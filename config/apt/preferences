@@ -1,0 +1,3 @@
+Package: exim4*
+Pin: version *
+Pin-Priority: -1
