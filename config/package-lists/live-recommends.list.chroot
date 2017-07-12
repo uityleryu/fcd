@@ -1,0 +1,14 @@
+# live-boot recommended packages
+#live-boot-doc
+live-tools
+rsync
+uuid-runtime
+
+#live-config recommended packages
+iproute2
+keyboard-configuration
+#live-config-doc
+live-tools
+locales
+sudo
+user-setup

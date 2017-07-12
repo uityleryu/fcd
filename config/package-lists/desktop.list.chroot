@@ -6,3 +6,7 @@ lightdm
 
 plymouth
 plymouth-x11
+
+lsb-release
+psmisc
+xorg
