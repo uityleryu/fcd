@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e
+set -x
+
+cat <<EOF > /etc/dpkg/dpkg.cfg.d/01_nolocales
+path-exclude /usr/share/locale/*
+path-include /usr/share/locale/en*
+EOF
+
+cat <<EOF > /etc/dpkg/dpkg.cfg.d/01_nodoc
+path-exclude /usr/share/doc/*
+# we need to keep copyright files for legal reasons
+path-include /usr/share/doc/*/copyright
+EOF
+
+find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en*' | xargs rm -r
+
+find /usr/share/doc -depth -type f ! -name copyright | xargs rm || true
+find /usr/share/doc -empty | xargs rmdir || true
+
+rm -f /var/cache/apt/*.bin
+
+cat <<EOF > /etc/apt/apt.conf.d/02nocache
+Dir::Cache {
+	srcpkgcache "";
+	pkgcache "";
+}
+EOF
