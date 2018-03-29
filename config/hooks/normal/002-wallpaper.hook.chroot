@@ -5,7 +5,8 @@ set -e
 apt-get -y install imagemagick
 
 mv /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
-convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'GPON ONU'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+VER=`cat /srv/tftp/version.txt`
+convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'ESX [$VER]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
 rm /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 
 apt-get -y remove --purge imagemagick imagemagick-6-common

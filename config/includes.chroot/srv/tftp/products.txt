@@ -1,0 +1,11 @@
+# ubnt
+appname=ESX Production Utility
+portcnt=4
+usetty=1
+indsel=0
+product.1.name=esx
+product.1.description=Ubiquiti Networks
+product.1.script=/usr/local/sbin/esx-production.tcl
+product.1.barcode=1
+product.1.fullbom=1
+product.1.script_params=tty target idx model_string passwd bom_string ssid keys mac srvip
