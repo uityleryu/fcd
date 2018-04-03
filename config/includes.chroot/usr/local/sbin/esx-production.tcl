@@ -10,6 +10,7 @@ set keydir [lindex $argv 7]
 set mac_addr [lindex $argv 8]
 set tftpserver [lindex $argv 9]
 set tty_sid 0
+set progress 0
 
 set uboot_promt "RTL838x#"
 set linux_promt " #"
@@ -36,6 +37,14 @@ proc log_warn { msg } {
 proc log_progress { p msg } {
 	set d [clock format [clock seconds] -format {%H:%M:%S}]
 	send_user "\r\n=== $p $d $msg ===\r\n"
+}
+
+proc log_progress_step { step msg } {
+	global progress
+	set progress [expr {$progress + $step}]
+
+	set d [clock format [clock seconds] -format {%H:%M:%S}]
+	send_user "\r\n=== $progress $d $msg ===\r\n"
 }
 
 proc log_debug { msg } {
@@ -161,6 +170,25 @@ proc from_tftp_srv { sid rem_file ip} {
 	exec_cmd $sid "tftp -g -r $rem_file $ip\r"
 }
 
+proc is_alive { {ip} {count} } {
+	send_user  "PING to $ip "
+
+	set status 0
+	for { set i 1 } { $i <= $count } { incr i } {
+
+		if {[catch {exec ping $ip -c 2} ping]} { set ping 0 }
+		if {[lindex $ping 0] == "0"} { send_user "." }
+		if {[lindex $ping 0] != "0"} {
+			if {[regexp {time=(.*) ms} $ping -> time]} {
+				send_user "\nGot response\n"
+				return 0
+			}
+		}
+	}
+	send_user "\nNot responding\n"
+	return 1
+}
+
 proc download_helper { sid } {
 	global ip
 	global tftpserver
@@ -174,9 +202,14 @@ proc download_helper { sid } {
 	log_debug "Sending helpers..."
 	exec_cmd $sid "cd /tmp\r"
 
-	sleep 10
+	set ping_res [is_alive $ip 30]
+	if { $ping_res == 0 } {
+		log_debug "Detected with ping..."
+	} else {
+		error_critical "Network failure"
+	}
 
-	set timeout 120
+	set timeout 10
 	from_tftp_srv $sid $helper_file $tftpserver
 
 	exec_cmd $sid "chmod +x $helper_file\r"
@@ -313,12 +346,27 @@ proc write_hw_info { {sid} {mac} {device_type} {bom}} {
 
 proc linux_login { sid user password} {
 	global linux_promt
-	set timeout 30
+	set timeout 10
+	set login_found 0
+	set retry_count 12
 
-	expect  {
-		-i $sid "Press any key to continue" { send -i $sid "\r" }
-		-i $sid timeout { error_critical "Failed to login" }
+	for {set x 0} { $x<$retry_count } {incr x} {
+		expect  {
+			-i $sid timeout { continue }
+			-i $sid "Generating a SSHv2" { log_progress_step 10 "Booting in progress..." }
+			-i $sid "Press any key to continue" {
+				send -i $sid "\r"
+				set login_found 1
+				set x $retry_count
+			}
+		}
 	}
+
+	if {$login_found < 1} {
+        error_critical "Failed to login"
+    }
+
+	set timeout 10
 
 	expect  {
 		-i $sid "Username: " {
@@ -371,14 +419,33 @@ proc setup_uboot_env { sid } {
 	exec_cmd_uboot $sid "saveenv\r"
 }
 
-proc check_update_progress { sid } {
+proc check_update_progress { sid progress_increment } {
+	global progress
+
 	set timeout 15
 	while { 1 } {
 		expect {
 			-i $sid "success" { log_debug "Update sucedded"; return }
-			-i $sid "Comparing file ......" { log_debug "Flashed. Checking."; set timeout 60 }
+			-i $sid "Comparing file ......" {
+				log_debug "Flashed. Checking.";
+				if {$progress_increment != 0} {
+					log_progress_step $progress_increment "Comparing..."
+				}
+				set timeout 60
+			}
 			-i $sid "%" {}
 			-i $sid "#" {}
+			-i $sid "Erasing"
+			{
+				if {$progress_increment != 0} {
+					log_progress_step $progress_increment "Erasing..."
+				}
+			}
+			-i $sid "Writting" {
+				if {$progress_increment != 0} {
+					log_progress_step $progress_increment "Writting..."
+				}
+			}
 			timeout { error_critical "Firmware upgrade failed!" }
 		  	eof {error_critical "Firmware upgrade failed!"}
 		}
@@ -387,13 +454,13 @@ proc check_update_progress { sid } {
 
 proc update_bootloader { sid } {
 	send -i $sid "upgrade loader esx-u-boot.bin\r"
-	check_update_progress $sid
+	check_update_progress $sid 0
 	wait_for_promt_uboot $sid
 }
 
 proc update_firmware { sid } {
 	send -i $sid "upgrade runtime esx-vmlinux.bix\r"
-	check_update_progress $sid
+	check_update_progress $sid 10
 	wait_for_promt_uboot $sid
 }
 
@@ -401,6 +468,10 @@ proc clean_up { sid } {
 	exec_cmd_uboot $sid "setenv ipaddr 192.168.1.20\r"
 	exec_cmd_uboot $sid "setenv serverip 192.168.1.254\r"
 	exec_cmd_uboot $sid "saveenv\r"
+	#JFFS2_CFG
+	exec_cmd_uboot $sid "flerase index 3\r"
+	#JFFS2_LOG
+	exec_cmd_uboot $sid "flerase index 4\r"
 }
 
 proc handle_boot { } {
@@ -412,36 +483,41 @@ proc handle_boot { } {
 	global mac_addr
 	global dev_id
 	global dev_bom
+	global progress
+
+	set progress 0
 
 	stop_uboot $tty_sid
-	log_progress 1 "Got into U-Boot"
+	log_progress_step 0 "Got into U-Boot"
+	set progress [expr {$progress + 0}]
 
 	setup_uboot_env $tty_sid
-	log_progress 2 "Updating bootloader..."
+	log_progress_step 5 "Updating bootloader..."
 	update_bootloader $tty_sid
 
 	log_debug "Reseting..."
 	send -i $tty_sid "reset\r"
 	stop_uboot $tty_sid
+	setup_uboot_env $tty_sid
 
-	log_progress 5 "Writing HW details..."
+	log_progress_step 5 "Writing HW details..."
 	write_hw_info $tty_sid $mac_addr $device_type $dev_bom
 
-	log_progress 10 "Updating firmware..."
+	log_progress_step 5 "Updating firmware..."
 	update_firmware $tty_sid
 
 	log_debug "Cleaning environment..."
 	clean_up $tty_sid
 
-	log_progress 50 "Booting..."
+	log_progress_step 5 "Booting..."
+
 	send -i $tty_sid "boota\r"
-	set timeout 120
 	linux_login $tty_sid "admin" "admin"
 
-	log_progress 60 "Downloading helper..."
+	log_progress_step 20 "Downloading helper..."
 	download_helper $tty_sid
 
-	log_progress 70 "Signing..."
+	log_progress_step 20 "Signing..."
 	do_security $tty_sid
 
 	log_progress 100 "Completed with $mac_addr"
