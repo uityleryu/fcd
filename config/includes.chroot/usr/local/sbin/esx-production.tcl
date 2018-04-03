@@ -468,10 +468,8 @@ proc clean_up { sid } {
 	exec_cmd_uboot $sid "setenv ipaddr 192.168.1.20\r"
 	exec_cmd_uboot $sid "setenv serverip 192.168.1.254\r"
 	exec_cmd_uboot $sid "saveenv\r"
-	#JFFS2_CFG
-	exec_cmd_uboot $sid "flerase index 3\r"
-	#JFFS2_LOG
-	exec_cmd_uboot $sid "flerase index 4\r"
+	exec_cmd_uboot $sid "flerase name JFFS2_CFG\r"
+	exec_cmd_uboot $sid "flerase name JFFS2_LOG\r"
 }
 
 proc handle_boot { } {
