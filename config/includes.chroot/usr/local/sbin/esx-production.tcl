@@ -381,7 +381,7 @@ proc linux_login { sid user password} {
 
 	expect -i $sid timeout {
 		error_critical "Login promt not found"
-	} "Switch#"
+	} "EdgeSwitch X#"
 
 	set timeout 5
 	#send ctrl+t
@@ -510,7 +510,7 @@ proc handle_boot { } {
 	log_progress_step 5 "Booting..."
 
 	send -i $tty_sid "boota\r"
-	linux_login $tty_sid "admin" "admin"
+	linux_login $tty_sid "ubnt" "ubnt"
 
 	log_progress_step 20 "Downloading helper..."
 	download_helper $tty_sid
