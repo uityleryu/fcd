@@ -428,6 +428,7 @@ sub enter_prod_info{
 			$ssid_model_string{"$product_string"} = $pr_model_string;
 			$ssid_barcode{"$product_string"} = $use_barcode;
 			$ssid_qrcode{"$product_string"} = $use_qrcode;
+			$ssid_model_name{"$product_string"} = $name;
 		}
 	}
 
@@ -576,6 +577,7 @@ sub enter_prod_info{
 		$use_barcode_overide = $ssid_barcode{"$full_name"};
 		$use_qrcode_overide = $ssid_qrcode{"$full_name"};
 		$model_string = $ssid_model_string{"$full_name"};
+		$selected_short_name = $ssid_model_name{"$full_name"};
 
 		if (
 			(( $hw_revision <= 0 ) or ( $hw_revision > 255 ))
@@ -607,8 +609,6 @@ sub enter_prod_info{
 			} else {
 				$selected_name = " ($full_name [rev. $hw_revision])";
 			}
-			my $active = $product->get_active;
-			$selected_short_name = $product_ssid->get('product.'.($active+1).'.name');
 			$passwd_dialog->destroy;
 		} else {
 			my $err_dialog = Gtk2::MessageDialog->new(
