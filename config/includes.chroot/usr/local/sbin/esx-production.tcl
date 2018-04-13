@@ -287,7 +287,7 @@ proc do_security { sid } {
 	log_debug "Writing eeprom..."
 	exec_cmd $sid "./$helper_file -q -i field=flash_eeprom,format=binary,pathname=/tmp/eeprom_out$idx\r"
 
-	exec_cmd $sid "cp /dev/mtdblock5 /tmp/check_eeprom$idx\r"
+	exec_cmd $sid "cp /dev/mtdblock6 /tmp/check_eeprom$idx\r"
 
 	log_debug "Checking EEPROM..."
 
