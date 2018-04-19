@@ -388,7 +388,7 @@ proc linux_login { sid user password} {
 	send \x14
 
 	expect  {
-		-i $sid "Diagnostics:" { send -i $sid "rtk2379"; sleep 1; send -i $sid "\r" }
+		-i $sid "Diagnostics:" { send -i $sid "Kinaa7AA7Mnb"; sleep 1; send -i $sid "\r" }
 		-i $sid timeout { error_critical "Login promt not found" }
 	}
 
