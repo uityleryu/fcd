@@ -56,7 +56,9 @@ fi
 echo "Copying firmware files..."
 
 cp ${BOOTLOADER} config/includes.chroot/srv/tftp/esx-u-boot.bin
+git add config/includes.chroot/srv/tftp/esx-u-boot.bin
 cp ${RUNTIME}    config/includes.chroot/srv/tftp/esx-vmlinux.bix
+git add config/includes.chroot/srv/tftp/esx-vmlinux.bix
 
 
 echo "Setting version to [${VERSION}] ..."
