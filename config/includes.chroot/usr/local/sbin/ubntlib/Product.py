@@ -30,7 +30,7 @@
 #       'CCLOCK': "na", 
 #       'SCRIPT': "na"}
 
-u1 = ["1", "U1", "ea11", "113-00618-01", "UniFi One base", "na", "na"]
+u1 = [0, "U1", "ea11", "113-00618", "UniFi One base", "na", "na"]
 
 prodlist = []
 prodlist.append(u1)
