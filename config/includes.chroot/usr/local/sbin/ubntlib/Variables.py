@@ -14,3 +14,9 @@ class GCommon:
     active_passphrase = ""
     active_product = ""
     active_productidx = ""
+    barcode = ""
+    barcodelen = 0
+    macaddr = ""
+    macaddrlen = 12
+    qrcode = ""
+    qrcodelen = 6

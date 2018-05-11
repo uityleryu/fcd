@@ -4,9 +4,6 @@ import gi
 import re
 import os
 import subprocess
-from _ast import Gt
-from _operator import gt
-from AptUrl import gtk
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 from ubntlib.Product import prodlist
@@ -126,6 +123,8 @@ class fraMonitorPanel(Gtk.Frame):
         # start button
         self.btnstart = Gtk.Button()
         self.btnstart.set_label(" Start ")
+        self.btnstart.set_focus_on_click(False)
+        self.btnstart.connect("clicked", self.startreg)
         #btnstart.set_name("myButton_yellow")
 
         lblresult = Gtk.Label('')
@@ -155,6 +154,70 @@ class fraMonitorPanel(Gtk.Frame):
     def set_product(self, pd):
         self.etyproductname.set_text(pd)
 
+    def get_bomrev(self):
+        return self.etybomrev.get_text()
+
+    def get_region(self):
+        return self.etyregion.get_text()
+
+    def get_product(self):
+        return self.etyproductname.get_text()
+
+    def get_tty(self):
+        combo = self.cmbbcomport
+        tree_iter = combo.get_active_iter()
+        if tree_iter is not None:
+            model = combo.get_model()
+            return model[tree_iter][0]
+
+    def startreg(self, button):
+        tty = self.get_tty()
+        product = self.get_product()
+        bomrev = self.get_bomrev()
+        region = self.get_region()
+        id = self.id
+        manufid = "fcd"
+        print("Joe: in startreg, "+str(tty))
+        print("Joe: in startreg, "+str(product))
+        print("Joe: in startreg, "+str(bomrev))
+        print("Joe: in startreg, "+str(id))
+        tmp = bomrev.split("-")
+        bomrev = tmp[1]+"-"
+
+        if (tty == "" or \
+            product == "" or \
+            bomrev == "" or \
+            region == ""):
+            msgerrror(self, "Information is not adequate. Exiting...")
+            return False
+
+        win = Gtk.Window()
+        dialog = dlgBarcodeinput(win)
+        response = dialog.run()
+        if (response == Gtk.ResponseType.OK):
+            print("Joe: this is barcode response ok")
+            barcode = GCommon.barcode
+            barcodelen = GCommon.barcodelen
+            macaddrlen = GCommon.macaddrlen
+            qrcodelen = GCommon.qrcodelen
+            print("Joe: the macaddr+qrcode: %d" % (macaddrlen+qrcodelen))
+            if (barcodelen == (macaddrlen+qrcodelen+1)):
+                btmp = barcode.split("-")
+                if ((len(btmp[0]) != macaddrlen) or \
+                    (len(btmp[1]) != qrcodelen)):
+                    msgerrror(win, "Barcode invalid. Exiting...")
+                else:
+                    print("Joe: the barcode is valid")
+                    GCommon.macaddr = btmp[0]
+                    GCommon.qrcode = btmp[1]
+            else:
+                msgerrror(win, "Barcode invalid. Exiting...")
+        else:
+            print("Joe: this is barcode response cancel")
+
+        dialog.destroy()
+        win.destroy()
+
 class ntbMessage(Gtk.Notebook):
     def __init__(self):
         Gtk.Notebook.__init__(self)
@@ -178,9 +241,12 @@ class ntbMessage(Gtk.Notebook):
 
 class dlgUserInput(Gtk.Dialog):
     def __init__(self, parent):
-        Gtk.Dialog.__init__(self, "User Input Dialog", parent, 0,
-                            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                             Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        Gtk.Dialog.__init__(self,
+                            "User Input Dialog",
+                            parent,
+                            0,
+                            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
         self.set_default_size(150, 100)
         self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 
@@ -260,6 +326,61 @@ class dlgUserInput(Gtk.Dialog):
 
         print("The region: "+GCommon.active_region)
 
+    def check_inputs(self):
+        idx = GCommon.active_productidx
+        if (GCommon.active_passphrase == "" or \
+           GCommon.active_productidx == "" or \
+           GCommon.active_product == "" or \
+           GCommon.active_bomrev == "" or \
+           GCommon.active_region == ""):
+            return False
+
+        ubomrev = GCommon.active_bomrev.split("-")
+        print("Joe: 1st ubomrev: "+str(ubomrev))
+        if (len(ubomrev) < 2):
+            print("BOM revision format incorrect")
+            return False
+        else:
+            ubomrev = ubomrev[0]+"-"+ubomrev[1]
+            print("Joe: 2nd ubomrev: "+str(ubomrev))
+
+        if (ubomrev != prodlist[idx][3]):
+            print("Joe: input BOM revision is not match to product")
+            return False
+
+class dlgBarcodeinput(Gtk.Dialog):
+    def __init__(self, parent):
+        Gtk.Dialog.__init__(self,
+                            "Waiting for barcode",
+                            parent,
+                            0,
+                            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
+        self.vboxbarcode = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        #self.set_default_response("ok")
+
+        self.lbltitle = Gtk.Label("Waiting for barcode")
+        self.lblmac = Gtk.Label("------------")
+        self.etymacedit = Gtk.Entry()
+        self.etymacedit.set_visibility(True)
+        self.etymacedit.set_activates_default(True)
+        self.etymacedit.connect("changed", self.on_etymacedit_changed)
+
+        self.vboxbarcode.pack_start(self.lbltitle, False, False, 0)
+        self.vboxbarcode.pack_start(self.lblmac, False, False, 0)
+        self.vboxbarcode.pack_start(self.etymacedit, False, False, 0)
+
+        self.area = self.get_content_area()
+        self.area.add(self.vboxbarcode)
+        self.show_all()
+
+    def on_etymacedit_changed(self):
+        barcode = self.etymacedit.get_text()
+        barcode = barcode.strip()
+        GCommon.barcode = barcode
+        GCommon.barcodelen = len(barcode)
+        print("The barcode: %s" % GCommon.barcode)
+        print("The barcode: %d" % GCommon.barcodelen)
 
 class winFcdFactory(Gtk.Window):
     def __init__(self):
@@ -305,19 +426,19 @@ class winFcdFactory(Gtk.Window):
 
     def envinitial(self):
 #         if (self.network_status_set() == False):
-#             self.msgerrror("Network configure faile. Exiting...")
+#             msgerrror("Network configure faile. Exiting...")
 #             return False
 #
-#         if (self.find_usb_storage() == False):
-#             self.msgerrror("No USB storage found. Exiting...")
-#             return False
-#
-#         if (self.check_key_files() == False):
-#             self.msgerrror("Security key files missing. Exiting...")
-#             return False
+        if (self.find_usb_storage() == False):
+            msgerrror(self, "No USB storage found. Exiting...")
+            return False
+
+        if (self.check_key_files() == False):
+            msgerrror(self, "Security key files missing. Exiting...")
+            return False
 
         if (self.check_comport() == False):
-            self.msgerrror("Check host ttys failed. Exiting...")
+            msgerrror(self, "Check host ttys failed. Exiting...")
             return False
 
         self.call_input_dlg()
@@ -338,9 +459,13 @@ class winFcdFactory(Gtk.Window):
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
-        if (output.returncode == 0):
-            #print("returncode: " + str(output.returncode))
-            print(f'return_cdoe:{output.returncode}:s')
+        """
+        Linux shell script return code:
+            pass: 0
+            failed: 1
+        """
+        if (output.returncode == 1):
+            print("returncode: " + str(output.returncode))
             return False
 
         stdoutarray = stdout.decode().splitlines()
@@ -382,6 +507,11 @@ class winFcdFactory(Gtk.Window):
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
+        """
+        Linux shell script return code:
+            pass: 0
+            failed: 1
+        """
         if (output.returncode == 1):
             print("returncode: " + str(output.returncode))
             return False
@@ -425,66 +555,65 @@ class winFcdFactory(Gtk.Window):
 
     def call_input_dlg(self):
         dialog = dlgUserInput(self)
-        response = dialog.run()
 
-        if (GCommon.active_bomrev != ""):
-            ubomrev = GCommon.active_bomrev.split("-")
-            print("Joe: 1st ubomrev: "+str(ubomrev))
-            if (len(ubomrev) < 2):
-                print("BOM revision format incorrect")
+        rt = False
+        while (rt == False):
+            response = dialog.run()
+            if (response == Gtk.ResponseType.OK):
+                print("The OK button was clicked")
+                result = dialog.check_inputs()
+                if (result == False):
+                    msgerrror("Any one of inputs is not correct")
+                    response = ""
+                    rt = False
+                else:
+                    idx = GCommon.active_productidx
+                    title = "%s, %s" % (prodlist[idx][4], prodlist[idx][3])
+                    self.lblprod.set_text(title)
+                    self.frame1.set_bomrev(GCommon.active_bomrev)
+                    self.frame1.set_region(GCommon.active_region)
+                    self.frame1.set_product(GCommon.active_product)
+                    self.frame2.set_bomrev(GCommon.active_bomrev)
+                    self.frame2.set_region(GCommon.active_region)
+                    self.frame2.set_product(GCommon.active_product)
+                    self.frame3.set_bomrev(GCommon.active_bomrev)
+                    self.frame3.set_region(GCommon.active_region)
+                    self.frame3.set_product(GCommon.active_product)
+                    self.frame4.set_bomrev(GCommon.active_bomrev)
+                    self.frame4.set_region(GCommon.active_region)
+                    self.frame4.set_product(GCommon.active_product)
+                    rt = True
             else:
-                ubomrev = ubomrev[0]+"-"+ubomrev[1]
-                print("Joe: 2nd ubomrev: "+str(ubomrev))
-
-            idx = GCommon.active_productidx
-            if (ubomrev != prodlist[idx][3]):
-                print("Joe: input BOM revision is not match to product")
-                return False
-
-        if (response == Gtk.ResponseType.OK):
-            print("The OK button was clicked")
-            if (GCommon.active_passphrase != ""):
-                title = "%s, %s" % (prodlist[idx][4], prodlist[idx][3])
-                self.lblprod.set_text(title)
-                self.frame1.set_bomrev(GCommon.active_bomrev)
-                self.frame1.set_region(GCommon.active_region)
-                self.frame1.set_product(GCommon.active_product)
-                self.frame2.set_bomrev(GCommon.active_bomrev)
-                self.frame2.set_region(GCommon.active_region)
-                self.frame2.set_product(GCommon.active_product)
-                self.frame3.set_bomrev(GCommon.active_bomrev)
-                self.frame3.set_region(GCommon.active_region)
-                self.frame3.set_product(GCommon.active_product)
-                self.frame4.set_bomrev(GCommon.active_bomrev)
-                self.frame4.set_region(GCommon.active_region)
-                self.frame4.set_product(GCommon.active_product)
-            else:
-                self.msgerrror("Pass-phrase/BOM-rev doesn't match..")
-                dialog.destroy()
-                os._exit()
-        elif (response == Gtk.ResponseType.CANCEL):
-            print("The Cancel button was clicked")
+                print("The Cancel button was clicked")
+                rt = True
 
         dialog.destroy()
 
         return True
 
-    def msgerrror(self, msg):
-        mgdimsg = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, "")
-        mgdimsg.format_secondary_text(msg)
-        mgdimsg.run()
-        mgdimsg.destroy()
-        return False
+def msgerrror(parent, msg):
+    mgdimsg = Gtk.MessageDialog(parent,
+                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                Gtk.MessageType.ERROR,
+                                Gtk.ButtonsType.CLOSE,
+                                "")
+    mgdimsg.format_secondary_text(msg)
+    mgdimsg.run()
+    mgdimsg.destroy()
 
-    def msginfo(self, msg):
-        mgdimsg = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, "")
-        mgdimsg.format_secondary_text(msg)
-        x = mgdimsg.run()
-        print('The return x:'+str(x))
-        z = mgdimsg.response(Gtk.ResponseType.OK)
-        print('The return z:'+str(z))
-        y = mgdimsg.destroy()
-        print('The return y:'+str(y))
+def msginfo(parent, msg):
+    mgdimsg = Gtk.MessageDialog(parent,
+                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                Gtk.MessageType.INFO,
+                                Gtk.ButtonsType.NONE,
+                                "")
+    mgdimsg.format_secondary_text(msg)
+    x = mgdimsg.run()
+    print('The return x:'+str(x))
+    z = mgdimsg.response(Gtk.ResponseType.OK)
+    print('The return z:'+str(z))
+    y = mgdimsg.destroy()
+    print('The return y:'+str(y))
 
 def main():
     window = winFcdFactory()
