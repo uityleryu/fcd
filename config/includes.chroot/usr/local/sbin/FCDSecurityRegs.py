@@ -6,24 +6,32 @@ import os
 import subprocess
 import time
 import random
+import threading
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
+from time import sleep
 
-# Prefix expression
-#     fra    : Gtk.Frame
-#     ety    : Gtk.Entry
-#     cmbb   : Gtk.ComboBox
-#     lbl    : Gtk.Lable
-#     btn    : Gtk.Button
-#     txv    : Gtk.TextView
-#     scl    : Gtk.ScrolledWindow
-#     epd    : Gtk.Expander
-#     mgdi   : Gtk.MessageDialog
-#     lsr    : Gtk.ListStore
-#     crt    : Gtk.CellRendererText
-#     dlg    : Gtk.Dialog
+"""
+    Prefix expression
+        fra    : Gtk.Frame
+        ety    : Gtk.Entry
+        cmbb   : Gtk.ComboBox
+        lbl    : Gtk.Lable
+        btn    : Gtk.Button
+        txv    : Gtk.TextView
+        scl    : Gtk.ScrolledWindow
+        epd    : Gtk.Expander
+        mgdi   : Gtk.MessageDialog
+        lsr    : Gtk.ListStore
+        crt    : Gtk.CellRendererText
+        dlg    : Gtk.Dialog
+        ntb    : Gtk.Notebook
+        txb    : Gtk.TextBuffer
+        txi    : Gtk.TextIter
+"""
+
 
 css = b"""
 #myGrid {
@@ -37,8 +45,8 @@ css = b"""
     background-color: white;
 }
 
-GtkProgressBar {
-    background-color: cyan;
+GtkBox#pgrs_yellow {
+    background-color: yellow;
 }
 
 #myButton_red{
@@ -88,6 +96,8 @@ class fraMonitorPanel(Gtk.Frame):
         Gtk.Frame.__init__(self, label=frametitle)
 
         self.busy = False
+        self.devregready = False
+        self.progressvalue = 0
 
         self.provider = Gtk.CssProvider()
         self.provider.load_from_data(css)
@@ -101,17 +111,19 @@ class fraMonitorPanel(Gtk.Frame):
         #self.etyproductname.set_editable(False)
         #self.etyproductname.override_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.0, 1.0, 0.0, 1.0))
         self.etyproductname.set_editable(False)
-        self.etyproductname.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+        self.etyproductname.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
         #self.etyproductname.set_name("myGrid")
 
         # BOM revision
         self.etybomrev = Gtk.Entry()
         self.etybomrev.set_editable(False)
+        self.etyproductname.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
         #self.etybomrev.set_name("myButton_blue")
 
         # Region - country
         self.etyregion = Gtk.Entry()
         self.etyregion.set_editable(False)
+        self.etyregion.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
         #self.etyregion.set_name("myButton_blue")
 
         # Serail COM port
@@ -129,18 +141,27 @@ class fraMonitorPanel(Gtk.Frame):
         self.lblmacqr = Gtk.Label('xx:xx:xx:xx:xx:xx-xxxxxx')
 
         # Progressing bar
+        self.hboxpgrs = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.pgrbprogress = Gtk.ProgressBar()
         self.pgrbprogress.set_text("None")
         self.pgrbprogress.set_show_text(True)
         self.pgrbprogress.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
-        #self.pgrbprogress.set_name("myButton_red")
+        self.hboxpgrs.pack_start(self.pgrbprogress, True, True, 0)
 
         # start button
         self.btnstart = Gtk.Button()
         self.btnstart.set_label(" Start ")
         self.btnstart.set_focus_on_click(False)
-        self.btnstart.connect("clicked", self.startreg)
+        self.btnstart.connect("clicked", self.on_start_button_click)
         #btnstart.set_name("myButton_yellow")
+
+        self.txvlog = Gtk.TextView()
+        self.scllog = Gtk.ScrolledWindow()
+        self.scllog.add(self.txvlog)
+        self.txblog = self.txvlog.get_buffer()
+        self.txilog = self.txblog.get_end_iter()
+        self.endmark = self.txblog.create_mark("end", self.txilog, False)
+        self.txblog.connect("insert-text", self.autoscroll)
 
         """
             A label to show the status: Idle, working, completed
@@ -156,9 +177,12 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.pack_start(self.etyregion, False, False, 0)
         self.hbox.pack_start(self.cmbbcomport, False, False, 0)
         self.hbox.pack_start(self.lblmacqr, False, False, 0)
-        self.hbox.pack_start(self.pgrbprogress, True, True, 0)
+        self.hbox.pack_start(self.hboxpgrs, True, True, 0)
         self.hbox.pack_end(self.btnstart, False, False, 0)
         self.hbox.pack_end(self.lblresult, False, False, 0)
+
+    def autoscroll(self, iter, text, length, user_param1):
+        self.txvlog.scroll_to_mark(self.endmark, 0.0, True, 0.0, 1.0)
 
     def apply_comport_item(self, items):
         self.lsritemlist.clear()
@@ -191,18 +215,38 @@ class fraMonitorPanel(Gtk.Frame):
         if tree_iter is not None:
             model = combo.get_model()
             return model[tree_iter][0]
-        
+
+    def appendlog(self, text):
+        self.txblog.insert(self.txilog, text)
+
     def panelstartconf(self):
         self.busy = True
         lblresultcolorfont = '<span background="darkgrey" foreground="yellow" size="xx-large"><b>Working....</b></span>'
         self.lblresult.set_markup(lblresultcolorfont)
+        self.hboxpgrs.set_name("pgrs_yellow")
+        self.appendlog("\n--------[STARTED: ]\n")
         self.etybomrev.set_sensitive(False)
         self.etyproductname.set_sensitive(False)
         self.etyregion.set_sensitive(False)
         self.cmbbcomport.set_sensitive(False)
         self.btnstart.set_sensitive(False)
 
-    def startreg(self, button):
+    def panelstepconf(self):
+        while True:
+            self.pgrbprogress.set_fraction(int(self.progressvalue)/100)
+            textvalue = str(self.progressvalue)
+            self.pgrbprogress.set_text(textvalue+" %")
+
+            if (self.progressvalue == "100"):
+                print("Joe: panelstepconf progressvalue is 100")
+                break
+
+            sleep(1)
+
+    def panelendconf(self):
+        return True
+
+    def aquirebarcode(self):
         tty = self.get_tty()
         product = self.get_product()
         bomrev = self.get_bomrev()
@@ -262,16 +306,20 @@ class fraMonitorPanel(Gtk.Frame):
         else:
             print("Joe: this is barcode response cancel")
 
+        print("Joe: going to destroy barcode dialog")
         dialog.destroy()
         win.destroy()
+        print("Joe: finsh destroying")
 
+    def setdirfl(self):
         # Set the correct MAC-QR to control panel
-        g = btmp[0]
+        g = GCommon.macaddr
+
         """
             MAC address + QR code format:
             XX:XX:XX:XX:XX:XX-XXXXXX
         """
-        info = g[0:2]+":"+g[2:4]+":"+g[4:6]+":"+g[6:8]+":"+g[8:10]+":"+g[10:12]+"-"+btmp[1]
+        info = g[0:2]+":"+g[2:4]+":"+g[4:6]+":"+g[6:8]+":"+g[8:10]+":"+g[10:12]+"-"+GCommon.qrcode
         print("Joe: mac+qr: "+info)
         self.lblmacqr.set_label(info)
 
@@ -288,42 +336,60 @@ class fraMonitorPanel(Gtk.Frame):
         [hour, min, sec] = t1[4].split(":")
         print("Joe: hour: %s, min: %s, sec: %s" % (hour, min, sec))
 
+        # Create the report directory
         reportdir = GPath.logdir+"/"+GCommon.active_product+"/rev"+GCommon.active_bomrev+"/"+GCommon.active_region
         print("Joe: report dir: "+reportdir)
         GPath.reportdir = reportdir
 
-        # Create report directory
         if not (os.path.isdir(GPath.reportdir)):
             result = pcmd("mkdir -p "+GPath.reportdir)
             if (result == False):
-                msgerrror("Can't create a log directory in the USB disk")
+                msgerrror(self, "Can't create a log directory in the USB disk")
 
+        # Create the temporary report file
         randnum = random.randint(1, 2000)
-        tempfile = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
-        print("Joe: tempfile: "+tempfile)
+        GCommon.templogfile = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
+
+    def on_start_button_click(self, button):
+        self.aquirebarcode()
+        self.setdirfl()
         self.panelstartconf()
+        self.devregready = True
 
+        return True
 
-class ntbMessage(Gtk.Notebook):
-    def __init__(self):
-        Gtk.Notebook.__init__(self)
-        txvlog1 = Gtk.TextView()
-        txvlog2 = Gtk.TextView()
-        txvlog3 = Gtk.TextView()
-        txvlog4 = Gtk.TextView()
-        scllog1 = Gtk.ScrolledWindow()
-        scllog2 = Gtk.ScrolledWindow()
-        scllog3 = Gtk.ScrolledWindow()
-        scllog4 = Gtk.ScrolledWindow()
-        scllog1.add(txvlog1)
-        scllog2.add(txvlog2)
-        scllog3.add(txvlog3)
-        scllog4.add(txvlog4)
-        self.append_page(scllog1, Gtk.Label("Slot 1"))
-        self.append_page(scllog2, Gtk.Label("Slot 2"))
-        self.append_page(scllog3, Gtk.Label("Slot 3"))
-        self.append_page(scllog4, Gtk.Label("Slot 4"))
+    def devreg(self):
+        print("Joe: devreg starting")
+        t = threading.Thread(target=self.panelstepconf)
+        t.start()
+        #cmd = "perl test.pl"
+        cmd = "cat ~/Documents/2018-5-8.log"
+        while True:
+            if (self.devregready == True):
+                self.run_streamcmd(cmd)
 
+            sleep(1)
+            print("Joe: devreg while loop")
+
+    def run_streamcmd(self, cmd):
+        process = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                print("Joe: poll is None")
+                x1 = output.decode()
+                print("Joe: read line: "+str(x1))
+                #ot = output.replace("\000", "")
+                self.appendlog(str(x1))
+                pattern = re.compile("^=== (\d+) .*$")
+                x2 = pattern.match(x1)
+                if (x2 != None):
+                    print("Joe: retrive pattern: "+str(x2.group(1)))
+                    self.progressvalue = x2.group(1)
+
+            sleep(0.2)
 
 class dlgUserInput(Gtk.Dialog):
     def __init__(self, parent):
@@ -490,13 +556,17 @@ class winFcdFactory(Gtk.Window):
         self.vboxdashboard.pack_start(self.frame3, False, False, 0)
         self.vboxdashboard.pack_start(self.frame4, False, False, 0)
 
-        self.msg = ntbMessage()
+        self.ntbmsg = Gtk.Notebook()
+        self.ntbmsg.append_page(self.frame1.scllog, Gtk.Label("Slot 1"))
+        self.ntbmsg.append_page(self.frame2.scllog, Gtk.Label("Slot 2"))
+        self.ntbmsg.append_page(self.frame3.scllog, Gtk.Label("Slot 3"))
+        self.ntbmsg.append_page(self.frame4.scllog, Gtk.Label("Slot 4"))
 
         # operation log
         self.epdoplog = Gtk.Expander()
         self.epdoplog.set_label('Output of production scripts')
         self.epdoplog.set_expanded(False)
-        self.epdoplog.add(self.msg)
+        self.epdoplog.add(self.ntbmsg)
 
         # Main window
         self.vboxMainWindow = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -512,7 +582,7 @@ class winFcdFactory(Gtk.Window):
 
     def envinitial(self):
 #         if (self.network_status_set() == False):
-#             msgerrror("Network configure faile. Exiting...")
+#             msgerrror(self, "Network configure faile. Exiting...")
 #             return False
 #
         if (self.find_usb_storage() == False):
@@ -527,7 +597,19 @@ class winFcdFactory(Gtk.Window):
             msgerrror(self, "Check host ttys failed. Exiting...")
             return False
 
-        self.call_input_dlg()
+        if (self.call_input_dlg() == False):
+            msgerrror(self, "Inputs information incorrect. Exiting...")
+            return False
+
+        t1 = threading.Thread(target=self.frame1.devreg)
+        t1.start()
+        t2 = threading.Thread(target=self.frame2.devreg)
+        t2.start()
+        t3 = threading.Thread(target=self.frame3.devreg)
+        t3.start()
+        t4 = threading.Thread(target=self.frame4.devreg)
+        t4.start()
+
         return True
 
     def network_status_set(self):
@@ -649,7 +731,7 @@ class winFcdFactory(Gtk.Window):
                 print("The OK button was clicked")
                 result = dialog.check_inputs()
                 if (result == False):
-                    msgerrror("Any one of inputs is not correct")
+                    msgerrror(self, "Any one of inputs is not correct")
                     response = ""
                     rt = False
                 else:
