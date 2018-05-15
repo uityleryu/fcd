@@ -8,7 +8,7 @@ import time
 import random
 import threading
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
 from time import sleep
@@ -34,59 +34,16 @@ from time import sleep
 
 
 css = b"""
-#myGrid {
-    background-color: cyan;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-}
-
-#myChildTop {
-    background-color: white;
-}
-
 GtkBox#pgrs_yellow {
     background-color: yellow;
 }
 
-#myButton_red{
-    background-color: red;
-    color: blue;
-    font-family: DejaVu Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 15px;
+GtkBox#pgrs_green {
+    background-color: #00FF00;
 }
 
-#myButton_yellow{
-    background-color: #131313;
-    color: red;
-    font-family: DejaVu Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 15px;
-}
-
-#myButton_green{
-    background-color: green;
-    color: white;
-    font-family: DejaVu Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 15px;
-}
-
-#myButton_blue{
-    background-color: white;
-    color: blue;
-    font-family: DejaVu Sans;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    border-radius: 15px;
+GtkBox#pgrs_red {
+    background-color: #FF0000;
 }
 """
 
@@ -95,9 +52,11 @@ class fraMonitorPanel(Gtk.Frame):
         self.id = id
         Gtk.Frame.__init__(self, label=frametitle)
 
-        self.busy = False
         self.devregready = False
         self.progressvalue = 0
+        self.starttime = ""
+        self.endtime = ""
+        self.rtdevreg = 0
 
         self.provider = Gtk.CssProvider()
         self.provider.load_from_data(css)
@@ -107,24 +66,20 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.set_border_width(5)
         self.add(self.hbox)
 
+        # Product
         self.etyproductname = Gtk.Entry()
-        #self.etyproductname.set_editable(False)
-        #self.etyproductname.override_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.0, 1.0, 0.0, 1.0))
         self.etyproductname.set_editable(False)
         self.etyproductname.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
-        #self.etyproductname.set_name("myGrid")
 
         # BOM revision
         self.etybomrev = Gtk.Entry()
         self.etybomrev.set_editable(False)
         self.etyproductname.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
-        #self.etybomrev.set_name("myButton_blue")
 
         # Region - country
         self.etyregion = Gtk.Entry()
         self.etyregion.set_editable(False)
         self.etyregion.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
-        #self.etyregion.set_name("myButton_blue")
 
         # Serail COM port
         self.lsritemlist = Gtk.ListStore(str)
@@ -153,15 +108,15 @@ class fraMonitorPanel(Gtk.Frame):
         self.btnstart.set_label(" Start ")
         self.btnstart.set_focus_on_click(False)
         self.btnstart.connect("clicked", self.on_start_button_click)
-        #btnstart.set_name("myButton_yellow")
 
         self.txvlog = Gtk.TextView()
+        self.txvlog.set_editable(False)
         self.scllog = Gtk.ScrolledWindow()
         self.scllog.add(self.txvlog)
         self.txblog = self.txvlog.get_buffer()
         self.txilog = self.txblog.get_end_iter()
         self.endmark = self.txblog.create_mark("end", self.txilog, False)
-        self.txblog.connect("insert-text", self.autoscroll)
+        #self.txblog.connect("insert-text", self.autoscroll)
 
         """
             A label to show the status: Idle, working, completed
@@ -182,7 +137,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.pack_end(self.lblresult, False, False, 0)
 
     def autoscroll(self, iter, text, length, user_param1):
-        self.txvlog.scroll_to_mark(self.endmark, 0.0, True, 0.0, 1.0)
+        self.txvlog.scroll_to_mark(self.endmark, 0.0, False, 1.0, 1.0)
 
     def apply_comport_item(self, items):
         self.lsritemlist.clear()
@@ -220,7 +175,6 @@ class fraMonitorPanel(Gtk.Frame):
         self.txblog.insert(self.txilog, text)
 
     def panelstartconf(self):
-        self.busy = True
         lblresultcolorfont = '<span background="darkgrey" foreground="yellow" size="xx-large"><b>Working....</b></span>'
         self.lblresult.set_markup(lblresultcolorfont)
         self.hboxpgrs.set_name("pgrs_yellow")
@@ -231,32 +185,43 @@ class fraMonitorPanel(Gtk.Frame):
         self.cmbbcomport.set_sensitive(False)
         self.btnstart.set_sensitive(False)
 
-    def panelstepconf(self):
-        while True:
-            self.pgrbprogress.set_fraction(int(self.progressvalue)/100)
-            textvalue = str(self.progressvalue)
-            self.pgrbprogress.set_text(textvalue+" %")
-
-            if (self.progressvalue == "100"):
-                print("Joe: panelstepconf progressvalue is 100")
-                break
-
-            sleep(1)
+    def panelstepconf(self, pgvalue):
+        self.pgrbprogress.set_fraction(int(pgvalue)/100)
+        self.pgrbprogress.set_text(pgvalue+" %")
 
     def panelendconf(self):
-        return True
+        print("Joe: in panelendconf")
+        self.etybomrev.set_sensitive(True)
+        self.etyproductname.set_sensitive(True)
+        self.etyregion.set_sensitive(True)
+        self.cmbbcomport.set_sensitive(True)
+        self.btnstart.set_sensitive(True)
+        self.pgrbprogress.set_fraction(0)
+        self.devregready = False
+
+        if (self.rtdevreg == 0):
+            self.endtime = time.time()
+            timeelapsed = self.endtime - self.starttime
+            elapsemin = int(timeelapsed/60)
+            elapsesec = int(timeelapsed) % 60
+            pgtxt = "Completed, elapsed time: "+str(elapsemin)+":"+str(elapsesec)
+            self.pgrbprogress.set_text(pgtxt)
+            lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
+            self.lblresult.set_markup(lblresultcolorfont)
+            self.hboxpgrs.set_name("pgrs_green")
+        else:
+            self.pgrbprogress.set_text("Failed")
+            lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>PASS</b></span>'
+            self.lblresult.set_markup(lblresultcolorfont)
+            self.hboxpgrs.set_name("pgrs_red")
 
     def aquirebarcode(self):
         tty = self.get_tty()
         product = self.get_product()
         bomrev = self.get_bomrev()
         region = self.get_region()
-        id = self.id
+        id = int(self.id)
         manufid = "fcd"
-        print("Joe: in startreg, "+str(tty))
-        print("Joe: in startreg, "+str(product))
-        print("Joe: in startreg, "+str(bomrev))
-        print("Joe: in startreg, "+str(id))
         tmp = bomrev.split("-")
         bomrev = tmp[1]+"-"
 
@@ -290,7 +255,7 @@ class fraMonitorPanel(Gtk.Frame):
                     pres = pattern.match(btmp[0])
                     if (pres != None):
                         print("Joe: the macaddr format is incorrect")
-                        msgerrror(win, "MAC address invalid. Exiting...")
+                        msgerrror(win, "MAC adress invalid. Exiting...")
                         dialog.destroy()
                         win.destroy()
                         return False
@@ -298,6 +263,7 @@ class fraMonitorPanel(Gtk.Frame):
                         print("Joe: the barcode is valid")
                         GCommon.macaddr = btmp[0]
                         GCommon.qrcode = btmp[1]
+                        self.starttime = time.time()
             else:
                 msgerrror(win, "Barcode invalid. Exiting...")
                 dialog.destroy()
@@ -306,10 +272,8 @@ class fraMonitorPanel(Gtk.Frame):
         else:
             print("Joe: this is barcode response cancel")
 
-        print("Joe: going to destroy barcode dialog")
         dialog.destroy()
         win.destroy()
-        print("Joe: finsh destroying")
 
     def setdirfl(self):
         # Set the correct MAC-QR to control panel
@@ -331,8 +295,6 @@ class fraMonitorPanel(Gtk.Frame):
         nowtime = time.strftime("%a,%d,%b,%Y,%H:%M:%S", time.gmtime())
         print("Joe: nowtime: ", nowtime)
         t1 = nowtime.split(",")
-        print("Joe: t1[3]: "+str(t1[3]))
-        print("Joe: t1[4]: "+str(t1[4]))
         [hour, min, sec] = t1[4].split(":")
         print("Joe: hour: %s, min: %s, sec: %s" % (hour, min, sec))
 
@@ -348,7 +310,7 @@ class fraMonitorPanel(Gtk.Frame):
 
         # Create the temporary report file
         randnum = random.randint(1, 2000)
-        GCommon.templogfile = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
+        GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
 
     def on_start_button_click(self, button):
         self.aquirebarcode()
@@ -356,38 +318,31 @@ class fraMonitorPanel(Gtk.Frame):
         self.panelstartconf()
         self.devregready = True
 
-        return True
-
     def devreg(self):
-        print("Joe: devreg starting")
-        t = threading.Thread(target=self.panelstepconf)
-        t.start()
-        #cmd = "perl test.pl"
-        cmd = "cat ~/Documents/2018-5-8.log"
+        cmd = "python3.6 UniFiOneRegister.py"
+        #cmd = "cat ~/Documents/2018-5-8.log"
         while True:
             if (self.devregready == True):
                 self.run_streamcmd(cmd)
 
-            sleep(1)
-            print("Joe: devreg while loop")
+            sleep(2)
 
     def run_streamcmd(self, cmd):
         process = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         while True:
             output = process.stdout.readline()
-            if output == '' and process.poll() is not None:
+            if (process.poll() is not None):
+                self.rtdevreg = process.returncode
+                self.panelendconf()
                 break
-            if output:
-                print("Joe: poll is None")
-                x1 = output.decode()
-                print("Joe: read line: "+str(x1))
+            else:
+                raw2str = output.decode()
                 #ot = output.replace("\000", "")
-                self.appendlog(str(x1))
+                self.appendlog(str(raw2str))
                 pattern = re.compile("^=== (\d+) .*$")
-                x2 = pattern.match(x1)
-                if (x2 != None):
-                    print("Joe: retrive pattern: "+str(x2.group(1)))
-                    self.progressvalue = x2.group(1)
+                pgvalue = pattern.match(raw2str)
+                if (pgvalue != None):
+                    self.panelstepconf(str(pgvalue.group(1)))
 
             sleep(0.2)
 
@@ -613,13 +568,14 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def network_status_set(self):
-#         cmd = "sudo sh prod-network.sh"
-#         output = subprocess.Popen([t], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-#         output.wait()
-#         [stdout, stderr] = output.communicate()
-#         if (output.returncode == 0):
-#             print("returncode: " + str(output.returncode))
-#             return False
+        cmd = "sudo sh prod-network.sh"
+        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        output.wait()
+        [stdout, stderr] = output.communicate()
+        if (output.returncode == 0):
+            print("returncode: " + str(output.returncode))
+            return False
+
         return True
 
     def find_usb_storage(self):

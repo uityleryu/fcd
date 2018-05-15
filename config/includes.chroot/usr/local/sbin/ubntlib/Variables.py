@@ -4,7 +4,9 @@ class GPath:
     logdir = ""
     keydir = ""
     reportdir = ""
-    templogfile = ""
+
+    # Temporary log file
+    templogfile = ["", "", "", ""]
 
 class GCommon:
     keyfilenames = ["ca.pem", "crt.pem", "key.pem"]
@@ -22,8 +24,6 @@ class GCommon:
     macaddrlen = 12
     qrcode = ""
     qrcodelen = 6
-    devregready = False
-
 
 def main():
     print("Joe: report dir: "+GPath.reportdir)
