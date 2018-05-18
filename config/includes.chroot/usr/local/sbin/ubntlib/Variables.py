@@ -9,9 +9,11 @@ class GPath:
     templogfile = ["", "", "", ""]
 
 class GCommon:
+    serverip = "192.168.1.19"
     keyfilenames = ["ca.pem", "crt.pem", "key.pem"]
     dftty = ["ttyUSB0", "ttyUSB1", "ttyUSB2", "ttyUSB3"]
     active_tty = []
+    finaltty = ["na", "na", "na", "na"]
     region_names = ["World", "USA/Canada", "Thailand", "Israsel"]
     active_bomrev = ""
     active_region = ""

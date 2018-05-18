@@ -12,6 +12,7 @@ from gi.repository import Gtk, Gdk
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
 from time import sleep
+from ubntlib.Commonlib import msgerrror, msginfo, pcmd
 
 """
     Prefix expression
@@ -34,16 +35,40 @@ from time import sleep
 
 
 css = b"""
-GtkBox#pgrs_yellow {
+#pgrs_yellow {
     background-color: yellow;
 }
 
-GtkBox#pgrs_green {
+#pgrs_green {
     background-color: #00FF00;
 }
 
-GtkBox#pgrs_red {
+#pgrs_red {
     background-color: #FF0000;
+}
+
+#lbl_black {
+    background-color: #D3D3D3;
+    color: black;
+    font-size: 15px;
+}
+
+#lbl_red {
+    background-color: #D3D3D3;
+    color: red;
+    font-size: 15px;
+}
+
+#lbl_yellow {
+    background-color: #D3D3D3;
+    color: yellow;
+    font-size: 15px;
+}
+
+#lbl_green {
+    background-color: #D3D3D3;
+    color: green;
+    font-size: 15px;
 }
 """
 
@@ -65,6 +90,8 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
         self.hbox.set_border_width(5)
         self.add(self.hbox)
+
+        self.win = Gtk.Window()
 
         # Product
         self.etyproductname = Gtk.Entry()
@@ -90,6 +117,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.cmbbcomport = Gtk.ComboBox.new_with_model(self.lsritemlist)
         self.cmbbcomport.pack_start(self.crtcmblist, True)
         self.cmbbcomport.add_attribute(self.crtcmblist, "text", 0)
+        self.cmbbcomport.connect("changed", self.on_cmbbcomport_combo_changed)
         self.cmbbcomport.set_active(0)
 
         # MAC address + QR code
@@ -121,11 +149,14 @@ class fraMonitorPanel(Gtk.Frame):
         """
             A label to show the status: Idle, working, completed
         """
-        self.lblresult = Gtk.Label('')
+        self.lblresult = Gtk.Label('NONE')
         self.lblresult.set_size_request(100, 32)
-        self.lblresult.set_alignment(0.0, 0.0)
-        lblresultcolorfont = '<span foreground="black" size="xx-large"><b>Idle....</b></span>'
-        self.lblresult.set_markup(lblresultcolorfont)
+        #self.lblresult.set_alignment(0.0, 0.0)
+        self.lblresult.set_halign(Gtk.Align.CENTER)
+        self.lblresult.set_valign(Gtk.Align.CENTER)
+        self.lblresult.set_name("lbl_black")
+        #lblresultcolorfont = '<span foreground="black" size="xx-large"><b>Idle....</b></span>'
+        #self.lblresult.set_markup(lblresultcolorfont)
 
         self.hbox.pack_start(self.etyproductname, False, False, 0)
         self.hbox.pack_start(self.etybomrev, False, False, 0)
@@ -135,6 +166,14 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.pack_start(self.hboxpgrs, True, True, 0)
         self.hbox.pack_end(self.btnstart, False, False, 0)
         self.hbox.pack_end(self.lblresult, False, False, 0)
+
+    def on_cmbbcomport_combo_changed(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter is not None:
+            model = combo.get_model()
+            GCommon.finaltty[int(self.id)] = model[tree_iter][0]
+
+        print("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
 
     def autoscroll(self, iter, text, length, user_param1):
         self.txvlog.scroll_to_mark(self.endmark, 0.0, False, 1.0, 1.0)
@@ -175,9 +214,12 @@ class fraMonitorPanel(Gtk.Frame):
         self.txblog.insert(self.txilog, text)
 
     def panelstartconf(self):
-        lblresultcolorfont = '<span background="darkgrey" foreground="yellow" size="xx-large"><b>Working....</b></span>'
-        self.lblresult.set_markup(lblresultcolorfont)
-        self.hboxpgrs.set_name("pgrs_yellow")
+        #lblresultcolorfont = '<span background="darkgrey" foreground="yellow" size="xx-large"><b>Working....</b></span>'
+        #self.lblresult.set_markup(lblresultcolorfont)
+#         self.lblresult.set_name("lbl_yellow")
+#         self.lblresult.set_text("Working...")
+        #self.hboxpgrs.set_name("pgrs_yellow")
+        self.pgrbprogress.set_text("Starting...")
         self.appendlog("\n--------[STARTED: ]\n")
         self.etybomrev.set_sensitive(False)
         self.etyproductname.set_sensitive(False)
@@ -191,13 +233,6 @@ class fraMonitorPanel(Gtk.Frame):
 
     def panelendconf(self):
         print("Joe: in panelendconf")
-        self.etybomrev.set_sensitive(True)
-        self.etyproductname.set_sensitive(True)
-        self.etyregion.set_sensitive(True)
-        self.cmbbcomport.set_sensitive(True)
-        self.btnstart.set_sensitive(True)
-        self.pgrbprogress.set_fraction(0)
-        self.devregready = False
 
         if (self.rtdevreg == 0):
             self.endtime = time.time()
@@ -206,16 +241,23 @@ class fraMonitorPanel(Gtk.Frame):
             elapsesec = int(timeelapsed) % 60
             pgtxt = "Completed, elapsed time: "+str(elapsemin)+":"+str(elapsesec)
             self.pgrbprogress.set_text(pgtxt)
-            lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
-            self.lblresult.set_markup(lblresultcolorfont)
-            self.hboxpgrs.set_name("pgrs_green")
+            #lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
+            #self.lblresult.set_markup(lblresultcolorfont)
+#             self.lblresult.set_name("lbl_green")
+#             self.lblresult.set_text("PASS")
+            #self.hboxpgrs.set_name("pgrs_green")
         else:
             self.pgrbprogress.set_text("Failed")
-            lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>PASS</b></span>'
-            self.lblresult.set_markup(lblresultcolorfont)
-            self.hboxpgrs.set_name("pgrs_red")
+            #lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
+            #self.lblresult.set_markup(lblresultcolorfont)
+#             self.lblresult.set_name("lbl_red")
+#             self.lblresult.set_text("FAILED")
+            #self.hboxpgrs.set_name("pgrs_red")
+            
+        self.devregready = False
 
     def aquirebarcode(self):
+        rt = False
         tty = self.get_tty()
         product = self.get_product()
         bomrev = self.get_bomrev()
@@ -232,8 +274,8 @@ class fraMonitorPanel(Gtk.Frame):
             msgerrror(self, "Information is not adequate. Exiting...")
             return False
 
-        win = Gtk.Window()
-        dialog = dlgBarcodeinput(win)
+        #win = Gtk.Window()
+        dialog = dlgBarcodeinput(self.win)
         response = dialog.run()
         if (response == Gtk.ResponseType.OK):
             print("Joe: this is barcode response ok")
@@ -246,34 +288,32 @@ class fraMonitorPanel(Gtk.Frame):
                 btmp = barcode.split("-")
                 if ((len(btmp[0]) != macaddrlen) or \
                     (len(btmp[1]) != qrcodelen)):
-                    msgerrror(win, "Barcode invalid. Exiting...")
-                    dialog.destroy()
-                    win.destroy()
-                    return False
+                    msgerrror(self.win, "Barcode invalid. Exiting...")
+                    rt = False
                 else:
                     pattern = re.compile(r'[^0-9a-fA-F]')
                     pres = pattern.match(btmp[0])
                     if (pres != None):
                         print("Joe: the macaddr format is incorrect")
-                        msgerrror(win, "MAC adress invalid. Exiting...")
-                        dialog.destroy()
-                        win.destroy()
-                        return False
+                        msgerrror(self.win, "MAC adress invalid. Exiting...")
+                        rt = False
                     else:
                         print("Joe: the barcode is valid")
                         GCommon.macaddr = btmp[0]
                         GCommon.qrcode = btmp[1]
                         self.starttime = time.time()
+                        print("Joe: start time: "+str(self.starttime))
+                        rt = True
             else:
-                msgerrror(win, "Barcode invalid. Exiting...")
-                dialog.destroy()
-                win.destroy()
-                return False
+                msgerrror(self.win, "Barcode invalid. Exiting...")
+                rt = False
         else:
             print("Joe: this is barcode response cancel")
+            rt = False
 
         dialog.destroy()
-        win.destroy()
+        self.win.destroy()
+        return rt
 
     def setdirfl(self):
         # Set the correct MAC-QR to control panel
@@ -313,27 +353,39 @@ class fraMonitorPanel(Gtk.Frame):
         GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
 
     def on_start_button_click(self, button):
-        self.aquirebarcode()
-        self.setdirfl()
-        self.panelstartconf()
-        self.devregready = True
+        rt = self.aquirebarcode()
+
+        if (rt == False):
+            self.devregready = False
+        else:
+            self.setdirfl()
+            self.panelstartconf()
+            self.devregready = True
 
     def devreg(self):
-        cmd = "python3.6 UniFiOneRegister.py"
+        cmd = "python3.6 UniFiOneRegister.py "+str(self.id)
         #cmd = "cat ~/Documents/2018-5-8.log"
         while True:
             if (self.devregready == True):
-                self.run_streamcmd(cmd)
+                print("Joe: before starting run streamcmd")
+                #self.run_streamcmd(cmd)
 
-            sleep(2)
+            #sleep(2)
 
     def run_streamcmd(self, cmd):
         process = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         while True:
             output = process.stdout.readline()
-            if (process.poll() is not None):
+            poll = process.poll()
+            if (poll is not None):
                 self.rtdevreg = process.returncode
                 self.panelendconf()
+                self.etybomrev.set_sensitive(True)
+                self.etyproductname.set_sensitive(True)
+                self.etyregion.set_sensitive(True)
+                self.cmbbcomport.set_sensitive(True)
+                self.btnstart.set_sensitive(True)
+                self.pgrbprogress.set_fraction(0)
                 break
             else:
                 raw2str = output.decode()
@@ -344,7 +396,7 @@ class fraMonitorPanel(Gtk.Frame):
                 if (pgvalue != None):
                     self.panelstepconf(str(pgvalue.group(1)))
 
-            sleep(0.2)
+            sleep(0.3)
 
 class dlgUserInput(Gtk.Dialog):
     def __init__(self, parent):
@@ -534,6 +586,15 @@ class winFcdFactory(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.add(self.vboxMainWindow)
         self.connect("destroy", Gtk.main_quit)
+        
+        t1 = threading.Thread(target=self.frame1.devreg)
+        t1.start()
+        t2 = threading.Thread(target=self.frame2.devreg)
+        t2.start()
+        t3 = threading.Thread(target=self.frame3.devreg)
+        t3.start()
+        t4 = threading.Thread(target=self.frame4.devreg)
+        t4.start()
 
     def envinitial(self):
 #         if (self.network_status_set() == False):
@@ -555,15 +616,6 @@ class winFcdFactory(Gtk.Window):
         if (self.call_input_dlg() == False):
             msgerrror(self, "Inputs information incorrect. Exiting...")
             return False
-
-        t1 = threading.Thread(target=self.frame1.devreg)
-        t1.start()
-        t2 = threading.Thread(target=self.frame2.devreg)
-        t2.start()
-        t3 = threading.Thread(target=self.frame3.devreg)
-        t3.start()
-        t4 = threading.Thread(target=self.frame4.devreg)
-        t4.start()
 
         return True
 
@@ -715,46 +767,6 @@ class winFcdFactory(Gtk.Window):
 
         return True
 
-def msgerrror(parent, msg):
-    mgdimsg = Gtk.MessageDialog(parent,
-                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                Gtk.MessageType.ERROR,
-                                Gtk.ButtonsType.CLOSE,
-                                "")
-    mgdimsg.format_secondary_text(msg)
-    mgdimsg.run()
-    mgdimsg.destroy()
-
-def msginfo(parent, msg):
-    mgdimsg = Gtk.MessageDialog(parent,
-                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                Gtk.MessageType.INFO,
-                                Gtk.ButtonsType.NONE,
-                                "")
-    mgdimsg.format_secondary_text(msg)
-    x = mgdimsg.run()
-    print('The return x:'+str(x))
-    z = mgdimsg.response(Gtk.ResponseType.OK)
-    print('The return z:'+str(z))
-    y = mgdimsg.destroy()
-    print('The return y:'+str(y))
-
-def pcmd(cmd):
-    print("Joe: in pcmd, cmd: "+cmd)
-    output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    output.wait()
-    [stdout, stderr] = output.communicate()
-    """
-    Linux shell script return code:
-        pass: 0
-        failed: 1
-    """
-    if (output.returncode == 1):
-        print("pcmd returncode: " + str(output.returncode))
-        return False
-    else:
-        return True
-
 def main():
     window = winFcdFactory()
     window.show_all()
@@ -773,6 +785,7 @@ def debugdlgUserInput():
     dialog.destroy()
     return True
 
-if __name__ == "__main__":
-    main()
-    #debugdlgUserInput()
+main()
+# if __name__ == "__main__":
+#     main()
+#     #debugdlgUserInput()
