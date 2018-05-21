@@ -13,7 +13,7 @@ def msg(no, out):
         pstr = "\n=== "+str(no)+" ===";
 
     nowtime = time.strftime("[FCD %Y-%m-%d %H:%M:%S] ", time.gmtime())
-    print("\n"+pstr+"\n"+nowtime+out+"\n\n")
+    print("\n"+pstr+"\n"+nowtime+out+"\n\n\n")
 
 def log_error(msg):
     erstr = "\n* * * ERROR: * * *"
