@@ -85,6 +85,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.x = False
         self.y = False
         self.z = False
+        self.w = "na"
         self.proc = ""
 
         self.provider = Gtk.CssProvider()
@@ -141,6 +142,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.btnstart.set_focus_on_click(False)
         self.btnstart.connect("clicked", self.on_start_button_click)
 
+        # Text view for showing log
         self.txvlog = Gtk.TextView()
         self.txvlog.set_editable(False)
         self.scllog = Gtk.ScrolledWindow()
@@ -148,7 +150,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.txblog = self.txvlog.get_buffer()
         self.txilog = self.txblog.get_end_iter()
         self.endmark = self.txblog.create_mark("end", self.txilog, False)
-        #self.txblog.connect("insert-text", self.autoscroll)
+        self.txblog.connect("insert-text", self.autoscroll)
 
         """
             A label to show the status: Idle, working, completed
@@ -170,9 +172,9 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.pack_end(self.btnstart, False, False, 0)
         self.hbox.pack_end(self.lblresult, False, False, 0)
 
-        GObject.timeout_add(1000, self.panelstartconf, None)
+        GObject.timeout_add(700, self.panelstartconf, None)
         GObject.timeout_add(300, self.panelstepconf, None)
-        GObject.timeout_add(1000, self.panelendconf, None)
+        GObject.timeout_add(700, self.panelendconf, None)
 
     def on_cmbbcomport_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -249,41 +251,32 @@ class fraMonitorPanel(Gtk.Frame):
     def panelendconf(self, user_data):
 #         print("Joe: in panelendconf "+str(self.id))
         if (self.y == True):
-            self.endtime = time.time()
-            timeelapsed = self.endtime - self.starttime
-            elapsemin = int(timeelapsed/60)
-            elapsesec = int(timeelapsed) % 60
-            pgtxt = "Completed, elapsed time: "+str(elapsemin)+":"+str(elapsesec)
-            self.pgrbprogress.set_text(pgtxt)
-            lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
-            self.lblresult.set_markup(lblresultcolorfont)
-            self.hboxpgrs.set_name("pgrs_green")
+            if (self.w == "good"):
+                self.endtime = time.time()
+                timeelapsed = self.endtime - self.starttime
+                elapsemin = int(timeelapsed/60)
+                elapsesec = int(timeelapsed) % 60
+                pgtxt = "Completed, elapsed time: "+str(elapsemin)+":"+str(elapsesec)
+                self.pgrbprogress.set_text(pgtxt)
+                lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
+                self.lblresult.set_markup(lblresultcolorfont)
+                self.hboxpgrs.set_name("pgrs_green")
+            else:
+                print("Joe: in selfz true panelendconf "+str(self.id))
+                self.pgrbprogress.set_text("Failed")
+                lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
+                self.lblresult.set_markup(lblresultcolorfont)
+                self.hboxpgrs.set_name("pgrs_red")
+
+            self.etybomrev.set_sensitive(True)
+            self.etyproductname.set_sensitive(True)
+            self.etyregion.set_sensitive(True)
+            self.cmbbcomport.set_sensitive(True)
+            self.btnstart.set_sensitive(True)
+            self.pgrbprogress.set_fraction(0)
             self.y = False
 
         return True
-#         print("Joe: in panelendconf")
-#
-#         if (self.rtdevreg == 0):
-#             self.endtime = time.time()
-#             timeelapsed = self.endtime - self.starttime
-#             elapsemin = int(timeelapsed/60)
-#             elapsesec = int(timeelapsed) % 60
-#             pgtxt = "Completed, elapsed time: "+str(elapsemin)+":"+str(elapsesec)
-#             self.pgrbprogress.set_text(pgtxt)
-#             #lblresultcolorfont = '<span background="darkgrey" foreground="green" size="xx-large"><b>PASS</b></span>'
-#             #self.lblresult.set_markup(lblresultcolorfont)
-#             self.lblresult.set_name("lbl_green")
-#             self.lblresult.set_text("PASS")
-#             self.hboxpgrs.set_name("pgrs_green")
-#         else:
-#             self.pgrbprogress.set_text("Failed")
-#             #lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
-#             #self.lblresult.set_markup(lblresultcolorfont)
-#             self.lblresult.set_name("lbl_red")
-#             self.lblresult.set_text("FAILED")
-#             self.hboxpgrs.set_name("pgrs_red")
-#
-#         self.devregready = False
 
     def aquirebarcode(self):
         rt = False
@@ -391,22 +384,32 @@ class fraMonitorPanel(Gtk.Frame):
             return True
 
     def run_streamcmd(self):
-        cmd = "/usr/bin/python3.6 UniFiOneRegister.py 0"
-        self.proc = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        cmd = ["/usr/bin/python3.6",
+               "UniFiOneRegister.py",
+               prodlist[GCommon.active_productidx][2],
+               GCommon.macaddr,
+               GCommon.active_passphrase,
+               GPath.keydir,
+               GCommon.finaltty[int(self.id)],
+               self.id,
+               GCommon.active_bomrev,
+               GCommon.qrcode]
+        str1 = " ".join(str(x) for x in cmd)
+        print("Joe: cmd: "+str1)
+        self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         GObject.io_add_watch(self.proc.stdout,
                           GLib.IO_IN|GLib.IO_HUP,
-                          self.inspection)
+                          self.inspection, self.proc)
 
-    def inspection(self, fd, cond):
+    def inspection(self, fd, cond, proc):
         if (cond == GLib.IO_HUP):
-            print("Joe: io_hup: finished")
+            proc.poll()
             self.y = True
-            self.etybomrev.set_sensitive(True)
-            self.etyproductname.set_sensitive(True)
-            self.etyregion.set_sensitive(True)
-            self.cmbbcomport.set_sensitive(True)
-            self.btnstart.set_sensitive(True)
-            self.pgrbprogress.set_fraction(0)
+            if (proc.returncode == 0):
+                self.w = "good"
+            else:
+                self.w = "bad"
+
             return False
         else:
             x = fd.readline()
@@ -416,7 +419,6 @@ class fraMonitorPanel(Gtk.Frame):
             pgvalue = pattern.match(raw2str)
             if (pgvalue != None):
                 self.z = True
-                print("Joe: the pgvalue: "+pgvalue.group(1))
                 self.progressvalue = int(pgvalue.group(1))
 
             return True
