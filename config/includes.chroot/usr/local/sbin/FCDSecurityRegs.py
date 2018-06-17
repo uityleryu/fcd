@@ -381,7 +381,8 @@ class fraMonitorPanel(Gtk.Frame):
             self.setdirfl()
             self.x = True
             self.run_streamcmd()
-            return True
+
+        return rt
 
     def run_streamcmd(self):
         cmd = ["/usr/bin/python3.6",
@@ -615,7 +616,7 @@ class winFcdFactory(Gtk.Window):
 #         if (self.network_status_set() == False):
 #             msgerrror(self, "Network configure faile. Exiting...")
 #             return False
-#
+
         if (self.find_usb_storage() == False):
             msgerrror(self, "No USB storage found. Exiting...")
             return False
