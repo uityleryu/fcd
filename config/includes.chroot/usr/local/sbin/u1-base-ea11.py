@@ -3,11 +3,13 @@
 import re
 import sys
 import time
-import os, stat
+import os
+import stat
 
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
 from ubntlib.Commonlib import *
+from UniFiOneRegister import eeprom_check
 
 
 boardid = sys.argv[1]
@@ -19,7 +21,7 @@ idx = sys.argv[6]
 bomrev = sys.argv[7]
 qrcode = sys.argv[8]
 region = sys.argv[9]
-svip = "192.168.1.11"
+svip = "192.168.1.19"
  
 prod_ip_base = 31
 prod_pfx_len = 34
@@ -30,8 +32,7 @@ prod_dev_tmp_mac = "00:15:6d:00:00:0"+idx
  
 ubpmt = "ALPINE_UBNT>"
 lnxpmt = "#"
- 
-prod_dir = "usc8"
+
 fullbomrev = "113-$bomrev"
 do_devreg = "1"
 tmpdir = "/tmp/"
@@ -42,14 +43,8 @@ eeprom_txt = "e.t."+idx
 eeprom_tgz = "e."+idx+".tgz"
 eeprom_signed = "e.s."+idx
 eeprom_check = "e.c."+idx
-e_s_gz = eeprom_signed+".gz"
-e_c_gz = "$eeprom_check.gz"
 helperexe = "helper_AL324_release"
-
-
-eeprom_bin = "e.b.0"
-eeprom_txt = "e.t.0"
-eeprom_tgz = "e.0.tgz"
+mtdpart = "/dev/mtdblock4"
 
 def IOconfig():
     cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
@@ -138,16 +133,38 @@ def main():
 
     msg(20, "Send EEPROM command and set info to EEPROM ...")
     log_debug("Send "+eepmexe+"command from host to DUT ...")
-    sstr = ["tftp -g -r", tftpdir+eepmexe, "-l", tmpdir+eepmexe, svip]
+    sstr = ["tftp",
+            "-g",
+            "-r "+tftpdir+eepmexe,
+            "-l "+tmpdir+eepmexe,
+            svip]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, lnxpmt, sstrj)
+    p.expect2act(30, lnxpmt, "\n")
+
+    log_debug("Send "+helperexe+"command from host to DUT ...")
+    sstr = ["tftp",
+            "-g",
+            "-r "+tftpdir+helperexe,
+            "-l "+tmpdir+helperexe,
+            svip]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, lnxpmt, sstrj)
+    p.expect2act(30, lnxpmt, "\n")
+
+    log_debug("Change file permission - "+helperexe+" ...")
+    sstr = ["chmod 777", tmpdir+helperexe]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, lnxpmt, sstrj)
+    p.expect2act(30, lnxpmt, "\n")
+
+    log_debug("Change file permission - "+eepmexe+" ...")
+    sstr = ["chmod 777", tmpdir+eepmexe]
     sstrj = ' '.join(sstr)
     p.expect2act(30, lnxpmt, sstrj)
     p.expect2act(30, lnxpmt, "\n")
 
     log_debug("Starting to do "+eepmexe+"...")
-    sstr = ["chmod 777", tmpdir+eepmexe]
-    sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt, sstrj)
-
     sstr = ["."+tmpdir+eepmexe,
             "-F",
             "-r "+bomrev,
@@ -205,21 +222,7 @@ def main():
     else:
         log_debug("File - "+eeprom_tgz+" doesn't exist ...")
 
-    log_debug("Send "+helperexe+"command from host to DUT ...")
-    sstr = ["tftp",
-            "-g",
-            "-r "+tftpdir+helperexe,
-            "-l "+tmpdir+helperexe,
-            svip]
-    sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt, sstrj)
-
     log_debug("Starting to do "+helperexe+"...")
-    sstr = ["chmod 777", tmpdir+helperexe]
-    sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt, sstrj)
-    p.expect2act(30, lnxpmt, "\n")
-
     sstr = ["."+tmpdir+helperexe,
             "-q",
             "-c product_class=basic",
@@ -307,83 +310,67 @@ def main():
         error_critical("Can't find "+eeprom_signed)
 
     msg(40, "Finish doing registration ...")
-
-#     cmd = "gzip "+tftpdir+eeprom_signed
-#     [sto, rtc] = xcmd(cmd)
-#     if (int(rtc) > 0):
-#         error_critical("zip signed eeprom failed!!")
-#     else:
-#         log_debug("zip signed eeprom successfully")
-# 
-#     time.sleep(2)
-# 
-#     log_debug("Send zipped signed eeprom file from host to DUT ...")
-#     sstr = ["tftp",
-#             "-g",
-#             "-r",
-#             tftpdir+e_s_gz,
-#             "-l",
-#             tftpdir+e_s_gz,
-#             svip]
-#     sstrj = ' '.join(sstr)
-#     p.expect2act(30, lnxpmt, sstrj)
-
-
     log_debug("Send signed eeprom file from host to DUT ...")
     sstr = ["tftp",
             "-g",
-            "-r",
-            tftpdir+eeprom_signed,
-            "-l",
-            eeprom_signed,
+            "-r "+tftpdir+eeprom_signed,
+            "-l "+tmpdir+eeprom_signed,
             svip]
     sstrj = ' '.join(sstr)
     p.expect2act(30, lnxpmt, sstrj)
 
+    log_debug("Change file permission - "+eeprom_signed+" ...")
+    sstr = ["chmod 777", tmpdir+eeprom_signed]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, lnxpmt, sstrj)
+    p.expect2act(30, lnxpmt, "\n")
+
     log_debug("Starting to write signed info to SPI flash ...")
-    cmd = ["."+tmpdir+helperexe,
+    sstr = ["."+tmpdir+helperexe,
            "-q",
-           "-i field=flash_eeprom,format=binary,pathname="+tftpdir+eeprom_signed]
-    cmdj = ' '.join(cmd)
-    [sto, rtc] = xcmd(cmdj)
-    rt = sto.decode('UTF-8')
-    if (int(rtc) > 0):
-        error_critical("Writing the signed info failed!!")
-    else:
-        log_debug("Writing the signed info successfully")
-        print(rt)
+           "-i field=flash_eeprom,format=binary,pathname="+tmpdir+eeprom_signed]
+    sstrj = ' '.join(sstr)
+    print("cmd: "+sstrj)
+    p.expect2act(30, lnxpmt, sstrj)
 
     log_debug("Starting to extract the EEPROM content from SPI flash ...")
     sstr = ["dd",
-           "if=/dev/mtdblock4",
-           "of="+tftpdir+eeprom_check]
-    sstrj = ' '.join(cmd)
+           "if="+mtdpart,
+           "of="+tmpdir+eeprom_check]
+    sstrj = ' '.join(sstr)
+    print("cmd: "+sstrj)
     p.expect2act(30, lnxpmt, sstrj)
+    time.sleep(2)
 
-    log_debug("Send e.c. from DUT to host ...")
+    os.mknod(tftpdir+eeprom_check)
+    os.chmod(tftpdir+eeprom_check, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+
+    log_debug("Send "+eeprom_check+" from DUT to host ...")
     sstr = ["tftp",
             "-p",
             "-r",
             tftpdir+eeprom_check,
             "-l",
-            eeprom_tgz,
+            tmpdir+eeprom_check,
             svip]
-    sstrj = ' '.join(cmd)
+    sstrj = ' '.join(sstr)
+    print("cmd: "+sstrj)
     p.expect2act(30, lnxpmt, sstrj)
 
-    log_debug("Starting to compare the e.c. and e.s. files ...")
-    cmd = ["/usr/bin/cmp",
-           tftpdir+eeprom_check,
-           tftpdir+eeprom_signed]
-    cmdj = ' '.join(cmd)
-    [sto, rtc] = xcmd(cmdj)
-    rt = sto.decode('UTF-8')
-    if (int(rtc) > 0):
-        error_critical("Comparing files failed!!")
+    if os.path.isfile(tftpdir+eeprom_check):
+        log_debug("Starting to compare the"+eeprom_check+" and "+eeprom_signed+" files ...")
+        cmd = ["/usr/bin/cmp",
+               tftpdir+eeprom_check,
+               tftpdir+eeprom_signed]
+        cmdj = ' '.join(cmd)
+        [sto, rtc] = xcmd(cmdj)
+        if (int(rtc) > 0):
+            error_critical("Comparing files failed!!")
+        else:
+            log_debug("Comparing files successfully")
     else:
-        log_debug("Comparing files successfully")
-        print(rt)
-        
+        log_debug("Can't find the "+eeprom_check+" and "+eeprom_signed+" files ...")
+
     msg(50, "Finish doing signed file and EEPROM checking ...")
 
     exit(0)

@@ -13,7 +13,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
 from time import sleep
-from ubntlib.Commonlib import msgerrror, msginfo, pcmd
+from ubntlib.Commonlib import msgerrror, msginfo, pcmd, xcmd
 
 """
     Prefix expression
@@ -423,15 +423,34 @@ class fraMonitorPanel(Gtk.Frame):
                 passdir = GPath.reportdir+"/Pass"
                 if not os.path.isdir(passdir):
                     os.makedirs(passdir)
-                shutil.copyfile(GPath.templogfile[int(self.id)], passdir)
-                #shutil.move(GPath.templogfile[int(self.id)], passdir)
+
+                tfile = passdir+"/"+GCommon.macaddr+".log"
+                print("Joe: target file: "+tfile)
+                if not os.path.isfile(tfile):
+                    shutil.move(GPath.templogfile[int(self.id)], passdir)
+                else:
+                    cmd = "cat "+GPath.templogfile[int(self.id)]+" >> "+tfile
+                    [sto, rtc] = xcmd(cmd)
+                    if (int(rtc) > 0):
+                        print("Appending log failed!!")
+                    else:
+                        print("Appending log successfully")
             else:
                 self.w = "bad"
                 faildir = GPath.reportdir+"/Fail"
                 if not os.path.isdir(faildir):
                     os.makedirs(faildir)
-                shutil.copyfile(GPath.templogfile[int(self.id)], faildir)
-                #shutil.move(GPath.templogfile[int(self.id)], faildir)
+
+                tfile = faildir+"/"+GCommon.macaddr+".log"
+                if not os.path.isfile(tfile):
+                    shutil.move(GPath.templogfile[int(self.id)], faildir)
+                else:
+                    cmd = "cat "+GPath.templogfile[int(self.id)]+" >> "+tfile
+                    [sto, rtc] = xcmd(cmd)
+                    if (int(rtc) > 0):
+                        print("Appending log failed!!")
+                    else:
+                        print("Appending log successfully")
 
             return False
         else:
