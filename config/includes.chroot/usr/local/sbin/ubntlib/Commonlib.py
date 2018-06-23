@@ -16,7 +16,7 @@ class ExpttyProcess():
                tty,
                "-b 115200"]
         cmdstr = " ".join(str(x) for x in cmd)
-        self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace', timeout=1200)
+        self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace', timeout=2000)
         self.proc.setecho(False)
         self.proc.logfile = sys.stdout
 
@@ -107,6 +107,7 @@ def log_debug(msg):
 
 def error_critical(msg):
     log_error(msg)
+    time.sleep(1)
     sys.exit(2)
 
 
@@ -156,6 +157,8 @@ def xcmd(cmd):
     output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
     output.wait()
     [stdout, stderr] = output.communicate()
+    stdoutd = stdout.decode()
+    print(stdoutd)
     return [stdout, output.returncode]
 
 

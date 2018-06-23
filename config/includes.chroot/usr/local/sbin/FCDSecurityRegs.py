@@ -7,6 +7,7 @@ import subprocess
 import time
 import random
 import threading
+import shutil
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.Product import prodlist
@@ -354,14 +355,16 @@ class fraMonitorPanel(Gtk.Frame):
             Time format:
             Weekday Day Month Year Hour:Minute:Second
         """
-        nowtime = time.strftime("%a,%d,%b,%Y,%H:%M:%S", time.gmtime())
+        nowtime = time.strftime("%a,%d,%m,%Y,%H:%M:%S", time.gmtime())
         print("Joe: nowtime: ", nowtime)
         t1 = nowtime.split(",")
+        t1date = t1[3]+"-"+t1[2]+"-"+t1[1]
         [hour, min, sec] = t1[4].split(":")
         print("Joe: hour: %s, min: %s, sec: %s" % (hour, min, sec))
+        print("Joe: date: %s" % (t1date))
 
         # Create the report directory
-        reportdir = GPath.logdir+"/"+GCommon.active_product+"/rev"+GCommon.active_bomrev+"/"+GCommon.active_region
+        reportdir = GPath.logdir+"/"+GCommon.active_product+"/rev"+GCommon.active_bomrev+"/"+GCommon.active_region+"/"+t1date
         print("Joe: report dir: "+reportdir)
         GPath.reportdir = reportdir
 
@@ -372,7 +375,9 @@ class fraMonitorPanel(Gtk.Frame):
 
         # Create the temporary report file
         randnum = random.randint(1, 2000)
-        GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
+        #GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
+        GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+GCommon.macaddr+".log"
+        print("Joe: templogfile: "+GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
         rt = self.aquirebarcode()
@@ -385,8 +390,14 @@ class fraMonitorPanel(Gtk.Frame):
         return rt
 
     def run_streamcmd(self):
+        for idx in range(4):
+            if (GCommon.active_region == GCommon.region_names[idx]):
+                regcidx = idx
+            else:
+                regcidx = 0
+
         cmd = ["/usr/bin/python3.6",
-               "UniFiOneRegister.py",
+               "u1-base-ea11.py",
                prodlist[GCommon.active_productidx][2],
                GCommon.macaddr,
                GCommon.active_passphrase,
@@ -394,7 +405,8 @@ class fraMonitorPanel(Gtk.Frame):
                GCommon.finaltty[int(self.id)],
                self.id,
                GCommon.active_bomrev,
-               GCommon.qrcode]
+               GCommon.qrcode,
+               GCommon.region_codes[regcidx]]
         str1 = " ".join(str(x) for x in cmd)
         print("Joe: cmd: "+str1)
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
@@ -408,14 +420,27 @@ class fraMonitorPanel(Gtk.Frame):
             self.y = True
             if (proc.returncode == 0):
                 self.w = "good"
+                passdir = GPath.reportdir+"/Pass"
+                if not os.path.isdir(passdir):
+                    os.makedirs(passdir)
+                shutil.copyfile(GPath.templogfile[int(self.id)], passdir)
+                #shutil.move(GPath.templogfile[int(self.id)], passdir)
             else:
                 self.w = "bad"
+                faildir = GPath.reportdir+"/Fail"
+                if not os.path.isdir(faildir):
+                    os.makedirs(faildir)
+                shutil.copyfile(GPath.templogfile[int(self.id)], faildir)
+                #shutil.move(GPath.templogfile[int(self.id)], faildir)
 
             return False
         else:
+            f = open(GPath.templogfile[int(self.id)], "a")
             x = fd.readline()
             raw2str = x.decode()
             self.appendlog(str(raw2str))
+            f.write(raw2str)
+            f.close()
             pattern = re.compile("^=== (\d+) .*$")
             pgvalue = pattern.match(raw2str)
             if (pgvalue != None):
