@@ -28,18 +28,20 @@ apt-get -y install python3-pexpect
 
 # serial console packages
 apt-get -y install picocom
-apt-get -y install cu
-apt-get -y install screen
 
-mkdir /media/FCDUSB
-usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
-echo $usbdv >> /etc/fstab
+# text editor
+apt-get -y install vim
+apt-get -y install gedit
+
+# mkdir /media/FCDUSB
+# usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
+# echo $usbdv >> /etc/fstab
 
 apt-get -y install imagemagick
 
 mv /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 VER=`cat /srv/tftp/version.txt`
-convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'BSP-FCD [$VER]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'FCD-U1-Base [$VER]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
 rm /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 
 apt-get -y remove --purge imagemagick imagemagick-6-common

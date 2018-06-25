@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6
+#!/usr/bin/python3
 
 import gi
 import re
@@ -396,7 +396,7 @@ class fraMonitorPanel(Gtk.Frame):
             else:
                 regcidx = 0
 
-        cmd = ["/usr/bin/python3.6",
+        cmd = ["/usr/bin/python3",
                "u1-base-ea11.py",
                prodlist[GCommon.active_productidx][2],
                GCommon.macaddr,
@@ -657,9 +657,9 @@ class winFcdFactory(Gtk.Window):
         self.add(self.vboxMainWindow)
 
     def envinitial(self):
-#         if (self.network_status_set() == False):
-#             msgerrror(self, "Network configure faile. Exiting...")
-#             return False
+        if (self.network_status_set() == False):
+            msgerrror(self, "Network configure faile. Exiting...")
+            return False
 
         if (self.find_usb_storage() == False):
             msgerrror(self, "No USB storage found. Exiting...")

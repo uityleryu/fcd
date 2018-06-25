@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6
+#!/usr/bin/python3
 
 # class Product:
 #     def __init__(self, index, name, boardid, bomrev, description, cclock, script):
