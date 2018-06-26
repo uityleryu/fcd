@@ -9,8 +9,6 @@ import stat
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
 from ubntlib.Commonlib import *
-from UniFiOneRegister import eeprom_check
-
 
 boardid = sys.argv[1]
 macaddr = sys.argv[2]
@@ -135,7 +133,7 @@ def main():
     log_debug("Send "+eepmexe+"command from host to DUT ...")
     sstr = ["tftp",
             "-g",
-            "-r "+tftpdir+eepmexe,
+            "-r "+eepmexe,
             "-l "+tmpdir+eepmexe,
             svip]
     sstrj = ' '.join(sstr)
@@ -145,7 +143,7 @@ def main():
     log_debug("Send "+helperexe+"command from host to DUT ...")
     sstr = ["tftp",
             "-g",
-            "-r "+tftpdir+helperexe,
+            "-r "+helperexe,
             "-l "+tmpdir+helperexe,
             svip]
     sstrj = ' '.join(sstr)
@@ -246,10 +244,8 @@ def main():
     log_debug("Send helper output tgz file from DUT to host ...")
     sstr = ["tftp",
             "-p",
-            "-r",
-            tftpdir+eeprom_tgz,
-            "-l",
-            eeprom_tgz,
+            "-r "+eeprom_tgz,
+            "-l "+eeprom_tgz,
             svip]
     sstrj = ' '.join(sstr)
     p.expect2act(30, "", "\n")
@@ -296,7 +292,7 @@ def main():
                 "-z "+keydir+"crt.pem"]
 
     regparamj = ' '.join(regparam)
-    cmd = "/usr/local/sbin/client_x86 "+regparamj
+    cmd = "sudo /usr/local/sbin/client_x86_release "+regparamj
     print("cmd: "+cmd)
     [sto, rtc] = xcmd(cmd)
     time.sleep(10)
@@ -313,7 +309,7 @@ def main():
     log_debug("Send signed eeprom file from host to DUT ...")
     sstr = ["tftp",
             "-g",
-            "-r "+tftpdir+eeprom_signed,
+            "-r "+eeprom_signed,
             "-l "+tmpdir+eeprom_signed,
             svip]
     sstrj = ' '.join(sstr)
@@ -348,10 +344,8 @@ def main():
     log_debug("Send "+eeprom_check+" from DUT to host ...")
     sstr = ["tftp",
             "-p",
-            "-r",
-            tftpdir+eeprom_check,
-            "-l",
-            tmpdir+eeprom_check,
+            "-r "+eeprom_check,
+            "-l "+tmpdir+eeprom_check,
             svip]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)

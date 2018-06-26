@@ -28,6 +28,7 @@ apt-get -y install python3-pexpect
 
 # serial console packages
 apt-get -y install picocom
+apt-get -y install minicom
 
 # text editor
 apt-get -y install vim

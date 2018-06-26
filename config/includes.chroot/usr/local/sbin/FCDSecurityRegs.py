@@ -396,8 +396,8 @@ class fraMonitorPanel(Gtk.Frame):
             else:
                 regcidx = 0
 
-        cmd = ["/usr/bin/python3",
-               "u1-base-ea11.py",
+        cmd = ["sudo /usr/bin/python3",
+               "/usr/local/sbin/u1-base-ea11.py",
                prodlist[GCommon.active_productidx][2],
                GCommon.macaddr,
                GCommon.active_passphrase,
@@ -642,7 +642,7 @@ class winFcdFactory(Gtk.Window):
         # operation log
         self.epdoplog = Gtk.Expander()
         self.epdoplog.set_label('Output of production scripts')
-        self.epdoplog.set_expanded(False)
+        self.epdoplog.set_expanded(True)
         self.epdoplog.add(self.ntbmsg)
 
         # Main window
@@ -680,11 +680,11 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def network_status_set(self):
-        cmd = "sudo sh prod-network.sh"
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh"
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
-        if (output.returncode == 0):
+        if (output.returncode == 1):
             print("returncode: " + str(output.returncode))
             return False
 
