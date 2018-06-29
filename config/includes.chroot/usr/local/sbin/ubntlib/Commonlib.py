@@ -16,13 +16,14 @@ class ExpttyProcess():
                tty,
                "-b 115200"]
         cmdstr = " ".join(str(x) for x in cmd)
-        self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace', timeout=2000)
-        self.proc.setecho(False)
+        self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace')
         self.proc.logfile = sys.stdout
+        self.proc.timeout = None
 
-    def expect2act(self, timeout, exptxt, action):
+    def expect2act(self, tmo, exptxt, action):
         if (exptxt != ""):
-            rt = self.proc.expect(exptxt, timeout)
+#             self.proc.timeout = tmo
+            rt = self.proc.expect(exptxt)
             time.sleep(0.2)
         else:
             rt = 1
@@ -163,22 +164,48 @@ def xcmd(cmd):
 
 
 def main():
+    cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
+    [sto, rtc] = xcmd(cmd)
+    if (int(sto.decode()) > 0):
+        error_critical("Caps Lock is on")
+    else:
+        log_debug("Caps Lock is off")
+
+    cmd = "sudo chmod 777 /dev/ttyUSB0"
+    [sto, rtc] = xcmd(cmd)
+    if (int(rtc) > 0):
+        error_critical("Can't set tty to 777 failed!!")
+    else:
+        log_debug("Configure tty to 777 successfully")
+
+    time.sleep(0.5)
+
     cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
     [sto, rtc] = xcmd(cmd)
-    t = ExpttyProcess(0, "/dev/ttyUSB0")
-    t.expect2act(30, 'Hit any key to', "\n")
-    t.expect2act(30, 'uboot>', "setenv ipaddr 192.168.1.31")
-    t.expect2act(30, 'uboot>', "setenv serverip 192.168.1.11")
-    t.expect2act(30, 'uboot>', "ping 192.168.1.11")
-    t.expect2act(30, 'host 192.168.1.11 is alive', "")
-    t.expect2act(30, 'uboot>', "printenv")
-    t.expect2act(30, 'uboot>', "reset")
-    t.expect2act(60, 'Please press Enter to activate', "\n")
-    t.expect2act(30, 'UBNT login:', "ubnt")
-    t.expect2act(30, 'Password:', "ubnt")
-    t.expect2act(30, 'US.pcb-mscc', "\n")
-    t.expect2act(30, 'US.pcb-mscc', "cat /proc/ubnthal/system.info")
-    t.expect2act(30, 'US.pcb-mscc#', "info")
+    if (int(rtc) > 0):
+        error_critical("stty configuration failed!!")
+    else:
+        log_debug("Configure stty successfully")
+
+    time.sleep(0.5)
+    p = ExpttyProcess(0, "/dev/ttyUSB0")
+    rrt = p.proc.isatty()
+    if rrt == True:
+        print("Joe: is tty")
+    p.expect2act(10, "", "\n")
+
+#     p.expect2act(30, "Hit any key to stop autoboot:", "\n")
+
+    sstr = ["tftp",
+            "-g",
+            "-r upgrade.tar",
+            "-l /tmp/upgrade.tar",
+            "192.168.1.19"]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, "#", sstrj)
+    time.sleep(200)
+    p.expect2act(200, "#", "\n")
+    print("Joe: complete")
 
 
 if __name__ == "__main__":

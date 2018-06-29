@@ -5,6 +5,7 @@ import sys
 import time
 import os
 import stat
+import shutil
 
 from ubntlib.Product import prodlist
 from ubntlib.Variables import GPath, GCommon
@@ -32,9 +33,9 @@ ubpmt = "ALPINE_UBNT>"
 lnxpmt = "#"
 
 fullbomrev = "113-$bomrev"
-do_devreg = "1"
 tmpdir = "/tmp/"
 tftpdir = "/tftpboot/"
+proddir = tftpdir+boardid+"/"
 eepmexe = "al324-ee"
 eeprom_bin = "e.b."+idx
 eeprom_txt = "e.t."+idx
@@ -43,6 +44,17 @@ eeprom_signed = "e.s."+idx
 eeprom_check = "e.c."+idx
 helperexe = "helper_AL324_release"
 mtdpart = "/dev/mtdblock4"
+
+bootimg = tftpdir+"boot.img"
+uimage = tftpdir+"uImage"
+dtimg = tftpdir+"dt.img"
+upgradetar = tftpdir+"upgrade.tar"
+fcddtimg = proddir+"fcd/fcd-dt.img"
+fcduimage = proddir+"fcd/fcd-uImage"
+fcdpreload = proddir+"fcd/preload.img"
+fwbootimg = proddir+"fw/ubnt_one_rev4_boot.img"
+fwuimage = proddir+"fw/fw-uImage"
+fwupgradetar = proddir+"fw/upgrade.tar"
 
 def IOconfig():
     cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
@@ -58,7 +70,7 @@ def IOconfig():
         error_critical("Can't set tty to 777 failed!!")
     else:
         log_debug("Configure tty to 777 successfully")
- 
+
     time.sleep(0.5)
 
     cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
@@ -70,32 +82,7 @@ def IOconfig():
 
     time.sleep(0.5)
 
-def main2():
-    log_debug("Erase existed eeprom information files ...")
-    rtf = os.path.isfile(eeprom_bin)
-    if (rtf == True):
-        rtfd = os.remove(eeprom_bin)
-    else:
-        log_debug("File - e.b. doesn't exist ...")
-
-    rtf = os.path.isfile(eeprom_txt)
-    if (rtf == True):
-        rtfd = os.remove(eeprom_txt)
-    else:
-        log_debug("File - e.t. doesn't exist ...")
-
-    rtf = os.path.isfile(eeprom_tgz)
-    if (rtf == True):
-        rtfd = os.remove(eeprom_tgz)
-    else:
-        log_debug("File - e.tgz doesn't exist ...")
-
-
-def main():
     msg(5, "Starting: key parameters")
-    IOconfig()
-    p = ExpttyProcess(idx, tty)
-    tm = 0.5
     print("prod_dev_tmp_mac: "+prod_dev_tmp_mac)
     print("prod_dev_ip: "+prod_dev_ip)
     print("idx: "+str(idx))
@@ -108,9 +95,70 @@ def main():
     print("bomrev: "+str(bomrev))
     print("qrcode: "+str(qrcode))
     print("region: "+str(region))
-    msg(10, "Boot from tftp ...")
 
-    p.expect2act(30, 'Hit any key to stop autoboot', "\n")
+def main():
+    IOconfig()
+    p = ExpttyProcess(idx, tty)
+
+    msg(10, "Boot from tftp ...")
+    p.expect2act(30, "Hit any key to stop autoboot", "\n\n")
+    p.expect2act(30, ubpmt, "\n")
+
+    rtf = os.path.isfile(bootimg)
+    if (rtf == True):
+        log_debug("Erasing File - "+bootimg+" ...")
+        os.chmod(bootimg, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(bootimg)
+    else:
+        log_debug("File - "+bootimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(uimage)
+    if (rtf == True):
+        log_debug("Erasing File - "+uimage+" ...")
+        os.chmod(uimage, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(uimage)
+    else:
+        log_debug("File - "+uimage+" doesn't exist ...")
+
+    rtf = os.path.isfile(dtimg)
+    if (rtf == True):
+        log_debug("Erasing File - "+dtimg+" ...")
+        os.chmod(dtimg, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(dtimg)
+    else:
+        log_debug("File - "+dtimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(fcddtimg)
+    if (rtf == True):
+        log_debug("Copy File - "+fcddtimg+" to "+dtimg)
+        shutil.copyfile(fcddtimg, dtimg)
+    else:
+        log_debug("File - "+fcddtimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(fcduimage)
+    if (rtf == True):
+        log_debug("Copy File - "+fcduimage+" to "+uimage)
+        shutil.copyfile(fcduimage, uimage)
+    else:
+        log_debug("File - "+fcduimage+" doesn't exist ...")
+
+    rtf = os.path.isfile(fcdpreload)
+    if (rtf == True):
+        log_debug("Copy File - "+fcdpreload+" to "+bootimg)
+        shutil.copyfile(fcdpreload, bootimg)
+    else:
+        log_debug("File - "+fcdpreload+" doesn't exist ...")
+
+    p.expect2act(30, ubpmt, "qca8k")
+    p.expect2act(30, "al_eth1: QCA8K_ID_QCA8337 0x13", "\n")
+    p.expect2act(30, ubpmt, "setenv ipaddr "+prod_dev_ip)
+    p.expect2act(30, ubpmt, "setenv serverip "+svip)
+    p.expect2act(30, ubpmt, "run bootupd")
+    p.expect2act(60, "bootupd done", "")
+    p.expect2act(60, ubpmt, "reset")
+    p.expect2act(30, "Hit any key to stop autoboot", "\n")
+    p.expect2act(30, ubpmt, "\n")
+
     p.expect2act(30, ubpmt, "qca8k")
     p.expect2act(30, "al_eth1: QCA8K_ID_QCA8337 0x13", "\n")
     p.expect2act(30, ubpmt, "setenv ipaddr "+prod_dev_ip)
@@ -124,7 +172,6 @@ def main():
     p.expect2act(30, lnxpmt, sstrj)
 
     p.expect2act(30, lnxpmt, "ifconfig\n")
-
     p.expect2act(30, lnxpmt, "ping "+svip)
     p.expect2act(30, "64 bytes from", '\003')
     p.expect2act(30, lnxpmt, "")
@@ -295,7 +342,7 @@ def main():
     cmd = "sudo /usr/local/sbin/client_x86_release "+regparamj
     print("cmd: "+cmd)
     [sto, rtc] = xcmd(cmd)
-    time.sleep(10)
+    time.sleep(5)
     if (int(rtc) > 0):
         error_critical("client_x86 registration failed!!")
     else:
@@ -367,14 +414,140 @@ def main():
 
     msg(50, "Finish doing signed file and EEPROM checking ...")
 
+    log_debug("Change to use FW uImage and upgrade tar file ...")
+    rtf = os.path.isfile(bootimg)
+    if (rtf == True):
+        log_debug("Erasing File - "+bootimg+" ...")
+        os.chmod(bootimg, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(bootimg)
+    else:
+        log_debug("File - "+bootimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(uimage)
+    if (rtf == True):
+        log_debug("Erasing File - "+uimage+" ...")
+        os.chmod(uimage, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(uimage)
+    else:
+        log_debug("File - "+uimage+" doesn't exist ...")
+
+    rtf = os.path.isfile(dtimg)
+    if (rtf == True):
+        log_debug("Erasing File - "+dtimg+" ...")
+        os.chmod(dtimg, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.remove(dtimg)
+    else:
+        log_debug("File - "+dtimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(fwbootimg)
+    if (rtf == True):
+        log_debug("Copy File - "+fwbootimg+" to "+bootimg)
+        shutil.copyfile(fwbootimg, bootimg)
+    else:
+        log_debug("File - "+fwbootimg+" doesn't exist ...")
+
+    rtf = os.path.isfile(fwuimage)
+    if (rtf == True):
+        log_debug("Copy File - "+fwuimage+" to "+uimage)
+        shutil.copyfile(fwuimage, uimage)
+    else:
+        log_debug("File - "+fwuimage+" doesn't exist ...")
+
+    rtf = os.path.isfile(fwupgradetar)
+    if (rtf == True):
+        log_debug("Copy File - "+fwupgradetar+" to "+upgradetar)
+        shutil.copyfile(fwupgradetar, upgradetar)
+    else:
+        log_debug("File - "+fwupgradetar+" doesn't exist ...")
+
+    log_debug("Change to product U-boot ...")
+    p.expect2act(30, "", "\n")
+    p.expect2act(30, lnxpmt, "reboot")
+    p.expect2act(30, 'Hit any key to stop autoboot', "\n")
+    p.expect2act(30, ubpmt, "\n")
+
+    p.expect2act(30, ubpmt, "qca8k")
+    p.expect2act(30, "al_eth1: QCA8K_ID_QCA8337 0x13", "\n")
+    p.expect2act(30, ubpmt, "setenv ipaddr "+prod_dev_ip)
+    p.expect2act(30, ubpmt, "setenv serverip "+svip)
+    p.expect2act(30, ubpmt, "run bootupd")
+    p.expect2act(60, "bootupd done", "\n")
+    p.expect2act(30, ubpmt, "reset")
+    p.expect2act(30, 'Hit any key to stop autoboot', "\n")
+    p.expect2act(30, ubpmt, "\n")
+    p.expect2act(30, ubpmt, "run delenv")
+    msg(60, "Finish changing to product U-boot ...")
+
+    log_debug("Starting to run the product kernel ...")
+    p.expect2act(30, ubpmt, "qca8k")
+    p.expect2act(30, "al_eth1: QCA8K_ID_QCA8337 0x13", "\n")
+    p.expect2act(30, ubpmt, "setenv ipaddr "+prod_dev_ip)
+    p.expect2act(30, ubpmt, "setenv serverip "+svip)
+    p.expect2act(30, ubpmt, "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
+    p.expect2act(30, ubpmt, "cp.b $fdtaddr $loadaddr_dt 7ffc")
+    p.expect2act(30, ubpmt, "fdt addr $loadaddr_dt")
+    p.expect2act(30, ubpmt, "tftpboot $loadaddr uImage")
+    p.expect2act(30, "Bytes transferred", "")
+    p.expect2act(30, ubpmt, "bootm $loadaddr - $fdtaddr")
+    p.expect2act(60, "login:", "root")
+    p.expect2act(30, "Password:", "ubnt\n")
+    msg(70, "Succeeding in booting to product firmware upgraded linux console ...")
+
+    p.expect2act(30, "", "\n")
+    p.expect2act(30, lnxpmt, "dmesg -n 1")
+
+    sstr = ["ifconfig",
+            "eth0",
+            prod_dev_ip,
+            "up"]
+    sstrj = ' '.join(sstr)
+    p.expect2act(30, lnxpmt, sstrj)
+
+    p.expect2act(30, lnxpmt, "ping "+svip)
+    p.expect2act(30, "64 bytes from", '\003')
+
+    p.expect2act(30, "", "\n")
+    p.expect2act(30, lnxpmt, "echo \"\" > /tmp/upgrade.tar")
+    p.expect2act(30, lnxpmt, "ls -la /tmp")
+
+    sstr = ["tftp",
+            "-g",
+            "-r upgrade.tar",
+            "-l "+tmpdir+"upgrade.tar",
+            svip]
+    sstrj = ' '.join(sstr)
+    p.expect2act(120, lnxpmt, sstrj)
+    p.expect2act(30, "", "\n")
+    time.sleep(120)
+    p.expect2act(30, "", "\n")
+
+    sstr = ["tftp",
+            "-g",
+            "-r upgrade.tar",
+            "-l "+tmpdir+"upgrade.tar",
+            svip]
+    sstrj = ' '.join(sstr)
+    p.expect2act(120, lnxpmt, sstrj)
+    p.expect2act(30, "", "\n")
+    time.sleep(120)
+    p.expect2act(30, "", "\n")
+    msg(80, "Succeeding in downloading the upgrade tarf file ...")
+ 
+    p.expect2act(30, lnxpmt, "sh /sbin/flash-factory.sh")
+    p.expect2act(30, "uImage: OK", "")
+    p.expect2act(30, "rootfs.squashfs: OK", "")
+    p.expect2act(120, "Writing superblocks and filesystem accounting information", "")
+  
+    p.expect2act(60, "login:", "root")
+    p.expect2act(30, "Password:", "ubnt")
+    p.expect2act(30, "", "\n")
+    p.expect2act(30, lnxpmt, "")
+    msg(100, "Completing firmware upgrading ...")
+    time.sleep(2)
     exit(0)
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
 
 
