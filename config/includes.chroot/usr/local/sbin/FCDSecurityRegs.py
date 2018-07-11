@@ -147,6 +147,8 @@ class fraMonitorPanel(Gtk.Frame):
         self.txvlog = Gtk.TextView()
         self.txvlog.set_editable(False)
         self.scllog = Gtk.ScrolledWindow()
+        self.scllog.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scllog.set_size_request(100,400)
         self.scllog.add(self.txvlog)
         self.txblog = self.txvlog.get_buffer()
         self.txilog = self.txblog.get_end_iter()
