@@ -644,7 +644,7 @@ class winFcdFactory(Gtk.Window):
         # operation log
         self.epdoplog = Gtk.Expander()
         self.epdoplog.set_label('Output of production scripts')
-        self.epdoplog.set_expanded(True)
+        self.epdoplog.set_expanded(False)
         self.epdoplog.add(self.ntbmsg)
 
         # Main window

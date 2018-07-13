@@ -30,13 +30,16 @@
 #       'CCLOCK': "na", 
 #       'SCRIPT': "na"}
 
-u1p = [0, "U1P", "ea13", "113-00618", "UniFi One Plus", "na", "na"]
-u1 = [1, "U1", "ea11", "113-00623", "UniFi One Base", "na", "na"]
+u1dmp = [0, "U1DMP", "ea13", "113-00618", "UniFi One Dream Machine Plus", "na", "na"]
+u1dm = [1, "U1DM", "ea11", "113-00623", "UniFi One Dream Machine", "na", "na"]
+u1dmrm = [2, "U1DM-RM", "ea14", "113-00633", "UniFi One Dream Machine RackMount", "na", "na"]
+u1dmprm = [3, "U1DMP-RM", "ea15", "113-00631", "UniFi One Dream Machine RackMount", "na", "na"]
 
 prodlist = []
-prodlist.append(u1p)
-prodlist.append(u1)
-
+prodlist.append(u1dmp)
+prodlist.append(u1dm)
+prodlist.append(u1dmrm)
+prodlist.append(u1dmprm)
 
 def main():
     print(prodlist[0][1])

@@ -18,12 +18,10 @@ class ExpttyProcess():
         cmdstr = " ".join(str(x) for x in cmd)
         self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace')
         self.proc.logfile = sys.stdout
-        self.proc.timeout = None
 
     def expect2act(self, tmo, exptxt, action):
         if (exptxt != ""):
-#             self.proc.timeout = tmo
-            rt = self.proc.expect(exptxt)
+            rt = self.proc.expect(exptxt, tmo)
             time.sleep(0.2)
         else:
             rt = 1
