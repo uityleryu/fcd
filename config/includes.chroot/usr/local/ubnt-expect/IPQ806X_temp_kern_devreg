@@ -1,0 +1,10 @@
+'', "\n"
+10, "$temp_kern_prompt", "cd /tmp\n"
+10, "$temp_kern_prompt", 'helper_IPQ806x_release -c product_class=basic ' \
+            . '-o field=flash_eeprom,format=binary,' \
+            . "pathname=$reg_pfile >$reg_ffile\n"
+10, "$temp_kern_prompt", "sync\n"
+10, "$temp_kern_prompt", "sleep 1\n"
+10, "$temp_kern_prompt", "tftp -p -l $reg_ffile $prod_server_ip\n"
+10, "$temp_kern_prompt", "tftp -p -l $reg_pfile $prod_server_ip\n"
+10, "$temp_kern_prompt", ''

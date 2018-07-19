@@ -1,0 +1,6 @@
+boardid=ed01
+bomrev=113-02556
+cclock=none
+description=UBNT UniFiSwitch USC 8 ports
+name=usc-8
+script=/usr/local/sbin/msccfactory.pl

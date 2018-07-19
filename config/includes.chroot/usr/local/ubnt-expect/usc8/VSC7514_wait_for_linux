@@ -1,0 +1,6 @@
+210, 'Please press Enter to activate this console', ''
+@sleep 1
+'', "\n\n"
+10, 'UBNT login: ', "ubnt\n"
+10, 'Password: ', "ubnt\n"
+10, "$exp_os_prompt", ''

@@ -1,0 +1,12 @@
+'', "\n"
+20, "$temp_kern_prompt", "rmmod ubnthal\n"
+@sleep 2
+20, "$temp_kern_prompt", "insmod ubnthal\n"
+20, "$temp_kern_prompt", "hciconfig hci0 up\n"
+@sleep 2
+20, "$temp_kern_prompt", "ath3k-bdaddr -s -f\n "
+20, "Changing to: $prod_btaddr", ''
+5, 'Writing to OTP... DONE.', ''
+5, "Active addr: $prod_btaddr", ''
+5, "OTP bdaddr (0): $prod_btaddr", ''
+5, "$temp_kern_prompt", ''

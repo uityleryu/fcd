@@ -1,0 +1,6 @@
+boardid=eb31
+bomrev=113-02147
+cclock=none
+description=UBNT UniFiSwitch 24-Port 250W
+name=us-24-250w
+script=/usr/local/sbin/uswitchfactory.tcl

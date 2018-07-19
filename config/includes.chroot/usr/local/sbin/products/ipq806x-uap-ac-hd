@@ -1,0 +1,6 @@
+boardid=e530
+bomrev=113-00438
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-HD
+name=uap-ac-hd
+script=/usr/local/sbin/uap_ipq806x_factory.pl

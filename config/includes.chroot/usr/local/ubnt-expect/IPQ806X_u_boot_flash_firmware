@@ -1,0 +1,8 @@
+'', ""
+5, '-re', "$u_boot_prompt", "sf probe\n"
+5, '-re', "$u_boot_prompt", "tftpboot 0x42000000 ipq806x-nor-linux0.ubin\n"
+30, 'Bytes transferred ', ''
+5, '-re', "$u_boot_prompt", "imgaddr=0x42000000;source \$imgaddr:script\n"
+15, 'Flashing kernel0: ', ''
+600, 'crc32+ [ done ]', ''
+5, '-re', "$u_boot_prompt", "reset\n"

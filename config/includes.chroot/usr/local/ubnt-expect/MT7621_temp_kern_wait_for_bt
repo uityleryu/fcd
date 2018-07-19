@@ -1,0 +1,4 @@
+'', "\n"
+20, "$temp_kern_prompt", "hciconfig\n"
+10, 'hci0:	Type: BR/EDR  Bus: USB', ''
+5, "$temp_kern_prompt", ''

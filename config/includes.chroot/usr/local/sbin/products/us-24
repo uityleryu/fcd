@@ -1,0 +1,6 @@
+boardid=eb30
+bomrev=113-02294
+cclock=none
+description=UBNT UniFiSwitch 24-Port
+name=us-24
+script=/usr/local/sbin/uswitchfactory.tcl

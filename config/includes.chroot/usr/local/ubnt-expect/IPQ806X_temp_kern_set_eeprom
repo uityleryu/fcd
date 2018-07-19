@@ -1,0 +1,23 @@
+'', "\n"
+20, "$temp_kern_prompt", "ipq806x-ee -F -r 113-$bom_rev -s 0x$board_id -m $prod_dev_mac -c 0x$prod_dev_regdmn -e $prod_ethcnt -w $prod_wificnt -k\n"
+20, "$temp_kern_prompt", "ipq806x-ee -I -v 2>&1\n"
+10, 'DEBUG: SBD Magic: 55424e54 (OK)', ''
+5, "DEBUG: SBD Length: 24", ''
+5, "DEBUG: SBD Format: 0x0001", ''
+5, "DEBUG: SBD Version: 0x0001", ''
+5, "DEBUG: SBD system ID: 0777:$board_id", ''
+5, "DEBUG: SBD HW revision: 113-$bom_rev", ''
+5, "DEBUG: SBD HW Address Base: $prod_dev_mac", ''
+5, "DEBUG: SBD Ethernet MAC count: $prod_ethcnt", ''
+5, "DEBUG: SBD WiFi RADIO count: $prod_wificnt", ''
+5, "DEBUG: SBD Regulatory Domain: 0x$prod_dev_regdmn", ''
+5, "DEBUG: DBD eth0 hwaddr: $prod_dev_mac", ''
+5, "DEBUG: DBD system ID: 0777:$board_id", ''
+5, "DEBUG: DBD HW revision: 113-$bom_rev", ''
+5, "DEBUG: EXTRA ENTRY[0]: DSS KEY", ''
+5, "DEBUG: EXTRA ENTRY[1]: RSA KEY", ''
+5, "$temp_kern_prompt", "cmp -s /tmp/dropbear_key.dss /tmp/dropbear_key_dump.dss 2>&1 ; echo \$? \n"
+20, "0", ''
+5, "$temp_kern_prompt", "cmp -s /tmp/dropbear_key.rsa /tmp/dropbear_key_dump.rsa 2>&1 ; echo \$? \n"
+20, "0", ''
+5, "$temp_kern_prompt", ''

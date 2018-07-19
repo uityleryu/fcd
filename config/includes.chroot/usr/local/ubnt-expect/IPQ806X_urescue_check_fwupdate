@@ -1,0 +1,4 @@
+120, "Updating APPSBL partition (and skip identical blocks) ...... done.", ''
+600, "Updating kernel0 partition (and skip identical blocks) ...... done.", ''
+60, "Updating bootselect partition (and skip identical blocks) ...... done.", ''
+10, "resetting ...", ''

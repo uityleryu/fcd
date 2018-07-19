@@ -1,0 +1,6 @@
+boardid=e547
+bomrev=113-00444
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-EDU
+name=uap-ac-edu
+script=/usr/local/sbin/uapfactory.tcl

@@ -1,0 +1,4 @@
+'', "\n"
+5, '-re', "$exp_os_prompt", "cd /tmp\n"
+5, '-re', "$exp_os_prompt", "lrz -v -b\n"
+30, '-re', "waiting to receive", ''

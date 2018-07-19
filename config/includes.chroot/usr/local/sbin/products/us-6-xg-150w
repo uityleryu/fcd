@@ -1,0 +1,6 @@
+boardid=eb23
+bomrev=113-02604
+cclock=none
+description=UBNT UniFiSwitch 6-Port XG 150W
+name=us-6xg-150
+script=/usr/local/sbin/uswitchfactory.tcl

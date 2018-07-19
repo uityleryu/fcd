@@ -1,0 +1,4 @@
+'', "\n"
+5, '-re', "$exp_os_prompt", "cd /tmp\n"
+5, '-re', "$exp_os_prompt", "lsz -e -v -b /tmp/$exp_eeprom_tgz\n"
+60, '-re', "$exp_os_prompt", ''

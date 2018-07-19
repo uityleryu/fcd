@@ -1,0 +1,6 @@
+boardid=e587
+bomrev=113-00446
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-InWall
+name=uap-ac-inwall
+script=/usr/local/sbin/uapfactory.tcl

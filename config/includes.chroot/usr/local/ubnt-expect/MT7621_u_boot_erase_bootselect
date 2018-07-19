@@ -1,0 +1,3 @@
+5, '-re', "$u_boot_prompt", "erase bootselect\n"
+15, 'Erase bootselect block !!', ''
+30, '-re', "$u_boot_prompt", "\n"

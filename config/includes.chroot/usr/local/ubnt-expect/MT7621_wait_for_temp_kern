@@ -1,0 +1,7 @@
+90, 'Please press Enter to activate this console', ''
+@sleep 5
+'', "\n"
+10, 'UBNT login: ', "ubnt\n"
+10, 'Password: ', "ubnt\n"
+10, "$temp_kern_prompt", "dmesg -n 1 \n"
+20, "$temp_kern_prompt", ''

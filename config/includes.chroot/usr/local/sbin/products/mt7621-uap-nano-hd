@@ -1,0 +1,6 @@
+boardid=ec20
+bomrev=113-00573
+cclock=unifird
+description=Ubiquiti Networks UniFiAP-AC-NANO-HD
+name=uap-ac-nano-hd
+script=/usr/local/sbin/uap_mt7621_factory.pl

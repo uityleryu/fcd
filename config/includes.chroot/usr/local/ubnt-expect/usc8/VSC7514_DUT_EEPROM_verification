@@ -1,0 +1,11 @@
+'', "\n"
+5, '-re', "$exp_os_prompt", "cd /tmp\n"
+5, '-re', "$exp_os_prompt", "gunzip /tmp/$exp_e_s_gz\n"
+@sleep 2
+10, '-re', "$exp_os_prompt", "dd of=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd | sed 's~mtd~mtdblock~g'` if=/tmp/$exp_eeprom_signed\n"
+@sleep 2
+10, '-re', "$exp_os_prompt", "dd if=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd | sed 's~mtd~mtdblock~g'` of=/tmp/$exp_eeprom_check\n"
+@sleep 2
+10, '-re', "$exp_os_prompt", "gzip /tmp/$exp_eeprom_check\n"
+10, '-re', "$exp_os_prompt", "lsz -e -v -b /tmp/$exp_e_c_gz\n"
+10, '-re', "$exp_os_prompt", ''

@@ -1,0 +1,9 @@
+'', "\n"
+10, "$temp_kern_prompt", "cd /tmp\n"
+10, "$temp_kern_prompt", "tftp -p -l $reg_ffile $prod_server_ip >/dev/null 2>&1 ; echo ${reg_ffile}:\$?\n"
+20, "${reg_ffile}:0", ''
+10, "$temp_kern_prompt", "tftp -p -l $reg_pfile $prod_server_ip >/dev/null 2>&1 ; echo ${reg_pfile}:\$?\n"
+20, "${reg_pfile}:0", ''
+10, "$temp_kern_prompt", "tftp -p -l $reg_sfile $prod_server_ip >/dev/null 2>&1 ; echo ${reg_sfile}:\$?\n"
+20, "${reg_sfile}:0", ''
+10, "$temp_kern_prompt", ''

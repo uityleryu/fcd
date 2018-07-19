@@ -1,0 +1,5 @@
+5, '-re', "$u_boot_prompt", "set ubnt_clearcfg TRUE\n"
+5, '-re', "$u_boot_prompt", "set ubnt_clearenv TRUE\n"
+5, '-re', "$u_boot_prompt", "set do_urescue TRUE\n"
+5, '-re', "$u_boot_prompt", "bootubnt -f\n"
+20, "Listening for TFTP transfer on", ''

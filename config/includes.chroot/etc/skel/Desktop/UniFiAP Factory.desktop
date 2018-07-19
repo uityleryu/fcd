@@ -1,0 +1,17 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=UniFiAP Factory
+Type=Application
+Exec=sudo /usr/local/sbin/UAPFactory.pl
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=UniFiAP Factory
+GenericName[en_US]=
+Comment[en_US]=Utility for production of UniFiAP
+GenericName=
+Comment=Utility for production of UniFiAP
+Icon=/usr/local/UBNT.jpeg
+StartupNotify=false

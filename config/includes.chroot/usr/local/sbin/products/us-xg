@@ -1,0 +1,6 @@
+boardid=eb20
+bomrev=113-02376
+cclock=none
+description=UBNT UniFiSwitch XG
+name=us-xg
+script=/usr/local/sbin/uswitchfactory.tcl

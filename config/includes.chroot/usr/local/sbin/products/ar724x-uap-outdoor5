@@ -1,0 +1,6 @@
+boardid=e515
+bomrev=113-00296
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-Outdoor5G
+name=uap-outdoor5
+script=/usr/local/sbin/uapfactory.tcl

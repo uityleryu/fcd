@@ -1,0 +1,7 @@
+5, '-re', "$u_boot_prompt", "tftpboot $prod_loadaddr $prod_kernel\n"
+60, "Bytes transferred = $prod_kernelsize", ''
+5, '-re', "$u_boot_prompt", "erase linux\n"
+15, 'Erase linux block !!', ''
+300, '-re', "$u_boot_prompt", "cp.linux\n"
+15, "Copy partition linux \[$prod_kernelsize bytes\] from \[0x$prod_loadaddr\] to SPI Flash", ''
+300, '-re', "$u_boot_prompt", "\n"

@@ -1,0 +1,17 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=UniFiAP to ART
+Type=Application
+Exec=sudo /usr/local/sbin/UAP2ART.pl
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=UniFiAP to ART
+GenericName[en_US]=
+Comment[en_US]=Utility for converting UniFi APs to ART
+GenericName=
+Comment=Utility for converting UniFi APs to ART
+Icon=/usr/local/UAP.jpg
+StartupNotify=false

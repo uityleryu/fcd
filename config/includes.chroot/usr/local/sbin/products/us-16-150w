@@ -1,0 +1,6 @@
+boardid=eb21
+bomrev=113-02290
+cclock=none
+description=UBNT UniFiSwitch 16-Port 150W
+name=us-16-150w
+script=/usr/local/sbin/uswitchfactory.tcl

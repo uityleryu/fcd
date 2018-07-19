@@ -1,0 +1,6 @@
+boardid=eb10
+bomrev=113-02189
+cclock=none
+description=UBNT UniFiSwitch 8-Port 150W
+name=us-8-150w
+script=/usr/local/sbin/uswitchfactory.tcl

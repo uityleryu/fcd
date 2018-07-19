@@ -1,0 +1,9 @@
+'', "\n"
+30, '-re', "$exp_uboot_prompt", "setenv ethaddr $exp_prod_dev_tmp_mac\n"
+30, '-re', "$exp_uboot_prompt", "setenv ipaddr $exp_prod_dev_ip\n"
+30, '-re', "$exp_uboot_prompt", "setenv serverip $exp_hostip\n"
+30, '-re', "$exp_uboot_prompt", "ping $exp_hostip\n"
+40, "host $exp_hostip is alive", ''
+30, '-re', "$exp_uboot_prompt", "bootubnt ubntrescue\n"
+30, '-re', "$exp_uboot_prompt", "bootubnt\n"
+10, "Loading", ''

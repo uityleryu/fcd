@@ -1,0 +1,6 @@
+boardid=e585
+bomrev=113-00557
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-XG-STADIUM
+name=uap-xg-stadium-black
+script=/usr/local/sbin/uap_ipq806x_factory.pl

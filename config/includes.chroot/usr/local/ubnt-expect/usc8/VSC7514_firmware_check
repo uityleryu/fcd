@@ -1,0 +1,7 @@
+5, "", "\n"
+10, "$exp_os_prompt", "dmesg -n 1\n"
+10, "$exp_os_prompt", "grep -c flashsize /proc/ubnthal/system.info\n"
+10, "$exp_os_prompt", "grep qrid /proc/ubnthal/system.info\n"
+10, "$exp_qrcode", "\n"
+10, "$exp_os_prompt", "info\n"
+10, "$exp_os_prompt", ''

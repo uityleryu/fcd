@@ -1,0 +1,6 @@
+boardid=e597
+bomrev=113-00547
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-IW-PRO
+name=uap-ac-iw-pro
+script=/usr/local/sbin/uapfactory.tcl

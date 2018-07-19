@@ -1,0 +1,6 @@
+boardid=ed02
+bomrev=113-02624
+cclock=none
+description=UBNT UniFiSwitch USC 8 ports 60W
+name=usc-8-60
+script=/usr/local/sbin/msccfactory.pl

@@ -1,0 +1,3 @@
+5, '-re', "$u_boot_prompt", "tftpboot $prod_loadaddr $u_boot_tftp_file\n"
+60, "Bytes transferred", ''
+5, '-re', "$u_boot_prompt", "bootm\n"

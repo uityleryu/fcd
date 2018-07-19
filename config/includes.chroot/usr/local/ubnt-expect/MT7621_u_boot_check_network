@@ -1,0 +1,2 @@
+5, '-re', "$u_boot_prompt", "ping $prod_server_ip\n"
+10, 'is alive', ''

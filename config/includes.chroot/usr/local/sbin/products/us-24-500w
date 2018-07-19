@@ -1,0 +1,6 @@
+boardid=eb32
+bomrev=113-02147
+cclock=none
+description=UBNT UniFiSwitch 24-Port 500W
+name=us-24-500w
+script=/usr/local/sbin/uswitchfactory.tcl

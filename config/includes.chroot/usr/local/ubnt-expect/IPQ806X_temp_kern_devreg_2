@@ -1,0 +1,11 @@
+'', "\n"
+10, "$temp_kern_prompt", "cd /tmp\n"
+10, "$temp_kern_prompt", "tftp -b 4096 -g -r $reg_cfile $prod_server_ip >/dev/null 2>&1 ; echo ${reg_cfile}:\$?\n"
+10, "${reg_cfile}:0", ''
+10, "$temp_kern_prompt", "dd if=$reg_cfile of=/dev/mtdblock10 bs=64k count=1 >/dev/null 2>&1 ; echo dd_${reg_cfile}:\$?\n"
+10, "$temp_kern_prompt", "sync\n"
+10, "$temp_kern_prompt", "dd if=/dev/mtdblock10 of=${reg_pfile}-1 bs=64k count=1 >/dev/null 2>&1 ; echo dd_${reg_pfile}-1:\$?\n"
+10, "dd_${reg_pfile}-1:0", ''
+10, "$temp_kern_prompt", "tftp -p -l ${reg_pfile}-1 $prod_server_ip >/dev/null 2>&1 ; echo ${reg_pfile}:\$?\n"
+10, "${reg_pfile}:0", ''
+10, "$temp_kern_prompt", "reboot -f\n"

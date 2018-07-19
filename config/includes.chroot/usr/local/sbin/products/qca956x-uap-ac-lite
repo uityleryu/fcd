@@ -1,0 +1,6 @@
+boardid=e517
+bomrev=113-00391
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-Lite
+name=uap-ac-lite
+script=/usr/local/sbin/uapfactory.tcl

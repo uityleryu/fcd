@@ -1,0 +1,2 @@
+30, 'Hit any key to stop autoboot:', "\cC"
+30, '-re', "$exp_uboot_prompt", ''

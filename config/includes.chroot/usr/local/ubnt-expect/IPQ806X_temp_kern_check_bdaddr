@@ -1,0 +1,8 @@
+'', "\n"
+20, "$temp_kern_prompt", "hciconfig hci0 up\n"
+@sleep 2
+5, "$temp_kern_prompt", "ath3k-bdaddr\n "
+20, "Active addr: $prod_btaddr", ''
+5, "OTP bdaddr (0): $prod_btaddr", ''
+5, "$temp_kern_prompt", ''
+

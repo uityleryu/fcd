@@ -1,0 +1,6 @@
+'', ""
+5, '-re', "$u_boot_prompt", "tftpboot 0x44000000 $u_boot_tftp_file\n"
+30, 'Bytes transferred ', ''
+5, '-re', "$u_boot_prompt", "setenv bootargs 'console=ttyHSL1,115200n8 quiet'\n"
+5, '-re', "$u_boot_prompt", "pcideinit\n"
+5, '-re', "$u_boot_prompt", "bootm 0x44000000#config@\${dtb_cfg_name}\n"

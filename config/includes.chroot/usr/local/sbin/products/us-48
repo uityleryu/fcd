@@ -1,0 +1,6 @@
+boardid=eb60
+bomrev=113-02295
+cclock=none
+description=UBNT UniFiSwitch 48-Port
+name=us-48
+script=/usr/local/sbin/uswitchfactory.tcl

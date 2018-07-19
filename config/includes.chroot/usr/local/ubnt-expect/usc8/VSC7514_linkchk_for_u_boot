@@ -1,0 +1,6 @@
+30, 'Hit any key to stop autoboot:', "\cC"
+30, '-re', "$exp_uboot_prompt", "setenv ipaddr $exp_prod_dev_ip\n"
+30, '-re', "$exp_uboot_prompt", "setenv serverip $exp_hostip\n"
+30, '-re', "$exp_uboot_prompt", "ping $exp_hostip\n"
+40, "host $exp_hostip is alive", ''
+10, '-re', "$exp_uboot_prompt", "reset\n"

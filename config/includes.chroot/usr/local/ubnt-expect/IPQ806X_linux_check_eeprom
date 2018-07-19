@@ -1,0 +1,9 @@
+'', "\n"
+5, "$os_prompt", "cat /proc/ubnthal/system.info\n"
+20, "flashSize=33554432", ''
+5, "systemid=$board_id", ''
+5, "serialno=$prod_dev_mac", ''
+5, "qrid=$qr_code", ''
+5, "$os_prompt", "cat /usr/lib/build.properties\n"
+5, "$os_prompt", "cat /usr/lib/version\n"
+5, "$os_prompt", "\n"

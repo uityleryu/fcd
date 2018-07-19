@@ -1,0 +1,6 @@
+boardid=eb63
+bomrev=113-02146
+cclock=none
+description=UBNT UniFiSwitch 48-Port 750W
+name=us-48-750w
+script=/usr/local/sbin/uswitchfactory.tcl

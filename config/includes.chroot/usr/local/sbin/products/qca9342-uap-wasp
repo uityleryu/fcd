@@ -1,0 +1,6 @@
+boardid=e572
+bomrev=113-00163
+cclock=athrd
+description=Ubiquiti Networks UniFiAPv2
+name=uap-wasp
+script=/usr/local/sbin/uapfactory.tcl

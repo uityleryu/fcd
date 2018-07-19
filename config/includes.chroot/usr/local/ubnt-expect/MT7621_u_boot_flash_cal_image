@@ -1,0 +1,9 @@
+'', ""
+5, '-re', "$u_boot_prompt", "sf probe\n"
+5, '-re', "$u_boot_prompt", "tftpboot 0x42000000 $art_img\n"
+30, 'Bytes transferred ', ''
+5, '-re', "$u_boot_prompt", "set machid $prod_machid\n"
+5, '-re', "$u_boot_prompt", "imgaddr=0x42000000;source \$imgaddr:script\n"
+180, 'Flashing fs: ', ''
+720, 'crc32+ [ done ]', ''
+5, '-re', "$u_boot_prompt", "reset\n"

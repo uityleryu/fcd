@@ -1,0 +1,4 @@
+20, "Updating u-boot partition (and skip identical blocks)", ''
+60, "done.", ''
+20, "Updating kernel0 partition (and skip identical blocks)", ''
+360, "done.", ''

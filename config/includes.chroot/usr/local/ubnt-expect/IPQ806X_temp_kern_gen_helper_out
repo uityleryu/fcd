@@ -1,0 +1,10 @@
+'', "\n"
+10, "$temp_kern_prompt", "cd /tmp\n"
+10, "$temp_kern_prompt", 'helper_IPQ806x_release -c product_class=basic ' \
+            . '-o field=flash_eeprom,format=binary,' \
+            . "pathname=$reg_pfile >$reg_ffile; echo helper:\$?\n"
+20, "helper:0", ''
+10, "$temp_kern_prompt", "md5sum $reg_ffile $reg_pfile > $reg_sfile; echo md5sum:\$?\n"
+20, "md5sum:0", ''
+10, "$temp_kern_prompt", "sleep 1; sync; cat $reg_sfile\n"
+20, "$temp_kern_prompt", ''

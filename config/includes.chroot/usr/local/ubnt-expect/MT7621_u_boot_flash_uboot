@@ -1,0 +1,6 @@
+5, '-re', "$u_boot_prompt", "tftpboot $prod_loadaddr $prod_uboot\n"
+60, "Bytes transferred = $prod_ubootsize", ''
+5, '-re', "$u_boot_prompt", "sf probe\n"
+15, 'flash manufacture id:', ''
+30, '-re', "$u_boot_prompt", "sf update $prod_loadaddr 0 \$(filesize)\n"
+30, '-re', "$u_boot_prompt", "reset\n"

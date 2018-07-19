@@ -1,0 +1,6 @@
+boardid=eb19
+bomrev=113-02311
+cclock=none
+description=UBNT UniFiSwitch 8-Port
+name=us-8
+script=/usr/local/sbin/uswitchfactory.tcl

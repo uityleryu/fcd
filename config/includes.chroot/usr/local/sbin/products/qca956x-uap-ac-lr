@@ -1,0 +1,6 @@
+boardid=e527
+bomrev=113-00392
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-LR
+name=uap-ac-lr
+script=/usr/local/sbin/uapfactory.tcl

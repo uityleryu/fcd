@@ -1,0 +1,6 @@
+boardid=e567
+bomrev=113-00445
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-AC-Mesh-Pro
+name=uap-ac-mesh-pro
+script=/usr/local/sbin/uapfactory.tcl

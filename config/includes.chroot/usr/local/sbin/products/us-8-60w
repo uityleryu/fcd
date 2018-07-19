@@ -1,0 +1,6 @@
+boardid=eb18
+bomrev=113-02341
+cclock=none
+description=UBNT UniFiSwitch 8-Port 60W
+name=us-8-60w
+script=/usr/local/sbin/uswitchfactory.tcl

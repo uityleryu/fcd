@@ -1,0 +1,6 @@
+boardid=e507
+bomrev=113-00238
+cclock=athrd
+description=Ubiquiti Networks UniFiAP-Professional
+name=uap-pro
+script=/usr/local/sbin/uapfactory.tcl

@@ -1,0 +1,6 @@
+boardid=eb66
+bomrev=113-02479
+cclock=none
+description=UBNT UniFiSwitch 48-Port Layer2 PoE
+name=us-48p-l2
+script=/usr/local/sbin/uswitchfactory.tcl

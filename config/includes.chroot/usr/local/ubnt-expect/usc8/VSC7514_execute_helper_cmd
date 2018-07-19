@@ -1,0 +1,5 @@
+'', "\n"
+5, '-re', "$exp_os_prompt", "cd /tmp\n"
+5, '-re', "$exp_os_prompt", "$exp_helpercmd\n"
+5, '-re', "$exp_os_prompt", "tar zcf $exp_eeprom_tgz $exp_eeprom_bin $exp_eeprom_txt\n"
+10, '-re', "$exp_os_prompt", ''

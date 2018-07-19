@@ -1,0 +1,6 @@
+boardid=ed03
+bomrev=113-02651
+cclock=none
+description=UBNT UniFiSwitch USC 8 ports 150W
+name=usc-8-150
+script=/usr/local/sbin/msccfactory.pl

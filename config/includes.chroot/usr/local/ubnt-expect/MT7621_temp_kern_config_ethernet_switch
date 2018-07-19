@@ -1,0 +1,6 @@
+'', "\n"
+10, "$temp_kern_prompt", "swconfig dev switch0 set enable_vlan 1\n"
+10, "$temp_kern_prompt", "swconfig dev switch0 vlan 1 set vid 1\n"
+10, "$temp_kern_prompt", "swconfig dev switch0 vlan 1 set ports '6 0'\n"
+10, "$temp_kern_prompt", "swconfig dev switch0 set apply\n"
+5, "$temp_kern_prompt", ''

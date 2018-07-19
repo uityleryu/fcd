@@ -1,0 +1,4 @@
+'', "\n"
+5, '-re', "$u_boot_prompt", "set ethaddr $prod_dev_tmp_mac\n"
+5, '-re', "$u_boot_prompt", "set ipaddr $prod_dev_ip\n"
+5, '-re', "$u_boot_prompt", "set serverip $prod_server_ip\n"

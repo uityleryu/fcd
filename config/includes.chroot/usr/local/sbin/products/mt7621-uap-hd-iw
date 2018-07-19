@@ -1,0 +1,6 @@
+boardid=ec22
+bomrev=113-00600
+cclock=unifird
+description=Ubiquiti Networks UniFiAP-HD-IW
+name=uap-hd-iw
+script=/usr/local/sbin/uap_mt7621_factory.pl
