@@ -10,26 +10,28 @@ import pexpect
 
 
 class ExpttyProcess():
-    def __init__(self, id, tty):
+    def __init__(self, id, cmd):
         self.id = id
-        cmd = ["sudo picocom",
-               tty,
-               "-b 115200"]
-        cmdstr = " ".join(str(x) for x in cmd)
-        self.proc = pexpect.spawn(cmdstr, encoding='utf-8', codec_errors='replace')
-        self.proc.logfile = sys.stdout
+        self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
+        self.proc.logfile_read = sys.stdout
 
-    def expect2act(self, tmo, exptxt, action):
+    def expect2act(self, timeout, exptxt, action):
         if (exptxt != ""):
-            rt = self.proc.expect(exptxt, tmo)
-            time.sleep(0.2)
+          rt = self.proc.expect(exptxt, timeout)
         else:
-            rt = 1
+          rt = 1
 
         if (action != "") and (rt >= 0):
-            self.proc.sendline(action)
+          self.proc.send(action + "\r\n")
 
-        time.sleep(1)
+    # It's actually flush stdout with twice expect... 
+    def flush_buffer(self, timeout, exptxt):
+        if (exptxt != ""):
+          rt = self.proc.expect(exptxt, timeout)
+          rt = self.proc.expect(exptxt, timeout)
+        else:
+          rt = 1
+        print("\n\r")
 
 #     def tftpgetfromhost(self, srfile, dstfile):
 #         log_debug("Get"+srfile+"command from host to DUT ...")
