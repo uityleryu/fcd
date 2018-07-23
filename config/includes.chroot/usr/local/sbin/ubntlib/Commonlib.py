@@ -25,8 +25,10 @@ class ExpttyProcess():
         if(index == 2):
             print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
             return -1
-            
-        self.proc.send(action + self.newline)
+        
+        if (action != "") and (index >= 0):
+            self.proc.send(action + self.newline)
+
         return 0
 
 #     def tftpgetfromhost(self, srfile, dstfile):
@@ -107,7 +109,6 @@ def error_critical(msg):
     sys.exit(2)
 
 
-
 def msgerrror(parent, msg):
     mgdimsg = Gtk.MessageDialog(parent,
                                 Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
@@ -117,6 +118,7 @@ def msgerrror(parent, msg):
     mgdimsg.format_secondary_text(msg)
     mgdimsg.run()
     mgdimsg.destroy()
+
 
 def msginfo(parent, msg):
     mgdimsg = Gtk.MessageDialog(parent,

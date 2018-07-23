@@ -10,11 +10,6 @@ if [ -f ${STATUS} ]; then
     exit 0
 fi
 
-# mount tmpfs on /tftpboot, to get rid of tftp timeout
-mount -t tmpfs tmpfs /tftpboot
-echo " *** Change the tftpboot permission *** "
-chmod -R 777 /tftpboot
-
 host_ip=$1
 if [ "${host_ip}" = "" ]; then
     host_ip=192.168.1.19
@@ -116,7 +111,9 @@ if ! grep -q usbdisk /proc/mounts; then
     ln -sf $MDIR /home/user/Desktop/
 fi
 
-sudo ifconfig $prod_iface ${host_ip} netmask 255.255.255.224 up
+sudo ip addr flush dev $prod_iface
+sudo ip addr add ${host_ip}/24 dev $prod_iface
+sudo ifconfig $prod_iface up
 sudo ifconfig
 
 wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
@@ -138,6 +135,11 @@ if [ $wget_status -eq 0 ]; then
     fi
 else
     echo "Can't link to baidu website"
+    exit 1
+fi
+
+if ! /etc/init.d/atftpd restart; then
+    echo 'Failed to start TFTP server'
     exit 1
 fi
 

@@ -29,6 +29,11 @@ prod_dev_ip = "192.168.1." + str(prod_dev_ip_base)
  
 prod_dev_tmp_mac = "00:15:6d:00:00:0"+idx
 
+tmpdir = "/tmp/"
+tftpdir = "/tftpboot/"
+proddir = tftpdir+boardid+"/"
+toolsdir = tftpdir+"tools/"
+
 # U-boot prompt
 ubpmt = {'ea11':"ALPINE_UBNT>",
          'ea13':"ALPINE_UBNT_PLUS>",
@@ -70,11 +75,6 @@ btnum = {'ea11':"1",
          'ea13':"1",
          'ea14':"1",
          'ea15':"1"}
-
-tmpdir = "/tmp/"
-tftpdir = "/tftpboot/"
-proddir = tftpdir+boardid+"/"
-toolsdir = tftpdir+"tools/"
 
 eepmexe = "al324-ee"
 eeprom_bin = "e.b."+idx
@@ -148,7 +148,7 @@ def main():
     p.expect2act(30, swmsg[boardid], "\n")
     p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
     p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+boardid+"-art-")
+    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fcd-")
     p.expect2act(30, ubpmt[boardid], "ping "+svip)
     p.expect2act(30, "host "+svip+" is alive", "")
     p.expect2act(30, ubpmt[boardid], "run bootupd")
@@ -161,7 +161,7 @@ def main():
     p.expect2act(30, swmsg[boardid], "\n")
     p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
     p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+boardid+"-fcd-")
+    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/u1-fcdcommon-")
     p.expect2act(30, ubpmt[boardid], "ping "+svip)
     p.expect2act(30, "host "+svip+" is alive", "")
     p.expect2act(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
@@ -326,7 +326,8 @@ def main():
 
     qrhex = qrcode.encode('utf-8').hex()
 
-    regparam = ["-k "+pshr,
+    regparam = ["-h devreg-prod.ubnt.com",
+                "-k "+pshr,
                 regsubparams,
                 "-i field=qr_code,format=hex,value="+qrhex,
                 "-i field=flash_eeprom,format=binary,pathname="+tftpdir+eeprom_bin,
@@ -346,7 +347,7 @@ def main():
     cmd = "sudo /usr/local/sbin/client_x86_release "+regparamj
     print("cmd: "+cmd)
     [sto, rtc] = xcmd(cmd)
-    time.sleep(5)
+    time.sleep(6)
     if (int(rtc) > 0):
         error_critical("client_x86 registration failed!!")
     else:
@@ -428,7 +429,7 @@ def main():
     p.expect2act(30, swmsg[boardid], "\n")
     p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
     p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+boardid+"-fw-")
+    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fw-")
     p.expect2act(30, ubpmt[boardid], "ping "+svip)
     p.expect2act(30, "host "+svip+" is alive", "")
     p.expect2act(30, ubpmt[boardid], "run bootupd")
@@ -449,7 +450,7 @@ def main():
     p.expect2act(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
     p.expect2act(30, ubpmt[boardid], "cp.b $fdtaddr $loadaddr_dt 7ffc")
     p.expect2act(30, ubpmt[boardid], "fdt addr $loadaddr_dt")
-    p.expect2act(30, ubpmt[boardid], "tftpboot $loadaddr "+boardid+"-fw-uImage")
+    p.expect2act(30, ubpmt[boardid], "tftpboot $loadaddr images/u1-fwcommon-uImage")
     p.expect2act(30, "Bytes transferred", "")
     p.expect2act(30, ubpmt[boardid], "bootm $loadaddr - $fdtaddr")
     p.expect2act(60, "login:", "root")
@@ -473,7 +474,7 @@ def main():
 
     sstr = ["tftp",
             "-g",
-            "-r "+boardid+"-fw.tar",
+            "-r images/u1-fwcommon-upgrade.tar",
             "-l "+tmpdir+"upgrade.tar",
             svip]
     sstrj = ' '.join(sstr)
@@ -482,16 +483,6 @@ def main():
     time.sleep(120)
     p.expect2act(30, "", "\n")
 
-    sstr = ["tftp",
-            "-g",
-            "-r "+boardid+"-fw.tar",
-            "-l "+tmpdir+"upgrade.tar",
-            svip]
-    sstrj = ' '.join(sstr)
-    p.expect2act(120, lnxpmt[boardid], sstrj)
-    p.expect2act(30, "", "\n")
-    time.sleep(120)
-    p.expect2act(30, "", "\n")
     msg(80, "Succeeding in downloading the upgrade tarf file ...")
 
     p.expect2act(30, lnxpmt[boardid], "sh /sbin/flash-factory.sh")
