@@ -10,28 +10,24 @@ import pexpect
 
 
 class ExpttyProcess():
-    def __init__(self, id, cmd):
+    def __init__(self, id, cmd, newline):
         self.id = id
         self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
         self.proc.logfile_read = sys.stdout
+        self.newline = newline
 
+    '''return negative means error, return 0 means success'''
     def expect2act(self, timeout, exptxt, action):
-        if (exptxt != ""):
-          rt = self.proc.expect(exptxt, timeout)
-        else:
-          rt = 1
-
-        if (action != "") and (rt >= 0):
-          self.proc.send(action + "\r\n")
-
-    # It's actually flush stdout with twice expect... 
-    def flush_buffer(self, timeout, exptxt):
-        if (exptxt != ""):
-          rt = self.proc.expect(exptxt, timeout)
-          rt = self.proc.expect(exptxt, timeout)
-        else:
-          rt = 1
-        print("\n\r")
+        index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
+        if(index == 1):
+            print("[ERROR:EOF]: Expect \"" + exptxt + "\"")
+            return -1
+        if(index == 2):
+            print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
+            return -1
+            
+        self.proc.send(action + self.newline)
+        return 0
 
 #     def tftpgetfromhost(self, srfile, dstfile):
 #         log_debug("Get"+srfile+"command from host to DUT ...")
@@ -41,7 +37,6 @@ class ExpttyProcess():
 
     def close(self):
         self.proc.close()
-
 
 # class ExpttyProcess():
 #     def __init__(self, id, tty):
@@ -164,49 +159,45 @@ def xcmd(cmd):
 
 
 def main():
-    cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
-    [sto, rtc] = xcmd(cmd)
-    if (int(sto.decode()) > 0):
-        error_critical("Caps Lock is on")
-    else:
-        log_debug("Caps Lock is off")
 
-    cmd = "sudo chmod 777 /dev/ttyUSB0"
-    [sto, rtc] = xcmd(cmd)
-    if (int(rtc) > 0):
-        error_critical("Can't set tty to 777 failed!!")
-    else:
-        log_debug("Configure tty to 777 successfully")
-
-    time.sleep(0.5)
-
+    ''' This example is outdated 
     cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
     [sto, rtc] = xcmd(cmd)
-    if (int(rtc) > 0):
-        error_critical("stty configuration failed!!")
-    else:
-        log_debug("Configure stty successfully")
+    t = ExpttyProcess(0, "/dev/ttyUSB0")
+    t.expect2act(30, 'Hit any key to', "\n")
+    t.expect2act(30, 'uboot>', "setenv ipaddr 192.168.1.31")
+    t.expect2act(30, 'uboot>', "setenv serverip 192.168.1.11")
+    t.expect2act(30, 'uboot>', "ping 192.168.1.11")
+    t.expect2act(30, 'host 192.168.1.11 is alive', "")
+    t.expect2act(30, 'uboot>', "printenv")
+    t.expect2act(30, 'uboot>', "reset")
+    t.expect2act(60, 'Please press Enter to activate', "\n")
+    t.expect2act(30, 'UBNT login:', "ubnt")
+    t.expect2act(30, 'Password:', "ubnt")
+    t.expect2act(30, 'US.pcb-mscc', "\n")
+    t.expect2act(30, 'US.pcb-mscc', "cat /proc/ubnthal/system.info")
+    t.expect2act(30, 'US.pcb-mscc#', "info")
+    '''
 
-    time.sleep(0.5)
-    p = ExpttyProcess(0, "/dev/ttyUSB0")
-    rrt = p.proc.isatty()
-    if rrt == True:
-        print("Joe: is tty")
-    p.expect2act(10, "", "\n")
+    ''' telnet connection example of EOT450
+    # Assign command of connection and newline character, 
+      some machine newline is "\n" EX: UAP NANO HD
+    conn = Commonlib.ExpttyProcess(0, "telnet 10.2.128.209", "\r")
+    conn.expect2act(5, 'Username', "admin")
+    conn.expect2act(5, 'Password', "")
+    ...do someting...
+    conn.expect2act(5, '#', "") #flush buffer(expect the last command and force output)
+    '''    
 
-#     p.expect2act(30, "Hit any key to stop autoboot:", "\n")
-
-    sstr = ["tftp",
-            "-g",
-            "-r upgrade.tar",
-            "-l /tmp/upgrade.tar",
-            "192.168.1.19"]
-    sstrj = ' '.join(sstr)
-    p.expect2act(30, "#", sstrj)
-    time.sleep(200)
-    p.expect2act(200, "#", "\n")
-    print("Joe: complete")
-
+    ''' UART connection example of EOT450
+    conn = Commonlib.ExpttyProcess(0, "picocom /dev/ttyUSB0 -b 115200", "\r")
+    conn.expect2act(5, '', "")
+    conn.expect2act(5, 'Username', "admin")
+    conn.expect2act(5, 'Password', "")
+    ...do someting...
+    conn.expect2act(5, '#', "")
+    '''
+    pass
 
 if __name__ == "__main__":
     main()
