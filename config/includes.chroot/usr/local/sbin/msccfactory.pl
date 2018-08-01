@@ -250,7 +250,8 @@ if ($do_devreg) {
              . "-x $keydir/ca.pem "
              . "-y $keydir/key.pem "
              . "-z $keydir/crt.pem "
-             . "$qrcode";
+             . "$qrcode "
+             . '-h devreg-prod.ubnt.com';
     system_log("/usr/local/sbin/client_x86 $params");
     sleep 2;
 
