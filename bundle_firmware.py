@@ -4,7 +4,7 @@ import ConfigParser
 import urllib
 import os
 
-image_dir = 'config/includes.chroot/srv/tftp/images'
+image_dir = 'config/includes.chroot/srv/tftp/images/'
 Config = ConfigParser.SafeConfigParser()
 Config.read('bundle_firmware.ini')
 for section in Config.sections():

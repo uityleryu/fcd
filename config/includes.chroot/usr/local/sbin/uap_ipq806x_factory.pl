@@ -410,6 +410,7 @@ system($cmd);
 my $cpath = "$tdir/$cfile";
 
 my $params = "-k $passphrase "
+             . "-h devreg-prod.ubnt.com "
              . "-i field=flash_eeprom,format=binary,pathname=$ppath "
              . "-x $keydir/ca.pem -y $keydir/key.pem -z $keydir/crt.pem "
              . "\$(cat $fpath1) "

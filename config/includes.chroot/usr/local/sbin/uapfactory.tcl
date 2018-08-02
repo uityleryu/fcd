@@ -15,7 +15,7 @@ set dss_key dropbear_dss_host_key
 set user "ubnt"
 set passwd "ubnt"
 set prompt "ar7240>"
-set devreg_host ""
+set devreg_host "-h devreg-prod.ubnt.com"
 
 set UAP_ID          "e502"
 set UAPLR_ID        "e512"
@@ -1388,7 +1388,7 @@ proc main_detector { } {
 #
 # action starts here
 #
-set file [open ~/Desktop/version.txt r]
+set file [open /home/user/Desktop/version.txt r]
 while {[gets $file buf] != -1} {
     send_user "FCD version $buf\n\r"
 }
