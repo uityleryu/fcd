@@ -17,6 +17,20 @@ class ExpttyProcess():
         self.newline = newline
 
     '''return negative means error, return 0 means success'''
+    def expect2actu1(self, timeout, exptxt, action):
+        index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
+        if(index == 1):
+            print("[ERROR:EOF]: Expect \"" + exptxt + "\"")
+            return -1
+        if(index == 2):
+            print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
+            return -1
+
+        if (action != "") and (index >= 0):
+            self.proc.send(action + self.newline)
+
+        return 0
+
     def expect2act(self, timeout, exptxt, action):
         index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
         if(index == 1):
@@ -25,10 +39,8 @@ class ExpttyProcess():
         if(index == 2):
             print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
             return -1
-        
-        if (action != "") and (index >= 0):
-            self.proc.send(action + self.newline)
 
+        self.proc.send(action + self.newline)
         return 0
 
 #     def tftpgetfromhost(self, srfile, dstfile):

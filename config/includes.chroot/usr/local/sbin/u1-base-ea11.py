@@ -32,7 +32,7 @@ prod_dev_tmp_mac = "00:15:6d:00:00:0"+idx
 tmpdir = "/tmp/"
 tftpdir = "/tftpboot/"
 proddir = tftpdir+boardid+"/"
-toolsdir = tftpdir+"tools/"
+toolsdir = "tools/"
 
 # U-boot prompt
 ubpmt = {'ea11':"ALPINE_UBNT>",
@@ -138,45 +138,48 @@ def IOconfig():
 
 def main():
     IOconfig()
-    p = ExpttyProcess(idx, tty)
+    expcmd = "sudo picocom "+tty+" -b 115200"
+    p = ExpttyProcess(idx, expcmd, "\n")
 
     msg(10, "Boot from tftp ...")
-    p.expect2act(30, "Hit any key to stop autoboot", "\n\n")
-    p.expect2act(30, ubpmt[boardid], "\n")
+    p.expect2actu1(30, "Hit any key to stop autoboot", "\n\n")
+    p.expect2actu1(30, ubpmt[boardid], "\n")
 
-    p.expect2act(30, ubpmt[boardid], swchip[boardid])
-    p.expect2act(30, swmsg[boardid], "\n")
-    p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
-    p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fcd-")
-    p.expect2act(30, ubpmt[boardid], "ping "+svip)
-    p.expect2act(30, "host "+svip+" is alive", "")
-    p.expect2act(30, ubpmt[boardid], "run bootupd")
-    p.expect2act(60, "bootupd done", "")
-    p.expect2act(60, ubpmt[boardid], "reset")
-    p.expect2act(30, "Hit any key to stop autoboot", "\n")
-    p.expect2act(30, ubpmt[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], swchip[boardid])
+    p.expect2actu1(30, swmsg[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv serverip "+svip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fcd-")
+    time.sleep(2)
+    p.expect2actu1(30, ubpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "host "+svip+" is alive", "")
+    p.expect2actu1(30, ubpmt[boardid], "run bootupd")
+    p.expect2actu1(60, "bootupd done", "")
+    p.expect2actu1(60, ubpmt[boardid], "reset")
+    p.expect2actu1(30, "Hit any key to stop autoboot", "\n")
+    p.expect2actu1(30, ubpmt[boardid], "\n")
 
-    p.expect2act(30, ubpmt[boardid], swchip[boardid])
-    p.expect2act(30, swmsg[boardid], "\n")
-    p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
-    p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/u1-fcdcommon-")
-    p.expect2act(30, ubpmt[boardid], "ping "+svip)
-    p.expect2act(30, "host "+svip+" is alive", "")
-    p.expect2act(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
-    p.expect2act(30, ubpmt[boardid], "run boottftp")
+    p.expect2actu1(30, ubpmt[boardid], swchip[boardid])
+    p.expect2actu1(30, swmsg[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv serverip "+svip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv tftpdir "+"images/u1-fcdcommon-")
+    time.sleep(2)
+    p.expect2actu1(30, ubpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "host "+svip+" is alive", "")
+    p.expect2actu1(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
+    p.expect2actu1(30, ubpmt[boardid], "run boottftp")
 
-    p.expect2act(60, "Calling CRDA to update world", "\n")
+    p.expect2actu1(60, "Calling CRDA to update world", "\n")
     sstr = ["ifconfig", "eth1", prod_dev_ip, "up\n"]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "dmesg -n 1")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "dmesg -n 1")
 
-    p.expect2act(30, lnxpmt[boardid], "ifconfig\n")
-    p.expect2act(30, lnxpmt[boardid], "ping "+svip)
-    p.expect2act(30, "64 bytes from", '\003')
-    p.expect2act(30, lnxpmt[boardid], "")
+    p.expect2actu1(30, lnxpmt[boardid], "ifconfig\n")
+    p.expect2actu1(30, lnxpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "64 bytes from", '\003')
+    p.expect2actu1(30, lnxpmt[boardid], "")
 
     msg(20, "Send EEPROM command and set info to EEPROM ...")
     log_debug("Send "+eepmexe+"command from host to DUT ...")
@@ -186,8 +189,9 @@ def main():
             "-l "+tmpdir+eepmexe,
             svip]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "\n")
+    time.sleep(2)
 
     log_debug("Send "+helperexe+"command from host to DUT ...")
     sstr = ["tftp",
@@ -196,20 +200,21 @@ def main():
             "-l "+tmpdir+helperexe,
             svip]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "\n")
+    time.sleep(2)
 
     log_debug("Change file permission - "+helperexe+" ...")
     sstr = ["chmod 777", tmpdir+helperexe]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "\n")
 
     log_debug("Change file permission - "+eepmexe+" ...")
     sstr = ["chmod 777", tmpdir+eepmexe]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "\n")
 
     log_debug("Starting to do "+eepmexe+"...")
     sstr = ["."+tmpdir+eepmexe,
@@ -224,7 +229,7 @@ def main():
             "-k",
             "-p Factory"]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
     time.sleep(3)
 
     msg(30, "Do helper to get the output file to devreg server ...")
@@ -277,7 +282,8 @@ def main():
             ">",
             eeprom_txt]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    time.sleep(2)
 
     sstr = ["tar",
             "cf",
@@ -285,7 +291,7 @@ def main():
             eeprom_bin,
             eeprom_txt]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
 
     os.mknod(tftpdir+eeprom_tgz)
     os.chmod(tftpdir+eeprom_tgz, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
@@ -297,10 +303,10 @@ def main():
             "-l "+eeprom_tgz,
             svip]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, "", "\n")
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, "", "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    time.sleep(2)
 
-    time.sleep(1)
     cmd = "tar xvf "+tftpdir+eeprom_tgz+" -C "+tftpdir
     [sto, rtc] = xcmd(cmd)
     if (int(rtc) > 0):
@@ -365,13 +371,14 @@ def main():
             "-l "+tmpdir+eeprom_signed,
             svip]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    time.sleep(2)
 
     log_debug("Change file permission - "+eeprom_signed+" ...")
     sstr = ["chmod 777", tmpdir+eeprom_signed]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
-    p.expect2act(30, lnxpmt[boardid], "\n")
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], "\n")
 
     log_debug("Starting to write signed info to SPI flash ...")
     sstr = ["."+tmpdir+helperexe,
@@ -379,7 +386,8 @@ def main():
            "-i field=flash_eeprom,format=binary,pathname="+tmpdir+eeprom_signed]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    time.sleep(2)
 
     log_debug("Starting to extract the EEPROM content from SPI flash ...")
     sstr = ["dd",
@@ -387,7 +395,7 @@ def main():
            "of="+tmpdir+eeprom_check]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
     time.sleep(2)
 
     os.mknod(tftpdir+eeprom_check)
@@ -401,7 +409,8 @@ def main():
             svip]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+    time.sleep(2)
 
     if os.path.isfile(tftpdir+eeprom_check):
         log_debug("Starting to compare the"+eeprom_check+" and "+eeprom_signed+" files ...")
@@ -420,57 +429,59 @@ def main():
     msg(50, "Finish doing signed file and EEPROM checking ...")
 
     log_debug("Change to product U-boot ...")
-    p.expect2act(30, "", "\n")
-    p.expect2act(30, lnxpmt[boardid], "reboot")
-    p.expect2act(30, 'Hit any key to stop autoboot', "\n")
-    p.expect2act(30, ubpmt[boardid], "\n")
+    p.expect2actu1(30, "", "\n")
+    p.expect2actu1(30, lnxpmt[boardid], "reboot")
+    p.expect2actu1(30, 'Hit any key to stop autoboot', "\n")
+    p.expect2actu1(30, ubpmt[boardid], "\n")
 
-    p.expect2act(30, ubpmt[boardid], swchip[boardid])
-    p.expect2act(30, swmsg[boardid], "\n")
-    p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
-    p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fw-")
-    p.expect2act(30, ubpmt[boardid], "ping "+svip)
-    p.expect2act(30, "host "+svip+" is alive", "")
-    p.expect2act(30, ubpmt[boardid], "run bootupd")
-    p.expect2act(60, "bootupd done", "\n")
-    p.expect2act(30, ubpmt[boardid], "reset")
-    p.expect2act(30, 'Hit any key to stop autoboot', "\n")
-    p.expect2act(30, ubpmt[boardid], "\n")
-    p.expect2act(30, ubpmt[boardid], "run delenv")
+    p.expect2actu1(30, ubpmt[boardid], swchip[boardid])
+    p.expect2actu1(30, swmsg[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv serverip "+svip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv tftpdir "+"images/"+boardid+"-fw-")
+    time.sleep(2)
+    p.expect2actu1(30, ubpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "host "+svip+" is alive", "")
+    p.expect2actu1(30, ubpmt[boardid], "run bootupd")
+    p.expect2actu1(60, "bootupd done", "\n")
+    p.expect2actu1(30, ubpmt[boardid], "reset")
+    p.expect2actu1(30, 'Hit any key to stop autoboot', "\n")
+    p.expect2actu1(30, ubpmt[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], "run delenv")
     msg(60, "Finish changing to product U-boot ...")
 
     log_debug("Starting to run the product kernel ...")
-    p.expect2act(30, ubpmt[boardid], swchip[boardid])
-    p.expect2act(30, swmsg[boardid], "\n")
-    p.expect2act(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
-    p.expect2act(30, ubpmt[boardid], "setenv serverip "+svip)
-    p.expect2act(30, ubpmt[boardid], "ping "+svip)
-    p.expect2act(30, "host "+svip+" is alive", "")
-    p.expect2act(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
-    p.expect2act(30, ubpmt[boardid], "cp.b $fdtaddr $loadaddr_dt 7ffc")
-    p.expect2act(30, ubpmt[boardid], "fdt addr $loadaddr_dt")
-    p.expect2act(30, ubpmt[boardid], "tftpboot $loadaddr images/u1-fwcommon-uImage")
-    p.expect2act(30, "Bytes transferred", "")
-    p.expect2act(30, ubpmt[boardid], "bootm $loadaddr - $fdtaddr")
-    p.expect2act(60, "login:", "root")
-    p.expect2act(30, "Password:", "ubnt\n")
+    p.expect2actu1(30, ubpmt[boardid], swchip[boardid])
+    p.expect2actu1(30, swmsg[boardid], "\n")
+    p.expect2actu1(30, ubpmt[boardid], "setenv ipaddr "+prod_dev_ip)
+    p.expect2actu1(30, ubpmt[boardid], "setenv serverip "+svip)
+    time.sleep(2)
+    p.expect2actu1(30, ubpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "host "+svip+" is alive", "")
+    p.expect2actu1(30, ubpmt[boardid], "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
+    p.expect2actu1(30, ubpmt[boardid], "cp.b $fdtaddr $loadaddr_dt 7ffc")
+    p.expect2actu1(30, ubpmt[boardid], "fdt addr $loadaddr_dt")
+    p.expect2actu1(30, ubpmt[boardid], "tftpboot $loadaddr images/u1-fwcommon-uImage")
+    p.expect2actu1(30, "Bytes transferred", "")
+    p.expect2actu1(30, ubpmt[boardid], "bootm $loadaddr - $fdtaddr")
+    p.expect2actu1(60, "login:", "root")
+    p.expect2actu1(30, "Password:", "ubnt\n")
     msg(70, "Succeeding in booting to product firmware upgraded linux console ...")
 
-    p.expect2act(30, "", "\n")
-    p.expect2act(30, lnxpmt[boardid], "dmesg -n 1")
+    p.expect2actu1(30, "", "\n")
+    p.expect2actu1(30, lnxpmt[boardid], "dmesg -n 1")
 
     sstr = ["ifconfig",
             "eth0",
             prod_dev_ip,
             "up"]
     sstrj = ' '.join(sstr)
-    p.expect2act(30, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
 
-    p.expect2act(30, lnxpmt[boardid], "ping "+svip)
-    p.expect2act(30, "64 bytes from", '\003')
+    p.expect2actu1(30, lnxpmt[boardid], "ping "+svip)
+    p.expect2actu1(30, "64 bytes from", '\003')
 
-    p.expect2act(30, "", "\n")
+    p.expect2actu1(30, "", "\n")
 
     sstr = ["tftp",
             "-g",
@@ -478,22 +489,22 @@ def main():
             "-l "+tmpdir+"upgrade.tar",
             svip]
     sstrj = ' '.join(sstr)
-    p.expect2act(120, lnxpmt[boardid], sstrj)
-    p.expect2act(30, "", "\n")
+    p.expect2actu1(120, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, "", "\n")
     time.sleep(120)
-    p.expect2act(30, "", "\n")
+    p.expect2actu1(30, "", "\n")
 
     msg(80, "Succeeding in downloading the upgrade tarf file ...")
 
-    p.expect2act(30, lnxpmt[boardid], "sh /sbin/flash-factory.sh")
-    p.expect2act(30, "uImage: OK", "")
-    p.expect2act(30, "rootfs.squashfs: OK", "")
-    p.expect2act(120, "Writing superblocks and filesystem accounting information", "")
+    p.expect2actu1(30, lnxpmt[boardid], "sh /sbin/flash-factory.sh")
+    p.expect2actu1(30, "uImage: OK", "")
+    p.expect2actu1(30, "rootfs.squashfs: OK", "")
+    p.expect2actu1(120, "Writing superblocks and filesystem accounting information", "")
 
-    p.expect2act(60, "login:", "root")
-    p.expect2act(30, "Password:", "ubnt")
-    p.expect2act(30, "", "\n")
-    p.expect2act(30, lnxpmt[boardid], "")
+    p.expect2actu1(60, "login:", "root")
+    p.expect2actu1(30, "Password:", "ubnt")
+    p.expect2actu1(30, "", "\n")
+    p.expect2actu1(30, lnxpmt[boardid], "")
     msg(100, "Completing firmware upgrading ...")
     time.sleep(2)
     exit(0)

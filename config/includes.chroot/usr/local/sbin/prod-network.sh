@@ -10,6 +10,26 @@ if [ -f ${STATUS} ]; then
     exit 0
 fi
 
+echo " configuring the USB disk "
+MDIR=/media/usbdisk
+mkdir -p $MDIR
+if ! grep -q usbdisk /proc/mounts; then
+    udev=$(find /dev/disk/by-id -name 'usb-*' | xargs -n1 readlink -f \
+            | grep 1 | head -1)
+    if [ -z "$udev" ]; then
+        udev=$(find /dev/disk/by-id -name 'usb-*' | xargs -n1 readlink -f \
+               | grep -v '[0-9]' | head -1)
+    fi
+    if [ -z "$udev" ]; then
+        echo 'Cannot find USB storage device'
+        exit 1
+    elif ! mount "$udev" $MDIR; then
+        echo 'Cannot mount USB storage device'
+        exit 1
+    fi
+    ln -sf $MDIR /home/user/Desktop/
+fi
+
 host_ip=$1
 if [ "${host_ip}" = "" ]; then
     host_ip=192.168.1.19
@@ -55,7 +75,7 @@ for iface in $ifaces; do
     echo " Right now, the Ethernet interface: "$iface
     #ifconfig $iface 0.0.0.0 up
     ip addr flush dev ${iface}
-    sudo timeout 15 dhclient $iface >/dev/null 2>${DHCPOUT}; erron=$?
+    sudo timeout 60 dhclient $iface >/dev/null 2>${DHCPOUT}; erron=$?
     sleep 1
     sudo ifconfig
     if [ $erron -eq 0 ]; then
@@ -91,26 +111,6 @@ fi
 prod_iface=`cat /tmp/iface | grep -v $dhcp_iface`
 echo " prod_iface: "$prod_iface
 
-echo " configuring the USB disk "
-MDIR=/media/usbdisk
-mkdir -p $MDIR
-if ! grep -q usbdisk /proc/mounts; then
-    udev=$(find /dev/disk/by-id -name 'usb-*' | xargs -n1 readlink -f \
-            | grep 1 | head -1)
-    if [ -z "$udev" ]; then
-        udev=$(find /dev/disk/by-id -name 'usb-*' | xargs -n1 readlink -f \
-               | grep -v '[0-9]' | head -1)
-    fi
-    if [ -z "$udev" ]; then
-        echo 'Cannot find USB storage device'
-        exit 1
-    elif ! mount "$udev" $MDIR; then
-        echo 'Cannot mount USB storage device'
-        exit 1
-    fi
-    ln -sf $MDIR /home/user/Desktop/
-fi
-
 sudo ip addr flush dev $prod_iface
 sudo ip addr add ${host_ip}/24 dev $prod_iface
 sudo ifconfig $prod_iface up
@@ -131,7 +131,6 @@ if [ $wget_status -eq 0 ]; then
         /etc/init.d/isc-dhcp-server start >/dev/null 2>&1
     else
         echo 'Failed to start DHCP server'
-        exit 1
     fi
 else
     echo "Can't link to baidu website"
