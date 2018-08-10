@@ -387,6 +387,7 @@ my $cpath = "$tdir/$cfile";
 
 my $params = "-k $passphrase "
              . "-i field=flash_eeprom,format=binary,pathname=$ppath "
+             . "-h devreg-prod.ubnt.com "
              . "-x $keydir/ca.pem -y $keydir/key.pem -z $keydir/crt.pem "
              . "\$(cat $fpath1) "
              . "-o field=flash_eeprom,format=binary,pathname=$cpath "
