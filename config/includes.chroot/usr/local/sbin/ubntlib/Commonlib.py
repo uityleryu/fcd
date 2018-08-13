@@ -7,14 +7,25 @@ import time
 import sys
 import subprocess
 import pexpect
-
+import logging
+from io import StringIO
 
 class ExpttyProcess():
-    def __init__(self, id, cmd, newline):
+    def __init__(self, id, cmd, newline, logger_name=None):
         self.id = id
         self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
         self.proc.logfile_read = sys.stdout
         self.newline = newline
+        # Using default logger shows message to stdout
+        if(logger_name == None):
+            self.log = logging.getLogger()
+            self.log.setLevel(logging.DEBUG)
+            log_stream = logging.StreamHandler(sys.stdout)
+            log_stream.setLevel(logging.DEBUG)
+            self.log.addHandler(log_stream)
+        # Using customized logger shows message
+        else:
+            self.log = logging.getLogger(logger_name)
 
     '''return negative means error, return 0 means success'''
     def expect2actu1(self, timeout, exptxt, action):
@@ -31,16 +42,49 @@ class ExpttyProcess():
 
         return 0
 
-    def expect2act(self, timeout, exptxt, action):
+
+    def expect2act(self, timeout, exptxt, action, rt_buf=None):
+        sys.stdout = mystdout = StringIO()
+        self.proc.logfile_read = sys.stdout
+
+        # expect last time command buffer
         index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
         if(index == 1):
-            print("[ERROR:EOF]: Expect \"" + exptxt + "\"")
+            self.log.error("[ERROR:EOF]: Expect \"" + exptxt + "\"")
             return -1
         if(index == 2):
-            print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
+            self.log.error("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
             return -1
 
+        sys.stdout = sys.__stdout__
+        self.log.debug(mystdout.getvalue())
+
+        # send action
         self.proc.send(action + self.newline)
+
+        # re-init
+        sys.stdout = mystdout = StringIO()
+        self.proc.logfile_read = sys.stdout
+
+        # capture action output message, if you pass not None rt_buf 
+        if(rt_buf != None):
+            # read action output
+            index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
+            if(index == 1):
+                self.log.error("[ERROR:EOF]: Expect \"" + exptxt + "\"")
+                return -1
+            if(index == 2):
+                self.log.error("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
+                return -1
+
+            sys.stdout = sys.__stdout__
+            rt_buf.insert(0, mystdout.getvalue())
+            self.log.debug(rt_buf[0])
+    
+            # only senf newline for getting hint
+            self.proc.send(self.newline)
+
+        sys.stdout = sys.__stdout__
         return 0
 
 #     def tftpgetfromhost(self, srfile, dstfile):
@@ -193,17 +237,17 @@ def main():
     t.expect2act(30, 'US.pcb-mscc#', "info")
     '''
 
-    ''' telnet connection example of EOT450
+    ''' EOT450 telnet connection example 
     # Assign command of connection and newline character, 
       some machine newline is "\n" EX: UAP NANO HD
     conn = Commonlib.ExpttyProcess(0, "telnet 10.2.128.209", "\r")
     conn.expect2act(5, 'Username', "admin")
     conn.expect2act(5, 'Password', "")
     ...do someting...
-    conn.expect2act(5, '#', "") #flush buffer(expect the last command and force output)
+    conn.expect2act(5, '#', "") #flush buffer(expect the last command output)
     '''    
 
-    ''' UART connection example of EOT450
+    ''' EOT450 uart connection example
     conn = Commonlib.ExpttyProcess(0, "picocom /dev/ttyUSB0 -b 115200", "\r")
     conn.expect2act(5, '', "")
     conn.expect2act(5, 'Username', "admin")
