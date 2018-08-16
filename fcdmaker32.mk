@@ -12,7 +12,6 @@ BUILD_DIR=$(shell pwd)
 FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-base.iso
-
 NEW_LABEL=UBNT_FCD
 VER=FCD-Amplifi-[0.0.4]
 LIVE_CD_VER=$(VER).iso
@@ -23,12 +22,12 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
-
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 	@echo " >> copy prep scripts to new squashfs "
 	cp -rf $(FCDAPP_DIR)/usr/local/* $(NEWSQUASHFS)/usr/local/
 	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
+
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 	convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 '$(VER)'" $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.jpg

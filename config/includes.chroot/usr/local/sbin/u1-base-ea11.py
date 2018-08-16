@@ -472,15 +472,31 @@ def main():
     p.expect2actu1(30, lnxpmt[boardid], "dmesg -n 1")
 
     sstr = ["ifconfig",
+            "br0",
+            "192.168.2.10"]
+    sstrj = ' '.join(sstr)
+    p.expect2actu1(30, lnxpmt[boardid], sstrj)
+
+    sstr = ["ifconfig",
             "eth0",
-            prod_dev_ip,
-            "up"]
+            prod_dev_ip]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
 
     p.expect2actu1(30, lnxpmt[boardid], "ping "+svip)
     p.expect2actu1(30, "64 bytes from", '\003')
 
+    p.expect2actu1(30, "", "\n")
+
+    sstr = ["tftp",
+            "-g",
+            "-r images/u1-fwcommon-upgrade.tar",
+            "-l "+tmpdir+"upgrade.tar",
+            svip]
+    sstrj = ' '.join(sstr)
+    p.expect2actu1(120, lnxpmt[boardid], sstrj)
+    p.expect2actu1(30, "", "\n")
+    time.sleep(120)
     p.expect2actu1(30, "", "\n")
 
     sstr = ["tftp",
@@ -501,7 +517,8 @@ def main():
     p.expect2actu1(30, "rootfs.squashfs: OK", "")
     p.expect2actu1(120, "Writing superblocks and filesystem accounting information", "")
 
-    p.expect2actu1(60, "login:", "root")
+    p.expect2actu1(80, "Calling CRDA to update world regulatory domain", "\003")
+    p.expect2actu1(80, "login:", "root")
     p.expect2actu1(30, "Password:", "ubnt")
     p.expect2actu1(30, "", "\n")
     p.expect2actu1(30, lnxpmt[boardid], "")
