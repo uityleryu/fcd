@@ -8,6 +8,7 @@ import time
 import random
 import threading
 import shutil
+import json
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.Product import prodlist
@@ -399,8 +400,8 @@ class fraMonitorPanel(Gtk.Frame):
                 regcidx = 0
 
         cmd = ["sudo /usr/bin/python3",
-               "/usr/local/sbin/u1-base-ea11.py",
-               prodlist[GCommon.active_productidx][2],
+               "/usr/local/sbin/"+GCommon.active_product_obj['FILE'],
+               GCommon.active_product_obj['BOARDID'],
                GCommon.macaddr,
                GCommon.active_passphrase,
                GPath.keydir,
@@ -488,12 +489,29 @@ class dlgUserInput(Gtk.Dialog):
         self.etypassphrase.set_activates_default(True)
         self.etypassphrase.connect("changed", self.on_phassphrase_changed)
 
+
+        # Load test items
+        f = open('ubntlib/'+'Products-info.json')
+        self.prods = json.load(f)
+        f.close()
+
+        # Product Series combo box
+        self.lblpds = Gtk.Label("Select a product series:")
+        self.lsrpdslist = Gtk.ListStore(str)
+        for item in sorted(self.prods.keys()):
+            self.lsrpdslist.append([item])
+
+        self.crtrpdslist = Gtk.CellRendererText()
+        self.cmbbpds = Gtk.ComboBox.new_with_model(self.lsrpdslist)
+        self.cmbbpds.pack_start(self.crtrpdslist, True)
+        self.cmbbpds.add_attribute(self.crtrpdslist, "text", 0)
+        self.cmbbpds.connect("changed", self.on_pds_combo_changed)
+        
         # Product combo box
-        self.lblallpd = Gtk.Label("(for all slots) Product:")
+        self.lblallpd = Gtk.Label("Select a product:")
         self.lsrallpdlist = Gtk.ListStore(int, str)
-        print(prodlist[0])
-        for item in prodlist:
-            self.lsrallpdlist.append([item[0], item[1]])
+        #for item in prodlist:
+            #self.lsrallpdlist.append([item[0], item[1]])
 
         self.crtrallpdlist = Gtk.CellRendererText()
         self.cmbballpd = Gtk.ComboBox.new_with_model(self.lsrallpdlist)
@@ -521,6 +539,8 @@ class dlgUserInput(Gtk.Dialog):
 
         self.vboxuserauth.pack_start(self.lblpassphrase, False, False, 0)
         self.vboxuserauth.pack_start(self.etypassphrase, False, False, 0)
+        self.vboxuserauth.pack_start(self.lblpds, False, False, 0)
+        self.vboxuserauth.pack_start(self.cmbbpds, False, False, 0)
         self.vboxuserauth.pack_start(self.lblallpd, False, False, 0)
         self.vboxuserauth.pack_start(self.cmbballpd, False, False, 0)
         self.vboxuserauth.pack_start(self.lblbomrev, False, False, 0)
@@ -536,14 +556,26 @@ class dlgUserInput(Gtk.Dialog):
         GCommon.active_passphrase = self.etypassphrase.get_text()
         print("The passphrse: "+GCommon.active_passphrase)
 
+    def on_pds_combo_changed(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter is not None:
+            model = combo.get_model()
+            GCommon.active_product_series  = model[tree_iter][0]
+            print("The Product Series: "+GCommon.active_product_series)
+        
+        self.lsrallpdlist.clear()
+        [GCommon.active_productidx, GCommon.active_product] =["",""]
+        for key, val in sorted(self.prods[GCommon.active_product_series].items()):
+            self.lsrallpdlist.append([val['INDEX'], key])
+
     def on_allpd_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
             [GCommon.active_productidx, GCommon.active_product] = model[tree_iter][:2]
-
-        print("The product index: "+str(GCommon.active_productidx))
-        print("The product: "+GCommon.active_product)
+            GCommon.active_product_obj = self.prods[GCommon.active_product_series][GCommon.active_product]
+            print("The product index: "+str(GCommon.active_productidx))
+            print("The product: "+GCommon.active_product)
 
     def on_bomrev_changed(self, entry):
         GCommon.active_bomrev = self.etybomrev.get_text()
@@ -575,7 +607,7 @@ class dlgUserInput(Gtk.Dialog):
             ubomrev = ubomrev[0]+"-"+ubomrev[1]
             print("Joe: 2nd ubomrev: "+str(ubomrev))
 
-        if (ubomrev != prodlist[idx][3]):
+        if (ubomrev != GCommon.active_product_obj['BOMREV']):
             print("Joe: input BOM revision is not match to product")
             return False
 
@@ -621,7 +653,7 @@ class winFcdFactory(Gtk.Window):
 
         self.lblflavor = Gtk.Label("Flavor: ")
         self.lblprod = Gtk.Label('')
-        self.lblprod.set_text(prodlist[0][4])
+        #self.lblprod.set_text(prodlist[0][4])
 
         self.frame1 = fraMonitorPanel("0", "Slot 1")
         self.frame2 = fraMonitorPanel("1", "Slot 2")
@@ -806,7 +838,7 @@ class winFcdFactory(Gtk.Window):
                     rt = False
                 else:
                     idx = GCommon.active_productidx
-                    title = "%s, %s" % (prodlist[idx][4], prodlist[idx][3])
+                    title = "%s, %s" % (GCommon.active_product_obj['DESC'], GCommon.active_product_obj['BOMREV'])
                     self.lblprod.set_text(title)
                     self.frame1.set_bomrev(GCommon.active_bomrev)
                     self.frame1.set_region(GCommon.active_region)
