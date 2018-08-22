@@ -32,10 +32,10 @@ class ExpttyProcess():
         index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
         if(index == 1):
             print("[ERROR:EOF]: Expect \"" + exptxt + "\"")
-            return -1
+            exit(1)
         if(index == 2):
             print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
-            return -1
+            exit(1)
 
         if (action != "") and (index >= 0):
             self.proc.send(action + self.newline)

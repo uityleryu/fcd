@@ -9,7 +9,7 @@
       "DESC" : "UniFi One Dream Machine",
       "FILE" : "u1-base-ea11.py"
     },
-    
+
     "U1DMP":{
       "INDEX" : 1,
       "NAME" : "U1DMP",
@@ -73,5 +73,22 @@
 
   "Amplifi":
   {
+    "AFi-AX-R":{
+      "INDEX" : 0,
+      "NAME" : "AFi-AX-R",
+      "BOARDID" : "da11",
+      "BOMREV" : "113-00605",
+      "DESC" : "Amplifi AX Router",
+      "FILE" : "ax-mesh.py"
+    },
+
+    "AFi-AX-P":{
+      "INDEX" : 1,
+      "NAME" : "AFi-AX-P",
+      "BOARDID" : "da12",
+      "BOMREV" : "113-00657",
+      "DESC" : "Amplifi AX Mesh Point",
+      "FILE" : "ax-mesh.py"
+    }
   }
 }

@@ -10,6 +10,11 @@ if [ -f ${STATUS} ]; then
     exit 0
 fi
 
+echo " configuring the SSH server "
+cp /tftpboot/tools/sshd_config /etc/ssh/
+sudo /etc/init.d/ssh restart
+sleep 1
+
 echo " configuring the USB disk "
 MDIR=/media/usbdisk
 mkdir -p $MDIR

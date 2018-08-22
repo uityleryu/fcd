@@ -393,7 +393,7 @@ class fraMonitorPanel(Gtk.Frame):
         return rt
 
     def run_streamcmd(self):
-        for idx in range(4):
+        for idx in range(5):
             if (GCommon.active_region == GCommon.region_names[idx]):
                 regcidx = idx
             else:
@@ -491,7 +491,7 @@ class dlgUserInput(Gtk.Dialog):
 
 
         # Load test items
-        f = open('ubntlib/'+'Products-info.json')
+        f = open('/usr/local/sbin/ubntlib/'+'Products-info.json')
         self.prods = json.load(f)
         f.close()
 
@@ -506,7 +506,7 @@ class dlgUserInput(Gtk.Dialog):
         self.cmbbpds.pack_start(self.crtrpdslist, True)
         self.cmbbpds.add_attribute(self.crtrpdslist, "text", 0)
         self.cmbbpds.connect("changed", self.on_pds_combo_changed)
-        
+
         # Product combo box
         self.lblallpd = Gtk.Label("Select a product:")
         self.lsrallpdlist = Gtk.ListStore(int, str)
@@ -562,7 +562,7 @@ class dlgUserInput(Gtk.Dialog):
             model = combo.get_model()
             GCommon.active_product_series  = model[tree_iter][0]
             print("The Product Series: "+GCommon.active_product_series)
-        
+
         self.lsrallpdlist.clear()
         [GCommon.active_productidx, GCommon.active_product] =["",""]
         for key, val in sorted(self.prods[GCommon.active_product_series].items()):

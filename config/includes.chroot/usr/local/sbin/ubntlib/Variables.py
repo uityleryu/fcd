@@ -14,8 +14,8 @@ class GCommon:
     dftty = ["ttyUSB0", "ttyUSB1", "ttyUSB2", "ttyUSB3"]
     active_tty = []
     finaltty = ["na", "na", "na", "na"]
-    region_names = ["World", "USA/Canada", "Thailand", "Israsel"]
-    region_codes = ['0000', '002a', '82fc', '8178']
+    region_names = ["World", "USA/Canada", "Thailand", "Israsel", "Fcc"]
+    region_codes = ['0000', '002a', '82fc', '8178', '0002']
     active_bomrev = ""
     active_region = ""
     active_passphrase = ""
