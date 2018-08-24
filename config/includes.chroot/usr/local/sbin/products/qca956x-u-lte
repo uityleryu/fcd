@@ -1,0 +1,6 @@
+boardid=e611
+bomrev=113-02525
+cclock=athrd
+description=Ubiquiti Networks LTE
+name=u-lte
+script=/usr/local/sbin/uapfactory.tcl

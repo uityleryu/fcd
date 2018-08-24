@@ -35,6 +35,7 @@ set UAPGEN2MESH_ID  "e557"
 set UAPGEN2MESHPRO_ID   "e567"
 set UAPGEN2IW_ID    "e587"
 set UAPGEN2IWPRO_ID "e597"
+set INSTANTLTE_ID   "e611"
 
 set uappaddr "0x80200020"
 set uappext_printenv "go $uappaddr uprintenv"
@@ -325,6 +326,7 @@ proc has_dragonfly_cpu { boardid } {
     global UAPGEN2MESHPRO_ID
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
+    global INSTANTLTE_ID
 
     if {
             [string equal -nocase $boardid $UAPGEN2LITE_ID] == 1
@@ -335,6 +337,7 @@ proc has_dragonfly_cpu { boardid } {
             || [string equal -nocase $boardid $UAPGEN2MESHPRO_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IW_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1
+            || [string equal -nocase $boardid $INSTANTLTE_ID] == 1
                                                                     } {
          return 1
     } else {
@@ -449,6 +452,7 @@ proc update_firmware { boardid } {
     global ip
     global uappext
     global prompt
+    global INSTANTLTE_ID
 
     log_debug "Firmware $fwimg\r"
 
@@ -485,10 +489,12 @@ proc update_firmware { boardid } {
     
     log_progress 10 "Firmware loaded"
     
-    set timeout 15
-    expect timeout { 
-        error_critical "Failed to flash firmware (u-boot) !"
-    } "Copying partition 'u-boot' to flash memory:"
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 0} {
+        set timeout 15
+        expect timeout {
+            error_critical "Failed to flash firmware (u-boot) !"
+        } "Copying partition 'u-boot' to flash memory:"
+    }
     
     log_progress 15 "Flashing firmware..."
 
@@ -640,11 +646,17 @@ proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
 
 proc check_unifiOS_network_ready { boardid } {
     global tftpserver
+    global INSTANTLTE_ID
+
     set max_loop 5
     set pingable 0
 
-    set timeout 90
-    send "while \[ ! -f /etc/udhcpc/info.br0 \]; do sleep 5; done\r"
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        set timeout 360
+    } else {
+        set timeout 90
+    }
+    send "while \[ ! -f /etc/udhcpc/info.br0 \]; do ifconfig; ls /etc/udhcpc; sleep 5; done\r"
     expect timeout { error_critical "Can't get DHCP IP address" } "#"
 
     for { set i 0 } { $i < $max_loop } { incr i } {
@@ -681,8 +693,13 @@ proc do_security { boardid } {
     global tftpserver
     global user
     global passwd
+    global INSTANTLTE_ID
 
-    set helper helper_ARxxxx
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        set helper helper_ARxxxx_musl
+    } else {
+        set helper helper_ARxxxx
+    }
     set eeprom_bin e.b.$idx
     set eeprom_txt e.t.$idx
     set eeprom_signed e.s.$idx
@@ -707,6 +724,7 @@ proc do_security { boardid } {
     set timeout 20
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
+    sleep 3
 
     if { [ catch { exec rm -f /tftpboot/$eeprom_bin } msg ] } {
         puts "$::errorInfo"
@@ -842,6 +860,7 @@ proc check_security { boardid } {
     global user
     global passwd
     global qrcode
+    global INSTANTLTE_ID
 
     set timeout 120
     # login    
@@ -862,6 +881,7 @@ proc check_security { boardid } {
     set timeout 20
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
+    sleep 3
 
     # to get rid of the br0 state change or no IPv6 routers present messages from console
     check_unifiOS_network_ready $boardid
@@ -1065,6 +1085,7 @@ proc handle_uboot { {wait_prompt 0} } {
     global prompt
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
+    global INSTANTLTE_ID
 
     if { $wait_prompt == 1 } {
         stop_uboot
@@ -1086,7 +1107,8 @@ proc handle_uboot { {wait_prompt 0} } {
     }
 
     if  { [string equal -nocase $boardid $UAPGEN2IW_ID] == 1 ||
-          [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1 } {
+          [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1 ||
+          [string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
         set_network_env
         update_uboot $boardid
         stop_uboot

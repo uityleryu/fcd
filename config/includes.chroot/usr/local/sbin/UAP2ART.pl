@@ -842,6 +842,8 @@ sub load_products {
     push @list, $product;
     $product = Product->new(38, 'UAP-HD-IW-ART', 'ec22', 'uap_mt7621_to_calibration.pl');
     push @list, $product;
+    $product = Product->new(39, 'U-LTE-ART', 'e611', 'uap2art.tcl');
+    push @list, $product;
 
     return @list;
 }

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-SRC_DIR=target/edit/usr/local/sbin/products
-DST_FILE=target/edit/usr/local/sbin/products.txt.km
+CURDIR=$(pwd)
+SRC_DIR=${CURDIR}/config/includes.chroot/usr/local/sbin/products
+DST_FILE=${CURDIR}/config/includes.chroot/usr/local/sbin/products.txt.km
 
 rm -f ${DST_FILE}
 

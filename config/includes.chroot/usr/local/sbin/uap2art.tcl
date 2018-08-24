@@ -27,6 +27,7 @@ set UAPGEN2MESH_ID  "e557"
 set UAPGEN2OUT_ID   "e567"
 set UAPGEN2IW_ID    "e587"
 set UAPGEN2IWPRO_ID "e597"
+set INSTANTLTE_ID   "e611"
 
 #
 # procedures
@@ -221,6 +222,7 @@ proc has_dragonfly_cpu { boardid } {
     global UAPGEN2OUT_ID
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
+    global INSTANTLTE_ID
 
     if {
             [string equal -nocase $boardid $UAPGEN2LITE_ID] == 1
@@ -231,6 +233,7 @@ proc has_dragonfly_cpu { boardid } {
             || [string equal -nocase $boardid $UAPGEN2OUT_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IW_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1
+            || [string equal -nocase $boardid $INSTANTLTE_ID] == 1
                                                                     } {
          return 1
     } else {
@@ -480,10 +483,53 @@ proc main_detector { } {
     global cmd_prefix
     global prompt
     global boardid
+    global INSTANTLTE_ID
+    global tftpserver
+    global fwimg
+
+    set sadd 0x81000000
+    set fadd 0x9f000000
+    set sz +0x1000000
+    set cbsz 0x1000000
     set timeout 30
     sleep 1
     send \003
     send "\r"
+
+    if { [string equal -nocase $boardid $INSTANTLTE_ID] == 1 } {
+        stop_uboot
+
+        log_progress 5 "Stop at U-boot"
+
+        set_network_env
+        log_progress 10 "Network environment set"
+
+        log_progress 50 "Start to load ART image to RAM"
+        send "tftpboot $sadd $fwimg\r"
+        set timeout 30
+        expect timeout {
+            error_critical "Failed to download ART image)"
+        } -re "Bytes transferred = (.*)\r"
+
+        log_progress 70 "Start to erase the flash"
+        sleep 1
+        send "erase $fadd $sz\r"
+        set timeout 180
+        expect timeout {
+            error_critical "Failed to erase flash !"
+        } "Erased"
+
+        log_progress 90 "Start to write the flash"
+        sleep 1
+        send "cp.b $sadd $fadd $cbsz\r"
+        set timeout 180
+        expect timeout {
+            error_critical "Failed to write flash !"
+        } "done"
+
+        log_progress 100 "Completed"
+        exit 0
+    }
 
     if { [may_have_non_ubntapp_uboot $boardid] == 1 } {
         expect {
@@ -532,7 +578,7 @@ proc main_detector { } {
 #
 # action starts here
 #
-set file [open ~/Desktop/version.txt r]
+set file [open /home/user/Desktop/version.txt r]
 while {[gets $file buf] != -1} {
     send_user "FCD version $buf\n\r"
 }
