@@ -1,0 +1,29 @@
+{
+  "DiagTestItems": [
+    {
+      "File" : "test_uled",
+      "Name" : "U-LED test",
+      "ID" : 1,
+      "EN" : 1
+    },
+    {
+      "File" : "test_flash",
+      "Name" : "NAND flash test",
+      "ID" : 100,
+      "EN" : 1
+    },
+    {
+      "File" : "test_poe",
+      "Name" : "POE test",
+      "ID" : 200,
+      "EN" : 1
+    },
+    {
+      "File" : "test_snake",
+      "Name" : "Snake test",
+      "ID" : 300,
+      "EN" : 1
+    }
+  ]
+}
+

@@ -87,7 +87,7 @@ for iface in $ifaces; do
         NODHCP=`grep -c "No working leases in persistent database" ${DHCPOUT}`
         if [ ${NODHCP} -eq 0 ]; then
             dhcp_iface=${iface}
-            wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
+            timeout 15 wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
             wget_status=$?
             #echo -n "wget_status: $wget_status"
             if [ $wget_status -eq 0 ]; then
@@ -121,7 +121,7 @@ sudo ip addr add ${host_ip}/24 dev $prod_iface
 sudo ifconfig $prod_iface up
 sudo ifconfig
 
-wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
+timeout 15 wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
 
 wget_status=$?
 echo -n "wget_status: $wget_status\n"
