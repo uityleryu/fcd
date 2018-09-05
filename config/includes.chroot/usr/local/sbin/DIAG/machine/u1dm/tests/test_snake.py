@@ -17,6 +17,9 @@ global conn
 log = logging.getLogger('Diag')
 
 def _pre_action():
+    conn.expect2act(5, '#', "pkill -9 /sbin/udhcpc")
+    conn.expect2act(5, '#', "sysctl -w net.ipv6.conf.all.disable_ipv6=1")
+    conn.expect2act(5, '#', "sysctl -w net.ipv6.conf.default.disable_ipv6=1")
     return test_def.TEST_OK
 
 def _post_action():
@@ -34,6 +37,7 @@ def _test():
     conn.expect2act(5, '#', "swconfig dev switch0 port 3 set enable_vlan 1")
     conn.expect2act(5, '#', "swconfig dev switch0 port 4 set enable_vlan 1")
     conn.expect2act(5, '#', "swconfig dev switch0 port 5 set enable_vlan 1")
+    conn.expect2act(5, '#', "swconfig dev switch0 vlan 0 set ports \'0 1\'")
     conn.expect2act(5, '#', "swconfig dev switch0 vlan 10 set ports \'2 3\'")
     conn.expect2act(5, '#', "swconfig dev switch0 vlan 11 set ports \'4 5\'")
     conn.expect2act(5, '#', "swconfig dev switch0 set apply")

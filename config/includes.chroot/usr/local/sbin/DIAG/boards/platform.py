@@ -44,7 +44,11 @@ DiagTestMap = {
   'Fan test   '      : 700,
 
 '''Temperature (800-899)'''
-  'Temperature test' : 800
+  'Temperature test' : 800,
+
+  '''Firmware (900-999)'''
+  'Firmware loading' : 900,
+  'Firmware checking' : 901
 }
 
 diagdir = "/usr/local/sbin/DIAG"

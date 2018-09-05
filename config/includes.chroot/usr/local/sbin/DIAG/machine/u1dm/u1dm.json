@@ -45,6 +45,18 @@
       "Name" : "Temperature test",
       "ID" : 800,
       "EN" : 1
+    },
+    {
+      "File" : "test_firmware",
+      "Name" : "loading firmware",
+      "ID" : 900,
+      "EN" : 1
+    },
+    {
+      "File" : "test_fwcheck",
+      "Name" : "checking firmware",
+      "ID" : 901,
+      "EN" : 1
     }
   ]
 }

@@ -17,7 +17,7 @@ global conn
 log = logging.getLogger('Diag')
 
 interval = 15
-localavg = 45
+localavg = 50
 remoteavg = 55
 
 def _pre_action():
@@ -27,7 +27,7 @@ def _post_action():
     return test_def.TEST_OK
 
 def _test():
-    log.debug("In temper test")
+    log.info("In temper test")
     rt_buf = []
     conn.expect2act(5, '#', "cat /sys/class/hwmon/hwmon0/temp1_input", rt_buf)
     words = rt_buf[0].split("\n")
@@ -45,8 +45,8 @@ def _test():
     words = rt_buf[0].split("\n")
     mes = int(words[1])/1000
 
-    log.info("remote temperature: "+str(mes))
-    if (mes > localavg-interval) and (mes < localavg+interval):
+    log.info("Remote temperature: "+str(mes))
+    if (mes > remoteavg-interval) and (mes < remoteavg+interval):
         log.info("Remote temperature is good")
     else:
         log.info("Remote temperature is bad")

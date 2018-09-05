@@ -16,11 +16,11 @@ from machine.u1dm.cmd_diag import conn
 global conn
 log = logging.getLogger('Diag')
 
-interval = 200
-rmptarget25p = 1900
-rmptarget50p = 3200
+interval = 300
+rmptarget25p = 2000
+rmptarget50p = 3300
 rmptarget75p = 4600
-rmptarget100p = 6300
+rmptarget100p = 6500
 
 def _pre_action():
     # Switching on the pwm1_enable so that we can configure the pwm1
@@ -33,9 +33,9 @@ def _post_action():
     return test_def.TEST_OK
 
 def _test():
-    log.debug("In Fan test")
+    log.info("In Fan test")
     conn.expect2act(5, '#', "echo 110 > /sys/class/hwmon/hwmon0/pwm1")
-    time.sleep(5)
+    time.sleep(7)
     rt_buf = []
     conn.expect2act(10, '#', "cat /sys/class/hwmon/hwmon0/fan1_input", rt_buf)
 
@@ -48,7 +48,7 @@ def _test():
         return test_def.TEST_FAIL
 
     conn.expect2act(5, '#', "echo 140 > /sys/class/hwmon/hwmon0/pwm1")
-    time.sleep(5)
+    time.sleep(7)
     rt_buf = []
     conn.expect2act(10, '#', "cat /sys/class/hwmon/hwmon0/fan1_input", rt_buf)
 
@@ -61,7 +61,7 @@ def _test():
         return test_def.TEST_FAIL
 
     conn.expect2act(5, '#', "echo 200 > /sys/class/hwmon/hwmon0/pwm1")
-    time.sleep(5)
+    time.sleep(7)
     rt_buf = []
     conn.expect2act(10, '#', "cat /sys/class/hwmon/hwmon0/fan1_input", rt_buf)
 
@@ -74,7 +74,7 @@ def _test():
         return test_def.TEST_FAIL
 
     conn.expect2act(5, '#', "echo 255 > /sys/class/hwmon/hwmon0/pwm1")
-    time.sleep(5)
+    time.sleep(7)
     rt_buf = []
     conn.expect2act(10, '#', "cat /sys/class/hwmon/hwmon0/fan1_input", rt_buf)
 

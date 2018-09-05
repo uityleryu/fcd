@@ -89,13 +89,6 @@ bootimg = tftpdir+"boot.img"
 uimage = tftpdir+"uImage"
 dtimg = tftpdir+"dt.img"
 
-fcddtimg = proddir+"fcd/fcd-dt.img"
-fcduimage = proddir+"fcd/fcd-uImage"
-fcdpreload = proddir+"fcd/preload.img"
-fwbootimg = proddir+"fw/ubnt_one_rev4_boot.img"
-fwuimage = proddir+"fw/fw-uImage"
-fwupgradetar = proddir+"fw/upgrade.tar"
-
 def IOconfig():
     cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
     [sto, rtc] = xcmd(cmd)
@@ -142,7 +135,7 @@ def main():
     p = ExpttyProcess(idx, expcmd, "\n")
 
     msg(10, "Boot from tftp ...")
-    p.expect2actu1(30, "press \"<Esc><Esc>\" to stop", "\033\033")
+    p.expect2actu1(30, "to stop", "\033\033")
     p.expect2actu1(30, ubpmt[boardid], "\n")
 
     p.expect2actu1(30, ubpmt[boardid], swchip[boardid])
@@ -490,7 +483,7 @@ def main():
 
     sstr = ["tftp",
             "-g",
-            "-r images/u1-fwcommon-upgrade.tar",
+            "-r images/u1-diag.tar",
             "-l "+tmpdir+"upgrade.tar",
             svip]
     sstrj = ' '.join(sstr)
@@ -501,7 +494,7 @@ def main():
 
     sstr = ["tftp",
             "-g",
-            "-r images/u1-fwcommon-upgrade.tar",
+            "-r images/u1-diag.tar",
             "-l "+tmpdir+"upgrade.tar",
             svip]
     sstrj = ' '.join(sstr)
