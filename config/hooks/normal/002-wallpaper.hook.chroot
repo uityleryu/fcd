@@ -50,7 +50,7 @@ apt-get -y install imagemagick
 
 mv /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 VER=`cat /srv/tftp/version.txt`
-convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'FCD-USW/UAP [3.9.49]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'FCD-USW/UAP [3.9.52]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
 rm /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 
 apt-get -y remove --purge imagemagick imagemagick-6-common
