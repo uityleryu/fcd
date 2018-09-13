@@ -105,6 +105,17 @@ proc stop_uboot { } {
                     error_critical "Device not found!"
                 }
             }
+        } "Validate Shmoo parameters stored in flash ..... failed" {
+            #log_progress 2 "Waiting for self calibration in u-boot for xg series"
+            set timeout 90
+            expect {
+                "Hit any key to stop autoboot" {
+                    #log_progress 2 "Stopping u-boot ..."
+                    send "\r"
+                } timeout {
+                    error_critical "Device not found!"
+                }
+            }
         } "Hit any key to stop autoboot" {
             #log_progress 2 "Stopping u-boot ..."
             send "\r"

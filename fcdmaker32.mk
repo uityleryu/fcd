@@ -13,7 +13,7 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-perl-base-20180806.iso
 NEW_LABEL=UBNT_FCD
-VER=FCD-USW-UAP[3.9.52]
+VER=FCD-USW-UAP[3.9.53]
 LIVE_CD_VER=$(VER).iso
 
 # Mount Checking LiveCD

@@ -110,7 +110,8 @@ my $prod_dev_tmp_mac = "${prod_tmp_mac_pfx}$prod_dev_tmp_mac_base";
 my %modelname = (
     'ed01' => 'UniFi USC-8!',
     'ed02' => 'UniFi USC-8P-60!',
-    'ed03' => 'UniFi USC-8P-150!'
+    'ed03' => 'UniFi USC-8P-150!',
+    'ed04' => 'UniFi UIS-8P-450!'
 );
 
 my $timeout = '';
