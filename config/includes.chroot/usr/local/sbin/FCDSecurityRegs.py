@@ -396,6 +396,7 @@ class fraMonitorPanel(Gtk.Frame):
         for idx in range(5):
             if (GCommon.active_region == GCommon.region_names[idx]):
                 regcidx = idx
+                break
             else:
                 regcidx = 0
 
