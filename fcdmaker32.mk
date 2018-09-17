@@ -15,6 +15,7 @@ BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
 VER=FCD-U1-DIAG-[ENG-0.3]
 LIVE_CD_VER=$(VER).iso
+UPYFCD_VER=a927fabc46a166ecb6ba2a0794f2edf65a355634
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -23,7 +24,7 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
 # Create a whole new ISO from a downloaded ISO
-create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
+create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
 	@echo " >> copy prep scripts to new squashfs "
 	cp -rf $(FCDAPP_DIR)/usr/local/* $(NEWSQUASHFS)/usr/local/
 	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
@@ -164,6 +165,13 @@ new_livedcd_pkg: check_root
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(VERSION) .
 
+gitrepo: UPyFCD
+
+UPyFCD:
+	@git clone git@github.com:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
+	@cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER)
+	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
+	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/
 
 clean: check_root
 	@echo " *** Cleaning all files under $(OUTDIR) *** "
@@ -189,4 +197,5 @@ clean: check_root
 
 	@echo " >> Deleting $(STAGEDIR) "
 	@rm -rf $(STAGEDIR)
+	@rm -rf $(OUTDIR)/$(LIVE_CD_VER)
 
