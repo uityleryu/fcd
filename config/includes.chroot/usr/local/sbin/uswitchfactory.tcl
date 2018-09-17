@@ -22,6 +22,8 @@ set use_64mb_flash 0
 # model ID
 set USW_XG         "eb20"
 set USW_6XG_150    "eb23"
+set USW_24_PRO     "eb36"
+set USW_48_PRO     "eb67"
 
 set flash_mtdparts_64M "mtdparts=spi1.0:1920k(u-boot),64k(u-boot-env),64k(shmoo),31168k(kernel0),31232k(kernel1),1024k(cfg),64k(EEPROM)"
 set flash_mtdparts_32M "mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"
@@ -190,6 +192,8 @@ proc set_network_env {} {
     global boardid
     global USW_XG
     global USW_6XG_150
+    global USW_24_PRO
+    global USW_48_PRO
     set max_loop 3
     set pingable 0
 
@@ -199,7 +203,9 @@ proc set_network_env {} {
         }
 
         if { [string equal -nocase $boardid $USW_XG] == 1 ||
-             [string equal -nocase $boardid $USW_6XG_150] == 1 } {
+             [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+             [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+             [string equal -nocase $boardid $USW_48_PRO] == 1 } {
             sleep 1
             send "mdk_drv\r"
             set timeout 30
@@ -465,10 +471,14 @@ proc get_helper {} {
     global boardid
     global USW_XG
     global USW_6XG_150
+    global USW_24_PRO
+    global USW_48_PRO
 
     if { [string equal -nocase $boardid $USW_XG] == 1 } {
         set helper helper_BCM5341x
-    } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 } {
+    } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+               [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+               [string equal -nocase $boardid $USW_48_PRO] == 1 ||} {
         set helper helper_BCM5616x
     } else {
         set helper helper_BCM5334x
@@ -753,13 +763,17 @@ proc erase_linux_config { boardid } {
 proc get_bootargs {boardid} {
     global USW_XG
     global USW_6XG_150
+    global USW_24_PRO
+    global USW_48_PRO
     global use_64mb_flash
     global flash_mtdparts_64M
     global flash_mtdparts_32M
 
     if { [string equal -nocase $boardid $USW_XG] == 1 } {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=496M $flash_mtdparts_64M'\r"
-    } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 } {
+    } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+               [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+               [string equal -nocase $boardid $USW_48_PRO] == 1} {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=1008M $flash_mtdparts_64M'\r"
     } elseif { $use_64mb_flash == 1 } {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 $flash_mtdparts_64M'\r"

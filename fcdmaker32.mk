@@ -1,3 +1,5 @@
+include include/images.mk
+include include/image-install.mk
 
 # For build environmental variables
 OUTDIR=/export
@@ -13,6 +15,7 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-perl-base-20180806.iso
 NEW_LABEL=UBNT_FCD
+
 VER=FCD-USW-UAP[3.9.55]
 LIVE_CD_VER=$(VER).iso
 
@@ -22,7 +25,19 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
-# Create a whole new ISO from a downloaded ISO
+# USG product line
+USG-PRODUCT-LINE=""
+$(eval $(call ProductImage,USGXG8,$(USGXG8-IMAGE),FCD-USGXG8-$(VER)))
+
+# USW product line
+USW-PRODUCT-LINE=""
+$(eval $(call ProductImage,USPRO,$(USPRO-IMAGE),FCD-USPRO-$(VER)))
+
+#ifneq ($(USW-PRODUCT-LINE), "")
+#	fcd-usw: new-rootfs $(USW-PRODUCT-LINE) pack-iso
+#endif
+
+
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 	@echo " >> copy prep scripts to new squashfs "
 	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
@@ -56,27 +71,15 @@ help:
 	@echo " ****************************************************************** "
 	@echo "                   FCD build configuration                          "
 	@echo " ****************************************************************** "
-	@echo "   OUTDIR      = $(OUTDIR)"
-	@echo "   EXLIVECD    = $(EXLIVECD)"
-	@echo "   EXSQUASHFS  = $(EXSQUASHFS)"
-	@echo "   STAGEDIR    = $(STAGEDIR)"
-	@echo "   NEWLIVEDCD  = $(NEWLIVEDCD)"
-	@echo "   NEWSQUASHFS = $(NEWSQUASHFS)"
-	@echo "   BUILD_DIR   = $(BUILD_DIR)"
-	@echo "   FCDAPP_DIR  = $(FCDAPP_DIR)"
-	@echo "   BASE_OS     = $(BASE_OS)"
-	@echo " ****************************************************************** "
-
-
-usage:
-	@echo " ****************************************************************** "
-	@echo "                   Makefile inputs                                  "
-	@echo " ****************************************************************** "
-	@echo "   1. UAP                                                           "
-	@echo "   2. USW                                                           "
-	@echo "   3. AmpliFi                                                       "
-	@echo "   4. UniFi Dream Machine                                           "
-	@echo "   5. USG                                                           "
+	@echo "   OUTDIR         = $(OUTDIR)"
+	@echo "   EXLIVECD       = $(EXLIVECD)"
+	@echo "   EXSQUASHFS     = $(EXSQUASHFS)"
+	@echo "   STAGEDIR       = $(STAGEDIR)"
+	@echo "   NEWLIVEDCD     = $(NEWLIVEDCD)"
+	@echo "   NEWSQUASHFS    = $(NEWSQUASHFS)"
+	@echo "   BUILD_DIR      = $(BUILD_DIR)"
+	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)"
+	@echo "   BASE_OS        = $(BASE_OS)"
 	@echo " ****************************************************************** "
 
 
@@ -91,6 +94,10 @@ check_root:
 		echo ""; \
 		exit 1; \
 	fi
+
+
+# Create a whole new ISO from a downloaded ISO
+new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
 
 prep: check_root
@@ -190,4 +197,3 @@ clean: check_root
 
 	@echo " >> Deleting $(STAGEDIR) "
 	@rm -rf $(STAGEDIR)
-
