@@ -1,0 +1,6 @@
+'', "cd /tmp\n"
+'/tmp # ', "ip link set eth0 up\n"
+'/tmp # ', ''
+@sleep 5
+'', "ip addr add $prod_dev_ip/$prod_dev_pfx dev eth0\n"
+'/tmp # ', ''

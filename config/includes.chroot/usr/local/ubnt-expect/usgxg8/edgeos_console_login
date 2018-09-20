@@ -1,0 +1,7 @@
+600, [ qr/ERROR L2D_ERR/, \
+       sub { my $m = 'L2D ERROR'; print "\n\n$m\n\n"; die $m; } ], \
+     'ubnt login: ', "ubnt\n"
+'Password:', "ubnt\n"
+10, "$edgeos_prompt", ''
+# sleep to wait for LCM firmware flash to complete
+@sleep 200

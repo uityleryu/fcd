@@ -1,0 +1,17 @@
+
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=USG Factory
+Type=Application
+Exec=sudo /usr/local/sbin/edge-router-main.pl
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=USG Factory
+GenericName[en_US]=
+Comment[en_US]=Utility for production of USG
+GenericName=
+Comment=Utility for production of USG
+Icon=/usr/local/sbin/USG.jpeg
+StartupNotify=false

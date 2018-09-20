@@ -1,0 +1,7 @@
+'', "\n"
+'/tmp # ', "tftp -b 4096 -g -r $reg_cfile $prod_server_ip\n"
+10, '/tmp # ', './helper_CN50xx ' \
+               . "-i field=flash_eeprom,format=binary,pathname=$reg_cfile\n"
+10, '/tmp # ', "dd if=/dev/mtd2 of=${reg_pfile}-1\n"
+10, '/tmp # ', "tftp -p -l ${reg_pfile}-1 $prod_server_ip\n"
+10, '/tmp # ', ''

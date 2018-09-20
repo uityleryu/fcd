@@ -13,5 +13,5 @@ GenericName[en_US]=
 Comment[en_US]=Utility for production of UniFiAP
 GenericName=
 Comment=Utility for production of UniFiAP
-Icon=/usr/local/UBNT.jpeg
+Icon=/usr/local/sbin/UBNT.jpeg
 StartupNotify=false

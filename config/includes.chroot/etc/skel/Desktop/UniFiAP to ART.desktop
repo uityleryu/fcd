@@ -13,5 +13,5 @@ GenericName[en_US]=
 Comment[en_US]=Utility for converting UniFi APs to ART
 GenericName=
 Comment=Utility for converting UniFi APs to ART
-Icon=/usr/local/UAP.jpg
+Icon=/usr/local/sbin/UAP.jpg
 StartupNotify=false

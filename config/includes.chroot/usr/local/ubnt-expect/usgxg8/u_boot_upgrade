@@ -1,0 +1,11 @@
+'', "setenv ethact $prod_dev_eth\n"
+5, '-re', "$u_boot_prompt", "setenv ipaddr $prod_dev_ip\n"
+5, '-re', "$u_boot_prompt", "setenv serverip $prod_server_ip\n"
+5, '-re', "$u_boot_prompt", "ping $prod_server_ip\n"
+15, 'is alive', ''
+5, '-re', "$u_boot_prompt", "tftpboot \$(loadaddr) $u_boot_bin_file\n"
+20, 'Bytes transferred ', ''
+5, '-re', "$u_boot_prompt", "protect off $flash_base +\$(filesize)\n"
+5, '-re', "$u_boot_prompt", "erase $flash_base +\$(filesize)\n"
+40, '-re', "$u_boot_prompt", "cp.b \$(fileaddr) $flash_base \$(filesize)\n"
+30, '-re', "$u_boot_prompt", ''

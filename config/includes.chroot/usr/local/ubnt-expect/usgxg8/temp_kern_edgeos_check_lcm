@@ -1,0 +1,5 @@
+'', "\n"
+20, "$edgeos_prompt", "sudo -i\n"
+20, "$edgeos_cfg_prompt", "grep lcmd /var/log/messages\n"
+5, 'LCM Firmware Info', ''
+5, "$edgeos_cfg_prompt", "exit\n"

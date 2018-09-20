@@ -1,0 +1,8 @@
+'', "\n"
+'/tmp # ', "tftp -b 4096 -g -r $prod_img_tar $prod_server_ip\n"
+60, '/tmp # ', "tftp -g -r scripts/mmc-prep.sh " \
+               . "-l mmc-prep.sh $prod_server_ip\n"
+10, '/tmp # ', "chmod +x ./mmc-prep.sh\n"
+'/tmp # ', "./mmc-prep.sh $linux_mmc_dev /tmp/$prod_img_tar\n"
+600, [ qr/\[FAILED\]/, sub { die 'USB prep failed'; } ], \
+     '[DONE]', ''
