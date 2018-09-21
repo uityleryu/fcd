@@ -13,9 +13,9 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
-VER=FCD-U1-DIAG-[ENG-0.3]
+VER=FCD-Amplifi-[0.0.5]
 LIVE_CD_VER=$(VER).iso
-UPYFCD_VER=a927fabc46a166ecb6ba2a0794f2edf65a355634
+UPYFCD_VER=5b72f6e359f395ef874a2fabbf5fbff93a03f07f
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
