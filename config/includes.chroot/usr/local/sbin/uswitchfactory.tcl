@@ -478,7 +478,7 @@ proc get_helper {} {
         set helper helper_BCM5341x
     } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 ||
                [string equal -nocase $boardid $USW_24_PRO] == 1 ||
-               [string equal -nocase $boardid $USW_48_PRO] == 1 ||} {
+               [string equal -nocase $boardid $USW_48_PRO] == 1 } {
         set helper helper_BCM5616x
     } else {
         set helper helper_BCM5334x
@@ -773,7 +773,7 @@ proc get_bootargs {boardid} {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=496M $flash_mtdparts_64M'\r"
     } elseif { [string equal -nocase $boardid $USW_6XG_150] == 1 ||
                [string equal -nocase $boardid $USW_24_PRO] == 1 ||
-               [string equal -nocase $boardid $USW_48_PRO] == 1} {
+               [string equal -nocase $boardid $USW_48_PRO] == 1 } {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=1008M $flash_mtdparts_64M'\r"
     } elseif { $use_64mb_flash == 1 } {
         set bootargs "setenv bootargs 'quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 $flash_mtdparts_64M'\r"
@@ -1038,7 +1038,8 @@ proc find_version { major minor } {
 
     if { ([expr $major] == 1 && [expr $minor] >= 0)
       || ([expr $major] == 80 && [expr $minor] == 0)
-      || ([expr $major] == 10 && [expr $minor] == 0) } {
+      || ([expr $major] == 10 && [expr $minor] == 0)
+      || ([expr $major] == 51 && [expr $minor] == 0) } {
        log_debug "ubntapp firmware"
        set cmd_prefix "go ${ubntaddr} "
     }
@@ -1055,7 +1056,7 @@ proc main_detector { } {
     send "\r"
 
     expect {
-        -re "U-Boot (unifi-feature-us48p.|unifi-feature-unifi.|usw-v|usw-feature-us-xg.|usw-USHR3_v)(\[.0-9]+)-(.*)" {
+        -re "U-Boot (usw-feature-us-hr3.|unifi-feature-us48p.|unifi-feature-unifi.|usw-v|usw-feature-us-xg.|usw-USHR3_v)(\[.0-9]+)-(.*)" {
             set id $expect_out(2,string)
             log_debug "U-boot version: $id"
             regexp "(\[0-9]+)\.?(\[1-9]*)\.?(\[1-9]*)(.*)" $id ignore major minor release rest
