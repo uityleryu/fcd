@@ -36,10 +36,10 @@ sub msg {
 
 ###### main ######
 
-my ($platformid, $boardid, $mac, $passphrase, $keydir, $dev, $idx, $boardrev, $serial_num)
+my ($platformid, $boardid, $mac, $passphrase, $keydir, $dev, $idx, $boardrev, $serial_num, $qr_code)
     = @ARGV;
 
-for my $p ($boardid, $mac, $passphrase, $dev, $idx, $boardrev, $serial_num) {
+for my $p ($boardid, $mac, $passphrase, $dev, $idx, $boardrev, $serial_num, $qr_code) {
     die "Required parameter(s) missing\n" if (!defined($p));
 }
 
@@ -50,7 +50,7 @@ my $bom_part = ${bom_part_hash{$boardid}};
 
 msg(1, "Starting: platformid=$platformid boardid=$boardid dev=$dev mac=$mac "
     . "idx=$idx boardrev=$boardrev serial_num=$serial_num "
-    . "bom=${bom_part}-$boardrev");
+    . "bom=${bom_part}-$boardrev qr_code=$qr_code");
 
 my ($prod_ip_pfx, $prod_ip_base, $prod_pfx_len) = ('192.168.1.', 19, 24);
 
@@ -102,7 +102,8 @@ my $exp_env = {
     'reg_cfile'             => $cfile,
     'linux_mmc_dev'         => 'mmcblk0',
     'edgeos_prompt'         => '@ubnt:~$ ',
-    'edgeos_cfg_prompt'     => '@ubnt:~# '
+    'edgeos_cfg_prompt'     => '@ubnt:~# ',
+    'qrcode'                => "$qr_code"
 };
 
 my $exp_h = get_console_expect($dev);
@@ -167,14 +168,18 @@ system("sync");
 sleep(1);
 system($cmd);
 
+my $qrhex = $qr_code;
+$qrhex =~ s/(.)/sprintf("%x",ord($1))/eg;
+
 my $kdir = '/media/usbdisk/keys';
 my $cpath = "$tdir/$cfile";
 my $params = "-h devreg-prod.ubnt.com -k $passphrase "
              . "-i field=flash_eeprom,format=hex,pathname=$ppath "
+             . "-i field=qr_code,format=hex,value=$qrhex "
              . "-x $kdir/ca.pem -y $kdir/key.pem -z $kdir/crt.pem "
              . "\$(cat $fpath1) "
              . "-o field=flash_eeprom,format=binary,pathname=$cpath "
-             . '-o field=22';
+             . '-o field=registration_id -o field=result -o field=device_id -o field=registration_status_id -o field=registration_status_msg -o field=error_message ';
 system("/usr/local/sbin/client_x86 $params");
 
 if (-f $cpath) {
