@@ -844,7 +844,11 @@ sub load_products {
     push @list, $product;
     $product = Product->new(39, 'U-LTE-ART', 'e611', 'uap2art.tcl');
     push @list, $product;
-    $product = Product->new(34, 'UIS-8-450', 'ed04', 'mscc2mfg.pl');
+    $product = Product->new(40, 'UIS-8-450', 'ed04', 'mscc2mfg.pl');
+    push @list, $product;
+    $product = Product->new(40, 'US-24-PRO', 'eb36', 'uswitch2mfg.tcl');
+    push @list, $product;
+    $product = Product->new(40, 'US-48-PRO', 'eb67', 'uswitch2mfg.tcl');
     push @list, $product;
 
     return @list;

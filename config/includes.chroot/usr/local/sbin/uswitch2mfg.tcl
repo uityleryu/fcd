@@ -15,6 +15,8 @@ set fakemac "00:90:4c:06:a5:7$idx"
 # model ID
 set USW_XG         "eb20"
 set USW_6XG_150    "eb23"
+set USW_24_PRO     "eb36"
+set USW_48_PRO     "eb67"
 
 set flash_mtdparts_64M "mtdparts=spi1.0:1920k(u-boot),64k(u-boot-env),64k(shmoo),31168k(kernel0),31232k(kernel1),1024k(cfg),64k(EEPROM)"
 set flash_mtdparts_32M "mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"
@@ -133,6 +135,8 @@ proc handle_urescue {} {
     global boardid
     global USW_XG
     global USW_6XG_150
+    global USW_24_PRO
+    global USW_48_PRO
     global fakemac
 
     log_debug "Starting in the urescue mode to program the firmware"
@@ -145,7 +149,9 @@ proc handle_urescue {} {
     } "$bootloader_prompt"
 
     if { [string equal -nocase $boardid $USW_XG] == 1 ||
-         [string equal -nocase $boardid $USW_6XG_150] == 1 } {
+         [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+         [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+         [string equal -nocase $boardid $USW_48_PRO] == 1 } {
         sleep 1
         send "mdk_drv\r"
         set timeout 30
@@ -466,6 +472,8 @@ proc main_detector { } {
     global boardid
     global USW_XG
     global USW_6XG_150
+    global USW_24_PRO
+    global USW_48_PRO
 
     set timeout 30
     sleep 1
