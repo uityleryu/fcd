@@ -60,6 +60,7 @@ my $prod_dev_ip_base = $prod_ip_base + 1 + $idx;
 my $prod_dev_ip = "${prod_ip_pfx}$prod_dev_ip_base";
 
 my $prod_dir = "usgxg8";
+my $systemid = "ee33";
 
 my %num_macs_hash = (
     'e1020' => 9
@@ -103,7 +104,8 @@ my $exp_env = {
     'linux_mmc_dev'         => 'mmcblk0',
     'edgeos_prompt'         => '@ubnt:~$ ',
     'edgeos_cfg_prompt'     => '@ubnt:~# ',
-    'qrcode'                => "$qr_code"
+    'qrcode'                => "$qr_code",
+    'exp_systemid'          => "$systemid"
 };
 
 my $exp_h = get_console_expect($dev);
@@ -218,6 +220,10 @@ die 'FAILED to Set BT MAC address'
 msg(87, 'Check LCM FW is loaded...');
 die 'FAILED to seek for LCM FW'
     if (!run_ubnt_expect($exp_h, "${prod_dir}/temp_kern_edgeos_check_lcm", $exp_env));
+
+msg(90, 'Check devreg data...');
+die 'FAILED to check devreg data'
+    if (!run_ubnt_expect($exp_h, "${prod_dir}/temp_kern_edgeos_check_devregdata", $exp_env));
 
 msg(95, 'Rebooting...');
 run_ubnt_expect($exp_h, "${prod_dir}/edgeos_reboot", $exp_env);

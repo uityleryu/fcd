@@ -6,7 +6,7 @@ USGXG8-IMAGE=e1020.bin \
              products.txt \
              images/usg-xg-8-fw.bin \
              images/usg-xg-8-kernel \
-             images/UGWXG.v4.4.28.5118795.tar \
+             images/UGWXG.v4.4.30.5127046.tar \
              uboot-images/usg-xg-8.bin \
              scripts/mmc-prep.sh \
              scripts/usb-prep.sh

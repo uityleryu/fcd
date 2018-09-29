@@ -1,0 +1,8 @@
+'', "\n"
+20, "$edgeos_prompt", "sudo -i\n"
+20, "$edgeos_cfg_prompt", "cat /proc/ubnthal/system.info\n"
+3, 'flashSize=', ''
+1, 'vendorid=0777', ''
+1, "systemid=${exp_systemid}", ''
+1, "qrid=${qrcode}", ''
+20, "$edgeos_cfg_prompt", "info\n"
