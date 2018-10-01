@@ -1,0 +1,4 @@
+30, [ qr/BIST FAILURE/, \
+      sub { my $m = 'CPU BIST errors'; print "\n\n$m\n\n"; die $m; } ], \
+    'USB:', "\n\n"
+30, '-re', "$u_boot_prompt", ''

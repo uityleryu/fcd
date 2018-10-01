@@ -1,0 +1,12 @@
+'', "\n"
+'/tmp # ', "mkdir -p /var/lock\n"
+'/tmp # ', "tftp -b 4096 -g -r helper_CN50xx $prod_server_ip\n"
+10, '/tmp # ', "chmod a+x helper_CN50xx\n"
+'/tmp # ', './helper_CN50xx -c product_class=router ' \
+            . '-o field=flash_eeprom,format=hex,' \
+            . "pathname=$reg_pfile >$reg_ffile\n"
+10, '/tmp # ', "sync\n"
+10, '/tmp # ', "sleep 1\n"
+10, '/tmp # ', "tftp -p -l $reg_ffile $prod_server_ip\n"
+10, '/tmp # ', "tftp -p -l $reg_pfile $prod_server_ip\n"
+10, '/tmp # ', ''

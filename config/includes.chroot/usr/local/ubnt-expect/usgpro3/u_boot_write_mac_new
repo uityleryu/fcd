@@ -1,0 +1,7 @@
+# nuke the env here since this is the first task
+'', "run nuke_env\n"
+15, '-re', "$u_boot_prompt", \
+    "ubntw all $prod_dev_mac $num_macs $board_id $board_rev $board_serial " \
+    . "$bom_part\n"
+15, 'Serial number:', ''
+5, '-re', "$u_boot_prompt", ''

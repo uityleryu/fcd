@@ -1,0 +1,8 @@
+'', "\n"
+'/tmp # ', "tftp -b 4096 -g -r $prod_img_tar $prod_server_ip\n"
+60, '/tmp # ', "tftp -g -r scripts/USGPRO3/usb-prep.sh " \
+               . "-l usb-prep.sh $prod_server_ip\n"
+10, '/tmp # ', "chmod +x ./usb-prep.sh\n"
+'/tmp # ', "./usb-prep.sh $linux_usb_dev /tmp/$prod_img_tar\n"
+600, [ qr/\[FAILED\]/, sub { die 'USB prep failed'; } ], \
+     '[DONE]', ''

@@ -1,0 +1,20 @@
+30, '-re', 'Core clock: 500 MHz', ''
+3, '-re', 'DRAM:\s+512 MB', ''
+3, '-re', 'Flash:\s+8 MB', ''
+3, '-re', 'Net:\s+octeth0, octeth1, octeth2\r', ''
+30, [ qr/BIST FAILURE/, \
+      sub { my $m = 'CPU BIST errors'; print "\n\n$m\n\n"; die $m; } ], \
+    'USB:', "\n\n"
+30, '-re', "$u_boot_prompt", ''
+'', "mii read 0 2\n"
+'FFFF', "mii read 1 2\n"
+'FFFF', "mii read 2 2\n"
+'FFFF', "mii read 3 2\n"
+'FFFF', "mii read 4 2\n"
+'FFFF', "mii read 5 2\n"
+'004D', "mii read 6 2\n"
+'004D', "mii read 7 2\n"
+'004D', "mii read 5 3\n"
+'D072', "mii read 6 3\n"
+'D072', "mii read 7 3\n"
+'D072', ''
