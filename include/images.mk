@@ -8,8 +8,18 @@ USGXG8-IMAGE=e1020.bin \
              images/usg-xg-8-kernel \
              images/UGWXG.v4.4.30.5127046.tar \
              uboot-images/usg-xg-8.bin \
-             scripts/mmc-prep.sh \
-             scripts/usb-prep.sh
+             scripts/USGXG8/mmc-prep.sh \
+             scripts/USGXG8/usb-prep.sh
+
+USGPRO4-IMAGE=e221.bin \
+             e220.uboot \
+             e221-fcd.kernel \
+             products.txt \
+             images/usg-pro-4-kernel \
+             images/ER-e220.v4.3.33.4936086.tar \
+             uboot-images/u-boot.ER-e220.e220.4785663-gaff5016.bin.2 \
+             scripts/USGPRO4/mmc-prep.sh \
+             scripts/USGPRO4/usb-prep.sh
 
 # USW
 USPRO-IMAGE=eb36.bin eb36-mfg.bin \

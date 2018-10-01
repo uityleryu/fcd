@@ -1,7 +1,13 @@
 # ubnt
 product.1.name=unifigatewayxg-02485
 product.1.description=UBNT UniFi Security Gateway XG (13-02485)
-product.1.script=/usr/local/sbin/unifi-gateway-e1020.pl
+product.1.script=/usr/local/sbin/unifi-gateway-e1020.plo
 product.1.testscript=/usr/local/sbin/unifi-gateway-test-e1020.pl
 product.1.boardid=e1020
 product.1.platformid=e1020
+product.2.name=unifigateway4-02102
+product.2.description=UBNT UniFi Security Gateway 4-Port (13-02102)
+product.2.script=/usr/local/sbin/unifi-gateway-e220.pl
+product.2.testscript=/usr/local/sbin/unifi-gateway-test-e220.pl
+product.2.boardid=e221
+product.2.platformid=e221

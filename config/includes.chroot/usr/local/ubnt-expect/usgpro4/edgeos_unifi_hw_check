@@ -1,0 +1,8 @@
+'', "cat /proc/ubnthal/system.info\n"
+3, 'flashSize=', ''
+1, 'vendorid=0777', ''
+1, "systemid=${systemid}", ''
+1, "boardrevision=${board_rev}", ''
+1, "serialno=${board_serial_lc}", ''
+1, "qrid=${qrcode}", ''
+'', "info\n"

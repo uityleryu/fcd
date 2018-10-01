@@ -1,0 +1,11 @@
+# save the default env here first
+'', "saveenv\n"
+15, '-re', "$u_boot_prompt", "setenv ethact $prod_dev_eth\n"
+5, '-re', "$u_boot_prompt", "setenv ipaddr $prod_dev_ip\n"
+5, '-re', "$u_boot_prompt", "setenv serverip $prod_server_ip\n"
+@sleep 5
+5, '-re', "$u_boot_prompt", "ping $prod_server_ip\n"
+10, 'is alive', ''
+5, '-re', "$u_boot_prompt", "tftpboot \$(loadaddr) $u_boot_tftp_file\n"
+30, 'Bytes transferred ', ''
+5, '-re', "$u_boot_prompt", "bootoctlinux \$(loadaddr) $u_boot_linux_cmdline\n"

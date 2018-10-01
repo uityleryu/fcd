@@ -28,6 +28,7 @@ MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 # USG product line
 USG-PRODUCT-LINE=""
 $(eval $(call ProductImage,USGXG8,$(USGXG8-IMAGE),FCD-USGXG8-$(VER)))
+$(eval $(call ProductImage,USGPRO4,$(USGPRO4-IMAGE),FCD-USGPRO4-$(VER)))
 
 # USW product line
 USW-PRODUCT-LINE=""

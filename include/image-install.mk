@@ -12,7 +12,7 @@ image-install-$1:
 	rm -rf $(NEWSQUASHFS)/srv/tftp/*
 	mkdir -p $(NEWSQUASHFS)/srv/tftp/images
 	mkdir -p $(NEWSQUASHFS)/srv/tftp/uboot-images
-	mkdir -p $(NEWSQUASHFS)/srv/tftp/scripts
+	mkdir -p $(NEWSQUASHFS)/srv/tftp/scripts/$1
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/usr/local/ubnt-expect/* $(NEWSQUASHFS)/usr/local/ubnt-expect
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/* $(NEWSQUASHFS)/etc/skel/Desktop/

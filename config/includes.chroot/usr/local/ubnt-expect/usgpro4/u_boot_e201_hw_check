@@ -1,0 +1,27 @@
+30, '-re', 'Core clock: 800 MHz', ''
+3, '-re', 'DRAM:\s+2 GiB', ''
+3, '-re', 'Flash:\s+8 MiB', ''
+3, '-re', 'Net:\s+octeth0, octeth1, octeth2, octeth3, octeth4, octeth5, octeth6, octeth7\r', ''
+!wait_for_u_boot_e200
+'', "mii read 0 2\n"
+'600D', "mii read 1 2\n"
+'600D', "mii read 2 2\n"
+'600D', "mii read 3 2\n"
+'600D', "mii read 4 2\n"
+'600D', "mii read 5 2\n"
+'600D', "mii read 6 2\n"
+'600D', "mii read 7 2\n"
+'600D', "mii read 0 3\n"
+3, '-re', '844.', "mii read 1 3\n"
+3, '-re', '844.', "mii read 2 3\n"
+3, '-re', '844.', "mii read 3 3\n"
+3, '-re', '844.', "mii read 4 3\n"
+3, '-re', '844.', "mii read 5 3\n"
+3, '-re', '844.', "mii read 6 3\n"
+3, '-re', '844.', "mii read 7 3\n"
+3, '-re', '844.', "mii device mdio-octeon1\n"
+'', "mii read 0 2\n"
+'0000', "mii read 1 2\n"
+'0000', "mii read 0 3\n"
+'0000', "mii read 1 3\n"
+'0000', ''
