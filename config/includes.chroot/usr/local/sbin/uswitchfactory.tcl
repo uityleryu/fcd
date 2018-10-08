@@ -1039,7 +1039,7 @@ proc find_version { major minor } {
     if { ([expr $major] == 1 && [expr $minor] >= 0)
       || ([expr $major] == 80 && [expr $minor] == 0)
       || ([expr $major] == 10 && [expr $minor] == 0)
-      || ([expr $major] == 51 && [expr $minor] == 0) } {
+      || ([expr $major] == 52 && [expr $minor] == 0) } {
        log_debug "ubntapp firmware"
        set cmd_prefix "go ${ubntaddr} "
     }
