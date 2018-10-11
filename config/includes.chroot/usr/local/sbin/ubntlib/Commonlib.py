@@ -71,8 +71,8 @@ class ExpttyProcess():
             else:
                 self.proc.send(action + self.newline)
 
-            #time.sleep(0.1)
-            #self.proc.readline(1)
+            time.sleep(0.05)
+            self.proc.readline(1)
 
         return 0
 

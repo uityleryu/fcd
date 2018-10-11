@@ -7,7 +7,7 @@
       "BOARDID" : "ea11",
       "BOMREV" : "113-00623",
       "DESC" : "UniFi One Dream Machine",
-      "FILE" : "u1-base-ea11.py"
+      "FILE" : "alpine-udm.py"
     },
 
     "U1DMP":{
@@ -16,7 +16,7 @@
       "BOARDID" : "ea13",
       "BOMREV" : "113-00618",
       "DESC" : "UniFi One Dream Machine Plus",
-      "FILE" : "u1-base-ea11.py"
+      "FILE" : "alpine-udm.py"
     },
 
     "U1DM-RM":{
@@ -25,7 +25,7 @@
       "BOARDID" : "ea14",
       "BOMREV" : "113-00633",
       "DESC" : "UniFi One Dream Machine RackMount",
-      "FILE" : "u1-base-ea11.py"
+      "FILE" : "alpine-udm.py"
     },
 
     "U1DMP-RM":{
@@ -34,7 +34,7 @@
       "BOARDID" : "ea15",
       "BOMREV" : "113-00633",
       "DESC" : "UniFi One Dream Machine RackMount",
-      "FILE" : "u1-base-ea11.py"
+      "FILE" : "alpine-udm.py"
     },
 
     "UDM-B":{

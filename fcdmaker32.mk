@@ -27,19 +27,11 @@ MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
 # UDM product line
 UDM-PRODUCT-LINE=""
-$(eval $(call ProductImage,UDM,$(UDM-IMAGE),FCD-UDM-$(VER)))
+$(eval $(call ProductImage,UDM,FCD-UDM-$(VER),u1dm))
 
-# USG product line
-USG-PRODUCT-LINE=""
-$(eval $(call ProductImage,USGXG8,$(USGXG8-IMAGE),FCD-USGXG8-$(VER)))
-
-# USW product line
-USW-PRODUCT-LINE=""
-$(eval $(call ProductImage,USPRO,$(USPRO-IMAGE),FCD-USPRO-$(VER)))
-
-#ifneq ($(USW-PRODUCT-LINE), "")
-#	fcd-usw: new-rootfs $(USW-PRODUCT-LINE) pack-iso
-#endif
+# Amplifi product line
+AFI-PRODUCT-LINE=""
+$(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
 
 help:
 	@echo " ****************************************************************** "
