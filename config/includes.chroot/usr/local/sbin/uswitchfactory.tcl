@@ -1030,25 +1030,12 @@ proc handle_login { user passwd } {
     main_detector
 }
 
-proc find_version { major minor } {
-    global cmd_prefix
-    global ubntaddr
-
-    log_debug "Major=$major, Minor=$minor"
-
-    if { ([expr $major] == 1 && [expr $minor] >= 0)
-      || ([expr $major] == 80 && [expr $minor] == 0)
-      || ([expr $major] == 10 && [expr $minor] == 0)
-      || ([expr $major] == 52 && [expr $minor] == 0) } {
-       log_debug "ubntapp firmware"
-       set cmd_prefix "go ${ubntaddr} "
-    }
-}
-
 proc main_detector { } {
     global bootloader_prompt
     global user
     global passwd
+    global ubntaddr
+    global cmd_prefix
 
     set timeout 60
     sleep 1
@@ -1056,17 +1043,9 @@ proc main_detector { } {
     send "\r"
 
     expect {
-        -re "U-Boot (usw-feature-us-hr3.|unifi-feature-us48p.|unifi-feature-unifi.|usw-v|usw-feature-us-xg.|usw-USHR3_v)(\[.0-9]+)-(.*)" {
-            set id $expect_out(2,string)
-            log_debug "U-boot version: $id"
-            regexp "(\[0-9]+)\.?(\[1-9]*)\.?(\[1-9]*)(.*)" $id ignore major minor release rest
-
-            log_debug "major=$major  minor=$minor"
-
-            if { $minor == "" } {
-            set minor "0"
-            }
-            find_version $major $minor
+        -re "U-Boot" {
+            log_debug "ubntapp firmware"
+            set cmd_prefix "go ${ubntaddr} "
             handle_uboot
         } "$bootloader_prompt" {
             send "reset\r"
