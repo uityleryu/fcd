@@ -448,6 +448,26 @@ proc handle_uboot { {wait_prompt 0} } {
 
     stop_uboot
 
+    # erase uboot-env
+    sleep 2
+    send "sf probe\r"
+    set timeout 20
+    expect timeout {
+        error_critical "Probe serial flash failed !"
+    } "$bootloader_prompt"
+
+    if { $use_64mb_flash == 1 } {
+        send "sf erase 0x1e0000 0x10000\r"
+    } else {
+        send "sf erase 0xc0000 0x10000\r"
+    }
+    set timeout 20
+    expect timeout {
+        error_critical "Erase uboot-env failed !"
+    } "$bootloader_prompt"
+
+    log_progress 90 "uboot-env erased"
+
     # Update Kernel 1
     handle_urescue
     log_progress 95 "DUT complete the firmware programming"
