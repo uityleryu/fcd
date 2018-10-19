@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker rmi -f ubnt/esxbuild:fcd
+docker rmi -f ubnt/live-cd:fcd
 set -e
-docker build -f Dockerfile -t ubnt/esxbuild:fcd .
+docker build -f Dockerfile -t ubnt/live-cd:fcd .
 
