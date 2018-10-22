@@ -114,6 +114,9 @@ proc check_mdk {} {
         "Found MDK device" {
             handle_urescue
             log_progress 100 "Back to ART completed"
+        } "MDK initialized failed" {
+            handle_urescue
+            log_progress 100 "Back to ART completed"
         } "Unknown command" {
             set timeout 30
             expect timeout {
@@ -148,11 +151,23 @@ proc handle_urescue {} {
         error_critical "U-boot prompt not found !"
     } "$bootloader_prompt"
 
+    # set Board ID
+    sleep 2
+    send "$cmd_prefix usetbid $boardid\r"
+    set timeout 15
+    expect timeout {
+        error_critical "usetbid set failed !"
+    } "Done."
+    set timeout 5
+    expect timeout {
+        error_critical "U-boot prompt not found !"
+    } "$bootloader_prompt"
+
     if { [string equal -nocase $boardid $USW_XG] == 1 ||
          [string equal -nocase $boardid $USW_6XG_150] == 1 ||
          [string equal -nocase $boardid $USW_24_PRO] == 1 ||
          [string equal -nocase $boardid $USW_48_PRO] == 1 } {
-        sleep 1
+        sleep 10
         send "mdk_drv\r"
         set timeout 30
         expect timeout {
