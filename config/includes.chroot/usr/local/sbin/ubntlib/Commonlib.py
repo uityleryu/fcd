@@ -27,21 +27,46 @@ class ExpttyProcess():
         else:
             self.log = logging.getLogger(logger_name)
 
-    '''return negative means error, return 0 means success'''
     def expect2actu1(self, timeout, exptxt, action):
-        index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
-        if(index == 1):
-            print("[ERROR:EOF]: Expect \"" + exptxt + "\"")
-            exit(1)
-        if(index == 2):
-            print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
-            exit(1)
+        return self.expect_base(timeout=timeout, exptxt=exptxt, action=action)
 
+    def expect_base(self, timeout, exptxt, action, end_if_timeout=True, get_result_index=False):
+        """
+        Args:
+            timeout {int}:  expect timeout
+            exptxt {string or list}: expect text
+            action {string}: the action command
+            get_result_index {bool}: return index which expect found
+        Returns:
+            return 0 means success, 
+            return (index, 0) if get_result_index is True
+        """
+        ex = []
+        if isinstance(exptxt, list):
+            for e in exptxt:
+                ex.append(e)
+        else:
+            ex.append(exptxt)
+        ex.append(pexpect.EOF)
+        ex.append(pexpect.TIMEOUT)
+        index = self.proc.expect(ex, timeout)
+        if(index == (len(ex) - 2 )):
+            print("[ERROR:EOF]: Expect \"" + str(exptxt) + "\"")
+            exit(1)
+        if(index == (len(ex) - 1)):
+            print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds")
+            if end_if_timeout == True:
+                exit(1)
+            else:
+                return -1
+            
         if (action != "") and (index >= 0):
             self.proc.send(action + self.newline)
-
-        return 0
-
+        
+        if get_result_index is True:
+            return (index, 0)
+        else:
+            return 0
 
     def expect2act(self, timeout, exptxt, action, rt_buf=None):
         sys.stdout = mystdout = StringIO()
