@@ -21,6 +21,10 @@ class CommonVariable(object):
         self.fcd_version_info_file = "version.txt"
         self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
+        #images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
+        self.firmware_dir = "images"
+        self.tftp_server_dir = "/tftpboot"
+
     def print_variables(self):
         print("user:" + str(self.user))
         print("password:" + str(self.password))

@@ -32,8 +32,9 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Linux Hung!!")
         time.sleep(5)
         for retry in range(3):
-            self.pexpect_helper.proc.send('cd /tmp/; tftp -r images/{0}/{1} -l fwupdate.bin -g {2}\r'
-                                            .format(self.variable_helper.mfg_broadcom.board_id,
+            self.pexpect_helper.proc.send('cd /tmp/; tftp -r {0}/{1}/{2} -l fwupdate.bin -g {3}\r'
+                                            .format(self.variable_helper.common_variable.firmware_dir
+                                                    self.variable_helper.mfg_broadcom.board_id,
                                                     self.variable_helper.mfg_broadcom.firmware_img,
                                                     self.variable_helper.common_variable.tftp_server))
             extext_list = ["Invalid argument", 
@@ -152,9 +153,11 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Failed to start urescue")
         elif index == 0 or index == 1:
             log_debug(msg="TFTP is waiting for file")
-        atftp_cmd = "atftp --option \"mode octet\" -p -l /tftpboot/images/{0}/{1} {2}".format(self.variable_helper.mfg_broadcom.board_id,
-                                                                                              self.variable_helper.mfg_broadcom.firmware_img,
-                                                                                              self.variable_helper.mfg_broadcom.ip)
+        atftp_cmd = "atftp --option \"mode octet\" -p -l {0}/{1}/{2}/{3} {4}".format(self.variable_helper.common_variable.tftp_server_dir,
+                                                                                    self.variable_helper.common_variable.firmware_dir,
+                                                                                    self.variable_helper.mfg_broadcom.board_id,
+                                                                                    self.variable_helper.mfg_broadcom.firmware_img,
+                                                                                    self.variable_helper.mfg_broadcom.ip)
         msg(no=70, out="DUT is requesting the firmware from FCD server") 
         log_debug(msg="Run cmd on host:"+ atftp_cmd)
         xcmd(cmd=atftp_cmd)
