@@ -11,6 +11,15 @@ class USMFGGeneral(ScriptBase):
     def __init__(self):
         super(USMFGGeneral, self).__init__()
     
+    def uclearcfg(self):
+        """
+        run cmd : uclearcfg
+        clear linux config data
+        """
+        self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uclearcfg")
+        self.pexpect_helper.expect2actu1(timeout=20, exptxt="Done.", action="")
+        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
+        log_debug(msg="Linux configuration erased")
 
     def download_and_update_firmware_in_linux(self):
         """
@@ -22,7 +31,7 @@ class USMFGGeneral(ScriptBase):
         if return_code == -1:
             error_critical(msg="Linux Hung!!")
         time.sleep(5)
-        for _ in range(3):
+        for retry in range(3):
             self.pexpect_helper.proc.send('cd /tmp/; tftp -r images/{0}/{1} -l fwupdate.bin -g {2}\r'
                                             .format(self.variable_helper.mfg_broadcom.board_id,
                                                     self.variable_helper.mfg_broadcom.firmware_img,
@@ -48,11 +57,16 @@ class USMFGGeneral(ScriptBase):
         time.sleep(3)
         self.pexpect_helper.proc.sendline('\rifconfig;ping ' + self.variable_helper.common_variable.tftp_server)
         extext_list = ["ping: sendto: Network is unreachable", 
-                       r"64 bytes from " + self.variable_helper.common_variable.tftp_server]
+                       r"64 bytes from " + self.variable_helper.common_variable.tftp_server,
+                       "host " + self.variable_helper.common_variable.tftp_server + " is alive"]
         (index, _) = self.pexpect_helper.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
         if index == 0 or index == -1:
             return False
         elif index == 1:
+            #debug purpose
+            self.pexpect_helper.proc.send("\003")
+            return True
+        elif index == 2:
             #debug purpose
             self.pexpect_helper.proc.send("\003")
             return True
@@ -108,9 +122,6 @@ class USMFGGeneral(ScriptBase):
 
     def flash_firmware_no_mdk(self):
         (uboot_env_address, uboot_env_address_size) = self.decide_uboot_env_mtd_memory()
-        log_debug(msg="Initialize ubnt app by uappinit")
-        self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uappinit")
-        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
         
         log_debug(msg="Erasing uboot-env")
         self.sf_erase(address=uboot_env_address, erase_size=uboot_env_address_size)
@@ -118,14 +129,61 @@ class USMFGGeneral(ScriptBase):
         self.reset_and_login_linux()
         self.download_and_update_firmware_in_linux()
         self.stop_uboot()
-        log_debug(msg="Flashed firmware and currently stopped at u-boot....")
-
-    def flash_firmware_with_mdk(self): 
-        log_debug(msg="Starting in the urescue mode to program the firmware")
+        log_debug(msg="Flashed firmware with no mdk package and currently stopped at u-boot....")
         log_debug(msg="Initialize ubnt app by uappinit")
         self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uappinit")
         self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
 
+
+    def flash_firmware_with_mdk(self): 
+        """
+        after flash firmware, DU will be resetting
+        """
+        log_debug(msg="Starting in the urescue mode to program the firmware")        
+        if self.variable_helper.mfg_broadcom.is_board_id_in_group(group=self.variable_helper.mfg_broadcom.usw_group_1):
+            time.sleep(1)
+            self.pexpect_helper.proc.sendline("mdk_drv")
+            self.pexpect_helper.expect2actu1(timeout=30, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
+            time.sleep(3)
+
+        setenv_cmd = 'setenv ethaddr {0}; setenv serverip {1}; setenv ipaddr {2}'.format(self.variable_helper.mfg_broadcom.fake_mac, 
+                                                                                         self.variable_helper.common_variable.tftp_server,
+                                                                                         self.variable_helper.mfg_broadcom.ip)
+        self.pexpect_helper.proc.sendline(setenv_cmd)
+        if self.is_network_alive() is False:
+            error_critical(msg="Can't ping the FCD server !")
+        self.pexpect_helper.proc.sendline("urescue -u")
+        extext_list = ["TFTPServer started. Wating for tftp connection...", 
+                       "Listening for TFTP transfer"]
+        (index, _) = self.pexpect_helper.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
+        if index == -1:
+            error_critical(msg="Failed to start urescue")
+        elif index == 0 or index == 1:
+            log_debug(msg="TFTP is waiting for file")
+        atftp_cmd = "atftp --option \"mode octet\" -p -l /tftpboot/images/{0}/{1} {2}".format(self.variable_helper.mfg_broadcom.board_id,
+                                                                                              self.variable_helper.mfg_broadcom.firmware_img,
+                                                                                              self.variable_helper.mfg_broadcom.ip)
+        msg(no=70, out="DUT is requesting the firmware from FCD server") 
+        log_debug(msg="Run cmd on host:"+ atftp_cmd)
+        xcmd(cmd=atftp_cmd)
+        self.pexpect_helper.expect2actu1(timeout=150, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
+        log_debug(msg="FCD completed the firmware uploading")
+        self.uclearcfg()
+        msg(no=80, out="DUT completed erasing the calibration data")
+        
+        self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uwrite -f")
+        self.pexpect_helper.expect2actu1(timeout=20, exptxt="Firmware Version:", action="")
+        log_debug(msg="DUT finds the firmware version")
+        (index, _) = self.pexpect_helper.expect_base(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done", action ="", end_if_timeout=False, get_result_index=True)
+        if index == -1:
+            error_critical(msg="Failed to flash firmware.")
+        log_debug(msg="DUT starts to program the firmware to flash")
+        (index, _) = self.pexpect_helper.expect_base(timeout=200, exptxt="Firmware update complete.", action ="", end_if_timeout=False, get_result_index=True)
+        if index == -1:
+            error_critical(msg="Failed to flash firmware.")
+        log_debug(msg="DUT completed programming the firmware into flash, will be rebooting")
+
+        self.pexpect_helper.expect2actu1(timeout=120, exptxt="Verifying Checksum ... OK", action="")
 
 
     def run(self):
@@ -147,38 +205,24 @@ class USMFGGeneral(ScriptBase):
         
         self.pexpect_helper.proc.send('\003')
         self.pexpect_helper.proc.send('\r')
-        msg(1, "Waiting - PULG in the device...")
+        msg(no=1, out="Waiting - PULG in the device...")
         
-        extext_list = ["Switching to RD_DATA_DELAY Step  :  3 (WL = 0)", 
-                       "Board Net Initialization Failed", 
-                       "Found MDK device", 
-                       self.variable_helper.common_variable.bootloader_prompt, 
-                       "UBNT login:", 
-                       "counterfeit login:"]
-        (index, _) = self.pexpect_helper.expect_base(timeout=30, exptxt=extext_list, action ="", get_result_index=True)
-        log_debug(msg="Found: " + extext_list[index])
-        if index == 0:
-            msg(no=2, out="Waiting for self calibration in u-boot ...")
-            self.stop_uboot(timeout=90)
+        self.stop_uboot()
+        msg(no=5, out="Go into U-boot")
 
-        elif index == 1:
-            self.stop_uboot()
-            if self.is_mdk_exist_in_uboot() is True:
-                log_debug(msg="There is MDK available")
-                #handle_urescue
-            else:
-                log_debug(msg="There isn't MDK available")
-                msg(no=5, out="Go into U-boot")
-                #handle_uboot   ####currently working here####
-                self.flash_firmware_no_mdk()
-        elif index == 2:
-            self.stop_uboot()
-        elif index == 3:
-            #direclty hand_uboot
-            pass
-        elif index == 4 or index == 5:
-            #login and reboot and stop at u-boot
-            pass
+        log_debug(msg="Initialize ubnt app by uappinit")
+        self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uappinit")
+        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
+        
+        if self.is_mdk_exist_in_uboot() is True:
+            log_debug(msg="There is MDK available")
+            self.flash_firmware_with_mdk()
+        else:
+            log_debug(msg="There isn't MDK available")
+            self.flash_firmware_no_mdk()
+            self.flash_firmware_with_mdk()
+
+        msg(no=100, out="Back to ART has completed")  
 
 
 def main():

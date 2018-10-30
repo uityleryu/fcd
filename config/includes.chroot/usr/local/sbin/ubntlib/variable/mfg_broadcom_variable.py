@@ -2,11 +2,12 @@
 
 class MFGBroadcomVariable(object):
 
-    # model ID
+    # board IDs
     USW_XG = "eb20"
     USW_6XG_150 = "eb23"
     USW_24_PRO = "eb36"
     USW_48_PRO ="eb67"
+    usw_group_1 = [USW_XG, USW_6XG_150, USW_24_PRO, USW_48_PRO]
 
     def __init__(self, args):
         """
@@ -31,4 +32,11 @@ class MFGBroadcomVariable(object):
         print("In MFGVariable: erasecal=%s, dev=%s, row_id=%s, board_id=%s, firmware_img=%s" \
             % (self.erasecal, self.dev, self.row_id, self.board_id, self.firmware_img))
         print("fake_mac=%s, ip=%s" % (self.fake_mac, self.ip))   
+
+    def is_board_id_in_group(self, group=None):
+        if group is not None:
+            return (self.board_id in group)
+        else:
+            print("Group is not assigned")
+            return False
 
