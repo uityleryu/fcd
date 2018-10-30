@@ -62,13 +62,7 @@ class USMFGGeneral(ScriptBase):
         (index, _) = self.pexpect_helper.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
         if index == 0 or index == -1:
             return False
-        elif index == 1:
-            #debug purpose
-            self.pexpect_helper.proc.send("\003")
-            return True
-        elif index == 2:
-            #debug purpose
-            self.pexpect_helper.proc.send("\003")
+        elif index == 1 or index == 2:
             return True
 
     def reset_and_login_linux(self):
@@ -113,8 +107,6 @@ class USMFGGeneral(ScriptBase):
         self.pexpect_helper.proc.sendline("print mtdparts")
         self.pexpect_helper.expect2actu1(timeout=10, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
         output = self.pexpect_helper.proc.before
-        #debug purpose, debug log, will remove afterward
-        log_debug(msg=output)
         if self.variable_helper.mfg_broadcom.flash_mtdparts_64M in output:
             return ("0x1e0000", "0x10000") #use 64mb flash
         else:
@@ -191,9 +183,6 @@ class USMFGGeneral(ScriptBase):
         Main procudure of back to ART
         """
         self.config_stty(self.variable_helper.mfg_broadcom.dev)
-        
-        ##debug purpose, temp file for debug usuage
-        filepath = os.path.join("/tftpboot", "version.txt")
         self.print_current_fcd_version(file=filepath)
 
         #Connect into DU using picocom

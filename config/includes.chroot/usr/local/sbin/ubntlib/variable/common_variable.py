@@ -10,8 +10,7 @@ class CommonVariable(object):
         self.linux_prompt = "#"
         self.cmd_prefix = r"go $ubntaddr "
 
-        #self.tftp_server = "192.168.1.19"
-        self.tftp_server = "192.168.1.7" #debug purpose
+        self.tftp_server = "192.168.1.19"
 
         #DU log-in info
         self.user = "ubnt"
