@@ -39,6 +39,6 @@ class CommonVariable(object):
 
     def set_cmd_prefix(self, prefix=None):
         if prefix != None:
-            self.cmd_prefix = prefiz
+            self.cmd_prefix = prefix
         else:
             print("Nothing changed. Please assign prefix!")
