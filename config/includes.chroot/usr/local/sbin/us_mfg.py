@@ -32,11 +32,13 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Linux Hung!!")
         time.sleep(5)
         for retry in range(3):
-            self.pexpect_helper.proc.send('cd /tmp/; tftp -r {0}/{1}/{2} -l fwupdate.bin -g {3}\r'
-                                            .format(self.variable_helper.common_variable.firmware_dir
+            tftp_cmd = "cd /tmp/; tftp -r {0}/{1}/{2} -l fwupdate.bin -g {3}\r".format(
+                                                    self.variable_helper.common_variable.firmware_dir,
                                                     self.variable_helper.mfg_broadcom.board_id,
                                                     self.variable_helper.mfg_broadcom.firmware_img,
-                                                    self.variable_helper.common_variable.tftp_server))
+                                                    self.variable_helper.common_variable.tftp_server)
+            
+            self.pexpect_helper.proc.send(tftp_cmd)
             extext_list = ["Invalid argument", 
                             r".*#"]
             (index, _) = self.pexpect_helper.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
@@ -122,11 +124,12 @@ class USMFGGeneral(ScriptBase):
         self.reset_and_login_linux()
         self.download_and_update_firmware_in_linux()
         self.stop_uboot()
-        log_debug(msg="Flashed firmware with no mdk package and currently stopped at u-boot....")
+
         log_debug(msg="Initialize ubnt app by uappinit")
         self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uappinit")
         self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
-
+        
+        log_debug(msg="Flashed firmware with no mdk package and currently stopped at u-boot....")
 
     def flash_firmware_with_mdk(self): 
         """
