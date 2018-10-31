@@ -12,7 +12,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 class ScriptBase(object):
     def __init__(self):
         self.args = sys.argv
-        print("Initial script with args: " + str(self.args[1:]))
+        log_debug(msg="Initial script with args: " + str(self.args[1:]))
 
         #shared variable object
         #example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
