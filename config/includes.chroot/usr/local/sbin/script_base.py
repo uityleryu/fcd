@@ -36,30 +36,6 @@ class ScriptBase(object):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
 
-    def stop_uboot(self, timeout=30):
-        if self.pexpect == None:
-            error_critical(msg="No pexpect obj exists!")
-        else:
-            log_debug(msg="Stopping U-boot")
-            self.pexpect.expect2actu1(timeout=timeout, exptxt="Hit any key to stop autoboot", action="\r")
-            self.pexpect.expect2actu1(timeout=timeout, exptxt=self.variable.common.bootloader_prompt, action="\r")
-
-    def is_mdk_exist_in_uboot(self):
-        is_exist = False
-        log_debug(msg="Checking if MDK available in U-boot.")
-        self.pexpect.proc.send('\r')
-        self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
-        time.sleep(1)
-        self.pexpect.proc.sendline('mdk_drv')
-        extext_list = ["Found MDK device", 
-                       "Unknown command"]
-        (index, _) = self.pexpect.expect_base(timeout=30, exptxt=extext_list, action="", get_result_index=True)
-        if index == 0 :
-            is_exist = True
-        elif index == 1:
-            is_exist = False
-            self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
-        return is_exist
 
     def login(self, username=None, password=None):
         """
