@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from lazy import lazy
 from ubntlib.variable.common import CommonVariable
-from ubntlib.variable.us_mfg import USMFG
-from ubntlib.variable.us_factory import USFactory
+from ubntlib.variable.us_mfg_variable import USMFG
+from ubntlib.variable.us_factory_variable import USFactory
 
 class VariableHelper(object):
 

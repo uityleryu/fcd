@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from lazy import lazy
 from ubntlib.fcd.common import Common
-from ubntlib.fcd.uboot import Uboot
+
 
 class FCDHelper(object):
     def __init__(self):
@@ -15,9 +15,5 @@ class FCDHelper(object):
         instance = Common()
         return instance
 
-    @lazy
-    def uboot(self):
-        instance =  Uboot(self.__pexpect_obj)
-        return instance
 
 

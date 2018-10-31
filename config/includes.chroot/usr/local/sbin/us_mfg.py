@@ -11,6 +11,32 @@ class USMFGGeneral(ScriptBase):
     def __init__(self):
         super(USMFGGeneral, self).__init__()
     
+    def sf_erase(self, address, erase_size):
+        """
+        run cmd in uboot :[sf erase address erase_size]
+        Arguments:
+            address {string}
+            erase_size {string} 
+        """
+        log_debug(msg="Initializing sf => sf probe")
+        self.pexpect.proc.sendline('sf probe')
+        self.pexpect.expect2actu1(timeout=20, exptxt=self.variable.common.bootloader_prompt, action="")
+
+        earse_cmd = "sf erase " + address + " " +erase_size
+        log_debug(msg="run cmd " + earse_cmd)
+        self.pexpect.proc.sendline(earse_cmd)
+        self.pexpect.expect2actu1(timeout=20, exptxt=self.variable.common.bootloader_prompt, action="")
+    
+    def uclearcal(self, args="-f -e"):
+        """
+        run cmd in uboot: uclearcal {args}
+        for wifi usage only
+        """
+        self.pexpect.proc.sendline(self.variable.common.cmd_prefix + "uclearcal " + args)
+        self.pexpect.expect2actu1(timeout=20, exptxt="Done.", action="")
+        self.pexpect.expect2actu1(timeout=20, exptxt=self.variable.common.bootloader_prompt, action="")
+        log_debug(msg="Calibration Data erased")
+    
     def uclearcfg(self):
         """
         run cmd : uclearcfg
@@ -55,6 +81,31 @@ class USMFGGeneral(ScriptBase):
         if return_code == -1:
             error_critical(msg="Failed to download firmware !")
         msg(no=40, out="Firmware flashed")
+
+    def stop_uboot(self, timeout=30):
+        if self.pexpect == None:
+            error_critical(msg="No pexpect obj exists!")
+        else:
+            log_debug(msg="Stopping U-boot")
+            self.pexpect.expect2actu1(timeout=timeout, exptxt="Hit any key to stop autoboot", action="\r")
+            self.pexpect.expect2actu1(timeout=timeout, exptxt=self.variable.common.bootloader_prompt, action="\r")
+
+    def is_mdk_exist_in_uboot(self):
+        is_exist = False
+        log_debug(msg="Checking if MDK available in U-boot.")
+        self.pexpect.proc.send('\r')
+        self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
+        time.sleep(1)
+        self.pexpect.proc.sendline('mdk_drv')
+        extext_list = ["Found MDK device", 
+                       "Unknown command"]
+        (index, _) = self.pexpect.expect_base(timeout=30, exptxt=extext_list, action="", get_result_index=True)
+        if index == 0 :
+            is_exist = True
+        elif index == 1:
+            is_exist = False
+            self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
+        return is_exist
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
@@ -128,7 +179,7 @@ class USMFGGeneral(ScriptBase):
         (uboot_env_address, uboot_env_address_size) = self.decide_uboot_env_mtd_memory()
         
         log_debug(msg="Erasing uboot-env")
-        self.fcd.uboot.sf_erase(address=uboot_env_address, erase_size=uboot_env_address_size)
+        self.sf_erase(address=uboot_env_address, erase_size=uboot_env_address_size)
 
         self.reset_and_login_linux()
         self.download_and_update_firmware_in_linux()

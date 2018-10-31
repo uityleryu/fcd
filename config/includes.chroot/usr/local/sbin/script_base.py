@@ -61,32 +61,6 @@ class ScriptBase(object):
             self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
         return is_exist
 
-    def sf_erase(self, address, erase_size):
-        """
-        run cmd in uboot :[sf erase address erase_size]
-        Arguments:
-            address {string}
-            erase_size {string} 
-        """
-        log_debug(msg="Initializing sf => sf probe")
-        self.pexpect_helper.proc.sendline('sf probe')
-        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
-
-        earse_cmd = "sf erase " + address + " " +erase_size
-        log_debug(msg="run cmd " + earse_cmd)
-        self.pexpect_helper.proc.sendline(earse_cmd)
-        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
-
-    def uclearcal(self, args="-f -e"):
-        """
-        run cmd in uboot: uclearcal {args}
-        for wifi usage only
-        """
-        self.pexpect_helper.proc.sendline(self.variable_helper.common_variable.cmd_prefix + "uclearcal " + args)
-        self.pexpect_helper.expect2actu1(timeout=20, exptxt="Done.", action="")
-        self.pexpect_helper.expect2actu1(timeout=20, exptxt=self.variable_helper.common_variable.bootloader_prompt, action="")
-        log_debug(msg="Calibration Data erased")
-
     def login(self, username=None, password=None):
         """
         should be called at login console
