@@ -189,7 +189,7 @@ class USMFGGeneral(ScriptBase):
         Main procudure of back to ART
         """
         self.config_stty(self.variable_helper.mfg_broadcom.dev)
-        self.print_current_fcd_version(file=filepath)
+        self.print_current_fcd_version()
 
         #Connect into DU using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.variable_helper.mfg_broadcom.dev + " -b 115200"
