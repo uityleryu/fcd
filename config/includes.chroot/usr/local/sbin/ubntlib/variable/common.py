@@ -3,7 +3,7 @@ import os
 
 class CommonVariable(object):
 
-    def __init__(self, args):
+    def __init__(self):
 
         #prompt related
         self.bootloader_prompt = "u-boot>"
@@ -11,6 +11,7 @@ class CommonVariable(object):
         self.cmd_prefix = r"go $ubntaddr "
 
         self.tftp_server = "192.168.1.19"
+     
 
         #DU log-in info
         self.user = "ubnt"
@@ -30,3 +31,14 @@ class CommonVariable(object):
         print("password:" + str(self.password))
         print("tftp_server:" + str(self.tftp_server))
 
+    def set_bootloader_prompt(self, prompt=None):
+        if prompt != None:
+            self.bootloader_prompt = prompt
+        else:
+            print("Nothing changed. Please assign promt!")
+
+    def set_cmd_prefix(self, prefix=None):
+        if prefix != None:
+            self.cmd_prefix = prefiz
+        else:
+            print("Nothing changed. Please assign prefix!")
