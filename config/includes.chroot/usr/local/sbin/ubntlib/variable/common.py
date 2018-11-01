@@ -42,3 +42,9 @@ class CommonVariable(object):
             self.cmd_prefix = prefix
         else:
             print("Nothing changed. Please assign prefix!")
+
+    def set_linux_prompt(self, prompt=None):
+        if prompt != None:
+            self.linux_prompt = prompt
+        else:
+            print("Nothing changed. Please assign prompt!")

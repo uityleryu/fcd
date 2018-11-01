@@ -69,7 +69,7 @@ class USMFGGeneral(ScriptBase):
         self.pexpect.proc.sendline("syswrapper.sh upgrade2")
         return_code = self.pexpect.expect_base(timeout=120, exptxt="Restarting system.", action="", end_if_timeout=False)
         if return_code == -1:
-            error_critical(msg="Failed to download firmware !")
+            error_critical(msg="Failed to flash firmware !")
         msg(no=40, out="Firmware flashed")
 
     def stop_uboot(self, timeout=30):
@@ -213,7 +213,7 @@ class USMFGGeneral(ScriptBase):
                                                                                     self.variable.us_mfg.firmware_img,
                                                                                     self.variable.us_mfg.ip)
         msg(no=70, out="DUT is requesting the firmware from FCD server") 
-        log_debug(msg="Run cmd on host:"+ atftp_cmd)
+        log_debug(msg="Run cmd on host:" + atftp_cmd)
         self.fcd.common.xcmd(cmd=atftp_cmd)
         self.pexpect.expect2actu1(timeout=150, exptxt=self.variable.common.bootloader_prompt, action="")
         log_debug(msg="FCD completed the firmware uploading")

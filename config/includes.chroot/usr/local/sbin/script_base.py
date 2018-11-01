@@ -36,7 +36,6 @@ class ScriptBase(object):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
 
-
     def login(self, username=None, password=None):
         """
         should be called at login console
