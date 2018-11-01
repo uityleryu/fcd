@@ -27,16 +27,6 @@ class USMFGGeneral(ScriptBase):
         self.pexpect.proc.sendline(earse_cmd)
         self.pexpect.expect2actu1(timeout=20, exptxt=self.variable.common.bootloader_prompt, action="")
     
-    def uclearcal(self, args="-f -e"):
-        """
-        run cmd in uboot: uclearcal {args}
-        for wifi usage only
-        """
-        self.pexpect.proc.sendline(self.variable.common.cmd_prefix + "uclearcal " + args)
-        self.pexpect.expect2actu1(timeout=20, exptxt="Done.", action="")
-        self.pexpect.expect2actu1(timeout=20, exptxt=self.variable.common.bootloader_prompt, action="")
-        log_debug(msg="Calibration Data erased")
-    
     def uclearcfg(self):
         """
         run cmd : uclearcfg
@@ -113,9 +103,11 @@ class USMFGGeneral(ScriptBase):
         extext_list = ["ping: sendto: Network is unreachable", 
                        r"64 bytes from " + self.variable.common.tftp_server]
         (index, _) = self.pexpect.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
-        if index == -1:
+        if index == 0 or index == -1:
+            self.pexpect.proc.send("\003")
             return False
-        elif index == 0 or index == 1:
+        elif index == 1:
+            self.pexpect.proc.send("\003")
             return True
 
     def is_network_alive_in_uboot(self):
@@ -144,7 +136,6 @@ class USMFGGeneral(ScriptBase):
             time.sleep(10)
             is_network_alive = self.is_network_alive_in_linux()
             if is_network_alive is False:
-                self.pexpect.proc.send('\003')
                 self.pexpect.proc.sendline('reboot')
                 continue
             else:
@@ -242,7 +233,6 @@ class USMFGGeneral(ScriptBase):
         log_debug(msg="DUT completed programming the firmware into flash, will be rebooting")
 
         self.pexpect.expect2actu1(timeout=120, exptxt="Verifying Checksum ... OK", action="")
-
 
     def run(self):
         """
