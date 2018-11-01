@@ -45,6 +45,6 @@ class ScriptBase(object):
             username = self.variable.common.user
             password = self.variable.common.password
         self.pexpect.proc.sendline(username)
-        self.pexpect.expect2actu1(timeout=20, exptxt="Password:", action="")
+        self.pexpect.expect(timeout=20, exptxt="Password:")
         self.pexpect.proc.sendline(password)
         time.sleep(2)

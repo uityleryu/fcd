@@ -22,19 +22,43 @@ class ExpttyProcess():
         else:
             self.log = logging.getLogger(logger_name)
 
-    def expect2actu1(self, timeout, exptxt, action):
-        return self.expect_base(timeout=timeout, exptxt=exptxt, action=action)
+    def expect(self, timeout, exptxt):
+        """simply expect
+            will exit if expect timeout or EOF
+        """
+        return self.__expect_base(timeout=timeout, exptxt=exptxt)
 
-    def expect_base(self, timeout, exptxt, action, end_if_timeout=True, get_result_index=False):
+    def expect_action(self, timeout, exptxt, action):
+        """expect and send action cmd
+            will exit if expect timeout or EOF
+        """
+        return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action)
+
+    def expect_get_index(self, timeout, exptxt):
+        """expect and get index which expect found
+        Returns:
+            [int] -- index if found, -1 if timeout
+        """
+        return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
+
+    def expect_get_index_action(self, timeout, exptxt, action):
+        """expect and send action cmd, meanwhile, return index which expect found        
+        Returns:
+            [int] -- index if found, -1 if timeout
+        """
+        return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action, end_if_timeout=False, get_result_index=True)
+
+    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False):
         """
         Args:
-            timeout {int}:  expect timeout
-            exptxt {string or list}: expect text
+            timeout {int}:
+            exptxt {string or list}:
             action {string}: the action command
-            get_result_index {bool}: return index which expect found
+            end_if_timeout {bool}: if timeout, exit or return -1
+            get_result_index {bool}: if true, return index which expect found
         Returns:
-            return 0 means success, 
-            return (index, 0) if get_result_index is True
+            return 0 means success
+            return index if get_result_index is True
         """
         ex = []
         if isinstance(exptxt, list):
@@ -55,11 +79,11 @@ class ExpttyProcess():
             else:
                 return -1
             
-        if (action != "") and (index >= 0):
+        if (action != None) and (index >= 0):
             self.proc.send(action + self.newline)
         
         if get_result_index is True:
-            return (index, 0)
+            return index
         else:
             return 0
 
