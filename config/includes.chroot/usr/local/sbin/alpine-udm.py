@@ -428,6 +428,7 @@ def main():
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, "", "")
     p.expect2actu1(30, lnxpmt, sstrj)
+    time.sleep(2)
 
     if os.path.isfile(tftpdir+eeprom_check):
         log_debug("Starting to compare the "+eeprom_check+" and "+eeprom_signed+" files ...")
@@ -436,6 +437,7 @@ def main():
                tftpdir+eeprom_signed]
         cmdj = ' '.join(cmd)
         [sto, rtc] = xcmd(cmdj)
+        time.sleep(2)
         if (int(rtc) > 0):
             error_critical("Comparing files failed!!")
         else:
@@ -475,7 +477,20 @@ def main():
     p.expect2actu1(30, "rootfs.squashfs: OK", "")
     p.expect2actu1(120, "Writing superblocks and filesystem accounting information", "")
 
-    p.expect2actu1(80, "Calling CRDA to update world regulatory domain", "\003")
+    p.expect2actu1(30, "to stop", "\033\033")
+    p.expect2actu1(30, ubpmt, swchip[boardid])
+    p.expect2actu1(30, ubpmt, "setenv ipaddr "+prod_dev_ip)
+    p.expect2actu1(30, ubpmt, "setenv serverip "+svip)
+    p.expect2actu1(30, ubpmt, "setenv tftpdir images/udm/udm-signed-")
+    time.sleep(2)
+    p.expect2actu1(30, ubpmt, "ping "+svip)
+    p.expect2actu1(30, "host "+svip+" is alive", "")
+    p.expect2actu1(30, ubpmt, "run bootupd")
+    p.expect2actu1(30, "Written: OK", "")
+    p.expect2actu1(30, "bootupd done", "")
+    p.expect2actu1(30, ubpmt, "reset")
+
+    p.expect2actu1(100, "Calling CRDA to update world regulatory domain", "\003")
     p.expect2actu1(80, "login:", "root")
     p.expect2actu1(30, "Password:", "ubnt")
 
