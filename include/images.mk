@@ -17,7 +17,7 @@ USGPRO4-IMAGE=e221.bin \
              products.txt \
              images/usg-pro-4-kernel \
              images/ER-e220.v4.4.30.5127050.tar \
-             uboot-images/u-boot.ER-e220.e220.4785663-gaff5016.bin.2 \
+             uboot-images/u-boot.ER-e220.e220.5102844-g4f1145c.bin.2 \
              scripts/USGPRO4/mmc-prep.sh \
              scripts/USGPRO4/usb-prep.sh
 
