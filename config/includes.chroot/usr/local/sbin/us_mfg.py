@@ -96,6 +96,7 @@ class USMFGGeneral(ScriptBase):
         return is_exist
 
     def is_network_alive_in_linux(self):
+        time.sleep(3)
         self.pexpect.proc.sendline('\rifconfig;ping ' + self.variable.common.tftp_server)
         extext_list = ["ping: sendto: Network is unreachable", 
                        r"64 bytes from " + self.variable.common.tftp_server]
@@ -108,6 +109,7 @@ class USMFGGeneral(ScriptBase):
             return True
 
     def is_network_alive_in_uboot(self):
+        time.sleep(3)
         self.pexpect.proc.sendline('ping ' + self.variable.common.tftp_server)
         extext_list = ["host " + self.variable.common.tftp_server + " is alive"]
         index = self.pexpect.expect_get_index(timeout=60, exptxt=extext_list)
