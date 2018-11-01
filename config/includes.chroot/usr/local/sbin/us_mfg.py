@@ -193,10 +193,12 @@ class USMFGGeneral(ScriptBase):
             self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
             time.sleep(3)
 
-        setenv_cmd = 'setenv ethaddr {0}; setenv serverip {1}; setenv ipaddr {2}'.format(self.variable.us_mfg.fake_mac, 
-                                                                                         self.variable.common.tftp_server,
-                                                                                         self.variable.us_mfg.ip)
-        self.pexpect.proc.sendline(setenv_cmd)
+        self.pexpect.proc.sendline("setenv ethaddr " + self.variable.us_mfg.fake_mac)
+        time.sleep(0.5)
+        self.pexpect.proc.sendline("setenv serverip " + self.variable.common.tftp_server)
+        time.sleep(0.5)
+        self.pexpect.proc.sendline("setenv ipaddr " + self.variable.us_mfg.ip)
+        time.sleep(0.5)
         if self.is_network_alive_in_uboot() is False:
             error_critical(msg="Can't ping the FCD server !")
         self.pexpect.proc.sendline("urescue -u")
