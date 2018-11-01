@@ -23,26 +23,26 @@ class ExpttyProcess():
             self.log = logging.getLogger(logger_name)
 
     def expect(self, timeout, exptxt):
-        """simply expect
-            will exit if expect timeout or EOF
+        """Simply expect.
+            Will exit if expect timeout or EOF.
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt)
 
     def expect_action(self, timeout, exptxt, action):
-        """expect and send action cmd
-            will exit if expect timeout or EOF
+        """Expect and send action cmd.
+            Will exit if expect timeout or EOF.
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action)
 
     def expect_get_index(self, timeout, exptxt):
-        """expect and get index which expect found
+        """Expect and get index which expect found.
         Returns:
             [int] -- index if found, -1 if timeout
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
 
     def expect_get_index_action(self, timeout, exptxt, action):
-        """expect and send action cmd, meanwhile, return index which expect found        
+        """Expect and send action cmd, then, return index which expect found.        
         Returns:
             [int] -- index if found, -1 if timeout
         """
