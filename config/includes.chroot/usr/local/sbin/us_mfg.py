@@ -136,7 +136,7 @@ class USMFGGeneral(ScriptBase):
                 if is_network_alive == True:
                     break
                 else:
-                    log_debug("Retry checking network (retry=" + str(retry + ")"))
+                    log_debug("Retry checking network (retry=" + str(retry) + ")")
                     time.sleep(3)
             if is_network_alive is False:
                 self.pexpect.proc.sendline('reboot')
