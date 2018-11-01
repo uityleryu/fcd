@@ -46,7 +46,6 @@ class USMFGGeneral(ScriptBase):
         return_code = self.pexpect.expect_base(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="", end_if_timeout=False)
         if return_code == -1:
             error_critical(msg="Linux Hung!!")
-        time.sleep(5)
         for retry in range(3):
             tftp_cmd = "cd /tmp/; tftp -r {0}/{1}/{2} -l fwupdate.bin -g {3}\r".format(
                                                     self.variable.common.firmware_dir,
@@ -65,7 +64,6 @@ class USMFGGeneral(ScriptBase):
             elif index == 1:
                 break
         log_debug(msg="Firmware downloaded")
-        time.sleep(2)
         self.pexpect.proc.sendline("syswrapper.sh upgrade2")
         return_code = self.pexpect.expect_base(timeout=120, exptxt="Restarting system.", action="", end_if_timeout=False)
         if return_code == -1:
@@ -85,7 +83,6 @@ class USMFGGeneral(ScriptBase):
         log_debug(msg="Checking if MDK available in U-boot.")
         self.pexpect.proc.send('\r')
         self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
-        time.sleep(1)
         self.pexpect.proc.sendline('mdk_drv')
         extext_list = ["Found MDK device", 
                        "Unknown command"]
@@ -98,7 +95,6 @@ class USMFGGeneral(ScriptBase):
         return is_exist
 
     def is_network_alive_in_linux(self):
-        time.sleep(3)
         self.pexpect.proc.sendline('\rifconfig;ping ' + self.variable.common.tftp_server)
         extext_list = ["ping: sendto: Network is unreachable", 
                        r"64 bytes from " + self.variable.common.tftp_server]
@@ -111,7 +107,6 @@ class USMFGGeneral(ScriptBase):
             return True
 
     def is_network_alive_in_uboot(self):
-        time.sleep(3)
         self.pexpect.proc.sendline('ping ' + self.variable.common.tftp_server)
         extext_list = ["host " + self.variable.common.tftp_server + " is alive"]
         (index, _) = self.pexpect.expect_base(timeout=60, exptxt=extext_list, action ="", end_if_timeout=False, get_result_index=True)
@@ -133,7 +128,6 @@ class USMFGGeneral(ScriptBase):
             self.pexpect.expect2actu1(timeout=10, exptxt="login:", action="")
             log_debug(msg="Got Linux login prompt")
             self.login()
-            time.sleep(10)
             is_network_alive = self.is_network_alive_in_linux()
             if is_network_alive is False:
                 self.pexpect.proc.sendline('reboot')
@@ -188,17 +182,16 @@ class USMFGGeneral(ScriptBase):
         """
         log_debug(msg="Starting in the urescue mode to program the firmware")        
         if self.variable.us_mfg.is_board_id_in_group(group=self.variable.us_mfg.usw_group_1):
-            time.sleep(1)
             self.pexpect.proc.sendline("mdk_drv")
             self.pexpect.expect2actu1(timeout=30, exptxt=self.variable.common.bootloader_prompt, action="")
             time.sleep(3)
 
         self.pexpect.proc.sendline("setenv ethaddr " + self.variable.us_mfg.fake_mac)
-        time.sleep(0.5)
+        self.pexpect.expect2actu1(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="")
         self.pexpect.proc.sendline("setenv serverip " + self.variable.common.tftp_server)
-        time.sleep(0.5)
+        self.pexpect.expect2actu1(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="")
         self.pexpect.proc.sendline("setenv ipaddr " + self.variable.us_mfg.ip)
-        time.sleep(0.5)
+        self.pexpect.expect2actu1(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="")
         if self.is_network_alive_in_uboot() is False:
             error_critical(msg="Can't ping the FCD server !")
         self.pexpect.proc.sendline("urescue -u")
