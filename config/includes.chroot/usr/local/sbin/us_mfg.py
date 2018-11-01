@@ -46,6 +46,7 @@ class USMFGGeneral(ScriptBase):
         return_code = self.pexpect.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
         if return_code == -1:
             error_critical(msg="Linux Hung!!")
+        time.sleep(5)
         for retry in range(3):
             tftp_cmd = "cd /tmp/; tftp -r {0}/{1}/{2} -l fwupdate.bin -g {3}\r".format(
                                                     self.variable.common.firmware_dir,
@@ -128,7 +129,13 @@ class USMFGGeneral(ScriptBase):
             self.pexpect.expect(timeout=10, exptxt="login:")
             log_debug(msg="Got Linux login prompt")
             self.login()
-            is_network_alive = self.is_network_alive_in_linux()
+            for retry in range(3):
+                is_network_alive = self.is_network_alive_in_linux()
+                if is_network_alive == True:
+                    break
+                else:
+                    log_debug("Retry checking network (retry=" + str(retry + ")"))
+                    time.sleep(3)
             if is_network_alive is False:
                 self.pexpect.proc.sendline('reboot')
                 continue
