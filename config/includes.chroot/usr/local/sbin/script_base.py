@@ -21,7 +21,7 @@ class ScriptBase(object):
 
         #shared pexpect object, instanced from class ExpttyProcess
         #must be set by set_pexpect_helper()
-        #example usuage - self.pexpect.proc.expect_action(...) / .expect_simplely(...)
+        #example usuage - self.pexpect.proc.{function}(...)
         self.__pexpect_obj = None
       
 
