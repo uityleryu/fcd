@@ -45,13 +45,6 @@ class ExpttyProcess():
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
 
-    def expect_get_index_action(self, timeout, exptxt, action):
-        """Expect and send action cmd, then, return index which expect found.        
-        Returns:
-            [int] -- index if found, -1 if timeout
-        """
-        return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action, end_if_timeout=False, get_result_index=True)
-
     def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False):
         """
         Args:

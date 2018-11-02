@@ -152,10 +152,11 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Network is Unreachable")
         else:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
-            index = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
+            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
-            index = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
+            self.pexp.expect_action(timeout=10, exptxt="", action="")
+            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
     
