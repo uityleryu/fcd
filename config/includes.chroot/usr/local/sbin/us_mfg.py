@@ -43,8 +43,8 @@ class USMFGGeneral(ScriptBase):
         """
         log_debug(msg="Download "+ self.variable.us_mfg.firmware_img + " from " + self.variable.common.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt="", action="")
-        return_code = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
-        if return_code == -1:
+        index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
+        if index == self.pexp.TIMEOUT:
             error_critical(msg="Linux Hung!!")
         time.sleep(5)
         for retry in range(3):
@@ -58,7 +58,7 @@ class USMFGGeneral(ScriptBase):
             extext_list = ["Invalid argument", 
                             r".*#"]
             index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
-            if index == -1:
+            if index == self.pexp.TIMEOUT:
                 error_critical(msg="Failed to download Firmware")
             elif index == 0:
                 continue
@@ -66,8 +66,8 @@ class USMFGGeneral(ScriptBase):
                 break
         log_debug(msg="Firmware downloaded")
         self.pexp.expect_action(timeout=10, exptxt="", action="syswrapper.sh upgrade2")
-        return_code = self.pexp.expect_get_index(timeout=120, exptxt="Restarting system.")
-        if return_code == -1:
+        index = self.pexp.expect_get_index(timeout=120, exptxt="Restarting system.")
+        if index == self.pexp.TIMEOUT:
             error_critical(msg="Failed to flash firmware !")
         msg(no=40, out="Firmware flashed")
 
@@ -91,7 +91,7 @@ class USMFGGeneral(ScriptBase):
         index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
         if index == 0 or index == 1:
             is_exist = True
-        elif index == 2:
+        elif index == 2 or index == self.pexp.TIMEOUT:
             is_exist = False
             self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
         return is_exist
@@ -102,7 +102,7 @@ class USMFGGeneral(ScriptBase):
         extext_list = ["ping: sendto: Network is unreachable", 
                        r"64 bytes from " + self.variable.common.tftp_server]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
-        if index == 0 or index == -1:
+        if index == 0 or index == self.pexp.TIMEOUT:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
             return False
         elif index == 1:
@@ -119,7 +119,7 @@ class USMFGGeneral(ScriptBase):
             if index == 0:
                 is_alive = True
                 break
-            elif index == -1:
+            elif index == self.pexp.TIMEOUT:
                 is_alive = False
         return is_alive
 
@@ -152,12 +152,11 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Network is Unreachable")
         else:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
-            return_code = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
-            # return_code == -1 means timeout
-            if return_code == -1:
+            index = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
+            if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
             return_code = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
-            if return_code == -1:
+            if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
     
     def decide_uboot_env_mtd_memory(self):
@@ -215,7 +214,7 @@ class USMFGGeneral(ScriptBase):
         extext_list = ["TFTPServer started. Wating for tftp connection...", 
                        "Listening for TFTP transfer"]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
-        if index == -1:
+        if index == self.pexp.TIMEOUT:
             error_critical(msg="Failed to start urescue")
         elif index == 0 or index == 1:
             log_debug(msg="TFTP is waiting for file")
@@ -236,11 +235,11 @@ class USMFGGeneral(ScriptBase):
         self.pexp.expect_only(timeout=20, exptxt="Firmware Version:")
         log_debug(msg="DUT finds the firmware version")
         index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done")
-        if index == -1:
+        if index == self.pexp.TIMEOUT:
             error_critical(msg="Failed to flash firmware.")
         log_debug(msg="DUT starts to program the firmware to flash")
         index = self.pexp.expect_get_index(timeout=200, exptxt="Firmware update complete.")
-        if index == -1:
+        if index == self.pexp.TIMEOUT:
             error_critical(msg="Failed to flash firmware.")
         log_debug(msg="DUT completed programming the firmware into flash, will be rebooting")
 

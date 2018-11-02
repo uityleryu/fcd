@@ -6,6 +6,10 @@ import logging
 from io import StringIO
 
 class ExpttyProcess():
+
+    TIMEOUT = -1
+    EOF = -2
+
     def __init__(self, id, cmd, newline, logger_name=None):
         self.id = id
         self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
@@ -77,7 +81,7 @@ class ExpttyProcess():
             if end_if_timeout == True:
                 exit(1)
             else:
-                return -1
+                return self.TIMEOUT
             
         if (action != None) and (index >= 0):
             self.proc.send(action + self.newline)
