@@ -86,11 +86,12 @@ class USMFGGeneral(ScriptBase):
         self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
         self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
         extext_list = ["Found MDK device", 
+                       "MDK initialized failed",
                        "Unknown command"]
         index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
-        if index == 0 :
+        if index == 0 or index == 1:
             is_exist = True
-        elif index == 1:
+        elif index == 2:
             is_exist = False
             self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
         return is_exist
@@ -194,15 +195,22 @@ class USMFGGeneral(ScriptBase):
         after flash firmware, DU will be resetting
         """
         log_debug(msg="Starting in the urescue mode to program the firmware")        
+        self.pexp.expect_action(timeout=10, exptxt="", action="{0}usetbid {1}".format(self.variable.common.cmd_prefix,
+                                                                                      self.variable.us_mfg.board_id))
+        self.pexp.expect_only(timeout=10, exptxt="Done.")
+
         if self.variable.us_mfg.is_board_id_in_group(group=self.variable.us_mfg.usw_group_1):
             self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
             self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
             time.sleep(3)
-        self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv ethaddr " + self.variable.us_mfg.fake_mac)
+
+        self.pexp.expect_action(timeout=10, exptxt="", action="setenv ethaddr " + self.variable.us_mfg.fake_mac)
         self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv serverip " + self.variable.common.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv ipaddr " + self.variable.us_mfg.ip)
+        
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical(msg="Can't ping the FCD server !")
+        
         self.pexp.expect_action(timeout=10, exptxt="", action="urescue -u")
         extext_list = ["TFTPServer started. Wating for tftp connection...", 
                        "Listening for TFTP transfer"]
