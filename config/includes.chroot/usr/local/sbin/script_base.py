@@ -21,12 +21,12 @@ class ScriptBase(object):
 
         #shared pexpect object, instanced from class ExpttyProcess
         #must be set by set_pexpect_helper()
-        #example usuage - self.pexpect.proc.send(...) / .sendline(...)
+        #example usuage - self.pexpect.proc.expect_action(...) / .expect_simplely(...)
         self.__pexpect_obj = None
       
 
     @property
-    def pexpect(self):
+    def pexp(self):
         if self.__pexpect_obj != None:
             return self.__pexpect_obj
         else:
@@ -44,7 +44,6 @@ class ScriptBase(object):
             #No username/password input, using default account
             username = self.variable.common.user
             password = self.variable.common.password
-        self.pexpect.proc.sendline(username)
-        self.pexpect.expect(timeout=20, exptxt="Password:")
-        self.pexpect.proc.sendline(password)
+        self.pexp.proc.send(username + self.pexp.newline)
+        self.pexp.expect_action(timeout=20, exptxt="Password:", action=password)
         time.sleep(2)
