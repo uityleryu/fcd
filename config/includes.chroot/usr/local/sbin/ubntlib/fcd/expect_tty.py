@@ -22,7 +22,7 @@ class ExpttyProcess():
         else:
             self.log = logging.getLogger(logger_name)
 
-    def expect_simplely(self, timeout, exptxt):
+    def expect_only(self, timeout, exptxt):
         """Simply expect.
             Will exit if expect timeout or EOF.
         """
