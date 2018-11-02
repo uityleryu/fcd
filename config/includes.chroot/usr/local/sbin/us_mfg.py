@@ -155,7 +155,7 @@ class USMFGGeneral(ScriptBase):
             index = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
-            return_code = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
+            index = self.pexp.expect_get_index_action(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt, action="")
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
     
