@@ -1,7 +1,7 @@
 #!/bins/sh
 
 # For build environmental variables
-OUTDIR="/export"
+OUTDIR=$(pwd)/output
 APP_DIR="usr/local/sbin"
 EXLIVECD="${OUTDIR}/ExtractLivedCD"
 EXSQUASHFS="${OUTDIR}/ExtractLivedSquashfs"

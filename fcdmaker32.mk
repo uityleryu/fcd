@@ -2,7 +2,7 @@ include include/images.mk
 include include/image-install.mk
 
 # For build environmental variables
-OUTDIR=/export
+OUTDIR=$(shell pwd)/output
 APP_DIR=usr/local/sbin
 EXLIVECD=$(OUTDIR)/ExtractLivedCD
 EXSQUASHFS=$(OUTDIR)/ExtractLivedSquashfs
