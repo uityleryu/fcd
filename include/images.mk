@@ -38,8 +38,8 @@ USPRO-IMAGE=eb36.bin eb36-mfg.bin \
             images/unifiswitch-us48pro-fw.bin \
             images/unifiswitch-us24pro-mfg.bin \
             images/unifiswitch-us48pro-mfg.bin \
-            images/US.bcm5616x.feature-usw-pro-dev.9279.181004.1949-uboot-mdk-mfg.bin \
-            images/US.bcm5616x.feature-usw-pro-dev.9293.181019.1547-uboot.bin
+            images/US.bcm5616x.feature-usw-pro-dev.9306.181102.0853-uboot-mdk.bin \
+            images/US.bcm5616x.feature-usw-pro-dev.9306.181101.1543-uboot.bin
 
 TOOLS=helper_ARxxxx \
       helper_ARxxxx_musl \
