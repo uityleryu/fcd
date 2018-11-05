@@ -168,7 +168,7 @@ class USMFGGeneral(ScriptBase):
         """
         self.pexp.expect_action(timeout=10, exptxt="", action="print mtdparts")
         self.pexp.expect_only(timeout=10, exptxt=self.variable.common.bootloader_prompt)
-        output = self.pexp.proc.before
+        output = self.pexp.get_before_str()
         if self.variable.us_mfg.flash_mtdparts_64M in output:
             return ("0x1e0000", "0x10000") #use 64mb flash
         else:
@@ -256,7 +256,11 @@ class USMFGGeneral(ScriptBase):
         #Connect into DU using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.variable.us_mfg.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.variable.us_mfg.row_id, pexpect_cmd, "\n")
+        pexpect_obj = ExpttyProcess(self.variable.us_mfg.row_id,
+                        "/dev/"+ self.variable.us_mfg.dev,
+                        115200,
+                        "\n"
+                        )
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         

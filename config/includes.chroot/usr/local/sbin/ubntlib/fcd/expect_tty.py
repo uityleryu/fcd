@@ -2,18 +2,28 @@
 import time
 import sys
 import pexpect
+from pexpect import fdpexpect
 import logging
 from io import StringIO
+import serial
 
 class ExpttyProcess():
 
     TIMEOUT = -1
     EOF = -2
 
-    def __init__(self, id, cmd, newline, logger_name=None):
+    def __init__(self, id, port, speed, newline, logger_name=None):
         self.id = id
-        self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
-        self.proc.logfile_read = sys.stdout
+        self.ser = serial.Serial(
+            port = port,
+            baudrate = speed,
+            parity=serial.PARITY_NONE,
+            stopbits=serial.STOPBITS_ONE,
+            bytesize=serial.EIGHTBITS
+            )
+        self.ser.isOpen()
+        self.proc = pexpect.fdpexpect.fdspawn(self.ser)
+        self.proc.logfile = sys.stdout.buffer
         self.newline = newline
         # Using default logger shows message to stdout
         if(logger_name == None):
@@ -44,6 +54,11 @@ class ExpttyProcess():
             [int] -- index if found, -1 if timeout
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
+
+    def get_before_str(self):
+        """ Get expect.before and transcode to str
+        """
+        return self.proc.before.decode('utf-8')
 
     def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False):
         """
