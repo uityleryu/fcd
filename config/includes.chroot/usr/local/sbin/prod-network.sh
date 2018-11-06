@@ -123,6 +123,7 @@ echo -n "wget_status: $wget_status\n"
 
 if [ $wget_status -eq 0 ]; then
     touch ${STATUS}
+    echo $prod_iface > ${STATUS}
     if [ -f /etc/init.d/dhcp3-server ]; then
         sed -i -e "s,^INTERFACES=.*$,INTERFACES=\"${prod_iface}\",g" /etc/default/dhcp3-server
         /etc/init.d/dhcp3-server start >/dev/null 2>&1

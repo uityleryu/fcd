@@ -16,7 +16,7 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 BASE_OS=FCD-perl-base-20180806.iso
 NEW_LABEL=UBNT_FCD
 
-VER=FCD-USW-UAP[4.0.2]
+VER=FCD-USW-UAP[4.0.5]-UIS8-BRNIN
 LIVE_CD_VER=$(VER).iso
 
 # Mount Checking LiveCD
@@ -46,6 +46,7 @@ create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_li
 	rm -rf $(NEWSQUASHFS)/srv/tftp/*
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Firmware\ Loader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/Firmware\ Loader.desktop
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg

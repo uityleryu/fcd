@@ -1,6 +1,6 @@
 boardid=ed04
 bomrev=113-02672
 cclock=none
-description=UniFi Industrial Switch 8 ports 150W
+description=UniFi Industrial Switch 8 ports 450W
 name=uis-8-450
 script=/usr/local/sbin/msccfactory.pl
