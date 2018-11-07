@@ -249,7 +249,7 @@ class DHCPServerConfiguration(object):
     subnet_mask = '255.255.255.0'
     router = None # list of ips
     # 1 day is 86400
-    ip_address_lease_time = 60 # seconds
+    ip_address_lease_time = 120 # seconds
     domain_name_server = None # list of ips
 
     host_file = 'hosts.csv'
@@ -559,7 +559,6 @@ class DHCPServer(object):
 
     def monitor(self, amount, cb):
         self.monitor_run = True
-        self.time_started = time.time()
         cur_hosts = self.get_current_hosts() 
         while len(cur_hosts) < amount:
             cur_hosts = self.get_current_hosts()
@@ -570,6 +569,7 @@ class DHCPServer(object):
 
     def monitor_in_thread(self, amount, dhcp_done_cb):
         if self.monitor_run == False :
+            self.time_started = time.time()
             thread = threading.Thread(target = self.monitor, args=[amount, dhcp_done_cb])
             thread.setDaemon(True)
             thread.start()

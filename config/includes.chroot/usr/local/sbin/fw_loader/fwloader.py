@@ -108,6 +108,7 @@ class fwloader():
         
         print("Waiting for updating done => mac={} ip={}".format(self.devmac, self.devip))
         self.conn.expect2act(120, "Done")
+        time.sleep(5)
 
     def showInfo(self, prompt):
         rtbuf = []
@@ -137,7 +138,6 @@ class fwloader():
             msg(100, "Connecting via ssh to devices for the {} time".format(self.loadcnt))
             self.sshlogin(prompt)
             self.showInfo(prompt)
-            
 
         
 def main():
