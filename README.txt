@@ -27,6 +27,9 @@ FCD-base.iso:
     apt-get -y install python3-gi-cairo
     apt-get -y install python3-serial
     apt-get -y install python3-pexpect
+    pip3 install setuptools
+    pip3 install wheel
+    pip3 install lazy
     
     # serial console packages
     apt-get -y install picocom
