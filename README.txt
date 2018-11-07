@@ -53,4 +53,3 @@ Generating FCD ISO file procedure
 Step_1: copy the FCD-base.iso to /export
 Step_2: go to the fcd folder where you cloned
 Step_3: typing "make -f fcdmaker32.mk create_live_cd"
-Step_4: you will find the new FCD in the /export

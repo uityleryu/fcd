@@ -19,9 +19,8 @@ class ScriptBase(object):
         self.variable = VariableHelper(self.args[1:])
         self.fcd = FCDHelper()
 
-        #shared pexpect object, instanced from class ExpttyProcess
         #must be set by set_pexpect_helper()
-        #example usuage - self.pexpect.proc.{function}(...)
+        #example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
       
 
