@@ -66,6 +66,15 @@
       "BOMREV" : "113-02672",
       "DESC" : "UniFi Industrial Switch 8 ports 450W",
       "FILE" : ""
+    },
+
+    "US-8C":{
+      "INDEX" : 7,
+      "NAME" : "US-8C",
+      "BOARDID" : "ed01",
+      "BOMREV" : "113-02556",
+      "DESC" : "UniFi Switch 8 ports (Microsemi)",
+      "FILE" : ""
     }
 
   },

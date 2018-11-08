@@ -32,6 +32,7 @@ login_passwd  = "ubnt"
 ubidiag_prompt = "UBNT-US.ubidiag"
 #ubidiag_prompt = "UBNT-US.pr-2291#"
 formal_prompt = {'ed04':"UBNT-US.v4.0.5#",
+                 'ed01':"UBNT-US.v4.0.5#",
                  'ed10':"UBNT-US.pr-2291#"}
 
 tftpdir = "/tftpboot/"
