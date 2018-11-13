@@ -17,7 +17,7 @@ BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
 VER=FCD-Amplifi-[0.0.5]
 LIVE_CD_VER=$(VER).iso
-UPYFCD_VER=5b72f6e359f395ef874a2fabbf5fbff93a03f07f
+UPYFCD_VER=4e5fa351ba4db345567dbb335a35e078dacfd3ca
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -32,6 +32,38 @@ $(eval $(call ProductImage,UDM,FCD-UDM-$(VER),u1dm))
 # Amplifi product line
 AFI-PRODUCT-LINE=""
 $(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
+
+# Create a whole new ISO from a downloaded ISO
+new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
+
+# Create a whole new ISO from a downloaded ISO
+create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
+	@echo " >> copy prep scripts to new squashfs "
+	cp -rf $(FCDAPP_DIR)/usr/local/* $(NEWSQUASHFS)/usr/local/
+	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/* $(NEWSQUASHFS)/etc/skel/Desktop/
+
+	@echo ">> change the FCD version to the desktop"
+	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
+	convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 '$(VER)'" $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.jpg
+
+	@echo " >> Regenerating NewSquashfs file "
+	if [ -f "$(NEWLIVEDCD)/live/filesystem.squashfs" ]; then \
+		rm $(NEWLIVEDCD)/live/filesystem.squashfs; \
+	fi
+	mksquashfs $(NEWSQUASHFS) $(NEWLIVEDCD)/live/filesystem.squashfs
+
+	@echo " >> Update MD5 sums "
+	@if [ -f "$(NEWLIVEDCD)/md5sum.txt" ]; then \
+		rm $(NEWLIVEDCD)/md5sum.txt; \
+	fi
+	bash -c "cd $(NEWLIVEDCD)/ && find . -type f -exec md5sum {} + > $(NEWLIVEDCD)/md5sum.txt"
+
+	echo " >> Generating NewLivedCD ISO "
+	cd $(NEWLIVEDCD); \
+	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(LIVE_CD_VER) .
+	chmod 777 $(OUTDIR)/$(LIVE_CD_VER)
+
 
 help:
 	@echo " ****************************************************************** "
@@ -60,10 +92,6 @@ check_root:
 		echo ""; \
 		exit 1; \
 	fi
-
-
-# Create a whole new ISO from a downloaded ISO
-new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
 
 prep: check_root
@@ -141,7 +169,7 @@ new_livedcd_pkg: check_root
 gitrepo: UPyFCD
 
 UPyFCD:
-	@git clone git@github.com:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
+	@git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
 	@cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER)
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
 	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/
