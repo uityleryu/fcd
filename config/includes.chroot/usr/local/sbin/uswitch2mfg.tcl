@@ -111,12 +111,18 @@ proc check_mdk {} {
     sleep 1
     send "mdk_drv\r"
     expect {
+        # DUT with mdk and initialized
+        # Goto uboot and do urescure
         "Found MDK device" {
             handle_urescue
-            log_progress 100 "Back to ART completed"
+            log_progress 100 "Back to ART has completed"
+        # DUT with mdk but not initialized
+        # Goto uboot and do urescure
         } "MDK initialized failed" {
             handle_urescue
-            log_progress 100 "Back to ART completed"
+            log_progress 100 "Back to ART has completed"
+        # DUT without mdk
+        # Goto linux upgrade uboot first
         } "Unknown command" {
             set timeout 30
             expect timeout {
@@ -142,52 +148,93 @@ proc handle_urescue {} {
     global USW_48_PRO
     global fakemac
 
+    set max_loop 4
+
     log_debug "Starting in the urescue mode to program the firmware"
 
-    sleep 1
-    send "$cmd_prefix uappinit\r"
-    set timeout 30
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    # Loop for uappinit retry
+    # Adding this retry because sometime mdk_drv failed to init
+    for { set i 0 } { $i < $max_loop } { incr i } {
+        if { $i == $max_loop - 1 } {
+            error_critical "U-Boot Init mdk_drv retry max reach"
+        }
 
-    # set Board ID
-    sleep 2
-    send "$cmd_prefix usetbid $boardid\r"
-    set timeout 15
-    expect timeout {
-        error_critical "usetbid set failed !"
-    } "Done."
-    set timeout 5
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+        set timeout 10
 
-    if { [string equal -nocase $boardid $USW_XG] == 1 ||
-         [string equal -nocase $boardid $USW_6XG_150] == 1 ||
-         [string equal -nocase $boardid $USW_24_PRO] == 1 ||
-         [string equal -nocase $boardid $USW_48_PRO] == 1 } {
-        sleep 10
-        send "mdk_drv\r"
-        set timeout 30
+        sleep 1
+        send "$cmd_prefix uappinit\r"
         expect timeout {
             error_critical "U-boot prompt not found !"
         } "$bootloader_prompt"
-        sleep 3
+
+        # set Board ID
+        sleep 2
+        send "$cmd_prefix usetbid $boardid\r"
+        expect timeout {
+            log_error "usetbid set failed !"
+            continue
+        } "Done."
+        
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } "$bootloader_prompt"
+
+        if { [string equal -nocase $boardid $USW_XG] == 1 ||
+            [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+            [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+            [string equal -nocase $boardid $USW_48_PRO] == 1 } {
+            sleep 3
+
+            send "mdk_drv\r"
+            expect {
+                "Found MDK device" {
+                    break
+                } "MDK is already initialized" {
+                    break
+                } "MDK initialized failed" {
+                    log_warn  "Fail to init mdk_drv...retrying"
+                    continue
+                } timeout {
+                    error_critical "U-boot prompt not found !"
+                }
+            }
+        }
     }
 
-    send "setenv ethaddr $fakemac; setenv serverip $tftpserver; setenv ipaddr $ip \r"
-    set timeout 10
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    set max_loop 4
+    # Loop for set network and ping retry
+    for { set i 0 } { $i < $max_loop } { incr i } {
+        set timeout 10
 
-    sleep 1
-    send "ping $tftpserver \r"
-    set timeout 50
-    expect timeout {
-        error_critical "Can't ping the FCD server !"
-    } "host $tftpserver is alive"
+        if { $i == $max_loop - 1 } {
+            error_critical "Ping retry max reach, Stop trying"
+        }
+
+        send "setenv ethaddr $fakemac\r"
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } "$bootloader_prompt"
+
+        send "setenv serverip $tftpserver\r"
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } "$bootloader_prompt"
+
+        send "setenv ipaddr $ip\r"
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } "$bootloader_prompt"
+
+        sleep 1
+        send "ping $tftpserver\r"
+        set timeout 10
+        expect timeout {
+            log_warn "Can't ping the FCD server !...retrying"
+            sleep 3
+            continue
+        } "host $tftpserver is alive"
+        break
+    }
 
     sleep 2
     send "urescue -u\r"
@@ -238,19 +285,32 @@ proc handle_urescue {} {
     send "$cmd_prefix uwrite -f\r"
     set timeout 70
     expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "Firmware Version:"
+        error_critical "Get firmware version error"
+    } -re "Firmware Version: .*"
 
-    log_debug "DUT finds the firmware version"
+    log_debug "DUT found the firmware version"
 
-    set timeout 300
     expect timeout {
-        error_critical "Failed to flash firmware !"
+        error_critical "Download Image file verify failure"
+    } "Image Signature Verfied, Success."
+
+    log_debug "Download image verify pass."
+
+    expect timeout {
+        error_critical "Failed to flash u-boot !"
+    } "Copying 'u-boot' partition. Please wait... :  done"
+
+    log_debug "u-boot flashed"
+
+
+    set timeout 600
+    expect timeout {
+        error_critical "Failed to flash kernel0 !"
     } "Copying to 'kernel0' partition. Please wait... :  done."
 
-    log_debug "DUT starts to program the firmware to flash"
+    log_debug "DUT finish to program the firmware to flash kernel0"
 
-    set timeout 180
+    set timeout 600
     expect timeout {
         error_critical "Failed to flash firmware !"
     } "Firmware update complete."
@@ -280,12 +340,19 @@ proc handle_linux {} {
     global bootloader_prompt
     global tftpserver
     global ip
-    set max_loop 3
+    set max_loop 5
 
     set timeout 200
+    set reboot_retry 0
     send "reset\r"
 
+    # Loop for reboot retry
     for { set i 0 } { $i < $max_loop } { incr i } {
+
+        if { $i == $max_loop - 1 } {
+            error_critical "Linux Network setup failed"
+        }
+
         expect timeout {
               error_critical "Linux Boot Failure"
         } "Please press Enter to activate this console"
@@ -300,20 +367,34 @@ proc handle_linux {} {
         log_debug "Got Linux Login prompt..."
         handle_login $user $passwd 0
 
-        sleep 10
-        send "\rifconfig;ping $tftpserver\r"
-        set timeout 60
-        expect {
-            "ping: sendto: Network is unreachable" {
-                error_critical "Network Unreachable"
-            } -re "64 bytes from $tftpserver" {
-                # Do nothing
-            } timeout {
-                error_critical "No response for ping !"
-                send \003
+        sleep 4
+        # Loop for ping retry
+        for { set j 0 } { $j < $max_loop } { incr j } {
+
+            if { $j == $max_loop-1 } {
+                log_warn "Ping retry max reach, rebooting..."
                 send "reboot\r"
-                continue
+                set reboot_retry 1
+                break
             } 
+
+            send "\rifconfig;ping $tftpserver\r"
+            set timeout 60
+            expect {
+                "ping: sendto: Network is unreachable" {
+                    log_warn "Network Unreachable...retrying"
+                } -re "64 bytes from $tftpserver" {
+                    break
+                } timeout {
+                    log_error "No response for ping !"
+                }
+            }
+            send \003
+            sleep 3
+        }
+
+        if { $reboot_retry == 1 } {
+            continue
         }
 
         send \003
@@ -361,6 +442,11 @@ proc update_firmware { boardid } {
     #start firmware flashing
     sleep 5
     for { set i 0 } { $i < $max_loop } { incr i } {
+
+        if { $i == $max_loop -1} {
+            error_critical "Failed to download Firmware"
+        }
+
         send "cd /tmp/; tftp -r$fwimg -lfwupdate.bin -g $tftpserver\r"
         set timeout 60
         expect {

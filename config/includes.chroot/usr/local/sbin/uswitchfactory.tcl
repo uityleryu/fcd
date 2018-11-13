@@ -197,6 +197,7 @@ proc set_network_env {} {
     set max_loop 3
     set pingable 0
 
+    # Loop for reboot retry
     for { set i 0 } { $i < $max_loop } { incr i } {
         if { $i != 0 } {
             stop_uboot
@@ -228,24 +229,23 @@ proc set_network_env {} {
             error_critical "U-boot prompt not found !"
         } "$bootloader_prompt"
 
-        sleep 2
-        send "ping $tftpserver\r"
-        set timeout 25
-        expect timeout {
-            error_critical "Unknown response for ping !"
-        } -re ".*host $tftpserver (.*) alive"
+        # Loop for ping retry
+        for { set j 0 } { $j < $max_loop } { incr j } {
+            sleep 2
+            send "ping $tftpserver\r"
+            set timeout 25
+            expect {
+                "host $tftpserver is alive" {
+                    set pingable 1
+                    break
+                } timeout {
+                    log_warn "Unknown response for ping !"
+                }
+            }
+        }
 
-        sleep 2
-        send "ping $tftpserver\r"
-        set timeout 25
-        expect timeout {
-            error_critical "Unknown response for ping !"
-        } -re ".*host $tftpserver (.*) alive"
-
-        set alive_str $expect_out(1,string)
-
-        if { [string equal $alive_str "is"] == 1 } {
-            set pingable 1
+        # If network is fine, exit reboot retry loop
+        if { $pingable == 1 } {
             break
         } else {
             send "re\r"
@@ -350,16 +350,28 @@ proc update_firmware { boardid } {
 
     log_progress 65 "Firmware loaded"
 
-    set timeout 300
     expect timeout {
-        error_critical "Failed to flash firmware !"
+        error_critical "Download Image file verify failure"
+    } "Image Signature Verfied, Success."
+
+    log_debug "Download image verify pass."
+
+    expect timeout {
+        error_critical "Failed to flash u-boot !"
+    } "Copying 'u-boot' partition. Please wait... :  done"
+
+    log_debug "u-boot flashed"
+
+    set timeout 600
+    expect timeout {
+        error_critical "Failed to flash kernel0 !"
     } "Copying to 'kernel0' partition. Please wait... :  done."
 
     log_progress 75 "Firmware flashed"
 
-    set timeout 300
+    set timeout 600
     expect timeout {
-        error_critical "Failed to flash firmware !"
+        error_critical "Failed to flash kernel1 !"
     } "Firmware update complete."
 
     log_progress 90 "Firmware flashed"
