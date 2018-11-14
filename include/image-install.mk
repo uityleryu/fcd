@@ -10,7 +10,10 @@ image-install-$1:
 	sed -e s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template > $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	sed -e s/MODEL/$3/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop.template > $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
-	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/* $(NEWSQUASHFS)/etc/skel/Desktop/
+	# copy the desktop icons to new squash folder
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
 	sh include/cp2tftp.sh $($1-IMAGE)
 	sh include/cp2tftp.sh $(TOOLS)
 

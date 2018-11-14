@@ -15,7 +15,6 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
-VER=FCD-Amplifi-[0.0.5]
 LIVE_CD_VER=$(VER).iso
 UPYFCD_VER=4e5fa351ba4db345567dbb335a35e078dacfd3ca
 
@@ -35,6 +34,7 @@ $(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
 
 # Create a whole new ISO from a downloaded ISO
 new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
+
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
@@ -96,6 +96,12 @@ check_root:
 
 prep: check_root
 	@echo " *** Creating all prerequisite directories *** "
+ifndef VER
+	@echo "fcdmaker usage:"
+	@echo "example1: sudo make VER=0.9.1-d9e5388-3 -f fcdmaker32.mk fcd-UDM-new"
+	@echo "example2: sudo make VER=FCD-USW-UAP-4.0.4 -f fcdmaker32.mk create_live_cd"
+	@exit 1
+endif
 	@if [ ! -d $(EXLIVECD) ]; then \
 		mkdir -p $(EXLIVECD); \
 	fi
