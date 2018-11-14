@@ -1,6 +1,8 @@
+include include/images.mk
+include include/image-install.mk
 
 # For build environmental variables
-OUTDIR=/export
+OUTDIR=$(shell pwd)/output
 APP_DIR=usr/local/sbin
 EXLIVECD=$(OUTDIR)/ExtractLivedCD
 EXSQUASHFS=$(OUTDIR)/ExtractLivedSquashfs
@@ -13,15 +15,26 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
-VER=FCD-Amplifi-[0.0.5]
 LIVE_CD_VER=$(VER).iso
-UPYFCD_VER=5b72f6e359f395ef874a2fabbf5fbff93a03f07f
+UPYFCD_VER=4e5fa351ba4db345567dbb335a35e078dacfd3ca
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
+
+# UDM product line
+UDM-PRODUCT-LINE=""
+$(eval $(call ProductImage,UDM,FCD-UDM-$(VER),u1dm))
+
+# Amplifi product line
+AFI-PRODUCT-LINE=""
+$(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
+
+# Create a whole new ISO from a downloaded ISO
+new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
+
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
@@ -56,27 +69,15 @@ help:
 	@echo " ****************************************************************** "
 	@echo "                   FCD build configuration                          "
 	@echo " ****************************************************************** "
-	@echo "   OUTDIR      = $(OUTDIR)"
-	@echo "   EXLIVECD    = $(EXLIVECD)"
-	@echo "   EXSQUASHFS  = $(EXSQUASHFS)"
-	@echo "   STAGEDIR    = $(STAGEDIR)"
-	@echo "   NEWLIVEDCD  = $(NEWLIVEDCD)"
-	@echo "   NEWSQUASHFS = $(NEWSQUASHFS)"
-	@echo "   BUILD_DIR   = $(BUILD_DIR)"
-	@echo "   FCDAPP_DIR  = $(FCDAPP_DIR)"
-	@echo "   BASE_OS     = $(BASE_OS)"
-	@echo " ****************************************************************** "
-
-
-usage:
-	@echo " ****************************************************************** "
-	@echo "                   Makefile inputs                                  "
-	@echo " ****************************************************************** "
-	@echo "   1. UAP                                                           "
-	@echo "   2. USW                                                           "
-	@echo "   3. AmpliFi                                                       "
-	@echo "   4. UniFi Dream Machine                                           "
-	@echo "   5. USG                                                           "
+	@echo "   OUTDIR         = $(OUTDIR)"
+	@echo "   EXLIVECD       = $(EXLIVECD)"
+	@echo "   EXSQUASHFS     = $(EXSQUASHFS)"
+	@echo "   STAGEDIR       = $(STAGEDIR)"
+	@echo "   NEWLIVEDCD     = $(NEWLIVEDCD)"
+	@echo "   NEWSQUASHFS    = $(NEWSQUASHFS)"
+	@echo "   BUILD_DIR      = $(BUILD_DIR)"
+	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)"
+	@echo "   BASE_OS        = $(BASE_OS)"
 	@echo " ****************************************************************** "
 
 
@@ -95,6 +96,12 @@ check_root:
 
 prep: check_root
 	@echo " *** Creating all prerequisite directories *** "
+ifndef VER
+	@echo "fcdmaker usage:"
+	@echo "example1: sudo make VER=0.9.1-d9e5388-3 -f fcdmaker32.mk fcd-UDM-new"
+	@echo "example2: sudo make VER=FCD-USW-UAP-4.0.4 -f fcdmaker32.mk create_live_cd"
+	@exit 1
+endif
 	@if [ ! -d $(EXLIVECD) ]; then \
 		mkdir -p $(EXLIVECD); \
 	fi
@@ -168,7 +175,7 @@ new_livedcd_pkg: check_root
 gitrepo: UPyFCD
 
 UPyFCD:
-	@git clone git@github.com:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
+	@git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
 	@cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER)
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
 	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/

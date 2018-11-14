@@ -10,9 +10,37 @@ import pexpect
 import logging
 from io import StringIO
 
+
+class Tee(object):
+    def __init__(self, name, mode):
+        self.file = open(name, mode)
+        self.stdout = sys.stdout
+        sys.stdout = self
+
+    def __del__(self):
+        #sys.stdout = self.stdout
+        self.file.close()
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+
+    def flush(self):
+        self.stdout.flush()
+        self.file.flush()
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, _type, _value, _traceback):
+        pass
+
+
 class ExpttyProcess():
     def __init__(self, id, cmd, newline, logger_name=None):
         self.id = id
+        #fout = open('mylog.txt','w')
+        Tee('mylog.txt','w')
         self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
         self.proc.logfile_read = sys.stdout
         self.newline = newline
@@ -37,8 +65,14 @@ class ExpttyProcess():
             print("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
             exit(1)
 
-        if (action != "") and (index >= 0):
-            self.proc.send(action + self.newline)
+        if (action != ""):
+            if (action == "enter"):
+                self.proc.send(self.newline)
+            else:
+                self.proc.send(action + self.newline)
+
+            time.sleep(0.05)
+            self.proc.readline(1)
 
         return 0
 
@@ -146,7 +180,6 @@ def msg(no, out):
     nowtime = time.strftime("[FCD %Y-%m-%d %H:%M:%S] ", time.gmtime())
     print("\n"+pstr+"\n"+nowtime+out+"\n\n\n")
 
-
 def log_error(msg):
     erstr = "\n* * * ERROR: * * *"
     nowtime = time.strftime("[FCD %Y-%m-%d %H:%M:%S] ", time.gmtime())
@@ -217,45 +250,23 @@ def xcmd(cmd):
 
 
 def main():
-
-    ''' This example is outdated
     cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
     [sto, rtc] = xcmd(cmd)
-    t = ExpttyProcess(0, "/dev/ttyUSB0")
-    t.expect2act(30, 'Hit any key to', "\n")
-    t.expect2act(30, 'uboot>', "setenv ipaddr 192.168.1.31")
-    t.expect2act(30, 'uboot>', "setenv serverip 192.168.1.11")
-    t.expect2act(30, 'uboot>', "ping 192.168.1.11")
-    t.expect2act(30, 'host 192.168.1.11 is alive', "")
-    t.expect2act(30, 'uboot>', "printenv")
-    t.expect2act(30, 'uboot>', "reset")
-    t.expect2act(60, 'Please press Enter to activate', "\n")
-    t.expect2act(30, 'UBNT login:', "ubnt")
-    t.expect2act(30, 'Password:', "ubnt")
-    t.expect2act(30, 'US.pcb-mscc', "\n")
-    t.expect2act(30, 'US.pcb-mscc', "cat /proc/ubnthal/system.info")
-    t.expect2act(30, 'US.pcb-mscc#', "info")
-    '''
+    if (int(rtc) > 0):
+        error_critical("stty configuration failed!!")
+    else:
+        log_debug("Configure stty successfully")
 
-    ''' EOT450 telnet connection example
-    # Assign command of connection and newline character,
-      some machine newline is "\n" EX: UAP NANO HD
-    conn = Commonlib.ExpttyProcess(0, "telnet 10.2.128.209", "\r")
-    conn.expect2act(5, 'Username', "admin")
-    conn.expect2act(5, 'Password', "")
-    ...do someting...
-    conn.expect2act(5, '#', "") #flush buffer(expect the last command output)
-    '''
+    expcmd = "sudo picocom /dev/ttyUSB0 -b 115200"
+    p = ExpttyProcess(0, expcmd, "\n")
 
-    ''' EOT450 uart connection example
-    conn = Commonlib.ExpttyProcess(0, "picocom /dev/ttyUSB0 -b 115200", "\r")
-    conn.expect2act(5, '', "")
-    conn.expect2act(5, 'Username', "admin")
-    conn.expect2act(5, 'Password', "")
-    ...do someting...
-    conn.expect2act(5, '#', "")
-    '''
-    pass
+    p.expect2actu1(5, "", "enter")
+    #p.expect2act(5, "#", "tftp -g -r upgra4de.tar -l /tmp/upgrade.tar 192.168.1.22", rt_buf=None)
+    p.expect2actu1(5, "#", "sleep 6")
+    p.expect2actu1(15, "#", "ifconfig")
+#     p.expect2act(5, "#", "ls -la")
+    p.expect2actu1(15, "#", "")
+    print("Joe: this is the last one")
 
 if __name__ == "__main__":
     main()
