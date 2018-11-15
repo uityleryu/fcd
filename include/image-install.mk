@@ -1,8 +1,8 @@
 
 define ProductImage
 
-$1: new-rootfs image-install-$1 packiso-$1
-$1-update: image-install-$1 packiso-$1
+$1: new-rootfs gitrepo image-install-$1 packiso-$1
+$1-update: gitrepo image-install-$1 packiso-$1
 
 image-install-$1:
 	@echo " ****************************************************************** "

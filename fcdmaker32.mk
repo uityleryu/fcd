@@ -27,7 +27,7 @@ MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 include include/$(PRD).mk
 
 # Create a whole new ISO from a downloaded ISO
-new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
+new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
@@ -159,11 +159,20 @@ new_livedcd_pkg: check_root
 gitrepo: UPyFCD fcd-image
 
 fcd-image:
-	@git clone git@10.2.128.30:lucian.chen/fcd-image.git -b master $(STAGEDIR)/$@
+	@if [ -d "$(STAGEDIR)/$@" ]; then \
+		cd $(STAGEDIR)/$@; git pull; \
+	else \
+		git clone git@10.2.128.30:lucian.chen/fcd-image.git -b master $(STAGEDIR)/$@; \
+	fi
 
 UPyFCD:
-	@git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@
-	@cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER)
+	@if [ -d "$(STAGEDIR)/$@" ]; then \
+		cd $(STAGEDIR)/$@; git pull; \
+		cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+	else \
+		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@; \
+		cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+	fi
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
 	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/
 
