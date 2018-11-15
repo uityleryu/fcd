@@ -1,6 +1,10 @@
 # AFi-AX
-IMAGE=images/da11/* \
-          images/da12/*
+IMAGE-AFI-AX-R=images/da11/*
+
+IMAGE-AFI-AX-P=images/da12/*
+
+IMAGE-AFI-AX+=$(IMAGE-AFI-AX-R)
+IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
 
 DIAG_MODEL=afi_ax_r
 
@@ -16,6 +20,6 @@ TOOLS=tools/al324-ee \
       tools/dropbearkey_arm64 \
       tools/ubios-udapi-server.default
 
-# Amplifi product line
-AFI-PRODUCT-LINE=""
-$(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
+$(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
+$(eval $(call ProductImage,AFI-AX-R,FCD-AFI-AX-R-$(VER)))
+$(eval $(call ProductImage,AFI-AX-P,FCD-AFI-AX-P-$(VER)))

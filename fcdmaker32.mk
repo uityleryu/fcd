@@ -1,4 +1,3 @@
-include include/$(PRD).mk
 include include/image-install.mk
 
 # For build environmental variables
@@ -16,6 +15,7 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
 LIVE_CD_VER=$(VER).iso
+FCD_ISO_NAME=FCD-$(PRD)-$(VER)
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -26,7 +26,8 @@ MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 # Create a whole new ISO from a downloaded ISO
 new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
 
-$(eval $(call ProductImage,${PRD},FCD-$(PRD)-$(VER)))
+# Import and Initialize Product specific Targets
+include include/$(PRD).mk
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo

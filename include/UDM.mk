@@ -1,5 +1,5 @@
 # UDM
-IMAGE=images/ea11* \
+IMAGE-UDM=images/ea11* \
           udm-fw/*
 
 DIAG_MODEL=u1dm
@@ -16,3 +16,4 @@ TOOLS=tools/al324-ee \
       tools/dropbearkey_arm64 \
       tools/ubios-udapi-server.default
 
+$(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
