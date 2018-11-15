@@ -1,6 +1,9 @@
 
 define ProductImage
 
+$1: new-rootfs image-install-$1 packiso-$1
+$1-update: image-install-$1 packiso-$1
+
 image-install-$1:
 	@echo " ****************************************************************** "
 	@echo "   FCD ISO NAME   = $2                                              "
@@ -40,7 +43,6 @@ packiso-$1:
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$2.iso .
 	chmod 777 $(OUTDIR)/$2.iso
 
-$1-update: image-install-$1 packiso-$1
-$1: new-rootfs image-install-$1 packiso-$1
+
 
 endef

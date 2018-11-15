@@ -23,11 +23,11 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
-# Create a whole new ISO from a downloaded ISO
-new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
-
 # Import and Initialize Product specific Targets
 include include/$(PRD).mk
+
+# Create a whole new ISO from a downloaded ISO
+new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
