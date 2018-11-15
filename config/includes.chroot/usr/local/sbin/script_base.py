@@ -5,28 +5,28 @@ Base script class
 import sys
 import time
 import os
-from ubntlib.variable.helper import VariableHelper 
+from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+
 
 class ScriptBase(object):
     def __init__(self):
         self.args = sys.argv
         log_debug(msg="Initial script with args: " + str(self.args[1:]))
 
-        #shared variable object
-        #example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
+        # shared variable object
+        # example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
         self.variable = VariableHelper(self.args[1:])
         self.fcd = FCDHelper()
 
-        #must be set by set_pexpect_helper()
-        #example usuage - self.pexp.{function}(...)
+        # must be set by set_pexpect_helper()
+        # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
-      
 
     @property
     def pexp(self):
-        if self.__pexpect_obj != None:
+        if self.__pexpect_obj is not None:
             return self.__pexpect_obj
         else:
             error_critical("No pexpect obj exists!")
@@ -39,8 +39,8 @@ class ScriptBase(object):
         """
         should be called at login console
         """
-        if username == None or password == None:
-            #No username/password input, using default account
+        if username is None or password is None:
+            # No username/password input, using default account
             username = self.variable.common.user
             password = self.variable.common.password
         self.pexp.expect_action(timeout=15, exptxt="login:", action=username)
