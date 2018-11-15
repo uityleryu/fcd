@@ -156,7 +156,10 @@ new_livedcd_pkg: check_root
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(VERSION) .
 
-gitrepo: UPyFCD
+gitrepo: UPyFCD fcd-image
+
+fcd-image:
+	@git clone git@10.2.128.30:lucian.chen/fcd-image.git -b master $(STAGEDIR)/$@
 
 UPyFCD:
 	@git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@

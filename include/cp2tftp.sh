@@ -18,5 +18,5 @@ for arg in "$@"; do
 	if [ ! -d ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}) ]; then \
 		mkdir -p ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}); \
 	fi
-	cp -rf ${FCDAPP_DIR}/srv/tftp/${arg} ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}); \
+	cp -rf ${STAGEDIR}/fcd-image/${arg} ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}); \
 done
