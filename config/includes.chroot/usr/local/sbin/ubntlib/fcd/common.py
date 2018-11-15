@@ -8,7 +8,7 @@ from ubntlib.variable.common import CommonVariable
 class Common(object):
     def __init__(self):
         self.__variable = CommonVariable()
-    
+
     def print_current_fcd_version(self, file=None):
         out_log = "Using default file "+ self.__variable.fcd_version_info_file_path if file is None else \
                 "Using file " + file
@@ -16,9 +16,9 @@ class Common(object):
         msg(no="", out=out_log)
         f = open(file, "r")
         line = f.readline()
-        msg(no="", out="FCD version: " + line) 
+        msg(no="", out="FCD version: " + line)
         f.close()
-   
+
     def config_stty(self, dev=None):
         """
         config stty to 777 and set output to /dev/{dev}
@@ -32,7 +32,7 @@ class Common(object):
                 error_critical("Can't set tty to 777 failed!!")
             else:
                 log_debug("Configure tty to 777 successfully")
-        
+
             time.sleep(0.5)
 
             cmd = "stty -F /dev/" + dev +" sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
@@ -60,7 +60,7 @@ class Common(object):
             return True
 
     def xcmd(self, cmd):
-        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        output = subprocess.Popen([cmd], shell=True, stderr=None, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
         stdoutd = stdout.decode()
