@@ -1,4 +1,4 @@
-include include/images.mk
+include include/$(PRD).mk
 include include/image-install.mk
 
 # For build environmental variables
@@ -16,7 +16,6 @@ FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
 LIVE_CD_VER=$(VER).iso
-UPYFCD_VER=4e5fa351ba4db345567dbb335a35e078dacfd3ca
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -24,17 +23,10 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
-# UDM product line
-UDM-PRODUCT-LINE=""
-$(eval $(call ProductImage,UDM,FCD-UDM-$(VER),u1dm))
-
-# Amplifi product line
-AFI-PRODUCT-LINE=""
-$(eval $(call ProductImage,AFI,FCD-Amplifi-$(VER),afi_ax_r))
-
 # Create a whole new ISO from a downloaded ISO
 new-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
 
+$(eval $(call ProductImage,${PRD},FCD-$(PRD)-$(VER)))
 
 # Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs gitrepo
@@ -64,7 +56,6 @@ create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_li
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(LIVE_CD_VER) .
 	chmod 777 $(OUTDIR)/$(LIVE_CD_VER)
 
-
 help:
 	@echo " ****************************************************************** "
 	@echo "                   FCD build configuration                          "
@@ -80,7 +71,6 @@ help:
 	@echo "   BASE_OS        = $(BASE_OS)"
 	@echo " ****************************************************************** "
 
-
 check_root:
 	@if ! [ "$$(whoami)" = "root" ]; then \
 		echo ""; \
@@ -92,7 +82,6 @@ check_root:
 		echo ""; \
 		exit 1; \
 	fi
-
 
 prep: check_root
 	@echo " *** Creating all prerequisite directories *** "
@@ -116,7 +105,6 @@ endif
 	fi
 	@chmod -R 777 $(OUTDIR)
 
-
 download_livecd:
 	@if [ ! -f "$(OUTDIR)/$(BASE_OS)" ]; then \
 		echo ">> Download $(BASE_OS)"; \
@@ -127,27 +115,22 @@ download_livecd:
 		echo ">> ISO: $(BASE_OS) is existed"; \
 	fi
 
-
 mount_livedcd: check_root
 	@echo " *** Mounting LivedCD ISO *** "
 	mount -o loop $(OUTDIR)/$(BASE_OS) $(EXLIVECD)
-
 
 mount_livedcd_squashfs: check_root
 	@echo " *** Mounting LivedCD Squashfs *** "
 	modprobe squashfs
 	mount -t squashfs -o loop $(EXLIVECD)/live/filesystem.squashfs $(EXSQUASHFS)
 
-
 prep_new_livedcd: check_root
 	@echo " *** rsync LivedCD to NewliveCD in excludsive of LivedCD_Squashfs *** "
 	rsync --exclude=/live/filesystem.squashfs -a $(EXLIVECD)/ $(NEWLIVEDCD)
 
-
 prep_new_squashfs: check_root
 	@echo " *** rsync LivedCD_Squashfs to NewliveCD_Squashfs *** "
 	cp -a $(EXSQUASHFS)/* $(NEWSQUASHFS)
-
 
 new_livedcd_pkg: check_root
 	@echo " *** Packaging the New LiveCD *** "
