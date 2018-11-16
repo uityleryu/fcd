@@ -162,7 +162,7 @@ fcd-image:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
 	else \
-		git clone git@10.2.128.30:lucian.chen/fcd-image.git -b master $(STAGEDIR)/$@; \
+		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(STAGEDIR)/$@; \
 	fi
 
 UPyFCD:
