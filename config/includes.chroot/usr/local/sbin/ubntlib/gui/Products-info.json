@@ -1,35 +1,44 @@
 {
   "Unifi One":
   {
-    "UDM":{
+    "U1DM":{
       "INDEX" : 0,
-      "NAME" : "UDM",
+      "NAME" : "U1DM",
       "BOARDID" : "ea11",
       "BOMREV" : "113-00623",
-      "DESC" : "UniFi Dream Machine",
-      "FILE" : "udm_alpine_factory.py"
+      "DESC" : "UniFi One Dream Machine",
+      "FILE" : "u1-base-ea11.py"
     },
 
-    "UDM-SE":{
+    "U1DMP":{
       "INDEX" : 1,
-      "NAME" : "UDM-SE",
+      "NAME" : "U1DMP",
       "BOARDID" : "ea13",
       "BOMREV" : "113-00618",
-      "DESC" : "UniFi Dream Machine Special",
-      "FILE" : "alpine-udm.py"
+      "DESC" : "UniFi One Dream Machine Plus",
+      "FILE" : "u1-base-ea11.py"
     },
 
-    "UDM-PRO":{
+    "U1DM-RM":{
       "INDEX" : 2,
-      "NAME" : "UDM-PRO",
+      "NAME" : "U1DM-RM",
+      "BOARDID" : "ea14",
+      "BOMREV" : "113-00633",
+      "DESC" : "UniFi One Dream Machine RackMount",
+      "FILE" : "u1-base-ea11.py"
+    },
+
+    "U1DMP-RM":{
+      "INDEX" : 3,
+      "NAME" : "U1DMP-RM",
       "BOARDID" : "ea15",
-      "BOMREV" : "113-00631",
-      "DESC" : "UniFi Dream Machine Pro",
-      "FILE" : "alpine-udm.py"
+      "BOMREV" : "113-00633",
+      "DESC" : "UniFi One Dream Machine RackMount",
+      "FILE" : "u1-base-ea11.py"
     },
 
     "UDM-B":{
-      "INDEX" : 3,
+      "INDEX" : 4,
       "NAME" : "UDM-B",
       "BOARDID" : "ec25",
       "BOMREV" : "113-00622",
@@ -42,7 +51,7 @@
   "Unifi Switch":
   {
     "US-FLEX":{
-      "INDEX" : 0,
+      "INDEX" : 5,
       "NAME" : "US-FLEX",
       "BOARDID" : "ed10",
       "BOMREV" : "113-02767",

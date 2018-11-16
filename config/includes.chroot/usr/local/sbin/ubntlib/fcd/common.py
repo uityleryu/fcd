@@ -5,6 +5,7 @@ import os
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.variable.common import CommonVariable
 
+
 class Common(object):
     def __init__(self):
         self.__variable = CommonVariable()

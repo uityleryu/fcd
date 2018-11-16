@@ -198,57 +198,6 @@ def error_critical(msg):
     sys.exit(2)
 
 
-def msgerrror(parent, msg):
-    mgdimsg = Gtk.MessageDialog(parent,
-                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                Gtk.MessageType.ERROR,
-                                Gtk.ButtonsType.CLOSE,
-                                "")
-    mgdimsg.format_secondary_text(msg)
-    mgdimsg.run()
-    mgdimsg.destroy()
-
-
-def msginfo(parent, msg):
-    mgdimsg = Gtk.MessageDialog(parent,
-                                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                Gtk.MessageType.INFO,
-                                Gtk.ButtonsType.NONE,
-                                "")
-    mgdimsg.format_secondary_text(msg)
-    x = mgdimsg.run()
-    print('The return x:'+str(x))
-    z = mgdimsg.response(Gtk.ResponseType.OK)
-    print('The return z:'+str(z))
-    y = mgdimsg.destroy()
-    print('The return y:'+str(y))
-
-
-def pcmd(cmd):
-    output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    output.wait()
-    [stdout, stderr] = output.communicate()
-    """
-    Linux shell script return code:
-        pass: 0
-        failed: 1
-    """
-    if (output.returncode == 1):
-        print("pcmd returncode: " + str(output.returncode))
-        return False
-    else:
-        return True
-
-
-def xcmd(cmd):
-    output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    output.wait()
-    [stdout, stderr] = output.communicate()
-    stdoutd = stdout.decode()
-    print(stdoutd)
-    return [stdout, output.returncode]
-
-
 def main():
     cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
     [sto, rtc] = xcmd(cmd)

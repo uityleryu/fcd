@@ -142,9 +142,11 @@ else
     exit 1
 fi
 
-if ! /etc/init.d/atftpd restart; then
-    echo 'Failed to start TFTP server'
-    exit 1
+if [ -f /etc/init.d/atftpd ]; then
+    if ! /etc/init.d/atftpd restart; then
+        echo 'Failed to start TFTP server'
+        exit 1
+    fi
 fi
 
 rm ${DHCPOUT} ${WGETOUT}

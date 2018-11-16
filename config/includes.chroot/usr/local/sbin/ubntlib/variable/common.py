@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import os
 
+
 class CommonVariable(object):
 
     def __init__(self):
