@@ -8,7 +8,6 @@ import stat
 import shutil
 
 from ubntlib.Product import prodlist
-from ubntlib.Variables import GPath, GCommon
 from ubntlib.Commonlib import *
 
 boardid = sys.argv[1]
@@ -51,36 +50,36 @@ fcdssh = "user@"+svip+":"
 mtdpart = "/dev/mtdblock18"
 
 # U-boot prompt
-ubpmt = {'da11':"IPQ807x",
-         'da12':"IPQ807x"}
+ubpmt = {'da11': "IPQ807x",
+         'da12': "IPQ807x"}
 
 # linux console prompt
-lnxpmt = {'da11':"ubnt@",
-          'da12':"ubnt@"}
+lnxpmt = {'da11': "ubnt@",
+          'da12': "ubnt@"}
 
 # number of Ethernet
-ethnum = {'da11':"5",
-          'da12':"7"}
+ethnum = {'da11': "5",
+          'da12': "7"}
 
 # number of WiFi
-wifinum = {'da11':"2",
-           'da12':"2"}
+wifinum = {'da11': "2",
+           'da12': "2"}
 
 # number of Bluetooth
-btnum = {'da11':"1",
-         'da12':"1"}
+btnum = {'da11': "1",
+         'da12': "1"}
 
 # communicating Ethernet interface
-comuteth = {'da11':"eth4",
-            'da12':"br-lan"}
+comuteth = {'da11': "br-lan",
+            'da12': "br-lan"}
 
 # temporary eeprom binary file
-tempeeprom = {'da11':boardid+"/fcd_eeprom_AX.bin",
-              'da12':boardid+"/AFi-AX-P_eeprom_sample.bin"}
+tempeeprom = {'da11': boardid + "/fcd_eeprom_AX.bin",
+              'da12': boardid + "/AFi-AX-P_eeprom_sample.bin"}
 
 # booting up the last message
-bootmsg = {'da11':"eth4: link becomes ready",
-           'da12':"eth3: PHY Link up speed"}
+bootmsg = {'da11': "(eth4: link becomes ready)|(eth3: PHY Link up speed)",
+           'da12': "eth3: PHY Link up speed"}
 
 
 def IOconfig():
@@ -123,6 +122,7 @@ def IOconfig():
     print("qrcode: "+str(qrcode))
     print("region: "+str(region))
 
+
 def main():
     IOconfig()
     expcmd = "sudo picocom "+tty+" -b 115200"
@@ -138,7 +138,7 @@ def main():
     p.expect2actu1(30, "host "+svip+" is alive", "")
     sstr = ["tftpboot",
             "0x44000000",
-            "images/bootloader.bin"]
+            "images/da11_bootloader.bin"]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, ubpmt[boardid], sstrj)
     time.sleep(3)
@@ -165,18 +165,18 @@ def main():
     p.expect2actu1(30, "Written: OK", "")
     sstr = ["tftpboot",
             "0x44000000",
-            "images/afi-xg-ubios-factory.img"]
+            "images/da11_fw.img"]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, ubpmt[boardid], sstrj)
     time.sleep(4)
 
-    p.expect2actu1(30, "Bytes transferred", "nand erase 0 0x7C00000")
+    p.expect2actu1(120, "Bytes transferred", "nand erase 0 0x10000000")
     time.sleep(8)
-    p.expect2actu1(30, "Erasing at 0x7be0000", "nand write 0x44000000 0 $filesize")
+    p.expect2actu1(30, "Erasing at 0xffe0000", "nand write 0x44000000 0 $filesize")
     time.sleep(8)
 
     p.expect2actu1(30, "written: OK", "reset")
-    p.expect2actu1(60, bootmsg[boardid], "\n")
+    p.expect2actu1(120, bootmsg[boardid], "\n")
     sstr = ["ifconfig",
             comuteth[boardid],
             prod_dev_ip]
@@ -201,37 +201,37 @@ def main():
     p.expect2actu1(30, "password:", "live")
     time.sleep(2)
 
-    log_debug("Send "+helperexe+"command from host to DUT ...")
+    log_debug("Send " + helperexe + "command from host to DUT ...")
     sstr = ["scp",
-            fcdssh+toolsdir+helperexe,
+            fcdssh+toolsdir + helperexe,
             "/tmp/"]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     p.expect2actu1(30, "password:", "live")
     time.sleep(2)
 
-    log_debug("Change file permission - "+helperexe+" ...")
-    sstr = ["chmod 777", tmpdir+helperexe]
+    log_debug("Change file permission - " + helperexe + " ...")
+    sstr = ["chmod 777", tmpdir + helperexe]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     p.expect2actu1(30, lnxpmt[boardid], "\n")
 
-    log_debug("Change file permission - "+eepmexe+" ...")
-    sstr = ["chmod 777", tmpdir+eepmexe]
+    log_debug("Change file permission - " + eepmexe + " ...")
+    sstr = ["chmod 777", tmpdir + eepmexe]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     p.expect2actu1(30, lnxpmt[boardid], "\n")
 
     log_debug("Starting to do "+eepmexe+"...")
-    sstr = ["cd /tmp; ./"+eepmexe,
+    sstr = ["cd /tmp; ./" + eepmexe,
             "-F",
-            "-r "+bomrev,
-            "-s 0x"+boardid,
-            "-m "+macaddr,
-            "-c 0x"+region,
-            "-e "+ethnum[boardid],
-            "-w "+wifinum[boardid],
-            "-b "+btnum[boardid]]
+            "-r " + bomrev,
+            "-s 0x" + boardid,
+            "-m " + macaddr,
+            "-c 0x" + region,
+            "-e " + ethnum[boardid],
+            "-w " + wifinum[boardid],
+            "-b " + btnum[boardid]]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     p.expect2actu1(30, lnxpmt[boardid], "")
@@ -240,41 +240,41 @@ def main():
     msg(30, "Do helper to get the output file to devreg server ...")
     log_debug("Erase existed eeprom information files ...")
     rtf = os.path.isfile(tftpdir+eeprom_bin)
-    if (rtf == True):
+    if (rtf is True):
         log_debug("Erasing File - "+eeprom_bin+" ...")
-        os.chmod(tftpdir+eeprom_bin, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.chmod(tftpdir+eeprom_bin, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         os.remove(tftpdir+eeprom_bin)
     else:
         log_debug("File - "+eeprom_bin+" doesn't exist ...")
 
     rtf = os.path.isfile(tftpdir+eeprom_txt)
-    if (rtf == True):
+    if (rtf is True):
         log_debug("Erasing File - "+eeprom_txt+" ...")
-        os.chmod(tftpdir+eeprom_txt, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.chmod(tftpdir+eeprom_txt, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         os.remove(tftpdir+eeprom_txt)
     else:
         log_debug("File - "+eeprom_txt+" doesn't exist ...")
 
     rtf = os.path.isfile(tftpdir+eeprom_signed)
-    if (rtf == True):
+    if (rtf is True):
         log_debug("Erasing File - "+eeprom_signed+" ...")
-        os.chmod(tftpdir+eeprom_signed, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.chmod(tftpdir+eeprom_signed, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         os.remove(tftpdir+eeprom_signed)
     else:
         log_debug("File - "+eeprom_signed+" doesn't exist ...")
 
     rtf = os.path.isfile(tftpdir+eeprom_check)
-    if (rtf == True):
+    if (rtf is True):
         log_debug("Erasing File - "+eeprom_check+" ...")
-        os.chmod(tftpdir+eeprom_check, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.chmod(tftpdir+eeprom_check, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         os.remove(tftpdir+eeprom_check)
     else:
         log_debug("File - "+eeprom_check+" doesn't exist ...")
 
     rtf = os.path.isfile(tftpdir+eeprom_tgz)
-    if (rtf == True):
+    if (rtf is True):
         log_debug("Erasing File - "+eeprom_tgz+" ...")
-        os.chmod(tftpdir+eeprom_tgz, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+        os.chmod(tftpdir+eeprom_tgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         os.remove(tftpdir+eeprom_tgz)
     else:
         log_debug("File - "+eeprom_tgz+" doesn't exist ...")
@@ -299,7 +299,7 @@ def main():
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
 
     os.mknod(tftpdir+eeprom_tgz)
-    os.chmod(tftpdir+eeprom_tgz, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+    os.chmod(tftpdir+eeprom_tgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
     log_debug("Send helper output tgz file from DUT to host ...")
     sstr = ["scp",
@@ -353,7 +353,7 @@ def main():
 
     regparamj = ' '.join(regparam)
 
-    cmd = "sudo /usr/local/sbin/client_x86_release "+regparamj
+    cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
     print("cmd: "+cmd)
     [sto, rtc] = xcmd(cmd)
     time.sleep(6)
@@ -363,7 +363,7 @@ def main():
         log_debug("Excuting client_x86 registration successfully")
 
     rtf = os.path.isfile(tftpdir+eeprom_signed)
-    if (rtf != True):
+    if (rtf is not True):
         error_critical("Can't find "+eeprom_signed)
 
     msg(40, "Finish doing registration ...")
@@ -383,25 +383,27 @@ def main():
     p.expect2actu1(30, lnxpmt[boardid], "\n")
 
     log_debug("Starting to write signed info to SPI flash ...")
-    sstr = ["cd /tmp; ./"+helperexe,
-           "-q",
-           "-i field=flash_eeprom,format=binary,pathname="+tmpdir+eeprom_signed]
+    sstr = [
+            "cd /tmp; ./"+helperexe,
+            "-q",
+            "-i field=flash_eeprom,format=binary,pathname="+tmpdir+eeprom_signed]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     time.sleep(2)
 
     log_debug("Starting to extract the EEPROM content from SPI flash ...")
-    sstr = ["dd",
-           "if="+mtdpart,
-           "of="+tmpdir+eeprom_check]
+    sstr = [
+            "dd",
+            "if="+mtdpart,
+            "of="+tmpdir+eeprom_check]
     sstrj = ' '.join(sstr)
     print("cmd: "+sstrj)
     p.expect2actu1(30, lnxpmt[boardid], sstrj)
     time.sleep(2)
 
     os.mknod(tftpdir+eeprom_check)
-    os.chmod(tftpdir+eeprom_check, stat.S_IRWXU|stat.S_IRWXG|stat.S_IRWXO)
+    os.chmod(tftpdir+eeprom_check, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
     log_debug("Send "+eeprom_check+" from DUT to host ...")
     sstr = ["scp",
@@ -436,7 +438,18 @@ def main():
     msg(70, "Firmware booting up successfully ...")
     p.expect2actu1(60, lnxpmt[boardid], "grep qrid /proc/ubnthal/system.info")
     p.expect2actu1(60, qrcode, "")
-    msg(100, "Complete ...")
+    p.expect2actu1(60, lnxpmt[boardid], "grep -c flashSize /proc/ubnthal/system.info")
+    p.expect2actu1(60, lnxpmt[boardid], "")
+    match = re.search(r'(\d+)', p.proc.before)
+    if match:
+        if int(match.group(1)) is not 1:
+            error_critical(msg="Device Registration check failed!")
+    else:
+        error_critical(msg="Unable to get flashSize!, please checkout output by grep")
+    time.sleep(5)
+    p.expect2actu1(30, "", "ubus call firmware info")
+    p.expect2act(30, "version", "")
+    msg(100, "Formal firmware completed...")
 
 if __name__ == "__main__":
     main()

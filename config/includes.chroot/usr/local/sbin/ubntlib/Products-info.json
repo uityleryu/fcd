@@ -70,7 +70,7 @@
       "BOARDID" : "da11",
       "BOMREV" : "113-00605",
       "DESC" : "Amplifi AX Router",
-      "FILE" : "ax-mesh.py"
+      "FILE" : "afi_ipq807x_factory.py"
     },
 
     "AFi-AX-P":{
@@ -79,7 +79,7 @@
       "BOARDID" : "da12",
       "BOMREV" : "113-00657",
       "DESC" : "Amplifi AX Mesh Point",
-      "FILE" : "ax-mesh.py"
+      "FILE" : "afi_ipq807x_factory.py"
     }
   }
 }
