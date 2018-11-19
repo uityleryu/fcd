@@ -31,6 +31,7 @@ prod_dev_tmp_mac = "00:15:6d:00:00:0"+idx
 # Common folder
 tmpdir = "/tmp/"
 tftpdir = "/tftpboot/"
+wifi_cal_data_dir = os.path.join(tmpdir, "IPQ8074")
 
 # For tftpboot use
 proddir = "images/"+boardid+"/"
@@ -446,7 +447,21 @@ def main():
             error_critical(msg="Device Registration check failed!")
     else:
         error_critical(msg="Unable to get flashSize!, please checkout output by grep")
-    time.sleep(5)
+    msg(80, "Checking there's wifi calibration data exist.")
+    md5sum_no_wifi_cal = "41d2e2c0c0edfccf76fa1c3e38bc1cf2"
+    cal_file = os.path.join(wifi_cal_data_dir, "caldata.bin")
+    p.expect2actu1(10, "", "md5sum " + cal_file)
+    p.expect2actu1(10, lnxpmt[boardid], "")
+    md5sum_from_dut = ""
+    match = re.search(r'([a-f0-9]{32})', p.proc.before)
+    if match:
+        md5sum_from_dut = match.group(1)
+        log_debug(msg="MD5 :" + md5sum_from_dut)
+    else:
+        error_critical(msg="Unable to get md5 sum, please checkout output by md5sum command")
+    if md5sum_from_dut == md5sum_no_wifi_cal:
+        error_critical(msg="Wifi calibration data empty!")
+    time.sleep(2)
     p.expect2actu1(30, "", "ubus call firmware info")
     p.expect2act(30, "version", "")
     msg(100, "Formal firmware completed...")
