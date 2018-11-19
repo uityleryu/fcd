@@ -458,7 +458,7 @@ def main():
         md5sum_from_dut = match.group(1)
         log_debug(msg="MD5 :" + md5sum_from_dut)
     else:
-        error_critical(msg="Unable to get md5 sum, please checkout output by md5sum command")
+        error_critical(msg="Unable to get md5 sum, please check output of md5sum command")
     if md5sum_from_dut == md5sum_no_wifi_cal:
         error_critical(msg="Wifi calibration data empty!")
     time.sleep(2)
