@@ -461,6 +461,8 @@ def main():
         error_critical(msg="Unable to get md5 sum, please check output of md5sum command")
     if md5sum_from_dut == md5sum_no_wifi_cal:
         error_critical(msg="Wifi calibration data empty!")
+    else:
+        log_debug(msg="Wifi calibration data is not empty, pass!")
     time.sleep(2)
     p.expect2actu1(30, "", "ubus call firmware info")
     p.expect2act(30, "version", "")
