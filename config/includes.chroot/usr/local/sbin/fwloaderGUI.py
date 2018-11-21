@@ -10,14 +10,15 @@ import threading
 import shutil
 import json
 import sys
-gi.require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.Variables import GPath, GCommon
 from time import sleep
 from ubntlib.Commonlib import msgerrror, msginfo, pcmd, xcmd
-#from fw_loader.dhcp import *
+# from fw_loader.dhcp import *
 from fw_loader import dhcp
 
+gi.require_version('Gtk', '3.0')
 """
     Prefix expression
         fra    : Gtk.Frame
@@ -76,6 +77,7 @@ css = b"""
 }
 """
 
+
 class fraMonitorPanel(Gtk.Frame):
     def __init__(self, id, frametitle):
         self.id = id
@@ -107,7 +109,6 @@ class fraMonitorPanel(Gtk.Frame):
         self.etymac.set_editable(False)
         self.etymac.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
 
-
         self.etyip = Gtk.Entry()
         self.etyip.set_editable(False)
         self.etymac.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
@@ -131,7 +132,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.txvlog.set_editable(False)
         self.scllog = Gtk.ScrolledWindow()
         self.scllog.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self.scllog.set_size_request(100,400)
+        self.scllog.set_size_request(100, 400)
         self.scllog.add(self.txvlog)
         self.txblog = self.txvlog.get_buffer()
         self.txilog = self.txblog.get_end_iter()
@@ -143,7 +144,7 @@ class fraMonitorPanel(Gtk.Frame):
         """
         self.lblresult = Gtk.Label('NONE')
         self.lblresult.set_size_request(100, 32)
-        #self.lblresult.set_alignment(0.0, 0.0)
+        # self.lblresult.set_alignment(0.0, 0.0)
         self.lblresult.set_halign(Gtk.Align.CENTER)
         self.lblresult.set_valign(Gtk.Align.CENTER)
         lblresultcolorfont = '<span foreground="black" size="xx-large"><b>Idle....</b></span>'
@@ -152,21 +153,21 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.pack_start(self.etymac, False, False, 0)
         self.hbox.pack_start(self.etyip, False, False, 0)
         self.hbox.pack_start(self.hboxpgrs, True, True, 0)
-        #self.hbox.pack_end(self.btnstart, False, False, 0)
+        # self.hbox.pack_end(self.btnstart, False, False, 0)
         self.hbox.pack_end(self.lblresult, False, False, 0)
 
         GObject.timeout_add(700, self.panelstartconf, None)
         GObject.timeout_add(300, self.panelstepconf, None)
         GObject.timeout_add(700, self.panelendconf, None)
 
-        #GObject.threads_init()
+        # GObject.threads_init()
         Gdk.threads_init()
 
         self.templogfile = ""
         self.dev_mac = ""
         self.fwload_cnt = 0
 
-        #self.loadr = fwloader()
+        # self.loadr = fwloader()
 
     def on_cmbbcomport_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -189,10 +190,8 @@ class fraMonitorPanel(Gtk.Frame):
     def set_ip(self, ip):
         self.etyip.set_text(ip)
 
-
     def set_mac(self, mac):
         self.etymac.set_text(mac)
-
 
     def get_tty(self):
         combo = self.cmbbcomport
@@ -205,8 +204,8 @@ class fraMonitorPanel(Gtk.Frame):
         self.txblog.insert(self.txilog, text)
 
     def panelstartconf(self, user_data):
-#         print("Joe: in panelstartconf "+str(self.id))
-        if (self.x == True):
+        # print("Joe: in panelstartconf "+str(self.id))
+        if (self.x is True):
             lblresultcolorfont = '<span background="darkgrey" foreground="yellow" size="xx-large"><b>Working....</b></span>'
             self.lblresult.set_markup(lblresultcolorfont)
             self.hboxpgrs.set_name("pgrs_yellow")
@@ -214,14 +213,14 @@ class fraMonitorPanel(Gtk.Frame):
             self.appendlog("\n--------[STARTED: ]\n")
             self.etyip.set_sensitive(False)
             self.etymac.set_sensitive(False)
-            #self.btnstart.set_sensitive(False)
+            # self.btnstart.set_sensitive(False)
             self.x = False
 
         return True
 
     def panelstepconf(self, user_data):
-#         print("Joe: in panelstepconf "+str(self.id))
-        if (self.z == True):
+        # print("Joe: in panelstepconf "+str(self.id))
+        if (self.z is True):
             self.pgrbprogress.set_fraction(self.progressvalue/100)
             self.pgrbprogress.set_text(str(self.progressvalue)+" %")
             self.z = False
@@ -229,8 +228,8 @@ class fraMonitorPanel(Gtk.Frame):
         return True
 
     def panelendconf(self, user_data):
-#         print("Joe: in panelendconf "+str(self.id))
-        if (self.y == True):
+        # print("Joe: in panelendconf "+str(self.id))
+        if (self.y is True):
             if (self.w == "good"):
                 self.endtime = time.time()
                 timeelapsed = self.endtime - self.starttime
@@ -250,7 +249,7 @@ class fraMonitorPanel(Gtk.Frame):
 
             self.etyip.set_sensitive(True)
             self.etymac.set_sensitive(True)
-            #self.btnstart.set_sensitive(True)
+            # self.btnstart.set_sensitive(True)
             self.pgrbprogress.set_fraction(0)
             self.y = False
 
@@ -278,19 +277,19 @@ class fraMonitorPanel(Gtk.Frame):
 
         if not (os.path.isdir(GPath.reportdir)):
             result = pcmd("mkdir -p "+GPath.reportdir)
-            if (result == False):
+            if (result is False):
                 msgerrror(self, "Can't create a log directory in the USB disk")
 
         # Create the temporary report file
-        self.templogfile  = open(GPath.reportdir+"/"+GCommon.macaddr+".log","a")
+        self.templogfile = open(GPath.reportdir+"/"+GCommon.macaddr+".log", "a")
         print("Joe: templogfile: "+self.templogfile.name)
 
     def on_start_button_click(self, button):
-        #self.starttime = time.time()
+        # self.starttime = time.time()
         self.x = True
-        #self.dhcpsrv  = DHCPServer()
-        #self.dhcpsrv.run_in_thread()
-        #self.dhcpsrv.monitor_in_thread(int(dlgUserInput.deviceamount), self.fwloader_start)
+        # self.dhcpsrv  = DHCPServer()
+        # self.dhcpsrv.run_in_thread()
+        # self.dhcpsrv.monitor_in_thread(int(dlgUserInput.deviceamount), self.fwloader_start)
 
     def fwloader_start(self, host):
         print("Connecting to device => mac={} ip={}".format(host.mac, host.ip))
@@ -303,30 +302,28 @@ class fraMonitorPanel(Gtk.Frame):
             self.setdirfl()
 
         cmd = ["sudo python3 /usr/local/sbin/fw_loader/fwloader.py",
-                GCommon.active_product_obj['BOARDID'],
-                host.mac,
-                host.ip,
-                str(self.fwload_cnt)]
+               GCommon.active_product_obj['BOARDID'],
+               host.mac,
+               host.ip,
+               str(self.fwload_cnt)]
         cmd = ' '.join(cmd)
         print(cmd)
         self.proc = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        GObject.io_add_watch(self.proc.stdout,
-                      GLib.IO_IN|GLib.IO_HUP,
-                      self.inspection_test, self.proc)
-    
+        GObject.io_add_watch(self.proc.stdout, GLib.IO_IN | GLib.IO_HUP, self.inspection_test, self.proc)
+
     def savelog(self, result):
         tmplog = self.templogfile.name
         self.templogfile.close()
-        
+
         rtdir = GPath.reportdir+"/" + result
         if not os.path.isdir(rtdir):
             os.makedirs(rtdir)
-                       
+
         tfile = rtdir+"/"+os.path.basename(self.templogfile.name)
         print("Joe: result file: "+tfile)
         if not os.path.exists(tfile):
             shutil.move(tmplog, rtdir)
-        else:              
+        else:
             cmd = "cat "+tmplog+" >> "+tfile
             [sto, rtc] = xcmd(cmd)
             if (int(rtc) > 0):
@@ -335,7 +332,7 @@ class fraMonitorPanel(Gtk.Frame):
                 print("Appending log successfully")
 
         if os.path.exists(tmplog):
-            cmd = "rm "+ tmplog
+            cmd = "rm " + tmplog
             [sto, rtc] = xcmd(cmd)
             if (int(rtc) > 0):
                 print("Deleting temp log failed!!")
@@ -347,18 +344,18 @@ class fraMonitorPanel(Gtk.Frame):
             proc.poll()
             print("pid = {}, rt = {}".format(proc.pid, proc.returncode))
             if (proc.returncode == 0):
-                self.w = "good"    
+                self.w = "good"
                 self.y = True
                 self.savelog("Pass")
 
             elif (proc.returncode == 3):
                 window.dhcpsrv.monitor_in_thread(len(window.mac_list), window.dhcp_done)
 
-            else :
+            else:
                 print("removing mac = {}".format(self.dev_mac))
                 window.mac_list.remove(self.dev_mac)
                 window.dhcpsrv.mac_filter_set(window.mac_list)
-                print("now mac list = {}, len={}".format(window.mac_list,len(window.mac_list)))
+                print("now mac list = {}, len={}".format(window.mac_list, len(window.mac_list)))
 
                 self.w = "bad"
                 self.y = True
@@ -374,7 +371,7 @@ class fraMonitorPanel(Gtk.Frame):
 
             pattern = re.compile("^=== (\d+) .*$")
             pgvalue = pattern.match(raw2str)
-            if (pgvalue != None):
+            if (pgvalue is not None):
                 self.z = True
                 self.progressvalue = int(pgvalue.group(1))
 
@@ -383,7 +380,8 @@ class fraMonitorPanel(Gtk.Frame):
 
 class dlgUserInput(Gtk.Dialog):
     deviceamount = 0
-    dev_macs = ["","","",""]
+    dev_macs = ["", "", "", ""]
+
     def __init__(self, parent):
         Gtk.Dialog.__init__(self,
                             "User Input Dialog",
@@ -393,7 +391,6 @@ class dlgUserInput(Gtk.Dialog):
 
         self.set_default_size(150, 100)
         self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-
 
         # Load products info json file
         f = open('/usr/local/sbin/ubntlib/'+'Products-info.json')
@@ -415,8 +412,6 @@ class dlgUserInput(Gtk.Dialog):
         # Product combo box
         self.lblallpd = Gtk.Label("Select a product:")
         self.lsrallpdlist = Gtk.ListStore(int, str)
-        #for item in prodlist:
-            #self.lsrallpdlist.append([item[0], item[1]])
 
         self.crtrallpdlist = Gtk.CellRendererText()
         self.cmbballpd = Gtk.ComboBox.new_with_model(self.lsrallpdlist)
@@ -430,9 +425,9 @@ class dlgUserInput(Gtk.Dialog):
         self.etybomrev.connect("changed", self.on_bomrev_changed)
 
         # amount of devices
-        #self.lblamount = Gtk.Label("Enter amount of devices (max=4)")
-        #self.etyamount = Gtk.Entry()
-        #self.etyamount.connect("changed", self.on_amount_changed)
+        # self.lblamount = Gtk.Label("Enter amount of devices (max=4)")
+        # self.etyamount = Gtk.Entry()
+        # self.etyamount.connect("changed", self.on_amount_changed)
 
         self.lblbarcde = Gtk.Label("Enter Bar-code of devices (max=4)")
         self.etybarcde1 = Gtk.Entry()
@@ -451,8 +446,8 @@ class dlgUserInput(Gtk.Dialog):
         self.vboxuserauth.pack_start(self.lblbomrev, False, False, 0)
         self.vboxuserauth.pack_start(self.etybomrev, False, False, 0)
         self.vboxuserauth.pack_start(self.cmbballpd, False, False, 0)
-        #self.vboxuserauth.pack_start(self.lblamount, False, False, 0)
-        #self.vboxuserauth.pack_start(self.etyamount, False, False, 0)
+        # self.vboxuserauth.pack_start(self.lblamount, False, False, 0)
+        # self.vboxuserauth.pack_start(self.etyamount, False, False, 0)
         self.vboxuserauth.pack_start(self.lblbarcde, False, False, 0)
         self.vboxuserauth.pack_start(self.etybarcde1, False, False, 0)
         self.vboxuserauth.pack_start(self.etybarcde2, False, False, 0)
@@ -463,12 +458,11 @@ class dlgUserInput(Gtk.Dialog):
         self.area.add(self.vboxuserauth)
         self.show_all()
 
-    
     def on_amount_changed(self, entry):
         maxamount = 4
         dlgUserInput.deviceamount = int(self.etyamount.get_text())
-        if dlgUserInput.deviceamount :
-            if dlgUserInput.deviceamount > maxamount :
+        if dlgUserInput.deviceamount:
+            if dlgUserInput.deviceamount > maxamount:
                 dlgUserInput.deviceamount = maxamount
 
         print("The amount of devices: " + str(dlgUserInput.deviceamount))
@@ -501,11 +495,11 @@ class dlgUserInput(Gtk.Dialog):
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
-            GCommon.active_product_series  = model[tree_iter][0]
+            GCommon.active_product_series = model[tree_iter][0]
             print("The Product Series: "+GCommon.active_product_series)
 
         self.lsrallpdlist.clear()
-        [GCommon.active_productidx, GCommon.active_product] =["",""]
+        [GCommon.active_productidx, GCommon.active_product] = ["", ""]
         for key, val in sorted(self.prods[GCommon.active_product_series].items()):
             self.lsrallpdlist.append([val['INDEX'], key])
 
@@ -532,7 +526,7 @@ class dlgUserInput(Gtk.Dialog):
 
     def check_inputs(self):
         idx = GCommon.active_productidx
-        if (GCommon.active_productidx == "" or \
+        if (GCommon.active_productidx == "" or
            GCommon.active_product == ""):
             return False
 
@@ -549,6 +543,7 @@ class dlgUserInput(Gtk.Dialog):
             print("Joe: input BOM revision is not match to product")
             return False
 
+
 class dlgBarcodeinput(Gtk.Dialog):
     def __init__(self, parent):
         Gtk.Dialog.__init__(self,
@@ -558,7 +553,7 @@ class dlgBarcodeinput(Gtk.Dialog):
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
 
         self.vboxbarcode = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        #self.set_default_response("ok")
+        # self.set_default_response("ok")
 
         self.lbltitle = Gtk.Label("Waiting for barcode")
         self.lblmac = Gtk.Label("------------")
@@ -583,6 +578,7 @@ class dlgBarcodeinput(Gtk.Dialog):
         print("The barcode: %s" % GCommon.barcode)
         print("The barcode: %d" % GCommon.barcodelen)
 
+
 class winFcdFactory(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self)
@@ -590,8 +586,8 @@ class winFcdFactory(Gtk.Window):
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 
         self.lblprod = Gtk.Label('')
-        #self.lblprod.set_text(prodlist[0][4])
-        
+        # self.lblprod.set_text(prodlist[0][4])
+
         self.frame1 = fraMonitorPanel("0", "Slot 1")
         self.frame2 = fraMonitorPanel("1", "Slot 2")
         self.frame3 = fraMonitorPanel("2", "Slot 3")
@@ -632,24 +628,23 @@ class winFcdFactory(Gtk.Window):
         Gtk.main_quit()
 
     def envinitial(self):
-        if (self.network_status_set() == False):
+        if (self.network_status_set() is False):
             msgerrror(self, "Network configure faile. Exiting...")
             return False
 
-        if (self.find_usb_storage() == False):
+        if (self.find_usb_storage() is False):
             msgerrror(self, "No USB storage found. Exiting...")
             return False
 
-        if (self.check_key_files() == False):
+        if (self.check_key_files() is False):
             msgerrror(self, "Security key files missing. Exiting...")
             return False
 
-        if (self.call_input_dlg() == False):
+        if (self.call_input_dlg() is False):
             msgerrror(self, "Inputs information incorrect. Exiting...")
             return False
 
         return True
-
 
     def network_status_set(self):
         cmd = "sudo sh /usr/local/sbin/prod-network.sh"
@@ -759,7 +754,7 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def dhcp_done(self, current_hosts):
-        for idx, host in enumerate(current_hosts) :
+        for idx, host in enumerate(current_hosts):
             if host.mac == self.frame1.dev_mac and self.frame1.w != "bad":
                 self.frame1.set_mac(host.mac)
                 self.frame1.set_ip(host.ip)
@@ -781,7 +776,7 @@ class winFcdFactory(Gtk.Window):
             time.sleep(2)
 
     def set_mac_string(self, mac):
-        return ':'.join([mac[i:i+2] for i in range(0,12,2)])
+        return ':'.join([mac[i:i+2] for i in range(0, 12, 2)])
 
     def get_mac_list(self, mac_list):
 
@@ -792,8 +787,8 @@ class winFcdFactory(Gtk.Window):
         m4 = dlgUserInput.dev_macs[3]
 
         mac_seen = set()
-        if m1 != "" and  (m1 not in mac_seen) :
-            if len(m1)==12 :
+        if m1 != "" and (m1 not in mac_seen):
+            if len(m1) == 12:
                 mac_seen.add(m1)
                 self.frame1.dev_mac = self.set_mac_string(m1)
                 mac_list.append(self.frame1.dev_mac)
@@ -803,7 +798,7 @@ class winFcdFactory(Gtk.Window):
                 rt = False
 
         if m2 != "" and (m2 not in mac_seen):
-            if len(m2)==12:
+            if len(m2) == 12:
                 mac_seen.add(m2)
                 self.frame2.dev_mac = self.set_mac_string(m2)
                 mac_list.append(self.frame2.dev_mac)
@@ -813,7 +808,7 @@ class winFcdFactory(Gtk.Window):
                 rt = False
 
         if m3 != "" and (m3 not in mac_seen):
-            if len(m3)==12 :
+            if len(m3) == 12:
                 mac_seen.add(m3)
                 self.frame3.dev_mac = self.set_mac_string(m3)
                 mac_list.append(self.frame3.dev_mac)
@@ -823,7 +818,7 @@ class winFcdFactory(Gtk.Window):
                 rt = False
 
         if m4 != "" and (m4 not in mac_seen):
-            if len(m4)==12 :
+            if len(m4) == 12:
                 mac_seen.add(m4)
                 self.frame4.dev_mac = self.set_mac_string(m4)
                 mac_list.append(self.frame4.dev_mac)
@@ -838,12 +833,12 @@ class winFcdFactory(Gtk.Window):
         dialog = dlgUserInput(self)
 
         rt = False
-        while (rt == False):
+        while (rt is False):
             response = dialog.run()
             if (response == Gtk.ResponseType.OK):
                 print("The OK button was clicked")
                 result = dialog.check_inputs()
-                if (result == False):
+                if (result is False):
                     msgerrror(self, "Any one of inputs is not correct")
                     response = ""
                     rt = False
@@ -852,12 +847,12 @@ class winFcdFactory(Gtk.Window):
                     title = "%s, %s" % (GCommon.active_product_obj['DESC'], GCommon.active_product_obj['BOMREV'])
                     self.lblprod.set_text(title)
                     self.mac_list = []
-                    if self.get_mac_list(self.mac_list) == True:
-                        self.dhcpsrv  = dhcp.DHCPServer(mac_filter_list = self.mac_list)
+                    if self.get_mac_list(self.mac_list) is True:
+                        self.dhcpsrv = dhcp.DHCPServer(mac_filter_list=self.mac_list)
                         self.dhcpsrv.run_in_thread()
                         self.dhcpsrv.monitor_in_thread(len(self.mac_list), self.dhcp_done)
                         rt = True
-                    else :
+                    else:
                         rt = False
             else:
                 print("The Cancel button was clicked")
@@ -867,12 +862,14 @@ class winFcdFactory(Gtk.Window):
 
         return True
 
+
 def main():
     window = winFcdFactory()
     window.show_all()
     window.envinitial()
-    #window.connect("destroy", Gtk.main_quit)
+    # window.connect("destroy", Gtk.main_quit)
     Gtk.main()
+
 
 def debugdlgUserInput():
     dialog = dlgUserInput()
@@ -886,7 +883,7 @@ def debugdlgUserInput():
     dialog.destroy()
     return True
 
-#main()
+# main()
 
 window = winFcdFactory()
 window.show_all()
