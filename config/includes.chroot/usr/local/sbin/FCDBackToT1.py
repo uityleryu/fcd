@@ -1,23 +1,45 @@
 #!/usr/bin/python3
 
-
 from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.gui.gui_variable import GPath, GCommon
 from time import sleep
 from ubntlib.gui.msgdialog import msgerrror, msginfo
 from ubntlib.fcd.common import Common
-from ubntlib.fcd.logger import gui_log_info
 
 import gi
 import re
 import os
+import sys
 import subprocess
 import time
 import random
 import threading
 import shutil
 import json
+import logging
 gi.require_version('Gtk', '3.0')
+
+tmpguidir = "/usr/local/sbin/guilog"
+timestamp = time.strftime('%Y-%m-%d-%H')
+logfilename = tmpguidir + '/' + 'FCDBackToT1GUI_' + timestamp + '.log'
+
+log = logging.getLogger('FCDBackToT1GUI')
+log.setLevel(logging.INFO)
+
+# console log handler
+log_stream = logging.StreamHandler(sys.stdout)
+log_stream.setLevel(logging.DEBUG)
+
+# file log handler
+if not os.path.exists(tmpguidir):
+    os.makedirs(tmpguidir)
+
+log_file = logging.FileHandler(logfilename)
+log_file.setFormatter(logging.Formatter('[%(asctime)s - %(filename)s:%(lineno)d] %(message)s', '%Y-%m-%d %H:%M:%S'))
+log_file.setLevel(logging.DEBUG)
+
+log.addHandler(log_stream)
+log.addHandler(log_file)
 
 """
     Prefix expression
@@ -26,6 +48,7 @@ gi.require_version('Gtk', '3.0')
         cmbb   : Gtk.ComboBox
         lbl    : Gtk.Lable
         btn    : Gtk.Button
+        cbtn   : Gtk.CheckButton
         txv    : Gtk.TextView
         scl    : Gtk.ScrolledWindow
         epd    : Gtk.Expander
@@ -114,6 +137,17 @@ class fraMonitorPanel(Gtk.Frame):
         for item in GCommon.dftty:
             self.lsritemlist.append([item])
 
+        # Erase WiFi calibratio checkbutton
+        self.cbtnerasecal = Gtk.CheckButton("Erase-caldata")
+        if GCommon.erasewifidata[int(self.id)] is True:
+            log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+            self.cbtnerasecal.set_active(True)
+        else:
+            log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+            self.cbtnerasecal.set_active(False)
+
+        self.cbtnerasecal.connect("toggled", self.on_cbtnerasecal_toggled)
+
         self.crtcmblist = Gtk.CellRendererText()
         self.cmbbcomport = Gtk.ComboBox.new_with_model(self.lsritemlist)
         self.cmbbcomport.pack_start(self.crtcmblist, True)
@@ -160,6 +194,7 @@ class fraMonitorPanel(Gtk.Frame):
 
         self.hbox.pack_start(self.etyproductname, False, False, 0)
         self.hbox.pack_start(self.cmbbcomport, False, False, 0)
+        self.hbox.pack_start(self.cbtnerasecal, False, False, 0)
         self.hbox.pack_start(self.hboxpgrs, True, True, 0)
         self.hbox.pack_end(self.btnstart, False, False, 0)
         self.hbox.pack_end(self.lblresult, False, False, 0)
@@ -168,13 +203,17 @@ class fraMonitorPanel(Gtk.Frame):
         GObject.timeout_add(300, self.panelstepconf, None)
         GObject.timeout_add(700, self.panelendconf, None)
 
+    def on_cbtnerasecal_toggled(self, button):
+        GCommon.erasewifidata[int(self.id)] = not GCommon.erasewifidata[int(self.id)]
+        log.info("on_cbtnerasecal_toggled(), GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+
     def on_cmbbcomport_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
             GCommon.finaltty[int(self.id)] = model[tree_iter][0]
 
-        gui_log_info("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
+        log.info("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
 
     def autoscroll(self, iter, text, length, user_param1):
         self.txvlog.scroll_to_mark(self.endmark, 0.0, False, 1.0, 1.0)
@@ -237,7 +276,7 @@ class fraMonitorPanel(Gtk.Frame):
                 self.lblresult.set_markup(lblresultcolorfont)
                 self.hboxpgrs.set_name("pgrs_green")
             else:
-                gui_log_info("in selfz true panelendconf " + str(self.id))
+                log.info("in selfz true panelendconf " + str(self.id))
                 self.pgrbprogress.set_text("Failed")
                 lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
                 self.lblresult.set_markup(lblresultcolorfont)
@@ -255,18 +294,12 @@ class fraMonitorPanel(Gtk.Frame):
         # Set time
         """
             Time format:
-            Weekday Day Month Year Hour:Minute:Second
         """
-        nowtime = time.strftime("%a,%d,%m,%Y,%H:%M:%S", time.gmtime())
-        t1 = nowtime.split(",")
-        t1date = t1[3] + "-" + t1[2] + "-" + t1[1]
-        [hour, min, sec] = t1[4].split(":")
-        gui_log_info("hour: %s, min: %s, sec: %s" % (hour, min, sec))
-        gui_log_info("date: %s" % (t1date))
+        date = time.strftime("%Y-%m-%d", time.gmtime())
 
         # Create the report directory
-        reportdir = GPath.logdir + "/" + GCommon.active_product + "/rev" + GCommon.active_bomrev + "/" + GCommon.active_region + "/" + t1date
-        gui_log_info("report dir: " + reportdir)
+        reportdir = GPath.logdir + "/" + GCommon.active_product + "/" + date
+        log.info("report dir: " + reportdir)
         GPath.reportdir = reportdir
 
         if not (os.path.isdir(GPath.reportdir)):
@@ -275,10 +308,9 @@ class fraMonitorPanel(Gtk.Frame):
                 msgerrror(self, "Can't create a log directory in the USB disk")
 
         # Create the temporary report file
-        # randnum = random.randint(1, 2000)
-        # GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
-        GPath.templogfile[int(self.id)] = GPath.reportdir + "/" + GCommon.macaddr + ".log"
-        gui_log_info("templogfile: " + GPath.templogfile[int(self.id)])
+        nowtime = time.strftime("%Y-%m-%d-%H%M", time.gmtime())
+        GPath.templogfile[int(self.id)] = GCommon.macaddr + "_" + nowtime + ".log"
+        log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
         self.setdirfl()
@@ -295,15 +327,27 @@ class fraMonitorPanel(Gtk.Frame):
             else:
                 regcidx = 0
 
+        """
+            command parameter description for BackToT1
+            command: python3
+            pyfile:  script
+            para0:   slot ID
+            para1:   UART device number
+            para2:   FCD host IP
+            para3:   system ID
+            para4:   Erase calibration data selection
+        """
         cmd = [
             "sudo /usr/bin/python3",
-            "/usr/local/sbin/" + GCommon.active_product_obj['FILE'],
-            GCommon.active_product_obj['BOARDID'],
+            "/usr/local/sbin/" + GCommon.active_product_obj['T1FILE'],
+            self.id,
             GCommon.finaltty[int(self.id)],
-            self.id
+            GCommon.fcdhostip,
+            GCommon.active_product_obj['BOARDID'],
+            GCommon.erasewifidata[int(self.id)]
         ]
         str1 = " ".join(str(x) for x in cmd)
-        gui_log_info("cmd: " + str1)
+        log.info("cmd: " + str1)
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         GObject.io_add_watch(
             self.proc.stdout,
@@ -314,49 +358,38 @@ class fraMonitorPanel(Gtk.Frame):
         if (cond == GLib.IO_HUP):
             proc.poll()
             self.y = True
-            if proc.returncode == 0:
+            if (proc.returncode == 0):
                 self.w = "good"
                 passdir = GPath.reportdir + "/Pass"
                 if not os.path.isdir(passdir):
                     os.makedirs(passdir)
 
-                tfile = passdir + "/" + GCommon.macaddr + ".log"
-                gui_log_info("target file: " + tfile)
-                if not os.path.isfile(tfile):
-                    shutil.move(GPath.templogfile[int(self.id)], passdir)
-                else:
-                    cmd = "cat " + GPath.templogfile[int(self.id)] + " >> " + tfile
-                    [sto, rtc] = self.xcmd(cmd)
-                    if (int(rtc) > 0):
-                        gui_log_info("Appending log failed!!")
-                    else:
-                        gui_log_info("Appending log successfully")
+                tfile = passdir + "/" + GPath.templogfile[int(self.id)]
             else:
                 self.w = "bad"
                 faildir = GPath.reportdir + "/Fail"
                 if not os.path.isdir(faildir):
                     os.makedirs(faildir)
 
-                tfile = faildir + "/" + GCommon.macaddr + ".log"
-                if not os.path.isfile(tfile):
-                    shutil.move(GPath.templogfile[int(self.id)], faildir)
-                else:
-                    cmd = "cat " + GPath.templogfile[int(self.id)] + " >> " + tfile
-                    [sto, rtc] = self.xcmd(cmd)
-                    if int(rtc) > 0:
-                        gui_log_info("Appending log failed!!")
-                    else:
-                        gui_log_info("Appending log successfully")
+                tfile = faildir + "/" + GPath.templogfile[int(self.id)]
+
+            log.info("In inspection(), target file: " + tfile)
+            sfile = os.path.join(
+                "/tftpboot/",
+                "log_slot" + self.id + ".log")
+            log.info("In inspection(), source file: " + sfile)
+
+            if os.path.isfile(sfile):
+                shutil.copy2(sfile, tfile)
+            else:
+                log.info("In inspection(), can't find the source file")
 
             return False
         else:
-            f = open(GPath.templogfile[int(self.id)], "a")
             x = fd.readline()
             raw2str = x.decode()
             self.appendlog(str(raw2str))
-            f.write(raw2str)
-            f.close()
-            pattern = re.compile("^=== (\d+) .*$")
+            pattern = re.compile(r"^=== (\d+) .*$")
             pgvalue = pattern.match(raw2str)
             if pgvalue is not None:
                 self.z = True
@@ -377,7 +410,7 @@ class dlgUserInput(Gtk.Dialog):
         self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 
         # Load test items
-        f = open('/usr/local/sbin/ubntlib/' + 'Products-info.json')
+        f = open('/usr/local/sbin/' + 'Products-info.json')
         self.prods = json.load(f)
         f.close()
 
@@ -396,8 +429,6 @@ class dlgUserInput(Gtk.Dialog):
         # Product combo box
         self.lblallpd = Gtk.Label("Select a product:")
         self.lsrallpdlist = Gtk.ListStore(int, str)
-        # for item in prodlist:
-            # self.lsrallpdlist.append([item[0], item[1]])
 
         self.crtrallpdlist = Gtk.CellRendererText()
         self.cmbballpd = Gtk.ComboBox.new_with_model(self.lsrallpdlist)
@@ -419,7 +450,7 @@ class dlgUserInput(Gtk.Dialog):
         if tree_iter is not None:
             model = combo.get_model()
             GCommon.active_product_series = model[tree_iter][0]
-            gui_log_info("The Product Series: " + GCommon.active_product_series)
+            log.info("The Product Series: " + GCommon.active_product_series)
 
         self.lsrallpdlist.clear()
         [GCommon.active_productidx, GCommon.active_product] = ["", ""]
@@ -432,8 +463,8 @@ class dlgUserInput(Gtk.Dialog):
             model = combo.get_model()
             [GCommon.active_productidx, GCommon.active_product] = model[tree_iter][:2]
             GCommon.active_product_obj = self.prods[GCommon.active_product_series][GCommon.active_product]
-            print("The product index: " + str(GCommon.active_productidx))
-            print("The product: " + GCommon.active_product)
+            log.info("The product index: " + str(GCommon.active_productidx))
+            log.info("The product: " + GCommon.active_product)
 
     def check_inputs(self):
         idx = GCommon.active_productidx
@@ -447,10 +478,36 @@ class winFcdFactory(Gtk.Window):
         Gtk.Window.__init__(self)
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.hboxdashboard = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self.lblflavor = Gtk.Label("Flavor: ")
         self.lblprod = Gtk.Label('')
         # self.lblprod.set_text(prodlist[0][4])
+
+        # set the FCD host IP
+        self.lblhostip = Gtk.Label("FCD host IP:")
+        self.etyhostip = Gtk.Entry()
+        self.etyhostip.set_text(GCommon.fcdhostip)
+        self.etyhostip.connect("changed", self.on_etyhostip_changed)
+
+        # Enable to set the FCD host IP
+        self.cbtnsethostip = Gtk.CheckButton("Enable-set-host-IP")
+        if GCommon.hostipsetenable is True:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(True)
+            self.etyhostip.set_sensitive(True)
+            self.cbtnsethostip.set_active(True)
+        else:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(False)
+            self.etyhostip.set_sensitive(False)
+            self.cbtnsethostip.set_active(False)
+
+        self.cbtnsethostip.connect("toggled", self.on_cbtnsethostip_toggled)
+
+        self.hboxdashboard.pack_start(self.lblhostip, False, False, 0)
+        self.hboxdashboard.pack_start(self.etyhostip, False, False, 0)
+        self.hboxdashboard.pack_start(self.cbtnsethostip, False, False, 0)
 
         self.frame1 = fraMonitorPanel("0", "Slot 1")
         self.frame2 = fraMonitorPanel("1", "Slot 2")
@@ -459,6 +516,7 @@ class winFcdFactory(Gtk.Window):
 
         self.vboxdashboard.pack_start(self.lblflavor, False, False, 0)
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
+        self.vboxdashboard.pack_start(self.hboxdashboard, False, False, 0)
         self.vboxdashboard.pack_start(self.frame1, False, False, 0)
         self.vboxdashboard.pack_start(self.frame2, False, False, 0)
         self.vboxdashboard.pack_start(self.frame3, False, False, 0)
@@ -487,6 +545,21 @@ class winFcdFactory(Gtk.Window):
         self.set_position(Gtk.WindowPosition.CENTER)
         self.add(self.vboxMainWindow)
 
+    def on_etyhostip_changed(self, entry):
+        GCommon.fcdhostip = self.etyhostip.get_text()
+        log.info("In on_etyhostip_changed(), the FCD host IP: " + GCommon.fcdhostip)
+
+    def on_cbtnsethostip_toggled(self, button):
+        GCommon.hostipsetenable = not GCommon.hostipsetenable
+        if GCommon.hostipsetenable is True:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(True)
+            self.etyhostip.set_sensitive(True)
+        else:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(False)
+            self.etyhostip.set_sensitive(False)
+
     def envinitial(self):
         if self.network_status_set() is False:
             msgerrror(self, "Network configure faile. Exiting...")
@@ -507,12 +580,12 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def network_status_set(self):
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh"
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         output.communicate()
         if (output.returncode == 1):
-            gui_log_info("returncode: " + str(output.returncode))
+            log.info("returncode: " + str(output.returncode))
             return False
 
         return True
@@ -528,7 +601,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            gui_log_info("returncode: " + str(output.returncode))
+            log.info("returncode: " + str(output.returncode))
             return False
 
         stdoutarray = stdout.decode().splitlines()
@@ -551,7 +624,7 @@ class winFcdFactory(Gtk.Window):
 
             file.close()
 
-        print("No USB storage found")
+        log.info("No USB storage found")
         return False
 
     def check_comport(self):
@@ -565,7 +638,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            gui_log_info("returncode: " + str(output.returncode))
+            log.info("returncode: " + str(output.returncode))
             return False
 
         exist_tty = stdout.decode().splitlines()
@@ -575,7 +648,7 @@ class winFcdFactory(Gtk.Window):
             output.wait()
             [stdout, stderr] = output.communicate()
             if (output.returncode == 1):
-                gui_log_info("returncode: " + str(output.returncode))
+                log.info("returncode: " + str(output.returncode))
                 return False
 
             GCommon.active_tty.append(itty)
@@ -612,7 +685,7 @@ class winFcdFactory(Gtk.Window):
         while rt is False:
             response = dialog.run()
             if (response == Gtk.ResponseType.OK):
-                gui_log_info("The OK button was clicked")
+                log.info("The OK button was clicked")
                 result = dialog.check_inputs()
                 if result is False:
                     msgerrror(self, "Any one of inputs is not correct")
@@ -627,7 +700,7 @@ class winFcdFactory(Gtk.Window):
                     self.frame4.set_product(GCommon.active_product)
                     rt = True
             else:
-                gui_log_info("The Cancel button was clicked")
+                log.info("The Cancel button was clicked")
                 rt = True
 
         dialog.destroy()
@@ -648,9 +721,9 @@ def debugdlgUserInput():
     response = dialog.run()
 
     if response == Gtk.ResponseType.OK:
-        gui_log_info("The OK button was clicked")
+        log.info("The OK button was clicked")
     elif response == Gtk.ResponseType.CANCEL:
-        gui_log_info("The Cancel button was clicked")
+        log.info("The Cancel button was clicked")
 
     dialog.destroy()
     return True

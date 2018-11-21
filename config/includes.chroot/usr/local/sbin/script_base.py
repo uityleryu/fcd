@@ -5,6 +5,7 @@ Base script class
 import sys
 import time
 import os
+from ubntlib.fcd.common import Tee
 from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -23,6 +24,15 @@ class ScriptBase(object):
         # must be set by set_pexpect_helper()
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
+
+        self.recordfilename = os.path.join(
+            "/tftpboot/",
+            "log_slot" + self.args[0] + ".log")
+
+        if os.path.isfile(self.recordfilename):
+            os.remove(self.recordfilename)
+        else:
+            Tee(self.recordfilename, 'w')
 
     @property
     def pexp(self):

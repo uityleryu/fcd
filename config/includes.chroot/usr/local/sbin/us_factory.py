@@ -99,8 +99,8 @@ class USFactoryGeneral(ScriptBase):
         is_alive = False
         for _ in range(retry):
             time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.common.tftp_server)
-            extext_list = ["host " + self.variable.common.tftp_server + " is alive"]
+            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.us_factory.tftp_server)
+            extext_list = ["host " + self.variable.us_factory.tftp_server + " is alive"]
             index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
             if index == 0:
                 is_alive = True
@@ -239,7 +239,7 @@ class USFactoryGeneral(ScriptBase):
                 self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
                 self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
                 time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="setenv serverip " + self.variable.common.tftp_server)
+            self.pexp.expect_action(timeout=10, exptxt="", action="setenv serverip " + self.variable.us_factory.tftp_server)
             self.pexp.expect_action(
                                     timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv ipaddr " +
                                     self.variable.us_factory.ip)
@@ -250,7 +250,7 @@ class USFactoryGeneral(ScriptBase):
             else:
                 break
         if is_network_alive is False:
-            error_critical(msg=self.variable.common.tftp_server + " is not reachable.")
+            error_critical(msg=self.variable.us_factory.tftp_server + " is not reachable.")
         self.pexp.expect_action(timeout=10, exptxt="", action="")
         self.pexp.expect_only(timeout=10, exptxt=self.variable.common.bootloader_prompt)
 

@@ -10,10 +10,7 @@ class CommonVariable(object):
         self.bootloader_prompt = "u-boot>"
         self.linux_prompt = "#"
         self.cmd_prefix = r"go $ubntaddr "
-
-        self.tftp_server = "192.168.1.19"
      
-
         #DU log-in info
         self.user = "ubnt"
         self.password = "ubnt"

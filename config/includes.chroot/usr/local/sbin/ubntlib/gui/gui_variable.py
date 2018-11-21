@@ -16,7 +16,6 @@ class GPath(object):
 
 
 class GCommon(object):
-    serverip = "192.168.1.19"
     keyfilenames = [
         "ca.pem",
         "crt.pem",
@@ -49,6 +48,14 @@ class GCommon(object):
         '8178',
         '0002'
     ]
+    erasewifidata = [
+        False,
+        False,
+        False,
+        False
+    ]
+    fcdhostip = "192.168.1.19"
+    hostipsetenable = False
     active_bomrev = ""
     active_region = ""
     active_passphrase = ""
@@ -63,7 +70,7 @@ class GCommon(object):
 
 
 def main():
-    print("Joe: report dir: " + GPath.reportdir)
+    pass
 
 if __name__ == "__main__":
     main()

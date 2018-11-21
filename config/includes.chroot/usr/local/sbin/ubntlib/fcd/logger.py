@@ -27,8 +27,3 @@ def error_critical(msg):
     log_error(msg)
     time.sleep(1)
     sys.exit(2)
-
-
-def gui_log_info(msg):
-    nowtime = time.strftime("[GUI info %Y-%m-%d %H:%M:%S] ", time.gmtime())
-    print("\n" + nowtime + msg + "\n")

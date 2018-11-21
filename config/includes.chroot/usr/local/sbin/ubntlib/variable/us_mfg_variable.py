@@ -11,13 +11,22 @@ class USMFG(object):
 
     def __init__(self, args):
         """
-        ex: ['-e', 'ttyUSB1', '1', 'eb23', 'eb23-mfg.bin', '192.168.1.19']
+            command parameter description for BackToT1
+            command: python3
+            pyfile:  script
+            para0:   slot ID
+            para1:   UART device number
+            para2:   FCD host IP
+            para3:   system ID
+            para4:   Erase calibration data selection
+            ex: [1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
         """
-        self.erasecal = args[0]
+        self.row_id = args[0]
         self.dev = args[1]
-        self.row_id = args[2]
+        self.tftp_server = args[2]
         self.board_id = args[3]
-        self.firmware_img = args[4]
+        self.erasecal = args[4]
+        self.firmware_img = self.board_id + "-mfg.bin"
 
         self.fake_mac = r"00:90:4c:06:a5:7" + self.row_id
         self.ip = r"192.168.1." + str((int(self.row_id) + 21))
@@ -26,7 +35,6 @@ class USMFG(object):
         self.flash_mtdparts_32M = r"mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"
 
         self.use_64mb_flash = 0
-
 
     def print_variables(self):
         print("In MFGVariable: erasecal=%s, dev=%s, row_id=%s, board_id=%s, firmware_img=%s" \

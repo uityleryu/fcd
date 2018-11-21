@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-class USFactory(object):
 
+class USFactory(object):
     # model ID
     USW_XG = "eb20"
     USW_6XG_150 = "eb23"
@@ -11,15 +11,29 @@ class USFactory(object):
 
     def __init__(self, args):
         """
-        ex: ['eb23', 'b4fbe451f2ba', '4w3IYmVMHKzj', '/media/chike/Ubuntu 18.04.1 LTS amd64/keys/', 
-            'ttyUSB1', '1', '192.168.1.7', '02604-20', 'mYvJIK']
+            command parameter description for security registration
+            command: python3
+            pyfile:  script
+            para0:   slot ID
+            para1:   UART device number
+            para2:   FCD host IP
+            para3:   system ID (board ID)
+            para4:   MAC address
+            para5:   passphrase
+            para6:   key directory
+            para7:   BOM revision
+            para8:   QR code
+            para9:   Region Code
+            ex: ['1', 'ttyUSB1', 192.168.1.7', 'eb23', 'b4fbe451f2ba', '4w3IYmVMHKzj', '/media/chike/Ubuntu 18.04.1 LTS amd64/keys/',
+            '02604-20', 'mYvJIK', '0000']
         """
-        self.board_id = args[0]
-        self.mac = args[1]
-        self.pass_phrase = args[2]
-        self.key_dir = args[3]
-        self.dev = args[4]
-        self.row_id = args[5]
+        self.row_id = args[0]
+        self.dev = args[1]
+        self.tftp_server = args[2]
+        self.board_id = args[3]
+        self.mac = args[4]
+        self.pass_phrase = args[5]
+        self.key_dir = args[6]
         self.bom_rev = args[7]
         self.qrcode = args[8]
 

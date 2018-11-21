@@ -10,6 +10,11 @@ if [ -f ${STATUS} ]; then
     exit 0
 fi
 
+host_ip=$1
+if [ "${host_ip}" = "" ]; then
+    host_ip=192.168.1.19
+fi
+
 echo " configuring the SSH server "
 cp /tftpboot/tools/sshd_config /etc/ssh/
 sudo /etc/init.d/ssh restart
@@ -33,11 +38,6 @@ if ! grep -q usbdisk /proc/mounts; then
         exit 1
     fi
     ln -sf $MDIR /home/user/Desktop/
-fi
-
-host_ip=$1
-if [ "${host_ip}" = "" ]; then
-    host_ip=192.168.1.19
 fi
 
 # There are two kinds of dhcp server for linux

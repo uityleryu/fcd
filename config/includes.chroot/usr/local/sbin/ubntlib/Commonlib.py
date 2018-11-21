@@ -1,46 +1,19 @@
 #!/usr/bin/python3
-
-import gi
-gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from io import StringIO
+
 import time
 import sys
 import subprocess
 import pexpect
 import logging
-from io import StringIO
-
-
-class Tee(object):
-    def __init__(self, name, mode):
-        self.file = open(name, mode)
-        self.stdout = sys.stdout
-        sys.stdout = self
-
-    def __del__(self):
-        #sys.stdout = self.stdout
-        self.file.close()
-
-    def write(self, data):
-        self.file.write(data)
-        self.stdout.write(data)
-
-    def flush(self):
-        self.stdout.flush()
-        self.file.flush()
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, _type, _value, _traceback):
-        pass
+import gi
+gi.require_version('Gtk', '3.0')
 
 
 class ExpttyProcess():
     def __init__(self, id, cmd, newline, logger_name=None):
         self.id = id
-        #fout = open('mylog.txt','w')
-        Tee('mylog.txt','w')
         self.proc = pexpect.spawn(cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
         self.proc.logfile_read = sys.stdout
         self.newline = newline
@@ -75,7 +48,6 @@ class ExpttyProcess():
             self.proc.readline(1)
 
         return 0
-
 
     def expect2act(self, timeout, exptxt, action, rt_buf=None):
         sys.stdout = mystdout = StringIO()
@@ -180,6 +152,7 @@ def msg(no, out):
     nowtime = time.strftime("[FCD %Y-%m-%d %H:%M:%S] ", time.gmtime())
     print("\n"+pstr+"\n"+nowtime+out+"\n\n\n")
 
+
 def log_error(msg):
     erstr = "\n* * * ERROR: * * *"
     nowtime = time.strftime("[FCD %Y-%m-%d %H:%M:%S] ", time.gmtime())
@@ -197,25 +170,3 @@ def error_critical(msg):
     time.sleep(1)
     sys.exit(2)
 
-
-def main():
-    cmd = "stty -F /dev/ttyUSB0 sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
-    [sto, rtc] = xcmd(cmd)
-    if (int(rtc) > 0):
-        error_critical("stty configuration failed!!")
-    else:
-        log_debug("Configure stty successfully")
-
-    expcmd = "sudo picocom /dev/ttyUSB0 -b 115200"
-    p = ExpttyProcess(0, expcmd, "\n")
-
-    p.expect2actu1(5, "", "enter")
-    #p.expect2act(5, "#", "tftp -g -r upgra4de.tar -l /tmp/upgrade.tar 192.168.1.22", rt_buf=None)
-    p.expect2actu1(5, "#", "sleep 6")
-    p.expect2actu1(15, "#", "ifconfig")
-#     p.expect2act(5, "#", "ls -la")
-    p.expect2actu1(15, "#", "")
-    print("Joe: this is the last one")
-
-if __name__ == "__main__":
-    main()

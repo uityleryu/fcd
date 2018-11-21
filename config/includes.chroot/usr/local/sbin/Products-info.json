@@ -1,0 +1,100 @@
+{
+  "UniFi ONE":
+  {
+    "UDM":{
+      "INDEX" : 0,
+      "NAME" : "UDM",
+      "BOARDID" : "ea11",
+      "BOMREV" : "113-00623",
+      "DESC" : "UniFi Dream Machine",
+      "FILE" : "udm_alpine_factory.py",
+      "T1FILE" : ""
+    },
+
+    "UDM-SE":{
+      "INDEX" : 1,
+      "NAME" : "UDM-SE",
+      "BOARDID" : "ea13",
+      "BOMREV" : "113-00618",
+      "DESC" : "UniFi Dream Machine Special",
+      "FILE" : "udm_alpine_factory.py",
+      "T1FILE" : ""
+    },
+
+    "UDM-PRO":{
+      "INDEX" : 2,
+      "NAME" : "UDM-PRO",
+      "BOARDID" : "ea15",
+      "BOMREV" : "113-00631",
+      "DESC" : "UniFi Dream Machine Pro",
+      "FILE" : "udm_alpine_factory.py",
+      "T1FILE" : ""
+    },
+
+    "UDM-B":{
+      "INDEX" : 3,
+      "NAME" : "UDM-B",
+      "BOARDID" : "ec25",
+      "BOMREV" : "113-00622",
+      "DESC" : "UniFi One Dream Machine Beacon",
+      "FILE" : "mt7621_series.py",
+      "T1FILE" : ""
+    }
+  },
+  
+  "Unifi Switch":
+  {
+    "US-FLEX":{
+      "INDEX" : 0,
+      "NAME" : "US-FLEX",
+      "BOARDID" : "ed10",
+      "BOMREV" : "113-02767",
+      "DESC" : "UniFi Switch Flex",
+      "FILE" : "mt7621_series.py",
+      "T1FILE" : ""
+    },
+    "US-24-PRO":{
+      "INDEX" : 1,
+      "NAME" : "US-24-PRO",
+      "BOARDID" : "eb36",
+      "BOMREV" : "113-02779",
+      "DESC" : "UBNT UniFiSwitch 24-Port 802.3bt",
+      "FILE" : "us_factory.py",
+      "T1FILE" : "us_mfg.py"
+    }
+  },
+
+
+  "Unifi AP":
+  {
+  },
+
+
+  "Unifi SG":
+  {
+  },
+
+
+  "Amplifi":
+  {
+    "AFi-AX-R":{
+      "INDEX" : 0,
+      "NAME" : "AFi-AX-R",
+      "BOARDID" : "da11",
+      "BOMREV" : "113-00605",
+      "DESC" : "Amplifi AX Router",
+      "FILE" : "afi_ipq807x_factory.py",
+      "T1FILE" : ""
+    },
+
+    "AFi-AX-P":{
+      "INDEX" : 1,
+      "NAME" : "AFi-AX-P",
+      "BOARDID" : "da12",
+      "BOMREV" : "113-00657",
+      "DESC" : "Amplifi AX Mesh Point",
+      "FILE" : "afi_ipq807x_factory.py",
+      "T1FILE" : ""
+    }
+  }
+}

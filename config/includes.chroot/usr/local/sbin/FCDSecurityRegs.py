@@ -9,13 +9,37 @@ from ubntlib.fcd.common import Common
 import gi
 import re
 import os
+import sys
 import subprocess
 import time
 import random
 import threading
 import shutil
 import json
+import logging
 gi.require_version('Gtk', '3.0')
+
+tmpguidir = "/usr/local/sbin/guilog"
+timestamp = time.strftime('%Y-%m-%d-%H')
+logfilename = tmpguidir + '/' + 'FCDSecurityRegGUI_' + timestamp + '.log'
+
+log = logging.getLogger('FCDSecurityRegGUI')
+log.setLevel(logging.INFO)
+
+# console log handler
+log_stream = logging.StreamHandler(sys.stdout)
+log_stream.setLevel(logging.DEBUG)
+
+# file log handler
+if not os.path.exists(tmpguidir):
+    os.makedirs(tmpguidir)
+
+log_file = logging.FileHandler(logfilename)
+log_file.setFormatter(logging.Formatter('[%(asctime)s - %(filename)s:%(lineno)d] %(message)s', '%Y-%m-%d %H:%M:%S'))
+log_file.setLevel(logging.DEBUG)
+
+log.addHandler(log_stream)
+log.addHandler(log_file)
 
 
 """
@@ -25,6 +49,7 @@ gi.require_version('Gtk', '3.0')
         cmbb   : Gtk.ComboBox
         lbl    : Gtk.Lable
         btn    : Gtk.Button
+        cbtn   : Gtk.CheckButton
         txv    : Gtk.TextView
         scl    : Gtk.ScrolledWindow
         epd    : Gtk.Expander
@@ -191,7 +216,7 @@ class fraMonitorPanel(Gtk.Frame):
             model = combo.get_model()
             GCommon.finaltty[int(self.id)] = model[tree_iter][0]
 
-        print("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
+        log.info("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
 
     def autoscroll(self, iter, text, length, user_param1):
         self.txvlog.scroll_to_mark(self.endmark, 0.0, False, 1.0, 1.0)
@@ -268,7 +293,7 @@ class fraMonitorPanel(Gtk.Frame):
                 self.lblresult.set_markup(lblresultcolorfont)
                 self.hboxpgrs.set_name("pgrs_green")
             else:
-                print("Joe: in selfz true panelendconf " + str(self.id))
+                log.info("In panelendconf(), self.w is not good " + str(self.id))
                 self.pgrbprogress.set_text("Failed")
                 lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
                 self.lblresult.set_markup(lblresultcolorfont)
@@ -306,12 +331,12 @@ class fraMonitorPanel(Gtk.Frame):
         dialog = dlgBarcodeinput(self.win)
         response = dialog.run()
         if (response == Gtk.ResponseType.OK):
-            print("Joe: this is barcode response ok")
+            log.info("In aquirebarcode(), this is barcode response ok")
             barcode = GCommon.barcode
             barcodelen = GCommon.barcodelen
             macaddrlen = GCommon.macaddrlen
             qrcodelen = GCommon.qrcodelen
-            print("Joe: the macaddr+qrcode: %d" % (macaddrlen + qrcodelen))
+            log.info("In aquirebarcode(), the macaddr+qrcode: %d" % (macaddrlen + qrcodelen))
             if (barcodelen == (macaddrlen + qrcodelen + 1)):
                 btmp = barcode.split("-")
                 if ((len(btmp[0]) != macaddrlen) or \
@@ -322,21 +347,21 @@ class fraMonitorPanel(Gtk.Frame):
                     pattern = re.compile(r'[^0-9a-fA-F]')
                     pres = pattern.match(btmp[0])
                     if pres is not None:
-                        print("Joe: the macaddr format is incorrect")
+                        log.info("In aquirebarcode(), the macaddr format is incorrect")
                         msgerrror(self.win, "MAC adress invalid. Exiting...")
                         rt = False
                     else:
-                        print("Joe: the barcode is valid")
+                        log.info("In aquirebarcode(), the barcode is valid")
                         GCommon.macaddr = btmp[0]
                         GCommon.qrcode = btmp[1]
                         self.starttime = time.time()
-                        print("Joe: start time: " + str(self.starttime))
+                        log.info("In aquirebarcode(), start time: " + str(self.starttime))
                         rt = True
             else:
                 msgerrror(self.win, "Barcode invalid. Exiting...")
                 rt = False
         else:
-            print("Joe: this is barcode response cancel")
+            log.info("In aquirebarcode(), this is barcode response cancel")
             rt = False
 
         dialog.destroy()
@@ -352,37 +377,29 @@ class fraMonitorPanel(Gtk.Frame):
             XX:XX:XX:XX:XX:XX-XXXXXX
         """
         info = g[0:2] + ":" + g[2:4] + ":" + g[4:6] + ":" + g[6:8] + ":" + g[8:10] + ":" + g[10:12] + "-" + GCommon.qrcode
-        print("Joe: mac+qr: " + info)
+        log.info("In setdirfl(), mac+qr: " + info)
         self.lblmacqr.set_label(info)
 
         # Set time
         """
             Time format:
-            Weekday Day Month Year Hour:Minute:Second
         """
-        nowtime = time.strftime("%a,%d,%m,%Y,%H:%M:%S", time.gmtime())
-        print("Joe: nowtime: ", nowtime)
-        t1 = nowtime.split(",")
-        t1date = t1[3] + "-" + t1[2] + "-" + t1[1]
-        [hour, min, sec] = t1[4].split(":")
-        print("Joe: hour: %s, min: %s, sec: %s" % (hour, min, sec))
-        print("Joe: date: %s" % (t1date))
+        date = time.strftime("%Y-%m-%d", time.gmtime())
 
         # Create the report directory
-        reportdir = GPath.logdir + "/" + GCommon.active_product + "/rev" + GCommon.active_bomrev + "/" + GCommon.active_region + "/" + t1date
-        print("Joe: report dir: " + reportdir)
+        reportdir = GPath.logdir + "/" + GCommon.active_product + "/rev" + GCommon.active_bomrev + "/" + GCommon.active_region + "/" + date
+        log.info("In setdirfl(), report dir: " + reportdir)
         GPath.reportdir = reportdir
 
         if not (os.path.isdir(GPath.reportdir)):
-            result = pcmd("mkdir -p " + GPath.reportdir)
+            result = self.pcmd("mkdir -p " + GPath.reportdir)
             if result is False:
                 msgerrror(self, "Can't create a log directory in the USB disk")
 
         # Create the temporary report file
-        # randnum = random.randint(1, 2000)
-        # GPath.templogfile[int(self.id)] = GPath.reportdir+"/"+sec+min+hour+str(randnum)+".log"
-        GPath.templogfile[int(self.id)] = GPath.reportdir + "/" + GCommon.macaddr + ".log"
-        print("Joe: templogfile: " + GPath.templogfile[int(self.id)])
+        nowtime = time.strftime("%Y-%m-%d-%H%M", time.gmtime())
+        GPath.templogfile[int(self.id)] = GCommon.macaddr + "_" + nowtime + ".log"
+        log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
         rt = self.aquirebarcode()
@@ -402,21 +419,37 @@ class fraMonitorPanel(Gtk.Frame):
             else:
                 regcidx = 0
 
+        """
+           command parameter description for security registration
+            command: python3
+            pyfile:  script
+            para0:   slot ID
+            para1:   UART device number
+            para2:   FCD host IP
+            para3:   system ID (board ID)
+            para4:   MAC address
+            para5:   passphrase
+            para6:   key directory
+            para7:   BOM revision
+            para8:   QR code
+            para9:   Region Code
+        """
         cmd = [
             "sudo /usr/bin/python3",
             "/usr/local/sbin/" + GCommon.active_product_obj['FILE'],
+            self.id,
+            GCommon.finaltty[int(self.id)],
+            GCommon.fcdhostip,
             GCommon.active_product_obj['BOARDID'],
             GCommon.macaddr,
             GCommon.active_passphrase,
             GPath.keydir,
-            GCommon.finaltty[int(self.id)],
-            self.id,
             GCommon.active_bomrev,
             GCommon.qrcode,
             GCommon.region_codes[regcidx]
         ]
         str1 = " ".join(str(x) for x in cmd)
-        print("Joe: cmd: " + str1)
+        log.info("In run_streamcmd(), cmd: " + str1)
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         GObject.io_add_watch(
             self.proc.stdout,
@@ -433,43 +466,32 @@ class fraMonitorPanel(Gtk.Frame):
                 if not os.path.isdir(passdir):
                     os.makedirs(passdir)
 
-                tfile = passdir + "/" + GCommon.macaddr + ".log"
-                print("Joe: target file: " + tfile)
-                if not os.path.isfile(tfile):
-                    shutil.move(GPath.templogfile[int(self.id)], passdir)
-                else:
-                    cmd = "cat " + GPath.templogfile[int(self.id)] + " >> " + tfile
-                    [sto, rtc] = self.xcmd(cmd)
-                    if (int(rtc) > 0):
-                        print("Appending log failed!!")
-                    else:
-                        print("Appending log successfully")
+                tfile = passdir + "/" + GPath.templogfile[int(self.id)]
             else:
                 self.w = "bad"
                 faildir = GPath.reportdir + "/Fail"
                 if not os.path.isdir(faildir):
                     os.makedirs(faildir)
 
-                tfile = faildir + "/" + GCommon.macaddr + ".log"
-                if not os.path.isfile(tfile):
-                    shutil.move(GPath.templogfile[int(self.id)], faildir)
-                else:
-                    cmd = "cat " + GPath.templogfile[int(self.id)] + " >> " + tfile
-                    [sto, rtc] = self.xcmd(cmd)
-                    if int(rtc) > 0:
-                        print("Appending log failed!!")
-                    else:
-                        print("Appending log successfully")
+                tfile = faildir + "/" + GPath.templogfile[int(self.id)]
+
+            log.info("In inspection(), target file: " + tfile)
+            sfile = os.path.join(
+                "/tftpboot/",
+                "log_slot" + self.id + ".log")
+            log.info("In inspection(), source file: " + sfile)
+
+            if os.path.isfile(sfile):
+                shutil.copy2(sfile, tfile)
+            else:
+                log.info("In inspection(), can't find the source file")
 
             return False
         else:
-            f = open(GPath.templogfile[int(self.id)], "a")
             x = fd.readline()
             raw2str = x.decode()
             self.appendlog(str(raw2str))
-            f.write(raw2str)
-            f.close()
-            pattern = re.compile("^=== (\d+) .*$")
+            pattern = re.compile(r"^=== (\d+) .*$")
             pgvalue = pattern.match(raw2str)
             if pgvalue is not None:
                 self.z = True
@@ -495,7 +517,7 @@ class dlgUserInput(Gtk.Dialog):
         self.etypassphrase.connect("changed", self.on_phassphrase_changed)
 
         # Load test items
-        f = open('/usr/local/sbin/ubntlib/' + 'Products-info.json')
+        f = open('/usr/local/sbin/' + 'Products-info.json')
         self.prods = json.load(f)
         f.close()
 
@@ -536,7 +558,7 @@ class dlgUserInput(Gtk.Dialog):
         self.cmbbregion = Gtk.ComboBox.new_with_model(self.lsrregionlist)
         self.cmbbregion.pack_start(self.crtregionlist, True)
         self.cmbbregion.add_attribute(self.crtregionlist, "text", 0)
-        #self.cmbbregion.set_active(0)
+        # self.cmbbregion.set_active(0)
         self.cmbbregion.connect("changed", self.on_region_combo_changed)
 
         self.vboxuserauth.pack_start(self.lblpassphrase, False, False, 0)
@@ -556,14 +578,14 @@ class dlgUserInput(Gtk.Dialog):
 
     def on_phassphrase_changed(self, entry):
         GCommon.active_passphrase = self.etypassphrase.get_text()
-        print("The passphrse: " + GCommon.active_passphrase)
+        log.info("In on_phassphrase_changed(), the passphrse: " + GCommon.active_passphrase)
 
     def on_pds_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
             GCommon.active_product_series = model[tree_iter][0]
-            print("The Product Series: " + GCommon.active_product_series)
+            log.info("In on_pds_combo_changed(), the Product Series: " + GCommon.active_product_series)
 
         self.lsrallpdlist.clear()
         [GCommon.active_productidx, GCommon.active_product] = ["", ""]
@@ -576,12 +598,12 @@ class dlgUserInput(Gtk.Dialog):
             model = combo.get_model()
             [GCommon.active_productidx, GCommon.active_product] = model[tree_iter][:2]
             GCommon.active_product_obj = self.prods[GCommon.active_product_series][GCommon.active_product]
-            print("The product index: " + str(GCommon.active_productidx))
-            print("The product: " + GCommon.active_product)
+            log.info("In on_allpd_combo_changed(), the product index: " + str(GCommon.active_productidx))
+            log.info("In on_allpd_combo_changed(), the product: " + GCommon.active_product)
 
     def on_bomrev_changed(self, entry):
         GCommon.active_bomrev = self.etybomrev.get_text()
-        print("The BOM revision: " + GCommon.active_bomrev)
+        log.info("In on_bomrev_changed(), the BOM revision: " + GCommon.active_bomrev)
 
     def on_region_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -589,7 +611,7 @@ class dlgUserInput(Gtk.Dialog):
             model = combo.get_model()
             GCommon.active_region = model[tree_iter][0]
 
-        print("The region: "+GCommon.active_region)
+        log.info("In on_region_combo_changed(), the region: " + GCommon.active_region)
 
     def check_inputs(self):
         idx = GCommon.active_productidx
@@ -601,16 +623,16 @@ class dlgUserInput(Gtk.Dialog):
             return False
 
         ubomrev = GCommon.active_bomrev.split("-")
-        print("Joe: 1st ubomrev: " + str(ubomrev))
+        log.info("In  check_inputs(), 1st ubomrev: " + str(ubomrev))
         if (len(ubomrev) < 2):
-            print("BOM revision format incorrect")
+            log.info("In check_inputs(), BOM revision format incorrect")
             return False
         else:
             ubomrev = ubomrev[0] + "-" + ubomrev[1]
-            print("Joe: 2nd ubomrev: " + str(ubomrev))
+            log.info("In check_inputs(), 2nd ubomrev: " + str(ubomrev))
 
         if (ubomrev != GCommon.active_product_obj['BOMREV']):
-            print("Joe: input BOM revision is not match to product")
+            log.info("In check_inputs(), input BOM revision is not match to product")
             return False
 
 
@@ -643,8 +665,8 @@ class dlgBarcodeinput(Gtk.Dialog):
         barcode = barcode.strip()
         GCommon.barcode = barcode
         GCommon.barcodelen = len(barcode)
-        print("The barcode: %s" % GCommon.barcode)
-        print("The barcode: %d" % GCommon.barcodelen)
+        log.info("In on_etymacedit_changed(), the barcode: %s" % GCommon.barcode)
+        log.info("In on_etymacedit_changed(), the barcode length: %d" % GCommon.barcodelen)
 
 
 class winFcdFactory(Gtk.Window):
@@ -652,9 +674,35 @@ class winFcdFactory(Gtk.Window):
         Gtk.Window.__init__(self)
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.hboxdashboard = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self.lblflavor = Gtk.Label("Flavor: ")
         self.lblprod = Gtk.Label('')
+
+        # set the FCD host IP
+        self.lblhostip = Gtk.Label("FCD host IP:")
+        self.etyhostip = Gtk.Entry()
+        self.etyhostip.set_text(GCommon.fcdhostip)
+        self.etyhostip.connect("changed", self.on_etyhostip_changed)
+
+        # Enable to set the FCD host IP
+        self.cbtnsethostip = Gtk.CheckButton("Enable-set-host-IP")
+        if GCommon.hostipsetenable is True:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(True)
+            self.etyhostip.set_sensitive(True)
+            self.cbtnsethostip.set_active(True)
+        else:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(False)
+            self.etyhostip.set_sensitive(False)
+            self.cbtnsethostip.set_active(False)
+
+        self.cbtnsethostip.connect("toggled", self.on_cbtnsethostip_toggled)
+
+        self.hboxdashboard.pack_start(self.lblhostip, False, False, 0)
+        self.hboxdashboard.pack_start(self.etyhostip, False, False, 0)
+        self.hboxdashboard.pack_start(self.cbtnsethostip, False, False, 0)
 
         self.frame1 = fraMonitorPanel("0", "Slot 1")
         self.frame2 = fraMonitorPanel("1", "Slot 2")
@@ -663,6 +711,7 @@ class winFcdFactory(Gtk.Window):
 
         self.vboxdashboard.pack_start(self.lblflavor, False, False, 0)
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
+        self.vboxdashboard.pack_start(self.hboxdashboard, False, False, 0)
         self.vboxdashboard.pack_start(self.frame1, False, False, 0)
         self.vboxdashboard.pack_start(self.frame2, False, False, 0)
         self.vboxdashboard.pack_start(self.frame3, False, False, 0)
@@ -690,6 +739,21 @@ class winFcdFactory(Gtk.Window):
         self.set_resizable(True)
         self.set_position(Gtk.WindowPosition.CENTER)
         self.add(self.vboxMainWindow)
+
+    def on_etyhostip_changed(self, entry):
+        GCommon.fcdhostip = self.etyhostip.get_text()
+        log.info("In on_etyhostip_changed(), the FCD host IP: " + GCommon.fcdhostip)
+
+    def on_cbtnsethostip_toggled(self, button):
+        GCommon.hostipsetenable = not GCommon.hostipsetenable
+        if GCommon.hostipsetenable is True:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(True)
+            self.etyhostip.set_sensitive(True)
+        else:
+            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.etyhostip.set_editable(False)
+            self.etyhostip.set_sensitive(False)
 
     def envinitial(self):
         if self.network_status_set() is False:
@@ -720,7 +784,7 @@ class winFcdFactory(Gtk.Window):
         output.wait()
         [stdout, stderr] = output.communicate()
         if (output.returncode == 1):
-            print("returncode: " + str(output.returncode))
+            log.info("In network_status_set(), returncode: " + str(output.returncode))
             return False
 
         return True
@@ -736,7 +800,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            print("returncode: " + str(output.returncode))
+            log.info("In find_usb_storage(), returncode: " + str(output.returncode))
             return False
 
         stdoutarray = stdout.decode().splitlines()
@@ -751,7 +815,7 @@ class winFcdFactory(Gtk.Window):
                     tmp = line.split(" ")
                     if (tmp[1] and tmp[1] != "/cdrom"):
                         GPath.logdir = tmp[1]
-                        print("Found storage at " + GPath.logdir + "\n")
+                        log.info("In find_usb_storage(), found storage at " + GPath.logdir + "\n")
                         file.close()
                         return True
 
@@ -759,16 +823,16 @@ class winFcdFactory(Gtk.Window):
 
             file.close()
 
-        print("No USB storage found")
+        log.info("In find_usb_storage(), No USB storage found")
         return False
 
     def check_key_files(self):
         GPath.keydir = GPath.logdir + "/keys/"
         print(GPath.keydir)
         for name in GCommon.keyfilenames:
-            print("check keyfile: " + name)
+            log.info("In check_key_files(), check keyfile: " + name)
             if not (os.path.isfile(GPath.keydir + name)):
-                print("name doesn't exist!!\n")
+                log.info("In check_key_files(), name doesn't exist!!\n")
                 return False
 
         return True
@@ -784,7 +848,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            print("returncode: " + str(output.returncode))
+            log.info("In check_comport(), returncode: " + str(output.returncode))
             return False
 
         exist_tty = stdout.decode().splitlines()
@@ -794,7 +858,7 @@ class winFcdFactory(Gtk.Window):
             output.wait()
             [stdout, stderr] = output.communicate()
             if (output.returncode == 1):
-                print("returncode: " + str(output.returncode))
+                log.info("In check_comport(), returncode: " + str(output.returncode))
                 return False
 
             GCommon.active_tty.append(itty)
@@ -831,7 +895,7 @@ class winFcdFactory(Gtk.Window):
         while rt is False:
             response = dialog.run()
             if (response == Gtk.ResponseType.OK):
-                print("The OK button was clicked")
+                log.info("In call_input_dlg(), the OK button was clicked")
                 result = dialog.check_inputs()
                 if result is False:
                     msgerrror(self, "Any one of inputs is not correct")
@@ -855,7 +919,7 @@ class winFcdFactory(Gtk.Window):
                     self.frame4.set_product(GCommon.active_product)
                     rt = True
             else:
-                print("The Cancel button was clicked")
+                log.info("In call_input_dlg(), the Cancel button was clicked")
                 rt = True
 
         dialog.destroy()
@@ -876,12 +940,13 @@ def debugdlgUserInput():
     response = dialog.run()
 
     if response == Gtk.ResponseType.OK:
-        print("The OK button was clicked")
+        log.info("In debugdlgUserInput(), the OK button was clicked")
     elif response == Gtk.ResponseType.CANCEL:
-        print("The Cancel button was clicked")
+        log.info("In debugdlgUserInput(), the Cancel button was clicked")
 
     dialog.destroy()
     return True
+
 
 main()
 # if __name__ == "__main__":

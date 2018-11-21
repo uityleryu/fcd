@@ -43,7 +43,7 @@ class USMFGGeneral(ScriptBase):
         """
         After update firmware, linux will be restarting
         """
-        log_debug(msg="Download " + self.variable.us_mfg.firmware_img + " from " + self.variable.common.tftp_server)
+        log_debug(msg="Download " + self.variable.us_mfg.firmware_img + " from " + self.variable.us_mfg.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt="", action="")
         index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
         if index == self.pexp.TIMEOUT:
@@ -53,7 +53,7 @@ class USMFGGeneral(ScriptBase):
             tftp_cmd = "cd /tmp/; tftp -r {0}/{1} -l fwupdate.bin -g {2}".format(
                                                     self.variable.common.firmware_dir,
                                                     self.variable.us_mfg.firmware_img,
-                                                    self.variable.common.tftp_server)
+                                                    self.variable.us_mfg.tftp_server)
 
             self.pexp.expect_action(timeout=10, exptxt="", action=tftp_cmd)
             extext_list = ["Invalid argument", r".*#"]
@@ -97,9 +97,9 @@ class USMFGGeneral(ScriptBase):
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
-        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.variable.common.tftp_server)
+        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.variable.us_mfg.tftp_server)
         extext_list = ["ping: sendto: Network is unreachable",
-                       r"64 bytes from " + self.variable.common.tftp_server]
+                       r"64 bytes from " + self.variable.us_mfg.tftp_server]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
         if index == 0 or index == self.pexp.TIMEOUT:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
@@ -112,8 +112,8 @@ class USMFGGeneral(ScriptBase):
         is_alive = False
         for _ in range(retry):
             time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.common.tftp_server)
-            extext_list = ["host " + self.variable.common.tftp_server + " is alive"]
+            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.us_mfg.tftp_server)
+            extext_list = ["host " + self.variable.us_mfg.tftp_server + " is alive"]
             index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
             if index == 0:
                 is_alive = True
@@ -201,7 +201,7 @@ class USMFGGeneral(ScriptBase):
 
         self.pexp.expect_action(timeout=10, exptxt="", action="setenv ethaddr " + self.variable.us_mfg.fake_mac)
         self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv serverip " +
-                                self.variable.common.tftp_server)
+                                self.variable.us_mfg.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv ipaddr " +
                                 self.variable.us_mfg.ip)
         if self.is_network_alive_in_uboot(retry=3) is False:
@@ -274,7 +274,7 @@ class USMFGGeneral(ScriptBase):
 
 
 def main():
-    if len(sys.argv) < 7:  # TODO - hardcode
+    if len(sys.argv) < 6:  # TODO - hardcode
         msg(no="", out=str(sys.argv))
         error_critical(msg="Arguments are not enough")
     else:

@@ -2,8 +2,51 @@
 import subprocess
 import time
 import os
+import sys
+
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.variable.common import CommonVariable
+
+"""
+    Tee class is kind of sys.stdout recorder
+    in the __init__() of Tee class,
+        sys.stdout = self
+
+    If there is a snippet of code like
+        Tee('/tmp/log.txt', 'w')
+        sys.stdout.write("UBNT-test\n")
+
+    it will regard the code as
+        Tee('/tmp/log.txt', 'w')
+        Tee.write("UBNT-test\n")
+
+    Like C/C++ pointer
+"""
+
+
+class Tee(object):
+    def __init__(self, name, mode):
+        self.file = open(name, mode)
+        self.stdout = sys.stdout
+        sys.stdout = self
+
+    def __del__(self):
+        # sys.stdout = self.stdout
+        self.file.close()
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+
+    def flush(self):
+        self.stdout.flush()
+        self.file.flush()
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, _type, _value, _traceback):
+        pass
 
 
 class Common(object):
