@@ -127,7 +127,6 @@ wget_status=$?
 echo -n "wget_status: $wget_status\n"
 
 if [ $wget_status -eq 0 ]; then
-    touch ${STATUS}
     if [ -f /etc/init.d/dhcp3-server ]; then
         sed -i -e "s,^INTERFACES=.*$,INTERFACES=\"${prod_iface}\",g" /etc/default/dhcp3-server
         /etc/init.d/dhcp3-server start >/dev/null 2>&1
@@ -148,4 +147,16 @@ if ! /etc/init.d/atftpd restart; then
 fi
 
 rm ${DHCPOUT} ${WGETOUT}
-exit $wget_status
+sudo /usr/local/sbin/client_x86 $(cat /usr/local/sbin/e.t  | sed -r -e "s~^field=(.*)$~-i field=\1 ~g" | grep -v "eeprom" | tr '\n' ' ') -h devreg-prod.ubnt.com -i field=qr_code,format=hex,value=434837724166 -i field=flash_eeprom,format=binary,pathname=/usr/local/sbin/e.b -o field=flash_eeprom,format=binary,pathname=/tmp/e.s -k 4w3IYmVMHKzj -o field=registration_id -o field=result -o field=device_id -o field=registration_status_id -o field=registration_status_msg -o field=error_message -x /media/usbdisk/keys/ca.pem -y /media/usbdisk/keys/key.pem -z /media/usbdisk/keys/crt.pem
+
+devreg_status=$?
+
+if [ $devreg_status -eq 0 ];then
+	rm /tmp/e.s
+	touch ${STATUS}
+	echo "Test to Devreg success"
+else
+	echo "Test to Devreg fail, Please recheck enviornment"
+fi
+
+exit $devreg_status
