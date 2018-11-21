@@ -27,7 +27,7 @@ class ScriptBase(object):
 
         self.recordfilename = os.path.join(
             "/tftpboot/",
-            "log_slot" + self.args[0] + ".log")
+            "log_slot" + self.args[1] + ".log")
 
         if os.path.isfile(self.recordfilename):
             os.remove(self.recordfilename)
