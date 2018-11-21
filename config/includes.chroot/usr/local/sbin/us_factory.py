@@ -333,7 +333,7 @@ class USFactoryGeneral(ScriptBase):
     def run_client_x86(self, reg_files):
         """it's process which helps communicate and sign device
         """
-        sign_cmd = r"/usr/local/sbin/client_x86 $(cat /tftpboot/{0} | \
+        sign_cmd = r"/usr/local/sbin/client_x86_release $(cat /tftpboot/{0} | \
                     sed -r -e 's~^field=(.*)$~-i field=\1 ~g' | \
                     grep -v 'eeprom' | tr '\n' ' ') \
                     -h devreg-prod.ubnt.com \
