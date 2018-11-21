@@ -8,7 +8,8 @@
       "BOMREV" : "113-00623",
       "DESC" : "UniFi Dream Machine",
       "FILE" : "udm_alpine_factory.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     },
 
     "UDM-SE":{
@@ -18,7 +19,8 @@
       "BOMREV" : "113-00618",
       "DESC" : "UniFi Dream Machine Special",
       "FILE" : "udm_alpine_factory.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     },
 
     "UDM-PRO":{
@@ -28,7 +30,8 @@
       "BOMREV" : "113-00631",
       "DESC" : "UniFi Dream Machine Pro",
       "FILE" : "udm_alpine_factory.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     },
 
     "UDM-B":{
@@ -38,7 +41,8 @@
       "BOMREV" : "113-00622",
       "DESC" : "UniFi One Dream Machine Beacon",
       "FILE" : "mt7621_series.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     }
   },
   
@@ -51,7 +55,8 @@
       "BOMREV" : "113-02767",
       "DESC" : "UniFi Switch Flex",
       "FILE" : "mt7621_series.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     },
     "US-24-PRO":{
       "INDEX" : 1,
@@ -60,7 +65,8 @@
       "BOMREV" : "113-02779",
       "DESC" : "UBNT UniFiSwitch 24-Port 802.3bt",
       "FILE" : "us_factory.py",
-      "T1FILE" : "us_mfg.py"
+      "T1FILE" : "us_mfg.py",
+      "QRCHECK" : "True"
     }
   },
 
@@ -84,7 +90,8 @@
       "BOMREV" : "113-00605",
       "DESC" : "Amplifi AX Router",
       "FILE" : "afi_ipq807x_factory.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "False"
     },
 
     "AFi-AX-P":{
@@ -94,7 +101,8 @@
       "BOMREV" : "113-00657",
       "DESC" : "Amplifi AX Mesh Point",
       "FILE" : "afi_ipq807x_factory.py",
-      "T1FILE" : ""
+      "T1FILE" : "",
+      "QRCHECK" : "False"
     }
   }
 }

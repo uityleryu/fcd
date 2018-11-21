@@ -13,19 +13,19 @@ class USMFG(object):
         """
             command parameter description for BackToT1
             command: python3
-            pyfile:  script
-            para0:   slot ID
-            para1:   UART device number
-            para2:   FCD host IP
-            para3:   system ID
-            para4:   Erase calibration data selection
-            ex: [1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
+            para0:   script
+            para1:   slot ID
+            para2:   UART device number
+            para3:   FCD host IP
+            para4:   system ID
+            para5:   Erase calibration data selection
+            ex: [script, 1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
         """
-        self.row_id = args[0]
-        self.dev = args[1]
-        self.tftp_server = args[2]
-        self.board_id = args[3]
-        self.erasecal = args[4]
+        self.row_id = args[1]
+        self.dev = args[2]
+        self.tftp_server = args[3]
+        self.board_id = args[4]
+        self.erasecal = args[5]
         self.firmware_img = self.board_id + "-mfg.bin"
 
         self.fake_mac = r"00:90:4c:06:a5:7" + self.row_id

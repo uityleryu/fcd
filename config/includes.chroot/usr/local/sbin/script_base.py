@@ -31,8 +31,8 @@ class ScriptBase(object):
 
         if os.path.isfile(self.recordfilename):
             os.remove(self.recordfilename)
-        else:
-            Tee(self.recordfilename, 'w')
+
+        Tee(self.recordfilename, 'w')
 
     @property
     def pexp(self):

@@ -336,30 +336,48 @@ class fraMonitorPanel(Gtk.Frame):
             barcodelen = GCommon.barcodelen
             macaddrlen = GCommon.macaddrlen
             qrcodelen = GCommon.qrcodelen
-            log.info("In aquirebarcode(), the macaddr+qrcode: %d" % (macaddrlen + qrcodelen))
-            if (barcodelen == (macaddrlen + qrcodelen + 1)):
-                btmp = barcode.split("-")
-                if ((len(btmp[0]) != macaddrlen) or \
-                    (len(btmp[1]) != qrcodelen)):
+            log.info("In aquirebarcode(), the length of the macaddr+qrcode: %d" % (macaddrlen + qrcodelen))
+            qrcheck = GCommon.active_product_obj['QRCHECK']
+            if qrcheck is "True":
+                if (barcodelen == (macaddrlen + qrcodelen + 1)):
+                    btmp = barcode.split("-")
+                    if ((len(btmp[0]) != macaddrlen) or \
+                        (len(btmp[1]) != qrcodelen)):
+                        msgerrror(self.win, "Barcode invalid. Exiting...")
+                        rt = False
+                    else:
+                        pattern = re.compile(r'[^0-9a-fA-F]')
+                        pres = pattern.match(btmp[0])
+                        if pres is not None:
+                            log.info("In aquirebarcode(), the macaddr format is incorrect")
+                            msgerrror(self.win, "MAC adress invalid. Exiting...")
+                            rt = False
+                        else:
+                            log.info("In aquirebarcode(), the barcode is valid")
+                            GCommon.macaddr = btmp[0]
+                            GCommon.qrcode = btmp[1]
+                            self.starttime = time.time()
+                            log.info("In aquirebarcode(), start time: " + str(self.starttime))
+                            rt = True
+                else:
                     msgerrror(self.win, "Barcode invalid. Exiting...")
                     rt = False
-                else:
+            else:
+                if (barcodelen == (macaddrlen)):
                     pattern = re.compile(r'[^0-9a-fA-F]')
-                    pres = pattern.match(btmp[0])
+                    pres = pattern.match(barcode)
                     if pres is not None:
                         log.info("In aquirebarcode(), the macaddr format is incorrect")
                         msgerrror(self.win, "MAC adress invalid. Exiting...")
                         rt = False
                     else:
                         log.info("In aquirebarcode(), the barcode is valid")
-                        GCommon.macaddr = btmp[0]
-                        GCommon.qrcode = btmp[1]
                         self.starttime = time.time()
                         log.info("In aquirebarcode(), start time: " + str(self.starttime))
                         rt = True
-            else:
-                msgerrror(self.win, "Barcode invalid. Exiting...")
-                rt = False
+                else:
+                    msgerrror(self.win, "Barcode invalid. Exiting...")
+                    rt = False
         else:
             log.info("In aquirebarcode(), this is barcode response cancel")
             rt = False
@@ -420,19 +438,19 @@ class fraMonitorPanel(Gtk.Frame):
                 regcidx = 0
 
         """
-           command parameter description for security registration
+            command parameter description for security registration
             command: python3
-            pyfile:  script
-            para0:   slot ID
-            para1:   UART device number
-            para2:   FCD host IP
-            para3:   system ID (board ID)
-            para4:   MAC address
-            para5:   passphrase
-            para6:   key directory
-            para7:   BOM revision
-            para8:   QR code
-            para9:   Region Code
+            para0:   script
+            para1:   slot ID
+            para2:   UART device number
+            para3:   FCD host IP
+            para4:   system ID (board ID)
+            para5:   MAC address
+            para6:   passphrase
+            para7:   key directory
+            para8:   BOM revision
+            para9:   QR code
+            para10:  Region Code
         """
         cmd = [
             "sudo /usr/bin/python3",

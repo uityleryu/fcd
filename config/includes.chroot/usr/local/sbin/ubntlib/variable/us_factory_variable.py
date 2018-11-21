@@ -13,29 +13,29 @@ class USFactory(object):
         """
             command parameter description for security registration
             command: python3
-            pyfile:  script
-            para0:   slot ID
-            para1:   UART device number
-            para2:   FCD host IP
-            para3:   system ID (board ID)
-            para4:   MAC address
-            para5:   passphrase
-            para6:   key directory
-            para7:   BOM revision
-            para8:   QR code
-            para9:   Region Code
+            para0:   script
+            para1:   slot ID
+            para2:   UART device number
+            para3:   FCD host IP
+            para4:   system ID (board ID)
+            para5:   MAC address
+            para6:   passphrase
+            para7:   key directory
+            para8:   BOM revision
+            para9:   QR code
+            para10:  Region Code
             ex: ['1', 'ttyUSB1', 192.168.1.7', 'eb23', 'b4fbe451f2ba', '4w3IYmVMHKzj', '/media/chike/Ubuntu 18.04.1 LTS amd64/keys/',
             '02604-20', 'mYvJIK', '0000']
         """
-        self.row_id = args[0]
-        self.dev = args[1]
-        self.tftp_server = args[2]
-        self.board_id = args[3]
-        self.mac = args[4]
-        self.pass_phrase = args[5]
-        self.key_dir = args[6]
-        self.bom_rev = args[7]
-        self.qrcode = args[8]
+        self.row_id = args[1]
+        self.dev = args[2]
+        self.tftp_server = args[3]
+        self.board_id = args[4]
+        self.mac = args[5]
+        self.pass_phrase = args[6]
+        self.key_dir = args[7]
+        self.bom_rev = args[8]
+        self.qrcode = args[9]
 
         self.firmware_img = self.board_id + ".bin"
         self.rsa_key = "dropbear_rsa_host_key"

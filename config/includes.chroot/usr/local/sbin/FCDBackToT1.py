@@ -127,6 +127,8 @@ class fraMonitorPanel(Gtk.Frame):
         self.hbox.set_border_width(5)
         self.add(self.hbox)
 
+        self.win = Gtk.Window()
+
         # Product
         self.etyproductname = Gtk.Entry()
         self.etyproductname.set_editable(False)
@@ -290,6 +292,73 @@ class fraMonitorPanel(Gtk.Frame):
 
         return True
 
+    def aquirebarcode(self):
+        rt = False
+        tty = self.get_tty()
+        product = self.get_product()
+        id = int(self.id)
+
+        if (tty == "" or product == ""):
+            msgerrror(self, "Information is not adequate. Exiting...")
+            return False
+
+        dialog = dlgBarcodeinput(self.win)
+        response = dialog.run()
+        if (response == Gtk.ResponseType.OK):
+            log.info("In aquirebarcode(), this is barcode response ok")
+            barcode = GCommon.barcode
+            barcodelen = GCommon.barcodelen
+            macaddrlen = GCommon.macaddrlen
+            qrcodelen = GCommon.qrcodelen
+            qrcheck = GCommon.active_product_obj['QRCHECK']
+            if qrcheck is "True":
+                if (barcodelen == (macaddrlen + qrcodelen + 1)):
+                    btmp = barcode.split("-")
+                    if ((len(btmp[0]) != macaddrlen) or \
+                        (len(btmp[1]) != qrcodelen)):
+                        msgerrror(self.win, "Barcode invalid. Exiting...")
+                        rt = False
+                    else:
+                        pattern = re.compile(r'[^0-9a-fA-F]')
+                        pres = pattern.match(btmp[0])
+                        if pres is not None:
+                            log.info("In aquirebarcode(), the macaddr format is incorrect")
+                            msgerrror(self.win, "MAC adress invalid. Exiting...")
+                            rt = False
+                        else:
+                            log.info("In aquirebarcode(), the barcode is valid")
+                            GCommon.macaddr = btmp[0]
+                            GCommon.qrcode = btmp[1]
+                            self.starttime = time.time()
+                            log.info("In aquirebarcode(), start time: " + str(self.starttime))
+                            rt = True
+                else:
+                    msgerrror(self.win, "Barcode invalid. Exiting...")
+                    rt = False
+            else:
+                if (barcodelen == (macaddrlen)):
+                    pattern = re.compile(r'[^0-9a-fA-F]')
+                    pres = pattern.match(barcode)
+                    if pres is not None:
+                        log.info("In aquirebarcode(), the macaddr format is incorrect")
+                        msgerrror(self.win, "MAC adress invalid. Exiting...")
+                        rt = False
+                    else:
+                        log.info("In aquirebarcode(), the barcode is valid")
+                        self.starttime = time.time()
+                        log.info("In aquirebarcode(), start time: " + str(self.starttime))
+                        rt = True
+                else:
+                    msgerrror(self.win, "Barcode invalid. Exiting...")
+                    rt = False
+        else:
+            log.info("In aquirebarcode(), this is barcode response cancel")
+            rt = False
+
+        dialog.destroy()
+        self.win.destroy()
+        return rt
+
     def setdirfl(self):
         # Set time
         """
@@ -330,12 +399,12 @@ class fraMonitorPanel(Gtk.Frame):
         """
             command parameter description for BackToT1
             command: python3
-            pyfile:  script
-            para0:   slot ID
-            para1:   UART device number
-            para2:   FCD host IP
-            para3:   system ID
-            para4:   Erase calibration data selection
+            para0:   script
+            para1:   slot ID
+            para2:   UART device number
+            para3:   FCD host IP
+            para4:   system ID
+            para5:   Erase calibration data selection
         """
         cmd = [
             "sudo /usr/bin/python3",
@@ -471,6 +540,39 @@ class dlgUserInput(Gtk.Dialog):
         if (GCommon.active_productidx == "" or
            GCommon.active_product == ""):
             return False
+
+
+class dlgBarcodeinput(Gtk.Dialog):
+    def __init__(self, parent):
+        Gtk.Dialog.__init__(
+            self, "Waiting for barcode", parent, 0,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
+
+        self.vboxbarcode = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        # self.set_default_response("ok")
+
+        self.lbltitle = Gtk.Label("Waiting for barcode")
+        self.lblmac = Gtk.Label("------------")
+        self.etymacedit = Gtk.Entry()
+        self.etymacedit.set_visibility(True)
+        self.etymacedit.set_activates_default(True)
+        self.etymacedit.connect("changed", self.on_etymacedit_changed)
+
+        self.vboxbarcode.pack_start(self.lbltitle, False, False, 0)
+        self.vboxbarcode.pack_start(self.lblmac, False, False, 0)
+        self.vboxbarcode.pack_start(self.etymacedit, False, False, 0)
+
+        self.area = self.get_content_area()
+        self.area.add(self.vboxbarcode)
+        self.show_all()
+
+    def on_etymacedit_changed(self, entry):
+        barcode = self.etymacedit.get_text()
+        barcode = barcode.strip()
+        GCommon.barcode = barcode
+        GCommon.barcodelen = len(barcode)
+        log.info("In on_etymacedit_changed(), the barcode: %s" % GCommon.barcode)
+        log.info("In on_etymacedit_changed(), the barcode length: %d" % GCommon.barcodelen)
 
 
 class winFcdFactory(Gtk.Window):
