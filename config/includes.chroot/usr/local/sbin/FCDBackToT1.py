@@ -417,6 +417,7 @@ class fraMonitorPanel(Gtk.Frame):
         ]
         str1 = " ".join(str(x) for x in cmd)
         log.info("cmd: " + str1)
+        self.starttime = time.time()
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         GObject.io_add_watch(
             self.proc.stdout,
@@ -425,7 +426,8 @@ class fraMonitorPanel(Gtk.Frame):
 
     def inspection(self, fd, cond, proc):
         if (cond == GLib.IO_HUP):
-            proc.poll()
+            while proc.poll() is None:
+                time.sleep(0.5)
             self.y = True
             if (proc.returncode == 0):
                 self.w = "good"
