@@ -819,7 +819,6 @@ def main():
     window = winFcdFactory()
     window.show_all()
     window.envinitial()
-    window.init_logs()
     window.connect("destroy", Gtk.main_quit)
     Gtk.main()
 
