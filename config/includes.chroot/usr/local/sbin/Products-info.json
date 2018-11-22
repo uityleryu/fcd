@@ -67,6 +67,16 @@
       "FILE" : "us_factory.py",
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
+    },
+      "US-24-PRO":{
+      "INDEX" : 1,
+      "NAME" : "US-48-PRO",
+      "BOARDID" : "eb67",
+      "BOMREV" : "113-02757",
+      "DESC" : "UBNT UniFiSwitch 48-Port 802.3bt",
+      "FILE" : "us_factory.py",
+      "T1FILE" : "us_mfg.py",
+      "QRCHECK" : "True"
     }
   },
 
