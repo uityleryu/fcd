@@ -139,7 +139,7 @@ def main():
     p.expect2actu1(30, "host "+svip+" is alive", "")
     sstr = ["tftpboot",
             "0x44000000",
-            "images/da11_bootloader.bin"]
+            "images/da11-da12-bootloader.bin"]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, ubpmt[boardid], sstrj)
     time.sleep(3)
@@ -166,7 +166,7 @@ def main():
     p.expect2actu1(30, "Written: OK", "")
     sstr = ["tftpboot",
             "0x44000000",
-            "images/da11_fw.img"]
+            "images/" + boardid + "-fw.img"]
     sstrj = ' '.join(sstr)
     p.expect2actu1(30, ubpmt[boardid], sstrj)
     time.sleep(4)
