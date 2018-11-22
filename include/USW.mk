@@ -27,5 +27,5 @@ TOOLS=tools/al324-ee \
       tools/sshd_config
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
-$(eval $(call ProductImage,USW,FCD-USW-6XG-$(VER)))
-$(eval $(call ProductImage,USW,FCD-USW-24-$(VER)))
+$(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
+$(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
