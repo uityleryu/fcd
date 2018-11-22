@@ -18,7 +18,7 @@ class ScriptBase(object):
 
         # shared variable object
         # example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
-        self.variable = VariableHelper(self.args[1:])
+        self.variable = VariableHelper(self.args)
         self.fcd = FCDHelper()
 
         # must be set by set_pexpect_helper()
