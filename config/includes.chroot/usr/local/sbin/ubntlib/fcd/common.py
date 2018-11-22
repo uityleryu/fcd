@@ -58,10 +58,14 @@ class Common(object):
                 "Using file " + file
         file = self.__variable.fcd_version_info_file_path if file is None else file
         msg(no="", out=out_log)
-        f = open(file, "r")
-        line = f.readline()
-        msg(no="", out="FCD version: " + line)
-        f.close()
+        try:
+            f = open(file, "r")
+            line = f.readline()
+            msg(no="", out="FCD version: " + line)
+            f.close()
+        except Exception as e:
+            log_debug(msg="Failing in get fcd version from file at: " + file)
+            msg(out=e.message)
 
     def config_stty(self, dev=None):
         """

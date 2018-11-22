@@ -19,28 +19,6 @@ import json
 import logging
 gi.require_version('Gtk', '3.0')
 
-tmpguidir = "/usr/local/sbin/guilog"
-timestamp = time.strftime('%Y-%m-%d-%H')
-logfilename = tmpguidir + '/' + 'FCDBackToT1GUI_' + timestamp + '.log'
-
-log = logging.getLogger('FCDBackToT1GUI')
-log.setLevel(logging.INFO)
-
-# console log handler
-log_stream = logging.StreamHandler(sys.stdout)
-log_stream.setLevel(logging.DEBUG)
-
-# file log handler
-if not os.path.exists(tmpguidir):
-    os.makedirs(tmpguidir)
-
-log_file = logging.FileHandler(logfilename)
-log_file.setFormatter(logging.Formatter('[%(asctime)s - %(filename)s:%(lineno)d] %(message)s', '%Y-%m-%d %H:%M:%S'))
-log_file.setLevel(logging.DEBUG)
-
-log.addHandler(log_stream)
-log.addHandler(log_file)
-
 """
     Prefix expression
         fra    : Gtk.Frame
@@ -102,10 +80,10 @@ css = b"""
 
 
 class fraMonitorPanel(Gtk.Frame):
-    def __init__(self, id, frametitle):
+    def __init__(self, id, frametitle, log):
         self.id = id
         Gtk.Frame.__init__(self, label=frametitle)
-
+        self.log = log
         self.xcmd = Common().xcmd
         self.pcmd = Common().pcmd
         self.devregready = False
@@ -142,10 +120,10 @@ class fraMonitorPanel(Gtk.Frame):
         # Erase WiFi calibratio checkbutton
         self.cbtnerasecal = Gtk.CheckButton("Erase-caldata")
         if GCommon.erasewifidata[int(self.id)] is True:
-            log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+            self.log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
             self.cbtnerasecal.set_active(True)
         else:
-            log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+            self.log.info("Gtk.CheckButton config, GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
             self.cbtnerasecal.set_active(False)
 
         self.cbtnerasecal.connect("toggled", self.on_cbtnerasecal_toggled)
@@ -207,7 +185,7 @@ class fraMonitorPanel(Gtk.Frame):
 
     def on_cbtnerasecal_toggled(self, button):
         GCommon.erasewifidata[int(self.id)] = not GCommon.erasewifidata[int(self.id)]
-        log.info("on_cbtnerasecal_toggled(), GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
+        self.log.info("on_cbtnerasecal_toggled(), GCommon.erasewifidata[%d]: %s" % (int(self.id), GCommon.erasewifidata[int(self.id)]))
 
     def on_cmbbcomport_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -215,7 +193,7 @@ class fraMonitorPanel(Gtk.Frame):
             model = combo.get_model()
             GCommon.finaltty[int(self.id)] = model[tree_iter][0]
 
-        log.info("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
+        self.log.info("The finaltty[%s]: %s " % (self.id, str(GCommon.finaltty[int(self.id)])))
 
     def autoscroll(self, iter, text, length, user_param1):
         self.txvlog.scroll_to_mark(self.endmark, 0.0, False, 1.0, 1.0)
@@ -278,7 +256,7 @@ class fraMonitorPanel(Gtk.Frame):
                 self.lblresult.set_markup(lblresultcolorfont)
                 self.hboxpgrs.set_name("pgrs_green")
             else:
-                log.info("in selfz true panelendconf " + str(self.id))
+                self.log.info("in selfz true panelendconf " + str(self.id))
                 self.pgrbprogress.set_text("Failed")
                 lblresultcolorfont = '<span background="darkgrey" foreground="red" size="xx-large"><b>FAILED</b></span>'
                 self.lblresult.set_markup(lblresultcolorfont)
@@ -302,10 +280,10 @@ class fraMonitorPanel(Gtk.Frame):
             msgerrror(self, "Information is not adequate. Exiting...")
             return False
 
-        dialog = dlgBarcodeinput(self.win)
+        dialog = dlgBarcodeinput(self.win, self.log)
         response = dialog.run()
         if (response == Gtk.ResponseType.OK):
-            log.info("In aquirebarcode(), this is barcode response ok")
+            self.log.info("In aquirebarcode(), this is barcode response ok")
             barcode = GCommon.barcode
             barcodelen = GCommon.barcodelen
             macaddrlen = GCommon.macaddrlen
@@ -322,15 +300,15 @@ class fraMonitorPanel(Gtk.Frame):
                         pattern = re.compile(r'[^0-9a-fA-F]')
                         pres = pattern.match(btmp[0])
                         if pres is not None:
-                            log.info("In aquirebarcode(), the macaddr format is incorrect")
+                            self.log.info("In aquirebarcode(), the macaddr format is incorrect")
                             msgerrror(self.win, "MAC adress invalid. Exiting...")
                             rt = False
                         else:
-                            log.info("In aquirebarcode(), the barcode is valid")
+                            self.log.info("In aquirebarcode(), the barcode is valid")
                             GCommon.macaddr = btmp[0]
                             GCommon.qrcode = btmp[1]
                             self.starttime = time.time()
-                            log.info("In aquirebarcode(), start time: " + str(self.starttime))
+                            self.log.info("In aquirebarcode(), start time: " + str(self.starttime))
                             rt = True
                 else:
                     msgerrror(self.win, "Barcode invalid. Exiting...")
@@ -340,19 +318,19 @@ class fraMonitorPanel(Gtk.Frame):
                     pattern = re.compile(r'[^0-9a-fA-F]')
                     pres = pattern.match(barcode)
                     if pres is not None:
-                        log.info("In aquirebarcode(), the macaddr format is incorrect")
+                        self.log.info("In aquirebarcode(), the macaddr format is incorrect")
                         msgerrror(self.win, "MAC adress invalid. Exiting...")
                         rt = False
                     else:
-                        log.info("In aquirebarcode(), the barcode is valid")
+                        self.log.info("In aquirebarcode(), the barcode is valid")
                         self.starttime = time.time()
-                        log.info("In aquirebarcode(), start time: " + str(self.starttime))
+                        self.log.info("In aquirebarcode(), start time: " + str(self.starttime))
                         rt = True
                 else:
                     msgerrror(self.win, "Barcode invalid. Exiting...")
                     rt = False
         else:
-            log.info("In aquirebarcode(), this is barcode response cancel")
+            self.log.info("In aquirebarcode(), this is barcode response cancel")
             rt = False
 
         dialog.destroy()
@@ -368,7 +346,7 @@ class fraMonitorPanel(Gtk.Frame):
 
         # Create the report directory
         reportdir = GPath.logdir + "/" + GCommon.active_product + "/" + date
-        log.info("report dir: " + reportdir)
+        self.log.info("report dir: " + reportdir)
         GPath.reportdir = reportdir
 
         if not (os.path.isdir(GPath.reportdir)):
@@ -379,7 +357,7 @@ class fraMonitorPanel(Gtk.Frame):
         # Create the temporary report file
         nowtime = time.strftime("%Y-%m-%d-%H%M", time.gmtime())
         GPath.templogfile[int(self.id)] = GCommon.macaddr + "_" + nowtime + ".log"
-        log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
+        self.log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
         self.setdirfl()
@@ -416,7 +394,7 @@ class fraMonitorPanel(Gtk.Frame):
             GCommon.erasewifidata[int(self.id)]
         ]
         str1 = " ".join(str(x) for x in cmd)
-        log.info("cmd: " + str1)
+        self.log.info("cmd: " + str1)
         self.starttime = time.time()
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         GObject.io_add_watch(
@@ -444,16 +422,16 @@ class fraMonitorPanel(Gtk.Frame):
 
                 tfile = faildir + "/" + GPath.templogfile[int(self.id)]
 
-            log.info("In inspection(), target file: " + tfile)
+            self.log.info("In inspection(), target file: " + tfile)
             sfile = os.path.join(
                 "/tftpboot/",
                 "log_slot" + self.id + ".log")
-            log.info("In inspection(), source file: " + sfile)
+            self.log.info("In inspection(), source file: " + sfile)
 
             if os.path.isfile(sfile):
                 shutil.copy2(sfile, tfile)
             else:
-                log.info("In inspection(), can't find the source file")
+                self.log.info("In inspection(), can't find the source file")
 
             return False
         else:
@@ -470,7 +448,7 @@ class fraMonitorPanel(Gtk.Frame):
 
 
 class dlgUserInput(Gtk.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, log):
         Gtk.Dialog.__init__(self,
                             "User Input Dialog",
                             parent,
@@ -479,7 +457,7 @@ class dlgUserInput(Gtk.Dialog):
 
         self.set_default_size(150, 100)
         self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-
+        self.log = log
         # Load test items
         f = open('/usr/local/sbin/' + 'Products-info.json')
         self.prods = json.load(f)
@@ -521,7 +499,7 @@ class dlgUserInput(Gtk.Dialog):
         if tree_iter is not None:
             model = combo.get_model()
             GCommon.active_product_series = model[tree_iter][0]
-            log.info("The Product Series: " + GCommon.active_product_series)
+            self.log.info("The Product Series: " + GCommon.active_product_series)
 
         self.lsrallpdlist.clear()
         [GCommon.active_productidx, GCommon.active_product] = ["", ""]
@@ -534,8 +512,8 @@ class dlgUserInput(Gtk.Dialog):
             model = combo.get_model()
             [GCommon.active_productidx, GCommon.active_product] = model[tree_iter][:2]
             GCommon.active_product_obj = self.prods[GCommon.active_product_series][GCommon.active_product]
-            log.info("The product index: " + str(GCommon.active_productidx))
-            log.info("The product: " + GCommon.active_product)
+            self.log.info("The product index: " + str(GCommon.active_productidx))
+            self.log.info("The product: " + GCommon.active_product)
 
     def check_inputs(self):
         idx = GCommon.active_productidx
@@ -545,11 +523,11 @@ class dlgUserInput(Gtk.Dialog):
 
 
 class dlgBarcodeinput(Gtk.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, log):
         Gtk.Dialog.__init__(
             self, "Waiting for barcode", parent, 0,
             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
-
+        self.log = log
         self.vboxbarcode = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         # self.set_default_response("ok")
 
@@ -573,13 +551,15 @@ class dlgBarcodeinput(Gtk.Dialog):
         barcode = barcode.strip()
         GCommon.barcode = barcode
         GCommon.barcodelen = len(barcode)
-        log.info("In on_etymacedit_changed(), the barcode: %s" % GCommon.barcode)
-        log.info("In on_etymacedit_changed(), the barcode length: %d" % GCommon.barcodelen)
+        self.log.info("In on_etymacedit_changed(), the barcode: %s" % GCommon.barcode)
+        self.log.info("In on_etymacedit_changed(), the barcode length: %d" % GCommon.barcodelen)
 
 
 class winFcdFactory(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self)
+        self.init_logs()
+
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         self.hboxdashboard = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
@@ -597,12 +577,12 @@ class winFcdFactory(Gtk.Window):
         # Enable to set the FCD host IP
         self.cbtnsethostip = Gtk.CheckButton("Enable-set-host-IP")
         if GCommon.hostipsetenable is True:
-            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
             self.etyhostip.set_editable(True)
             self.etyhostip.set_sensitive(True)
             self.cbtnsethostip.set_active(True)
         else:
-            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
             self.etyhostip.set_editable(False)
             self.etyhostip.set_sensitive(False)
             self.cbtnsethostip.set_active(False)
@@ -613,10 +593,10 @@ class winFcdFactory(Gtk.Window):
         self.hboxdashboard.pack_start(self.etyhostip, False, False, 0)
         self.hboxdashboard.pack_start(self.cbtnsethostip, False, False, 0)
 
-        self.frame1 = fraMonitorPanel("0", "Slot 1")
-        self.frame2 = fraMonitorPanel("1", "Slot 2")
-        self.frame3 = fraMonitorPanel("2", "Slot 3")
-        self.frame4 = fraMonitorPanel("3", "Slot 4")
+        self.frame1 = fraMonitorPanel("0", "Slot 1", self.log)
+        self.frame2 = fraMonitorPanel("1", "Slot 2", self.log)
+        self.frame3 = fraMonitorPanel("2", "Slot 3", self.log)
+        self.frame4 = fraMonitorPanel("3", "Slot 4", self.log)
 
         self.vboxdashboard.pack_start(self.lblflavor, False, False, 0)
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
@@ -651,16 +631,16 @@ class winFcdFactory(Gtk.Window):
 
     def on_etyhostip_changed(self, entry):
         GCommon.fcdhostip = self.etyhostip.get_text()
-        log.info("In on_etyhostip_changed(), the FCD host IP: " + GCommon.fcdhostip)
+        self.log.info("In on_etyhostip_changed(), the FCD host IP: " + GCommon.fcdhostip)
 
     def on_cbtnsethostip_toggled(self, button):
         GCommon.hostipsetenable = not GCommon.hostipsetenable
         if GCommon.hostipsetenable is True:
-            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
             self.etyhostip.set_editable(True)
             self.etyhostip.set_sensitive(True)
         else:
-            log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
+            self.log.info("GCommon.hostipsetenable: %s" % (GCommon.hostipsetenable))
             self.etyhostip.set_editable(False)
             self.etyhostip.set_sensitive(False)
 
@@ -689,7 +669,7 @@ class winFcdFactory(Gtk.Window):
         output.wait()
         output.communicate()
         if (output.returncode == 1):
-            log.info("returncode: " + str(output.returncode))
+            self.log.info("returncode: " + str(output.returncode))
             return False
 
         return True
@@ -705,7 +685,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            log.info("returncode: " + str(output.returncode))
+            self.log.info("returncode: " + str(output.returncode))
             return False
 
         stdoutarray = stdout.decode().splitlines()
@@ -728,7 +708,7 @@ class winFcdFactory(Gtk.Window):
 
             file.close()
 
-        log.info("No USB storage found")
+        self.log.info("No USB storage found")
         return False
 
     def check_comport(self):
@@ -742,7 +722,7 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            log.info("returncode: " + str(output.returncode))
+            self.log.info("returncode: " + str(output.returncode))
             return False
 
         exist_tty = stdout.decode().splitlines()
@@ -752,7 +732,7 @@ class winFcdFactory(Gtk.Window):
             output.wait()
             [stdout, stderr] = output.communicate()
             if (output.returncode == 1):
-                log.info("returncode: " + str(output.returncode))
+                self.log.info("returncode: " + str(output.returncode))
                 return False
 
             GCommon.active_tty.append(itty)
@@ -783,13 +763,13 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def call_input_dlg(self):
-        dialog = dlgUserInput(self)
+        dialog = dlgUserInput(self, self.log)
 
         rt = False
         while rt is False:
             response = dialog.run()
             if (response == Gtk.ResponseType.OK):
-                log.info("The OK button was clicked")
+                self.log.info("The OK button was clicked")
                 result = dialog.check_inputs()
                 if result is False:
                     msgerrror(self, "Any one of inputs is not correct")
@@ -804,18 +784,42 @@ class winFcdFactory(Gtk.Window):
                     self.frame4.set_product(GCommon.active_product)
                     rt = True
             else:
-                log.info("The Cancel button was clicked")
+                self.log.info("The Cancel button was clicked")
                 rt = True
 
         dialog.destroy()
 
         return True
 
+    def init_logs(self, usb_dir=None):
+        if usb_dir is None:
+            usb_dir = "/media/usbdisk/logs"
+            timestamp = time.strftime('%Y-%m-%d-%H')
+            log_file_name = usb_dir + '/' + 'FCDBackToT1GUI_' + timestamp + '.log'
+
+        self.log = logging.getLogger('FCDBackToT1GUI')
+        self.log.setLevel(logging.INFO)
+
+        # console log handler
+        log_stream = logging.StreamHandler(sys.stdout)
+        log_stream.setLevel(logging.DEBUG)
+
+        # file log handler
+        if not os.path.exists(usb_dir):
+            os.makedirs(usb_dir)
+
+        log_file = logging.FileHandler(log_file_name)
+        log_file.setFormatter(logging.Formatter('[%(asctime)s - %(filename)s:%(lineno)d] %(message)s', '%Y-%m-%d %H:%M:%S'))
+        log_file.setLevel(logging.DEBUG)
+
+        self.log.addHandler(log_stream)
+        self.log.addHandler(log_file)
 
 def main():
     window = winFcdFactory()
     window.show_all()
     window.envinitial()
+    window.init_logs()
     window.connect("destroy", Gtk.main_quit)
     Gtk.main()
 
@@ -825,9 +829,9 @@ def debugdlgUserInput():
     response = dialog.run()
 
     if response == Gtk.ResponseType.OK:
-        log.info("The OK button was clicked")
+        self.log.info("The OK button was clicked")
     elif response == Gtk.ResponseType.CANCEL:
-        log.info("The Cancel button was clicked")
+        self.log.info("The Cancel button was clicked")
 
     dialog.destroy()
     return True

@@ -14,25 +14,16 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 class ScriptBase(object):
     def __init__(self):
         self.args = sys.argv
-        log_debug(msg="Initial script with args: " + str(self.args[1:]))
-
         # shared variable object
         # example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
         self.variable = VariableHelper(self.args)
         self.fcd = FCDHelper()
-
+        self._init_log()
         # must be set by set_pexpect_helper()
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
-
-        self.recordfilename = os.path.join(
-            "/tftpboot/",
-            "log_slot" + self.args[1] + ".log")
-
-        if os.path.isfile(self.recordfilename):
-            os.remove(self.recordfilename)
-
-        Tee(self.recordfilename, 'w')
+        self.fcd.common.print_current_fcd_version()
+        log_debug(msg="Initial script with args: " + str(self.args[1:]))
 
     @property
     def pexp(self):
@@ -44,6 +35,13 @@ class ScriptBase(object):
     def set_pexpect_helper(self, pexpect_obj):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
+
+    def _init_log(self, log_file_path=None):
+        if log_file_path is None:
+            log_file_path = os.path.join("/tftpboot/", "log_slot" + self.args[1] + ".log")
+        if os.path.isfile(log_file_path):
+            os.remove(log_file_path)
+        Tee(self.recordfilename, 'w')
 
     def login(self, username=None, password=None):
         """
