@@ -338,7 +338,7 @@ class fraMonitorPanel(Gtk.Frame):
             qrcodelen = GCommon.qrcodelen
             log.info("In aquirebarcode(), the length of the macaddr+qrcode: %d" % (macaddrlen + qrcodelen))
             qrcheck = GCommon.active_product_obj['QRCHECK']
-            if qrcheck is "True":
+            if qrcheck == "True":
                 if (barcodelen == (macaddrlen + qrcodelen + 1)):
                     btmp = barcode.split("-")
                     if ((len(btmp[0]) != macaddrlen) or \
@@ -462,7 +462,7 @@ class fraMonitorPanel(Gtk.Frame):
             GCommon.macaddr,
             GCommon.active_passphrase,
             GPath.keydir,
-            GCommon.active_bomrev,
+            GCommon.active_bomrev[4:],
             GCommon.qrcode,
             GCommon.region_codes[regcidx]
         ]
@@ -641,7 +641,7 @@ class dlgUserInput(Gtk.Dialog):
             return False
 
         ubomrev = GCommon.active_bomrev.split("-")
-        log.info("In  check_inputs(), 1st ubomrev: " + str(ubomrev))
+        log.info("In check_inputs(), 1st ubomrev: " + str(ubomrev))
         if (len(ubomrev) < 2):
             log.info("In check_inputs(), BOM revision format incorrect")
             return False
