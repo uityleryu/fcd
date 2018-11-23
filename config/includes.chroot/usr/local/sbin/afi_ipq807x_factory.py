@@ -79,8 +79,8 @@ tempeeprom = {'da11': boardid + "/fcd_eeprom_AX.bin",
               'da12': boardid + "/AFi-AX-P_eeprom_sample.bin"}
 
 # booting up the last message
-bootmsg = {'da11': "(eth4: link becomes ready)|(eth3: PHY Link up speed)",
-           'da12': "eth3: PHY Link up speed"}
+bootmsg = {'da11': "(eth\d: link becomes ready)|(eth\d: PHY Link up speed)",
+           'da12': "eth\d: PHY Link up speed"}
 
 
 def IOconfig():
