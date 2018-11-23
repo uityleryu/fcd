@@ -1,9 +1,10 @@
 # AFi-AX
 IMAGE-AFI-AX-R=images/da11/* \
-            images/da11_bootloader.bin \
-            images/da11_fw.img
+            images/da11-da12-bootloader.bin \
+            images/da11-fw.img
 
-IMAGE-AFI-AX-P=images/da12/*
+IMAGE-AFI-AX-P=images/da12/* \
+               images/da12-fw.img
 
 IMAGE-AFI-AX+=$(IMAGE-AFI-AX-R)
 IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
