@@ -54,7 +54,7 @@ class Common(object):
         self.__variable = CommonVariable()
 
     def print_current_fcd_version(self, file=None):
-        out_log = "Using default file "+ self.__variable.fcd_version_info_file_path if file is None else \
+        out_log = "Using default file " + self.__variable.fcd_version_info_file_path if file is None else \
                 "Using file " + file
         file = self.__variable.fcd_version_info_file_path if file is None else file
         msg(no="", out=out_log)
@@ -64,8 +64,7 @@ class Common(object):
             msg(no="", out="FCD version: " + line)
             f.close()
         except Exception as e:
-            log_debug(msg="Failing in get fcd version from file at: " + file)
-            msg(out=e.message)
+            log_debug(str(e))
 
     def config_stty(self, dev=None):
         """

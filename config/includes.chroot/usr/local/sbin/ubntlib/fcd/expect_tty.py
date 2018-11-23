@@ -45,7 +45,15 @@ class ExpttyProcess():
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
 
-    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False):
+    def expect_get_output(self, action, timeout=3):
+        """Expect and only get output which expect found.
+        Returns:
+            [string] -- all output after this function been called in the timeout perioud
+        """
+        return self.__expect_base(timeout=timeout, exptxt="dump_string_for_output_purpose_only",  action=action,
+                                  end_if_timeout=False, get_output=True,)
+
+    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False, get_output=False):
         """
         Args:
             timeout {int}:
@@ -65,20 +73,27 @@ class ExpttyProcess():
             ex.append(exptxt)
         ex.append(pexpect.EOF)
         ex.append(pexpect.TIMEOUT)
+
+        if (action is not None) and (get_output is True):
+            self.proc.send(action + self.newline)
+
         index = self.proc.expect(ex, timeout)
         if(index == (len(ex) - 2 )):
             print("[ERROR:EOF]: Expect \"" + str(exptxt) + "\"")
             exit(1)
         if(index == (len(ex) - 1)):
-            print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds")
-            if end_if_timeout == True:
+            if not get_output:
+                print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds")
+            else:
+                return str(self.proc.buffer)
+            if end_if_timeout is True:
                 exit(1)
             else:
                 return self.TIMEOUT
-            
-        if (action != None) and (index >= 0):
+
+        if (action is not None) and (index >= 0):
             self.proc.send(action + self.newline)
-        
+
         if get_result_index is True:
             return index
         else:

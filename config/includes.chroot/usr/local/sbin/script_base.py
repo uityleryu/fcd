@@ -41,7 +41,7 @@ class ScriptBase(object):
             log_file_path = os.path.join("/tftpboot/", "log_slot" + self.args[1] + ".log")
         if os.path.isfile(log_file_path):
             os.remove(log_file_path)
-        Tee(self.recordfilename, 'w')
+        Tee(log_file_path, 'w')
 
     def login(self, username=None, password=None):
         """
