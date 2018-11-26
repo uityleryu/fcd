@@ -45,15 +45,16 @@ class ExpttyProcess():
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, end_if_timeout=False, get_result_index=True)
 
-    def expect_get_output(self, action, timeout=3):
+    def expect_get_output(self, action, prompt, timeout=3):
         """Expect and only get output which expect found.
         Returns:
             [string] -- all output after this function been called in the timeout perioud
         """
         return self.__expect_base(timeout=timeout, exptxt="dump_string_for_output_purpose_only",  action=action,
-                                  end_if_timeout=False, get_output=True,)
+                                  end_if_timeout=False, get_output=True, prompt=prompt)
 
-    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False, get_output=False):
+    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False,
+                      prompt=None, get_output=False):
         """
         Args:
             timeout {int}:
@@ -85,7 +86,9 @@ class ExpttyProcess():
             if not get_output:
                 print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds")
             else:
-                return str(self.proc.buffer)
+                output = str(self.proc.buffer)
+                self.proc.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout)
+                return output
             if end_if_timeout is True:
                 exit(1)
             else:
