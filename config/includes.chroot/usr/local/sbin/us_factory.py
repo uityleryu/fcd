@@ -495,7 +495,6 @@ class USFactoryGeneral(ScriptBase):
             error_critical("Caps Lock is on")
 
         self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"

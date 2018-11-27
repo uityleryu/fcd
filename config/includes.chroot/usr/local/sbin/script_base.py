@@ -89,6 +89,7 @@ class ScriptBase(object):
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
+        self.region = args.region
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         log_debug(str(args))

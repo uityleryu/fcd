@@ -69,7 +69,7 @@
       "QRCHECK" : "True"
     },
       "US-48-PRO":{
-      "INDEX" : 1,
+      "INDEX" : 2,
       "NAME" : "US-48-PRO",
       "BOARDID" : "eb67",
       "BOMREV" : "113-02757",
@@ -79,7 +79,7 @@
       "QRCHECK" : "True"
     },
     "US-6XG-150":{
-      "INDEX" : 1,
+      "INDEX" : 3,
       "NAME" : "US-6XG-150",
       "BOARDID" : "eb23",
       "BOMREV" : "113-02604",

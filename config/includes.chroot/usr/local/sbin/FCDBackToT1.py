@@ -391,7 +391,7 @@ class fraMonitorPanel(Gtk.Frame):
             "-d=" + GCommon.finaltty[int(self.id)],
             "-ts=" + GCommon.fcdhostip,
             "-b=" + GCommon.active_product_obj['BOARDID'],
-            "-e=" + GCommon.erasewifidata[int(self.id)]
+            "-e=" + str(GCommon.erasewifidata[int(self.id)])
         ]
         str1 = " ".join(str(x) for x in cmd)
         self.log.info("cmd: " + str1)
