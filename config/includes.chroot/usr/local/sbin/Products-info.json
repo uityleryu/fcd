@@ -45,7 +45,7 @@
       "QRCHECK" : "True"
     }
   },
-  
+
   "Unifi Switch":
   {
     "US-FLEX":{
@@ -74,6 +74,16 @@
       "BOARDID" : "eb67",
       "BOMREV" : "113-02757",
       "DESC" : "UBNT UniFiSwitch 48-Port 802.3bt",
+      "FILE" : "us_factory.py",
+      "T1FILE" : "us_mfg.py",
+      "QRCHECK" : "True"
+    },
+    "US-6XG-150":{
+      "INDEX" : 1,
+      "NAME" : "US-6XG-150",
+      "BOARDID" : "eb23",
+      "BOMREV" : "113-02604",
+      "DESC" : "UBNT UniFiSwitch 6XG",
       "FILE" : "us_factory.py",
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
