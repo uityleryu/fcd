@@ -4,7 +4,7 @@ Version=1.0
 Encoding=UTF-8
 Name=DIAG-test
 Type=Application
-Exec=sudo PYTHONPATH="/usr/local/sbin/ubntlib/ python3 /usr/local/sbin/DIAG/upydiag.py MODEL
+Exec=sudo python3 /usr/local/sbin/DIAG/upydiag.py MODEL
 TryExec=
 X-GNOME-DocPath=
 Terminal=true
