@@ -29,6 +29,7 @@ apt-get -y install python3-pexpect
 pip3 install setuptools
 pip3 install wheel
 pip3 install lazy
+pip3 install paramiko
 
 # serial console packages
 apt-get -y install picocom
@@ -50,8 +51,12 @@ apt-get -y install imagemagick
 
 mv /usr/share/backgrounds/xfce/xfce-teal.jpg /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 VER=`cat /srv/tftp/version.txt`
-convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'FCD-U1 [$VER]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
+convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 'FCD [$VER]'" /usr/share/backgrounds/xfce/xfce-teal.orig.jpg /usr/share/backgrounds/xfce/xfce-teal.jpg
 rm /usr/share/backgrounds/xfce/xfce-teal.orig.jpg
+
+rm -rf /usr/local/sbin/*
+rm -rf /srv/tftp/*
+rm -rf /etc/skel/Desktop/*.template
 
 apt-get -y remove --purge imagemagick imagemagick-6-common
 apt-get -y --purge autoremove
