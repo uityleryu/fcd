@@ -11,7 +11,7 @@ image-install-$1:
 	@echo " ****************************************************************** "
 	@echo " >> copy prep scripts to new squashfs "
 	sed -e s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template > $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
-	sed -e s/MODEL/$(DIAG_NAME)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop.template > $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
+	sed -e s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop.template > $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*

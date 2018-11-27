@@ -30,6 +30,7 @@ pip3 install setuptools
 pip3 install wheel
 pip3 install lazy
 pip3 install paramiko
+pip3 install scp
 
 # serial console packages
 apt-get -y install picocom
