@@ -433,16 +433,16 @@ class fraMonitorPanel(Gtk.Frame):
         cmd = [
             "sudo /usr/bin/python3",
             "/usr/local/sbin/" + GCommon.active_product_obj['FILE'],
-            self.id,
-            GCommon.finaltty[int(self.id)],
-            GCommon.fcdhostip,
-            GCommon.active_product_obj['BOARDID'],
-            GCommon.macaddr,
-            GCommon.active_passphrase,
-            GPath.keydir,
-            GCommon.active_bomrev[4:],
-            GCommon.qrcode,
-            GCommon.region_codes[regcidx]
+            "-s=" + self.id,
+            "-d=" + GCommon.finaltty[int(self.id)],
+            "-ts=" + GCommon.fcdhostip,
+            "-b=" + GCommon.active_product_obj['BOARDID'],
+            "-m=" + GCommon.macaddr,
+            "-p=" + GCommon.active_passphrase,
+            "-k=" + GPath.keydir,
+            "-bom=" + GCommon.active_bomrev[4:],
+            "-q=" + GCommon.qrcode,
+            "-r=" + GCommon.region_codes[regcidx]
         ]
         str1 = " ".join(str(x) for x in cmd)
         self.log.info("In run_streamcmd(), cmd: " + str1)

@@ -9,6 +9,23 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class USFactoryGeneral(ScriptBase):
+    """
+    command parameter description for security registration
+    command: python3
+    para0:   script
+    para1:   slot ID
+    para2:   UART device number
+    para3:   FCD host IP
+    para4:   system ID (board ID)
+    para5:   MAC address
+    para6:   passphrase
+    para7:   key directory
+    para8:   BOM revision
+    para9:   QR code
+    para10:  Region Code
+    ex: ['1', 'ttyUSB1', 192.168.1.7', 'eb23', 'b4fbe451f2ba', '4w3IYmVMHKzj', '/media/chike/Ubuntu 18.04.1 LTS amd64/keys/',
+    '02604-20', 'mYvJIK', '0000']
+    """
     def __init__(self):
         super(USFactoryGeneral, self).__init__()
 
@@ -76,10 +93,10 @@ class USFactoryGeneral(ScriptBase):
         elif index == 0 or index == 1:
             log_debug(msg="TFTP is waiting for file")
         atftp_cmd = "atftp --option \"mode octet\" -p -l {0}/{1}/{2} {3}".format(
-                                                                                self.tftp_server_dir,
-                                                                                self.firmware_dir,
-                                                                                self.variable.us_factory.firmware_img,
-                                                                                self.variable.us_factory.ip)
+                                                                                self.tftpdir,
+                                                                                "images",
+                                                                                self.fwimg,
+                                                                                self.var.us.ip)
         log_debug(msg="Run cmd on host:" + atftp_cmd)
         self.fcd.common.xcmd(cmd=atftp_cmd)
         self.pexp.expect_only(timeout=150, exptxt=self.bootloader_prompt)
@@ -99,8 +116,8 @@ class USFactoryGeneral(ScriptBase):
         is_alive = False
         for _ in range(retry):
             time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.us_factory.tftp_server)
-            extext_list = ["host " + self.variable.us_factory.tftp_server + " is alive"]
+            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
+            extext_list = ["host " + self.tftp_server + " is alive"]
             index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
             if index == 0:
                 is_alive = True
@@ -118,44 +135,44 @@ class USFactoryGeneral(ScriptBase):
         self.pexp.expect_action(timeout=10, exptxt="", action="print mtdparts")
         self.pexp.expect_only(timeout=10, exptxt=self.bootloader_prompt)
         output = self.pexp.proc.before
-        if self.variable.us_factory.flash_mtdparts_64M in output:
-            self.variable.us_factory.use_64mb_flash = 1
+        if self.var.us.flash_mtdparts_64M in output:
+            self.var.us.use_64mb_flash = 1
             return ("0x1e0000", "0x10000")  # use 64mb flash
         else:
             return ("0xc0000", "0x10000")
 
     def decide_bootargs(self, board_id=None):
         bootargs = None
-        if board_id.lower() is self.variable.us_factory.USW_XG.lower():
-            bootargs = "quiet console=ttyS0,115200 mem=496M " + self.variable.us_factory.flash_mtdparts_64M
+        if board_id.lower() is self.var.us.USW_XG.lower():
+            bootargs = "quiet console=ttyS0,115200 mem=496M " + self.var.us.flash_mtdparts_64M
         elif board_id.lower() in [
-                                self.variable.us_factory.USW_24_PRO.lower(),
-                                self.variable.us_factory.USW_48_PRO.lower(),
-                                self.variable.us_factory.USW_6XG_150.lower()]:
-            bootargs = "quiet console=ttyS0,115200 mem=1008M " + self.variable.us_factory.flash_mtdparts_64M
-        elif self.variable.us_factory.use_64mb_flash is 1:
-            bootargs = "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.variable.us_factory.flash_mtdparts_64M
+                                self.var.us.USW_24_PRO.lower(),
+                                self.var.us.USW_48_PRO.lower(),
+                                self.var.us.USW_6XG_150.lower()]:
+            bootargs = "quiet console=ttyS0,115200 mem=1008M " + self.var.us.flash_mtdparts_64M
+        elif self.var.us.use_64mb_flash is 1:
+            bootargs = "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.var.us.flash_mtdparts_64M
         else:
-            bootargs = "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.variable.us_factory.flash_mtdparts_32M
+            bootargs = "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.var.us.flash_mtdparts_32M
         if bootargs is not None:
             return bootargs
         else:
             error_critical(msg="Cannot decide bootargs")
 
     def set_bootargs_and_run_bootcmd(self):
-        bootargs = self.decide_bootargs(board_id=self.variable.us_factory.board_id)
+        bootargs = self.decide_bootargs(board_id=self.board_id)
         self.pexp.expect_action(timeout=10, exptxt="", action="setenv bootargs '" + bootargs + "'")
         self.pexp.expect_only(timeout=15, exptxt=self.bootloader_prompt)
         self.pexp.expect_action(timeout=10, exptxt="", action="run bootcmd")
         self.pexp.expect_only(timeout=150, exptxt="Starting kernel")
 
     def set_board_info_in_uboot(self):
-        cmd = "{0}usetbid {1}".format(self.cmd_prefix, self.variable.us_factory.board_id)
+        cmd = "{0}usetbid {1}".format(self.cmd_prefix, self.board_id)
         self.pexp.expect_action(timeout=10, exptxt="", action=cmd)
         self.pexp.expect_only(timeout=15, exptxt="Done.")
         self.pexp.expect_only(timeout=5, exptxt=self.bootloader_prompt)
 
-        cmd = "{0}usetbrev {1}".format(self.cmd_prefix, self.variable.us_factory.bom_rev)
+        cmd = "{0}usetbrev {1}".format(self.cmd_prefix, self.bom_rev)
         self.pexp.expect_action(timeout=10, exptxt="", action=cmd)
         self.pexp.expect_only(timeout=15, exptxt="Done.")
         self.pexp.expect_only(timeout=5, exptxt=self.bootloader_prompt)
@@ -175,7 +192,7 @@ class USFactoryGeneral(ScriptBase):
             board_id = match.group(1)
         else:
             error_critical(msg="Found no Board ID info by regular expression. Please checkout output")
-        if board_id != self.variable.us_factory.board_id:
+        if board_id != self.board_id:
             error_critical(msg="Board ID doesn't match!")
 
         self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "usetbrev")
@@ -186,7 +203,7 @@ class USFactoryGeneral(ScriptBase):
             bom_rev = match.group(1)
         else:
             error_critical(msg="Found no BOM Revision info by regular expression. Please checkout output")
-        if bom_rev != self.variable.us_factory.bom_rev:
+        if bom_rev != self.bom_rev:
             error_critical(msg="BOM Revision  doesn't match!")
 
         self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "usetmac")
@@ -197,7 +214,7 @@ class USFactoryGeneral(ScriptBase):
                         re.S)
         mac_0 = None
         mac_1 = None
-        mac_input = self.variable.us_factory.mac
+        mac_input = self.mac
         mac_input_processed = mac_input
         if match:
             mac_0 = match.group(1).replace(":", "")
@@ -212,7 +229,7 @@ class USFactoryGeneral(ScriptBase):
             error_critical(msg="MAC address doesn't match!")
 
     def set_mac_info_in_uboot(self):
-        cmd = "{0}usetmac {1}".format(self.cmd_prefix, self.variable.us_factory.mac)
+        cmd = "{0}usetmac {1}".format(self.cmd_prefix, self.mac)
         self.pexp.expect_action(timeout=10, exptxt="", action=cmd)
         self.pexp.expect_only(timeout=15, exptxt="Done.")
         self.pexp.expect_only(timeout=10, exptxt=self.bootloader_prompt)
@@ -235,14 +252,14 @@ class USFactoryGeneral(ScriptBase):
     def set_network_env_in_uboot(self):
         is_network_alive = False
         for _ in range(3):
-            if self.variable.us_factory.is_board_id_in_group(group=self.variable.us_factory.usw_group_1):
+            if self.board_id in self.var.us.usw_group_1:
                 self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
                 self.pexp.expect_only(timeout=30, exptxt=self.bootloader_prompt)
                 time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="setenv serverip " + self.variable.us_factory.tftp_server)
+            self.pexp.expect_action(timeout=10, exptxt="", action="setenv serverip " + self.tftp_server)
             self.pexp.expect_action(
                                     timeout=10, exptxt=self.bootloader_prompt, action="setenv ipaddr " +
-                                    self.variable.us_factory.ip)
+                                    self.var.us.ip)
             is_network_alive = self.is_network_alive_in_uboot(retry=3)
             if is_network_alive is False:
                 self.pexp.expect_action(timeout=10, exptxt="", action="re")
@@ -250,7 +267,7 @@ class USFactoryGeneral(ScriptBase):
             else:
                 break
         if is_network_alive is False:
-            error_critical(msg=self.variable.us_factory.tftp_server + " is not reachable.")
+            error_critical(msg=self.tftp_server + " is not reachable.")
         self.pexp.expect_action(timeout=10, exptxt="", action="")
         self.pexp.expect_only(timeout=10, exptxt=self.bootloader_prompt)
 
@@ -273,8 +290,8 @@ class USFactoryGeneral(ScriptBase):
         self.set_network_env_in_uboot()
 
     def gen_and_upload_ssh_key_on_board(self):
-        full_path_rsa_key = "/tftpboot/" + self.variable.us_factory.rsa_key + self.variable.us_factory.row_id
-        full_path_dss_key = "/tftpboot/" + self.variable.us_factory.dss_key + self.variable.us_factory.row_id
+        full_path_rsa_key = "/tftpboot/" + self.var.us.rsa_key + self.row_id
+        full_path_dss_key = "/tftpboot/" + self.var.us.dss_key + self.row_id
 
         self.fcd.common.xcmd(cmd="rm -f " + full_path_rsa_key)
         self.fcd.common.xcmd(cmd="rm -f " + full_path_dss_key)
@@ -289,7 +306,7 @@ class USFactoryGeneral(ScriptBase):
             error_critical(msg="Failing in dss key generation.")
 
         dl_addr = "0x01000000"
-        rsa_key_on_board = self.variable.us_factory.rsa_key + self.variable.us_factory.row_id
+        rsa_key_on_board = self.var.us.rsa_key + self.row_id
         self.pexp.expect_action(timeout=5, exptxt="", action="tftpboot " + dl_addr + " " + rsa_key_on_board)
         self.pexp.expect_only(timeout=15, exptxt="Bytes transferred =")
         self.pexp.expect_only(timeout=5, exptxt=self.bootloader_prompt)
@@ -300,7 +317,7 @@ class USFactoryGeneral(ScriptBase):
         self.pexp.expect_action(timeout=5, exptxt="", action=set_ssh_cmd)
         self.pexp.expect_only(timeout=15, exptxt="Done.")
         self.pexp.expect_only(timeout=5, exptxt=self.bootloader_prompt)
-        dss_key_on_board = self.variable.us_factory.dss_key + self.variable.us_factory.row_id
+        dss_key_on_board = self.var.us.dss_key + self.row_id
         self.pexp.expect_action(timeout=15, exptxt="", action="tftpboot " + dl_addr + " " + dss_key_on_board)
         self.pexp.expect_only(timeout=15, exptxt="Bytes transferred =")
         self.pexp.expect_only(timeout=5, exptxt=self.bootloader_prompt)
@@ -313,11 +330,11 @@ class USFactoryGeneral(ScriptBase):
     """lrzsz helper functions"""
     def _host_send(self, filename):
         self.fcd.common.xcmd(
-                            cmd="sz -e -v -b " + filename + " > /dev/" + self.variable.us_factory.dev + " < /dev/" +
-                            self.variable.us_factory.dev)
+                            cmd="sz -e -v -b " + filename + " > /dev/" + self.dev + " < /dev/" +
+                            self.dev)
 
     def _host_receive(self):
-        self.fcd.common.xcmd(cmd="rz -v -b -y < /dev/" + self.variable.us_factory.dev + " > /dev/" + self.variable.us_factory.dev)
+        self.fcd.common.xcmd(cmd="rz -v -b -y < /dev/" + self.dev + " > /dev/" + self.dev)
 
     def _check_host_file_exist(self, filepath):
         if not os.path.isfile(filepath):
@@ -351,22 +368,22 @@ class USFactoryGeneral(ScriptBase):
                     -y '{5}'/key.pem \
                     -z '{5}'/crt.pem " \
                     .format(reg_files["eeprom_txt"],
-                            self.variable.us_factory.qrcode_hex,
+                            self.var.us.qrcode_hex,
                             reg_files["eeprom_bin"],
                             reg_files["eeprom_signed"],
-                            self.variable.us_factory.pass_phrase,
-                            self.variable.us_factory.key_dir)
+                            self.pass_phrase,
+                            self.key_dir)
         [stdout, returncode] = self.fcd.common.xcmd(sign_cmd)
         if returncode != 0:
             error_critical(msg="Registration failure:" + str(stdout))
 
     def gen_eeprom_check_file(self, reg_files):
         cmd = None
-        if self.variable.us_factory.use_64mb_flash == 1:
+        if self.var.us.use_64mb_flash == 1:
             cmd = r"dd of=/dev/`awk -F: '/EEPROM/{print $1}' /proc/mtd | \
                     sed 's~mtd~mtdblock~g'` if=/tmp/" + reg_files["eeprom_signed"]
         else:
-            cmd = self.variable.us_factory.get_helper() + \
+            cmd = self.var.us.get_helper(self.board_id) + \
                     r" -q -i field=flash_eeprom,format=binary,pathname=" + \
                     reg_files["eeprom_signed"]
         self.pexp.expect_action(timeout=5, exptxt="", action=cmd)
@@ -381,18 +398,18 @@ class USFactoryGeneral(ScriptBase):
         """after registeration process, board will be rebooting
         """
         reg_files = {
-                    "eeprom_bin": "e.b." + self.variable.us_factory.row_id,
-                    "eeprom_txt": "e.t." + self.variable.us_factory.row_id,
-                    "eeprom_tgz": "e." + self.variable.us_factory.row_id + ".tgz",
-                    "eeprom_signed": "e.s." + self.variable.us_factory.row_id,
-                    "eeprom_check": "e.c." + self.variable.us_factory.row_id,
-                    "e_s_gz": "e.s." + self.variable.us_factory.row_id + ".gz",
-                    "e_c_gz": "e.c." + self.variable.us_factory.row_id + ".gz"}
+                    "eeprom_bin": "e.b." + self.row_id,
+                    "eeprom_txt": "e.t." + self.row_id,
+                    "eeprom_tgz": "e." + self.row_id + ".tgz",
+                    "eeprom_signed": "e.s." + self.row_id,
+                    "eeprom_check": "e.c." + self.row_id,
+                    "e_s_gz": "e.s." + self.row_id + ".gz",
+                    "e_c_gz": "e.c." + self.row_id + ".gz"}
 
         self.cleanup_old_reg_related_files(reg_files)
         eeprom_gen_cmd = "\
                         {0} -q -c product_class=bcmswitch -o field=flash_eeprom,format=binary,pathname={1} > {2}"\
-                        .format(self.variable.us_factory.get_helper(), reg_files["eeprom_bin"], reg_files["eeprom_txt"])
+                        .format(self.var.us.get_helper(self.board_id), reg_files["eeprom_bin"], reg_files["eeprom_txt"])
         self.pexp.expect_action(timeout=20, exptxt="", action=eeprom_gen_cmd)
         self.pexp.expect_only(timeout=20, exptxt=self.linux_prompt)
         tar_cmd = "tar zcf {0} {1} {2}".format(reg_files["eeprom_tgz"], reg_files["eeprom_bin"], reg_files["eeprom_txt"])
@@ -461,7 +478,7 @@ class USFactoryGeneral(ScriptBase):
         if match:
             if str(
                     match.group(1)).strip().strip("\n") != \
-                    self.variable.us_factory.qrcode.strip().strip("\n"):
+                    self.qrcode.strip().strip("\n"):
                 error_critical(msg="QR code doesn't match!")
         else:
             error_critical(msg="Unable to get qrid!, please checkout output by grep")
@@ -471,19 +488,19 @@ class USFactoryGeneral(ScriptBase):
         """
         Main procedure of factory
         """
-        log_debug(msg="qrcode_hex=" + self.variable.us_factory.qrcode_hex)
+        log_debug(msg="qrcode_hex=" + self.var.us.qrcode_hex)
         cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
         [sto, _] = self.fcd.common.xcmd(cmd)
         if (int(sto.decode()) > 0):
             error_critical("Caps Lock is on")
 
-        self.fcd.common.config_stty(self.variable.us_factory.dev)
+        self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.variable.us_factory.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.variable.us_factory.row_id, pexpect_cmd, "\n")
+        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
@@ -516,18 +533,14 @@ class USFactoryGeneral(ScriptBase):
             self.login()
             self.pexp.expect_only(timeout=20, exptxt=self.linux_prompt)
             self.check_board_signed()
-            msg(no=100, out="Formal firmware completed with MAC0: " + self.variable.us_factory.mac)
+            msg(no=100, out="Formal firmware completed with MAC0: " + self.mac)
 
         elif index == self.pexp.TIMEOUT:
             error_critical(msg="Device not found!")
 
 
 def main():
-    if len(sys.argv) < 10:  # TODO - hardcode
-        msg(no="", out=str(sys.argv))
-        error_critical(msg="Arguments are not enough")
-    else:
-        us_factory_general = USFactoryGeneral()
-        us_factory_general.run()
+    us_factory_general = USFactoryGeneral()
+    us_factory_general.run()
 
 main()

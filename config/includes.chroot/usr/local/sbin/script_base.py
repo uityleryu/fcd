@@ -5,6 +5,7 @@ Base script class
 import sys
 import time
 import os
+import argparse
 from ubntlib.fcd.common import Tee
 from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
@@ -13,10 +14,10 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 class ScriptBase(object):
     def __init__(self):
-        self.args = sys.argv
+        self.input_args = self._init_parse_inputs()
         # shared variable object
         # example usuage - self.variable.{toolspecific}.{variable}
-        self.variable = VariableHelper(self.args)
+        self.var = VariableHelper(self.input_args)
         self._init_share_var()
         self.fcd = FCDHelper()
         self._init_log()
@@ -24,7 +25,6 @@ class ScriptBase(object):
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
-        log_debug(msg="Initial script with args: " + str(self.args[1:]))
 
     @property
     def pexp(self):
@@ -39,7 +39,7 @@ class ScriptBase(object):
 
     def _init_log(self, log_file_path=None):
         if log_file_path is None:
-            log_file_path = os.path.join("/tftpboot/", "log_slot" + self.args[1] + ".log")
+            log_file_path = os.path.join("/tftpboot/", "log_slot" + self.row_id + ".log")
         if os.path.isfile(log_file_path):
             os.remove(log_file_path)
         Tee(log_file_path, 'w')
@@ -60,8 +60,39 @@ class ScriptBase(object):
         self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
-        self.firmware_dir = "images"
-        self.tftp_server_dir = "/tftpboot"
+        self.tftpdir = "/tftpboot"
+        self.fwdir = self.tftpdir + "/images"
+        self.toolsdir = self.tftpdir + "/tools"
+
+    def _init_parse_inputs(self):
+        parse = argparse.ArgumentParser(description="FCD tool args Parser")
+        parse.add_argument('--slot', '-s', dest='row_id', help='Slot id', default=None)
+        parse.add_argument('--dev', '-d', dest='dev', help='UART device number. ex:ttyUSB0, ttyUSB1', default=None)
+        parse.add_argument('--tftp_server', '-ts', dest='tftp_server', help='FCD host IP', default=None)
+        parse.add_argument('--board_id', '-b', dest='board_id', help='System ID, ex:eb23, eb21', default=None)
+        parse.add_argument('--erasecal', '-e', dest='erasecal', help='Erase calibration data selection', default=None)
+        parse.add_argument('--mac', '-m', dest='mac', help='MAC address', default=None)
+        parse.add_argument('--pass_phrase', '-p', dest='pass_phrase', help='Passphrase', default=None)
+        parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
+        parse.add_argument('--bom_rev', '-bom', dest='bom_rev', help='BOM revision', default=None)
+        parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
+        parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
+
+        args, _ = parse.parse_known_args()
+        self.row_id = args.row_id
+        self.dev = args.dev
+        self.tftp_server = args.tftp_server
+        self.board_id = args.board_id
+        self.erasecal = args.erasecal
+        self.mac = args.mac
+        self.pass_phrase = args.pass_phrase
+        self.key_dir = args.key_dir
+        self.bom_rev = args.bom_rev
+        self.qrcode = args.qrcode
+        self.fwimg = self.board_id + ".bin"
+        self.fwimg_mfg = self.board_id + "-mfg.bin"
+        log_debug(str(args))
+        return args
 
     def login(self, username=None, password=None):
         """

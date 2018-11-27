@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 from lazy import lazy
-from ubntlib.variable.us_mfg_variable import USMFG
-from ubntlib.variable.us_factory_variable import USFactory
+from ubntlib.variable.us_variable import US
 
 
 class VariableHelper(object):
@@ -9,12 +8,6 @@ class VariableHelper(object):
         self.args = args
 
     @lazy
-    def us_mfg(self):
-        instance = USMFG(self.args)
+    def us(self):
+        instance = US(self.args)
         return instance
-
-    @lazy
-    def us_factory(self):
-        instance = USFactory(self.args)
-        return instance
-

@@ -387,11 +387,11 @@ class fraMonitorPanel(Gtk.Frame):
         cmd = [
             "sudo /usr/bin/python3",
             "/usr/local/sbin/" + GCommon.active_product_obj['T1FILE'],
-            self.id,
-            GCommon.finaltty[int(self.id)],
-            GCommon.fcdhostip,
-            GCommon.active_product_obj['BOARDID'],
-            GCommon.erasewifidata[int(self.id)]
+            "-s=" + self.id,
+            "-d=" + GCommon.finaltty[int(self.id)],
+            "-ts=" + GCommon.fcdhostip,
+            "-b=" + GCommon.active_product_obj['BOARDID'],
+            "-e=" + GCommon.erasewifidata[int(self.id)]
         ]
         str1 = " ".join(str(x) for x in cmd)
         self.log.info("cmd: " + str1)

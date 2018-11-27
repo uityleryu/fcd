@@ -9,7 +9,17 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class USMFGGeneral(ScriptBase):
-
+    """
+    command parameter description for BackToT1
+    command: python3
+    para0:   script
+    para1:   slot ID
+    para2:   UART device number
+    para3:   FCD host IP
+    para4:   system ID
+    para5:   Erase calibration data selection
+    ex: [script, 1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
+    """
     def __init__(self):
         super(USMFGGeneral, self).__init__()
 
@@ -43,7 +53,7 @@ class USMFGGeneral(ScriptBase):
         """
         After update firmware, linux will be restarting
         """
-        log_debug(msg="Download " + self.variable.us_mfg.firmware_img + " from " + self.variable.us_mfg.tftp_server)
+        log_debug(msg="Download " + self.fwimg_mfg + " from " + self.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt="", action="")
         index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.linux_prompt)
         if index == self.pexp.TIMEOUT:
@@ -51,9 +61,9 @@ class USMFGGeneral(ScriptBase):
         time.sleep(5)
         for _ in range(3):
             tftp_cmd = "cd /tmp/; tftp -r {0}/{1} -l fwupdate.bin -g {2}".format(
-                                                    self.firmware_dir,
-                                                    self.variable.us_mfg.firmware_img,
-                                                    self.variable.us_mfg.tftp_server)
+                                                    "images",
+                                                    self.fwimg_mfg,
+                                                    self.tftp_server)
 
             self.pexp.expect_action(timeout=10, exptxt="", action=tftp_cmd)
             extext_list = ["Invalid argument", r".*#"]
@@ -97,9 +107,9 @@ class USMFGGeneral(ScriptBase):
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
-        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.variable.us_mfg.tftp_server)
+        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.tftp_server)
         extext_list = ["ping: sendto: Network is unreachable",
-                       r"64 bytes from " + self.variable.us_mfg.tftp_server]
+                       r"64 bytes from " + self.tftp_server]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
         if index == 0 or index == self.pexp.TIMEOUT:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
@@ -112,8 +122,8 @@ class USMFGGeneral(ScriptBase):
         is_alive = False
         for _ in range(retry):
             time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.variable.us_mfg.tftp_server)
-            extext_list = ["host " + self.variable.us_mfg.tftp_server + " is alive"]
+            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
+            extext_list = ["host " + self.tftp_server + " is alive"]
             index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
             if index == 0:
                 is_alive = True
@@ -165,7 +175,7 @@ class USMFGGeneral(ScriptBase):
         self.pexp.expect_action(timeout=10, exptxt="", action="print mtdparts")
         self.pexp.expect_only(timeout=10, exptxt=self.bootloader_prompt)
         output = self.pexp.proc.before
-        if self.variable.us_mfg.flash_mtdparts_64M in output:
+        if self.var.us.flash_mtdparts_64M in output:
             return ("0x1e0000", "0x10000")  # use 64mb flash
         else:
             return ("0xc0000", "0x10000")
@@ -191,19 +201,19 @@ class USMFGGeneral(ScriptBase):
         """
         log_debug(msg="Starting in the urescue mode to program the firmware")
         self.pexp.expect_action(timeout=10, exptxt="", action="{0}usetbid {1}".format(self.cmd_prefix,
-                                                                                      self.variable.us_mfg.board_id))
+                                                                                      self.board_id))
         self.pexp.expect_only(timeout=10, exptxt="Done.")
 
-        if self.variable.us_mfg.is_board_id_in_group(group=self.variable.us_mfg.usw_group_1):
+        if self.board_id in self.var.us.usw_group_1:
             self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
             self.pexp.expect_only(timeout=30, exptxt=self.bootloader_prompt)
             time.sleep(3)
 
-        self.pexp.expect_action(timeout=10, exptxt="", action="setenv ethaddr " + self.variable.us_mfg.fake_mac)
+        self.pexp.expect_action(timeout=10, exptxt="", action="setenv ethaddr " + self.var.us.fake_mac)
         self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv serverip " +
-                                self.variable.us_mfg.tftp_server)
+                                self.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv ipaddr " +
-                                self.variable.us_mfg.ip)
+                                self.var.us.ip)
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical(msg="Can't ping the FCD server !")
 
@@ -216,10 +226,10 @@ class USMFGGeneral(ScriptBase):
         elif index == 0 or index == 1:
             log_debug(msg="TFTP is waiting for file")
         atftp_cmd = "atftp --option \"mode octet\" -p -l {0}/{1}/{2} {3}".format(
-                                                                                self.tftp_server_dir,
-                                                                                self.firmware_dir,
-                                                                                self.variable.us_mfg.firmware_img,
-                                                                                self.variable.us_mfg.ip)
+                                                                                self.tftpdir,
+                                                                                "images",
+                                                                                self.fwimg_mfg,
+                                                                                self.var.us.ip)
         msg(no=70, out="DUT is requesting the firmware from FCD server")
         log_debug(msg="Run cmd on host:" + atftp_cmd)
         self.fcd.common.xcmd(cmd=atftp_cmd)
@@ -244,13 +254,12 @@ class USMFGGeneral(ScriptBase):
         """
         Main procedure of back to ART
         """
-        self.fcd.common.config_stty(self.variable.us_mfg.dev)
-        self.fcd.common.print_current_fcd_version()
+        self.fcd.common.config_stty(self.dev)
 
         # Connect into DU using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.variable.us_mfg.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.variable.us_mfg.row_id, pexpect_cmd, "\n")
+        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(no=1, out="Waiting - PULG in the device...")
@@ -274,11 +283,8 @@ class USMFGGeneral(ScriptBase):
 
 
 def main():
-    if len(sys.argv) < 6:  # TODO - hardcode
-        msg(no="", out=str(sys.argv))
-        error_critical(msg="Arguments are not enough")
-    else:
-        us_mfg_general = USMFGGeneral()
-        us_mfg_general.run()
+    us_mfg_general = USMFGGeneral()
+    us_mfg_general.run()
+
 
 main()
