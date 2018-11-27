@@ -5,9 +5,10 @@ import os
 import sys
 
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
-from ubntlib.variable.common import CommonVariable
 
-"""
+
+class Tee(object):
+    """
     Tee class is kind of sys.stdout recorder
     in the __init__() of Tee class,
         sys.stdout = self
@@ -21,10 +22,8 @@ from ubntlib.variable.common import CommonVariable
         Tee.write("UBNT-test\n")
 
     Like C/C++ pointer
-"""
+    """
 
-
-class Tee(object):
     def __init__(self, name, mode):
         self.file = open(name, mode)
         self.stdout = sys.stdout
@@ -51,20 +50,21 @@ class Tee(object):
 
 class Common(object):
     def __init__(self):
-        self.__variable = CommonVariable()
+        pass
 
     def print_current_fcd_version(self, file=None):
-        out_log = "Using default file " + self.__variable.fcd_version_info_file_path if file is None else \
-                "Using file " + file
-        file = self.__variable.fcd_version_info_file_path if file is None else file
-        msg(no="", out=out_log)
-        try:
-            f = open(file, "r")
-            line = f.readline()
-            msg(no="", out="FCD version: " + line)
-            f.close()
-        except Exception as e:
-            log_debug(str(e))
+        if file is not None:
+            out_log = "Version file " + file
+            msg(no="", out=out_log)
+            try:
+                f = open(file, "r")
+                line = f.readline()
+                msg(no="", out="FCD version: " + line)
+                f.close()
+            except Exception as e:
+                log_debug(str(e))
+        else:
+            log_debug("[print_current_fcd_version] No file path input")
 
     def config_stty(self, dev=None):
         """
@@ -82,7 +82,7 @@ class Common(object):
 
             time.sleep(0.5)
 
-            cmd = "stty -F /dev/" + dev +" sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
+            cmd = "stty -F /dev/" + dev + " sane 115200 raw -parenb -cstopb cs8 -echo onlcr"
             [_, returncode] = self.xcmd(cmd)
             if (int(returncode) > 0):
                 error_critical("stty configuration failed!!")

@@ -15,14 +15,15 @@ class ScriptBase(object):
     def __init__(self):
         self.args = sys.argv
         # shared variable object
-        # example usuage - self.variable.common.xxx / self.variable.{toolspecific}.{variable}
+        # example usuage - self.variable.{toolspecific}.{variable}
         self.variable = VariableHelper(self.args)
+        self._init_share_var()
         self.fcd = FCDHelper()
         self._init_log()
         # must be set by set_pexpect_helper()
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
-        self.fcd.common.print_current_fcd_version()
+        self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
         log_debug(msg="Initial script with args: " + str(self.args[1:]))
 
     @property
@@ -43,14 +44,33 @@ class ScriptBase(object):
             os.remove(log_file_path)
         Tee(log_file_path, 'w')
 
+    def _init_share_var(self):
+        # prompt related
+        self.bootloader_prompt = "u-boot>"
+        self.linux_prompt = "#"
+        self.cmd_prefix = r"go $ubntaddr "
+
+        # DU log-in info
+        self.user = "ubnt"
+        self.password = "ubnt"
+
+        # fcd related
+        self.fcd_user = "user"
+        self.fcd_version_info_file = "version.txt"
+        self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
+
+        # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
+        self.firmware_dir = "images"
+        self.tftp_server_dir = "/tftpboot"
+
     def login(self, username=None, password=None):
         """
         should be called at login console
         """
         if username is None or password is None:
             # No username/password input, using default account
-            username = self.variable.common.user
-            password = self.variable.common.password
+            username = self.user
+            password = self.password
         self.pexp.expect_action(timeout=15, exptxt="login:", action=username)
         self.pexp.expect_action(timeout=15, exptxt="Password:", action=password)
         time.sleep(2)

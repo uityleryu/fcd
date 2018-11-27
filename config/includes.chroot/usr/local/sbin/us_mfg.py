@@ -22,21 +22,21 @@ class USMFGGeneral(ScriptBase):
         """
         log_debug(msg="Initializing sf => sf probe")
         self.pexp.expect_action(timeout=10, exptxt="", action="sf probe")
-        self.pexp.expect_only(timeout=20, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=20, exptxt=self.bootloader_prompt)
 
         earse_cmd = "sf erase " + address + " " + erase_size
         log_debug(msg="run cmd " + earse_cmd)
         self.pexp.expect_action(timeout=10, exptxt="", action=earse_cmd)
-        self.pexp.expect_only(timeout=20, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=20, exptxt=self.bootloader_prompt)
 
     def uclearcfg(self):
         """
         run cmd : uclearcfg
         clear linux config data
         """
-        self.pexp.expect_action(timeout=10, exptxt="", action=self.variable.common.cmd_prefix + "uclearcfg")
+        self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "uclearcfg")
         self.pexp.expect_only(timeout=20, exptxt="Done.")
-        self.pexp.expect_only(timeout=20, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=20, exptxt=self.bootloader_prompt)
         log_debug(msg="Linux configuration erased")
 
     def download_and_update_firmware_in_linux(self):
@@ -45,13 +45,13 @@ class USMFGGeneral(ScriptBase):
         """
         log_debug(msg="Download " + self.variable.us_mfg.firmware_img + " from " + self.variable.us_mfg.tftp_server)
         self.pexp.expect_action(timeout=10, exptxt="", action="")
-        index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
+        index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.linux_prompt)
         if index == self.pexp.TIMEOUT:
             error_critical(msg="Linux Hung!!")
         time.sleep(5)
         for _ in range(3):
             tftp_cmd = "cd /tmp/; tftp -r {0}/{1} -l fwupdate.bin -g {2}".format(
-                                                    self.variable.common.firmware_dir,
+                                                    self.firmware_dir,
                                                     self.variable.us_mfg.firmware_img,
                                                     self.variable.us_mfg.tftp_server)
 
@@ -76,13 +76,13 @@ class USMFGGeneral(ScriptBase):
         else:
             log_debug(msg="Stopping U-boot")
             self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
-            self.pexp.expect_action(timeout=timeout, exptxt=self.variable.common.bootloader_prompt, action="")
+            self.pexp.expect_action(timeout=timeout, exptxt=self.bootloader_prompt, action="")
 
     def is_mdk_exist_in_uboot(self):
         is_exist = False
         log_debug(msg="Checking if MDK available in U-boot.")
         self.pexp.expect_action(timeout=10, exptxt="", action="")
-        self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=30, exptxt=self.bootloader_prompt)
         self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
         extext_list = ["Found MDK device",
                        "MDK initialized failed",
@@ -92,7 +92,7 @@ class USMFGGeneral(ScriptBase):
             is_exist = True
         elif index == 2 or index == self.pexp.TIMEOUT:
             is_exist = False
-            self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
+            self.pexp.expect_only(timeout=30, exptxt=self.bootloader_prompt)
         return is_exist
 
     def is_network_alive_in_linux(self):
@@ -148,11 +148,11 @@ class USMFGGeneral(ScriptBase):
             error_critical(msg="Network is Unreachable")
         else:
             self.pexp.expect_action(timeout=10, exptxt="", action="\003")
-            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
+            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.linux_prompt)
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
             self.pexp.expect_action(timeout=10, exptxt="", action="")
-            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.variable.common.linux_prompt)
+            index = self.pexp.expect_get_index(timeout=10, exptxt=r".*" + self.linux_prompt)
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Linux Hung!!")
 
@@ -163,7 +163,7 @@ class USMFGGeneral(ScriptBase):
             [string, string] -- address, size
         """
         self.pexp.expect_action(timeout=10, exptxt="", action="print mtdparts")
-        self.pexp.expect_only(timeout=10, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=10, exptxt=self.bootloader_prompt)
         output = self.pexp.proc.before
         if self.variable.us_mfg.flash_mtdparts_64M in output:
             return ("0x1e0000", "0x10000")  # use 64mb flash
@@ -180,8 +180,8 @@ class USMFGGeneral(ScriptBase):
         self.download_and_update_firmware_in_linux()
         self.stop_uboot()
 
-        self.pexp.expect_action(timeout=10, exptxt="", action=self.variable.common.cmd_prefix + "uappinit")
-        self.pexp.expect_only(timeout=20, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "uappinit")
+        self.pexp.expect_only(timeout=20, exptxt=self.bootloader_prompt)
         log_debug(msg="Initialize ubnt app by uappinit")
         log_debug(msg="Flashed firmware with no mdk package and currently stopped at u-boot....")
 
@@ -190,19 +190,19 @@ class USMFGGeneral(ScriptBase):
         after flash firmware, DU will be resetting
         """
         log_debug(msg="Starting in the urescue mode to program the firmware")
-        self.pexp.expect_action(timeout=10, exptxt="", action="{0}usetbid {1}".format(self.variable.common.cmd_prefix,
+        self.pexp.expect_action(timeout=10, exptxt="", action="{0}usetbid {1}".format(self.cmd_prefix,
                                                                                       self.variable.us_mfg.board_id))
         self.pexp.expect_only(timeout=10, exptxt="Done.")
 
         if self.variable.us_mfg.is_board_id_in_group(group=self.variable.us_mfg.usw_group_1):
             self.pexp.expect_action(timeout=10, exptxt="", action="mdk_drv")
-            self.pexp.expect_only(timeout=30, exptxt=self.variable.common.bootloader_prompt)
+            self.pexp.expect_only(timeout=30, exptxt=self.bootloader_prompt)
             time.sleep(3)
 
         self.pexp.expect_action(timeout=10, exptxt="", action="setenv ethaddr " + self.variable.us_mfg.fake_mac)
-        self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv serverip " +
+        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv serverip " +
                                 self.variable.us_mfg.tftp_server)
-        self.pexp.expect_action(timeout=10, exptxt=self.variable.common.bootloader_prompt, action="setenv ipaddr " +
+        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv ipaddr " +
                                 self.variable.us_mfg.ip)
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical(msg="Can't ping the FCD server !")
@@ -216,19 +216,19 @@ class USMFGGeneral(ScriptBase):
         elif index == 0 or index == 1:
             log_debug(msg="TFTP is waiting for file")
         atftp_cmd = "atftp --option \"mode octet\" -p -l {0}/{1}/{2} {3}".format(
-                                                                                self.variable.common.tftp_server_dir,
-                                                                                self.variable.common.firmware_dir,
+                                                                                self.tftp_server_dir,
+                                                                                self.firmware_dir,
                                                                                 self.variable.us_mfg.firmware_img,
                                                                                 self.variable.us_mfg.ip)
         msg(no=70, out="DUT is requesting the firmware from FCD server")
         log_debug(msg="Run cmd on host:" + atftp_cmd)
         self.fcd.common.xcmd(cmd=atftp_cmd)
-        self.pexp.expect_only(timeout=150, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_only(timeout=150, exptxt=self.bootloader_prompt)
         log_debug(msg="FCD completed the firmware uploading")
         self.uclearcfg()
         msg(no=80, out="DUT completed erasing the calibration data")
 
-        self.pexp.expect_action(timeout=10, exptxt="", action=self.variable.common.cmd_prefix + "uwrite -f")
+        self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "uwrite -f")
         self.pexp.expect_only(timeout=20, exptxt="Firmware Version:")
         index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done")
         if index == self.pexp.TIMEOUT:
@@ -258,8 +258,8 @@ class USMFGGeneral(ScriptBase):
         self.stop_uboot()
         msg(no=5, out="Go into U-boot")
 
-        self.pexp.expect_action(timeout=10, exptxt="", action=self.variable.common.cmd_prefix + "uappinit")
-        self.pexp.expect_only(timeout=20, exptxt=self.variable.common.bootloader_prompt)
+        self.pexp.expect_action(timeout=10, exptxt="", action=self.cmd_prefix + "uappinit")
+        self.pexp.expect_only(timeout=20, exptxt=self.bootloader_prompt)
         log_debug(msg="Initialize ubnt app by uappinit")
 
         if self.is_mdk_exist_in_uboot() is True:
