@@ -16,8 +16,8 @@ class USFLEXFactory(ScriptBase):
         super(USFLEXFactory, self).__init__()
 
     def GetImgfromSrv(self, Img):
-        self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot 84000000 "+Img)
-        self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(Img).st_size), "")
+        self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot 84000000 "+"images/"+Img)
+        self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size), "")
 
     def SetBootNet(self):
         #self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr "+prod_dev_tmp_mac)
@@ -39,7 +39,7 @@ class USFLEXFactory(ScriptBase):
             time.sleep(3)
             self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
             extext_list = ["host " + self.tftp_server + " is alive"]
-            index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
+            index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
             if index == 0:
                 is_alive = True
                 break
@@ -109,14 +109,11 @@ class USFLEXFactory(ScriptBase):
         self.fcd.common.print_current_fcd_version()
         self.set_bootloader_prompt("MT7621 #")
 
-        bootimg = "{}/{}".format(self.fwdir,
-                                 self.board_id+"-uboot.bin")
+        bootimg = "{}".format(self.board_id+"-uboot.bin")
 
-        fcdimg = "{}/{}".format(self.fwdir,
-                                self.board_id+"-fcd.bin")
+        fcdimg = "{}".format(self.board_id+"-fcd.bin")
 
-        fwimg = "{}/{}".format(self.fwdir,
-                               self.fwimg)
+        fwimg = "{}".format(self.fwimg)
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -190,7 +187,7 @@ class USFLEXFactory(ScriptBase):
         sstrj = ' '.join(sstr)
     
         if(1):#for devlop
-            self.pexp.expect_action(30, self.linux_prompt, sstrj)
+            self.pexp.expect_action(60, self.linux_prompt, sstrj)
             self.pexp.expect_action(60, self.linux_prompt, eepmexe + " -I -v 2>&1")
             # self.pexp.expect_action(30, "DEBUG: SBD Magic: 55424e54 \(OK\)", "")
             # self.pexp.expect_action(30, "DEBUG: SBD CRC:", "")
@@ -457,7 +454,7 @@ class USFLEXFactory(ScriptBase):
             cmd = ["atftp",
                    "-p",
                    "-l",
-                   fwimg,
+                   self.fwdir+"/"+fwimg,
                    self.var.us.ip]
             cmdj = ' '.join(cmd)
 

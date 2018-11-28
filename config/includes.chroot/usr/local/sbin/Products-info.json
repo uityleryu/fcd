@@ -40,7 +40,7 @@
       "BOARDID" : "ec25",
       "BOMREV" : "113-00622",
       "DESC" : "UniFi One Dream Machine Beacon",
-      "FILE" : "mt7621_series.py",
+      "FILE" : "us_mt7621_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "True"
     }
@@ -54,7 +54,7 @@
       "BOARDID" : "ed10",
       "BOMREV" : "113-02767",
       "DESC" : "UniFi Switch Flex",
-      "FILE" : "mt7621_series.py",
+      "FILE" : "us_mt7621_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "True"
     },
