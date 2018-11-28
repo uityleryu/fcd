@@ -111,4 +111,4 @@ class ScriptBase(object):
         if prompt is not None:
             self.bootloader_prompt = prompt
         else:
-            print("Nothing changed. Please assign promt!")
+            print("Nothing changed. Please assign prompt!")
