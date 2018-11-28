@@ -106,3 +106,9 @@ class ScriptBase(object):
         self.pexp.expect_action(timeout=15, exptxt="login:", action=username)
         self.pexp.expect_action(timeout=15, exptxt="Password:", action=password)
         time.sleep(2)
+
+    def set_bootloader_prompt(self, prompt=None):
+        if prompt is not None:
+            self.bootloader_prompt = prompt
+        else:
+            print("Nothing changed. Please assign promt!")

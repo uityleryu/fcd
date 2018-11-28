@@ -8,6 +8,7 @@ class US(object):
     USW_6XG_150 = "eb23"
     USW_24_PRO = "eb36"
     USW_48_PRO = "eb67"
+    USW_FLEX = "ed10"
     usw_group_1 = [USW_XG, USW_6XG_150, USW_24_PRO, USW_48_PRO]
 
     def __init__(self, args):
@@ -31,6 +32,8 @@ class US(object):
     def get_helper(self, board_id=None):
         if board_id == self.USW_XG:
             return "helper_BCM5341x"
+        elif board_id == self.USW_FLEX:
+            return "helper_UNIFI_MT7621_release"
         elif board_id in [self.USW_6XG_150, self.USW_24_PRO, self.USW_48_PRO]:
             return "helper_BCM5616x"
         else:
