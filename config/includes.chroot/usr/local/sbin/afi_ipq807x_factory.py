@@ -179,10 +179,10 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, lnxpmt[self.board_id], "[ ! -f ~/.ssh/known_hosts ] || rm ~/.ssh/known_hosts")
 
-        log_debug("Send " + eepmexe + "command from host to DUT ...")
+        log_debug("Send tools.tar from host to DUT ...")
         sstr = [
             "scp",
-            fcdssh + self.toolsdir + "/" + eepmexe,
+            fcdssh + self.toolsdir + "/tools.tar",
             tmpdir
         ]
         sstrj = ' '.join(sstr)
@@ -191,17 +191,16 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(30, "password:", "live")
         time.sleep(2)
 
-        log_debug("Send " + helperexe + "command from host to DUT ...")
+        log_debug("Unzipping the tools.tar in the DUT ...")
         sstr = [
-            "scp",
-            fcdssh + self.toolsdir + "/" + helperexe,
-            tmpdir
+            "tar",
+            "-xvzf",
+            tmpdir + "tools.tar",
+            "-C " + tmpdir
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
-        self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
-        self.pexp.expect_action(30, "password:", "live")
-        time.sleep(2)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, lnxpmt, sstrj)
 
         log_debug("Change file permission - " + helperexe + " ...")
         sstr = ["chmod 777", tmpdir + helperexe]

@@ -1,60 +1,36 @@
 
-* How to build ISO file basing on the FCD-base.iso
-FCD-base.iso: 
-    it is just a FCD host ISO file which is a debian stretch version.
-    It includes the following packages.
-    # GTK3 packages
-    apt-get -y install gtk+3.0
-    apt-get -y install libgtk-3-dev
-    apt-get -y install gir1.2-gtk-3.0
-    
-    # Network tools
-    apt-get -y install net-tools
-    apt-get -y install atftp
-
-    # packages install checking
-    apt-get -y install pkg-config
-    
-    # python2 required packages
-    apt-get -y install python-gi
-    apt-get -y install python-gi-cairo
-    apt-get -y install python-serial
-    apt-get -y install python-pexpect
-    
-    # python3 required packages
-    apt-get -y install python3-pip
-    apt-get -y install python3-gi
-    apt-get -y install python3-gi-cairo
-    apt-get -y install python3-serial
-    apt-get -y install python3-pexpect
-    pip3 install setuptools
-    pip3 install wheel
-    pip3 install lazy
-    
-    # serial console packages
-    apt-get -y install picocom
-    apt-get -y install minicom
-    apt-get -y install lrzsz
-    
-    # text editor
-    apt-get -y install vim
-    apt-get -y install gedit
-    
-    # security key packages
-    apt-get -y install dropbear
-    
-    # mkdir /media/FCDUSB
-    # usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
-    # echo $usbdv >> /etc/fstab
-    
-    apt-get -y install imagemagick
-
 ========================================================================================================
 
 * Clone a FCD source code
 FCD repository: https://drive.google.com/open?id=14IOj5Z_bl-u18Skrly_BwEUNeRxT-jnQ
 
     git clone git@10.2.128.30:Ubiquiti-BSP/fcd.git
+
+
+========================================================================================================
+!!! IMPORTANT !!!
+!!! IMPORTANT !!!
+!!! IMPORTANT !!!
+* please clone the fcd-image and UPyFCD repository in advance
+
+    make PRD=UDM -f fcdmaker32.mk gitrepo
+
+
+========================================================================================================
+
+* General use case
+
+Example:
+
+    make PRD=UDM -f fcdmaker32.mk clean
+    make PRD=UDM -f fcdmaker32.mk gitrepo
+    make VER=[master] PRD=UDM -f fcdmaker32.mk UDM
+
+    fcd-image or UPyFCD update
+
+    make VER=[master] PRD=UDM -f fcdmaker32.mk UDM-upddate
+
+You can see more details in the following explainantion
 
 
 ========================================================================================================
@@ -121,3 +97,39 @@ Step_4: pack the modifying file to ISO file
 
         sudo make VER=0.9.1-d9e5388-4 PRD=UDM -f fcdmaker32.mk packiso-UDM
 
+========================================================================================================
+
+* How to build the ISO file with "<product-name>-update"
+Description:
+    There are two merits to use this way to build the ISO file.
+
+    merit-1:
+    The purpose of using the "<product-name>-update" is that we could reduce the ISO genrating time.
+
+    merit-2:
+    In addition, if you modify some codes to the fcd-image or UPyFCD repositories, you don't have to change the
+    hash number in the include/UDM.mk. As well as you needn't to deliver the changed commit to the gitlab.
+
+        UPYFCD_VER=49250ead9440898ef66a569ee4ff042e69b9175e
+        FCDIMG_VER=af4719c10ef69a3109dbe2d859bb94c9f5f05abc
+
+    reqirement:
+    It must do the full build once at the very beginning.
+
+        command:
+
+        sudo make VER=<version> PRD=<product> -f fcdmaker32.mk <product>
+
+    example:
+
+        sudo make VER=0.9.1-d9e5388-4 PRD=UDM -f fcdmaker32.mk UDM
+
+
+Step_1:
+    command:
+
+        sudo make VER=<version> PRD=<product> -f fcdmaker32.mk <product>-update
+
+    example:
+
+        sudo make VER=0.9.1-d9e5388-3 PRD=UDM -f fcdmaker32.mk UDM-update

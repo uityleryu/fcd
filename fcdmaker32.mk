@@ -11,6 +11,8 @@ NEWSQUASHFS=$(STAGEDIR)/NewSquashfs
 
 BUILD_DIR=$(shell pwd)
 FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
+FWIMG_DIR=$(BUILD_DIR)/fcd-image
+FTU_DIR=$(BUILD_DIR)/UPyFCD/DIAG
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
@@ -61,15 +63,17 @@ help:
 	@echo " ****************************************************************** "
 	@echo "                   FCD build configuration                          "
 	@echo " ****************************************************************** "
-	@echo "   OUTDIR         = $(OUTDIR)"
-	@echo "   EXLIVECD       = $(EXLIVECD)"
-	@echo "   EXSQUASHFS     = $(EXSQUASHFS)"
-	@echo "   STAGEDIR       = $(STAGEDIR)"
-	@echo "   NEWLIVEDCD     = $(NEWLIVEDCD)"
-	@echo "   NEWSQUASHFS    = $(NEWSQUASHFS)"
-	@echo "   BUILD_DIR      = $(BUILD_DIR)"
-	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)"
-	@echo "   BASE_OS        = $(BASE_OS)"
+	@echo "   OUTDIR         = $(OUTDIR)                                       "
+	@echo "   EXLIVECD       = $(EXLIVECD)                                     "
+	@echo "   EXSQUASHFS     = $(EXSQUASHFS)                                   "
+	@echo "   STAGEDIR       = $(STAGEDIR)                                     "
+	@echo "   NEWLIVEDCD     = $(NEWLIVEDCD)                                   "
+	@echo "   NEWSQUASHFS    = $(NEWSQUASHFS)                                  "
+	@echo "   BUILD_DIR      = $(BUILD_DIR)                                    "
+	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)                                   "
+	@echo "   FWIMG_DIR      = $(FWIMG_DIR)                                    "
+	@echo "   FTU_DIR        = $(FTU_DIR)                                      "
+	@echo "   BASE_OS        = $(BASE_OS)                                      "
 	@echo " ****************************************************************** "
 
 check_root:
@@ -158,33 +162,51 @@ new_livedcd_pkg: check_root
 
 gitrepo: UPyFCD fcd-image
 
-fcd-image:
-	@if [ -d "$(STAGEDIR)/$@" ]; then \
-		cd $(STAGEDIR)/$@; git pull; \
-		if [ "$(FCDIMG_VER)" != "" ]; then \
-			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
-		fi \
+dev-tools-check:
+	@if [ -d $(FWIMG_DIR) ]; then \
+		echo "fcd-image is exited"; \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(STAGEDIR)/$@; \
-		if [ "$(FCDIMG_VER)" != "" ]; then \
-			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
-		fi \
+		echo "fcd-image is not exited"; \
+		exit 1; \
+	fi
+	@if [ -d $(FTU_DIR) ]; then \
+		echo "diag tool is exited"; \
+	else \
+		echo "diag tool is not exited"; \
+		exit 1; \
 	fi
 
-UPyFCD:
-	@if [ -d "$(STAGEDIR)/$@" ]; then \
-		cd $(STAGEDIR)/$@; git pull; \
-		if [ "$(FCDIMG_VER)" != "" ]; then \
-			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+dev-diag-load:
+	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
+	@cp -rf $(FTU_DIR) $(NEWSQUASHFS)/usr/local/sbin/
+
+fcd-image:
+	@if [ -d "$(BUILD_DIR)/$@" ]; then \
+		cd $(BUILD_DIR)/$@; git pull; \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@; \
-		if [ "$(FCDIMG_VER)" != "" ]; then \
-			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
 	fi
-	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
-	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/
+	touch $(OUTDIR)/.clone-fcd-image-done
+
+UPyFCD:
+	@if [ -d "$(BUILD_DIR)/$@" ]; then \
+		cd $(BUILD_DIR)/$@; git pull; \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
+		fi \
+	else \
+		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
+		fi \
+	fi
+	touch $(OUTDIR)/.clone-diag-done
 
 clean: check_root
 	@echo " *** Cleaning all files under $(OUTDIR) *** "
@@ -211,4 +233,18 @@ clean: check_root
 	@echo " >> Deleting $(STAGEDIR) "
 	@rm -rf $(STAGEDIR)
 	@rm -rf $(OUTDIR)/$(LIVE_CD_VER)
+	@if [ -f $(OUTDIR)/.clone-fcd-image-done ]; then \
+		rm -rf $(OUTDIR)/.clone-fcd-image-done; \
+	fi
+	@if [ -f $(OUTDIR)/.clone-diag-done ]; then \
+		rm -rf $(OUTDIR)/.clone-diag-done; \
+	fi
+
+clean-repo:
+	@if [ -d $(BUILD_DIR)/UPyFCD ]; then \
+		rm -rf $(BUILD_DIR)/UPyFCD; \
+	fi
+	@if [ -d $(BUILD_DIR)/fcd-image ]; then \
+		rm -rf $(BUILD_DIR)/fcd-image; \
+	fi
 

@@ -1,14 +1,19 @@
 
 define ProductImage
 
-$1: new-rootfs gitrepo image-install-$1 packiso-$1
-$1-update: gitrepo image-install-$1 packiso-$1
+$1: new-rootfs image-install-$1 packiso-$1
+$1-update: dev-tools-check dev-diag-load image-install-$1 packiso-$1
 
 image-install-$1:
 	@echo " ****************************************************************** "
 	@echo "   FCD ISO NAME   = $2                                              "
 	@echo "   DIAG MODEL     = $(DIAG_MODEL)                                   "
 	@echo " ****************************************************************** "
+	if [ ! -d ${BUILD_DIR}/UPyFCD ]; then \
+		echo "${BUILD_DIR}/UPyFCD doesn't exist, "; \
+		echo "please do, make PRD=UDM -f fcdmaker32.mk gitrepo"; \
+		exit 1; \
+	fi
 	@echo " >> copy prep scripts to new squashfs "
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
@@ -29,7 +34,9 @@ image-install-$1:
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	sh include/cp2tftp.sh $(IMAGE-$1)
-	sh include/cp2tftp.sh $(TOOLS)
+	sh include/tar2tftp.sh $(TOOLS)
+	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
+	cp -rf $(BUILD_DIR)/UPyFCD/DIAG $(NEWSQUASHFS)/usr/local/sbin/
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg

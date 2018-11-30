@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 from lazy import lazy
 from ubntlib.fcd.common import Common
 
@@ -14,6 +15,3 @@ class FCDHelper(object):
     def common(self):
         instance = Common()
         return instance
-
-
-

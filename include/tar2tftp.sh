@@ -20,11 +20,9 @@ if [ ! -d ${BUILD_DIR}/fcd-image ]; then \
 	exit 1; \
 fi
 
-for arg in "$@"; do
-	echo "prepareimg.sh: input: ${arg}"
-	echo "prepareimg.sh: dirname: $(dirname ${arg})"
-	if [ ! -d ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}) ]; then \
-		mkdir -p ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}); \
-	fi
-	cp -rf ${BUILD_DIR}/fcd-image/${arg} ${NEWSQUASHFS}/srv/tftp/$(dirname ${arg}); \
-done
+if [ ! -d ${NEWSQUASHFS}/srv/tftp/tools ]; then \
+	mkdir -p ${NEWSQUASHFS}/srv/tftp/tools; \
+fi
+
+cd ${BUILD_DIR}/fcd-image/tools; tar -cvzf tools.tar $@; chmod 777 tools.tar
+cp -rf ${BUILD_DIR}/fcd-image/tools/tools.tar ${NEWSQUASHFS}/srv/tftp/tools

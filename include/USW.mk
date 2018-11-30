@@ -22,16 +22,8 @@ DIAG_MODEL=us_flex
 
 UPYFCD_VER=41733951b067164a84d411796b00b278d8f90dd1
 
-TOOLS=tools/al324-ee \
-      tools/ax_gen_eeprom.py \
-      tools/evtest \
-      tools/helper_AL324_release \
-      tools/helper_IPQ807x_release \
-      tools/ipq807x-aarch64-ee \
-      tools/dropbear_arm64 \
-      tools/dropbearkey_arm64 \
-      tools/ubios-udapi-server.default \
-      tools/sshd_config
+TOOLS=.tmux.conf \
+      sshd_config
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))

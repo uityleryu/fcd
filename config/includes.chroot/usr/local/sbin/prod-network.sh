@@ -5,6 +5,11 @@ DHCPOUT=/tmp/dhcp_out.txt
 WGETOUT=/tmp/wget_out.txt
 IFINFO=/tmp/ifinfo.txt
 
+if [ -f /tftpboot/tools/tools.tar ]; then
+    echo "Unzipping the tools.tar to /tftpboot/tools"
+    cd /tftpboot/tools; tar -xvzf /tftpboot/tools/tools.tar
+fi
+
 if [ -f ${STATUS} ]; then
     echo "Nothing to do - everything is already done."
     exit 0
@@ -19,6 +24,11 @@ echo " configuring the SSH server "
 cp /tftpboot/tools/sshd_config /etc/ssh/
 sudo /etc/init.d/ssh restart
 sleep 1
+
+if [ -f /tftpboot/tools/.tmux.conf ]; then
+    echo "Copying the TMUX configuration file to /home/user"
+    cp /tftpboot/tools/.tmux.conf /home/user
+fi
 
 echo " configuring the USB disk "
 MDIR=/media/usbdisk
