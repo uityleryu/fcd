@@ -76,6 +76,7 @@ class ExpttyProcess():
         ex.append(pexpect.TIMEOUT)
 
         if (action is not None) and (get_output is True):
+            self.proc.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout)  # for clearing previous stdout
             self.proc.send(action + self.newline)
 
         index = self.proc.expect(ex, timeout)
@@ -88,6 +89,7 @@ class ExpttyProcess():
             else:
                 output = str(self.proc.buffer)
                 self.proc.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout)
+                self.proc.send(self.newline)  # for getting prompt
                 return output
             if end_if_timeout is True:
                 exit(1)
