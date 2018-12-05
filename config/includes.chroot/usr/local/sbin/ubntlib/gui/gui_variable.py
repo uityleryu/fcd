@@ -38,15 +38,13 @@ class GCommon(object):
         "World",
         "USA/Canada",
         "Thailand",
-        "Israsel",
-        "Fcc"
+        "Israsel"
     ]
     region_codes = [
         '0000',
         '002a',
         '82fc',
-        '8178',
-        '0002'
+        '8178'
     ]
     erasewifidata = [
         False,

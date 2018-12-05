@@ -1,10 +1,9 @@
 # AFi-AX
-IMAGE-AFI-AX-R=images/da11/* \
-            images/da11-da12-bootloader.bin \
-            images/da11-fw.img
+IMAGE-AFI-AX-R=images/da11* \
+               afi-fw/*
 
-IMAGE-AFI-AX-P=images/da12/* \
-               images/da12-fw.img
+IMAGE-AFI-AX-P=images/da12* \
+               afi-fw/*
 
 IMAGE-AFI-AX+=$(IMAGE-AFI-AX-R)
 IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
@@ -12,6 +11,7 @@ IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
 DIAG_MODEL=afi_ax_r
 
 UPYFCD_VER=4956696e8902c84db6d2b0b69eda60a0ef9da942
+FCDIMG_VER=c12758b1fdfbb0c07c33a0c21efd0a01bd19f445
 
 TOOLS=tools/al324-ee \
       tools/ax_gen_eeprom.py \
@@ -25,7 +25,6 @@ TOOLS=tools/al324-ee \
       tools/sshd_config \
       tools/stop_daemons.sh \
       tools/DUT_wireless \
-      tools/Golden_wireless
 
 $(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
 $(eval $(call ProductImage,AFI-AX-R,FCD-AFI-AX-R-$(VER)))

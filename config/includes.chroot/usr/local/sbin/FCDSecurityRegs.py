@@ -350,6 +350,7 @@ class fraMonitorPanel(Gtk.Frame):
                         rt = False
                     else:
                         self.log.info("In aquirebarcode(), the barcode is valid")
+                        GCommon.macaddr = barcode
                         self.starttime = time.time()
                         self.log.info("In aquirebarcode(), start time: " + str(self.starttime))
                         rt = True
@@ -573,7 +574,8 @@ class dlgUserInput(Gtk.Dialog):
         self.show_all()
 
     def on_phassphrase_changed(self, entry):
-        GCommon.active_passphrase = self.etypassphrase.get_text()
+        passphrase = self.etypassphrase.get_text()
+        GCommon.active_passphrase = passphrase.strip()
         self.log.info("In on_phassphrase_changed(), the passphrse: " + GCommon.active_passphrase)
 
     def on_pds_combo_changed(self, combo):
@@ -598,7 +600,8 @@ class dlgUserInput(Gtk.Dialog):
             self.log.info("In on_allpd_combo_changed(), the product: " + GCommon.active_product)
 
     def on_bomrev_changed(self, entry):
-        GCommon.active_bomrev = self.etybomrev.get_text()
+        bomrev = self.etybomrev.get_text()
+        GCommon.active_bomrev = bomrev.strip()
         self.log.info("In on_bomrev_changed(), the BOM revision: " + GCommon.active_bomrev)
 
     def on_region_combo_changed(self, combo):
@@ -738,7 +741,8 @@ class winFcdFactory(Gtk.Window):
         self.add(self.vboxMainWindow)
 
     def on_etyhostip_changed(self, entry):
-        GCommon.fcdhostip = self.etyhostip.get_text()
+        fcdhostip = self.etyhostip.get_text()
+        GCommon.fcdhostip = fcdhostip.strip()
         self.log.info("In on_etyhostip_changed(), the FCD host IP: " + GCommon.fcdhostip)
 
     def on_cbtnsethostip_toggled(self, button):

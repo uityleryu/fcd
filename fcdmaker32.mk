@@ -161,8 +161,10 @@ gitrepo: UPyFCD fcd-image
 fcd-image:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
+		cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(STAGEDIR)/$@; \
+		cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
 	fi
 
 UPyFCD:
