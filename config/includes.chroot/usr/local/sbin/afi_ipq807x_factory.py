@@ -92,10 +92,11 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         fcdssh = "user@" + self.tftp_server + ":"
         bomrev = "113-" + self.bom_rev
         mtdpart = "/dev/mtdblock18"
+
+        # This MD5SUM value is generated from a file with all 0xff
         md5sum_no_wifi_cal = "41d2e2c0c0edfccf76fa1c3e38bc1cf2"
 
         self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -122,6 +123,7 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
         time.sleep(3)
 
+        msg(15, "Flash a temporary value to the EEPROM partition")
         self.pexp.expect_action(30, "Bytes transferred", "sf probe")
         self.pexp.expect_action(30, ubpmt[self.board_id], "sf erase 0x490000 0xa0000")
         time.sleep(3)
@@ -138,12 +140,13 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
         time.sleep(3)
-
         self.pexp.expect_action(30, "Bytes transferred", "sf erase 0x610000 0x10000")
         time.sleep(3)
         self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x610000 0x10000")
         time.sleep(3)
         self.pexp.expect_action(30, "Written: OK", "")
+
+        msg(20, "Loading firmware")
         sstr = [
             "tftpboot",
             "0x44000000",
@@ -157,8 +160,9 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         time.sleep(8)
         self.pexp.expect_action(30, "Erasing at 0xffe0000", "nand write 0x44000000 0 $filesize")
         time.sleep(8)
-
         self.pexp.expect_action(30, "written: OK", "reset")
+
+        msg(25, "Configuring the EEPROM partition ...")
         self.pexp.expect_action(120, bootmsg[self.board_id], "")
         sstr = [
             "ifconfig",
@@ -175,7 +179,6 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, lnxpmt[self.board_id], "[ ! -f ~/.ssh/known_hosts ] || rm ~/.ssh/known_hosts")
 
-        msg(20, "Send EEPROM command and set info to EEPROM ...")
         log_debug("Send " + eepmexe + "command from host to DUT ...")
         sstr = [
             "scp",
@@ -324,6 +327,7 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         else:
             log_debug("Decompressing " + eeprom_tgz + " files successfully")
 
+        msg(35, "Starignt to do the registration")
         log_debug("Starting to do registration ...")
         cmd = [
             "cat",
@@ -459,7 +463,11 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         msg(80, "Checking there's wifi calibration data exist.")
         cal_file = os.path.join(wifi_cal_data_dir, "caldata.bin")
         self.pexp.expect_action(10, lnxpmt[self.board_id], "md5sum " + cal_file)
-        self.pexp.expect_action(10, md5sum_no_wifi_cal, "")
+        index = self.pexp.expect_get_index(10, md5sum_no_wifi_cal)
+        if index == 0:
+            error_critical(msg="Wifi calibration data empty!")
+        else:
+            log_debug(msg="Wifi calibration data is not empty, pass!")
         # md5sum_from_dut = ""
         # match = re.search(r'([a-f0-9]{32})', self.pexp.proc.before)
         # if match:

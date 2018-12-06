@@ -25,6 +25,7 @@ class ScriptBase(object):
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
+        log_debug(str(self.input_args))
 
     @property
     def pexp(self):
@@ -92,7 +93,6 @@ class ScriptBase(object):
         self.region = args.region
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
-        log_debug(str(args))
         return args
 
     def login(self, username=None, password=None):
