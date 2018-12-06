@@ -25,6 +25,7 @@ TOOLS=tools/al324-ee \
       tools/sshd_config \
       tools/stop_daemons.sh \
       tools/DUT_wireless \
+      tools/golden_ax_dev.sh \
 
 $(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
 $(eval $(call ProductImage,AFI-AX-R,FCD-AFI-AX-R-$(VER)))
