@@ -11,7 +11,7 @@ IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
 DIAG_MODEL=afi_ax_r
 
 UPYFCD_VER=4956696e8902c84db6d2b0b69eda60a0ef9da942
-FCDIMG_VER=c12758b1fdfbb0c07c33a0c21efd0a01bd19f445
+FCDIMG_VER=
 
 TOOLS=tools/al324-ee \
       tools/ax_gen_eeprom.py \

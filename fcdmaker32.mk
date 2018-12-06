@@ -161,19 +161,27 @@ gitrepo: UPyFCD fcd-image
 fcd-image:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
-		cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
+		fi \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(STAGEDIR)/$@; \
-		cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
+		fi \
 	fi
 
 UPyFCD:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
-		cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+		fi \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@; \
-		cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+		if [ $(FCDIMG_VER) != "" ]; then \
+			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
+		fi \
 	fi
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
 	@mv $(STAGEDIR)/$@/DIAG $(NEWSQUASHFS)/usr/local/sbin/
