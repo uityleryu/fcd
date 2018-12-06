@@ -25,15 +25,10 @@ from ubntlib.fcd.common import Common
 login_account = "ubnt"
 login_passwd = "ubnt"
 
-ubidiag_prompt = "UBNT-US.ubidiag"
-formal_prompt = {'ed04': "UBNT-US.v4.0.5#",
-                 'ed01': "UBNT-US.v4.0.5#",
-                 'ed10': "UBNT-US.pr-2291#"}
-#re_promt = r'UBNT-.+\..+#'
-re_promt = "UBNT-US.pr-2291#"
+re_promt = r'UBNT-.+\..+#'
 
 tftpdir = "/tftpboot/"
-svip = "192.168.1.47"  # @@@@
+svip = "192.168.1.19"
 
 
 class fwloader():
@@ -45,7 +40,7 @@ class fwloader():
         self.pexp = None
 
     def sshlogin(self, prompt):
-        time_wait_ssh = 15 # @@@@@
+        time_wait_ssh = 15
         print("Loging via ssh after %d sec" % time_wait_ssh)
         time.sleep(time_wait_ssh)
 
@@ -61,7 +56,6 @@ class fwloader():
     def ckburninflag(self, prompt):
         # check burnin flag
         ret = self.pexp.expect_get_output("cat /tmp/system.cfg | grep burnin.status", prompt)
-        print("ret={}".format(ret))
         if "enabled" in ret:
             error_critical("Unfinished factory reset => mac={} ip={}".format(self.devmac, self.devip))
 
@@ -89,7 +83,6 @@ class fwloader():
         self.pexp.expect_action(10, prompt, "")
         # check fw md5sum in device
         ret = self.pexp.expect_get_output("md5sum " + self.boardid+".bin|awk '{printf(\"%s\\n\",$1)}'", prompt)
-        print("ret={}".format(ret))
         if md5sum in ret:
             print("md5sum of FW in device is correct")
         else:

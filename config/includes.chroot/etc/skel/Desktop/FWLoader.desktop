@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Firmware Loader
+Type=Application
+Exec=sudo python3 /usr/local/sbin/fwloaderGUI.py
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=Firmware Loader
+GenericName[en_US]=
+Comment[en_US]=Utility for loading formal firmware
+GenericName=
+Comment=Utility for production
+Icon=/usr/local/sbin/FWloader.png
+StartupNotify=false

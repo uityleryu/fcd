@@ -27,6 +27,10 @@ vlanport_idx = {'ed10': "'6 4'",
                 'ec25': "'6 0'",
                 'ec26': "'6 0'"}
 
+radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
+
+diag_en = {'ed10'}
+
 
 class USFLEXFactory(ScriptBase):
     def __init__(self):
@@ -37,7 +41,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size), "")
 
     def SetBootNet(self):
-        #self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr "+prod_dev_tmp_mac)
+        # self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr "+prod_dev_tmp_mac)
         self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.var.us.ip)
         self.pexp.expect_action(30, self.bootloader_prompt, "set serverip " + self.tftp_server)
 
@@ -65,7 +69,6 @@ class USFLEXFactory(ScriptBase):
         return is_alive
 
     def CheckRadioStat(self):
-        radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         if self.board_id in radio_check:
             log_debug('Checking radio calibration status...')
             ckaddr = radio_check[self.board_id][0]
@@ -151,7 +154,10 @@ class USFLEXFactory(ScriptBase):
 
         fcdimg = "{}".format(self.board_id+"-fcd.bin")
 
-        fwimg = "{}".format(self.fwimg)
+        if self.board_id in diag_en:
+            fwimg = "{}".format(self.board_id+"-diag.bin")
+        else:
+            fwimg = "{}".format(self.fwimg)
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -442,7 +448,6 @@ class USFLEXFactory(ScriptBase):
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical("Failed to ping tftp server in u-boot")
 
-
         msg(54, "Putting device to urescue mode...")
         self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearcfg TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearenv TRUE")
@@ -470,10 +475,12 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
     
         msg(60, "Updating released firmware...")
-        self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
-        self.pexp.expect_only(60, "done")
-        self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        if self.board_id not in diag_en:
+            self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
+            self.pexp.expect_only(60, "done")
+        else:
+            self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+            self.pexp.expect_only(120, "done")
 
         msg(62, 'Booting into released firmware...')
         rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
