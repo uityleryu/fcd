@@ -30,6 +30,11 @@ if ! grep -q usbdisk /proc/mounts; then
     ln -sf $MDIR /home/user/Desktop/
 fi
 
+if [ ! -f /media/usbdisk/keys/ca.pem ] && [ ! -f /media/usbdisk/keys/crt.pem ] && [ ! -f /media/usbdisk/keys/key.pem ]; then
+    echo "Missing necessary keys file"
+    exit 1
+fi
+
 host_ip=$1
 if [ "${host_ip}" = "" ]; then
     host_ip=192.168.1.19
@@ -121,7 +126,18 @@ wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1
 wget_status=$?
 echo -n "wget_status: $wget_status\n"
 
-if [ $wget_status -eq 0 ]; then
+if [ $wget_status -eq 1 ]; then
+    echo "Can't link to baidu website"
+    exit 1
+fi
+
+ping devreg-prod.ubnt.com -c 10
+
+ping_status=$?
+
+echo -n "ping_status: $ping_status\n"
+
+if [ $ping_status -eq 0 ]; then
     touch ${STATUS}
     echo $prod_iface > ${STATUS}
     if [ -f /etc/init.d/dhcp3-server ]; then
@@ -134,7 +150,7 @@ if [ $wget_status -eq 0 ]; then
         echo 'Failed to start DHCP server'
     fi
 else
-    echo "Can't link to baidu website"
+    echo "Can't link to devreg server"
     exit 1
 fi
 
@@ -144,4 +160,4 @@ if ! /etc/init.d/atftpd restart; then
 fi
 
 rm ${DHCPOUT} ${WGETOUT}
-exit $wget_status
+exit $ping_status

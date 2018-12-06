@@ -2,13 +2,13 @@
 
 set boardid [lindex $argv 0]
 set mac [lindex $argv 1]
-set passphrase [lindex $argv 2]
+set passphrase [string trim [lindex $argv 2] "\r\n"]
 set keydir [lindex $argv 3]
 set dev [lindex $argv 4]
 set idx [lindex $argv 5]
 set tftpserver [lindex $argv 6]
-set bomrev [lindex $argv 7]
-set qrcode [lindex $argv 8]
+set bomrev [string trim [lindex $argv 7] "\r\n"]
+set qrcode [string trim[lindex $argv 8] "\r\n"]
 set fwimg "$boardid.bin"
 set rsa_key dropbear_rsa_host_key
 set dss_key dropbear_dss_host_key
@@ -207,7 +207,7 @@ proc set_network_env {} {
              [string equal -nocase $boardid $USW_6XG_150] == 1 ||
              [string equal -nocase $boardid $USW_24_PRO] == 1 ||
              [string equal -nocase $boardid $USW_48_PRO] == 1 } {
-            sleep 1
+            sleep 3
             send "mdk_drv\r"
             set timeout 30
             expect timeout {
@@ -231,7 +231,7 @@ proc set_network_env {} {
 
         # Loop for ping retry
         for { set j 0 } { $j < $max_loop } { incr j } {
-            sleep 2
+            sleep 4
             send "ping $tftpserver\r"
             set timeout 25
             expect {
@@ -449,6 +449,7 @@ proc upload_sshkeys {} {
 
 proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
     global qrcode
+    set max_loop 3
     log_debug "Connecting to server:"
 
     set outfile [open "/tmp/client$idx.sh" w]
@@ -462,21 +463,33 @@ proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
     }
     close $outfile
 
-    if { [catch "spawn sh /tmp/client$idx.sh" reason] } {
-        error_critical "Failed to spawn client: $reason\n"
-    }
-    set sid $spawn_id
-    log_debug "sid $sid"
+    for { set i 0 } { $i < $max_loop } { incr i } {
 
-    expect -i $sid {
-        eof { log_debug "Done." }
+        if { [catch "spawn sh /tmp/client$idx.sh" reason] } {
+            log_warn "Failed to spawn client: $reason\n"
+            sleep 5
+            continue
+        }
+        set sid $spawn_id
+        log_debug "sid $sid"
+
+        expect -i $sid {
+            eof { log_debug "Done." }
+        }
+        catch wait result
+        set res [lindex $result 3]
+        log_debug "Client result $res"
+        if { $res != 0 } {
+            log_warn "Registration failure : $res\n"
+            sleep 5
+            continue
+        } else {
+            return
+        }
     }
-    catch wait result
-    set res [lindex $result 3]
-    log_debug "Client result $res"
-    if { $res != 0 } {
-        error_critical "Registration failure : $res\n"
-    }
+
+    error_critical "Registration failure : $res\n"
+
 }
 
 proc get_helper {} {
@@ -727,7 +740,7 @@ proc check_security {} {
     send "grep -c flashSize /proc/ubnthal/system.info\r"
     expect timeout {
         error_critical "Unable to get flashSize!"
-    } -re "(\\d+)\r"
+    } -re "info.+(\\d+)\r"
 
     set signed [expr $expect_out(1,string) + 0]
     expect timeout { error_critical "Command promt not found" } "#"
@@ -861,7 +874,7 @@ proc handle_uboot { } {
     stop_uboot
 
     # detect flash size
-    sleep 2
+    sleep 4
     send "print mtdparts\r"
     set timeout 5
     expect {
