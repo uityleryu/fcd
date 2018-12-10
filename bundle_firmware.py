@@ -25,6 +25,8 @@ for section in Config.sections():
         if os.path.exists(f):
             print 'removing', f
             os.remove(f)
+        else:
+            print "symlink doesn't exist: ", f
 
     # download new firmware
     fw = version + appendix
@@ -39,13 +41,15 @@ for section in Config.sections():
         # remove old trx
         for f in [image_dir + trx_symlink, os.path.realpath(image_dir + trx_symlink)]:
             if os.path.exists(f):
-                print 'removing', f
+                print 'removing trx', f
                 os.remove(f)
+            else:
+                print "symlink trx doesn't exist: ", f
 
         # download new trx
         trx = version + '_' + trx_name
         urllib.urlretrieve(url_prefix + '/' + trx_name, image_dir + trx)
-        print 'symlinking', image_dir + trx_symlink , '->', trx
+        print 'symlinking trx', image_dir + trx_symlink , '->', trx
         os.symlink(trx, image_dir + trx_symlink)
 
         print trx_symlink, trx_name
