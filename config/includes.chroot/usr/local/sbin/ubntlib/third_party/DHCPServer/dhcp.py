@@ -10,8 +10,8 @@ import socket
 import IN
 import fcntl
 import os
-from fw_loader.listener import *
 
+from ubntlib.third_party.DHCPServer.listener import *
 
 prod_setup_file = "/tmp/prod-setup.done"
 

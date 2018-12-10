@@ -12,5 +12,5 @@ GenericName[en_US]=
 Comment[en_US]=Utility for production of Ubiquiti units
 GenericName=
 Comment=Utility for production
-Icon=/usr/local/sbin/BackToT1.png
+Icon=/usr/local/sbin/icons/BackToT1.png
 StartupNotify=false

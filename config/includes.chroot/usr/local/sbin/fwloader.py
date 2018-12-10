@@ -8,19 +8,11 @@ import stat
 import shutil
 import threading
 
-from pathlib import Path
-file = Path(__file__).resolve()
-parent, root = file.parent, file.parents[1]
-sys.path.append(str(root))
-
-try:
-        sys.path.remove(str(parent))
-except ValueError:
-        pass
-
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.common import Common
+
+sys.path.append("..")
 
 login_account = "ubnt"
 login_passwd = "ubnt"

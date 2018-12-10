@@ -5,6 +5,7 @@ from ubntlib.gui.gui_variable import GPath, GCommon
 from time import sleep
 from ubntlib.gui.msgdialog import msgerrror, msginfo
 from ubntlib.fcd.common import Common
+from ubntlib.third_party.DHCPServer import dhcp
 
 import gi
 import re
@@ -16,9 +17,6 @@ import threading
 import shutil
 import json
 import sys
-
-# from fw_loader.dhcp import *
-from fw_loader import dhcp
 
 gi.require_version('Gtk', '3.0')
 
@@ -305,7 +303,7 @@ class fraMonitorPanel(Gtk.Frame):
             self.x = True
             self.setdirfl()
 
-        cmd = ["sudo python3 /usr/local/sbin/fw_loader/fwloader.py",
+        cmd = ["sudo python3 /usr/local/sbin/fwloader.py",
                GCommon.active_product_obj['BOARDID'],
                host.mac,
                host.ip,

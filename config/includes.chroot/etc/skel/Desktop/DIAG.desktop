@@ -4,7 +4,7 @@ Version=1.0
 Encoding=UTF-8
 Name=DIAG-test
 Type=Application
-Exec=sudo PYTHONPATH="/usr/local/sbin/ubntlib/" python3 /usr/local/sbin/DIAG/upydiag.py afi_ax_r
+Exec=sudo python3 /usr/local/sbin/DIAG/upydiag.py us_flex
 TryExec=
 X-GNOME-DocPath=
 Terminal=true
@@ -13,5 +13,5 @@ GenericName[en_US]=
 Comment[en_US]=Utility for production of Ubiquiti units
 GenericName=
 Comment=Utility for production
-Icon=/usr/local/sbin/UBNT-LB5G-23_2.jpg
+Icon=/usr/local/sbin/icons/DIAG.png
 StartupNotify=false
