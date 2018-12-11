@@ -652,12 +652,24 @@ proc check_unifiOS_network_ready { boardid } {
     set pingable 0
 
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
-        set timeout 360
+        set x 0
+        while { $x < 25 } {
+            send "ifconfig\r"
+            sleep 2
+            expect "192.168.1." {
+                break
+            }
+            sleep 5
+            incr x
+        }
+        if { $x == 25 } {
+            error_critical "Can't get DHCP IP address"
+        }
     } else {
         set timeout 90
+        send "while \[ ! -f /etc/udhcpc/info.br0 \]; do ifconfig; ls /etc/udhcpc; sleep 5; done\r"
+        expect timeout { error_critical "Can't get DHCP IP address" } "#"
     }
-    send "while \[ ! -f /etc/udhcpc/info.br0 \]; do ifconfig; ls /etc/udhcpc; sleep 5; done\r"
-    expect timeout { error_critical "Can't get DHCP IP address" } "#"
 
     for { set i 0 } { $i < $max_loop } { incr i } {
 
@@ -746,17 +758,31 @@ proc do_security { boardid } {
     exec chmod 666 /tftpboot/$eeprom_txt
     exec chmod 666 /tftpboot/$eeprom_check
 
-    set timeout 20
-    send "\[ ! -f /tmp/$eeprom_bin \] || rm /tmp/$eeprom_bin\r"
-    expect timeout { error_critical "Command promt not found" } "#" 
-    send "\[ ! -f /tmp/$eeprom_txt \] || rm /tmp/$eeprom_txt\r"
-    expect timeout { error_critical "Command promt not found" } "#" 
-    send "\[ ! -f /tmp/$eeprom_signed \] || rm /tmp/$eeprom_signed\r"
-    expect timeout { error_critical "Command promt not found" } "#" 
-    send "\[ ! -f /tmp/$eeprom_check \] || rm /tmp/$eeprom_check\r"
-    expect timeout { error_critical "Command promt not found" } "#" 
-
     check_unifiOS_network_ready $boardid
+
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        set timeout 20
+        send "cd /tmp\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        send "tftp -g -r deloutput.sh $tftpserver\r"
+        sleep 1
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        send "sh /tmp/deloutput.sh $idx\r"
+        sleep 2
+        expect timeout { error_critical "Command promt not found" } "#"
+    } else {
+        set timeout 20
+        send "\[ ! -f /tmp/$eeprom_bin \] || rm /tmp/$eeprom_bin\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+        send "\[ ! -f /tmp/$eeprom_txt \] || rm /tmp/$eeprom_txt\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+        send "\[ ! -f /tmp/$eeprom_signed \] || rm /tmp/$eeprom_signed\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+        send "\[ ! -f /tmp/$eeprom_check \] || rm /tmp/$eeprom_check\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+    }
 
     send "cd /tmp\r"
     expect timeout { error_critical "Command promt not found" } "#" 

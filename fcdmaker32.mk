@@ -39,7 +39,32 @@ $(eval $(call ProductImage,USPRO,$(USPRO-IMAGE),FCD-USPRO-$(VER)))
 #	fcd-usw: new-rootfs $(USW-PRODUCT-LINE) pack-iso
 #endif
 
+openiso: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
+packiso:
+	@echo ">> change the FCD version to the desktop"
+	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
+	convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 '$(VER)'" $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.jpg
+
+	@echo " >> Regenerating NewSquashfs file "
+	if [ -f "$(NEWLIVEDCD)/live/filesystem.squashfs" ]; then \
+		rm $(NEWLIVEDCD)/live/filesystem.squashfs; \
+	fi
+	mksquashfs $(NEWSQUASHFS) $(NEWLIVEDCD)/live/filesystem.squashfs
+
+	@echo " >> Update MD5 sums "
+	@if [ -f "$(NEWLIVEDCD)/md5sum.txt" ]; then \
+		rm $(NEWLIVEDCD)/md5sum.txt; \
+	fi
+	bash -c "cd $(NEWLIVEDCD)/ && find . -type f -exec md5sum {} + > $(NEWLIVEDCD)/md5sum.txt"
+
+	echo " >> Generating NewLivedCD ISO "
+	cd $(NEWLIVEDCD); \
+	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(LIVE_CD_VER) .
+	chmod 777 $(OUTDIR)/$(LIVE_CD_VER)
+
+
+# Create a whole new ISO from a downloaded ISO
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 	@echo " >> copy prep scripts to new squashfs "
 	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
