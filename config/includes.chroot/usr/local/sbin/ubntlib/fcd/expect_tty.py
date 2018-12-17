@@ -5,6 +5,7 @@ import pexpect
 import logging
 from io import StringIO
 
+
 class ExpttyProcess():
 
     TIMEOUT = -1
@@ -26,17 +27,19 @@ class ExpttyProcess():
         else:
             self.log = logging.getLogger(logger_name)
 
-    def expect_only(self, timeout, exptxt):
+    def expect_only(self, timeout, exptxt, err_msg=None):
         """Simply expect.
-            Will exit if expect timeout or EOF.
+            Will raise ExceptionPexpect if expect timeout
+            exit if expect come accross EOF
         """
-        return self.__expect_base(timeout=timeout, exptxt=exptxt)
+        return self.__expect_base(timeout=timeout, exptxt=exptxt, err_msg=err_msg)
 
-    def expect_action(self, timeout, exptxt, action):
+    def expect_action(self, timeout, exptxt, action, err_msg=None):
         """Expect and send action cmd.
-            Will exit if expect timeout or EOF.
+            Will raise ExceptionPexpect if expect timeout
+            exit if expect come accross EOF
         """
-        return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action)
+        return self.__expect_base(timeout=timeout, exptxt=exptxt, action=action, err_msg=err_msg)
 
     def expect_get_index(self, timeout, exptxt):
         """Expect and get index which expect found.
@@ -53,7 +56,7 @@ class ExpttyProcess():
         return self.__expect_base(timeout=timeout, exptxt="dump_string_for_output_purpose_only",  action=action,
                                   end_if_timeout=False, get_output=True, prompt=prompt)
 
-    def __expect_base(self, timeout, exptxt, action=None, end_if_timeout=True, get_result_index=False,
+    def __expect_base(self, timeout, exptxt, action=None, err_msg=None, end_if_timeout=True, get_result_index=False,
                       prompt=None, get_output=False):
         """
         Args:
@@ -64,6 +67,7 @@ class ExpttyProcess():
             get_result_index {bool}: if true, return index which expect found
         Returns:
             return 0 means success
+            return output if get_output is True
             return index if get_result_index is True
         """
         ex = []
@@ -84,15 +88,15 @@ class ExpttyProcess():
             print("[ERROR:EOF]: Expect \"" + str(exptxt) + "\"")
             exit(1)
         if(index == (len(ex) - 1)):
-            if not get_output:
-                print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds")
-            else:
+            detail = str(err_msg) if err_msg is not None else ""
+            if get_output is True:
                 output = str(self.proc.buffer)
                 self.proc.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout)
                 self.proc.send(self.newline)  # for getting prompt
-                return output
+                return output  # return all output including sended command
             if end_if_timeout is True:
-                exit(1)
+                print("[ERROR:Timeout]: Expect \"" + str(exptxt) + "\" more than " + str(timeout) + " seconds. " + detail)
+                raise pexpect.ExceptionPexpect(detail)
             else:
                 return self.TIMEOUT
 
