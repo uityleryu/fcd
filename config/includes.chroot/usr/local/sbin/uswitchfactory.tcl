@@ -8,7 +8,7 @@ set dev [lindex $argv 4]
 set idx [lindex $argv 5]
 set tftpserver [lindex $argv 6]
 set bomrev [string trim [lindex $argv 7] "\r\n"]
-set qrcode [string trim[lindex $argv 8] "\r\n"]
+set qrcode [string trim [lindex $argv 8] "\r\n"]
 set fwimg "$boardid.bin"
 set rsa_key dropbear_rsa_host_key
 set dss_key dropbear_dss_host_key
@@ -571,32 +571,32 @@ proc do_security {} {
 
     set timeout 20
     send "\[ ! -f /tmp/$eeprom_bin \] || rm /tmp/$eeprom_bin\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_txt \] || rm /tmp/$eeprom_txt\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_signed \] || rm /tmp/$eeprom_signed\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_check \] || rm /tmp/$eeprom_check\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_tgz \] || rm /tmp/$eeprom_tgz\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$e_c_gz \] || rm /tmp/$e_c_gz\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
     send "\[ ! -f /tmp/$e_s_gz \] || rm /tmp/$e_s_gz\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     cd /tftpboot
     send "cd /tmp\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     send "$helper -q -c product_class=bcmswitch -o"
     send " field=flash_eeprom,format=binary,"
     send "pathname=$eeprom_bin > $eeprom_txt"
     send "\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     send "tar zcf $eeprom_tgz $eeprom_bin $eeprom_txt\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     log_debug "Downloading files"
 
@@ -606,7 +606,7 @@ proc do_security {} {
     send "lsz -e -v -b $eeprom_tgz\r"
     sleep 1
     system rz -v -b -y < /dev/$dev > /dev/$dev
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     set file_size [file size  "/tftpboot/$eeprom_tgz"]
 
@@ -640,11 +640,11 @@ proc do_security {} {
     send "lrz -v -b \r"
     sleep 1
     system sz -e -v -b $e_s_gz > /dev/$dev < /dev/$dev
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     set timeout 20
     send "gunzip $e_s_gz\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     log_debug "File sent."
 
@@ -657,22 +657,22 @@ proc do_security {} {
         send "$helper -q -i "
         send "field=flash_eeprom,format=binary,pathname=$eeprom_signed\r"
     }
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     send "dd if=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd"
     send " | sed 's~mtd~mtdblock~g'` of=/tmp/$eeprom_check\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     set timeout 20
     send "gzip $eeprom_check\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     sleep 1
     set timeout 200
     send "lsz -e -v -b $e_c_gz\r"
     sleep 1
     system rz -v -b -y < /dev/$dev > /dev/$dev
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     set file_size [file size  "/tftpboot/$e_c_gz"]
 
@@ -699,7 +699,7 @@ proc do_security {} {
     }
 
     send "reboot\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     send "exit\r"
 
@@ -743,7 +743,7 @@ proc check_security {} {
     } -re "info.+(\\d+)\r"
 
     set signed [expr $expect_out(1,string) + 0]
-    expect timeout { error_critical "Command promt not found" } "#"
+    expect timeout { error_critical "Command prompt not found" } "#"
 
     log_debug "signed: $signed"
     if {$signed ne 1} {
@@ -757,7 +757,7 @@ proc check_security {} {
         } -re "qrid=(.*)\r"
 
         set qrid $expect_out(1,string)
-        expect timeout { error_critical "Command promt not found" } "#"
+        expect timeout { error_critical "Command prompt not found" } "#"
 
         log_debug "qrid: $qrid"
         if {$qrid ne $qrcode} {
@@ -1037,6 +1037,24 @@ proc handle_uboot { } {
 
     check_booting $boardid
     check_security
+
+    sleep 1
+
+    send "\r"
+
+    expect timeout { error_critical "Command prompt not found" } "#"
+
+    send "cat /proc/ubnthal/system.info\r"
+
+    expect timeout { error_critical "Command prompt not found" } "#"
+
+    sleep 60
+
+    send "lcm-ctrl -t dump\r"
+
+    expect timeout { error_critical "Command prompt not found" } "#"
+
+    sleep 3
 
     log_progress 100 "Formal firmware completed with MAC0: $mac "
 }
