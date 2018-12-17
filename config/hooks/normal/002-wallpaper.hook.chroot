@@ -44,6 +44,7 @@ apt-get -y install gedit
 
 # security key packages
 apt-get -y install dropbear
+apt-get -y install sshpass
 
 # mkdir /media/FCDUSB
 # usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
