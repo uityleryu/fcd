@@ -68,8 +68,10 @@ packiso:
 create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 	@echo " >> copy prep scripts to new squashfs "
 	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
+	rm -rf $(NEWSQUASHFS)/usr/local/ubnt-expect/*
 	rm -rf $(NEWSQUASHFS)/srv/tftp/*
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/ubnt-expect/* $(NEWSQUASHFS)/usr/local/ubnt-expect
 	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Firmware\ Loader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/Firmware\ Loader.desktop
 
