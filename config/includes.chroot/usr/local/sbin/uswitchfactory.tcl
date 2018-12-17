@@ -210,9 +210,15 @@ proc set_network_env {} {
             sleep 3
             send "mdk_drv\r"
             set timeout 30
-            expect timeout {
-                error_critical "U-boot prompt not found !"
-            } "$bootloader_prompt"
+            expect {
+                "Unknown command" {
+                    error_critical "MDK DRV not found. Please do Back to ART!"
+                } "$bootloader_prompt" {
+                    log_debug "Got MDK_DRV"
+                } timeout {
+                    error_critical "U-boot prompt not found !"
+                }
+            }
         }
 
         sleep 1
@@ -735,6 +741,12 @@ proc check_security {} {
 
     expect timeout { error_critical "Login failed" } "#"
 
+    sleep 60
+
+    send "\r\r\r"
+
+    expect timeout { error_critical "Command prompt not found" } "#"
+
     # for concurrent access issue on /proc/ubnthal/system.info
     # sleep 3
     send "grep -c flashSize /proc/ubnthal/system.info\r"
@@ -1048,13 +1060,12 @@ proc handle_uboot { } {
 
     expect timeout { error_critical "Command prompt not found" } "#"
 
-    sleep 60
-
     send "lcm-ctrl -t dump\r"
 
+    expect timeout { error_critical "Cannot found lcm version" } "version"
     expect timeout { error_critical "Command prompt not found" } "#"
 
-    sleep 3
+    sleep 5
 
     log_progress 100 "Formal firmware completed with MAC0: $mac "
 }
