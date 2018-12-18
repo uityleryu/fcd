@@ -23,11 +23,12 @@ my @unifi_regdmn_codes = (
 			'0000ffffffffffffffffffffffffffff',
 			'002affffffffffffffffffffffffffff',
 			'82fcffffffffffffffffffffffffffff',
-			'8178ffffffffffffffffffffffffffff'
+			'8178ffffffffffffffffffffffffffff',
+			'8188ffffffffffffffffffffffffffff'
 			);
-my @regdmn_codes = ( '0000', '002a', '82fc', '8178' );
-my @country_codes = ( '0', '840', '764', '376' );
-my @regdmn_names = ( 'world', 'USA/Canada', 'Thailand', 'Israel' );
+my @regdmn_codes = ( '0000', '002a', '82fc', '8178', '8188' );
+my @country_codes = ( '0', '840', '764', '376', '392' );
+my @regdmn_names = ( 'world', 'USA/Canada', 'Thailand', 'Israel', 'Japan' );
 my @migrators = ();
 
 my $window      = Gtk2::Window->new;
