@@ -49,8 +49,75 @@ FCD-base.iso:
     
     apt-get -y install imagemagick
 
-Generating FCD ISO file procedure
-Step_1: copy the FCD-base.iso to /export
-Step_2: go to the fcd folder where you cloned
-Step_3: typing "make -f fcdmaker32.mk create_live_cd"
-Step_4: you will find the new FCD in the /export
+========================================================================================================
+
+* Clone a FCD source code
+FCD repository: https://drive.google.com/open?id=14IOj5Z_bl-u18Skrly_BwEUNeRxT-jnQ
+
+    git clone git@10.2.128.30:Ubiquiti-BSP/fcd.git
+
+
+========================================================================================================
+
+* Generating FCD ISO file procedure based on develop branch
+Description:
+    The following instructions is used to create a whole new FCD ISO file
+    It means that it will delete the previous stage folders.
+
+
+Step_1: create a folder, output, under the folder where the fcdmaker32.mk is
+Step_2: make a symbolic to the latest FCD base ISO file to the output
+
+    Google drive: https://drive.google.com/open?id=14IOj5Z_bl-u18Skrly_BwEUNeRxT-jnQ
+
+    example:
+
+        ln -s ~/Downloads/FCD-BASE-20181220.iso FCD-base.iso
+
+Step_3: go to the path where the fcdmaker32.mk is
+
+    command:
+
+        sudo make VER=<version> PRD=<product> -f fcdmaker32.mk <product>
+
+    example:
+
+        sudo make VER=0.9.2-aabbccdd PRD=UDM -f fcdmaker32.mk UDM
+
+Step_4: you will find the new FCD under the output folder
+
+========================================================================================================
+
+* Modify the existed FCD ISO file
+Description:
+    It will decompress the existed FCD ISO file and you just modify some files under the stage folder
+    And then compress back the ISO file.
+
+Step_1: make a symbolic to an existed FCD base ISO file to the output
+
+    example:
+
+        ln -s ~/Downloads/FCD-UDM-0.9.1-d9e5388-3.iso FCD-base.iso
+
+Step_2: decompress the existed FCD ISO file
+
+    command:
+
+        sudo make VER=<version> PRD=<product> -f fcdmaker32.mk new-rootfs
+
+    example:
+
+        sudo make VER=0.9.1-d9e5388-3 PRD=UDM -f fcdmaker32.mk new-rootfs
+
+Step_3: modify the file in /home/djc/fcdsrc/bspfcd3/output/stage/NewSquashfs/
+
+Step_4: pack the modifying file to ISO file
+
+    command:
+
+        sudo make VER=<version> PRD=<product> -f fcdmaker32.mk packiso-<product>
+
+    example:
+
+        sudo make VER=0.9.1-d9e5388-4 PRD=UDM -f fcdmaker32.mk packiso-UDM
+
