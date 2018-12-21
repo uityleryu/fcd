@@ -12,9 +12,9 @@ import stat
 import shutil
 
 
-class AFIIPQ807XFactoryGeneral(ScriptBase):
+class AFIIPQ807XFactory(ScriptBase):
     def __init__(self):
-        super(AFIIPQ807XFactoryGeneral, self).__init__()
+        super(AFIIPQ807XFactory, self).__init__()
 
     def run(self):
         """
@@ -459,7 +459,11 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
         msg(70, "Firmware booting up successfully ...")
         self.pexp.expect_action(60, lnxpmt[self.board_id], "grep flashSize /proc/ubnthal/system.info")
         self.pexp.expect_action(60, "flashSize", "")
-
+        [sto, rtc] = self.fcd.common.xcmd(cmd="ifconfig eth1:0 169.254.1.19/16")
+        if (int(rtc) > 0):
+            error_critical("Setting zeroip interface failed!!")
+        else:
+            log_debug("zeroip interface has been config successfully")
         msg(80, "Checking there's wifi calibration data exist.")
         cal_file = os.path.join(wifi_cal_data_dir, "caldata.bin")
         self.pexp.expect_action(10, lnxpmt[self.board_id], "md5sum " + cal_file)
@@ -468,29 +472,19 @@ class AFIIPQ807XFactoryGeneral(ScriptBase):
             error_critical(msg="Wifi calibration data empty!")
         else:
             log_debug(msg="Wifi calibration data is not empty, pass!")
-        # md5sum_from_dut = ""
-        # match = re.search(r'([a-f0-9]{32})', self.pexp.proc.before)
-        # if match:
-        #     md5sum_from_dut = match.group(1)
-        #     log_debug(msg="MD5 :" + md5sum_from_dut)
-        # else:
-        #     error_critical(msg="Unable to get md5 sum, please check output of md5sum command")
-        # if md5sum_from_dut == md5sum_no_wifi_cal:
-        #     error_critical(msg="Wifi calibration data empty!")
-        # else:
-        #     log_debug(msg="Wifi calibration data is not empty, pass!")
-        time.sleep(2)
-        self.pexp.expect_action(30, "", "ubus call firmware info")
-        self.pexp.expect_action(30, "version", "")
+        time.sleep(5)
+        ssh_unlock_cmd = "echo ssh | prst_tool -w misc && prst_tool -e pairing && cfg.sh erase && echo cfg_done > /proc/afi_leds/mode && reboot -fd1"
+        self.pexp.expect_action(10, lnxpmt[self.board_id], ssh_unlock_cmd)
+        self.pexp.expect_only(10, "pairing erased")
+        self.pexp.expect_action(120, bootmsg[self.board_id], "")
+        self.pexp.expect_action(10, lnxpmt[self.board_id], "ubus call firmware info")
+        self.pexp.expect_get_index(5, "version")
         msg(100, "Formal firmware completed...")
 
+
 def main():
-    if len(sys.argv) < 10:  # TODO - hardcode
-        msg(no="", out=str(sys.argv))
-        error_critical(msg="Arguments are not enough")
-    else:
-        udm_factory_general = AFIIPQ807XFactoryGeneral()
-        udm_factory_general.run()
+    afi_ipq807x_factory = AFIIPQ807XFactory()
+    afi_ipq807x_factory.run()
 
 if __name__ == "__main__":
     main()
