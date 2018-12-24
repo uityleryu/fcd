@@ -10,7 +10,7 @@ IMAGE-AFI-AX+=$(IMAGE-AFI-AX-P)
 
 DIAG_MODEL=afi_ax_r
 
-UPYFCD_VER=4956696e8902c84db6d2b0b69eda60a0ef9da942
+UPYFCD_VER=f1a2ec30df925a03f242c14547c3c370639d5c9d
 FCDIMG_VER=
 
 TOOLS=tools/al324-ee \
@@ -27,6 +27,7 @@ TOOLS=tools/al324-ee \
       tools/DUT_wireless \
       tools/golden_ax_dev.sh \
       tools/Golden_wireless \
+      tools/as.txt \
 
 $(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
 $(eval $(call ProductImage,AFI-AX-R,FCD-AFI-AX-R-$(VER)))

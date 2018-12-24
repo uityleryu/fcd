@@ -10,12 +10,19 @@ image-install-$1:
 	@echo "   DIAG MODEL     = $(DIAG_MODEL)                                   "
 	@echo " ****************************************************************** "
 	@echo " >> copy prep scripts to new squashfs "
-	sed -e s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template > $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
-	sed -e s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop.template > $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
+	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
+	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop
+	if [ "${1}" = "AFI-AX" ]; then \
+		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
+	fi
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/DIAG.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/

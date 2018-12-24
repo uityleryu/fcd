@@ -119,6 +119,7 @@ echo " prod_iface: "$prod_iface
 sudo ip addr flush dev $prod_iface
 sudo ip addr add ${host_ip}/24 dev $prod_iface
 sudo ifconfig $prod_iface up
+sudo ifconfig $prod_iface:0 169.254.1.19/16
 sudo ifconfig
 
 timeout 15 wget -q -O ${WGETOUT} http://www.baidu.com/ >/dev/null 2>&1

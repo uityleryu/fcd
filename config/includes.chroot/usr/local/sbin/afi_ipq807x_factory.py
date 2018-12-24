@@ -459,11 +459,6 @@ class AFIIPQ807XFactory(ScriptBase):
         msg(70, "Firmware booting up successfully ...")
         self.pexp.expect_action(60, lnxpmt[self.board_id], "grep flashSize /proc/ubnthal/system.info")
         self.pexp.expect_action(60, "flashSize", "")
-        [sto, rtc] = self.fcd.common.xcmd(cmd="ifconfig eth1:0 169.254.1.19/16")
-        if (int(rtc) > 0):
-            error_critical("Setting zeroip interface failed!!")
-        else:
-            log_debug("zeroip interface has been config successfully")
         msg(80, "Checking there's wifi calibration data exist.")
         cal_file = os.path.join(wifi_cal_data_dir, "caldata.bin")
         self.pexp.expect_action(10, lnxpmt[self.board_id], "md5sum " + cal_file)
