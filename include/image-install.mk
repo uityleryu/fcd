@@ -26,6 +26,7 @@ image-install-$1:
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
 	convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 '$3'" $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.jpg
+	echo $3 > $(NEWSQUASHFS)/etc/skel/Desktop/version.txt
 
 
 packiso-$1:
