@@ -698,6 +698,120 @@ proc check_unifiOS_network_ready { boardid } {
     }
 }
 
+proc turn_on_burnin_mode { boardid } {
+    global INSTANTLTE_ID
+    global tftpserver
+    set timeout 10
+    set burnin_cfg "e611-burnin.cfg"
+    set burnin_flag "lte.burnin.enabled=enabled"
+
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        send "cd /tmp\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        send "tftp -g -r $burnin_cfg $tftpserver -l system.cfg\r"
+        sleep 1
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        send "grep \"burnin\" system.cfg\r"
+        expect timeout {
+            error_critical "Burnin config is not set correctly"
+        } -re $burnin_flag
+
+        # save config
+        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+
+    } else {
+        log_debug "Skip burnin mode enabling"
+    }
+}
+
+proc check_LTE_ver { boardid } {
+    global INSTANTLTE_ID
+    set timeout 5
+
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        set x 0
+        while { $x < 5 } {
+            send "echo -e \"ati\" > /dev/ttyUSB2\r"
+            sleep 1
+            send "grep \"Revision\" /dev/ttyUSB2\r"
+
+            expect -re "Revision: (.*)" {
+                # send ctrl+c to terminate grep
+                send \003
+                expect timeout { error_critical "Command promt not found" } "#"
+                break
+            }
+
+            sleep 2
+            incr x
+        }
+        if { $x == 5 } {
+            error_critical "Unable to get version of LTE firmware"
+        }
+
+        set lte_ver $expect_out(1,string)
+        log_debug "LTE Version: $lte_ver"
+    } else {
+        log_debug "Skip the version of LTE firmware checking"
+    }
+}
+
+proc check_ICCID { boardid } {
+    global INSTANTLTE_ID
+    set timeout 5
+
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+        set x 0
+        while { $x < 5 } {
+            send "echo -e \"at+ccid\" > /dev/ttyUSB2\r"
+            sleep 1
+            send "grep \"+CCID:\" /dev/ttyUSB2\r"
+
+            expect -re "CCID: (\\d*)" {
+                # send ctrl+c to terminate grep
+                send \003
+                expect timeout { error_critical "Command promt not found" } "#"
+                break
+            }
+
+            sleep 2
+            incr x
+        }
+        if { $x == 5 } {
+            error_critical "Unable to get ICCID!"
+        }
+
+        set ccid $expect_out(1,string)
+        set ccid_len [string length $ccid]
+        set ccid_len_max 22
+
+        log_debug "ccid: $ccid ccid_len: $ccid_len"
+
+        # clear eeprom
+        send "tr '\\000' '\\377' < /dev/zero | dd of=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd"
+        send " | sed 's~mtd~mtdblock~g'` bs=1 seek=33024 count=$ccid_len_max\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        # write ccid to eeprom
+        send "echo -e $ccid | dd of=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd"
+        send " | sed 's~mtd~mtdblock~g'` bs=1 seek=33024 count=$ccid_len\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+
+        send "hexdump -C -s 0x8100 -n $ccid_len -e '$ccid_len/1 \"%x\" \"\\n\"' /dev/mtdblock5\r"
+        expect timeout {
+             error_critical "Unable to get CCID from EEPROM"
+        } [string2hex $ccid]
+
+
+        log_debug "Completed to check CCID"
+    } else {
+        log_debug "Skip CCID checking"
+    }
+}
+
 proc do_security { boardid } {
     global passphrase
     global keydir
@@ -738,6 +852,7 @@ proc do_security { boardid } {
     expect timeout { error_critical "Command promt not found" } "#"
     sleep 3
 
+
     if { [ catch { exec rm -f /tftpboot/$eeprom_bin } msg ] } {
         puts "$::errorInfo"
     }
@@ -759,6 +874,7 @@ proc do_security { boardid } {
     exec chmod 666 /tftpboot/$eeprom_check
 
     check_unifiOS_network_ready $boardid
+    check_ICCID $boardid
 
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
         set timeout 20
@@ -819,6 +935,8 @@ proc do_security { boardid } {
 
     send "tftp -p -l $eeprom_txt $tftpserver\r"
     expect timeout { error_critical "Command promt not found" } "#" 
+
+    sleep 2
 
     set file_size [file size  "/tftpboot/$eeprom_bin"]
     
@@ -1352,6 +1470,8 @@ proc handle_uboot { {wait_prompt 0} } {
     sleep 1
     send "boot \r"
     check_security $boardid
+    turn_on_burnin_mode $boardid
+    check_LTE_ver $boardid
 
     log_progress 100 "Completed with MAC0: $mac " 
 
