@@ -104,7 +104,7 @@ proc stop_uboot { } {
                     #log_progress 2 "Stopping u-boot ..."
                     send "\r"
                 } timeout {
-                    error_critical "Device not found!"
+                    error_critical "E02101 Device not found"
                 }
             }
         } "Validate Shmoo parameters stored in flash ..... failed" {
@@ -115,14 +115,14 @@ proc stop_uboot { } {
                     #log_progress 2 "Stopping u-boot ..."
                     send "\r"
                 } timeout {
-                    error_critical "Device not found!"
+                    error_critical "E02101 Device not found"
                 }
             }
         } "Hit any key to stop autoboot" {
             #log_progress 2 "Stopping u-boot ..."
             send "\r"
         } timeout {
-            error_critical "Device not found!"
+            error_critical "E02101 Device not found"
         }
     }
 
@@ -135,9 +135,7 @@ proc stop_uboot { } {
     sleep 1
     send "\r"
     set timeout 30
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     sleep 1
     if { $cmd_prefix != "" } {
@@ -146,9 +144,7 @@ proc stop_uboot { } {
       send "mdk\r"
     }
     set timeout 30
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 }
 
 proc setmac {} {
@@ -160,7 +156,7 @@ proc setmac {} {
     send "$cmd_prefix usetmac $mac\r"
     set timeout 10
     expect timeout {
-        error_critical "MAC setting failed!"
+        error_critical "E02609 MAC setting failed"
     } "Done."
     set timeout 5
     expect timeout {
@@ -169,18 +165,15 @@ proc setmac {} {
     set timeout 5
     send "$cmd_prefix usetmac\r"
     expect timeout {
-        error_critical "Unable to get MAC !"
+        error_critical "E02610 Unable to get MAC"
     } -re "MAC0: (.{2}\[-:].{2}\[-:].{2}\[-:].{2}\[-:].{2}\[-:].{2})"
-    expect timeout {
-        error_critical "prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     set mac_str $expect_out(1,string)
 
     send "setenv ethaddr $mac_str; saveenv\r"
     set timeout 5
-    expect timeout {
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     send_user "\r\n * MAC setting succeded *\r\n"
 }
@@ -212,11 +205,11 @@ proc set_network_env {} {
             set timeout 30
             expect {
                 "Unknown command" {
-                    error_critical "MDK DRV not found. Please do Back to ART!"
+                    error_critical "E02104 MDK DRV not found. Please do Back to ART"
                 } "$bootloader_prompt" {
                     log_debug "Got MDK_DRV"
                 } timeout {
-                    error_critical "U-boot prompt not found !"
+                    error_critical "E02102 U-boot prompt not found"
                 }
             }
         }
@@ -224,16 +217,12 @@ proc set_network_env {} {
         sleep 1
         send "setenv ipaddr $ip\r"
         set timeout 15
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } "$bootloader_prompt"
+        expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
         sleep 1
         send "setenv serverip $tftpserver\r"
         set timeout 15
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } "$bootloader_prompt"
+        expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
         # Loop for ping retry
         for { set j 0 } { $j < $max_loop } { incr j } {
@@ -245,7 +234,7 @@ proc set_network_env {} {
                     set pingable 1
                     break
                 } timeout {
-                    log_warn "Unknown response for ping !"
+                    log_warn "Unknown response for ping"
                 }
             }
         }
@@ -259,7 +248,7 @@ proc set_network_env {} {
     }
 
     if { $pingable != 1 } {
-        error_critical "$tftpserver is not reachable !"
+        error_critical "E02105 $tftpserver is not reachable"
     }
 }
 
@@ -328,7 +317,7 @@ proc update_firmware { boardid } {
             # this expecting phrase that needs from BRCM5616x platform
             log_debug "TFTP is waiting for file"
         } timeout {
-            error_critical "Failed to start urescue"
+            error_critical "E02201 Failed to start urescue"
         }
     }
 
@@ -341,9 +330,7 @@ proc update_firmware { boardid } {
     if { $cmd_prefix != "" } {
         sleep 2
         set timeout 60
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } "$bootloader_prompt"
+        expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
         sleep 2
         set timeout 10
         send "$cmd_prefix uwrite -f \r"
@@ -351,33 +338,33 @@ proc update_firmware { boardid } {
     sleep 2
     set timeout 60
     expect timeout {
-        error_critical "Failed to download firmware !"
+        error_critical "E02202 Failed to download firmware"
     } "Firmware Version:"
 
     log_progress 65 "Firmware loaded"
 
     expect timeout {
-        error_critical "Download Image file verify failure"
+        error_critical "E02203 Download Image file verify failure"
     } "Image Signature Verfied, Success."
 
     log_debug "Download image verify pass."
 
     expect timeout {
-        error_critical "Failed to flash u-boot !"
+        error_critical "E02204 Failed to flash u-boot"
     } "Copying 'u-boot' partition. Please wait... :  done"
 
     log_debug "u-boot flashed"
 
     set timeout 600
     expect timeout {
-        error_critical "Failed to flash kernel0 !"
+        error_critical "E02204 Failed to flash kernel0"
     } "Copying to 'kernel0' partition. Please wait... :  done."
 
     log_progress 75 "Firmware flashed"
 
     set timeout 600
     expect timeout {
-        error_critical "Failed to flash kernel1 !"
+        error_critical "E02204 Failed to flash kernel1"
     } "Firmware update complete."
 
     log_progress 90 "Firmware flashed"
@@ -414,7 +401,7 @@ proc upload_sshkeys {} {
     send "tftpboot $dl_addr $rsa_key.$idx\r"
     set timeout 15
     expect timeout {
-        error_critical "TFTP failed on $rsa_key.$idx!"
+        error_critical "E02301 TFTP failed on $rsa_key.$idx!"
     } "Bytes transferred ="
     set timeout 5
     expect timeout {
@@ -424,7 +411,7 @@ proc upload_sshkeys {} {
     send "$cmd_prefix usetsshkey \${fileaddr} \${filesize}\r"
     set timeout 15
     expect timeout {
-        error_critical "setsshkey failed on $rsa_key.$idx!"
+        error_critical "E02302 setsshkey failed on $rsa_key.$idx!"
     } "Done."
     set timeout 5
     expect timeout {
@@ -434,7 +421,7 @@ proc upload_sshkeys {} {
     send "tftpboot $dl_addr $dss_key.$idx\r"
     set timeout 15
     expect timeout {
-        error_critical "TFTP failed on $dss_key.$idx!"
+        error_critical "E02303 TFTP failed on $dss_key.$idx!"
     } "Bytes transferred ="
     set timeout 5
     expect timeout {
@@ -444,7 +431,7 @@ proc upload_sshkeys {} {
     send "$cmd_prefix usetsshkey \${fileaddr} \${filesize}\r"
     set timeout 15
     expect timeout {
-        error_critical "setsshkey failed on $dss_key.$idx!"
+        error_critical "E02304 setsshkey failed on $dss_key.$idx!"
     } "Done."
     set timeout 5
     expect timeout {
@@ -487,14 +474,14 @@ proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
         log_debug "Client result $res"
         if { $res != 0 } {
             log_warn "Registration failure : $res\n"
-            sleep 5
+            sleep 10
             continue
         } else {
             return
         }
     }
 
-    error_critical "Registration failure : $res\n"
+    error_critical "E02402 Registration failure : $res\n"
 
 }
 
@@ -540,18 +527,18 @@ proc do_security {} {
     set timeout 120
     # login
     expect timeout {
-        error_critical "Failed to boot firmware !"
+        error_critical "E02501 Failed to boot firmware"
     } "Please press Enter to activate this console."
 
     send "\r"
 
     expect "login:" { send "$user\r" } \
-        timeout { error_critical "Login failed" }
+        timeout { error_critical "E02503 Login failed" }
 
     expect "Password:" { send "$passwd\r" } \
-        timeout { error_critical "Login failed" }
+        timeout { error_critical "E02503 Login failed" }
 
-    expect timeout { error_critical "Login failed" } "#"
+    expect timeout { error_critical "E02503 Linux Login failed" } "#"
 
     if { [ catch { exec rm -f /tftpboot/$eeprom_bin } msg ] } {
         puts "$::errorInfo"
@@ -577,47 +564,46 @@ proc do_security {} {
 
     set timeout 20
     send "\[ ! -f /tmp/$eeprom_bin \] || rm /tmp/$eeprom_bin\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_txt \] || rm /tmp/$eeprom_txt\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_signed \] || rm /tmp/$eeprom_signed\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_check \] || rm /tmp/$eeprom_check\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$eeprom_tgz \] || rm /tmp/$eeprom_tgz\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$e_c_gz \] || rm /tmp/$e_c_gz\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
     send "\[ ! -f /tmp/$e_s_gz \] || rm /tmp/$e_s_gz\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     cd /tftpboot
     send "cd /tmp\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "$helper -q -c product_class=bcmswitch -o"
     send " field=flash_eeprom,format=binary,"
     send "pathname=$eeprom_bin > $eeprom_txt"
     send "\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "tar zcf $eeprom_tgz $eeprom_bin $eeprom_txt\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     log_debug "Downloading files"
-
 
     sleep 1
     set timeout 200
     send "lsz -e -v -b $eeprom_tgz\r"
     sleep 1
     system rz -v -b -y < /dev/$dev > /dev/$dev
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     set file_size [file size  "/tftpboot/$eeprom_tgz"]
 
     if { $file_size == 0 } then { ; # check for file exist
-        error_critical "EEPROM (tgz) download failure"
+        error_critical "E02401 EEPROM (tgz) download failure"
     }
 
     if { [ catch { exec tar zxf $eeprom_tgz } msg ] } {
@@ -626,12 +612,12 @@ proc do_security {} {
 
     set file_size [file size  "/tftpboot/$eeprom_bin"]
     if { $file_size == 0 } then { ; # check for file exist
-        error_critical "EEPROM (bin) download failure"
+        error_critical "E02401 EEPROM (bin) download failure"
     }
 
     set file_size [file size  "/tftpboot/$eeprom_txt"]
     if { $file_size == 0 } then { ; # check for file exist
-        error_critical "EEPROM (txt) download failure"
+        error_critical "E02401 EEPROM (txt) download failure"
     }
 
     run_client $idx $eeprom_txt $eeprom_bin $eeprom_signed $passphrase $keydir
@@ -646,11 +632,11 @@ proc do_security {} {
     send "lrz -v -b \r"
     sleep 1
     system sz -e -v -b $e_s_gz > /dev/$dev < /dev/$dev
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     set timeout 20
     send "gunzip $e_s_gz\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     log_debug "File sent."
 
@@ -663,22 +649,22 @@ proc do_security {} {
         send "$helper -q -i "
         send "field=flash_eeprom,format=binary,pathname=$eeprom_signed\r"
     }
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "dd if=/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd"
     send " | sed 's~mtd~mtdblock~g'` of=/tmp/$eeprom_check\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     set timeout 20
     send "gzip $eeprom_check\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     sleep 1
     set timeout 200
     send "lsz -e -v -b $e_c_gz\r"
     sleep 1
     system rz -v -b -y < /dev/$dev > /dev/$dev
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     set file_size [file size  "/tftpboot/$e_c_gz"]
 
@@ -692,7 +678,7 @@ proc do_security {} {
 
     set file_size [file size  "/tftpboot/$eeprom_check"]
     if { $file_size == 0 } then { ; # check for file exist
-        error_critical "EEPROM (bin) download failure"
+        error_critical "E02401 EEPROM (bin) download failure"
     }
 
     if { [ catch { exec gunzip $e_s_gz } msg ] } {
@@ -701,17 +687,17 @@ proc do_security {} {
 
     set file_size [file size  "/tftpboot/$eeprom_signed"]
     if { $file_size == 0 } then { ; # check for file exist
-        error_critical "EEPROM (bin) download failure"
+        error_critical "E02401 EEPROM (bin) download failure"
     }
 
     send "reboot\r"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "exit\r"
 
     log_debug "Checking EEPROM..."
     if { [ catch { exec /usr/bin/cmp /tftpboot/$eeprom_signed /tftpboot/$eeprom_check } results ] } {
-        error_critical "EEPROM check failed"
+        error_critical "E02403 EEPROM check failed"
     }
 
     #log_debug $results
@@ -724,61 +710,69 @@ proc check_security {} {
     global user
     global passwd
     global qrcode
-
+    set max_loop 3
     set timeout 120
     # login
     expect timeout {
-        error_critical "Failed to boot firmware !"
+        error_critical "E02501 Failed to boot firmware"
     } "Please press Enter to activate this console."
 
     send "\r"
 
     expect "login:" { send "$user\r" } \
-        timeout { error_critical "Login failed" }
+        timeout { error_critical "E02503 Linux Login failed" }
 
     expect "Password:" { send "$passwd\r" } \
-        timeout { error_critical "Login failed" }
+        timeout { error_critical "E02503 Linux Login failed" }
 
-    expect timeout { error_critical "Login failed" } "#"
+    expect timeout { error_critical "E02503 Linux Login failed" } "#"
 
     sleep 60
 
     send "\r\r\r"
 
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
-    # for concurrent access issue on /proc/ubnthal/system.info
-    # sleep 3
-    send "grep -c flashSize /proc/ubnthal/system.info\r"
-    expect timeout {
-        error_critical "Unable to get flashSize!"
-    } -re "info.+(\\d+)\r"
+    for { set i 0 } { $i < $max_loop } { incr i } {
 
-    set signed [expr $expect_out(1,string) + 0]
-    expect timeout { error_critical "Command prompt not found" } "#"
-
-    log_debug "signed: $signed"
-    if {$signed ne 1} {
-        error_critical "Device Registration check failed!"
-    }
-
-    if {$qrcode ne ""} {
-        send "grep qrid /proc/ubnthal/system.info\r"
+        # for concurrent access issue on /proc/ubnthal/system.info
+        # sleep 3
+        send "grep -c flashSize /proc/ubnthal/system.info\r"
         expect timeout {
-            error_critical "Unable to get qrid!"
-        } -re "qrid=(.*)\r"
+            log_warn "Unable to get flashSize!"
+            continue
+        } -re "info.+(\\d+)\r"
 
-        set qrid $expect_out(1,string)
-        expect timeout { error_critical "Command prompt not found" } "#"
+        set signed [expr $expect_out(1,string) + 0]
+        expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
-        log_debug "qrid: $qrid"
-        if {$qrid ne $qrcode} {
-            error_critical "QR code doesn't match!"
+        log_debug "signed: $signed"
+        if {$signed ne 1} {
+            log_warn "E02612 Device Registration check failed"
+            continue
         }
 
+        if {$qrcode ne ""} {
+            send "grep qrid /proc/ubnthal/system.info\r"
+            expect timeout {
+                log_warn "Unable to get qrid!"
+                continue
+            } -re "qrid=(.*)\r"
+
+            set qrid $expect_out(1,string)
+            expect timeout { error_critical "E02502 Linux prompt not found" } "#"
+
+            log_debug "qrid: $qrid"
+            if {$qrid ne $qrcode} {
+                error_critical "E02613 QR code doesn't match"
+            } else {
+                log_progress 95 "Device Registration check OK..."
+                return
+            }
+        }
     }
 
-    log_progress 95 "Device Registration check OK..."
+    error_critical "E02601 Device Registration check failed"
 }
 
 proc erase_linux_config { boardid } {
@@ -789,12 +783,10 @@ proc erase_linux_config { boardid } {
     send "$cmd_prefix uclearcfg\r"
     set timeout 30
     expect timeout {
-        error_critical "Erase Linux configuration data failed !"
+        error_critical "E02608 Erase Linux configuration data failed !"
     } "Done."
     set timeout 5
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found !" } "$bootloader_prompt"
 }
 
 proc get_bootargs {boardid} {
@@ -829,9 +821,7 @@ proc turn_on_console { boardid } {
     send $bootargs
 
     set timeout 15
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 }
 
 proc check_macaddr { mac } {
@@ -841,7 +831,7 @@ proc check_macaddr { mac } {
     set timeout 20
     send "$cmd_prefix usetmac\r"
     expect timeout {
-        error_critical "Unable to get MAC !"
+        error_critical "E02610 Unable to get MAC"
     } -re "MAC0: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2}).*MAC1: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2})"
 
     set mac_str $expect_out(1,string)
@@ -853,7 +843,7 @@ proc check_macaddr { mac } {
 
     if { [string equal -nocase $mac0_write $mac0_read] != 1
          || [string equal -nocase $mac1_write $mac1_read] != 1} {
-        error_critical "MAC address doesn't match!"
+        error_critical "E02611 MAC address doesn't match"
     }
 
     set timeout 5
@@ -893,7 +883,7 @@ proc handle_uboot { } {
         "$bootloader_prompt" {
             # Do nothing
         } timeout {
-            error_critical "U-boot prompt not found !"
+            error_critical "E02102 U-boot prompt not found"
         }
     }
     set mtdparts $expect_out(buffer)
@@ -901,7 +891,7 @@ proc handle_uboot { } {
         set use_64mb_flash 1
     } elseif { [string first $flash_mtdparts_32M $mtdparts] != -1 } {
     } else {
-        error_critical "This mtdparts are not unsupported !"
+        error_critical "E02601 This mtdparts are not unsupported"
     }
 
     # set Board ID
@@ -909,28 +899,22 @@ proc handle_uboot { } {
     send "$cmd_prefix usetbid $boardid\r"
     set timeout 15
     expect timeout {
-        error_critical "usetbid set failed !"
+        error_critical "E02602 usetbid set failed"
     } "Done."
     set timeout 5
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     # set BOM Revision
     sleep 2
     send "$cmd_prefix usetbrev $bomrev\r"
     set timeout 15
     expect timeout {
-        error_critical "usetbrev set failed !"
+        error_critical "E02603 usetbrev set failed"
     } "Done."
     set timeout 5
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
     send "$cmd_prefix usetbrev\r"
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
     log_progress 10 "Board ID/Revision set"
 
     # erase uboot-env
@@ -938,7 +922,7 @@ proc handle_uboot { } {
     send "sf probe\r"
     set timeout 20
     expect timeout {
-        error_critical "Probe serial flash failed !"
+        error_critical "E02606 Probe serial flash failed"
     } "$bootloader_prompt"
 
     if { $use_64mb_flash == 1 } {
@@ -949,7 +933,7 @@ proc handle_uboot { } {
 
     set timeout 20
     expect timeout {
-        error_critical "Erase uboot-env failed !"
+        error_critical "E02607 Erase uboot-env failed"
     } "$bootloader_prompt"
 
     # erase linux configuration
@@ -970,16 +954,12 @@ proc handle_uboot { } {
     sleep 1
     send "printenv\r"
     set timeout 15
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     sleep 1
     send "saveenv\r"
     set timeout 15
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
     log_progress 20 "Environment Variables set"
 
     sleep 1
@@ -989,19 +969,19 @@ proc handle_uboot { } {
     sleep 1
     gen_sshkeys
     upload_sshkeys
-    log_progress 25 "ssh keys uploaded"
+    log_progress 25 "SSH keys uploaded"
 
     set timeout 20
     send "$cmd_prefix usetbid\r"
     expect timeout {
-        error_critical "Unable to get Board ID!"
+        error_critical "E02604 Unable to get Board ID"
     } -re "Board ID: (.{4})"
 
     set bid_str $expect_out(1,string)
     log_debug "bid_str: $bid_str"
 
     if { [string equal -nocase $bid_str $boardid] != 1 } {
-        error_critical "Board ID doesn't match!"
+        error_critical "E02604 Board ID doesn't match"
     }
     set timeout 5
     expect timeout {
@@ -1011,19 +991,17 @@ proc handle_uboot { } {
     set timeout 20
     send "$cmd_prefix usetbrev\r"
     expect timeout {
-        error_critical "Unable to get BOM Revision!"
+        error_critical "E02605 Unable to get BOM Revision"
     } -re "BOM Rev: (\\d+\\-\\d+)\r"
 
     set brev_str $expect_out(1,string)
     log_debug "brev_str: $brev_str"
 
     if { [string equal $brev_str $bomrev] != 1 } {
-        error_critical "BOM Revision doesn't match!"
+        error_critical "E02605 BOM Revision doesn't match"
     }
     set timeout 5
-    expect timeout {
-        error_critical "U-boot prompt not found !"
-    } "$bootloader_prompt"
+    expect timeout { error_critical "E02102 U-boot prompt not found" } "$bootloader_prompt"
 
     sleep 1
     check_macaddr $mac
@@ -1054,16 +1032,16 @@ proc handle_uboot { } {
 
     send "\r"
 
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "cat /proc/ubnthal/system.info\r"
 
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     send "lcm-ctrl -t dump\r"
 
     expect timeout { error_critical "Cannot found lcm version" } "version"
-    expect timeout { error_critical "Command prompt not found" } "#"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
     sleep 5
 
@@ -1109,7 +1087,7 @@ proc main_detector { } {
         } "counterfeit login:" {
             handle_login $user $passwd
         } timeout {
-            error_critical "Device not found!"
+            error_critical "E02101 Device not found!"
         }
     }
 }
