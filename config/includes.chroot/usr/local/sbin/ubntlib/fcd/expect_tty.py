@@ -17,7 +17,7 @@ class ExpttyProcess():
         self.proc.logfile_read = sys.stdout
         self.newline = newline
         # Using default logger shows message to stdout
-        if(logger_name == None):
+        if(logger_name is None):
             self.log = logging.getLogger()
             self.log.setLevel(logging.DEBUG)
             log_stream = logging.StreamHandler(sys.stdout)
@@ -84,7 +84,7 @@ class ExpttyProcess():
             self.proc.send(action + self.newline)
 
         index = self.proc.expect(ex, timeout)
-        if(index == (len(ex) - 2 )):
+        if(index == (len(ex) - 2)):
             print("[ERROR:EOF]: Expect \"" + str(exptxt) + "\"")
             exit(1)
         if(index == (len(ex) - 1)):
@@ -107,47 +107,3 @@ class ExpttyProcess():
             return index
         else:
             return 0
-
-    def expect2act(self, timeout, exptxt, action, rt_buf=None):
-        sys.stdout = mystdout = StringIO()
-        self.proc.logfile_read = sys.stdout
-
-        # expect last time command buffer
-        index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
-        if(index == 1):
-            self.log.error("[ERROR:EOF]: Expect \"" + exptxt + "\"")
-            return -1
-        if(index == 2):
-            self.log.error("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
-            return -1
-
-        sys.stdout = sys.__stdout__
-        self.log.debug(mystdout.getvalue())
-
-        # send action
-        self.proc.send(action + self.newline)
-
-        # re-init
-        sys.stdout = mystdout = StringIO()
-        self.proc.logfile_read = sys.stdout
-
-        # capture action output message, if you pass not None rt_buf
-        if(rt_buf != None):
-            # read action output
-            index = self.proc.expect([exptxt, pexpect.EOF, pexpect.TIMEOUT], timeout)
-            if(index == 1):
-                self.log.error("[ERROR:EOF]: Expect \"" + exptxt + "\"")
-                return -1
-            if(index == 2):
-                self.log.error("[ERROR:Timeout]: Expect \"" + exptxt + "\" more than " + str(timeout) + " seconds")
-                return -1
-
-            sys.stdout = sys.__stdout__
-            rt_buf.insert(0, mystdout.getvalue())
-            self.log.debug(rt_buf[0])
-
-            # only senf newline for getting hint
-            self.proc.send(self.newline)
-
-        sys.stdout = sys.__stdout__
-        return 0
