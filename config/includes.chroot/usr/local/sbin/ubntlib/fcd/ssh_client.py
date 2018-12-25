@@ -17,8 +17,8 @@ class SSHClient(object):
     def execmd(self, cmd):
         return self._exec_command(cmd=cmd)
 
-    def execmd_getmsg(self, cmd, stderr=False, all=False):
-        return self._exec_command(cmd=cmd, get_stdout=True, get_stderr=stderr, get_all=all)
+    def execmd_getmsg(self, cmd, stderr=False, get_all=False):
+        return self._exec_command(cmd=cmd, get_stdout=True, get_stderr=stderr, get_all=get_all)
 
     def _exec_command(self, cmd, get_stdout=False, get_stderr=False, get_all=False):
         try:
