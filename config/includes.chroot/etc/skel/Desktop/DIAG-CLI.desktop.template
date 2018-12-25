@@ -2,13 +2,13 @@
 [Desktop Entry]
 Version=1.0
 Encoding=UTF-8
-Name=DIAG-GUI
+Name=DIAG-CLI
 Type=Application
-Exec=sudo python3 /usr/local/sbin/DIAG/upydiag_ui.py -p=Amplifi
+Exec=sudo python3 /usr/local/sbin/DIAG/upydiag.py MODEL
 TryExec=
 X-GNOME-DocPath=
 Terminal=true
-Name[en_US]=DIAG-GUI
+Name[en_US]=DIAG-CLI
 GenericName[en_US]=
 Comment[en_US]=Utility for production of Ubiquiti units
 GenericName=

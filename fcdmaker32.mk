@@ -161,12 +161,12 @@ gitrepo: UPyFCD fcd-image
 fcd-image:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ "$(FCDIMG_VER)" != "" ]; then \
 			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(STAGEDIR)/$@; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ "$(FCDIMG_VER)" != "" ]; then \
 			cd $(STAGEDIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
 	fi
@@ -174,12 +174,12 @@ fcd-image:
 UPyFCD:
 	@if [ -d "$(STAGEDIR)/$@" ]; then \
 		cd $(STAGEDIR)/$@; git pull; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ "$(FCDIMG_VER)" != "" ]; then \
 			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(STAGEDIR)/$@; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ "$(FCDIMG_VER)" != "" ]; then \
 			cd $(STAGEDIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
 	fi
