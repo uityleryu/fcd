@@ -199,6 +199,7 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
         self.pexp.expect_action(30, "password:", "live")
         time.sleep(2)
 
@@ -308,6 +309,7 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
         self.pexp.expect_action(30, "password:", "live")
         time.sleep(1)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
@@ -388,6 +390,7 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
         self.pexp.expect_action(30, "password:", "live")
         time.sleep(2)
 
@@ -431,6 +434,7 @@ class AFIIPQ807XFactory(ScriptBase):
         sstrj = ' '.join(sstr)
         print("cmd: " + sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
         self.pexp.expect_action(30, "password:", "live")
         time.sleep(2)
 
