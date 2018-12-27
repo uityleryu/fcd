@@ -46,6 +46,10 @@ apt-get -y install gedit
 apt-get -y install dropbear
 apt-get -y install sshpass
 
+# terminator tools
+apt-get -y install tmux
+apt-get -y install terminator
+
 # mkdir /media/FCDUSB
 # usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
 # echo $usbdv >> /etc/fstab
