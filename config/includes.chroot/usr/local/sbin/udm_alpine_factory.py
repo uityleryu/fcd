@@ -191,6 +191,16 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, lnxpmt, sstrj)
 
+        log_debug("Copying the dropbearkey to /usr/bin ...")
+        sstr = [
+            "cp",
+            tmpdir + "dropbearkey_arm64",
+            "/usr/bin/dropbearkey"
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, lnxpmt, sstrj)
+
         log_debug("Starting to initialize the dropbear")
         sstr = [
             "mkdir",
@@ -466,7 +476,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
         msg(80, "Succeeding in downloading the upgrade tarf file ...")
         self.pexp.expect_action(10, lnxpmt, "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin")
-        self.pexp.expect_only(60, "Firmware version")
+        self.pexp.expect_only(200, "Firmware version")
         self.pexp.expect_only(60, "Writing recovery")
 
         self.pexp.expect_action(200, "login:", "root")

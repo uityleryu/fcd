@@ -20,17 +20,34 @@ FCD repository: https://drive.google.com/open?id=14IOj5Z_bl-u18Skrly_BwEUNeRxT-j
 
 * General use case
 
-Example:
+most used case:
+    To build a whole new FCD ISO
 
-    make PRD=UDM -f fcdmaker32.mk clean
-    make PRD=UDM -f fcdmaker32.mk gitrepo
-    make VER=[master] PRD=UDM -f fcdmaker32.mk UDM
+Example:
+    sudo make VER=[master] PRD=UDM -f fcdmaker32.mk UDM
+
+
+developing case:
+    To just modify the UPyFCD or fcd-img and update the FCD.
+
+    sudo make PRD=UDM -f fcdmaker32.mk clean
+    make PRD=UDM -f fcdmaker32.mk clean-repo
+    sudo make VER=[master] PRD=UDM -f fcdmaker32.mk UDM
 
     fcd-image or UPyFCD update
-
-    make VER=[master] PRD=UDM -f fcdmaker32.mk UDM-upddate
+    sudo make VER=[master] PRD=UDM -f fcdmaker32.mk UDM-upddate
 
 You can see more details in the following explainantion
+
+========================================================================================================
+
+* Alternative use case from Lucian
+
+1. Load FCD-BASE.iso on VM and boot.
+2. On Working PC, clone fcd/ftu ...
+3. Edit on Working PC
+4. rsync -avh include.chroot/usr/local/sbin/. user@192.168.1.19:/usr/local/sbin/
+5. Goto step 3
 
 
 ========================================================================================================

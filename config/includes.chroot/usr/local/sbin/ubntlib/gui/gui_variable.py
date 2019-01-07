@@ -38,13 +38,29 @@ class GCommon(object):
         "World",
         "USA/Canada",
         "Thailand",
-        "Israsel"
+        "Israsel",
+        "Japan"
     ]
     region_codes = [
         '0000',
         '002a',
         '82fc',
-        '8178'
+        '8178',
+        '8188'
+    ]
+    country_codes = [
+        '0',
+        '840',
+        '764',
+        '376',
+        '392'
+    ]
+    unifi_region_codes = [
+        '0000ffffffffffffffffffffffffffff',
+        '002affffffffffffffffffffffffffff',
+        '82fcffffffffffffffffffffffffffff',
+        '8178ffffffffffffffffffffffffffff',
+        '8188ffffffffffffffffffffffffffff'
     ]
     erasewifidata = [
         False,

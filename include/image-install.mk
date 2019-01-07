@@ -1,8 +1,8 @@
 
 define ProductImage
 
-$1: new-rootfs image-install-$1 packiso-$1
-$1-update: dev-tools-check dev-diag-load image-install-$1 packiso-$1
+$1: new-rootfs gitrepo image-install-$1 packiso-$1
+$1-update: dev-tools-check image-install-$1 packiso-$1
 
 image-install-$1:
 	@echo " ****************************************************************** "
@@ -22,6 +22,8 @@ image-install-$1:
 	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
 	if [ "${1}" = "AFI-AX" ]; then \
 		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
+	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMALL" ]; then \
+		sed -i s/MODEL/UniFiDream/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
 	fi
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
@@ -36,7 +38,7 @@ image-install-$1:
 	sh include/cp2tftp.sh $(IMAGE-$1)
 	sh include/tar2tftp.sh $(TOOLS)
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
-	cp -rf $(BUILD_DIR)/UPyFCD/DIAG $(NEWSQUASHFS)/usr/local/sbin/
+	cp -rf $(FTU_DIR) $(NEWSQUASHFS)/usr/local/sbin/
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
@@ -59,7 +61,5 @@ packiso-$1:
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$2.iso .
 	chmod 777 $(OUTDIR)/$2.iso
-
-
 
 endef

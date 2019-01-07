@@ -1,13 +1,21 @@
 # UDM
 IMAGE-UDM=images/ea11* \
-          images/ea13* \
-          images/ea15* \
           udm-fw/*
 
-DIAG_MODEL=u1dm
+IMAGE-UDMSE=images/ea13* \
+          udm-fw/*
 
-UPYFCD_VER=49250ead9440898ef66a569ee4ff042e69b9175e
-FCDIMG_VER=af4719c10ef69a3109dbe2d859bb94c9f5f05abc
+IMAGE-UDMPRO=images/ea15* \
+          udm-fw/*
+
+IMAGE-UDMALL+=$(IMAGE-UDM)
+IMAGE-UDMALL+=$(IMAGE-UDMSE)
+IMAGE-UDMALL+=$(IMAGE-UDMPRO)
+
+DIAG_MODEL=udm
+
+UPYFCD_VER=73e96fae471eec6d22d2660c97160094ec80996e
+FCDIMG_VER=0b07082f116a03de72116a1759322a7bb879a66e
 
 TOOLS=.tmux.conf \
       al324-ee \
@@ -27,3 +35,6 @@ TOOLS=.tmux.conf \
 
 
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
+$(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
+$(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
+$(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))
