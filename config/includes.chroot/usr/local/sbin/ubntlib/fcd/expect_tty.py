@@ -34,6 +34,18 @@ class ExpttyProcess():
         """
         return self.__expect_base(timeout=timeout, exptxt=exptxt, err_msg=err_msg)
 
+    def expect_cmd(self, timeout, exptxt, action, err_msg=None):
+        """Expect and send action cmd.
+            Will raise ExceptionPexpect if expect timeout
+            exit if expect come accross EOF
+            This API is used only when send command not just a space or Ctrl+C`
+        """
+        self.expect_action(timeout=timeout, exptxt=exptxt, action=action, err_msg=None)
+        if action.len > 20:
+            self.expect_only(10, exptxt=action[:20], err_msg=None)
+        else:
+            self.expect_only(10, exptxt=action, err_msg=None)
+
     def expect_action(self, timeout, exptxt, action, err_msg=None):
         """Expect and send action cmd.
             Will raise ExceptionPexpect if expect timeout

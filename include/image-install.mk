@@ -64,6 +64,4 @@ packiso-$1:
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$2.iso .
 	chmod 777 $(OUTDIR)/$2.iso
 
-
-
 endef

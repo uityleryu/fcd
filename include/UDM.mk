@@ -1,12 +1,20 @@
 # UDM
-IMAGE-UDM=images/ea11* \
-          udm-fw/*
+IMAGE-UDM-BASIC=udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
+                udm-fw/ubnt-upgrade-compat.tgz \
+                udm-fw/uImage-0.9.4-a9df305.r \
+                udm-fw/uImage-0.9.5.r
 
-IMAGE-UDMSE=images/ea13* \
-          udm-fw/*
+IMAGE-UDM+=$(IMAGE-UDM-BASIC)
+IMAGE-UDM+=images/ea11* \
+          udm-fw/UDM.alpinev2.v0.9.5.f18c4d1.190128.1425.bin \
 
-IMAGE-UDMPRO=images/ea15* \
-          udm-fw/*
+IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
+IMAGE-UDMSE+=images/ea13* \
+          udm-fw/UDM.alpinev2.v0.9.4+builder.836.a9df305.190115.1113.bin
+
+IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
+IMAGE-UDMPRO+=images/ea15* \
+          udm-fw/UDM.alpinev2.v0.9.4+builder.836.a9df305.190115.1113.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
@@ -25,8 +33,8 @@ IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 
 DIAG_MODEL=udm
 
-UPYFCD_VER=73e96fae471eec6d22d2660c97160094ec80996e
-FCDIMG_VER=3b32584c6aa5d01a99804655d80aebad66b680fc
+UPYFCD_VER=
+FCDIMG_VER=
 
 TOOLS-UDM=.tmux.conf \
       al324-ee \
@@ -35,6 +43,7 @@ TOOLS-UDM=.tmux.conf \
       dfu-util \
       spidev_test \
       dreammachine-se-lcm-fw.dfu \
+      dreammachine-pro-lcm-fw.dfu \
       ftu_system_udm.cfg \
       ftu-tool.sh \
       ftu-tool-common.sh \
@@ -42,7 +51,8 @@ TOOLS-UDM=.tmux.conf \
       dropbear_arm64 \
       dropbearkey_arm64 \
       sshd_config \
-      ubios-udapi-server.default
+      ubios-udapi-server.default \
+      rtl8370mb_rw
 
 TOOLS-UDMXG=.tmux.conf \
       xeon1521-ee \
@@ -62,6 +72,5 @@ $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
 $(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
 $(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
-$(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))
-
 $(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)))
+$(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))

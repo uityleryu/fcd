@@ -24,6 +24,13 @@ class SSHClient(object):
     def execmd_getmsg(self, cmd, stderr=False, get_all=False, timeout=10):
         return self._exec_command(cmd=cmd, get_stdout=True, get_stderr=stderr, get_all=get_all, timeout=timeout)
 
+    def execmd_expect(self, cmd, expectmsg, timeout=10):
+        msg = self.execmd_getmsg(cmd=cmd, timeout=timeout)
+        if expectmsg in msg:
+            return True
+        else:
+            return False
+
     def _exec_command(self, cmd, get_stdout=False, get_stderr=False, get_all=False, timeout=10):
         """exec command and get output/exit code
 

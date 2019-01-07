@@ -10,3 +10,9 @@ live-image-*.files
 live-image-*.hybrid.iso
 live-image-*.hybrid.iso.zsync
 live-image-*.packages
+fcd-image
+UPyFCD
+output
+*.pyc
+DIAG-CLI.desktop
+DIAG-GUI.desktop
