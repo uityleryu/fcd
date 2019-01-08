@@ -84,11 +84,11 @@ class ExpttyProcess():
             self.proc.send(action + self.newline)
 
         index = self.proc.expect(ex, timeout)
+        detail = str(err_msg) if err_msg is not None else ""
         if(index == (len(ex) - 2)):
             print("[ERROR:EOF]: Expect \"" + str(exptxt) + "\"")
-            exit(1)
+            raise pexpect.ExceptionPexpect(detail)
         if(index == (len(ex) - 1)):
-            detail = str(err_msg) if err_msg is not None else ""
             if get_output is True:
                 output = str(self.proc.buffer)
                 self.proc.expect([prompt, pexpect.EOF, pexpect.TIMEOUT], timeout)
