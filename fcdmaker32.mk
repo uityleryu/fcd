@@ -197,12 +197,12 @@ fcd-image:
 UPyFCD:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ $(UPYFCD_VER) != "" ]; then \
 			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
 	else \
 		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
-		if [ $(FCDIMG_VER) != "" ]; then \
+		if [ $(UPYFCD_VER) != "" ]; then \
 			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
 	fi
