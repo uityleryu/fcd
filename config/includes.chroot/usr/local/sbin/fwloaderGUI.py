@@ -630,11 +630,10 @@ class winFcdFactory(Gtk.Window):
         Gtk.main_quit()
 
     def envinitial(self):
-        '''
         if (self.network_status_set() is False):
             msgerrror(self, "Network configure faile. Exiting...")
             return False
-        '''
+
         if (self.find_usb_storage() is False):
             msgerrror(self, "No USB storage found. Exiting...")
             return False
@@ -649,16 +648,41 @@ class winFcdFactory(Gtk.Window):
 
         return True
 
-    def network_status_set(self):
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh"
-        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        output.wait()
-        [stdout, stderr] = output.communicate()
-        if (output.returncode == 1):
-            print("returncode: " + str(output.returncode))
+    def net_setting_inspect(self, fd, cond, proc):
+        if (cond == GLib.IO_HUP):
+            proc.poll()
+            if (proc.returncode != 0):
+                self.log.info("In network_status_set(), returncode: " + str(proc.returncode))
+                self.dialog.response(Gtk.ResponseType.NO)
+                return False
+
+            self.dialog.response(Gtk.ResponseType.YES)
+
             return False
 
-        return True
+    def network_status_set(self):
+        self.dialog = Gtk.MessageDialog(self, 0,
+                                        Gtk.MessageType.INFO,
+                                        Gtk.ButtonsType.CANCEL,
+                                        "Initializing environment, please wait.")
+        self.dialog.format_secondary_text("Press cancel button to stop setting and close program")
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh"
+        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+
+        GObject.io_add_watch(output.stdout,
+                             GLib.IO_HUP,
+                             self.net_setting_inspect,
+                             output)
+
+        resp = self.dialog.run()
+        self.dialog.destroy()
+        if resp == Gtk.ResponseType.CANCEL:
+            output.kill()
+            exit(0)
+        elif resp == Gtk.ResponseType.NO or output.returncode != 0:
+            return False
+        else:
+            return True
 
     def find_usb_storage(self):
         cmd = "ls -ls /dev/disk/by-id | grep usb-"
