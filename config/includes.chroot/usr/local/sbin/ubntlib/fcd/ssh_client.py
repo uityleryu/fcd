@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import paramiko
 from scp import SCPClient
+from datetime import datetime, timedelta
 
 
 class SSHClient(object):
@@ -14,18 +15,31 @@ class SSHClient(object):
             self.pkey = paramiko.RSAKey.from_private_key_file(pkey_path)
             self.client.connect(hostname=host, username=username, port=port, pkey=self.pkey, timeout=timeout)
 
-    def execmd(self, cmd):
-        return self._exec_command(cmd=cmd)
+    def execmd(self, cmd, timeout=10):
+        return self._exec_command(cmd=cmd, timeout=timeout)
 
-    def execmd_getmsg(self, cmd, stderr=False, get_all=False):
-        return self._exec_command(cmd=cmd, get_stdout=True, get_stderr=stderr, get_all=get_all)
+    def execmd_getmsg(self, cmd, stderr=False, get_all=False, timeout=10):
+        return self._exec_command(cmd=cmd, get_stdout=True, get_stderr=stderr, get_all=get_all, timeout=timeout)
 
-    def _exec_command(self, cmd, get_stdout=False, get_stderr=False, get_all=False):
+    def _exec_command(self, cmd, get_stdout=False, get_stderr=False, get_all=False, timeout=10):
+        """exec command and get output/exit code
+
+        Arguments:
+            cmd {[str]} -- [cmd]
+
+        Keyword Arguments:
+            get_stdout {bool}
+            get_stderr {bool}
+            get_all {bool} -- get both stdin, stdout, stderr
+
+        Returns:
+            stdout [str] or exit code or all std related stuffes
+        """
         try:
             stdin, stdout, stderror = self.client.exec_command(cmd)
         except Exception as e:
             print(str(e))
-            return False
+            return -1
         if get_stderr is True:
             return stdout.read(), stderror.read()
         elif get_all is True:
@@ -33,7 +47,12 @@ class SSHClient(object):
         elif get_stdout is True:
             return stdout.read()
         else:
-            return True
+            polling_time = datetime.now() + timedelta(seconds=timeout)
+            while datetime.now() < polling_time:
+                if stdout.channel.exit_status_ready() is True:  # in case the command wont end
+                    return stdout.channel.recv_exit_status()
+            else:
+                return True
 
     def put_file(self, local, remote):
         scp_obj = SCPClient(self.client.get_transport())
