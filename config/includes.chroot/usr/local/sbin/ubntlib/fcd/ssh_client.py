@@ -52,7 +52,7 @@ class SSHClient(object):
                 if stdout.channel.exit_status_ready() is True:  # in case the command wont end
                     return stdout.channel.recv_exit_status()
             else:
-                return True
+                return 0
 
     def put_file(self, local, remote):
         scp_obj = SCPClient(self.client.get_transport())
