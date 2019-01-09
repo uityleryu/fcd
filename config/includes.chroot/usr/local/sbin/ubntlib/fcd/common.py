@@ -113,3 +113,20 @@ class Common(object):
         stdoutd = stdout.decode()
         print(stdoutd)
         return [stdout, output.returncode]
+
+    @staticmethod
+    def get_zeroconfig_ip(mac):
+        mac.replace(":", "")
+
+        b1 = str(int(mac[8:10], 16))
+        b2 = str(int(mac[10:12], 16))
+
+        if b2 == 0:
+            b2 = 128
+        elif b2 == 255:
+            b2 = 127
+        elif b2 == 19:
+            b2 = 18
+
+        print("zeroip: 169.254." + b1 + "." + b2)
+        return "169.254." + b1 + "." + b2
