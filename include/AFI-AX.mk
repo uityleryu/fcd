@@ -20,9 +20,10 @@ TOOLS=.tmux.conf \
       ipq807x-aarch64-ee \
       sshd_config \
       stop_daemons.sh \
-      DUT_wireless \
+      DUT_wireless_radio0 \
+      DUT_wireless_radio1 \
+      DUT_wireless_radio2 \
       golden_ax_dev.sh \
-      Golden_wireless \
       as.txt
 
 $(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
