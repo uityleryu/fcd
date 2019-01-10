@@ -41,11 +41,11 @@ class SSHClient(object):
             print(str(e))
             return -1
         if get_stderr is True:
-            return stdout.read(), stderror.read()
+            return stdout.read().decode(), stderror.read().decode()
         elif get_all is True:
-            return stdin, stdout.read(), stderror.read()
+            return stdin, stdout.read().decode(), stderror.read().decode()
         elif get_stdout is True:
-            return stdout.read()
+            return stdout.read().decode()
         else:
             polling_time = datetime.now() + timedelta(seconds=timeout)
             while datetime.now() < polling_time:
