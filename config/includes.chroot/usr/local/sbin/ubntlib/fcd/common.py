@@ -114,8 +114,7 @@ class Common(object):
         print(stdoutd)
         return [stdout, output.returncode]
 
-    @staticmethod
-    def get_zeroconfig_ip(mac):
+    def get_zeroconfig_ip(self, mac):
         mac.replace(":", "")
         zeroip = "169.254."
         b1 = str(int(mac[8:10], 16))
