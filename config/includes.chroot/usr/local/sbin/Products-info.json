@@ -43,6 +43,17 @@
       "FILE" : "us_mt7621_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "True"
+    },
+
+    "UDM-XG":{
+      "INDEX" : 4,
+      "NAME" : "UDM-XG",
+      "BOARDID" : "ea17",
+      "BOMREV" : "113-02719",
+      "DESC" : "UniFi One Dream Machine XG",
+      "FILE" : "udm_xeon1521_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     }
   },
 

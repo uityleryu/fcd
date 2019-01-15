@@ -22,7 +22,7 @@ image-install-$1:
 	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
 	if [ "${1}" = "AFI-AX" ]; then \
 		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
-	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMALL" ]; then \
+	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMXG" ] || [ "${1}" = "UDMALL" ]; then \
 		sed -i s/MODEL/UniFiDream/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
 	elif [ "${1}" = "USW-FLEX" ]; then \
 		sed -i s/MODEL/Unifi-Switch/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
@@ -38,7 +38,7 @@ image-install-$1:
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	sh include/cp2tftp.sh $(IMAGE-$1)
-	sh include/tar2tftp.sh $(TOOLS)
+	sh include/tar2tftp.sh $(TOOLS-$1)
 	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
 	cp -rf $(FTU_DIR) $(NEWSQUASHFS)/usr/local/sbin/
 
@@ -63,5 +63,7 @@ packiso-$1:
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$2.iso .
 	chmod 777 $(OUTDIR)/$2.iso
+
+
 
 endef

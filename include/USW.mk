@@ -22,8 +22,12 @@ DIAG_MODEL=us_flex
 
 UPYFCD_VER=f943396b29f10cc120545682245111bd6e1fbd80
 
-TOOLS=.tmux.conf \
+TOOLS-USW=.tmux.conf \
       sshd_config
+
+TOOLS-USW-6XG=$(TOOLS-USW)
+TOOLS-USW-24=$(TOOLS-USW)
+TOOLS-USW-FLEX=$(TOOLS-USW)
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))

@@ -13,7 +13,7 @@ DIAG_MODEL=afi_ax_r
 UPYFCD_VER=4416bf52c96e2ba0977e4a9858ac3aab4f9a53eb
 FCDIMG_VER=
 
-TOOLS=.tmux.conf \
+TOOLS-AFI-AX=.tmux.conf \
       ax_gen_eeprom.py \
       evtest \
       helper_IPQ807x_release \
@@ -25,6 +25,9 @@ TOOLS=.tmux.conf \
       DUT_wireless_radio2 \
       golden_ax_dev.sh \
       as.txt
+
+TOOLS-AFI-AX-R=$(TOOLS-AFI-AX)
+TOOLS-AFI-AX-P=$(TOOLS-AFI-AX)
 
 $(eval $(call ProductImage,AFI-AX,FCD-AFI-AX-$(VER)))
 $(eval $(call ProductImage,AFI-AX-R,FCD-AFI-AX-R-$(VER)))
