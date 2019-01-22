@@ -101,7 +101,6 @@ class fwloader():
         if self.loadcnt != 3:
             msg(str(10+progval_base), "Connecting via ssh to devices for the {} time".format(self.loadcnt))
             self.sshlogin(prompt)
-            self.ckburninflag(prompt)
 
             msg(str(20+progval_base), "Transferring fw image for the {} time".format(self.loadcnt))
             self.xsferfile(prompt)

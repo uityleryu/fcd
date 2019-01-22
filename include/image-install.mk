@@ -24,6 +24,8 @@ image-install-$1:
 		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
 	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMALL" ]; then \
 		sed -i s/MODEL/UniFiDream/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
+	elif [ "${1}" = "USW-FLEX" ]; then \
+		sed -i s/MODEL/Unifi-Switch/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
 	fi
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
