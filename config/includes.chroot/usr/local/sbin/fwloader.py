@@ -61,7 +61,7 @@ class fwloader():
             md5sum = md5sum.decode('utf-8')
             print("md5sum of FW img = {}".format(md5sum))
 
-        # transfer fw img vi tftp
+        # transfer fw img using tftp
         cmd = ["tftp",
                "-g",
                "-r",
@@ -72,7 +72,7 @@ class fwloader():
         self.pexp.expect_action(10, prompt, "cd /tmp")
         self.pexp.expect_action(10, prompt, cmd)
 
-        self.pexp.expect_action(10, prompt, "")
+        self.pexp.expect_action(60, prompt, "")
         # check fw md5sum in device
         ret = self.pexp.expect_get_output("md5sum " + self.boardid+".bin|awk '{printf(\"%s\\n\",$1)}'", prompt)
         if md5sum in ret:
