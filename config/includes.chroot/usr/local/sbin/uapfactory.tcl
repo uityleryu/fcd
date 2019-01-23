@@ -647,11 +647,13 @@ proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
 proc check_unifiOS_network_ready { boardid } {
     global tftpserver
     global INSTANTLTE_ID
+    global UAPGEN2PRO_ID
 
     set max_loop 5
     set pingable 0
 
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
+        || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
         set x 0
         while { $x < 25 } {
             send "ifconfig\r"
@@ -809,6 +811,63 @@ proc check_ICCID { boardid } {
         log_debug "Completed to check CCID"
     } else {
         log_debug "Skip CCID checking"
+    }
+}
+
+proc fwupgrade { boardid } {
+    global UAPGEN2PRO_ID
+    global tftpserver
+    global user
+    global passwd
+
+    if {[string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
+        set timeout 180
+        send "cd /tmp\r"
+        send "tftp -g -r $boardid-formal.bin -l /tmp/$boardid-formal.bin $tftpserver\r"
+        expect timeout {
+             error_critical "FW loading failed!!"
+        } "#"
+        send "fwupdate.real -m /tmp/$boardid-formal.bin\r"
+        expect timeout {
+             error_critical "FW upgrading failed!!"
+        } "Done"
+
+        stop_uboot
+        turn_on_console $boardid
+
+        sleep 1
+        send "boot\r"
+
+        check_booting $boardid
+        # login
+        expect timeout {
+            error_critical "Failed to boot firmware !"
+        } "Please press Enter to activate this console."
+
+        sleep 1
+        send "\r"
+
+        set timeout 30
+        expect "login:" { send "$user\r" } \
+            timeout { error_critical "Login failed" }
+
+        expect "Password:" { send "$passwd\r" } \
+            timeout { error_critical "Login failed" }
+
+        expect timeout {
+            error_critical "Login failed"
+        } "#"
+        set timeout 20
+        send "dmesg -n 1\r"
+        expect timeout {
+            error_critical "Command promt not found"
+        } "#"
+        sleep 3
+
+        send "cat /proc/ubnthal/system.info\r"
+        expect timeout {
+            error_critical "Check the board ID"
+        } "systemid=$boardid"
     }
 }
 
@@ -1237,8 +1296,8 @@ proc handle_uboot { {wait_prompt 0} } {
 
     log_progress 5 "Got INTO U-boot uappext $uappext"
 
-    sleep 1 
-    send "\r" 
+    sleep 1
+    send "\r"
     set timeout 30
     expect timeout {
         error_critical "U-boot prompt not found !"
@@ -1470,6 +1529,7 @@ proc handle_uboot { {wait_prompt 0} } {
     sleep 1
     send "boot \r"
     check_security $boardid
+    fwupgrade $boardid
     turn_on_burnin_mode $boardid
     check_LTE_ver $boardid
 
