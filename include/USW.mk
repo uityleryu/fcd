@@ -20,12 +20,15 @@ IMAGE-USW-FLEX= \
 IMAGE-ULS-RPS= \
     images/ed11* \
     usw-fw/unifiswitch-ulsrps-* \
-    usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin 
+    usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin
+
+IMAGE-USW-LITE=
 
 IMAGE-USW+=$(IMAGE-USW-24)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
+IMAGE-USW+=$(IMAGE-USW-LITE)
 
 DIAG_MODEL=us_flex
 DIAG_UI_MODEL=Unifi-Switch
@@ -38,6 +41,11 @@ TOOLS-CONFIG= common/* common/.
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 
+TOOLS-USW-LITE+=$(TOOLS-CONFIG)
+TOOLS-USW-LITE+= \
+    helper_rtl838x \
+    rtl838x-ee
+
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-24=$(TOOLS-USW)
 TOOLS-USW-FLEX=$(TOOLS-USW)
@@ -48,3 +56,4 @@ $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
 $(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)))
+$(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)))

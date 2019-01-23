@@ -69,6 +69,7 @@
       "T1FILE" : "",
       "QRCHECK" : "True"
     },
+
     "US-24-PRO":{
       "INDEX" : 1,
       "NAME" : "US-24-PRO",
@@ -79,6 +80,7 @@
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
     },
+
       "US-48-PRO":{
       "INDEX" : 2,
       "NAME" : "US-48-PRO",
@@ -89,6 +91,7 @@
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
     },
+
     "US-6XG-150":{
       "INDEX" : 3,
       "NAME" : "US-6XG-150",
@@ -99,6 +102,7 @@
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
     },
+
     "ULS-RPS":{
       "INDEX" : 4,
       "NAME" : "ULS-RPS",
@@ -106,6 +110,28 @@
       "BOMREV" : "113-02781",
       "DESC" : "UniFi Life Saver RPS",
       "FILE" : "us_mt7621_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
+    },
+
+    "USW-LITE-16":{
+      "INDEX" : 4,
+      "NAME" : "USW-LITE-16",
+      "BOARDID" : "ed20",
+      "BOMREV" : "113-02848",
+      "DESC" : "UBNT UniFiSwitch LITE",
+      "FILE" : "us_rtl838x_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
+    },
+
+    "USW-LITE-24":{
+      "INDEX" : 4,
+      "NAME" : "USW-LITE-24",
+      "BOARDID" : "ed21",
+      "BOMREV" : "113-02831",
+      "DESC" : "UBNT UniFiSwitch LITE",
+      "FILE" : "us_rtl838x_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "True"
     }
