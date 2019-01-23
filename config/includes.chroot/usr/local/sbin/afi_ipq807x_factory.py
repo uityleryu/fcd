@@ -200,7 +200,7 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
+        self.pexp.expect_action(10, lnxpmt[self.board_id], sstrj)
 
         log_debug("Change file permission - " + helperexe + " ...")
         sstr = ["chmod 777", tmpdir + helperexe]
