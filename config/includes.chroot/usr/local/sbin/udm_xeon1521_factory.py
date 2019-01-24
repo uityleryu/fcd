@@ -13,9 +13,9 @@ import filecmp
 # linux console prompt
 lnxpmt = "# $"
 
-class UDMXEONFactoryGeneral(ScriptBase):
+class UDMXEONFactory(ScriptBase):
     def __init__(self):
-        super(UDMXEONFactoryGeneral, self).__init__()
+        super(UDMXEONFactory, self).__init__()
 
     def run(self):
         """
@@ -421,12 +421,8 @@ class UDMXEONFactoryGeneral(ScriptBase):
 
 
 def main():
-    if len(sys.argv) < 10:  # TODO - hardcode
-        msg(no="", out=str(sys.argv))
-        error_critical(msg="Arguments are not enough")
-    else:
-        udm_factory_general = UDMXEONFactoryGeneral()
-        udm_factory_general.run()
+    udm_factory = UDMXEONFactory()
+    udm_factory.run()
 
 if __name__ == "__main__":
     main()
