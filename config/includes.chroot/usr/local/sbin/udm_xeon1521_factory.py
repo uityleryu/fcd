@@ -25,8 +25,10 @@ class UDMXEONFactoryGeneral(ScriptBase):
         tftpdir = self.tftpdir + "/"
         toolsdir = "tools/"
         bomrev = "113-" + self.bom_rev
+        tools_pack = "tools.tar"
         eepmexe = "xeon1521-ee"
-        helperexe = "helper_xeon1521_release"
+        helperexe = "helper_XEON1521_release"
+        eeupdate = "eeupdate64e"
         mtdpart = "/dev/sda3"
 
         # switch chip
@@ -96,8 +98,8 @@ class UDMXEONFactoryGeneral(ScriptBase):
         sstr = [
             "tftp",
             "-g",
-            "-r " + toolsdir + "tools.tar.gz",
-            "-l " + tmpdir + "tools.tar.gz",
+            "-r " + toolsdir + tools_pack,
+            "-l " + tmpdir + tools_pack,
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
@@ -110,25 +112,26 @@ class UDMXEONFactoryGeneral(ScriptBase):
         sstr = [
             "tar",
             "-xvzf",
-            tmpdir + "tools.tar.gz",
+            tmpdir + tools_pack,
             "-C " + tmpdir
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, lnxpmt, sstrj)
         self.pexp.expect_action(10, lnxpmt, "")
 
-        log_debug("Change file permission - " + helperexe + " " + eepmexe + " ...")
+        log_debug("Change file permission - " + helperexe + " " + eepmexe + " " + eeupdate + " ...")
         sstr = [
             "chmod 777",
             tmpdir + helperexe,
-            tmpdir + eepmexe
+            tmpdir + eepmexe,
+            tmpdir + eeupdate
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, lnxpmt, sstrj)
         self.pexp.expect_action(10, lnxpmt, "")
 
         log_debug("Copy missing library ...")
-        cmd = "cp /tmp/lib* /lib/"
+        cmd = "cp /tmp/lib/* /lib/"
         self.pexp.expect_action(10, lnxpmt, cmd)
         self.pexp.expect_action(10, lnxpmt, "")
 
@@ -343,6 +346,23 @@ class UDMXEONFactoryGeneral(ScriptBase):
 
         msg(50, "Finish doing signed file and EEPROM checking ...")
 
+        log_debug("Write Intel 82599 MAC address ...")
+        base_mac = self.mac
+        mac_1 = base_mac[0:6]+str(hex(int(base_mac[6:12],16)+1))[2:8].upper()
+        mac_2 = base_mac[0:6]+str(hex(int(base_mac[6:12],16)+2))[2:8].upper()
+        mac_3 = base_mac[0:6]+str(hex(int(base_mac[6:12],16)+3))[2:8].upper()
+
+        self.pexp.expect_action(10, lnxpmt, tmpdir + eeupdate + " /NIC=1 /MAC=" + base_mac)
+        self.pexp.expect_action(10, lnxpmt, "")
+        self.pexp.expect_action(10, lnxpmt, tmpdir + eeupdate + " /NIC=2 /MAC=" + mac_1)
+        self.pexp.expect_action(10, lnxpmt, "")
+        self.pexp.expect_action(10, lnxpmt, tmpdir + eeupdate + " /NIC=3 /MAC=" + mac_2)
+        self.pexp.expect_action(10, lnxpmt, "")
+        self.pexp.expect_action(10, lnxpmt, tmpdir + eeupdate + " /NIC=4 /MAC=" + mac_3)
+        self.pexp.expect_action(10, lnxpmt, "")
+
+        msg(60, "Finish write Intel 82599 MAC ...")
+
         if False:
             sstr = [
                 "tftp",
@@ -379,14 +399,20 @@ class UDMXEONFactoryGeneral(ScriptBase):
 
         msg(90, "Checking final status ...")
 
-        self.pexp.expect_action(10, lnxpmt, "dmesg -n 1")
+        self.pexp.expect_action(10, lnxpmt, "dmesg")
         self.pexp.expect_action(10, lnxpmt, "")
 
-        self.pexp.expect_action(10, lnxpmt, "info")
-        self.pexp.expect_only(10, infover[self.board_id])
+        if False:
+            self.pexp.expect_action(10, lnxpmt, "info")
+            self.pexp.expect_only(10, infover[self.board_id])
 
-        self.pexp.expect_action(10, lnxpmt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_action(10, "systemid=" + self.board_id, "")
+            self.pexp.expect_action(10, lnxpmt, "cat /proc/ubnthal/system.info")
+            self.pexp.expect_action(10, "systemid=" + self.board_id, "")
+            self.pexp.expect_action(10, lnxpmt, "")
+
+        self.pexp.expect_action(10, lnxpmt, "hexdump -C -s 0x0 -n 100 /dev/sda3")
+        self.pexp.expect_action(10, lnxpmt, "")
+        self.pexp.expect_action(10, lnxpmt, "hexdump -C -s 0xa000 -n 100 /dev/sda3")
         self.pexp.expect_action(10, lnxpmt, "")
 
         msg(100, "Completing firmware upgrading ...")

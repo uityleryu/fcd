@@ -20,7 +20,7 @@ IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 DIAG_MODEL=udm
 
 UPYFCD_VER=73e96fae471eec6d22d2660c97160094ec80996e
-FCDIMG_VER=0b07082f116a03de72116a1759322a7bb879a66e
+FCDIMG_VER=43c32d6d03b1605587eb42211868d56ed49a160a
 
 TOOLS-UDM=.tmux.conf \
       al324-ee \
@@ -40,7 +40,9 @@ TOOLS-UDM=.tmux.conf \
 
 TOOLS-UDMXG=.tmux.conf \
       xeon1521-ee \
-      helper_XEON1521_release
+      helper_XEON1521_release \
+      eeupdate64e \
+      lib/
 
 TOOLS-UDMALL+=$(TOOLS-UDM)
 #TOOLS-UDMALL+=$(TOOLS-UDMXG)
