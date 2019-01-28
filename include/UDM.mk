@@ -53,7 +53,9 @@ TOOLS-UDMXG=.tmux.conf \
 TOOLS-UDMALL+=$(TOOLS-UDM)
 #TOOLS-UDMALL+=$(TOOLS-UDMXG)
 
-TOOLS-UDMB=.tmux.conf
+TOOLS-UDMB=.tmux.conf \
+           mt7621-ee \
+           helper_UNIFI_MT7621_release
 
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
