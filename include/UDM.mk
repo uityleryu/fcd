@@ -12,6 +12,12 @@ IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
 #          udm-fw/*
 
+IMAGE-UDMB=images/ec25* \
+           udm-fw/udm-b-* \
+           udm-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+           udm-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+           udm-fw/BZ.mt7621.*
+
 IMAGE-UDMALL+=$(IMAGE-UDM)
 IMAGE-UDMALL+=$(IMAGE-UDMSE)
 IMAGE-UDMALL+=$(IMAGE-UDMPRO)
@@ -47,8 +53,12 @@ TOOLS-UDMXG=.tmux.conf \
 TOOLS-UDMALL+=$(TOOLS-UDM)
 #TOOLS-UDMALL+=$(TOOLS-UDMXG)
 
+TOOLS-UDMB=.tmux.conf
+
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
 $(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
 $(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
 $(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))
+
+$(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)))
