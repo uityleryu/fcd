@@ -42,7 +42,7 @@ class USFLEXFactory(ScriptBase):
 
     def SetBootNet(self):
         # self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr "+prod_dev_tmp_mac)
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.var.us.ip)
+        self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.bootloader_prompt, "set serverip " + self.tftp_server)
 
     def CheckBootNet(self, MaxCnt):
@@ -79,7 +79,7 @@ class USFLEXFactory(ScriptBase):
             cmd = ' '.join(cmd)
 
             ret = self.pexp.expect_get_output(cmd, self.bootloader_prompt)
-            if rtbuf[1] == checkrst:
+            if checkrst in ret:
                 log_debug('Radio was calibrated')
             else:
                 error_critical("Radio was NOT calibrated, status result is {}".format(rtbuf[1]))
@@ -107,9 +107,9 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_only(30, "DEBUG: SBD Magic: 55424e54 \(OK\)")
         self.pexp.expect_only(30, "DEBUG: SBD CRC:")
         self.pexp.expect_only(30, "\(OK, expect:")
-        self.pexp.expect_only(30, "DEBUG: SBD Length: 100")
-        self.pexp.expect_only(30, "DEBUG: SBD Format: 0x0002")
-        self.pexp.expect_only(30, "DEBUG: SBD Version: 0x0001")
+        self.pexp.expect_only(30, "DEBUG: SBD Length:")
+        self.pexp.expect_only(30, "DEBUG: SBD Format:")
+        self.pexp.expect_only(30, "DEBUG: SBD Version:")
         self.pexp.expect_only(30, "DEBUG: SBD system ID: 0777:"+self.board_id)
         self.pexp.expect_only(30, "DEBUG: SBD HW revision: "+"113-"+self.bom_rev)
         self.pexp.expect_only(30, "DEBUG: SBD HW Address Base: "+self.mac.lower())
@@ -131,16 +131,11 @@ class USFLEXFactory(ScriptBase):
         """
         Main procedure of factory
         """
-
-        eeprom_bin = "e.b."+self.row_id
-        eeprom_txt = "e.t."+self.row_id
-        eeprom_tgz = "e."+self.row_id+".tgz"
-        eeprom_signed = "e.s."+self.row_id
-        eeprom_check = "e.c."+self.row_id
         mtdpart = "/dev/mtdblock3"
+        reg_helper = "helper_UNIFI_MT7621_release"
         tmpdir = "/tmp/"
 
-        log_debug(msg="qrcode_hex=" + self.var.us.qrcode_hex)
+        log_debug(msg="qrcode_hex=" + self.qrhex)
         cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
         [sto, _] = self.fcd.common.xcmd(cmd)
         if (int(sto.decode()) > 0):
@@ -272,37 +267,37 @@ class USFLEXFactory(ScriptBase):
 
         msg(30, 'Checking network in manufacturing kernel...')
         self.pexp.expect_action(30, self.linux_prompt, "[ $(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up")
-        self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.var.us.ip)
+        self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.dutip)
         self.pexp.expect_action(30, self.linux_prompt, "ping -c 1 "+self.tftp_server)
         self.pexp.expect_action(30, self.linux_prompt, "1 packets received")
 
         msg(32, 'Running registration helper...')
         self.pexp.expect_action(30, self.linux_prompt, "cd "+tmpdir)
-        sstr = [self.var.us.get_helper(self.board_id),
+        sstr = [reg_helper,
                 "-c product_class=basic",
-                "-o field=flash_eeprom,format=binary,pathname="+eeprom_bin,
+                "-o field=flash_eeprom,format=binary,pathname="+self.eebin,
                 ">",
-                eeprom_txt]
+                self.eetxt]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
 
         #msg(34, 'Uploading registration helper out files...')
-        os.system("rm -f " + self.tftpdir+"/"+eeprom_tgz)
-        os.system("touch " + self.tftpdir+"/"+eeprom_tgz)
-        os.system("chmod 777 " + self.tftpdir+"/"+eeprom_tgz)
+        os.system("rm -f " + self.tftpdir+"/"+self.eetgz)
+        os.system("touch " + self.tftpdir+"/"+self.eetgz)
+        os.system("chmod 777 " + self.tftpdir+"/"+self.eetgz)
   
         sstr = ["tar",
                 "cf",
-                eeprom_tgz,
-                eeprom_bin,
-                eeprom_txt]
+                self.eetgz,
+                self.eebin,
+                self.eetxt]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
 
         sstr = ["tftp",
                 "-p",
                 "-l",
-                eeprom_tgz,
+                self.eetgz,
                 self.tftp_server]
         sstrj = ' '.join(sstr)
         msg(34, 'Uploading registration helper out files...')
@@ -310,28 +305,28 @@ class USFLEXFactory(ScriptBase):
 
         #time.sleep(2)
         self.pexp.expect_action(30, self.linux_prompt, "")
-        cmd = "tar xvf "+self.tftpdir+"/"+eeprom_tgz+" -C " + self.tftpdir
+        cmd = "tar xvf "+self.tftpdir+"/"+self.eetgz+" -C " + self.tftpdir
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if (int(rtc) > 0):
-            error_critical("Decompressing "+eeprom_tgz+" file failed!!")
+            error_critical("Decompressing "+self.eetgz+" file failed!!")
         else:
-            log_debug("Decompressing "+eeprom_tgz+" files successfully")
+            log_debug("Decompressing "+self.eetgz+" files successfully")
 
         msg(36, 'Starting to do registration...')
         log_debug("Starting to do registration ...")
 
-        eeprom_txt_1 = self.tftpdir+"/"+eeprom_txt+"-1"
+        self.eetxt_1 = self.tftpdir+"/"+self.eetxt+"-1"
         cmd = ["grep field=",
-               self.tftpdir+"/"+eeprom_txt,
+               self.tftpdir+"/"+self.eetxt,
                "|",
                "grep -v flash_eeprom",
                "|",
                'while read line; do echo -n "-i $line "; done ',
-               ">"+eeprom_txt_1]
+               ">"+self.eetxt_1]
         cmdj = ' '.join(cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
 
-        cmd = ["cat "+eeprom_txt_1]
+        cmd = ["cat "+self.eetxt_1]
         cmdj = ' '.join(cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
         regsubparams = sto.decode('UTF-8')
@@ -342,9 +337,9 @@ class USFLEXFactory(ScriptBase):
 
         regparam = ["-k "+self.pass_phrase,
                     regsubparams,
-                    "-i field=qr_code,format=hex,value="+self.var.us.qrcode_hex,
-                    "-i field=flash_eeprom,format=binary,pathname="+self.tftpdir+"/"+eeprom_bin,
-                    "-o field=flash_eeprom,format=binary,pathname="+self.tftpdir+"/"+eeprom_signed,
+                    "-i field=qr_code,format=hex,value="+self.qrhex,
+                    "-i field=flash_eeprom,format=binary,pathname="+self.tftpdir+"/"+self.eebin,
+                    "-o field=flash_eeprom,format=binary,pathname="+self.tftpdir+"/"+self.eesign,
                     "-o field=registration_id",
                     "-o field=result",
                     "-o field=device_id",
@@ -365,28 +360,28 @@ class USFLEXFactory(ScriptBase):
         else:
             log_debug("Excuting client_x86 registration successfully")
 
-        rtf = os.path.isfile(self.tftpdir+"/"+eeprom_signed)
+        rtf = os.path.isfile(self.tftpdir+"/"+self.eesign)
         if (rtf is not True):
-            error_critical("Can't find "+eeprom_signed)
+            error_critical("Can't find "+self.eesign)
 
             msg(38, 'Finalizing device registration...')
         log_debug("Send signed eeprom file from host to DUT ...")
         sstr = ["tftp",
                 "-g",
                 "-r",
-                eeprom_signed,
+                self.eesign,
                 self.tftp_server]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
 
         log_debug("Starting to write signed information to SPI flash ...")
         self.pexp.expect_action(30, self.linux_prompt, "cd "+tmpdir)
-        sstr = [self.var.us.get_helper(self.board_id),
+        sstr = [reg_helper,
                 "-q",
-                "-i field=flash_eeprom,format=binary,pathname="+tmpdir+eeprom_signed]
+                "-i field=flash_eeprom,format=binary,pathname="+tmpdir+self.eesign]
         # sstr = ["dd",
-        #        "if="+tmpdir+eeprom_signed,
-        #        "of="+tmpdir+eeprom_check,
+        #        "if="+tmpdir+self.eesign,
+        #        "of="+tmpdir+self.eechk,
         #        "bs=64k",
         #        "count=1"]
         sstrj = ' '.join(sstr)
@@ -397,31 +392,31 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "sync")
         sstr = ["dd",
                 "if="+mtdpart,
-                "of="+tmpdir+eeprom_check]
+                "of="+tmpdir+self.eechk]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
         time.sleep(2)
 
-        log_debug("Send "+eeprom_check+" from DUT to host ...")
+        log_debug("Send "+self.eechk+" from DUT to host ...")
 
-        os.system("rm -f " + self.tftpdir+"/"+eeprom_check)
-        os.system("touch " + self.tftpdir+"/"+eeprom_check)
-        os.system("chmod 777 " + self.tftpdir+"/"+eeprom_check)
+        os.system("rm -f " + self.tftpdir+"/"+self.eechk)
+        os.system("touch " + self.tftpdir+"/"+self.eechk)
+        os.system("chmod 777 " + self.tftpdir+"/"+self.eechk)
 
         sstr = ["tftp",
                 "-p",
                 "-l",
-                eeprom_check,
+                self.eechk,
                 self.tftp_server]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
         time.sleep(2)
 
-        if os.path.isfile(self.tftpdir+"/"+eeprom_check):
-            log_debug("Starting to compare the"+eeprom_check+" and "+eeprom_signed+" files ...")
+        if os.path.isfile(self.tftpdir+"/"+self.eechk):
+            log_debug("Starting to compare the"+self.eechk+" and "+self.eesign+" files ...")
             cmd = ["/usr/bin/cmp",
-                   self.tftpdir+"/"+eeprom_check,
-                   self.tftpdir+"/"+eeprom_signed]
+                   self.tftpdir+"/"+self.eechk,
+                   self.tftpdir+"/"+self.eesign]
             cmdj = ' '.join(cmd)
             [sto, rtc] = self.fcd.common.xcmd(cmdj)
             if (int(rtc) > 0):
@@ -429,7 +424,7 @@ class USFLEXFactory(ScriptBase):
             else:
                 log_debug("Comparing files successfully")
         else:
-            log_debug("Can't find the "+eeprom_check+" and "+eeprom_signed+" files ...")
+            log_debug("Can't find the "+self.eechk+" and "+self.eesign+" files ...")
 
         msg(50, "Finish doing signed file and EEPROM checking ...")
     
@@ -460,7 +455,7 @@ class USFLEXFactory(ScriptBase):
                "-p",
                "-l",
                self.fwdir+"/"+fwimg,
-               self.var.us.ip]
+               self.dutip]
         cmdj = ' '.join(cmd)
 
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
