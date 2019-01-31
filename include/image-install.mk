@@ -20,7 +20,7 @@ image-install-$1:
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
 	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
-	if [ "${1}" = "AFI-AX" ]; then \
+	if [ "${1}" = "AFI-ALN" ]; then \
 		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
 	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMXG" ] || [ "${1}" = "UDMALL" ]; then \
 		sed -i s/MODEL/UniFiDream/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
