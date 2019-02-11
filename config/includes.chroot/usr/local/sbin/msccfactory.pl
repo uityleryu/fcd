@@ -315,7 +315,12 @@ if (!run_ubnt_expect($exp_h, "${prod_dir}/${cpuname}_firmware_update", $exp_env)
 }
 sleep 2;
 
-system_log("curl tftp://$prod_dev_ip -T /tftpboot/$boardid-ubidiag.bin");
+if ($boardid eq "ed04") {
+  system_log("curl tftp://$prod_dev_ip -T /tftpboot/$boardid-ubidiag.bin");
+}
+else{
+  system_log("curl tftp://$prod_dev_ip -T /tftpboot/$boardid.bin");
+
 if ($? == 0) {
     msg(50, 'Firmware uploading from FCD server is completed');
 } else {
