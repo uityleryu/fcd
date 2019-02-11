@@ -26,7 +26,7 @@ IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 DIAG_MODEL=udm
 
 UPYFCD_VER=73e96fae471eec6d22d2660c97160094ec80996e
-FCDIMG_VER=43c32d6d03b1605587eb42211868d56ed49a160a
+FCDIMG_VER=3b32584c6aa5d01a99804655d80aebad66b680fc
 
 TOOLS-UDM=.tmux.conf \
       al324-ee \
@@ -48,6 +48,7 @@ TOOLS-UDMXG=.tmux.conf \
       xeon1521-ee \
       helper_XEON1521_release \
       eeupdate64e \
+      dropbearkey \
       lib/
 
 TOOLS-UDMALL+=$(TOOLS-UDM)

@@ -135,6 +135,10 @@ class UDMXEONFactory(ScriptBase):
         self.pexp.expect_action(10, lnxpmt, cmd)
         self.pexp.expect_action(10, lnxpmt, "")
 
+        cmd = "cp /tmp/dropbearkey /usr/bin/dropbearkey"
+        self.pexp.expect_action(10, lnxpmt, cmd)
+        self.pexp.expect_action(10, lnxpmt, "")
+
         msg(25, "Run " + eepmexe + " ...")
 
         # ./xeon1521-ee -F -r 113-02719-11 -s 0xea17 -m 0418d6a0f7f7 -c 0x0000 -e 2 -w 2 -b 0 -k
