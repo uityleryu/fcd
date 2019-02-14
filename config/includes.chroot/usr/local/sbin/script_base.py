@@ -140,43 +140,12 @@ class ScriptBase(object):
     def erase_eefiles(self):
         tftpdir = self.tftpdir + "/"
         log_debug("Erase existed eeprom information files ...")
-        global toolsdir
-        rtf = os.path.isfile(tftpdir + self.eebin)
-        if rtf is True:
-            log_debug("Erasing File - " + self.eebin + " ...")
-            os.chmod(tftpdir + self.eebin, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            os.remove(tftpdir + self.eebin)
-        else:
-            log_debug("File - " + self.eebin + " doesn't exist ...")
-
-        rtf = os.path.isfile(tftpdir + self.eetxt)
-        if rtf is True:
-            log_debug("Erasing File - " + self.eetxt + " ...")
-            os.chmod(tftpdir + self.eetxt, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            os.remove(tftpdir + self.eetxt)
-        else:
-            log_debug("File - " + self.eetxt + " doesn't exist ...")
-
-        rtf = os.path.isfile(tftpdir + self.eesign)
-        if rtf is True:
-            log_debug("Erasing File - " + self.eesign + " ...")
-            os.chmod(tftpdir + self.eesign, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            os.remove(tftpdir + self.eesign)
-        else:
-            log_debug("File - " + self.eesign + " doesn't exist ...")
-
-        rtf = os.path.isfile(tftpdir + self.eechk)
-        if rtf is True:
-            log_debug("Erasing File - " + self.eechk + " ...")
-            os.chmod(tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            os.remove(tftpdir + self.eechk)
-        else:
-            log_debug("File - " + self.eechk + " doesn't exist ...")
-
-        rtf = os.path.isfile(tftpdir + self.eetgz)
-        if rtf is True:
-            log_debug("Erasing File - " + self.eetgz + " ...")
-            os.chmod(tftpdir + self.eetgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            os.remove(tftpdir + self.eetgz)
-        else:
-            log_debug("File - " + self.eetgz + " doesn't exist ...")
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz]
+        for f in files:
+            rtf = os.path.isfile(tftpdir + f)
+            if rtf is True:
+                log_debug("Erasing File - " + f + " ...")
+                os.chmod(tftpdir + f, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+                os.remove(tftpdir + f)
+            else:
+                log_debug("File - " + f + " doesn't exist ...")

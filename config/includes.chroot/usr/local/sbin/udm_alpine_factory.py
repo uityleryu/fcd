@@ -95,7 +95,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         # write system ID to the EEPROM partition
         write_sysid_cmd = "mw.l 0x08000000 " + wsysid[self.board_id]
 
-    def SetBootNet(self):
+    def set_boot_net(self):
         self.pexp.expect_action(30, ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, ubpmt, "setenv serverip " + self.tftp_server)
 
@@ -483,7 +483,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, "to stop", "\033\033")
 
         self.pexp.expect_action(10, ubpmt, swchip[self.board_id])
-        self.SetBootNet()
+        self.set_boot_net()
         self.pexp.expect_action(10, ubpmt, "setenv tftpdir images/" + self.board_id + "_signed_")
         time.sleep(2)
         self.pexp.expect_action(10, ubpmt, "ping " + self.tftp_server)
@@ -496,7 +496,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
         # Set the Ethernet IP
         self.pexp.expect_action(10, ubpmt, swchip[self.board_id])
-        self.SetBootNet()
+        self.set_boot_net()
         time.sleep(2)
         self.pexp.expect_action(10, ubpmt, "ping " + self.tftp_server)
         self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
@@ -506,8 +506,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, ubpmt, "tftpboot $loadaddr images/" + self.board_id + "-recovery")
         self.pexp.expect_only(30, "Bytes transferred")
         self.pexp.expect_action(10, ubpmt, "bootm $loadaddr - $fdtaddr")
-        self.pexp.expect_action(60, "login:", "root")
-        self.pexp.expect_action(10, "Password:", "ubnt")
+        self.pexp.expect_action(60, "login:", username)
+        self.pexp.expect_action(10, "Password:", password)
 
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, lnxpmt, "dmesg -n 1")
@@ -539,8 +539,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tarf file ...")
 
-        self.pexp.expect_action(200, "login:", "root")
-        self.pexp.expect_action(60, "Password:", "ubnt")
+        self.pexp.expect_action(200, "login:", username)
+        self.pexp.expect_action(60, "Password:", password)
 
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, lnxpmt, "dmesg -n 1")
