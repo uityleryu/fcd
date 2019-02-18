@@ -13,6 +13,8 @@ BUILD_DIR=$(shell pwd)
 FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
 FWIMG_DIR=$(BUILD_DIR)/fcd-image
 FTU_DIR=$(BUILD_DIR)/UPyFCD/DIAG
+TOOLS_DIR=$(BUILD_DIR)/fcd-script-tools
+UBNTLIB_DIR=$(BUILD_DIR)/fcd-ubntlib
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
@@ -41,6 +43,8 @@ help:
 	@echo "   BUILD_DIR      = $(BUILD_DIR)                                    "
 	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)                                   "
 	@echo "   FWIMG_DIR      = $(FWIMG_DIR)                                    "
+	@echo "   TOOLS_DIR      = $(TOOLS_DIR)                                    "
+	@echo "   UBNTLIB_DIR    = $(UBNTLIB_DIR)                                  "
 	@echo "   FTU_DIR        = $(FTU_DIR)                                      "
 	@echo "   BASE_OS        = $(BASE_OS)                                      "
 	@echo " ****************************************************************** "
@@ -131,7 +135,7 @@ new_livedcd_pkg: check_root
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(VERSION) .
 
-gitrepo: UPyFCD fcd-image
+gitrepo: UPyFCD fcd-image fcd-script-tools fcd-ubntlib
 
 dev-tools-check:
 	@if [ -d $(FWIMG_DIR) ]; then \
@@ -175,6 +179,23 @@ UPyFCD:
 	fi
 	touch $(OUTDIR)/.clone-diag-done
 
+fcd-script-tools:
+	@if [ -d "$(BUILD_DIR)/$@" ]; then \
+		cd $(BUILD_DIR)/$@; git pull; \
+	else \
+		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+	fi
+	cp -rf $(TOOLS_DIR)/tools $(FWIMG_DIR)/tools
+	touch $(OUTDIR)/.clone-fcd-script-tools-done
+
+fcd-ubntlib:
+	@if [ -d "$(BUILD_DIR)/$@" ]; then \
+		cd $(BUILD_DIR)/$@; git pull; \
+	else \
+		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+	fi
+	touch $(OUTDIR)/.clone-fcd-ubntlib-done
+
 clean: check_root
 	@echo " *** Cleaning all files under $(OUTDIR) *** "
 	@echo " >> Checking if $(EXLIVECD) is mounted ... "
@@ -213,4 +234,16 @@ clean-repo:
 	fi
 	@if [ -f $(OUTDIR)/.clone-diag-done ]; then \
 		rm -rf $(OUTDIR)/.clone-diag-done; \
+	fi
+	@if [ -d $(BUILD_DIR)/fcd-ubntlib ]; then \
+		rm -rf $(BUILD_DIR)/fcd-ubntlib; \
+	fi
+	@if [ -f $(OUTDIR)/.clone-fcd-ubntlib-done ]; then \
+		rm -rf $(OUTDIR)/.clone-fcd-ubntlib-done; \
+	fi
+	@if [ -d $(BUILD_DIR)/fcd-script-tools ]; then \
+		rm -rf $(BUILD_DIR)/fcd-script-tools; \
+	fi
+	@if [ -f $(OUTDIR)/.clone-fcd-script-tools-done ]; then \
+		rm -rf $(OUTDIR)/.clone-fcd-script-tools-done; \
 	fi

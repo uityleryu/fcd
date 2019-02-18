@@ -1,4 +1,3 @@
-
 define ProductImage
 
 $1: new-rootfs gitrepo image-install-$1 packiso-$1
@@ -8,6 +7,7 @@ image-install-$1:
 	@echo " ****************************************************************** "
 	@echo "   FCD ISO NAME   = $2                                              "
 	@echo "   DIAG MODEL     = $(DIAG_MODEL)                                   "
+	@echo "   DIAG UI MODEL     = $(DIAG_UI_MODEL)                                   "
 	@echo " ****************************************************************** "
 	if [ ! -d ${BUILD_DIR}/UPyFCD ]; then \
 		echo "${BUILD_DIR}/UPyFCD doesn't exist, "; \
@@ -20,13 +20,7 @@ image-install-$1:
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
 	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
-	if [ "${1}" = "AFI-ALN" ]; then \
-		sed -i s/MODEL/Amplifi/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
-	elif [ "${1}" = "UDM" ] || [ "${1}" = "UDMSE" ] || [ "${1}" = "UDMPRO" ] || [ "${1}" = "UDMXG" ] || [ "${1}" = "UDMALL" ]; then \
-		sed -i s/MODEL/UniFiDream/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
-	elif [ "${1}" = "USW-FLEX" ]; then \
-		sed -i s/MODEL/Unifi-Switch/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop; \
-	fi
+	sed -i s/MODEL/$(DIAG_UI_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*
@@ -36,6 +30,7 @@ image-install-$1:
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(UBNTLIB_DIR)/ubntlib $(NEWSQUASHFS)/usr/local/sbin/ubntlib
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	sh include/cp2tftp.sh $(IMAGE-$1)
 	sh include/tar2tftp.sh $(TOOLS-$1)

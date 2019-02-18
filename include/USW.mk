@@ -1,4 +1,4 @@
-# AFi-AX
+
 IMAGE-USW-24=images/eb36* \
              images/eb67* \
              usw-fw/unifiswitch-us* \
@@ -19,7 +19,7 @@ IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 
 DIAG_MODEL=us_flex
-
+DIAG_UI_MODEL=Unifi-Switch
 UPYFCD_VER=f943396b29f10cc120545682245111bd6e1fbd80
 
 TOOLS-USW=.tmux.conf \

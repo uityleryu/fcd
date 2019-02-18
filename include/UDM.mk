@@ -35,7 +35,7 @@ DIAG_MODEL=udm
 
 UPYFCD_VER=
 FCDIMG_VER=
-
+DIAG_UI_MODEL=UniFiDream
 TOOLS-UDM=.tmux.conf \
       al324-ee \
       helper_AL324_release \
