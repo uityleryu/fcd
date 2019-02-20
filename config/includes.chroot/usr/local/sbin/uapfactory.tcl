@@ -170,6 +170,47 @@ proc setmac {} {
     send_user "\r\n * MAC setting succeded *\r\n"
 }
 
+proc set_ssid_env { boardid } {
+    global UAPGEN2PRO_ID
+    global prompt
+
+    set ssid $boardid
+    append ssid "0777"
+    log_debug "SSID: $ssid"
+    if { [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1 } {
+        send "mw 82000000 $ssid\r"
+        set timeout 15
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } $prompt
+
+        send "cp.b 82000000 9fff000c 4\r"
+        set timeout 15
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } $prompt
+
+        send "md 9fff000c 4\r"
+        set timeout 15
+        expect timeout {
+            error_critical "1st SSID value check is wrong !"
+        } "$ssid"
+
+        send "reset \r"
+        stop_uboot
+
+        send "\r"
+        expect timeout {
+            error_critical "U-boot prompt not found !"
+        } $prompt
+        send "md 9fff000c 4\r"
+        set timeout 15
+        expect timeout {
+            error_critical "2nd SSID value check is wrong !"
+        } "$ssid"
+    }
+}
+
 proc set_network_env {} {
     global tftpserver
     global ip
@@ -198,7 +239,7 @@ proc set_network_env {} {
         } $prompt
 
         sleep 5
-    
+
         send "ping $tftpserver\r"
         set timeout 30
         expect timeout {
@@ -524,12 +565,12 @@ proc update_firmware { boardid } {
             log_progress 30 "Flashing firmware..."
         }
     }
-    
+
     set timeout 180
     expect timeout { 
         error_critical "Failed to flash firmware !" 
     } "Firmware update complet"
-    
+
     log_progress 45 "Firmware flashed"
 }
 
@@ -648,25 +689,34 @@ proc check_unifiOS_network_ready { boardid } {
     global tftpserver
     global INSTANTLTE_ID
     global UAPGEN2PRO_ID
+    global ip
 
     set max_loop 5
     set pingable 0
 
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
-        || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
+    if { [string equal -nocase $boardid $INSTANTLTE_ID] == 1 } {
         set x 0
-        while { $x < 25 } {
+        set looplimit 35
+        while { $x < $looplimit } {
             send "ifconfig\r"
             sleep 2
             expect "192.168.1." {
+                sleep 5
                 break
             }
             sleep 5
             incr x
         }
-        if { $x == 25 } {
+        if { $x == $looplimit} {
             error_critical "Can't get DHCP IP address"
         }
+    } elseif { [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1 } {
+        send "ifconfig eth0 $ip\r"
+        sleep 1
+        send "ifconfig\r"
+        expect timeout {
+            error_critical "Manually set IP address to eth0 failed !!"
+        } "$ip"
     } else {
         set timeout 90
         send "while \[ ! -f /etc/udhcpc/info.br0 \]; do ifconfig; ls /etc/udhcpc; sleep 5; done\r"
@@ -814,60 +864,79 @@ proc check_ICCID { boardid } {
     }
 }
 
-proc fwupgrade { boardid } {
+proc latestfwupdate { boardid } {
     global UAPGEN2PRO_ID
-    global tftpserver
-    global user
-    global passwd
+    global fwimg
+    global ip
+    global uappext
+    global prompt
+    global INSTANTLTE_ID
 
     if {[string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
-        set timeout 180
-        send "cd /tmp\r"
-        send "tftp -g -r $boardid-formal.bin -l /tmp/$boardid-formal.bin $tftpserver\r"
-        expect timeout {
-             error_critical "FW loading failed!!"
-        } "#"
-        send "fwupdate.real -m /tmp/$boardid-formal.bin\r"
-        expect timeout {
-             error_critical "FW upgrading failed!!"
-        } "Done"
-
         stop_uboot
-        turn_on_console $boardid
+        set_network_env
 
+        set fwimg $boardid-formal.bin
+        log_debug "Firmware $fwimg\r"
+
+        #start firmware flashing
         sleep 1
-        send "boot\r"
+        set timeout 10
+        if { [string equal -nocase $uappext ""] == 0 } {
+            send "setenv do_urescue TRUE;urescue -u -e\r"
+        } else {
+            send "urescue -f -e\r"
+        }
+            expect timeout {
+            error_critical "Failed to start urescue"
+        } "Waiting for connection"
 
-        check_booting $boardid
-        # login
-        expect timeout {
-            error_critical "Failed to boot firmware !"
-        } "Please press Enter to activate this console."
-
-        sleep 1
-        send "\r"
+        exec atftp --option "mode octet" -p -l /tftpboot/$fwimg $ip 2>/dev/null >/dev/null
 
         set timeout 30
-        expect "login:" { send "$user\r" } \
-            timeout { error_critical "Login failed" }
+        if { [string equal -nocase $uappext ""] == 0 } {
+            expect timeout {
+                error_critical "Failed to tftp firmware !"
+            } "TFTP Transfer Complete"
 
-        expect "Password:" { send "$passwd\r" } \
-            timeout { error_critical "Login failed" }
+            log_debug  "Download complete\n"
 
+            set timeout 15
+            expect timeout {
+            } $prompt
+            send "$uappext uwrite -f\r"
+        }
         expect timeout {
-            error_critical "Login failed"
-        } "#"
-        set timeout 20
-        send "dmesg -n 1\r"
-        expect timeout {
-            error_critical "Command promt not found"
-        } "#"
-        sleep 3
+            error_critical "Failed to correct firmware !"
+        } "Firmware Version:"
 
-        send "cat /proc/ubnthal/system.info\r"
+        set dual [has_ubntfsboot_dual_image $boardid]
+        if { $dual == 1 } {
+            set timeout 15
+            expect timeout {
+                error_critical "Failed to flash firmware (jffs2) !"
+            } "Copying partition 'jffs2' to flash memory:"
+        } else {
+            set timeout 15
+            expect timeout {
+                error_critical "Failed to flash firmware (kernel) !"
+            } -re "Copying partition 'kernel(.*)' to flash memory:"
+
+            set has_squashfs [rootfs_is_squashfs $boardid]
+            if { $has_squashfs == 1 } {
+                set timeout 15
+                expect timeout {
+                    error_critical "Failed to flash firmware (rootfs) !"
+                } "Copying partition 'rootfs' to flash memory:"
+            }
+        }
+
+        set timeout 180
         expect timeout {
-            error_critical "Check the board ID"
-        } "systemid=$boardid"
+            error_critical "Failed to flash firmware !"
+        } "Firmware update complet"
+
+        stop_uboot
     }
 }
 
@@ -879,8 +948,11 @@ proc do_security { boardid } {
     global user
     global passwd
     global INSTANTLTE_ID
+    global UAPGEN2PRO_ID
 
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+    # The version of FW after 4.0.11 include 4.0.11 should use the helper_ARxxxx_musl
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
+        || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
         set helper helper_ARxxxx_musl
     } else {
         set helper helper_ARxxxx
@@ -909,7 +981,7 @@ proc do_security { boardid } {
     set timeout 20
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
-    sleep 3
+    sleep 5
 
 
     if { [ catch { exec rm -f /tftpboot/$eeprom_bin } msg ] } {
@@ -959,10 +1031,12 @@ proc do_security { boardid } {
         expect timeout { error_critical "Command promt not found" } "#"
     }
 
+    set timeout 20
     send "cd /tmp\r"
     expect timeout { error_critical "Command promt not found" } "#" 
 
     send "tftp -g -r $helper $tftpserver\r"
+    sleep 3
     expect timeout { error_critical "Command promt not found" } "#" 
     
     set timeout 20
@@ -1037,6 +1111,7 @@ proc do_security { boardid } {
     send "\[ ! -f /proc/ubnthal/.uf \] || echo 1 > /proc/ubnthal/.uf\r"
     expect timeout { error_critical "Command promt not found" } "#"
     
+    send "\r"
     send "reboot\r"
     expect timeout { error_critical "Command promt not found" } "#" 
 
@@ -1356,6 +1431,8 @@ proc handle_uboot { {wait_prompt 0} } {
     send "reset \r"
     stop_uboot
 
+    #set_ssid_env $boardid
+
     ## RUN 1, update firmware  
     set_network_env
     update_firmware $boardid
@@ -1523,13 +1600,12 @@ proc handle_uboot { {wait_prompt 0} } {
 
     check_booting $boardid
     do_security $boardid
+    #latestfwupdate $boardid
     stop_uboot
-    sleep 1
     turn_on_console $boardid
     sleep 1
     send "boot \r"
     check_security $boardid
-    fwupgrade $boardid
     turn_on_burnin_mode $boardid
     check_LTE_ver $boardid
 

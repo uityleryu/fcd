@@ -17,7 +17,7 @@ my @migrators = ();
 
 my $window      = Gtk2::Window->new;
 my $initialized = FALSE;
-my $erase_caldata = TRUE;
+my $erase_caldata = FALSE;
 
 my $log_file_locked = FALSE;
 
