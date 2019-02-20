@@ -170,47 +170,6 @@ proc setmac {} {
     send_user "\r\n * MAC setting succeded *\r\n"
 }
 
-proc set_ssid_env { boardid } {
-    global UAPGEN2PRO_ID
-    global prompt
-
-    set ssid $boardid
-    append ssid "0777"
-    log_debug "SSID: $ssid"
-    if { [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1 } {
-        send "mw 82000000 $ssid\r"
-        set timeout 15
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } $prompt
-
-        send "cp.b 82000000 9fff000c 4\r"
-        set timeout 15
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } $prompt
-
-        send "md 9fff000c 4\r"
-        set timeout 15
-        expect timeout {
-            error_critical "1st SSID value check is wrong !"
-        } "$ssid"
-
-        send "reset \r"
-        stop_uboot
-
-        send "\r"
-        expect timeout {
-            error_critical "U-boot prompt not found !"
-        } $prompt
-        send "md 9fff000c 4\r"
-        set timeout 15
-        expect timeout {
-            error_critical "2nd SSID value check is wrong !"
-        } "$ssid"
-    }
-}
-
 proc set_network_env {} {
     global tftpserver
     global ip
@@ -1430,8 +1389,6 @@ proc handle_uboot { {wait_prompt 0} } {
     sleep 1
     send "reset \r"
     stop_uboot
-
-    #set_ssid_env $boardid
 
     ## RUN 1, update firmware  
     set_network_env
