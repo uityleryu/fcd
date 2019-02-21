@@ -13,7 +13,8 @@ DIAG_UI_MODEL=Amplifi
 
 UPYFCD_VER=04ef504c496215db2ca39c324b8943085f4b3eb6
 FCDIMG_VER=901c4d190756bb5f538377519e4e32eb91eea29d
-
+UBNTLIB_VER=
+TOOL_VER=
 TOOLS-AFI-ALN=.tmux.conf \
       ax_gen_eeprom.py \
       evtest \

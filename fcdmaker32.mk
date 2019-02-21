@@ -158,7 +158,7 @@ fcd-image:
 			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
+		git clone git@10.2.0.33:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
 		if [ $(FCDIMG_VER) != "" ]; then \
 			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
 		fi \
@@ -172,7 +172,7 @@ UPyFCD:
 			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
 		if [ $(UPYFCD_VER) != "" ]; then \
 			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
 		fi \
@@ -182,8 +182,14 @@ UPyFCD:
 fcd-script-tools:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
+		if [ $(TOOL_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(TOOL_VER); \
+		fi \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		if [ $(TOOL_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(TOOL_VER); \
+		fi \
 	fi
 	cp -rf $(TOOLS_DIR)/tools $(FWIMG_DIR)/tools
 	touch $(OUTDIR)/.clone-fcd-script-tools-done
@@ -191,8 +197,14 @@ fcd-script-tools:
 fcd-ubntlib:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
+		if [ $(UBNTLIB_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(UBNTLIB_VER); \
+		fi \
 	else \
-		git clone git@10.2.128.30:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		if [ $(UBNTLIB_VER) != "" ]; then \
+			cd $(BUILD_DIR)/$@; git reset --hard $(UBNTLIB_VER); \
+		fi \
 	fi
 	touch $(OUTDIR)/.clone-fcd-ubntlib-done
 

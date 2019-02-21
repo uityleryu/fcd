@@ -35,6 +35,8 @@ DIAG_MODEL=udm
 
 UPYFCD_VER=
 FCDIMG_VER=
+UBNTLIB_VER=
+TOOL_VER=
 DIAG_UI_MODEL=UniFiDream
 TOOLS-UDM=.tmux.conf \
       al324-ee \
