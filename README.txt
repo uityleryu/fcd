@@ -4,7 +4,7 @@
 * Clone a FCD source code
 FCD repository: https://drive.google.com/open?id=14IOj5Z_bl-u18Skrly_BwEUNeRxT-jnQ
 
-    git clone git@10.2.128.30:Ubiquiti-BSP/fcd.git
+    git clone git@10.2.0.33:Ubiquiti-BSP/fcd.git
 
 
 ========================================================================================================
