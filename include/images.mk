@@ -26,7 +26,7 @@ USGPRO3-IMAGE=e120.bin \
              e120-fcd.kernel \
              products.txt \
              images/usg-pro-3-kernel \
-             images/ER-e120.v4.3.33.4936086.tar \
+             images/UGW3.v4.4.36.5146617.tar \
              uboot-images/u-boot.ER-e120.e120.4674499-gfa58f5d.bin.2 \
              scripts/USGPRO3/mmc-prep.sh \
              scripts/USGPRO3/usb-prep.sh
