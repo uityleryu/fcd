@@ -16,7 +16,7 @@ USGPRO4-IMAGE=e221.bin \
              e221-fcd.kernel \
              products.txt \
              images/usg-pro-4-kernel \
-             images/ER-e220.v4.4.30.5127050.tar \
+             images/UGW4.v4.4.36.5146617.tar \
              uboot-images/u-boot.ER-e220.e220.5102844-g4f1145c.bin.2 \
              scripts/USGPRO4/mmc-prep.sh \
              scripts/USGPRO4/usb-prep.sh
