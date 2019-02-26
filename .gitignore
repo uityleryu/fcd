@@ -12,6 +12,8 @@ live-image-*.hybrid.iso.zsync
 live-image-*.packages
 fcd-image
 UPyFCD
+fcd-script-tools
+fcd-ubntlib
 output
 *.pyc
 DIAG-CLI.desktop
