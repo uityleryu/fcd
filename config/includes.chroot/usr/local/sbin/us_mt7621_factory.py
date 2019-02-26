@@ -8,6 +8,7 @@ import stat
 import shutil
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
+from ubntlib.fcd.common import Common
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 # number of mac
@@ -79,10 +80,11 @@ class USFLEXFactory(ScriptBase):
             cmd = ' '.join(cmd)
 
             ret = self.pexp.expect_get_output(cmd, self.bootloader_prompt)
+
             if checkrst in ret:
                 log_debug('Radio was calibrated')
             else:
-                error_critical("Radio was NOT calibrated, status result is {}".format(rtbuf[1]))
+                error_critical("Radio was NOT calibrated, status result is {}".format(ret))
         else:
             print("Pass checking radio status")
 
@@ -165,32 +167,11 @@ class USFLEXFactory(ScriptBase):
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
         if rt != 0:
             error_critical("Failed to detect device")
-
-        self.pexp.expect_action(30, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_only(30, "flash manufacture id:")
-
-        msg(6, "Setting IP address and checking network in u-boot, 1st time...")
-        self.SetBootNet()
-
-        if self.is_network_alive_in_uboot(retry=3) is False:
-            error_critical("Failed to ping tftp server in u-boot")
-
-        msg(8, "Getting uboot from tftp server, 1st time...")
-        
-        self.GetImgfromSrv(bootimg)
-        self.pexp.expect_action(30, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_action(30, "flash manufacture id:", "")
-        self.pexp.expect_action(30, self.bootloader_prompt, "reset")
-
-        msg(8, "Waiting for device, 2nd time...")
-        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-        if rt != 0:
-            error_critical("Failed to detect device")
         self.pexp.expect_action(30, self.bootloader_prompt, "")
 
-        msg(8, "Setting IP address and checking network in u-boot, 2nd time...")
+        msg(8, "Setting IP address and checking network in u-boot, 1st time...")
         self.SetBootNet()
-      
+
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical("Failed to ping tftp server in u-boot")
 
@@ -206,62 +187,18 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "UBNT login: ", "ubnt")
         self.pexp.expect_action(30, "Password: ", "ubnt")
 
-        self.CheckRadioStat()
-
         self.pexp.expect_action(30, self.linux_prompt, "dmesg -n 1")
 
         msg(14, 'Setting and checking hardware ID in EEPROM...')
         self.SetnCheckEEPROM()
 
-        msg(16, 'Rebooting manufacturing kernel...')
-        self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
-
-        msg(18, "Waiting for device, 3rd time...")
-        self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-        self.pexp.expect_action(30, self.bootloader_prompt, "")
-
-        msg(20, "Setting IP address and checking network in u-boot, 3rd time...")
-        self.SetBootNet()
-        
-        if self.is_network_alive_in_uboot(retry=3) is False:
-            error_critical("Failed to ping tftp server in u-boot")
-    
-        msg(22, "Getting manufacturing kernel from tftp server, 2nd time...")
-        self.GetImgfromSrv(fcdimg)
-        self.pexp.expect_action(30, self.bootloader_prompt, "bootm")
-
-        msg(24, 'Waiting for manufacturing kernel ready, 2nd time...')
-        self.pexp.expect_action(90, "Please press Enter to activate this console","")
-        self.pexp.expect_action(30, "UBNT login: ", "ubnt")
-        self.pexp.expect_action(30, "Password: ", "ubnt")
-        self.pexp.expect_action(30, self.linux_prompt, "dmesg -n 1")
-        if(0):
-            msg(26, 'Checking hardware ID in EEPROM...')
-            self.pexp.expect_action(30, self.linux_prompt, eepmexe + " -I -v 2>&1")
-            self.pexp.expect_action(30, "DEBUG: SBD Magic: 55424e54 \(OK\)")
-            self.pexp.expect_action(30, "DEBUG: SBD CRC:")
-            self.pexp.expect_action(30, "\(OK, expect:")
-            self.pexp.expect_action(30, "DEBUG: SBD Length: 100")
-            self.pexp.expect_action(30, "DEBUG: SBD Format: 0x0002")
-            self.pexp.expect_action(30, "DEBUG: SBD Version: 0x0001")
-            self.pexp.expect_action(30, "DEBUG: SBD system ID: 0777:"+self.board_id)
-            self.pexp.expect_action(30, "DEBUG: SBD HW revision: "+self.bom_rev)
-            self.pexp.expect_action(30, "DEBUG: SBD HW Address Base: "+self.mac.lower())
-            self.pexp.expect_action(30, "DEBUG: SBD Ethernet MAC count: "+macnum[self.board_id])
-            self.pexp.expect_action(30, "DEBUG: SBD WiFi RADIO count: "+wifinum[self.board_id])
-            self.pexp.expect_action(30, "DEBUG: SBD BT RADIO count: "+btnum[self.board_id])
-            self.pexp.expect_action(30, "DEBUG: SBD Regulatory Domain: 0x"+self.region)
-            self.pexp.expect_action(30, "DEBUG: SBD PartitionSHA key:")
-            self.pexp.expect_action(30, "DEBUG: DBD eth0 hwaddr: "+self.mac.lower())
-            self.pexp.expect_action(30, "DEBUG: DBD system ID: 0777:"+self.board_id)
-            self.pexp.expect_action(30, "DEBUG: DBD HW revision: "+self.bom_rev)
-            self.pexp.expect_action(30, "DEBUG: EXTRA ENTRY\[0\]: DSS KEY")
-            self.pexp.expect_action(30, "DEBUG: EXTRA ENTRY\[1\]: RSA KEY")
+        msg(16, 'Checking Radio status...')
+        self.CheckRadioStat()
 
         msg(28, 'Configuring ethernet switch...')
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set enable_vlan 1")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set vid 1")
-        self.pexp.expect_action(30, self.linux_prompt, 
+        self.pexp.expect_action(30, self.linux_prompt,
                                 "swconfig dev switch0 vlan 1 set ports "+vlanport_idx[self.board_id])
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set apply")
 
@@ -285,7 +222,7 @@ class USFLEXFactory(ScriptBase):
         os.system("rm -f " + self.tftpdir+"/"+self.eetgz)
         os.system("touch " + self.tftpdir+"/"+self.eetgz)
         os.system("chmod 777 " + self.tftpdir+"/"+self.eetgz)
-  
+
         sstr = ["tar",
                 "cf",
                 self.eetgz,
@@ -303,8 +240,8 @@ class USFLEXFactory(ScriptBase):
         msg(34, 'Uploading registration helper out files...')
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
 
-        #time.sleep(2)
-        self.pexp.expect_action(30, self.linux_prompt, "")
+        time.sleep(2)
+
         cmd = "tar xvf "+self.tftpdir+"/"+self.eetgz+" -C " + self.tftpdir
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if (int(rtc) > 0):
@@ -387,7 +324,7 @@ class USFLEXFactory(ScriptBase):
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, self.linux_prompt, sstrj)
         time.sleep(2)
-    
+
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         self.pexp.expect_action(30, self.linux_prompt, "sync")
         sstr = ["dd",
@@ -427,19 +364,19 @@ class USFLEXFactory(ScriptBase):
             log_debug("Can't find the "+self.eechk+" and "+self.eesign+" files ...")
 
         msg(50, "Finish doing signed file and EEPROM checking ...")
-    
+
         log_debug("Change to product firware...")
         self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
-    
+
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
         if rt != 0:
             error_critical("Failed to detect device")
-    
+
         self.pexp.expect_action(30, self.bootloader_prompt, "")
 
         msg(52, "Setting IP address and checking network in u-boot, 4th time...")
         self.SetBootNet()
-        
+
         if self.is_network_alive_in_uboot(retry=3) is False:
             error_critical("Failed to ping tftp server in u-boot")
 
@@ -449,7 +386,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "set do_urescue TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
-    
+
         msg(56, "Uploading released firmware...")
         cmd = ["atftp",
                "-p",
@@ -463,19 +400,19 @@ class USFLEXFactory(ScriptBase):
             error_critical("Failed to upload firmware image")
         else:
             log_debug("Uploading firmware image successfully")
-    
+
         msg(58, "Checking firmware...")
         self.pexp.expect_only(30, "Bytes transferred = ")
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
-    
+
         msg(60, "Updating released firmware...")
         if self.board_id not in diag_en:
             self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
             self.pexp.expect_only(60, "done")
-        else:
-            self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-            self.pexp.expect_only(120, "done")
+
+        self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+        self.pexp.expect_only(120, "done")
 
         msg(62, 'Booting into released firmware...')
         rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
@@ -489,6 +426,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "dmesg -n 1")
 
         msg(64, 'Checking EEPROM...')
+        self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(30, "flashSize=33554432")
         self.pexp.expect_only(30, "systemid="+self.board_id)
@@ -496,6 +434,20 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
+
+        if self.board_id in diag_en:
+            msg(70, "Setting zero config ip...")
+            comm_util = Common()
+            zero_cfg_ip = comm_util.get_zeroconfig_ip(self.mac)
+            log_debug("zero cfg ip is {}".format(zero_cfg_ip))
+            self.pexp.expect_action(30, self.linux_prompt, "sed -i -e \'s/netconf.1.ip=192.168.1.20/netconf.1.ip={}/g\' /tmp/system.cfg".format(zero_cfg_ip))
+            self.pexp.expect_action(30, self.linux_prompt, "sed -i -e \'s/netconf.1.netmask=255.255.255.0/netconf.1.netmask=255.255.0.0/g\' /tmp/system.cfg")
+            self.pexp.expect_action(30, self.linux_prompt, "sed -i \'/dhcpc.1.status=enabled/d\' /tmp/system.cfg")
+            self.pexp.expect_action(30, self.linux_prompt, "sed -i \'/dhcpc.1.devname=eth0/d\' /tmp/system.cfg")
+            self.pexp.expect_action(30, self.linux_prompt, "sed -i \'/mgmt.is_default=true/d\' /tmp/system.cfg")
+
+            self.pexp.expect_action(30, self.linux_prompt, "syswrapper.sh save-config")
+            self.pexp.expect_only(30, r'Storing Active.+\[%100\]')
 
         msg(100, "Completing firmware upgrading ...")
 
