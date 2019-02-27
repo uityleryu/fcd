@@ -14,23 +14,30 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 # number of mac
 macnum = {'ed10': "3",
           'ec25': "1",
-          'ec26': "1"}
+          'ec26': "1",
+          'ed11': "3"}
 # number of WiFi
 wifinum = {'ed10': "0",
            'ec25': "2",
-           'ec26': "2"}
+           'ec26': "2",
+           'ed11': "0"}
 # number of Bluetooth
 btnum = {'ed10': "0",
          'ec25': "1",
-         'ec26': "1"}
+         'ec26': "1",
+         'ed11': "0"}
 # vlan port mapping
 vlanport_idx = {'ed10': "'6 4'",
                 'ec25': "'6 0'",
-                'ec26': "'6 0'"}
+                'ec26': "'6 0'",
+                'ed11': "'6 0'"}
 
 radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
 
 diag_en = {'ed10'}
+
+# Pre-load image is for FCD/FTU
+preload_fcd = {'ed11'}
 
 
 class USFLEXFactory(ScriptBase):
@@ -364,57 +371,60 @@ class USFLEXFactory(ScriptBase):
             log_debug("Can't find the "+self.eechk+" and "+self.eesign+" files ...")
 
         msg(50, "Finish doing signed file and EEPROM checking ...")
-
-        log_debug("Change to product firware...")
-        self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
-
-        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-        if rt != 0:
-            error_critical("Failed to detect device")
-
-        self.pexp.expect_action(30, self.bootloader_prompt, "")
-
-        msg(52, "Setting IP address and checking network in u-boot, 4th time...")
-        self.SetBootNet()
-
-        if self.is_network_alive_in_uboot(retry=3) is False:
-            error_critical("Failed to ping tftp server in u-boot")
-
-        msg(54, "Putting device to urescue mode...")
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearcfg TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearenv TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "set do_urescue TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
-        self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
-
-        msg(56, "Uploading released firmware...")
-        cmd = ["atftp",
-               "-p",
-               "-l",
-               self.fwdir+"/"+fwimg,
-               self.dutip]
-        cmdj = ' '.join(cmd)
-
-        [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        if (int(rtc) > 0):
-            error_critical("Failed to upload firmware image")
+        if self.board_id in preload_fcd: 
+            self.pexp.expect_action(30, self.linux_prompt, "reboot -f")  
+            msg(62, 'Reboot into pre-load firmware...')
         else:
-            log_debug("Uploading firmware image successfully")
+            log_debug("Change to product firware...")
+            self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
+        
+            rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+            if rt != 0:
+                error_critical("Failed to detect device")
+        
+            self.pexp.expect_action(30, self.bootloader_prompt, "")
+    
+            msg(52, "Setting IP address and checking network in u-boot, 4th time...")
+            self.SetBootNet()
+            
+            if self.is_network_alive_in_uboot(retry=3) is False:
+                error_critical("Failed to ping tftp server in u-boot")
+    
+            msg(54, "Putting device to urescue mode...")
+            self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearcfg TRUE")
+            self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearenv TRUE")
+            self.pexp.expect_action(30, self.bootloader_prompt, "set do_urescue TRUE")
+            self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
+            self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
+        
+            msg(56, "Uploading released firmware...")
+            cmd = ["atftp",
+                   "-p",
+                   "-l",
+                   self.fwdir+"/"+fwimg,
+                   self.dutip]
+            cmdj = ' '.join(cmd)
+    
+            [sto, rtc] = self.fcd.common.xcmd(cmdj)
+            if (int(rtc) > 0):
+                error_critical("Failed to upload firmware image")
+            else:
+                log_debug("Uploading firmware image successfully")
+        
+            msg(58, "Checking firmware...")
+            self.pexp.expect_only(30, "Bytes transferred = ")
+            self.pexp.expect_only(30, "Firmware Version:")
+            self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
+        
+            msg(60, "Updating released firmware...")
+            if self.board_id not in diag_en:
+                self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
+                self.pexp.expect_only(60, "done")
+            else:
+                self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+                self.pexp.expect_only(120, "done")
+            msg(62, 'Booting into released firmware...')
 
-        msg(58, "Checking firmware...")
-        self.pexp.expect_only(30, "Bytes transferred = ")
-        self.pexp.expect_only(30, "Firmware Version:")
-        self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
-
-        msg(60, "Updating released firmware...")
-        if self.board_id not in diag_en:
-            self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
-            self.pexp.expect_only(60, "done")
-
-        self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
-
-        msg(62, 'Booting into released firmware...')
         rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
         if rt != 0:
             error_critical("Failed to boot manufacturing kernel")

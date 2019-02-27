@@ -18,8 +18,7 @@ UBNTLIB_DIR=$(BUILD_DIR)/fcd-ubntlib
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
-LIVE_CD_VER=$(VER).iso
-FCD_ISO_NAME=FCD-$(PRD)-$(VER)
+FCD_ISO=$(OUTDIR)/FCD-*-$(VER).iso
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -232,7 +231,8 @@ clean: check_root
 
 	@echo " >> Deleting $(STAGEDIR) "
 	@rm -rf $(STAGEDIR)
-	@rm -rf $(OUTDIR)/$(LIVE_CD_VER)
+	@echo " >> Deleting $(FCD_ISO) "
+	@rm -rf $(FCD_ISO)
 
 clean-repo:
 	@if [ -d $(BUILD_DIR)/UPyFCD ]; then \

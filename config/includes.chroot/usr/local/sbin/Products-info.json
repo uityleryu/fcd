@@ -98,6 +98,16 @@
       "FILE" : "us_factory.py",
       "T1FILE" : "us_mfg.py",
       "QRCHECK" : "True"
+    },
+    "ULS-RPS":{
+      "INDEX" : 4,
+      "NAME" : "ULS-RPS",
+      "BOARDID" : "ed11",
+      "BOMREV" : "113-02781",
+      "DESC" : "UniFi Life Saver RPS",
+      "FILE" : "us_mt7621_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     }
   },
 
