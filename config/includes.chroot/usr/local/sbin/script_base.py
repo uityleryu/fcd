@@ -149,3 +149,7 @@ class ScriptBase(object):
                 os.remove(tftpdir + f)
             else:
                 log_debug("File - " + f + " doesn't exist ...")
+
+    def close_fcd(self):
+        time.sleep(3)
+        exit(0)
