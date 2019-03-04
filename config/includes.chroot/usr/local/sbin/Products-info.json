@@ -146,6 +146,7 @@
       "QRCHECK" : "False"
     }
   },
+
   "AirFiber":
   {
     "LTU-5":{
@@ -157,6 +158,20 @@
       "FILE" : "af_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "False"
+    }
+  },
+
+  "Unifi VOIP":
+  {
+    "UVP-FLEX":{
+      "INDEX" : 0,
+      "NAME" : "UVP-FLEX",
+      "BOARDID" : "ef0d",
+      "BOMREV" : "113-02808",
+      "DESC" : "UniFi VOIP FLEX",
+      "FILE" : "uvp_dvf9918_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
     }
   }
 }
