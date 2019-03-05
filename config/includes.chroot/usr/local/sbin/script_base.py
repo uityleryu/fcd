@@ -109,7 +109,7 @@ class ScriptBase(object):
         self.tftp_server = args.tftp_server
         self.board_id = args.board_id
         self.erasecal = args.erasecal
-        self.mac = args.mac
+        self.mac = args.mac.lower()
         self.pass_phrase = args.pass_phrase
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
