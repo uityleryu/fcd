@@ -70,6 +70,7 @@ create_live_cd: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_li
 	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
 	rm -rf $(NEWSQUASHFS)/usr/local/ubnt-expect/*
 	rm -rf $(NEWSQUASHFS)/srv/tftp/*
+	mkdir -p $(NEWSQUASHFS)/usr/local/ubnt-expect
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/usr/local/ubnt-expect/* $(NEWSQUASHFS)/usr/local/ubnt-expect
 	cp -rf $(FCDAPP_DIR)/srv/tftp/* $(NEWSQUASHFS)/srv/tftp/
