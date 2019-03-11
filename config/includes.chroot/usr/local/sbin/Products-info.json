@@ -145,5 +145,18 @@
       "T1FILE" : "",
       "QRCHECK" : "False"
     }
+  },
+  "AirFiber":
+  {
+    "LTU-5":{
+      "INDEX" : 0,
+      "NAME" : "LTU-5",
+      "BOARDID" : "0000",
+      "BOMREV" : "113-00000",
+      "DESC" : "AirFiber LTU-5",
+      "FILE" : "af_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "False"
+    }
   }
 }
