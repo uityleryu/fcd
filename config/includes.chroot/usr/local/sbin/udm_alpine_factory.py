@@ -110,8 +110,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "ls",
             dir_filename
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
         idx = self.pexp.expect_get_index(10, "No such file")
         if idx == 0:
             log_debug("Can't find the " + dir_filename)
@@ -130,8 +130,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + tmpdir + "tools.tar",
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Unzipping the tools.tar in the DUT ...")
         self.dutisfile(tmpdir + "tools.tar")
@@ -141,8 +141,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             tmpdir + "tools.tar",
             "-C " + tmpdir
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
     def data_provision(self):
         log_debug("Change file permission - " + helperexe + " ...")
@@ -150,16 +150,16 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "chmod 777",
             tmpdir + helperexe
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Change file permission - " + eepmexe + " ...")
         sstr = [
             "chmod 777",
             tmpdir + eepmexe
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         if NEED_DROPBEAR is True:
             log_debug("Copying the dropbearkey to /usr/bin ...")
@@ -168,8 +168,16 @@ class UDMALPINEFactoryGeneral(ScriptBase):
                 tmpdir + "dropbearkey_arm64",
                 "/usr/bin/dropbearkey"
             ]
-            sstrj = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+            sstr = ' '.join(sstr)
+            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+
+            log_debug("Change file permission - dropbearkey ...")
+            sstr = [
+                "chmod 777",
+                "/usr/bin/dropbearkey"
+            ]
+            sstr = ' '.join(sstr)
+            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
             log_debug("Starting to initialize the dropbear")
             sstr = [
@@ -178,8 +186,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
                 "/var/run/dropbear; ",
                 "dropbear -R"
             ]
-            sstrj = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+            sstr = ' '.join(sstr)
+            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Starting to do " + eepmexe + "...")
         sstr = [
@@ -195,7 +203,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-k",
             "-p Factory"
         ]
-        sstrj = ' '.join(sstr)
+        sstr = ' '.join(sstr)
 
         postexp = [
             "ssh-dss",
@@ -203,7 +211,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "Fingerprint",
             lnxpmt
         ]
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, post_exp=postexp)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, post_exp=postexp)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + helperexe + "...")
@@ -215,8 +223,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             ">",
             self.eetxt
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
         time.sleep(1)
 
         sstr = [
@@ -226,8 +234,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             self.eebin,
             self.eetxt
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         os.mknod(tftpdir + self.eetgz)
         os.chmod(tftpdir + self.eetgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -240,8 +248,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + self.eetgz,
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
         time.sleep(1)
 
         sstr = [
@@ -249,8 +257,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "xvf " + tftpdir + self.eetgz,
             "-C " + tftpdir
         ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        sstr = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstr)
         time.sleep(1)
         if int(rtc) > 0:
             error_critical("Decompressing " + self.eetgz + " file failed!!")
@@ -318,16 +326,16 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + tmpdir + self.eesign,
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
             "chmod 777",
             tmpdir + self.eesign
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
@@ -335,8 +343,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-q",
             "-i field=flash_eeprom,format=binary,pathname=" + tmpdir + self.eesign
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
@@ -344,8 +352,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "if=" + mtdpart,
             "of=" + tmpdir + self.eechk
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
 
         os.mknod(tftpdir + self.eechk)
         os.chmod(tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -358,8 +366,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + tmpdir + self.eechk,
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
         time.sleep(1)
 
         if os.path.isfile(tftpdir + self.eechk):
@@ -380,8 +388,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + tmpdir + "upgrade.bin",
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(300, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(300, lnxpmt, sstr, lnxpmt)
 
         sstr = [
             "tftp",
@@ -390,8 +398,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-l " + tmpdir + "uImage.r",
             self.tftp_server
         ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(90, lnxpmt, sstrj, lnxpmt)
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(90, lnxpmt, sstr, lnxpmt)
 
         log_debug("Starting to do fwupdate ... ")
         sstr = [
@@ -400,13 +408,13 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-d",
             "/tmp/upgrade.bin"
         ]
-        sstrj = ' '.join(sstr)
+        sstr = ' '.join(sstr)
 
         postexp = [
             "Firmware version",
             "Writing recovery"
         ]
-        self.pexp.expect_lnxcmd(300, lnxpmt, sstrj, postexp)
+        self.pexp.expect_lnxcmd(300, lnxpmt, sstr, postexp)
 
     def check_info(self):
         ct = 0

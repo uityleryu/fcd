@@ -13,6 +13,7 @@ FTU_DIR="${BUILD_DIR}/DIAG"
 
 BUILD_DIR=$(pwd)
 FCDAPP_DIR="${BUILD_DIR}/config/includes.chroot"
+PACK_FILES=""
 
 if [ ! -d ${BUILD_DIR}/fcd-image ]; then \
 	echo "${BUILD_DIR}/fcd-image doesn't exist, "; \
@@ -24,5 +25,16 @@ if [ ! -d ${NEWSQUASHFS}/srv/tftp/tools ]; then \
 	mkdir -p ${NEWSQUASHFS}/srv/tftp/tools; \
 fi
 
-cd ${BUILD_DIR}/fcd-image/tools; tar -cvzf tools.tar $@; chmod 777 tools.tar
-cp -rf ${BUILD_DIR}/fcd-image/tools/tools.tar ${NEWSQUASHFS}/srv/tftp/tools
+if [ ! -d ${BUILD_DIR}/fcd-image/tools/tmp ]; then \
+	mkdir -p ${BUILD_DIR}/fcd-image/tools/tmp; \
+else \
+	rm -rf ${BUILD_DIR}/fcd-image/tools/tmp/*; \
+fi
+
+for arg in "$@"; do
+	cd ${BUILD_DIR}/fcd-image/tools; \
+	cp -rf $arg ${BUILD_DIR}/fcd-image/tools/tmp; \
+done
+
+cd ${BUILD_DIR}/fcd-image/tools/tmp; tar -cvzf tools.tar * .; chmod 777 tools.tar
+cp -rf ${BUILD_DIR}/fcd-image/tools/tmp/tools.tar ${NEWSQUASHFS}/srv/tftp/tools
