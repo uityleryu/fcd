@@ -55,7 +55,7 @@ class AFAMEFactroy(ScriptBase):
                 ssh.write_wait("dd if=/dev/mtdblock7 of=/var/tmp/EEPROM",timeout=5)
 
             elif self.product == 'AME':
-                ssh.scp("/tftpboot/tools/helper_UBNTAME", ':/var/tmp/helper_UBNTAME')
+                ssh.scp("/tftpboot/tools/af_ltu5/helper_UBNTAME", ':/var/tmp/helper_UBNTAME')
                 ssh.write_wait('ls -l /var/tmp/helper_UBNTAME')
                 ssh.write_wait('chmod 555 /var/tmp/helper_UBNTAME')
                 msg(10, "Run Helper File")

@@ -23,7 +23,8 @@ class AFIIPQ807XFactory(ScriptBase):
         # Common folder
         tmpdir = "/tmp/"
         tftpdir = self.tftpdir + "/"
-
+        self.afi_dir = os.path.join(self.toolsdir, "afi_aln")
+        self.dut_afi_dir = os.path.join(self.dut_tmpdir, "afi_aln")
         wifi_cal_data_dir = os.path.join(tmpdir, "IPQ8074")
 
         # U-boot prompt
@@ -92,7 +93,8 @@ class AFIIPQ807XFactory(ScriptBase):
         fcdssh = "user@" + self.tftp_server + ":"
         bomrev = "113-" + self.bom_rev
         mtdpart = "/dev/mtdblock18"
-
+        self.dut_helper_path = os.path.join(self.dut_afi_dir, helperexe)
+        self.dut_eepmexe_path = os.path.join(self.dut_afi_dir, eepmexe)
         # This MD5SUM value is generated from a file with all 0xff
         md5sum_no_wifi_cal = "41d2e2c0c0edfccf76fa1c3e38bc1cf2"
 
@@ -203,20 +205,20 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(10, lnxpmt[self.board_id], sstrj)
 
         log_debug("Change file permission - " + helperexe + " ...")
-        sstr = ["chmod 777", tmpdir + helperexe]
+        sstr = ["chmod 777", self.dut_afi_dir + helperexe]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         log_debug("Change file permission - " + eepmexe + " ...")
-        sstr = ["chmod 777", tmpdir + eepmexe]
+        sstr = ["chmod 777", self.dut_afi_dir + eepmexe]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         log_debug("Starting to do " + eepmexe + "...")
         sstr = [
-            "cd /tmp; ./" + eepmexe,
+            "cd " + self.dut_afi_dir + ";" + " ./" + eepmexe,
             "-F",
             "-r " + bomrev,
             "-s 0x" + self.board_id,
@@ -275,7 +277,7 @@ class AFIIPQ807XFactory(ScriptBase):
 
         log_debug("Starting to do " + helperexe + "...")
         sstr = [
-            "cd /tmp; ./" + helperexe,
+            "cd " + self.dut_afi_dir + ";" + " ./" + helperexe,
             "-q",
             "-c product_class=basic",
             "-o field=flash_eeprom,format=binary,pathname=" + eeprom_bin,
@@ -303,7 +305,7 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug("Send helper output tgz file from DUT to host ...")
         sstr = [
             "scp",
-            tmpdir + eeprom_tgz,
+            os.path.join(self.dut_afi_dir, eeprom_tgz),
             fcdssh + tftpdir
         ]
         sstrj = ' '.join(sstr)
@@ -401,7 +403,7 @@ class AFIIPQ807XFactory(ScriptBase):
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
-            "cd /tmp; ./" + helperexe,
+            "cd " + self.dut_afi_dir + ";" + " ./" + helperexe,
             "-q",
             "-i field=flash_eeprom,format=binary,pathname=" + tmpdir + eeprom_signed
         ]
