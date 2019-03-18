@@ -349,6 +349,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, "Password:", dutpwd)
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, lnxpmt, "dmesg -n 1")
+        self.sleep(5)
         self.pexp.expect_action(10, lnxpmt, "ping " + self.tftp_server)
         self.pexp.expect_action(10, "64 bytes from", '\003')
         self.pexp.expect_only(10, lnxpmt)
