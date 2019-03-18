@@ -186,6 +186,29 @@
       "QRCHECK" : "False"
     }
   },
+  "Unifi NAS":
+  {
+    "UNAS-4":{
+      "INDEX" : 0,
+      "NAME" : "UNAS-4",
+      "BOARDID" : "ea16",
+      "BOMREV" : "113-02832",
+      "DESC" : "UniFi NAS 4-Bay",
+      "FILE" : "unas_alpine_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
+    },
+    "UNAS-8":{
+      "INDEX" : 1,
+      "NAME" : "UNAS-8",
+      "BOARDID" : "ea18",
+      "BOMREV" : "113-02904",
+      "DESC" : "UniFi NAS 8-Bay",
+      "FILE" : "unas_alpine_factory.py",
+      "T1FILE" : "",
+      "QRCHECK" : "True"
+    }
+  },
 
   "Unifi VOIP":
   {

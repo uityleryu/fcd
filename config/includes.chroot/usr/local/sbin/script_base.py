@@ -6,6 +6,7 @@ import sys
 import time
 import os
 import stat
+import filecmp
 import argparse
 
 from ubntlib.fcd.common import Tee
@@ -18,7 +19,7 @@ class ScriptBase(object):
     def __init__(self):
         self.input_args = self._init_parse_inputs()
         # shared variable object
-        # example usuage - self.variable.{toolspecific}.{variable}
+        # example usuage - self.var.{toolspecific}.{variable}
         self.var = VariableHelper(self.input_args)
         self._init_share_var()
         self.fcd = FCDHelper()
@@ -84,6 +85,14 @@ class ScriptBase(object):
         # retrieve the content from EEPROM partition of DUT
         self.eechk = "e.c." + self.row_id
 
+        # EEPROM related files path on FCD
+        self.eebin_path = os.path.join(self.tftpdir, self.eebin)
+        self.eetxt_path = os.path.join(self.tftpdir, self.eetxt)
+        self.eetgz_path = os.path.join(self.tftpdir, self.eetgz)
+        self.eesign_path = os.path.join(self.tftpdir, self.eesign)
+        self.eechk_path = os.path.join(self.tftpdir, self.eechk)
+
+
         # DUT IP
         baseip = 31
         self.dutip = "192.168.1." + str((int(self.row_id) + baseip))
@@ -107,12 +116,12 @@ class ScriptBase(object):
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
 
         args, _ = parse.parse_known_args()
-        self.row_id = args.row_id
+        self.row_id = args.row_id if args.row_id is not None else "0"
         self.dev = args.dev
         self.tftp_server = args.tftp_server
-        self.board_id = args.board_id
+        self.board_id = args.board_id if args.board_id is not None else "na"
         self.erasecal = args.erasecal
-        self.mac = args.mac.lower()
+        self.mac = args.mac.lower() if args.mac is not None else args.mac
         self.pass_phrase = args.pass_phrase
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
