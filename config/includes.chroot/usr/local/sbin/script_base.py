@@ -166,65 +166,148 @@ class ScriptBase(object):
         time.sleep(3)
         exit(0)
 
-    def check_devreg_data(self):
+    def check_devreg_data(self, dut_tmp_subdir=None):
+        """check devreg data
+        in default we assume the datas under /tmp on dut
+        but if there is sub dir in your tools.tar, you should set dut_subdir
+
+        you MUST make sure there is eesign file under /tftpboot
+
+        Keyword Arguments:
+            dut_subdir {[str]} -- like udm, unas, afi_aln...etc, take refer to structure of fcd-script-tools repo
+        """
         log_debug("Send signed eeprom file from host to DUT ...")
+        eechk_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eechk) if dut_tmp_subdir is not None \
+            else os.path.join(self.dut_tmpdir, self.eechk)
+        eesign_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eesign) if dut_tmp_subdir is not None \
+            else os.path.join(self.dut_tmpdir, self.eesign)
         sstr = [
             "tftp",
             "-g",
             "-r " + self.eesign,
-            "-l " + self.dut_tmpdir + self.eesign,
+            "-l " + eesign_dut_path,
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
             "chmod 777",
-            self.dut_tmpdir + self.eesign
+            eesign_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
-            self.dut_tmpdir + helperexe,
-            "-q",
-            "-i field=flash_eeprom,format=binary,pathname=" + self.dut_tmpdir + self.eesign
+            "dd",
+            "if=" + eesign_dut_path,
+            "of=" + self.devregpart
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
             "dd",
             "if=" + self.devregpart,
-            "of=" + self.dut_tmpdir + self.eechk
+            "of=" + eechk_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
-        os.mknod(tftpdir + self.eechk)
-        os.chmod(tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        os.mknod(self.eechk_path)
+        os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
         sstr = [
             "tftp",
             "-p",
-            "-r " + self.eechk,
-            "-l " + self.dut_tmpdir + self.eechk,
+            "-r " + self.eechk_path,
+            "-l " + eechk_dut_path,
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstrj, lnxpmt)
-        time.sleep(1)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
-        if os.path.isfile(tftpdir + self.eechk):
+        if os.path.isfile(self.eechk_path):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
-            rtc = filecmp.cmp(tftpdir + self.eechk, tftpdir + self.eesign)
+            rtc = filecmp.cmp(self.eechk_path, self.eesign_path)
             if rtc is True:
                 log_debug("Comparing files successfully")
             else:
                 error_critical("Comparing files failed!!")
         else:
             log_debug("Can't find the " + self.eechk + " and " + self.eesign + " files ...")
+
+    def is_dutfile_exist(self, filename):
+        """check if file exist on dut by ls cmd
+
+        Arguments:
+            filename {[str]}
+
+        Returns:
+            [bool]
+        """
+        sstr = [
+            "ls",
+            filename
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        idx = self.pexp.expect_get_index(10, "No such file")
+        if idx == 0:
+            log_debug("Can't find the " + filename)
+            return False
+        else:
+            return True
+
+    def copy_and_unzipping_tools_to_dut(self, timeout=15):
+        log_debug("Send tools.tar from host to DUT ...")
+        source = os.path.join(self.toolsdir, "tools.tar")
+        target = os.path.join(self.dut_tmpdir, "tools.tar")
+        sstr = [
+            "tftp",
+            "-g",
+            "-r " + source,
+            "-l " + target,
+            self.tftp_server
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
+
+        log_debug("Unzipping the tools.tar in the DUT ...")
+        self.is_dutfile_exist(target)
+        sstr = [
+            "tar",
+            "-xvf",
+            target,
+            "-C " + self.dut_tmpdir
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
+
+    def is_network_alive_in_linux(self):
+        time.sleep(3)
+        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.tftp_server)
+        extext_list = ["ping: sendto: Network is unreachable",
+                       r"64 bytes from " + self.tftp_server]
+        index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
+        if index == 0 or index == self.pexp.TIMEOUT:
+            self.pexp.expect_action(timeout=10, exptxt="", action="\003")
+            return False
+        elif index == 1:
+            self.pexp.expect_action(timeout=10, exptxt="", action="\003")
+            return True

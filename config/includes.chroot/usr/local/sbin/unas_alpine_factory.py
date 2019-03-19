@@ -24,7 +24,7 @@ class UNASALPINEFactory(ScriptBase):
     def init_vars(self):
         # override the base vars
         self.user = "root"
-        self.bootloader_prompt = "UBNT"
+        self.ubpmt = "UBNT"
         self.linux_prompt = ["UniFi-NAS", "Error-A12"]
 
         # script specific vars
@@ -73,46 +73,6 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "Version:",
             'ea18': "Version:"
         }
-
-    def is_dutfile_exist(self, dir_filename):
-        sstr = [
-            "ls",
-            dir_filename
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        idx = self.pexp.expect_get_index(10, "No such file")
-        if idx == 0:
-            log_debug("Can't find the " + dir_filename)
-            exit(1)
-        else:
-            return True
-
-    def copy_tools_to_dut(self):
-        log_debug("Send tools.tar from host to DUT ...")
-        source = os.path.join(self.toolsdir, "tools.tar")
-        target = os.path.join(self.dut_tmpdir, "tools.tar")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r " + source,
-            "-l " + target,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Unzipping the tools.tar in the DUT ...")
-        self.is_dutfile_exist(target)
-        sstr = [
-            "tar",
-            "-xvf",
-            target,
-            "-C " + self.dut_tmpdir
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
 
     def data_provision(self):
         log_debug("Change file permission - " + self.helperexe + " ...")
@@ -277,75 +237,13 @@ class UNASALPINEFactory(ScriptBase):
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
 
-    def check_devreg_data(self):
-        log_debug("Send signed eeprom file from host to DUT ...")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r " + self.eesign,
-            "-l " + self.eesign_dut_path,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Change file permission - " + self.eesign + " ...")
-        sstr = [
-            "chmod 777",
-            self.eesign_dut_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Starting to write signed info to SPI flash ...")
-        sstr = [
-            self.helper_path,
-            "-q",
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eesign_dut_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Starting to extract the EEPROM content from SPI flash ...")
-        sstr = [
-            "dd",
-            "if=" + self.devregpart,
-            "of=" + self.eechk_dut_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        os.mknod(self.eechk_path)
-        os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
-        log_debug("Send " + self.eechk + " from DUT to host ...")
-        sstr = [
-            "tftp",
-            "-p",
-            "-r " + self.eechk_path,
-            "-l " + self.eechk_dut_path,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-        time.sleep(1)
-
-        if os.path.isfile(self.eechk_path):
-            log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
-            rtc = filecmp.cmp(self.eechk_path, self.eesign_path)
-            if rtc is True:
-                log_debug("Comparing files successfully")
-            else:
-                error_critical("Comparing files failed!!")
-        else:
-            log_debug("Can't find the " + self.eechk + " and " + self.eesign + " files ...")
-
     def fwupdate(self):
+        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         fwpath = os.path.join(self.dut_tmpdir, "firmware.bin")
         sstr = [
             "tftp",
             "-g",
-            "-r images/" + self.board_id + "-fw.bin",
+            "-r " + fcd_fwpath,
             "-l " + fwpath,
             self.tftp_server
         ]
@@ -360,26 +258,16 @@ class UNASALPINEFactory(ScriptBase):
             fwpath
         ]
         sstrj = ' '.join(sstr)
-        #postexp = [
-        #    ""
-        #]
         self.pexp.expect_action(300, self.linux_prompt, sstrj)
         self.pexp.expect_only(60, "Restarting system")
 
     def check_info(self):
         """under developing
         """
-        ct = 0
-        index = -1
-        #while ct < 5 and index == 0:
-        #    self.pexp.expect_cmd(10, self.linux_prompt, "info")
-        #    index = self.pexp.expect_get_index(5, self.infover[self.board_id])
-        #    ct += 1
-
         self.pexp.expect_action(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
-        self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="systemid error")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
+        self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
+        self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
 
     def run(self):
         """
@@ -407,7 +295,7 @@ class UNASALPINEFactory(ScriptBase):
 
         if PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
-            self.copy_tools_to_dut()
+            self.copy_and_unzipping_tools_to_dut(timeout=30)
             self.data_provision()
 
         if DOHELPER_ENABLE is True:
@@ -418,7 +306,7 @@ class UNASALPINEFactory(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.check_devreg_data(dut_tmp_subdir="unas")
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPDATE_ENABLE is True:

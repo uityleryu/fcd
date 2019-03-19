@@ -16,185 +16,142 @@ REGISTER_ENABLE = True
 FWUPGRADE_ENABLE = True
 DATAVERIFY_ENABLE = True
 
-# U-boot prompt
-ubpmt = "UBNT"
-
-# linux console prompt
-lnxpmt = "#"
-
-tmpdir = "/tmp/"
-tftpdir = ""
-toolsdir = "tools/"
-bomrev = ""
-eepmexe = "rtl838x-ee"
-helperexe = "helper_rtl838x"
-mtdpart = "/dev/mtdblock6"
-dutuser = "ubnt"
-dutpwd = "ubnt"
-
-# number of Ethernet
-ethnum = {
-    'ed20': "17",
-    'ed21': "25",
-    'ed22': "49"
-}
-
-# number of WiFi
-wifinum = {
-    'ed20': "0",
-    'ed21': "0",
-    'ed22': "0"
-}
-
-# number of Bluetooth
-btnum = {
-    'ed20': "0",
-    'ed21': "0",
-    'ed22': "0"
-}
-
 
 class USWLITEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(USWLITEFactoryGeneral, self).__init__()
-        global tftpdir
-        global bomrev
-        tftpdir = self.tftpdir + "/"
-        bomrev = "113-" + self.bom_rev
+        self.init_vars()
 
-    def dutisfile(self, dir_filename):
-        sstr = [
-            "ls",
-            dir_filename
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        idx = self.pexp.expect_get_index(10, "No such file")
-        if idx == 0:
-            log_debug("Can't find the " + dir_filename)
-            exit(1)
-        else:
-            return True
+    def init_vars(self):
+        # script specific vars
+        self.ubpmt = "UBNT"
+        self.devregpart = "/dev/mtdblock6"
+        self.bomrev = "113-" + self.bom_rev
+        self.eepmexe = "rtl838x-ee"
+        self.helperexe = "helper_rtl838x"
+        self.dut_uswdir = os.path.join(self.dut_tmpdir, "usw_lite")
+        self.helper_path = os.path.join(self.dut_uswdir, self.helperexe)
+        self.eepmexe_path = os.path.join(self.dut_uswdir, self.eepmexe)
 
-    def copytool2dut(self):
-        global toolsdir
-        global tmpdir
-        log_debug("Send tools.tar from host to DUT ...")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r " + toolsdir + "tools.tar",
-            "-l " + tmpdir + "tools.tar",
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        # EEPROM related files path on DUT
+        self.eesign_dut_path = os.path.join(self.dut_uswdir, self.eesign)
+        self.eetgz_dut_path = os.path.join(self.dut_uswdir, self.eetgz)
+        self.eechk_dut_path = os.path.join(self.dut_uswdir, self.eechk)
+        self.eebin_dut_path = os.path.join(self.dut_uswdir, self.eebin)
+        self.eetxt_dut_path = os.path.join(self.dut_uswdir, self.eetxt)
 
-        log_debug("Unzipping the tools.tar in the DUT ...")
-        self.dutisfile(tmpdir + "tools.tar")
-        sstr = [
-            "tar",
-            "-xvzf",
-            tmpdir + "tools.tar",
-            "-C " + tmpdir
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.fcd_uswdir = os.path.join(self.tftpdir, "tmp", "usw_lite")
+
+        # number of Ethernet
+        self.ethnum = {
+            'ed20': "17",
+            'ed21': "25",
+            'ed22': "49"
+        }
+
+        # number of WiFi
+        self.wifinum = {
+            'ed20': "0",
+            'ed21': "0",
+            'ed22': "0"
+        }
+
+        # number of Bluetooth
+        self.btnum = {
+            'ed20': "0",
+            'ed21': "0",
+            'ed22': "0"
+        }
 
     def data_provision(self):
-        log_debug("Change file permission - " + helperexe + " ...")
-        self.dutisfile(tmpdir + helperexe)
-        self.dutisfile(tmpdir + eepmexe)
+        log_debug("Change file permission - " + self.helperexe + " ...")
+        self.is_dutfile_exist(self.helper_path)
+        self.is_dutfile_exist(self.eepmexe_path)
         sstr = [
             "chmod 777",
-            tmpdir + helperexe
+            self.helper_path
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
 
-        log_debug("Change file permission - " + eepmexe + " ...")
+        log_debug("Change file permission - " + self.eepmexe + " ...")
         sstr = [
             "chmod 777",
-            tmpdir + eepmexe
+            self.eepmexe_path
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
-        log_debug("Starting to do " + eepmexe + "...")
+        log_debug("Starting to do " + self.eepmexe + "...")
         sstr = [
-            tmpdir + eepmexe,
+            self.eepmexe_path,
             "-F",
-            "-r " + bomrev,
+            "-r " + self.bomrev,
             "-s 0x" + self.board_id,
             "-m " + self.mac,
             "-c 0x" + self.region,
-            "-e " + ethnum[self.board_id],
-            "-w " + wifinum[self.board_id],
-            "-b " + btnum[self.board_id],
+            "-e " + self.ethnum[self.board_id],
+            "-w " + self.wifinum[self.board_id],
+            "-b " + self.btnum[self.board_id],
             "-k"
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
         self.pexp.expect_only(60, "ssh-dss")
         self.pexp.expect_only(60, "ssh-rsa")
-        self.pexp.expect_only(30, lnxpmt)
+        self.pexp.expect_only(30, self.linux_prompt)
 
     def prepare_sever_need_files(self):
-        log_debug("Starting to do " + helperexe + "...")
+        log_debug("Starting to do " + self.helperexe + "...")
         sstr = [
-            tmpdir + helperexe,
+            self.helper_path,
             "-q",
             "-c product_class=basic",
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin_dut_path,
             ">",
-            self.eetxt
+            self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
         sstr = [
             "tar",
             "cf",
-            self.eetgz,
-            self.eebin,
-            self.eetxt
+            self.eetgz_dut_path,
+            self.eebin_dut_path,
+            self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
-        os.mknod(tftpdir + self.eetgz)
-        os.chmod(tftpdir + self.eetgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        os.mknod(self.eetgz_path)
+        os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         log_debug("Send helper output tgz file from DUT to host ...")
         sstr = [
             "tftp",
             "-p",
-            "-r " + self.eetgz,
-            "-l " + self.eetgz,
+            "-r " + self.eetgz_path,
+            "-l " + self.eetgz_dut_path,
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_only(10, self.linux_prompt)
 
         sstr = [
             "tar",
-            "xvf " + tftpdir + self.eetgz,
-            "-C " + tftpdir
+            "xvf " + self.eetgz_path,
+            "-C " + self.tftpdir
         ]
         sstrj = ' '.join(sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstrj)
@@ -203,11 +160,29 @@ class USWLITEFactoryGeneral(ScriptBase):
             error_critical("Decompressing " + self.eetgz + " file failed!!")
         else:
             log_debug("Decompressing " + self.eetgz + " files successfully")
+        eetxt = os.path.join(self.fcd_uswdir, self.eetxt)
+        eebin = os.path.join(self.fcd_uswdir, self.eebin)
+        sstr = [
+            "mv",
+            eetxt,
+            self.eetxt_path
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
+        sstr = [
+            "mv",
+            eebin,
+            self.eebin_path
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
 
     def registration(self):
         log_debug("Starting to do registration ...")
         cmd = [
-            "cat " + tftpdir + self.eetxt,
+            "cat " + self.eetxt_path,
             "|",
             'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
             "|",
@@ -228,8 +203,8 @@ class USWLITEFactoryGeneral(ScriptBase):
             "-k " + self.pass_phrase,
             regsubparams,
             "-i field=qr_code,format=hex,value=" + self.qrhex,
-            "-i field=flash_eeprom,format=binary,pathname=" + tftpdir + self.eebin,
-            "-o field=flash_eeprom,format=binary,pathname=" + tftpdir + self.eesign,
+            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
             "-o field=registration_id",
             "-o field=result",
             "-o field=device_id",
@@ -252,81 +227,39 @@ class USWLITEFactoryGeneral(ScriptBase):
         else:
             log_debug("Excuting client_x86 registration successfully")
 
-        rtf = os.path.isfile(tftpdir + self.eesign)
+        rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
 
-    def check_devreg_data(self):
-        log_debug("Send signed eeprom file from host to DUT ...")
+    def fwupdate(self):
+        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        fwpath = os.path.join(self.dut_tmpdir, "fwupdate.bin")
         sstr = [
             "tftp",
             "-g",
-            "-r " + self.eesign,
-            "-l " + tmpdir + self.eesign,
+            "-r " + fcd_fwpath,
+            "-l " + fwpath,
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
 
-        log_debug("Change file permission - " + self.eesign + " ...")
+        log_debug("Starting to do fwupdate ... ")
         sstr = [
-            "chmod 777",
-            tmpdir + self.eesign
+            "syswrapper.sh",
+            "upgrade2"
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(300, self.linux_prompt, sstrj)
+        self.pexp.expect_only(180, "Restarting system")
 
-        log_debug("Starting to write signed info to SPI flash ...")
-        sstr = [
-            "dd",
-            "if=" + tmpdir + self.eesign,
-            "of=" + mtdpart
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
-
-        log_debug("Starting to extract the EEPROM content from SPI flash ...")
-        sstr = [
-            "dd",
-            "if=" + mtdpart,
-            "of=" + tmpdir + self.eechk
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
-
-        os.mknod(tftpdir + self.eechk)
-        os.chmod(tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
-        log_debug("Send " + self.eechk + " from DUT to host ...")
-        sstr = [
-            "tftp",
-            "-p",
-            "-r " + self.eechk,
-            "-l " + tmpdir + self.eechk,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, sstrj)
-        self.pexp.expect_only(10, lnxpmt)
-
-        if os.path.isfile(tftpdir + self.eechk):
-            log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
-            rtc = filecmp.cmp(tftpdir + self.eechk, tftpdir + self.eesign)
-            if rtc is True:
-                log_debug("Comparing files successfully")
-            else:
-                error_critical("Comparing files failed!!")
-        else:
-            log_debug("Can't find the " + self.eechk + " and " + self.eesign + " files ...")
+    def check_info(self):
+        """under developing
+        """
+        self.pexp.expect_action(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
+        self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
+        self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def run(self):
         """
@@ -334,7 +267,6 @@ class USWLITEFactoryGeneral(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -345,19 +277,20 @@ class USWLITEFactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         self.pexp.expect_action(150, "Please press Enter to activate this console", "")
-        self.pexp.expect_action(30, "login:", dutuser)
-        self.pexp.expect_action(10, "Password:", dutpwd)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, lnxpmt, "dmesg -n 1")
-        self.sleep(5)
-        self.pexp.expect_action(10, lnxpmt, "ping " + self.tftp_server)
-        self.pexp.expect_action(10, "64 bytes from", '\003')
-        self.pexp.expect_only(10, lnxpmt)
+        self.pexp.expect_action(30, "login:", self.user)
+        self.pexp.expect_action(10, "Password:", self.password)
+        for _ in range(3):
+            is_network_alive = self.is_network_alive_in_linux()
+            if is_network_alive is True:
+                break
+            time.sleep(5)
+        if is_network_alive is not True:
+            error_critical("Network is not good")
         msg(10, "Boot up to linux console and network is good ...")
 
         if PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
-            self.copytool2dut()
+            self.copy_and_unzipping_tools_to_dut(timeout=60)
             self.data_provision()
 
         if DOHELPER_ENABLE is True:
@@ -368,24 +301,29 @@ class USWLITEFactoryGeneral(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.check_devreg_data(dut_tmp_subdir="usw_lite")
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPGRADE_ENABLE is True:
-            pass
+            self.fwupdate()
+            msg(70, "Succeeding in downloading the fw file ...")
+            self.pexp.expect_action(300, "Please press Enter to activate this console", "")
+            self.pexp.expect_action(15, "login:", self.user)
+            self.pexp.expect_action(15, "Password:", self.password)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
+            msg(75, "Completing firmware upgrading ...")
 
         if DATAVERIFY_ENABLE is True:
-            pass
-        exit(0)
+            self.check_info()
+            msg(80, "Succeeding in checking the devreg information ...")
+
+        msg(100, "Completing FCD process ...")
+        self.close_fcd()
 
 
 def main():
-    if len(sys.argv) < 10:  # TODO - hardcode
-        msg(no="", out=str(sys.argv))
-        error_critical(msg="Arguments are not enough")
-    else:
-        us_factory_general = USWLITEFactoryGeneral()
-        us_factory_general.run()
+    us_factory_general = USWLITEFactoryGeneral()
+    us_factory_general.run()
 
 if __name__ == "__main__":
     main()

@@ -22,7 +22,10 @@ IMAGE-ULS-RPS= \
     usw-fw/unifiswitch-ulsrps-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin
 
-IMAGE-USW-LITE=
+IMAGE-USW-LITE= \
+    images/ed20* \
+    images/ed21* \
+    usw-fw/US.rtl838x.*
 
 IMAGE-USW+=$(IMAGE-USW-24)
 IMAGE-USW+=$(IMAGE-USW-6XG)
@@ -41,10 +44,10 @@ TOOLS-CONFIG= common/* common/.
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 
-TOOLS-USW-LITE+=$(TOOLS-CONFIG)
+TOOLS-USW-LITE+=$(TOOLS-USW)
 TOOLS-USW-LITE+= \
-    helper_rtl838x \
-    rtl838x-ee
+    usw_lite/helper_rtl838x \
+    usw_lite/rtl838x-ee
 
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-24=$(TOOLS-USW)
