@@ -251,7 +251,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(300, self.linux_prompt, sstrj)
-        self.pexp.expect_only(180, "Restarting system")
+        self.pexp.expect_only(300, "Restarting system")
 
     def check_info(self):
         """under developing
@@ -276,9 +276,11 @@ class USWLITEFactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        self.pexp.expect_action(150, "Please press Enter to activate this console", "")
+        self.pexp.expect_action(300, "Please press Enter to activate this console", "")
         self.pexp.expect_action(30, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
+        self.pexp.expect_action(10, self.linux_prompt, "initd")
+
         for _ in range(3):
             is_network_alive = self.is_network_alive_in_linux()
             if is_network_alive is True:
@@ -303,6 +305,19 @@ class USWLITEFactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data(dut_tmp_subdir="usw_lite")
             msg(50, "Finish doing signed file and EEPROM checking ...")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+            self.pexp.expect_action(300, "Please press Enter to activate this console", "")
+            self.pexp.expect_action(30, "login:", self.user)
+            self.pexp.expect_action(10, "Password:", self.password)
+            self.pexp.expect_action(10, self.linux_prompt, "initd")
+            for _ in range(3):
+                is_network_alive = self.is_network_alive_in_linux()
+                if is_network_alive is True:
+                    break
+                time.sleep(5)
+            if is_network_alive is not True:
+                error_critical("Network is not good")
+            msg(10, "Boot up to linux console and network is good ...")
 
         if FWUPGRADE_ENABLE is True:
             self.fwupdate()
