@@ -420,9 +420,9 @@ class USFLEXFactory(ScriptBase):
             if self.board_id not in diag_en:
                 self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
                 self.pexp.expect_only(60, "done")
-            else:
-                self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-                self.pexp.expect_only(120, "done")
+
+            self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+            self.pexp.expect_only(120, "done")
             msg(62, 'Booting into released firmware...')
 
         rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
