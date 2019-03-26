@@ -63,6 +63,12 @@ class USWLITEFactoryGeneral(ScriptBase):
             'ed22': "0"
         }
 
+        self.netif = {
+            'ed20': "ifconfig eth0 ",
+            'ed21': "ifconfig eth0 ",
+            'ed22': "ifconfig eth0 "
+        }
+
     def data_provision(self):
         log_debug("Change file permission - " + self.helperexe + " ...")
         self.is_dutfile_exist(self.helper_path)
@@ -280,7 +286,8 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(30, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
         self.pexp.expect_action(10, self.linux_prompt, "initd")
-
+        time.sleep(5)
+        self.pexp.expect_action(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
         for _ in range(3):
             is_network_alive = self.is_network_alive_in_linux()
             if is_network_alive is True:
