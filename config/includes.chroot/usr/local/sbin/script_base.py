@@ -295,7 +295,7 @@ class ScriptBase(object):
         self.is_dutfile_exist(target)
         sstr = [
             "tar",
-            "-xvf",
+            "-xzvf",
             target,
             "-C " + self.dut_tmpdir
         ]
