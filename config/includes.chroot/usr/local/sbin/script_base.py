@@ -241,8 +241,7 @@ class ScriptBase(object):
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
-
+        time.sleep(3)  # in case the e.c.0 is still in transfering
         if os.path.isfile(self.eechk_path):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
             rtc = filecmp.cmp(self.eechk_path, self.eesign_path)

@@ -9,11 +9,12 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
+INSTALL_NAND_FW_ENABLE = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-FWUPDATE_ENABLE = True
-DATAVERIFY_ENABLE = False
+FWUPDATE_ENABLE = False
+DATAVERIFY_ENABLE = True
 
 
 class UNASALPINEFactory(ScriptBase):
@@ -24,7 +25,7 @@ class UNASALPINEFactory(ScriptBase):
     def init_vars(self):
         # override the base vars
         self.user = "root"
-        self.ubpmt = "UBNT"
+        self.ubpmt = "UBNT_NAS"
         self.linux_prompt = ["UniFi-NAS", "Error-A12"]
 
         # script specific vars
@@ -46,10 +47,9 @@ class UNASALPINEFactory(ScriptBase):
         self.fcd_unasdir = os.path.join(self.tftpdir, "tmp", "unas")
 
         # number of Ethernet
-
         self.ethnum = {
-            'ea16': "1",
-            'ea18': "1"
+            'ea16': "2",
+            'ea18': "2"
         }
 
         # number of WiFi
@@ -68,11 +68,34 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "ifconfig enp0s1 ",
             'ea18': "ifconfig enp0s1 "
         }
-        # TO-DO remove if no need
-        self.infover = {
-            'ea16': "Version:",
-            'ea18': "Version:"
-        }
+
+    def install_nand_fw(self):
+        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        nand_path_for_dut = os.path.join(self.tftpdir, "firmware.bin")
+        sstr = [
+            "cp",
+            "-p",
+            fcd_fwpath,
+            nand_path_for_dut
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
+        if int(rtc) > 0:
+            error_critical("Copying nand flash to tftp server failed")
+        else:
+            log_debug("Copying nand flash to tftp server successfully")
+        self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
+        self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
+        self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
+        # clean up /config block, trap into "factory install" mode
+        self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
+        self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra server=" + self.tftp_server)
+        self.pexp.expect_action(10, self.ubpmt, "boot")
+        msg(15, "Installing fw on nand")
+        self.pexp.expect_only(10, "bootargs=", err_msg="Cannot see reboot msg after enter boot cmd in uboot")
+        self.pexp.expect_only(10, "Starting kernel", err_msg="No msg of process of installation")
 
     def data_provision(self):
         log_debug("Change file permission - " + self.helperexe + " ...")
@@ -145,7 +168,7 @@ class UNASALPINEFactory(ScriptBase):
         sstr = [
             "tftp",
             "-p",
-            "-r " + self.eetgz_path,
+            "-r " + self.eetgz,
             "-l " + self.eetgz_dut_path,
             self.tftp_server
         ]
@@ -238,7 +261,7 @@ class UNASALPINEFactory(ScriptBase):
             error_critical("Can't find " + self.eesign)
 
     def fwupdate(self):
-        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        fcd_fwpath = os.path.join(self.image, self.board_id + "-fw.bin")
         fwpath = os.path.join(self.dut_tmpdir, "firmware.bin")
         sstr = [
             "tftp",
@@ -283,42 +306,47 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        msg(5, "Boot to linux console ...")
-        self.pexp.expect_action(60, "login:", self.user)
+        if INSTALL_NAND_FW_ENABLE is True:
+            msg(5, "Boot to u-boot console ...")
+            self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
+            self.install_nand_fw()  # will be rebooting after installation
+
+        msg(30, "Waiting boot to linux console...")
+        self.pexp.expect_action(600, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
         time.sleep(2)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, ["64 bytes from"])
-        msg(10, "Boot up to linux console and network is good ...")
+        msg(35, "Boot up to linux console and network is good ...")
 
         if PROVISION_ENABLE is True:
-            msg(20, "Send tools to DUT and data provision ...")
+            msg(40, "Send tools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=30)
             self.data_provision()
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
-            msg(30, "Do helper to get the output file to devreg server ...")
+            msg(45, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
         if REGISTER_ENABLE is True:
             self.registration()
-            msg(40, "Finish doing registration ...")
+            msg(60, "Finish doing registration ...")
             self.check_devreg_data(dut_tmp_subdir="unas")
-            msg(50, "Finish doing signed file and EEPROM checking ...")
+            msg(70, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
-            msg(70, "Succeeding in downloading the fw file ...")
             self.pexp.expect_action(300, "login:", self.user)
             self.pexp.expect_action(15, "Password:", self.password)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
+            msg(80, "Succeeding in downloading the fw file ...")
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
+            msg(90, "Succeeding in checking the devreg information ...")
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
