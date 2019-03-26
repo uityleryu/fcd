@@ -65,8 +65,10 @@ class ScriptBase(object):
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
         self.tftpdir = "/tftpboot"
-        self.fwdir = self.tftpdir + "/images"
-        self.toolsdir = self.tftpdir + "/tools"
+        self.image = "images"
+        self.fwdir = os.path.join(self.tftpdir, self.image)
+        self.tools = "tools"
+        self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
         self.dut_tmpdir = "/tmp"
         self.devregpart = ""
 
@@ -232,7 +234,7 @@ class ScriptBase(object):
         sstr = [
             "tftp",
             "-p",
-            "-r " + self.eechk_path,
+            "-r " + self.eechk,
             "-l " + eechk_dut_path,
             self.tftp_server
         ]
@@ -276,7 +278,7 @@ class ScriptBase(object):
 
     def copy_and_unzipping_tools_to_dut(self, timeout=15):
         log_debug("Send tools.tar from host to DUT ...")
-        source = os.path.join(self.toolsdir, "tools.tar")
+        source = os.path.join(self.tools, "tools.tar")
         target = os.path.join(self.dut_tmpdir, "tools.tar")
         sstr = [
             "tftp",
@@ -287,8 +289,9 @@ class ScriptBase(object):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
-
+        self.pexp.expect_only(40, self.linux_prompt)
         log_debug("Unzipping the tools.tar in the DUT ...")
+
         self.is_dutfile_exist(target)
         sstr = [
             "tar",

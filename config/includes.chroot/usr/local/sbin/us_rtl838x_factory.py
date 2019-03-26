@@ -102,7 +102,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
         self.pexp.expect_only(60, "ssh-dss")
-        self.pexp.expect_only(60, "ssh-rsa")
+        self.pexp.expect_only(90, "ssh-rsa")
         self.pexp.expect_only(30, self.linux_prompt)
 
     def prepare_sever_need_files(self):
@@ -139,7 +139,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         sstr = [
             "tftp",
             "-p",
-            "-r " + self.eetgz_path,
+            "-r " + self.eetgz,
             "-l " + self.eetgz_dut_path,
             self.tftp_server
         ]
@@ -232,7 +232,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             error_critical("Can't find " + self.eesign)
 
     def fwupdate(self):
-        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        fcd_fwpath = os.path.join(self.image, self.board_id + "-fw.bin")
         fwpath = os.path.join(self.dut_tmpdir, "fwupdate.bin")
         sstr = [
             "tftp",
