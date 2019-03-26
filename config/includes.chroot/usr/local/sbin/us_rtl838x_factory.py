@@ -109,7 +109,6 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
         self.pexp.expect_only(60, "ssh-dss")
         self.pexp.expect_only(90, "ssh-rsa")
-        self.pexp.expect_only(30, self.linux_prompt)
 
     def prepare_sever_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
@@ -122,9 +121,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
 
         sstr = [
             "tar",
@@ -134,9 +131,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
 
         os.mknod(self.eetgz_path)
         os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -150,9 +145,8 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        time.sleep(5)
 
         sstr = [
             "tar",
@@ -317,6 +311,9 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.pexp.expect_action(30, "login:", self.user)
             self.pexp.expect_action(10, "Password:", self.password)
             self.pexp.expect_action(10, self.linux_prompt, "initd")
+            time.sleep(5)
+            self.pexp.expect_action(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
+
             for _ in range(3):
                 is_network_alive = self.is_network_alive_in_linux()
                 if is_network_alive is True:
@@ -324,7 +321,7 @@ class USWLITEFactoryGeneral(ScriptBase):
                 time.sleep(5)
             if is_network_alive is not True:
                 error_critical("Network is not good")
-            msg(10, "Boot up to linux console and network is good ...")
+            msg(60, "Boot up to linux console and network is good ...")
 
         if FWUPGRADE_ENABLE is True:
             self.fwupdate()
