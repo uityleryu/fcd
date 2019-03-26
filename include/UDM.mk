@@ -46,7 +46,9 @@ FCDIMG_VER=
 UBNTLIB_VER=
 TOOL_VER=
 
-TOOLS-CONFIG= common/* common/.
+TOOLS-CONFIG= \
+    common/.tmux.conf \
+    common/sshd_config
 
 TOOLS-UDM+=$(TOOLS-CONFIG)
 TOOLS-UDM+= udm/*
