@@ -300,6 +300,7 @@ class ScriptBase(object):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
+        self.pexp.expect_only(40, self.linux_prompt)
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
