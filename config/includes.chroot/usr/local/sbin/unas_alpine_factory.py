@@ -72,24 +72,27 @@ class UNASALPINEFactory(ScriptBase):
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         nand_path_for_dut = os.path.join(self.tftpdir, "firmware.bin")
-        sstr = [
-            "cp",
-            "-p",
-            fcd_fwpath,
-            nand_path_for_dut
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
-        if int(rtc) > 0:
-            error_critical("Copying nand flash to tftp server failed")
+        if not os.path.isfile(nand_path_for_dut):
+            sstr = [
+                "cp",
+                "-p",
+                fcd_fwpath,
+                nand_path_for_dut
+            ]
+            sstrj = ' '.join(sstr)
+            [sto, rtc] = self.fcd.common.xcmd(sstrj)
+            time.sleep(1)
+            if int(rtc) > 0:
+                error_critical("Copying nand flash to tftp server failed")
+            else:
+                log_debug("Copying nand flash to tftp server successfully")
         else:
-            log_debug("Copying nand flash to tftp server successfully")
+            log_debug("firmware.bin is already existed under /tftpboot")
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
         self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
-        # clean up /config block, trap into "factory install" mode
+        # clean up config block, trap into "factory install" mode
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
         self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra server=" + self.tftp_server)
         self.pexp.expect_action(10, self.ubpmt, "boot")
