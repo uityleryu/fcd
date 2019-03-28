@@ -31,13 +31,18 @@ vlanport_idx = {'ed10': "'6 4'",
                 'ec25': "'6 0'",
                 'ec26': "'6 0'",
                 'ed11': "'6 0'"}
+# flash size map
+flash_size = {'ed10' : "33554432",
+              'ed25' : "33554432",
+              'ed26' : "33554432",
+              'ed11' : "16777216"}
 
 radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
-
 diag_en = {'ed10'}
+zeroip_en = {'ed10', 'ed11'}
 
 # Pre-load image is for FCD/FTU
-preload_fcd = {'ed11'}
+preload_fcd = {}
 
 
 class USFLEXFactory(ScriptBase):
@@ -438,14 +443,14 @@ class USFLEXFactory(ScriptBase):
         msg(64, 'Checking EEPROM...')
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(30, "flashSize=33554432")
+        self.pexp.expect_only(30, "flashSize="+flash_size[self.board_id])
         self.pexp.expect_only(30, "systemid="+self.board_id)
         self.pexp.expect_only(30, "serialno="+self.mac.lower())
         self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
 
-        if self.board_id in diag_en:
+        if self.board_id in zeroip_en:
             msg(70, "Setting zero config ip...")
             comm_util = Common()
             zero_cfg_ip = comm_util.get_zeroconfig_ip(self.mac)

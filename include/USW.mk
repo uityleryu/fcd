@@ -20,7 +20,8 @@ IMAGE-USW-FLEX= \
 IMAGE-ULS-RPS= \
     images/ed11* \
     usw-fw/unifiswitch-ulsrps-* \
-    usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin
+    usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+    usw-fw/US.mt7621.sh-add-uls-rps-rebase-develop.10098.190320.2303-uboot.bin
 
 IMAGE-USW-LITE= \
     images/ed20* \
@@ -53,6 +54,13 @@ TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-24=$(TOOLS-USW)
 TOOLS-USW-FLEX=$(TOOLS-USW)
 TOOLS-ULS-RPS=$(TOOLS-USW)
+TOOLS-ULS-RPS+= \
+    uls_rps/burnin.sh \
+    uls_rps/burnin.cfg \
+    uls_rps/system.cfg.burnin \
+    uls_rps/ubidiag \
+    uls_rps/uls_get_power_status_fcd.sh \
+    uls_rps/uls_power.sh 
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
