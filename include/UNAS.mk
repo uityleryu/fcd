@@ -10,7 +10,9 @@ IMAGE-UNAS+=$(IMAGE-UNAS4)
 IMAGE-UNAS+=$(IMAGE-UNAS8)
 
 DIAG_MODEL=null
-DIAG_UI_MODEL=UNAS
+DIAG_UI_MODEL=UniFiNAS
+BACKT1_PRDSRL=$(DIAG_UI_MODEL)
+DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER=
 FCDIMG_VER=
@@ -18,8 +20,8 @@ UBNTLIB_VER=
 TOOL_VER=
 
 TOOLS-CONFIG= \
-    common/.tmux.conf \
-    common/sshd_config
+    common/sshd_config \
+    common/tmux.conf
 
 TOOLS-UNAS+=$(TOOLS-CONFIG)
 TOOLS-UNAS+= \

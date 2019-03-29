@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Factory-test
+Type=Application
+Exec=sudo python3 /usr/local/sbin/FCDSecurityRegs.py -p=PRODUCTSRL
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=Factory-test
+GenericName[en_US]=
+Comment[en_US]=Utility for production of Ubiquiti units
+GenericName=
+Comment=Utility for production
+Icon=/usr/local/sbin/icons/sever-security.png
+StartupNotify=false

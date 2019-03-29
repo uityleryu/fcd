@@ -6,6 +6,7 @@ from time import sleep
 from ubntlib.gui.msgdialog import msgerrror, msginfo
 from ubntlib.fcd.common import Common
 
+import argparse
 import gi
 import re
 import os
@@ -78,6 +79,10 @@ css = b"""
     font-size: 15px;
 }
 """
+
+parse = argparse.ArgumentParser(description="Back T1 args Parse")
+parse.add_argument('--product', '-p', dest='product', help='The name of the product series', default=None)
+args, _ = parse.parse_known_args()
 
 
 class fraMonitorPanel(Gtk.Frame):
@@ -518,21 +523,19 @@ class dlgUserInput(Gtk.Dialog):
         self.prods = json.load(f)
         f.close()
 
-        # Product Series combo box
-        self.lblpds = Gtk.Label("Select a product series:")
-        self.lsrpdslist = Gtk.ListStore(str)
-        for item in sorted(self.prods.keys()):
-            self.lsrpdslist.append([item])
-
-        self.crtrpdslist = Gtk.CellRendererText()
-        self.cmbbpds = Gtk.ComboBox.new_with_model(self.lsrpdslist)
-        self.cmbbpds.pack_start(self.crtrpdslist, True)
-        self.cmbbpds.add_attribute(self.crtrpdslist, "text", 0)
-        self.cmbbpds.connect("changed", self.on_pds_combo_changed)
+        GCommon.active_product_series = args.product
+        self.log.info("The Product Series: " + GCommon.active_product_series)
 
         # Product combo box
         self.lblallpd = Gtk.Label("Select a product:")
         self.lsrallpdlist = Gtk.ListStore(int, str)
+
+        self.lsrallpdlist.clear()
+        [GCommon.active_productidx, GCommon.active_product] = ["", ""]
+
+        for key, val in sorted(self.prods[args.product].items()):
+            if val['FILE'] != "":
+                self.lsrallpdlist.append([val['INDEX'], key])
 
         self.crtrallpdlist = Gtk.CellRendererText()
         self.cmbballpd = Gtk.ComboBox.new_with_model(self.lsrallpdlist)
@@ -560,8 +563,6 @@ class dlgUserInput(Gtk.Dialog):
 
         self.vboxuserauth.pack_start(self.lblpassphrase, False, False, 0)
         self.vboxuserauth.pack_start(self.etypassphrase, False, False, 0)
-        self.vboxuserauth.pack_start(self.lblpds, False, False, 0)
-        self.vboxuserauth.pack_start(self.cmbbpds, False, False, 0)
         self.vboxuserauth.pack_start(self.lblallpd, False, False, 0)
         self.vboxuserauth.pack_start(self.cmbballpd, False, False, 0)
         self.vboxuserauth.pack_start(self.lblbomrev, False, False, 0)
@@ -577,18 +578,6 @@ class dlgUserInput(Gtk.Dialog):
         passphrase = self.etypassphrase.get_text()
         GCommon.active_passphrase = passphrase.strip()
         self.log.info("In on_phassphrase_changed(), the passphrse: " + GCommon.active_passphrase)
-
-    def on_pds_combo_changed(self, combo):
-        tree_iter = combo.get_active_iter()
-        if tree_iter is not None:
-            model = combo.get_model()
-            GCommon.active_product_series = model[tree_iter][0]
-            self.log.info("In on_pds_combo_changed(), the Product Series: " + GCommon.active_product_series)
-
-        self.lsrallpdlist.clear()
-        [GCommon.active_productidx, GCommon.active_product] = ["", ""]
-        for key, val in sorted(self.prods[GCommon.active_product_series].items()):
-            self.lsrallpdlist.append([val['INDEX'], key])
 
     def on_allpd_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()

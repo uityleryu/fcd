@@ -28,20 +28,32 @@ IMAGE-USW-LITE= \
     images/ed21* \
     usw-fw/US.rtl838x.*
 
+IMAGE-USW-LEAF= \
+    images/f060* \
+    usw-fw/usw-leaf* \
+    usw-fw/udc* \
+    usw-fw/UDC*
+
 IMAGE-USW+=$(IMAGE-USW-24)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
 IMAGE-USW+=$(IMAGE-USW-LITE)
+IMAGE-USW+=$(IMAGE-USW-LEAF)
 
 DIAG_MODEL=us_flex
-DIAG_UI_MODEL=Unifi-Switch
+DIAG_UI_MODEL=UniFiSwitch
+BACKT1_PRDSRL=$(DIAG_UI_MODEL)
+DRVREG_PRDSRL=$(DIAG_UI_MODEL)
+
 UPYFCD_VER=
 FCDIMG_VER=
 UBNTLIB_VER=
 TOOL_VER=
 
-TOOLS-CONFIG= common/* common/.
+TOOLS-CONFIG= \
+    common/sshd_config \
+    common/tmux.conf
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 
@@ -49,6 +61,9 @@ TOOLS-USW-LITE+=$(TOOLS-USW)
 TOOLS-USW-LITE+= \
     usw_lite/helper_rtl838x \
     usw_lite/rtl838x-ee
+
+TOOLS-USW-LEAF+=$(TOOLS-USW)
+TOOLS-USW-LEAF+= usw-leaf/*
 
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-24=$(TOOLS-USW)
@@ -68,3 +83,4 @@ $(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)))
 $(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)))
+$(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)))

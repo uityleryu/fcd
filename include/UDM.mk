@@ -40,6 +40,8 @@ IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 
 DIAG_MODEL=udm
 DIAG_UI_MODEL=UniFiDream
+BACKT1_PRDSRL=$(DIAG_UI_MODEL)
+DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER=
 FCDIMG_VER=
@@ -47,8 +49,8 @@ UBNTLIB_VER=
 TOOL_VER=
 
 TOOLS-CONFIG= \
-    common/.tmux.conf \
-    common/sshd_config
+    common/sshd_config \
+    common/tmux.conf
 
 TOOLS-UDM+=$(TOOLS-CONFIG)
 TOOLS-UDM+= udm/*

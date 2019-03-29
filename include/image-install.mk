@@ -18,9 +18,13 @@ image-install-$1:
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
 	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
 	sed -i s/MODEL/$(DIAG_UI_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
+	sed -i s/PRODUCTSRL/$(BACKT1_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
+	sed -i s/PRODUCTSRL/$(DRVREG_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*

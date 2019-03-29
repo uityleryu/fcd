@@ -1,5 +1,5 @@
 {
-  "UniFi ONE":
+  "UniFiDream":
   {
     "UDM":{
       "INDEX" : 0,
@@ -57,7 +57,7 @@
     }
   },
 
-  "Unifi Switch":
+  "UniFiSwitch":
   {
     "US-FLEX":{
       "INDEX" : 0,
@@ -81,7 +81,7 @@
       "QRCHECK" : "True"
     },
 
-      "US-48-PRO":{
+    "US-48-PRO":{
       "INDEX" : 2,
       "NAME" : "US-48-PRO",
       "BOARDID" : "eb67",
@@ -134,19 +134,27 @@
       "FILE" : "us_rtl838x_factory.py",
       "T1FILE" : "",
       "QRCHECK" : "True"
+    },
+
+    "USW-LEAF":{
+      "INDEX" : 5,
+      "NAME" : "USW-LEAF",
+      "BOARDID" : "f060",
+      "BOMREV" : "113-02759",
+      "DESC" : "UniFi Super Switch 48-port",
+      "FILE" : "us_udc-alpine_factory.py",
+      "T1FILE" : "us_alpine_diagloader.py",
+      "QRCHECK" : "True"
     }
   },
 
-
-  "Unifi AP":
+  "UniFiAP":
   {
   },
 
-
-  "Unifi SG":
+  "UniFiSG":
   {
   },
-
 
   "Amplifi":
   {
@@ -186,7 +194,8 @@
       "QRCHECK" : "False"
     }
   },
-  "Unifi NAS":
+
+  "UniFiNAS":
   {
     "UNAS-4":{
       "INDEX" : 0,
@@ -198,6 +207,7 @@
       "T1FILE" : "",
       "QRCHECK" : "True"
     },
+
     "UNAS-8":{
       "INDEX" : 1,
       "NAME" : "UNAS-8",
@@ -210,7 +220,7 @@
     }
   },
 
-  "Unifi VOIP":
+  "UniFiVOIP":
   {
     "UVP-FLEX":{
       "INDEX" : 0,

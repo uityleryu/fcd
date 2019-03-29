@@ -133,7 +133,7 @@ class ScriptBase(object):
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         return args
 
-    def login(self, username=None, password=None):
+    def login(self, username=None, password=None, timeout=None):
         """
         should be called at login console
         """
@@ -141,7 +141,13 @@ class ScriptBase(object):
             # No username/password input, using default account
             username = self.user
             password = self.password
-        self.pexp.expect_action(timeout=15, exptxt="login:", action=username)
+
+        if timeout is not None:
+            tout = timeout
+        else:
+            tout = 15
+
+        self.pexp.expect_action(timeout=tout, exptxt="login:", action=username)
         self.pexp.expect_action(timeout=15, exptxt="Password:", action=password)
         time.sleep(2)
 

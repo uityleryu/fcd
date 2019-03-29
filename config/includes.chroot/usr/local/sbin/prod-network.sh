@@ -20,14 +20,16 @@ if [ "${host_ip}" = "" ]; then
     host_ip=192.168.1.19
 fi
 
-echo " configuring the SSH server "
-cp /tftpboot/tools/sshd_config /etc/ssh/
-sudo /etc/init.d/ssh restart
-sleep 1
+if [ -f /tftpboot/tools/common/sshd_config ]; then
+    echo " configuring the SSH server "
+    cp /tftpboot/tools/common/sshd_config /etc/ssh/
+    sudo /etc/init.d/ssh restart
+    sleep 1
+fi
 
-if [ -f /tftpboot/tools/.tmux.conf ]; then
+if [ -f /tftpboot/tools/common/tmux.conf ]; then
     echo "Copying the TMUX configuration file to /home/user"
-    cp /tftpboot/tools/.tmux.conf /home/user
+    cp /tftpboot/tools/common/tmux.conf /home/user/.tmux.conf
 fi
 
 echo " configuring the USB disk "
