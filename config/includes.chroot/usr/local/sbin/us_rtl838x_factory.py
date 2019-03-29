@@ -280,7 +280,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(30, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
         self.pexp.expect_action(10, self.linux_prompt, "initd")
-        time.sleep(5)
+        time.sleep(15)
         self.pexp.expect_action(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
         for _ in range(3):
             is_network_alive = self.is_network_alive_in_linux()
