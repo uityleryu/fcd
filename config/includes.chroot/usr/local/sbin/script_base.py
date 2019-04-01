@@ -197,9 +197,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
@@ -207,9 +205,7 @@ class ScriptBase(object):
             eesign_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
@@ -218,9 +214,7 @@ class ScriptBase(object):
             "of=" + self.devregpart
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
@@ -229,9 +223,7 @@ class ScriptBase(object):
             "of=" + eechk_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         os.mknod(self.eechk_path)
         os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -245,8 +237,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
         time.sleep(3)  # in case the e.c.0 is still in transfering
         if os.path.isfile(self.eechk_path):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
@@ -272,8 +263,7 @@ class ScriptBase(object):
             filename
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
         idx = self.pexp.expect_get_index(10, "No such file")
         if idx == 0:
             log_debug("Can't find the " + filename)
@@ -293,8 +283,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
-        self.pexp.expect_only(40, self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
         log_debug("Unzipping the tools.tar in the DUT ...")
 
         self.is_dutfile_exist(target)
@@ -305,8 +294,7 @@ class ScriptBase(object):
             "-C " + self.dut_tmpdir
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj)
-        self.pexp.expect_only(40, self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
 
     def is_network_alive_in_linux(self):
         time.sleep(3)

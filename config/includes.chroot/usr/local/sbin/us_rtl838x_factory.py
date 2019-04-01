@@ -78,8 +78,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.helper_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Change file permission - " + self.eepmexe + " ...")
         sstr = [
@@ -87,9 +86,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.eepmexe_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to do " + self.eepmexe + "...")
         sstr = [
@@ -105,10 +102,9 @@ class USWLITEFactoryGeneral(ScriptBase):
             "-k"
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, "", "")
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
-        self.pexp.expect_only(60, "ssh-dss")
-        self.pexp.expect_only(90, "ssh-rsa")
+
+        log_debug("Starting to do " + self.eepmexe + "...")
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
     def prepare_sever_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
@@ -121,7 +117,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         sstr = [
             "tar",
@@ -131,7 +127,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.eetxt_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         os.mknod(self.eetgz_path)
         os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -145,7 +141,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
         time.sleep(5)
 
         sstr = [
@@ -242,7 +238,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to do fwupdate ... ")
         sstr = [
@@ -250,13 +246,12 @@ class USWLITEFactoryGeneral(ScriptBase):
             "upgrade2"
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_action(300, self.linux_prompt, sstrj)
-        self.pexp.expect_only(300, "Restarting system")
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstrj, post_exp="Restarting system")
 
     def check_info(self):
         """under developing
         """
-        self.pexp.expect_action(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_action(10, "", "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
@@ -279,16 +274,9 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(300, "Please press Enter to activate this console", "")
         self.pexp.expect_action(30, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
-        self.pexp.expect_action(10, self.linux_prompt, "initd")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
         time.sleep(15)
-        self.pexp.expect_action(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
-        for _ in range(3):
-            is_network_alive = self.is_network_alive_in_linux()
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
         msg(10, "Boot up to linux console and network is good ...")
 
         if PROVISION_ENABLE is True:
@@ -310,17 +298,10 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.pexp.expect_action(300, "Please press Enter to activate this console", "")
             self.pexp.expect_action(30, "login:", self.user)
             self.pexp.expect_action(10, "Password:", self.password)
-            self.pexp.expect_action(10, self.linux_prompt, "initd")
-            time.sleep(5)
-            self.pexp.expect_action(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
-
-            for _ in range(3):
-                is_network_alive = self.is_network_alive_in_linux()
-                if is_network_alive is True:
-                    break
-                time.sleep(5)
-            if is_network_alive is not True:
-                error_critical("Network is not good")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", post_exp=self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
+            time.sleep(15)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
             msg(60, "Boot up to linux console and network is good ...")
 
         if FWUPGRADE_ENABLE is True:
@@ -329,7 +310,7 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.pexp.expect_action(300, "Please press Enter to activate this console", "")
             self.pexp.expect_action(15, "login:", self.user)
             self.pexp.expect_action(15, "Password:", self.password)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", post_exp=self.linux_prompt)
             msg(75, "Completing firmware upgrading ...")
 
         if DATAVERIFY_ENABLE is True:
