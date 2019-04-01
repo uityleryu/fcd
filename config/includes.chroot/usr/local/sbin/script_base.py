@@ -13,6 +13,7 @@ from ubntlib.fcd.common import Tee
 from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from ubntlib.fcd.expect_tty import ExpttyProcess
 
 
 class ScriptBase(object):
@@ -174,7 +175,59 @@ class ScriptBase(object):
         time.sleep(3)
         exit(0)
 
-    def check_devreg_data(self, dut_tmp_subdir=None):
+    def registration(self):
+        log_debug("Starting to do registration ...")
+        cmd = [
+            "cat " + self.eetxt_path,
+            "|",
+            'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
+            "|",
+            'grep -v \"eeprom\"',
+            "|",
+            "tr '\\n' ' '"
+        ]
+        cmdj = ' '.join(cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmdj)
+        regsubparams = sto.decode('UTF-8')
+        if int(rtc) > 0:
+            error_critical("Extract parameters failed!!")
+        else:
+            log_debug("Extract parameters successfully")
+
+        regparam = [
+            "-h devreg-prod.ubnt.com",
+            "-k " + self.pass_phrase,
+            regsubparams,
+            "-i field=qr_code,format=hex,value=" + self.qrhex,
+            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x " + self.key_dir + "ca.pem",
+            "-y " + self.key_dir + "key.pem",
+            "-z " + self.key_dir + "crt.pem"
+        ]
+
+        regparamj = ' '.join(regparam)
+
+        cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
+        print("cmd: " + cmd)
+        clit = ExpttyProcess(self.row_id, cmd, "\n")
+        clit.expect_only(30, "Ubiquiti Device Security Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        log_debug("Excuting client_x86 registration successfully")
+
+        rtf = os.path.isfile(self.eesign_path)
+        if rtf is not True:
+            error_critical("Can't find " + self.eesign)
+
+    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None):
         """check devreg data
         in default we assume the datas under /tmp on dut
         but if there is sub dir in your tools.tar, you should set dut_subdir
@@ -221,7 +274,13 @@ class ScriptBase(object):
             "dd",
             "if=" + self.devregpart,
             "of=" + eechk_dut_path
-        ]
+            ] if mtd_count is None else \
+            [
+            "dd",
+            "if=" + self.devregpart,
+            "of=" + eechk_dut_path,
+            "count=" + str(mtd_count)
+            ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
