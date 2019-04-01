@@ -197,7 +197,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
@@ -205,7 +205,7 @@ class ScriptBase(object):
             eesign_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
@@ -214,7 +214,7 @@ class ScriptBase(object):
             "of=" + self.devregpart
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
@@ -223,7 +223,7 @@ class ScriptBase(object):
             "of=" + eechk_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         os.mknod(self.eechk_path)
         os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -237,7 +237,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
         time.sleep(3)  # in case the e.c.0 is still in transfering
         if os.path.isfile(self.eechk_path):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
