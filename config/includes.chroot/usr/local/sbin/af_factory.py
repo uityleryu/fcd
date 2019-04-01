@@ -131,9 +131,14 @@ class AFAMEFactroy(ScriptBase):
                 ssh.write_wait("hexdump -C -s 0x0 -n 100 /dev/mtdblock4")
                 ssh.write_wait("hexdump -C -s 0xa000 -n 100 /dev/mtdblock4")
             
+            cmd = 'hexdump -C -s 0x0 -n 100 /tmp/EEPROM; hexdump -C -s 0xa0000 -n 100 /tmp/EEPROM'
+            (output, status ) = run(cmd, withexitstatus=1)
+            log_debug(output.decode("utf-8"))
+
             msg(90, "Radio Signed!")
             ssh.write_wait("reboot")
             msg(100, "Process Completed")
+            sys.stdout.flush()
             time.sleep(10)
             #ssh.logout()
         else:
