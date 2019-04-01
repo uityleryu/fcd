@@ -17,6 +17,6 @@ TOOLS-CONFIG= \
     common/tmux.conf
 
 TOOLS-AF+=$(TOOLS-CONFIG)
-TOOLS-AF+= helper_UBNTAME
+TOOLS-AF+= af_ltu5/helper_UBNTAME
 
 $(eval $(call ProductImage,AF,FCD-AF-$(VER)))

@@ -35,6 +35,19 @@ class AFAMEFactroy(ScriptBase):
             print("Invalid Key: %s" % self.key)
             return
         
+        for _ in range (1, 10):
+            cmd = 'ping ' + self.target_ip + ' -c 3 -q'
+            (output, status ) = run(cmd, withexitstatus=1)
+            #log_debug(output.decode("utf-8"))
+            if status:
+                log_debug("Wait Device network up")
+                time.sleep(5)
+                if _ == 10:
+                    error_critical("Cannot ping to Device")
+            else:
+                time.sleep(5)
+                break
+
         log_debug("Signing Radio ip=%s, username=%s, password=%s, key=%s, product=%s" 
             %( self.target_ip, self.username, self.password, self.key, self.product ))
         ssh = pyssh(self.target_ip, self.username, self.password)
@@ -95,12 +108,12 @@ class AFAMEFactroy(ScriptBase):
             (output, status ) = run(cmd, withexitstatus=1)
             log_debug(output.decode("utf-8"))
             if status:
-                error_critical("Signature Failed Error: %d" % status)
-                print(cmd)
+                print("Sign cmd:%s" %(cmd))
                 if int(status) == 231:
                     print("Wrong key used? key=%s" % self.key)
                 print("Radio Not Signed")
                 ssh.logout()
+                error_critical("Signature Failed Error: %d" % status)
             else:
                 print("Copying signed image to unit")
                 scp.scp('/tmp/EEPROM_SIGNED', ':/var/tmp/EEPROM_SIGNED')
