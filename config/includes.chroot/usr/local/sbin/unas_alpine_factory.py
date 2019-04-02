@@ -9,6 +9,7 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
+INSTALL_SPI_FLASH = True  # this is temp solution, will remove after next build
 INSTALL_NAND_FW_ENABLE = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
@@ -68,6 +69,39 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "ifconfig enp0s1 ",
             'ea18': "ifconfig enp0s1 "
         }
+
+    def install_uboot_on_spi(self):
+        fcd_spifwpath = os.path.join(self.tftpdir, "unas", "spi.image")
+        spi_fw_path = os.path.join(self.tftpdir, "spi.image")
+        if not os.path.isfile(spi_fw_path):
+            sstr = [
+                "cp",
+                "-p",
+                fcd_spifwpath,
+                spi_fw_path
+            ]
+            sstrj = ' '.join(sstr)
+            [sto, rtc] = self.fcd.common.xcmd(sstrj)
+            time.sleep(1)
+            if int(rtc) > 0:
+                error_critical("Copying spi flash to tftp server failed")
+            else:
+                log_debug("Copying spi flash to tftp server successfully")
+        else:
+            log_debug("spi.image is already existed under /tftpboot")
+        self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
+        self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
+        self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
+
+        uboot_fun = 'setenv offset 0x10000000;sf probe;tftpboot ${offset} ${tftpdir}spi.image;if test $? -ne 0; then run fail; exit;fi;if test ${filesize} -ne 2000000;  then echo "Wrong image size";  exit;fi;echo "Wrapping spi flash, DO NOT reboot now!";sf erase 0 0x2000000;echo "Writing spi flash, DO NOT reboot now!";sf write ${offset} 0 ${filesize};echo "SPI flash updated, reset";'
+        set_uboot_fun = "setenv spiupd '" + uboot_fun + "'"
+        self.pexp.expect_action(30, self.ubpmt, set_uboot_fun)
+        self.pexp.expect_action(10, self.ubpmt, "run spiupd")
+        msg(15, "Installing fw on spi")
+        self.pexp.expect_only(300, "Bytes transferred =", err_msg="Failed get spi.image from tftp server")
+        self.pexp.expect_only(60, "Wrapping spi flash", err_msg="No msg of process of installation")
+        self.pexp.expect_action(600, "SPI flash updated", "reset", err_msg="No msg of installation completed")
 
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
@@ -211,58 +245,6 @@ class UNASALPINEFactory(ScriptBase):
         [sto, rtc] = self.fcd.common.xcmd(sstrj)
         time.sleep(1)
 
-    def registration(self):
-        log_debug("Starting to do registration ...")
-        cmd = [
-            "cat " + self.eetxt_path,
-            "|",
-            'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
-            "|",
-            'grep -v \"eeprom\"',
-            "|",
-            "tr '\\n' ' '"
-        ]
-        cmdj = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        regsubparams = sto.decode('UTF-8')
-        if int(rtc) > 0:
-            error_critical("Extract parameters failed!!")
-        else:
-            log_debug("Extract parameters successfully")
-
-        regparam = [
-            "-h devreg-prod.ubnt.com",
-            "-k " + self.pass_phrase,
-            regsubparams,
-            "-i field=qr_code,format=hex,value=" + self.qrhex,
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
-            "-o field=registration_id",
-            "-o field=result",
-            "-o field=device_id",
-            "-o field=registration_status_id",
-            "-o field=registration_status_msg",
-            "-o field=error_message",
-            "-x " + self.key_dir + "ca.pem",
-            "-y " + self.key_dir + "key.pem",
-            "-z " + self.key_dir + "crt.pem"
-        ]
-
-        regparamj = ' '.join(regparam)
-
-        cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
-        print("cmd: " + cmd)
-        clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
-        clit.expect_only(30, "Hostname")
-        clit.expect_only(30, "field=result,format=u_int,value=1")
-
-        log_debug("Excuting client_x86 registration successfully")
-
-        rtf = os.path.isfile(self.eesign_path)
-        if rtf is not True:
-            error_critical("Can't find " + self.eesign)
-
     def fwupdate(self):
         fcd_fwpath = os.path.join(self.image, self.board_id + "-fw.bin")
         fwpath = os.path.join(self.dut_tmpdir, "firmware.bin")
@@ -296,8 +278,7 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
 
     def run(self):
-        """
-        Main procedure of factory
+        """main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
@@ -309,8 +290,13 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
+        if INSTALL_SPI_FLASH is True:
+            msg(5, "Boot to u-boot console and install spi flash...")
+            self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
+            self.install_uboot_on_spi()  # will be rebooting after installation
+
         if INSTALL_NAND_FW_ENABLE is True:
-            msg(5, "Boot to u-boot console ...")
+            msg(10, "Boot to u-boot console and install nand flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
             self.install_nand_fw()  # will be rebooting after installation
 
@@ -326,7 +312,7 @@ class UNASALPINEFactory(ScriptBase):
 
         if PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
-            self.copy_and_unzipping_tools_to_dut(timeout=30)
+            self.copy_and_unzipping_tools_to_dut(timeout=30, post_exp=False)
             self.data_provision()
 
         if DOHELPER_ENABLE is True:
@@ -337,7 +323,7 @@ class UNASALPINEFactory(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(60, "Finish doing registration ...")
-            self.check_devreg_data(dut_tmp_subdir="unas")
+            self.check_devreg_data(dut_tmp_subdir="unas", post_exp=False)
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPDATE_ENABLE is True:
