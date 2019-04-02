@@ -332,6 +332,11 @@ class UNASALPINEFactory(ScriptBase):
             self.pexp.expect_action(15, "Password:", self.password)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
             msg(80, "Succeeding in downloading the fw file ...")
+        else:
+            self.pexp.expect_action(30, self.linux_prompt, "reboot")
+            msg(85, "Waiting boot to linux console...")
+            self.pexp.expect_action(600, "login:", self.user)
+            self.pexp.expect_action(15, "Password:", self.password)
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
