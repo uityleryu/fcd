@@ -86,6 +86,7 @@ class UNASALPINEFactory(ScriptBase):
             if int(rtc) > 0:
                 error_critical("Copying spi flash to tftp server failed")
             else:
+                time.sleep(5)
                 log_debug("Copying spi flash to tftp server successfully")
         else:
             log_debug("spi.image is already existed under /tftpboot")
@@ -119,6 +120,7 @@ class UNASALPINEFactory(ScriptBase):
             if int(rtc) > 0:
                 error_critical("Copying nand flash to tftp server failed")
             else:
+                time.sleep(20)
                 log_debug("Copying nand flash to tftp server successfully")
         else:
             log_debug("firmware.bin is already existed under /tftpboot")
