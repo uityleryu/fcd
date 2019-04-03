@@ -134,22 +134,13 @@ class ScriptBase(object):
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         return args
 
-    def login(self, username=None, password=None, timeout=None):
+    def login(self, username="ubnt", password="ubnt", timeout=10):
         """
         should be called at login console
         """
-        if username is None or password is None:
-            # No username/password input, using default account
-            username = self.user
-            password = self.password
-
-        if timeout is not None:
-            tout = timeout
-        else:
-            tout = 15
-
-        self.pexp.expect_action(timeout=tout, exptxt="login:", action=username)
-        self.pexp.expect_action(timeout=15, exptxt="Password:", action=password)
+        self.pexp.expect_action(timeout, "login:", username)
+        self.pexp.expect_only(timeout, username)
+        self.pexp.expect_action(timeout, "Password:", password)
         time.sleep(2)
 
     def set_bootloader_prompt(self, prompt=None):
@@ -227,7 +218,7 @@ class ScriptBase(object):
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
 
-    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_exp=True):
+    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_exp=True, timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
         but if there is sub dir in your tools.tar, you should set dut_subdir
@@ -251,7 +242,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
@@ -259,7 +250,7 @@ class ScriptBase(object):
             eesign_dut_path
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
@@ -268,7 +259,7 @@ class ScriptBase(object):
             "of=" + self.devregpart
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
@@ -283,7 +274,7 @@ class ScriptBase(object):
             "count=" + str(mtd_count)
             ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
 
         os.mknod(self.eechk_path)
         os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -297,7 +288,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
         time.sleep(3)  # in case the e.c.0 is still in transfering
         if os.path.isfile(self.eechk_path):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
@@ -309,28 +300,11 @@ class ScriptBase(object):
         else:
             log_debug("Can't find the " + self.eechk + " and " + self.eesign + " files ...")
 
-    def is_dutfile_exist(self, filename, post_exp=True):
-        """check if file exist on dut by ls cmd
-
-        Arguments:
-            filename {[str]}
-
-        Returns:
-            [bool]
-        """
-        post_txt = self.linux_prompt if post_exp is True else None
-        sstr = [
-            "ls",
-            filename
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=post_txt)
-        idx = self.pexp.expect_get_index(10, "No such file")
-        if idx == 0:
-            log_debug("Can't find the " + filename)
-            return False
-        else:
-            return True
+    def is_dutfile_exist(self, filename):
+        """check if file exist on dut by shell script"""
+        # [ -e "<filename>"] && echo "File exists"
+        sstrj = '[ -e ' + filename + ' ] && echo "File exists"'
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="File exists")
 
     def copy_and_unzipping_tools_to_dut(self, timeout=15, post_exp=True):
         log_debug("Send tools.tar from host to DUT ...")
@@ -345,10 +319,12 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
         log_debug("Unzipping the tools.tar in the DUT ...")
+        time.sleep(1)
 
-        self.is_dutfile_exist(target, post_exp=post_txt)
+        self.is_dutfile_exist(target)
+
         sstr = [
             "tar",
             "-xzvf",
@@ -356,7 +332,7 @@ class ScriptBase(object):
             "-C " + self.dut_tmpdir
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=post_txt)
+        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
