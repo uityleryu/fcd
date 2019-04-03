@@ -319,7 +319,7 @@ class ScriptBase(object):
             self.tftp_server
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=post_txt)
         log_debug("Unzipping the tools.tar in the DUT ...")
         time.sleep(1)
 
@@ -332,7 +332,7 @@ class ScriptBase(object):
             "-C " + self.dut_tmpdir
         ]
         sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=post_txt)
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
