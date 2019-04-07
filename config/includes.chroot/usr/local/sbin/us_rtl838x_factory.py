@@ -32,6 +32,8 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.dut_uswdir = os.path.join(self.dut_tmpdir, "usw_lite")
         self.helper_path = os.path.join(self.dut_uswdir, self.helperexe)
         self.eepmexe_path = os.path.join(self.dut_uswdir, self.eepmexe)
+        self.bootloader_prompt = "uboot>"
+        self.fwimg = self.board_id + "-fw.bin"
 
         # EEPROM related files path on DUT
         self.eesign_dut_path = os.path.join(self.dut_uswdir, self.eesign)
@@ -228,30 +230,47 @@ class USWLITEFactoryGeneral(ScriptBase):
             error_critical("Can't find " + self.eesign)
 
     def fwupdate(self):
-        fcd_fwpath = os.path.join(self.image, self.board_id + "-fw.bin")
-        fwpath = os.path.join(self.dut_tmpdir, "fwupdate.bin")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r " + fcd_fwpath,
-            "-l " + fwpath,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(180, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
+        msg(60, "Reboot into Uboot for resetting to default environment")
+        self.pexp.expect_action(10, self.bootloader_prompt, "env set boardmodel")
+        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_only(10, "Resetting to default environment")
+        self.pexp.expect_only(10, "done")
+        self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
+        msg(63, "Reboot into Uboot again for urescue")
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ubntrescue")
+        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_only(30, "Listening for TFTP transfer on")
 
-        log_debug("Starting to do fwupdate ... ")
-        sstr = [
-            "syswrapper.sh",
-            "upgrade2"
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, sstrj, post_exp="Restarting system")
+        cmd = ["atftp",
+               "-p",
+               "-l",
+               self.fwdir + "/" + self.fwimg,
+               self.dutip]
+        cmdj = ' '.join(cmd)
+        time.sleep(3)
+        msg(65, "Uploading released firmware...")
+        [sto, rtc] = self.fcd.common.xcmd(cmdj)
+        if (int(rtc) > 0):
+            error_critical("Failed to upload firmware image")
+        else:
+            log_debug("Uploading firmware image successfully")
+
+        self.pexp.expect_only(30, "Bytes transferred = ")
+        self.pexp.expect_only(30, "Firmware Version:")
+        self.pexp.expect_only(30, "Signature Verfied, Success.")
+
+        msg(70, "Updating released firmware...")
+        self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+        self.pexp.expect_only(120, "done")
+
 
     def check_info(self):
         """under developing
         """
-        self.pexp.expect_lnxcmd_retry(10, "", "cat /proc/ubnthal/system.info")
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
@@ -271,13 +290,15 @@ class USWLITEFactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        self.pexp.expect_lnxcmd(300, "Please press Enter to activate this console", "")
+        self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
         self.login()
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-        time.sleep(15)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
-        msg(10, "Boot up to linux console and network is good ...")
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "ifconfig", post_exp=self.linux_prompt)
+        msg(10, "Boot up to linux console")
 
         if PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
@@ -294,22 +315,19 @@ class USWLITEFactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data(dut_tmp_subdir="usw_lite")
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "reboot")
-            self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
-            self.login()
-            self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "dmesg -n 1", post_exp=self.linux_prompt)
-            self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-            time.sleep(15)
-            self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
-            msg(60, "Boot up to linux console and network is good ...")
+
+        # reboot anyway 
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "reboot -f")
 
         if FWUPGRADE_ENABLE is True:
+            msg(55, "Starting firmware upgrade process...")
             self.fwupdate()
-            msg(70, "Succeeding in downloading the fw file ...")
-            self.pexp.expect_lnxcmd(300, "Please press Enter to activate this console", "")
-            self.login()
-            self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "dmesg -n 1", post_exp=self.linux_prompt)
             msg(75, "Completing firmware upgrading ...")
+
+        # login 
+        self.pexp.expect_lnxcmd_retry(180, "Please press Enter to activate this console", "")
+        self.login()
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
