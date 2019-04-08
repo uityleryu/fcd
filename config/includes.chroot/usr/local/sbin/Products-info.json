@@ -121,7 +121,7 @@
       "BOMREV" : "113-02848",
       "DESC" : "UBNT UniFiSwitch LITE",
       "FILE" : "us_rtl838x_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "us_rtl838x_mfg.py",
       "QRCHECK" : "True"
     },
 
@@ -132,7 +132,7 @@
       "BOMREV" : "113-02831",
       "DESC" : "UBNT UniFiSwitch LITE",
       "FILE" : "us_rtl838x_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "us_rtl838x_mfg.py",
       "QRCHECK" : "True"
     },
 
