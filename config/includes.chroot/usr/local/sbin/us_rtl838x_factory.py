@@ -264,8 +264,7 @@ class USWLITEFactoryGeneral(ScriptBase):
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "Resetting to default environment")
-
+        self.pexp.expect_only(120, "done")
 
     def check_info(self):
         """under developing
@@ -283,16 +282,17 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 9600"
+        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
-        pexpect_9600_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_9600_obj)
+        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
         self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
         self.login()
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
@@ -332,14 +332,14 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.fwupdate()
             msg(75, "Completing firmware upgrading ...")
 
-        pexpect_9600_obj.close()
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
-        log_debug(msg=pexpect_cmd)
-        pexpect_115200_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_115200_obj)
-        time.sleep(1)
+        #pexpect_obj.close()
+        #pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        #log_debug(msg=pexpect_cmd)
+        #pexpect_115200_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        #self.set_pexpect_helper(pexpect_obj=pexpect_115200_obj)
+        #time.sleep(1)
         # login 
-        self.pexp.expect_lnxcmd_retry(180, "Please press Enter to activate this console", "")
+        self.pexp.expect_lnxcmd_retry(240, "Please press Enter to activate this console", "")
         self.login()
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 

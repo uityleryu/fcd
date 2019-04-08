@@ -302,9 +302,9 @@ class ScriptBase(object):
 
     def is_dutfile_exist(self, filename):
         """check if file exist on dut by shell script"""
-        # [ -e "<filename>"] && echo "File exists"
-        sstrj = '[ -e ' + filename + ' ] && echo "File exists"'
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="File exists")
+        # ls "<filename>"; echo "RV="$?
+        sstrj = 'ls "' + filename + '"; echo "RV="$?'
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="RV=0")
 
     def copy_and_unzipping_tools_to_dut(self, timeout=15, post_exp=True):
         log_debug("Send tools.tar from host to DUT ...")

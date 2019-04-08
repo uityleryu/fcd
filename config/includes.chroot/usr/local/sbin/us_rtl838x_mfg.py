@@ -67,10 +67,10 @@ class USW_RTL838X_MFG(ScriptBase):
 
     def fwupgrade(self):
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "Resetting to default environment")
+        self.pexp.expect_only(120, "done")
 
     def imagecheck(self):
-        self.pexp.expect_lnxcmd_retry(180, "Please press Enter to activate this console", "")
+        self.pexp.expect_lnxcmd_retry(240, "Please press Enter to activate this console", "")
         self.login()
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
@@ -102,11 +102,11 @@ class USW_RTL838X_MFG(ScriptBase):
         self.fwupgrade()
         msg(50, "Upgrading firmware is done ...")
 
-        self.close_console()
-        msg(55, "Close console ...")
-        
-        self.open_console(baudrate=self.T1_baudrate)
-        msg(60, "Open serial port with baudrate " + self.T1_baudrate + " successfully ...")
+        #self.close_console()
+        #msg(55, "Close console ...")
+        #
+        #self.open_console(baudrate=self.T1_baudrate)
+        #msg(60, "Open serial port with baudrate " + self.T1_baudrate + " successfully ...")
 
         self.imagecheck()
         msg(70, "Boot into T1 image successfully ...")
