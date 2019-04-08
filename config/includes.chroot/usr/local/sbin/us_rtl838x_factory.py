@@ -264,7 +264,7 @@ class USWLITEFactoryGeneral(ScriptBase):
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(120, "Resetting to default environment")
 
 
     def check_info(self):
@@ -283,10 +283,10 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 9600"
         log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        pexpect_9600_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_9600_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
@@ -297,8 +297,16 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "ifconfig", post_exp=self.linux_prompt)
-        msg(10, "Boot up to linux console")
+
+        for _ in range(3):
+            is_network_alive = self.is_network_alive_in_linux()
+            if is_network_alive is True:
+                break
+            time.sleep(5)
+        if is_network_alive is not True:
+            error_critical("Network is not good")
+
+        msg(10, "Boot up to linux console and network is good ...")
 
         if PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
@@ -324,6 +332,12 @@ class USWLITEFactoryGeneral(ScriptBase):
             self.fwupdate()
             msg(75, "Completing firmware upgrading ...")
 
+        pexpect_9600_obj.close()
+        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        log_debug(msg=pexpect_cmd)
+        pexpect_115200_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_115200_obj)
+        time.sleep(1)
         # login 
         self.pexp.expect_lnxcmd_retry(180, "Please press Enter to activate this console", "")
         self.login()
@@ -332,7 +346,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         if DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
-
+        
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
