@@ -1,0 +1,6 @@
+boardid=eb67
+bomrev=113-02757
+cclock=none
+description=UBNT UniFiSwitch 48-Port 802.3bt
+name=us-48-pro-poe
+script=/usr/local/sbin/uswitchfactory.tcl

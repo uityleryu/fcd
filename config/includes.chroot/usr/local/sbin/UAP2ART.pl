@@ -846,9 +846,13 @@ sub load_products {
     push @list, $product;
     $product = Product->new(40, 'UIS-8-450', 'ed04', 'mscc2mfg.pl');
     push @list, $product;
-    $product = Product->new(40, 'US-24-PRO', 'eb36', 'uswitch2mfg.tcl');
+    $product = Product->new(41, 'US-24-PRO-POE', 'eb36', 'uswitch2mfg.tcl');
     push @list, $product;
-    $product = Product->new(40, 'US-48-PRO', 'eb67', 'uswitch2mfg.tcl');
+    $product = Product->new(42, 'US-48-PRO-POE', 'eb67', 'uswitch2mfg.tcl');
+    push @list, $product;
+    $product = Product->new(43, 'US-24-PRO', 'eb37', 'uswitch2mfg.tcl');
+    push @list, $product;
+    $product = Product->new(44, 'US-48-PRO', 'eb68', 'uswitch2mfg.tcl');
     push @list, $product;
 
     return @list;

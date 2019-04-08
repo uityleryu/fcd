@@ -1,6 +1,6 @@
-boardid=eb36
-bomrev=113-02779
+boardid=eb37
+bomrev=113-02953
 cclock=none
-description=UBNT UniFiSwitch 24-Port 802.3bt
+description=UBNT UniFiSwitch 24-Port
 name=us-24-pro
 script=/usr/local/sbin/uswitchfactory.tcl

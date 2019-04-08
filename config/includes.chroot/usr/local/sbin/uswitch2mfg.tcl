@@ -13,10 +13,12 @@ set use_64mb_flash 0
 set fakemac "00:90:4c:06:a5:7$idx"
 
 # model ID
-set USW_XG         "eb20"
-set USW_6XG_150    "eb23"
-set USW_24_PRO     "eb36"
-set USW_48_PRO     "eb67"
+set USW_XG                "eb20"
+set USW_6XG_150           "eb23"
+set USW_24_PRO            "eb36"
+set USW_24_PRO_NONPOE     "eb37"
+set USW_48_PRO            "eb67"
+set USW_48_PRO_NONPOE     "eb68"
 
 set flash_mtdparts_64M "mtdparts=spi1.0:1920k(u-boot),64k(u-boot-env),64k(shmoo),31168k(kernel0),31232k(kernel1),1024k(cfg),64k(EEPROM)"
 set flash_mtdparts_32M "mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"
@@ -145,7 +147,9 @@ proc handle_urescue {} {
     global USW_XG
     global USW_6XG_150
     global USW_24_PRO
+    global USW_24_PRO_NOPOE
     global USW_48_PRO
+    global USW_48_PRO_NOPOE
     global fakemac
 
     set max_loop 4
@@ -182,7 +186,9 @@ proc handle_urescue {} {
         if { [string equal -nocase $boardid $USW_XG] == 1 ||
             [string equal -nocase $boardid $USW_6XG_150] == 1 ||
             [string equal -nocase $boardid $USW_24_PRO] == 1 ||
-            [string equal -nocase $boardid $USW_48_PRO] == 1 } {
+            [string equal -nocase $boardid $USW_24_PRO_NOPOE] == 1 ||
+            [string equal -nocase $boardid $USW_48_PRO] == 1 ||
+            [string equal -nocase $boardid $USW_48_PRO_NOPOE] == 1} {
             sleep 3
 
             send "mdk_drv\r"
