@@ -15,7 +15,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FWUPGRADE_ENABLE = True
 DATAVERIFY_ENABLE = True
-
+WAIT_LCMUPGRADE_ENABLE = True
 
 class USWLITEFactoryGeneral(ScriptBase):
     def __init__(self):
@@ -274,6 +274,10 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
+    def wait_lcm_upgrade(self):
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=18)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+
     def run(self):
         """
         Main procedure of factory
@@ -346,6 +350,10 @@ class USWLITEFactoryGeneral(ScriptBase):
         if DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
+
+        if WAIT_LCMUPGRADE_ENABLE is True:
+            msg(90, "Waiting LCM upgrading ...")
+            self.wait_lcm_upgrade()
         
         msg(100, "Completing FCD process ...")
         self.close_fcd()
