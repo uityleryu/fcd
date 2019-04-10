@@ -964,7 +964,6 @@ proc do_security { boardid } {
     exec chmod 666 /tftpboot/$eeprom_check
 
     check_unifiOS_network_ready $boardid
-    check_ICCID $boardid
 
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
         set timeout 20
