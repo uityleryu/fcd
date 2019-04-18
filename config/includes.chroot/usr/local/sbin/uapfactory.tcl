@@ -908,10 +908,12 @@ proc do_security { boardid } {
     global passwd
     global INSTANTLTE_ID
     global UAPGEN2PRO_ID
+    global UAPGEN2IW_ID
 
     # The version of FW after 4.0.11 include 4.0.11 should use the helper_ARxxxx_musl
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
-        || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
+        || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1
+        || [string equal -nocase $boardid $UAPGEN2IW_ID] == 1} {
         set helper helper_ARxxxx_musl
     } else {
         set helper helper_ARxxxx
