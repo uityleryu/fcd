@@ -41,7 +41,7 @@
       "BOMREV" : "113-00622",
       "DESC" : "UniFi One Dream Machine Beacon",
       "FILE" : "us_mt7621_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "unifi_mt7621_mfg.py",
       "QRCHECK" : "True"
     },
 
@@ -66,7 +66,7 @@
       "BOMREV" : "113-02767",
       "DESC" : "UniFi Switch Flex",
       "FILE" : "us_mt7621_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "unifi_mt7621_mfg.py",
       "QRCHECK" : "True"
     },
 
@@ -110,7 +110,7 @@
       "BOMREV" : "113-02781",
       "DESC" : "UniFi Life Saver RPS",
       "FILE" : "us_mt7621_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "unifi_mt7621_mfg.py",
       "QRCHECK" : "True"
     },
 
@@ -157,7 +157,7 @@
       "BOMREV" : "113-00641",
       "DESC" : "UniFi AP Flex HD",
       "FILE" : "us_mt7621_factory.py",
-      "T1FILE" : "",
+      "T1FILE" : "unifi_mt7621_mfg.py",
       "QRCHECK" : "True"
     }
   },

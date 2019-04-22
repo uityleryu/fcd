@@ -13,8 +13,10 @@ IMAGE-USW-6XG= \
 IMAGE-USW-FLEX= \
     images/ed10* \
     usw-fw/unifiswitch-usflex-* \
+    usw-fw/unifiswitch-mt7621-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-    usw-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+    usw-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
+    usw-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     usw-fw/US.mt7621.*
 
 IMAGE-ULS-RPS= \
@@ -45,10 +47,10 @@ DIAG_UI_MODEL=UniFiSwitch
 BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
-UPYFCD_VER =5b6a7681ba673d002e35dc6b70ab4925bd21b475
-FCDIMG_VER =3c2312c03b2d7644d4755b0602062481372ebd35
-UBNTLIB_VER=671910c29d7dfacfca754ea5aa594ddfabe4310f
-TOOL_VER   =70ef4fa14efee327877c387b04e7b67514b978ff
+UPYFCD_VER =
+FCDIMG_VER =
+UBNTLIB_VER=
+TOOL_VER   =
 
 TOOLS-CONFIG= \
     common/sshd_config \

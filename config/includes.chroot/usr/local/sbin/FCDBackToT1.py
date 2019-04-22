@@ -532,6 +532,10 @@ class dlgBarcodeinput(Gtk.Dialog):
         self.etymacedit.set_visibility(True)
         self.etymacedit.set_activates_default(True)
         self.etymacedit.connect("changed", self.on_etymacedit_changed)
+        self.etymacedit.set_activates_default(True)
+        okButton = self.get_widget_for_response(response_id=Gtk.ResponseType.OK)
+        okButton.set_can_default(True)
+        okButton.grab_default()
 
         self.vboxbarcode.pack_start(self.lbltitle, False, False, 0)
         self.vboxbarcode.pack_start(self.lblmac, False, False, 0)
@@ -658,16 +662,41 @@ class winFcdFactory(Gtk.Window):
 
         return True
 
-    def network_status_set(self):
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
-        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        output.wait()
-        output.communicate()
-        if (output.returncode == 1):
-            self.log.info("returncode: " + str(output.returncode))
+    def net_setting_inspect(self, fd, cond, proc):
+        if (cond == GLib.IO_HUP):
+            proc.poll()
+            if (proc.returncode != 0):
+                self.log.info("In network_status_set(), returncode: " + str(proc.returncode))
+                self.dialog.response(Gtk.ResponseType.NO)
+                return False
+
+            self.dialog.response(Gtk.ResponseType.YES)
+
             return False
 
-        return True
+    def network_status_set(self):
+        self.dialog = Gtk.MessageDialog(self, 0,
+                                        Gtk.MessageType.INFO,
+                                        Gtk.ButtonsType.CANCEL,
+                                        "Initializing environment, please wait.")
+        self.dialog.format_secondary_text("Press cancel button to stop setting and close program")
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
+        output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+
+        GObject.io_add_watch(output.stdout,
+                             GLib.IO_HUP,
+                             self.net_setting_inspect,
+                             output)
+
+        resp = self.dialog.run()
+        self.dialog.destroy()
+        if resp == Gtk.ResponseType.CANCEL:
+            output.kill()
+            exit(0)
+        elif resp == Gtk.ResponseType.NO or output.returncode != 0:
+            return False
+        else:
+            return True
 
     def find_usb_storage(self):
         cmd = "ls -ls /dev/disk/by-id | grep usb-"

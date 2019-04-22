@@ -639,6 +639,10 @@ class dlgBarcodeinput(Gtk.Dialog):
         self.etymacedit.set_visibility(True)
         self.etymacedit.set_activates_default(True)
         self.etymacedit.connect("changed", self.on_etymacedit_changed)
+        self.etymacedit.set_activates_default(True)
+        okButton = self.get_widget_for_response(response_id=Gtk.ResponseType.OK)
+        okButton.set_can_default(True)
+        okButton.grab_default()
 
         self.vboxbarcode.pack_start(self.lbltitle, False, False, 0)
         self.vboxbarcode.pack_start(self.lblmac, False, False, 0)
@@ -786,7 +790,7 @@ class winFcdFactory(Gtk.Window):
                                         Gtk.ButtonsType.CANCEL,
                                         "Initializing environment, please wait.")
         self.dialog.format_secondary_text("Press cancel button to stop setting and close program")
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh"
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
         GObject.io_add_watch(output.stdout,

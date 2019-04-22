@@ -55,7 +55,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size), "")
 
     def SetBootNet(self):
-        # self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr "+prod_dev_tmp_mac)
+        self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr " + self.mac)
         self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.bootloader_prompt, "set serverip " + self.tftp_server)
 
@@ -159,8 +159,6 @@ class USFLEXFactory(ScriptBase):
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
         self.set_bootloader_prompt("MT7621 #")
-
-        bootimg = "{}".format(self.board_id+"-uboot.bin")
 
         fcdimg = "{}".format(self.board_id+"-fcd.bin")
 
@@ -423,10 +421,8 @@ class USFLEXFactory(ScriptBase):
             self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
         
             msg(60, "Updating released firmware...")
-            if self.board_id not in diag_en:
-                self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
-                self.pexp.expect_only(60, "done")
-
+            self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
+            self.pexp.expect_only(60, "done")
             self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
             self.pexp.expect_only(120, "done")
             msg(62, 'Booting into released firmware...')
