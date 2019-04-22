@@ -10,166 +10,174 @@ import os
 import stat
 import filecmp
 
-NEED_DROPBEAR = True
-PROVISION_ENABLE = True
-DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
-FWUPDATE_ENABLE = True
-DATAVERIFY_ENABLE = True
-
-# U-boot prompt
-ubpmt = ""
-
-# linux console prompt
-lnxpmt = ""
-
-username = "root"
-password = "ubnt"
-
-tmpdir = "/tmp/"
-tftpdir = ""
-toolsdir = "tools/"
-bomrev = ""
-eepmexe = "al324-ee"
-helperexe = "helper_AL324_release"
-mtdpart = "/dev/mtdblock4"
-
-# switch chip
-swchip = {
-    'ea11': "qca8k",
-    'ea13': "rtl83xx",
-    'ea15': "rtl83xx"
-}
-
-wsysid = {
-    'ea11': "770711ea",
-    'ea13': "770713ea",
-    'ea15': "770715ea"
-}
-
-# number of Ethernet
-ethnum = {
-    'ea11': "5",
-    'ea13': "7",
-    'ea15': "9"
-}
-
-# number of WiFi
-wifinum = {
-    'ea11': "2",
-    'ea13': "2",
-    'ea15': "0"
-}
-
-# number of Bluetooth
-btnum = {
-    'ea11': "1",
-    'ea13': "1",
-    'ea15': "1"
-}
-
-netif = {
-    'ea11': "ifconfig eth0 ",
-    'ea13': "ifconfig eth1 ",
-    'ea15': "ifconfig eth1 "
-}
-
-infover = {
-    'ea11': "Version:",
-    'ea13': "Version",
-    'ea15': "Version:"
-}
-
-write_sysid_cmd = ""
-
+SET_FAKE_EEPROM     = True
+UPDATE_UBOOT        = True
+BOOT_RECOVERY_IMAGE = True
+INIT_RECOVERY_IMAGE = True
+NEED_DROPBEAR       = True
+PROVISION_ENABLE    = True
+DOHELPER_ENABLE     = True
+REGISTER_ENABLE     = True
+FWUPDATE_ENABLE     = True
+DATAVERIFY_ENABLE   = True
 
 class UDMALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(UDMALPINEFactoryGeneral, self).__init__()
-        global tftpdir
-        global bomrev
-        global write_sysid_cmd
-        global lnxpmt
-        global ubpmt
-        tftpdir = self.tftpdir + "/"
-        bomrev = "113-" + self.bom_rev
+        self.init_vars()
+
+    def init_vars(self):
+        # script specific vars
+        self.mtdpart = "/dev/mtdblock4"
+        self.bomrev = "113-" + self.bom_rev
+        self.eepmexe = "al324-ee"
+        self.helperexe = "helper_AL324_release"
+        self.username = "root"
+        self.password = "ubnt"
         self.bootloader_prompt = "UBNT"
         self.linux_prompt = "#"
-        lnxpmt = self.linux_prompt
-        ubpmt = self.bootloader_prompt
+       
+        # Base path 
+        self.tftpdir = self.tftpdir + "/"
+        self.toolsdir = "tools/"
+        self.dut_udmdir = os.path.join(self.dut_tmpdir, "udm")
+        # Helper and ee-tool path on DUT
+        self.helper_dut_path = os.path.join(self.dut_udmdir, self.helperexe)
+        self.eepmexe_dut_path = os.path.join(self.dut_udmdir, self.eepmexe)
+        # EEPROM related files path on DUT
+        self.eesign_dut_path = os.path.join(self.dut_udmdir, self.eesign)
+        self.eetgz_dut_path = os.path.join(self.dut_udmdir, self.eetgz)                                                             
+        self.eechk_dut_path = os.path.join(self.dut_udmdir, self.eechk)
+        self.eebin_dut_path = os.path.join(self.dut_udmdir, self.eebin)
+        self.eetxt_dut_path = os.path.join(self.dut_udmdir, self.eetxt)
 
-        # write system ID to the EEPROM partition
-        write_sysid_cmd = "mw.l 0x08000000 " + wsysid[self.board_id]
+
+ 
+        # switch chip
+        self.swchip = {
+            'ea11': "qca8k",
+            'ea13': "rtl83xx",
+            'ea15': "rtl83xx"
+        }
+        
+        # sub-system ID
+        self.wsysid = {
+            'ea11': "770711ea",
+            'ea13': "770713ea",
+            'ea15': "770715ea"
+        }
+        
+        # number of Ethernet
+        self.ethnum = {
+            'ea11': "5",
+            'ea13': "7",
+            'ea15': "9"
+        }
+        
+        # number of WiFi
+        self.wifinum = {
+            'ea11': "2",
+            'ea13': "2",
+            'ea15': "0"
+        }
+        
+        # number of Bluetooth
+        self.btnum = {
+            'ea11': "1",
+            'ea13': "1",
+            'ea15': "1"
+        }
+       
+        # ethernet interface 
+        self.netif = {
+            'ea11': "ifconfig eth0 ",
+            'ea13': "ifconfig eth1 ",
+            'ea15': "ifconfig eth0 "
+        }
+        
+        self.infover = {
+            'ea11': "Version:",
+            'ea13': "Version",
+            'ea15': "Version:"
+        }
 
     def set_boot_net(self):
-        self.pexp.expect_ubcmd(30, ubpmt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(30, ubpmt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
-    def dutisfile(self, dir_filename):
-        sstr = [
-            "ls",
-            dir_filename
+    def set_fake_EEPROM(self):
+        self.pexp.expect_action(10, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 16000000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+        self.pexp.expect_only(30, "Erased: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
+    def update_uboot(self):
+        self.pexp.expect_action(10, "to stop", "\033\033")
+        self.set_boot_net()
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
+        time.sleep(2)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootupd")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_only(10, "bootupd done")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
+    def boot_recovery_image(self):
+        self.pexp.expect_action(10, "to stop", "\033\033")
+        self.set_boot_net()
+        time.sleep(2)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x08000004 images/" + self.board_id + "-recovery")
+        self.pexp.expect_only(30, "Bytes transferred")
+        self.pexp.expect_action(10, self.bootloader_prompt, "bootm $fitbootconf")
+
+    def init_recovery_image(self):
+        self.login(self.username, self.password, 60)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
+        time.sleep(2)
+        postexp = [
+            "64 bytes from",
+            self.linux_prompt
         ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
-        idx = self.pexp.expect_get_index(10, "No such file")
-        if idx == 0:
-            log_debug("Can't find the " + dir_filename)
-            exit(1)
-        else:
-            return True
-
-    def copytool2dut(self):
-        global toolsdir
-        global tmpdir
-        log_debug("Send tools.tar from host to DUT ...")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r " + toolsdir + "tools.tar",
-            "-l " + tmpdir + "tools.tar",
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
-
-        log_debug("Unzipping the tools.tar in the DUT ...")
-        self.dutisfile(tmpdir + "tools.tar")
-        sstr = [
-            "tar",
-            "-xvzf",
-            tmpdir + "tools.tar",
-            "-C " + tmpdir
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
-
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)        
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt) 
+        
     def data_provision(self):
-        log_debug("Change file permission - " + helperexe + " ...")
+        log_debug("Change file permission - " + self.helperexe + " ...")
         sstr = [
             "chmod 777",
-            tmpdir + helperexe
+            self.helper_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
-        log_debug("Change file permission - " + eepmexe + " ...")
+        log_debug("Change file permission - " + self.eepmexe + " ...")
         sstr = [
             "chmod 777",
-            tmpdir + eepmexe
+            self.eepmexe_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
         if NEED_DROPBEAR is True:
             log_debug("Copying the dropbearkey to /usr/bin ...")
             sstr = [
                 "cp",
-                tmpdir + "dropbearkey_arm64",
+                self.dut_udmdir + "/dropbearkey_arm64",
                 "/usr/bin/dropbearkey"
             ]
             sstr = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
             log_debug("Change file permission - dropbearkey ...")
             sstr = [
@@ -177,7 +185,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
                 "/usr/bin/dropbearkey"
             ]
             sstr = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
             log_debug("Starting to initialize the dropbear")
             sstr = [
@@ -187,19 +195,19 @@ class UDMALPINEFactoryGeneral(ScriptBase):
                 "dropbear -R"
             ]
             sstr = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
-        log_debug("Starting to do " + eepmexe + "...")
+        log_debug("Starting to do " + self.eepmexe + "...")
         sstr = [
-            tmpdir + eepmexe,
+            self.eepmexe_dut_path,
             "-F",
-            "-r " + bomrev,
+            "-r " + self.bomrev,
             "-s 0x" + self.board_id,
             "-m " + self.mac,
             "-c 0x" + self.region,
-            "-e " + ethnum[self.board_id],
-            "-w " + wifinum[self.board_id],
-            "-b " + btnum[self.board_id],
+            "-e " + self.ethnum[self.board_id],
+            "-w " + self.wifinum[self.board_id],
+            "-b " + self.btnum[self.board_id],
             "-k",
             "-p Factory"
         ]
@@ -209,53 +217,55 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "ssh-dss",
             "ssh-rsa",
             "Fingerprint",
-            lnxpmt
+            self.linux_prompt
         ]
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, post_exp=postexp)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, post_exp=postexp)
 
     def prepare_server_need_files(self):
-        log_debug("Starting to do " + helperexe + "...")
+        log_debug("Starting to do " + self.helperexe + "...")
         sstr = [
-            tmpdir + helperexe,
+            self.helper_dut_path,
             "-q",
             "-c product_class=basic",
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin_dut_path,
             ">",
-            self.eetxt
+            self.eetxt_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
         time.sleep(1)
 
         sstr = [
             "tar",
             "cf",
-            self.eetgz,
+            self.eetgz_dut_path,
+            "-C",
+            self.dut_udmdir,
             self.eebin,
             self.eetxt
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
-        os.mknod(tftpdir + self.eetgz)
-        os.chmod(tftpdir + self.eetgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        os.mknod(self.eetgz_path)
+        os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         log_debug("Send helper output tgz file from DUT to host ...")
         sstr = [
             "tftp",
             "-p",
             "-r " + self.eetgz,
-            "-l " + self.eetgz,
+            "-l " + self.eetgz_dut_path,
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
         time.sleep(1)
 
         sstr = [
             "tar",
-            "xvf " + tftpdir + self.eetgz,
-            "-C " + tftpdir
+            "xvf " + self.tftpdir + self.eetgz,
+            "-C " + self.tftpdir
         ]
         sstr = ' '.join(sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
@@ -268,7 +278,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def registration(self):
         log_debug("Starting to do registration ...")
         cmd = [
-            "cat " + tftpdir + self.eetxt,
+            "cat " + self.tftpdir + self.eetxt,
             "|",
             'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
             "|",
@@ -289,8 +299,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "-k " + self.pass_phrase,
             regsubparams,
             "-i field=qr_code,format=hex,value=" + self.qrhex,
-            "-i field=flash_eeprom,format=binary,pathname=" + tftpdir + self.eebin,
-            "-o field=flash_eeprom,format=binary,pathname=" + tftpdir + self.eesign,
+            "-i field=flash_eeprom,format=binary,pathname=" + self.tftpdir + self.eebin,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.tftpdir + self.eesign,
             "-o field=registration_id",
             "-o field=result",
             "-o field=device_id",
@@ -313,7 +323,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
         log_debug("Excuting client_x86 registration successfully")
 
-        rtf = os.path.isfile(tftpdir + self.eesign)
+        rtf = os.path.isfile(self.tftpdir + self.eesign)
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
 
@@ -323,56 +333,56 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "tftp",
             "-g",
             "-r " + self.eesign,
-            "-l " + tmpdir + self.eesign,
+            "-l " + self.eesign_dut_path,
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
         log_debug("Change file permission - " + self.eesign + " ...")
         sstr = [
             "chmod 777",
-            tmpdir + self.eesign
+            self.eesign_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
         log_debug("Starting to write signed info to SPI flash ...")
         sstr = [
-            tmpdir + helperexe,
+            self.helper_dut_path,
             "-q",
-            "-i field=flash_eeprom,format=binary,pathname=" + tmpdir + self.eesign
+            "-i field=flash_eeprom,format=binary,pathname=" + self.eesign_dut_path 
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
             "dd",
-            "if=" + mtdpart,
-            "of=" + tmpdir + self.eechk
+            "if=" + self.mtdpart,
+            "of=" + self.eechk_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
 
-        os.mknod(tftpdir + self.eechk)
-        os.chmod(tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        os.mknod(self.tftpdir + self.eechk)
+        os.chmod(self.tftpdir + self.eechk, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
         sstr = [
             "tftp",
             "-p",
             "-r " + self.eechk,
-            "-l " + tmpdir + self.eechk,
+            "-l " + self.eechk_dut_path,
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
         time.sleep(1)
 
-        if os.path.isfile(tftpdir + self.eechk):
+        if os.path.isfile(self.tftpdir + self.eechk):
             log_debug("Starting to compare the " + self.eechk + " and " + self.eesign + " files ...")
-            rtc = filecmp.cmp(tftpdir + self.eechk, tftpdir + self.eesign)
+            rtc = filecmp.cmp(self.tftpdir + self.eechk, self.tftpdir + self.eesign)
             if rtc is True:
                 log_debug("Comparing files successfully")
             else:
@@ -385,28 +395,28 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "tftp",
             "-g",
             "-r images/" + self.board_id + "-fw.bin",
-            "-l " + tmpdir + "upgrade.bin",
+            "-l " + self.dut_tmpdir + "/upgrade.bin",
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(300, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, self.linux_prompt)
 
         sstr = [
             "tftp",
             "-g",
             "-r images/" + self.board_id + "-recovery",
-            "-l " + tmpdir + "uImage.r",
+            "-l " + self.dut_tmpdir + "uImage.r",
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(90, lnxpmt, sstr, lnxpmt)
+        self.pexp.expect_lnxcmd(90, self.linux_prompt, sstr, self.linux_prompt)
 
         log_debug("Starting to do fwupdate ... ")
         sstr = [
             "sh",
             "/usr/bin/ubnt-upgrade",
             "-d",
-            "/tmp/upgrade.bin"
+            self.dut_tmpdir + "/upgrade.bin"
         ]
         sstr = ' '.join(sstr)
 
@@ -414,17 +424,17 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             "Firmware version",
             "Writing recovery"
         ]
-        self.pexp.expect_lnxcmd(300, lnxpmt, sstr, postexp)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
         ct = 0
         index = -1
         while ct < 5 and index == 0:
-            self.pexp.expect_cmd(10, lnxpmt, "info")
+            self.pexp.expect_cmd(10, self.linux_prompt, "info")
             index = self.pexp.expect_get_index(5, infover[self.board_id])
             ct += 1
 
-        self.pexp.expect_lnxcmd(10, lnxpmt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
@@ -442,61 +452,24 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+        msg(5, "Open serial port successfully ...")
 
-        msg(5, "Boot from tftp with installer ...")
-        self.pexp.expect_action(15, "to stop", "\033\033")
+        if SET_FAKE_EEPROM is True:
+            self.set_fake_EEPROM()
 
-        # Set the system ID to the DUT
-        self.pexp.expect_ubcmd(10, ubpmt, write_sysid_cmd)
-        self.pexp.expect_ubcmd(10, ubpmt, "sf probe")
-        self.pexp.expect_ubcmd(10, ubpmt, "sf erase 0x1f0000 0x1000")
-        self.pexp.expect_only(30, "Erased: OK")
-        self.pexp.expect_ubcmd(10, ubpmt, "sf write 0x8000000 0x1f000c 0x4")
-        self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, ubpmt, "reset")
-        self.pexp.expect_action(10, "to stop", "\033\033")
+        if UPDATE_UBOOT is True:
+            self.update_uboot()
 
-        self.pexp.expect_ubcmd(10, ubpmt, swchip[self.board_id])
-        self.set_boot_net()
-        self.pexp.expect_ubcmd(10, ubpmt, "setenv tftpdir images/" + self.board_id + "_signed_")
-        time.sleep(2)
-        self.pexp.expect_ubcmd(10, ubpmt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
-        self.pexp.expect_ubcmd(10, ubpmt, "run bootupd")
-        self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_only(10, "bootupd done")
-        self.pexp.expect_ubcmd(10, ubpmt, "reset")
-        self.pexp.expect_action(10, "to stop", "\033\033")
+        if BOOT_RECOVERY_IMAGE is True:
+            self.boot_recovery_image()
 
-        # Set the Ethernet IP
-        self.pexp.expect_ubcmd(10, ubpmt, swchip[self.board_id])
-        self.set_boot_net()
-        time.sleep(2)
-        self.pexp.expect_ubcmd(10, ubpmt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
-        self.pexp.expect_ubcmd(10, ubpmt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
-        self.pexp.expect_action(10, ubpmt, "cp.b $fdtaddr $loadaddr_dt 7ffc")
-        self.pexp.expect_action(10, ubpmt, "fdt addr $loadaddr_dt")
-        self.pexp.expect_action(10, ubpmt, "tftpboot $loadaddr images/" + self.board_id + "-recovery")
-        self.pexp.expect_only(30, "Bytes transferred")
-        self.pexp.expect_action(10, ubpmt, "bootm $loadaddr - $fdtaddr")
-        self.pexp.expect_action(60, "login:", username)
-        self.pexp.expect_action(10, "Password:", password)
-
-        self.pexp.expect_lnxcmd(10, lnxpmt, "dmesg -n 1", lnxpmt)
-        self.pexp.expect_lnxcmd(10, lnxpmt, netif[self.board_id] + self.dutip, lnxpmt)
-        time.sleep(2)
-
-        postexp = [
-            "64 bytes from",
-            lnxpmt
-        ]
-        self.pexp.expect_lnxcmd(10, lnxpmt, "ping -c 1 " + self.tftp_server, postexp)
-        msg(10, "Boot up to linux console and network is good ...")
+        if INIT_RECOVERY_IMAGE is True:
+            self.init_recovery_image()
+            msg(10, "Boot up to linux console and network is good ...")
 
         if PROVISION_ENABLE is True:
-            msg(20, "Send tools to DUT and data provision ...")
-            self.copytool2dut()
+            msg(20, "Sendtools to DUT and data provision ...")
+            self.copy_and_unzipping_tools_to_dut(timeout=60)                                                                        
             self.data_provision()
 
         if DOHELPER_ENABLE is True:
@@ -514,10 +487,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
 
-        self.pexp.expect_action(200, "login:", username)
-        self.pexp.expect_action(60, "Password:", password)
-
-        self.pexp.expect_lnxcmd(10, lnxpmt, "dmesg -n 1", lnxpmt)
+        self.login(self.username, self.password, 200)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()

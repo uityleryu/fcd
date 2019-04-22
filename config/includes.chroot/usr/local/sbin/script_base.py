@@ -139,8 +139,8 @@ class ScriptBase(object):
         should be called at login console
         """
         self.pexp.expect_action(timeout, "login:", username)
-        self.pexp.expect_only(timeout, username)
-        self.pexp.expect_action(timeout, "Password:", password)
+        self.pexp.expect_only(10, username)
+        self.pexp.expect_action(10, "Password:", password)
         time.sleep(2)
 
     def set_bootloader_prompt(self, prompt=None):

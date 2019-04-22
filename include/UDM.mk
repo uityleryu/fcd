@@ -1,24 +1,27 @@
 # UDM
 IMAGE-UDM-BASIC= \
-    udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
-    udm-fw/ubnt-upgrade-compat.tgz \
-    udm-fw/uImage-0.9.4-a9df305.r \
-    udm-fw/uImage-0.9.5.r
+    udm-fw/ubnt-upgrade-compat.tgz 
 
 IMAGE-UDM+=$(IMAGE-UDM-BASIC)
 IMAGE-UDM+= \
     images/ea11* \
-    udm-fw/UDM.alpinev2.v0.9.5.f18c4d1.190128.1425.bin \
+    udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
+    udm-fw/uImage-0.9.5.r \
+    udm-fw/UDM.alpinev2.v0.9.5.f18c4d1.190128.1425.bin 
 
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
     images/ea13* \
+	udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
+	udm-fw/uImage-0.9.4-a9df305.r \
     udm-fw/UDM.alpinev2.v0.10.1.879a225.190311.0833.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
     images/ea15* \
-    udm-fw/UDM.alpinev2.v0.10.1.879a225.190311.0833.bin
+    udm-fw/udm-pro-hwv6-dtsv5-boot.img \
+    udm-fw/uImage.r \
+    udm-fw/UDM.alpinev2.v0.11.0-dummy+builder.1120.d01847f.190418.0615.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
@@ -38,15 +41,14 @@ IMAGE-UDMALL+=$(IMAGE-UDMSE)
 IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 #IMAGE-UDMALL+=$(IMAGE-UDMXG)
 
-DIAG_MODEL=udm
 DIAG_UI_MODEL=UniFiDream
 BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
-UPYFCD_VER=
-FCDIMG_VER=
-UBNTLIB_VER=
-TOOL_VER=
+UPYFCD_VER = 6be7b57c2c6081005335a58e035e6cd9eb898bab
+FCDIMG_VER = afbde62fca5864bd4190d53a1517f141043edbdd
+UBNTLIB_VER= 430af4307ac290c7ca3f70367e4d0d78b11827a6
+TOOL_VER   = aad1522782ee21befc942efa994baeca994e97ec
 
 TOOLS-CONFIG= \
     common/sshd_config \
