@@ -17,9 +17,10 @@ FWUPGRADE_ENABLE = True
 DATAVERIFY_ENABLE = True
 WAIT_LCMUPGRADE_ENABLE = True
 
-class USWLITEFactoryGeneral(ScriptBase):
+
+class USW_RTL838X_FactoryGeneral(ScriptBase):
     def __init__(self):
-        super(USWLITEFactoryGeneral, self).__init__()
+        super(USW_RTL838X_FactoryGeneral, self).__init__()
         self.init_vars()
 
     def init_vars(self):
@@ -29,7 +30,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.bomrev = "113-" + self.bom_rev
         self.eepmexe = "rtl838x-ee"
         self.helperexe = "helper_rtl838x"
-        self.dut_uswdir = os.path.join(self.dut_tmpdir, "usw_lite")
+        self.dut_uswdir = os.path.join(self.dut_tmpdir, "usw_rtl838x")
         self.helper_path = os.path.join(self.dut_uswdir, self.helperexe)
         self.eepmexe_path = os.path.join(self.dut_uswdir, self.eepmexe)
         self.bootloader_prompt = "uboot>"
@@ -42,7 +43,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.eebin_dut_path = os.path.join(self.dut_uswdir, self.eebin)
         self.eetxt_dut_path = os.path.join(self.dut_uswdir, self.eetxt)
 
-        self.fcd_uswdir = os.path.join(self.tftpdir, "tmp", "usw_lite")
+        self.fcd_uswdir = os.path.join(self.tftpdir, "tmp", "usw_rtl838x")
 
         # number of Ethernet
         self.ethnum = {
@@ -275,7 +276,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=18)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def run(self):
@@ -325,7 +326,7 @@ class USWLITEFactoryGeneral(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(dut_tmp_subdir="usw_lite")
+            self.check_devreg_data(dut_tmp_subdir="usw_rtl838x")
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         # reboot anyway 
@@ -360,7 +361,7 @@ class USWLITEFactoryGeneral(ScriptBase):
 
 
 def main():
-    us_factory_general = USWLITEFactoryGeneral()
+    us_factory_general = USW_RTL838X_FactoryGeneral()
     us_factory_general.run()
 
 if __name__ == "__main__":

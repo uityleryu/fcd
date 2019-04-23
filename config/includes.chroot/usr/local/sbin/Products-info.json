@@ -114,23 +114,23 @@
       "QRCHECK" : "True"
     },
 
-    "USW-LITE-16":{
+    "USW-16-POE":{
       "INDEX" : 4,
-      "NAME" : "USW-LITE-16",
+      "NAME" : "USW-16-POE",
       "BOARDID" : "ed20",
       "BOMREV" : "113-02848",
-      "DESC" : "UBNT UniFiSwitch LITE",
+      "DESC" : "UBNT UniFiSwitch 16 POE",
       "FILE" : "us_rtl838x_factory.py",
       "T1FILE" : "us_rtl838x_mfg.py",
       "QRCHECK" : "True"
     },
 
-    "USW-LITE-24":{
+    "USW-24-POE":{
       "INDEX" : 4,
-      "NAME" : "USW-LITE-24",
+      "NAME" : "USW-24-POE",
       "BOARDID" : "ed21",
       "BOMREV" : "113-02831",
-      "DESC" : "UBNT UniFiSwitch LITE",
+      "DESC" : "UBNT UniFiSwitch 24 POE",
       "FILE" : "us_rtl838x_factory.py",
       "T1FILE" : "us_rtl838x_mfg.py",
       "QRCHECK" : "True"
