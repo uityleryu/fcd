@@ -316,6 +316,36 @@ class ScriptBase(object):
         sstrj = 'ls "' + filename + '"; echo "RV="$?'
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="RV=0")
 
+    def gen_and_load_key_to_dut(self):
+        src = os.path.join(self.tftpdir, "dropbear_key.rsa")
+        sstr = [
+            "dropbearkey",
+            "-t rsa",
+            "-f",
+            src
+        ]
+        sstr = ' '.join(sstr)
+        self.fcd.common.pcmd(sstr)
+
+        sstr = [
+            "chmod 777",
+            src
+        ]
+        sstr = ' '.join(sstr)
+        self.fcd.common.pcmd(sstr)
+
+        dest = os.path.join(self.dut_tmpdir, "dropbear_key.rsa")
+        sstr = [
+            "tftp",
+            "-g",
+            "-r dropbear_key.rsa",
+            "-l " + dest,
+            self.tftp_server
+        ]
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd_retry(timeout=15, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt)
+        self.is_dutfile_exist(dest)
+
     def copy_and_unzipping_tools_to_dut(self, timeout=15, post_exp=True):
         log_debug("Send tools.tar from host to DUT ...")
         post_txt = self.linux_prompt if post_exp is True else None
@@ -343,6 +373,14 @@ class ScriptBase(object):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=sstrj, post_exp=post_txt)
+
+        src = os.path.join(self.dut_tmpdir, "*")
+        sstr = [
+            "chmod -R 777",
+            src
+        ]
+        sstr = ' '.join(sstr)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=sstr, post_exp=post_txt)
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
