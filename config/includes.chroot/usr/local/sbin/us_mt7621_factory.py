@@ -381,26 +381,26 @@ class USFLEXFactory(ScriptBase):
         else:
             log_debug("Change to product firware...")
             self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
-        
+
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
             if rt != 0:
                 error_critical("Failed to detect device")
-        
+
             self.pexp.expect_action(30, self.bootloader_prompt, "")
-    
+
             msg(52, "Setting IP address and checking network in u-boot, 4th time...")
             self.SetBootNet()
-            
+
             if self.is_network_alive_in_uboot(retry=3) is False:
                 error_critical("Failed to ping tftp server in u-boot")
-    
+
             msg(54, "Putting device to urescue mode...")
             self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearcfg TRUE")
             self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearenv TRUE")
             self.pexp.expect_action(30, self.bootloader_prompt, "set do_urescue TRUE")
             self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
             self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
-        
+
             msg(56, "Uploading released firmware...")
             cmd = ["atftp",
                    "-p",
@@ -408,18 +408,18 @@ class USFLEXFactory(ScriptBase):
                    self.fwdir+"/"+fwimg,
                    self.dutip]
             cmdj = ' '.join(cmd)
-    
+
             [sto, rtc] = self.fcd.common.xcmd(cmdj)
             if (int(rtc) > 0):
                 error_critical("Failed to upload firmware image")
             else:
                 log_debug("Uploading firmware image successfully")
-        
+
             msg(58, "Checking firmware...")
             self.pexp.expect_only(30, "Bytes transferred = ")
             self.pexp.expect_only(30, "Firmware Version:")
             self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
-        
+
             msg(60, "Updating released firmware...")
             self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
             self.pexp.expect_only(60, "done")

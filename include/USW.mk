@@ -15,8 +15,7 @@ IMAGE-USW-FLEX= \
     usw-fw/unifiswitch-usflex-* \
     usw-fw/unifiswitch-mt7621-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-    usw-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
-    usw-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
+    usw-fw/MFG.us-flex.BL_gd9df1cea.UAP_4be38fd.image \
     usw-fw/US.mt7621.*
 
 IMAGE-ULS-RPS= \
