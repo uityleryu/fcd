@@ -108,17 +108,20 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def set_fake_EEPROM(self):
         self.pexp.expect_action(10, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 16000000")
+        if self.board_id == 'ea15':
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 16000000")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
+        if self.board_id == 'ea15':
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def update_uboot(self):
         self.pexp.expect_action(10, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
         time.sleep(2)
@@ -131,6 +134,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
     def boot_recovery_image(self):
         self.pexp.expect_action(10, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         time.sleep(2)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
@@ -427,13 +431,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
-        ct = 0
-        index = -1
-        while ct < 5 and index == 0:
-            self.pexp.expect_cmd(10, self.linux_prompt, "info")
-            index = self.pexp.expect_get_index(5, infover[self.board_id])
-            ct += 1
-
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())

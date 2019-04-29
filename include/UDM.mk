@@ -7,7 +7,7 @@ IMAGE-UDM+= \
     images/ea11* \
     udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
     udm-fw/uImage-0.9.5.r \
-    udm-fw/UDM.alpinev2.v0.9.5.f18c4d1.190128.1425.bin 
+    udm-fw/UDM.alpinev2.v0.10.3.4a06a44.190327.1701.bin 
 
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
@@ -45,10 +45,10 @@ DIAG_UI_MODEL=UniFiDream
 BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
-UPYFCD_VER = 6be7b57c2c6081005335a58e035e6cd9eb898bab
-FCDIMG_VER = afbde62fca5864bd4190d53a1517f141043edbdd
-UBNTLIB_VER= 430af4307ac290c7ca3f70367e4d0d78b11827a6
-TOOL_VER   = aad1522782ee21befc942efa994baeca994e97ec
+UPYFCD_VER = 
+FCDIMG_VER = 2e3dee0846a17ed110fd6e4a4cfdb072cf8ef524
+UBNTLIB_VER= a4f1411b7d60eb8532cadad1cf6335f37381b2ad
+TOOL_VER   = 5f4625f4d151f354f7dc45d0b69ff678d01d2f87
 
 TOOLS-CONFIG= \
     common/sshd_config \
