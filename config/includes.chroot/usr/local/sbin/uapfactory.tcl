@@ -1565,7 +1565,6 @@ proc handle_uboot { {wait_prompt 0} } {
     send "boot \r"
     check_security $boardid
     turn_on_burnin_mode $boardid
-    check_LTE_ver $boardid
 
     log_progress 100 "Completed with MAC0: $mac " 
 
