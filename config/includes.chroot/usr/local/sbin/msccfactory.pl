@@ -320,7 +320,7 @@ if ($boardid eq "ed04") {
 }
 else{
   system_log("curl tftp://$prod_dev_ip -T /tftpboot/$boardid.bin");
-
+}
 if ($? == 0) {
     msg(50, 'Firmware uploading from FCD server is completed');
 } else {
