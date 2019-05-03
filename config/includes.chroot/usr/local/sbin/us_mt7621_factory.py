@@ -33,10 +33,9 @@ vlanport_idx = {'ed10': "'6 4'",
                 'ed11': "'6 0'"}
 # flash size map
 flash_size = {'ed10' : "33554432",
-              'ed25' : "33554432",
-              'ed26' : "33554432",
-              'ed11' : "16777216",
-              'ec26' : "33554432"}
+              'ec25' : "33554432",
+              'ec26' : "33554432",
+              'ed11' : "16777216"}
 
 radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
 diag_en = {'ed10'}
@@ -55,7 +54,9 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size), "")
 
     def SetBootNet(self):
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr " + self.mac)
+        tmp_mac = "00:15:6d:00:00:0"+self.row_id
+        self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr " + tmp_mac)
+
         self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.bootloader_prompt, "set serverip " + self.tftp_server)
 

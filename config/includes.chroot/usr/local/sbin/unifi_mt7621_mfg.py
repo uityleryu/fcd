@@ -24,7 +24,8 @@ addr_map_uap = {
                   'ec25': {
                     'uboot': ('0', '0x60000'),
                     'factory': ('0x70000', '0x10000'),
-                    'bs2kernel0': ('0x90000', '0x1040000')
+                    'bs': ('0x90000', '0x10000'),
+                    'kernel0': ('0x1a0000', '0xf30000')
                   }
                 }
 
@@ -133,9 +134,10 @@ class MT7621MFGGeneral(ScriptBase):
             log_debug("Back to T1 with UAP rule")
             msg(no=40, out='flash back to calibration kernel ...')
             self.transfer_img(self.board_id+"-mfg.kernel")
-            flash_addr = addr_map_uap[self.board_id]['kernel'][0]
-            flash_size = addr_map_uap[self.board_id]['kernel'][1]
-            log_debug("kernel from {} to {}".format(flash_addr, flash_size))
+
+            flash_addr = addr_map_uap[self.board_id]['kernel0'][0]
+            flash_size = addr_map_uap[self.board_id]['kernel0'][1]
+            log_debug("kernel from {} ,len {}".format(flash_addr, flash_size))
             self.erase_partition(flash_addr=flash_addr, size=flash_size)
             self.write_img(flash_addr=flash_addr)
 
@@ -143,13 +145,20 @@ class MT7621MFGGeneral(ScriptBase):
             flash_addr = addr_map_uap[self.board_id]['bs'][0]
             flash_size = addr_map_uap[self.board_id]['bs'][1]
             log_debug("bs from {} to {}".format(flash_addr, flash_size))
-            self.erase_partition("0x90000", "0x10000")
+            self.erase_partition(flash_addr=flash_addr, size=flash_size)
 
-            msg(no=60, out='flash back to calibration u-boot ...')
+            if self.erasecal == "True":
+                msg(no=60, out='Erase calibration data ...')
+                flash_addr = addr_map_uap[self.board_id]['factory'][0]
+                flash_size = addr_map_uap[self.board_id]['factory'][1]
+                log_debug("cal from {} ,len {}".format(flash_addr, flash_size))
+                self.erase_partition(flash_addr=flash_addr, size=flash_size)
+
+            msg(no=70, out='flash back to calibration u-boot ...')
             self.transfer_img(self.board_id+"-mfg.uboot")
             flash_addr = addr_map_uap[self.board_id]['uboot'][0]
             flash_size = addr_map_uap[self.board_id]['uboot'][1]
-            log_debug("uboot from {} to {}".format(flash_addr, flash_size))
+            log_debug("uboot from {} ,len {}".format(flash_addr, flash_size))
             self.erase_partition(flash_addr=flash_addr, size=flash_size)
             self.write_img(flash_addr=flash_addr)
 
@@ -166,11 +175,15 @@ class MT7621MFGGeneral(ScriptBase):
         msg(no=80, out='Waiting for Calibration Linux ...')
 
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
-        self.pexp.expect_action(120, "Please press Enter to activate this console","")
-        self.pexp.expect_action(30, "", "")
-        self.pexp.expect_action(30, "UBNT login: ", "ubnt")
-        self.pexp.expect_action(30, "Password: ", "ubnt")
-        self.pexp.expect_only(30, "BusyBox v1.25.1")
+
+        if self.board_id in addr_map_uap:
+            self.pexp.expect_only(120, "BusyBox")
+        else:
+            self.pexp.expect_action(120, "Please press Enter to activate this console","")
+            self.pexp.expect_action(30, "", "")
+            self.pexp.expect_action(30, "UBNT login: ", "ubnt")
+            self.pexp.expect_action(30, "Password: ", "ubnt")
+            self.pexp.expect_only(30, "BusyBox v1.25.1")
 
         msg(no=100, out="Back to ART has completed")
 
