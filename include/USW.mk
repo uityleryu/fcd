@@ -1,4 +1,3 @@
-
 IMAGE-USW-24= \
     images/eb36* \
     images/eb67* \
@@ -22,7 +21,8 @@ IMAGE-ULS-RPS= \
     images/ed11* \
     usw-fw/unifiswitch-ulsrps-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-    usw-fw/US.mt7621.sh-add-uls-rps-rebase-develop.10098.190320.2303-uboot.bin
+    usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
+    usw-fw/US.mt7621.v4.0.34.10356.190429.2348-uboot.bin
 
 IMAGE-USW-16-24= \
     images/ed20* \
@@ -49,9 +49,9 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER =
-FCDIMG_VER =
-UBNTLIB_VER=
-TOOL_VER   =
+FCDIMG_VER = 41cda2e93d1ce980c42da128f24b3381083837c0
+UBNTLIB_VER= 11915e5ddb57ab97b69d0cffc13a9497533f4d7a
+TOOL_VER   = 1d14a908c3293afc158cf419c9a81b39c0c1d07a
 
 TOOLS-CONFIG= \
     common/sshd_config \

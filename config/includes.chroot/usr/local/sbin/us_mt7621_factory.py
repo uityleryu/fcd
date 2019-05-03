@@ -15,7 +15,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 macnum = {'ed10': "3",
           'ec25': "1",
           'ec26': "1",
-          'ed11': "3"}
+          'ed11': "2"}
 # number of WiFi
 wifinum = {'ed10': "0",
            'ec25': "2",
@@ -44,6 +44,8 @@ zeroip_en = {'ed10', 'ed11'}
 # Pre-load image is for FCD/FTU
 preload_fcd = {}
 
+UPDATE_UBOOT_ENABLE    = True
+WAIT_LCMUPGRADE_ENABLE = True
 
 class USFLEXFactory(ScriptBase):
     def __init__(self):
@@ -143,6 +145,28 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "cmp  /tmp/dropbear_key.dss /tmp/dropbear_key_dump.dss 2>&1 ; echo $?")
         self.pexp.expect_action(30, "0", "")
 
+    def wait_lcm_upgrade(self):                                                                                                     
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+    
+    def update_uboot(self):
+        self.pexp.expect_action(30, self.bootloader_prompt, "set loadaddr 0x84000000")
+        self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot ${loadaddr} images/" + self.board_id + '-uboot.bin')
+        self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
+        sf write ${loadaddr} 0x0 ${filesize}")
+        self.pexp.expect_action(30, self.bootloader_prompt, "reset")
+    
+    def enter_uboot(self):
+        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+        if rt != 0:
+            error_critical("Failed to detect device")
+        self.pexp.expect_action(30, self.bootloader_prompt, "")
+
+        self.SetBootNet()
+
+        if self.is_network_alive_in_uboot(retry=3) is False:
+            error_critical("Failed to ping tftp server in u-boot")
+
     def run(self):
         """
         Main procedure of factory
@@ -175,17 +199,15 @@ class USFLEXFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        msg(6, "Waiting for device, 1st time...")
-        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-        if rt != 0:
-            error_critical("Failed to detect device")
-        self.pexp.expect_action(30, self.bootloader_prompt, "")
-
-        msg(8, "Setting IP address and checking network in u-boot, 1st time...")
-        self.SetBootNet()
-
-        if self.is_network_alive_in_uboot(retry=3) is False:
-            error_critical("Failed to ping tftp server in u-boot")
+        msg(5, "Waiting for device, 1st time...")
+        self.enter_uboot()
+   
+        if self.board_id == 'ed11': 
+            if UPDATE_UBOOT_ENABLE == True:
+                msg(7, "Update uboot ...")
+                self.update_uboot()
+                msg(9, "Enter uboot again")
+                self.enter_uboot()
 
         msg(10, "Getting manufacturing kernel from tftp server, 1st time...")
         self.GetImgfromSrv(fcdimg)
@@ -461,6 +483,11 @@ class USFLEXFactory(ScriptBase):
 
             self.pexp.expect_action(30, self.linux_prompt, "syswrapper.sh save-config")
             self.pexp.expect_only(30, r'Storing Active.+\[%100\]')
+
+        if self.board_id == 'ed11':
+            if WAIT_LCMUPGRADE_ENABLE is True:
+                msg(90, "Waiting LCM upgrading ...")
+                self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
 
