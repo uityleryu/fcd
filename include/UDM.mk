@@ -19,9 +19,9 @@ IMAGE-UDMSE+= \
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
     images/ea15* \
-    udm-fw/udm-pro-hwv6-dtsv5-boot.img \
+    udm-fw/udm_pro_hw7_boot_02d0578.img \
     udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v0.11.0-dummy+builder.1120.d01847f.190418.0615.bin
+    udm-fw/UDM.alpinev2.v0.11.0.3e8dcdc.190503.0829.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
@@ -46,7 +46,7 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER = 
-FCDIMG_VER = 2e3dee0846a17ed110fd6e4a4cfdb072cf8ef524
+FCDIMG_VER = a2f7d761639e7cfc8eea6aefe96080d507515458
 UBNTLIB_VER= a4f1411b7d60eb8532cadad1cf6335f37381b2ad
 TOOL_VER   = 5f4625f4d151f354f7dc45d0b69ff678d01d2f87
 
