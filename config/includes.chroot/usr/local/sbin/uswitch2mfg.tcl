@@ -101,6 +101,7 @@ proc stop_uboot { {wait_time 30} } {
 
 proc check_mdk {} {
     global bootloader_prompt
+    global cmd_prefix
 
     log_debug "Checking if U-boot has MDK"
 
@@ -109,6 +110,9 @@ proc check_mdk {} {
     expect timeout {
         error_critical "U-boot prompt not found !"
     } "$bootloader_prompt"
+
+    sleep 1
+    send "$cmd_prefix uappinit\r"
 
     sleep 1
     send "mdk_drv\r"
@@ -147,9 +151,9 @@ proc handle_urescue {} {
     global USW_XG
     global USW_6XG_150
     global USW_24_PRO
-    global USW_24_PRO_NOPOE
+    global USW_24_PRO_NONPOE
     global USW_48_PRO
-    global USW_48_PRO_NOPOE
+    global USW_48_PRO_NONPOE
     global fakemac
 
     set max_loop 4
@@ -186,9 +190,9 @@ proc handle_urescue {} {
         if { [string equal -nocase $boardid $USW_XG] == 1 ||
             [string equal -nocase $boardid $USW_6XG_150] == 1 ||
             [string equal -nocase $boardid $USW_24_PRO] == 1 ||
-            [string equal -nocase $boardid $USW_24_PRO_NOPOE] == 1 ||
+            [string equal -nocase $boardid $USW_24_PRO_NONPOE] == 1 ||
             [string equal -nocase $boardid $USW_48_PRO] == 1 ||
-            [string equal -nocase $boardid $USW_48_PRO_NOPOE] == 1} {
+            [string equal -nocase $boardid $USW_48_PRO_NONPOE] == 1} {
             sleep 3
 
             send "mdk_drv\r"
