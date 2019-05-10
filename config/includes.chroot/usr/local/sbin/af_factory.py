@@ -125,13 +125,17 @@ class AFAMEFactroy(ScriptBase):
                     ssh.write_wait("/var/tmp/helper_UBNTAME -q -i field=flash_eeprom,format=binary,pathname=/var/tmp/EEPROM_SIGNED", timeout=20)
 
             if self.product == 'AF':
-                ssh.write_wait("hexdump -C -s 0x0 -n 100 /dev/mtdblock7")
-                ssh.write_wait("hexdump -C -s 0xa000 -n 100 /dev/mtdblock7")
+                ssh.write_wait("hexdump -C -s 0x0 -n 1000 /dev/mtdblock7")
+                ssh.write_wait("hexdump -C -s 0xa000 -n 200 /dev/mtdblock7")
             elif self.product == 'AME':
-                ssh.write_wait("hexdump -C -s 0x0 -n 100 /dev/mtdblock4")
-                ssh.write_wait("hexdump -C -s 0xa000 -n 100 /dev/mtdblock4")
+                ssh.write_wait("hexdump -C -s 0x0 -n 1000 /dev/mtdblock4")
+                ssh.write_wait("hexdump -C -s 0xa000 -n 200 /dev/mtdblock4")
             
-            cmd = 'hexdump -C -s 0x0 -n 100 /tmp/EEPROM; hexdump -C -s 0xa0000 -n 100 /tmp/EEPROM'
+            cmd = 'hexdump -C -s 0x0 -n 1000 /tmp/EEPROM_SIGNED'
+            (output, status ) = run(cmd, withexitstatus=1)
+            log_debug(output.decode("utf-8"))
+
+            cmd = 'hexdump -C -s 0xa000 -n 200 /tmp/EEPROM_SIGNED'
             (output, status ) = run(cmd, withexitstatus=1)
             log_debug(output.decode("utf-8"))
 
