@@ -145,6 +145,19 @@
       "FILE" : "us_udc-alpine_factory.py",
       "T1FILE" : "us_alpine_diagloader.py",
       "QRCHECK" : "True"
+    },
+
+    "USW-MINI":{
+      "INDEX"       : 6,
+      "NAME"        : "USW-MINI",
+      "BOARDID"     : "ed30",
+      "BOMREV"      : "113-02851",
+      "DESC"        : "UniFi Switch Mini",
+      "FILE"        : "us_m487_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
   },
 

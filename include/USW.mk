@@ -77,7 +77,11 @@ TOOLS-ULS-RPS+= \
     uls_rps/system.cfg.burnin \
     uls_rps/ubidiag \
     uls_rps/uls_get_power_status_fcd.sh \
-    uls_rps/uls_power.sh 
+    uls_rps/uls_power.sh
+
+TOOLS-USW-MINI=$(TOOLS-USW)
+TOOLS-USW-MINI+= \
+    usw_mini/x86-4k-ee
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
@@ -86,3 +90,4 @@ $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)))
 $(eval $(call ProductImage,USW-16-24,FCD-USW-16-24-$(VER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)))
+$(eval $(call ProductImage,USW-MINI,FCD-USW-MINI-$(VER)-$(FWVER)))

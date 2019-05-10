@@ -29,6 +29,13 @@ class ScriptBase(object):
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
+
+        k = []
+        for c in self.input_args.pass_phrase:
+            k.append('{:02x}'.format(ord(c)))
+
+        self.input_args.pass_phrase = ''.join(k)
+
         log_debug(str(self.input_args))
 
     @property
@@ -95,7 +102,6 @@ class ScriptBase(object):
         self.eesign_path = os.path.join(self.tftpdir, self.eesign)
         self.eechk_path = os.path.join(self.tftpdir, self.eechk)
 
-
         # DUT IP
         baseip = 31
         self.dutip = "192.168.1." + str((int(self.row_id) + baseip))
@@ -150,15 +156,15 @@ class ScriptBase(object):
             print("Nothing changed. Please assign prompt!")
 
     def erase_eefiles(self):
-        tftpdir = self.tftpdir + "/"
         log_debug("Erase existed eeprom information files ...")
         files = [self.eebin, self.eetxt, self.eechk, self.eetgz]
         for f in files:
-            rtf = os.path.isfile(tftpdir + f)
+            destf = os.path.join(self.tftpdir, f)
+            rtf = os.path.isfile(destf)
             if rtf is True:
                 log_debug("Erasing File - " + f + " ...")
-                os.chmod(tftpdir + f, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-                os.remove(tftpdir + f)
+                os.chmod(destf, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+                os.remove(destf)
             else:
                 log_debug("File - " + f + " doesn't exist ...")
 
