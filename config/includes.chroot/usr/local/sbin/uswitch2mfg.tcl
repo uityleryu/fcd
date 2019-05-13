@@ -265,7 +265,7 @@ proc handle_urescue {} {
     send_user "atftp --option \"mode octet\" -p -l /tftpboot/$fwimg $ip\r"
     exec atftp --option "mode octet" -p -l /tftpboot/$fwimg $ip 2>/dev/null >/dev/null
 
-    set timeout 150
+    set timeout 300
     expect timeout {
         error_critical "U-boot prompt not found !"
     } "$bootloader_prompt"
@@ -479,8 +479,6 @@ proc update_firmware { boardid } {
     expect timeout {
         error_critical "Failed to download firmware !"
     } "Restarting system."
-
-    log_progress 40 "Firmware flashed"
 }
 
 proc handle_uboot { {wait_prompt 0} } {
@@ -556,6 +554,7 @@ proc handle_uboot { {wait_prompt 0} } {
 
     # Update kernel 0
     update_firmware $boardid
+    log_progress 40 "Firmware flashed"
 
     stop_uboot
 
@@ -577,7 +576,7 @@ proc handle_uboot { {wait_prompt 0} } {
         error_critical "Erase uboot-env failed !"
     } "$bootloader_prompt"
 
-    log_progress 90 "uboot-env erased"
+    log_progress 50 "uboot-env erased"
 
     # Update Kernel 1
     handle_urescue

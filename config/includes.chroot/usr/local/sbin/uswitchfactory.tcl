@@ -700,11 +700,6 @@ proc do_security {} {
         error_critical "E02401 EEPROM (bin) download failure"
     }
 
-    send "reboot\r"
-    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
-
-    send "exit\r"
-
     log_debug "Checking EEPROM..."
     if { [ catch { exec /usr/bin/cmp /tftpboot/$eeprom_signed /tftpboot/$eeprom_check } results ] } {
         error_critical "E02403 EEPROM check failed"
@@ -714,6 +709,8 @@ proc do_security {} {
     log_debug "EEPROM check OK..."
 
     log_progress 60 "Rebooting"
+    send "reboot\r"
+    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 }
 
 proc check_security {} {
