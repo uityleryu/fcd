@@ -15,11 +15,11 @@ class USW_RTL838X_MFG(ScriptBase):
         # script specific vars
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-t1.bin"
-        
+
         self.empty_eeprom_md5sum = "fcd6bcb56c1689fcef28b57c22475bad"
         self.RFW_baudrate = "115200" # Release FirmWare baudrate
         self.T1_baudrate = "9600"    # T1 image baudrate
-    
+
     def open_console(self, baudrate):
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b " + baudrate
         log_debug(msg=pexpect_cmd)
@@ -32,14 +32,14 @@ class USW_RTL838X_MFG(ScriptBase):
 
     def stop_at_uboot(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
-    
+
     def setenv_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         #time.sleep(1)
         #self.pexp.expect_action(10, self.bootloader_prompt, "ping " + self.tftp_server)
         #self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
-        
+
     def enter_urescue(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)

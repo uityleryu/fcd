@@ -135,6 +135,27 @@
       "T1FILE" : "us_rtl838x_mfg.py",
       "QRCHECK" : "True"
     },
+    "USW-16":{
+      "INDEX" : 4,
+      "NAME" : "USW-16",
+      "BOARDID" : "ed23",
+      "BOMREV" : "113-02943",
+      "DESC" : "UBNT UniFiSwitch 16",
+      "FILE" : "us_rtl838x_factory.py",
+      "T1FILE" : "us_rtl838x_mfg.py",
+      "QRCHECK" : "True"
+    },
+
+    "USW-24":{
+      "INDEX" : 4,
+      "NAME" : "USW-24",
+      "BOARDID" : "ed24",
+      "BOMREV" : "113-02944",
+      "DESC" : "UBNT UniFiSwitch 24",
+      "FILE" : "us_rtl838x_factory.py",
+      "T1FILE" : "us_rtl838x_mfg.py",
+      "QRCHECK" : "True"
+    },
 
     "USW-LEAF":{
       "INDEX" : 5,

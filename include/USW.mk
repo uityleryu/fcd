@@ -27,8 +27,12 @@ IMAGE-ULS-RPS= \
 IMAGE-USW-16-24= \
     images/ed20* \
     images/ed21* \
+    images/ed23* \
+    images/ed24* \
     usw-fw/unifiswitch-16-* \
     usw-fw/unifiswitch-24-* \
+    usw-fw/unifiswitch-16poe-* \
+    usw-fw/unifiswitch-24poe-* \
     usw-fw/US.rtl838x.*
 
 IMAGE-USW-LEAF= \
@@ -49,9 +53,9 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER =
-FCDIMG_VER = 41cda2e93d1ce980c42da128f24b3381083837c0
-UBNTLIB_VER= 11915e5ddb57ab97b69d0cffc13a9497533f4d7a
-TOOL_VER   = 1d14a908c3293afc158cf419c9a81b39c0c1d07a
+FCDIMG_VER =
+UBNTLIB_VER=
+TOOL_VER   =
 
 TOOLS-CONFIG= \
     common/sshd_config \

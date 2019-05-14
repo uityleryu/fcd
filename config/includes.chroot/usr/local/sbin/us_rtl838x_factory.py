@@ -49,27 +49,35 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.ethnum = {
             'ed20': "17",
             'ed21': "25",
-            'ed22': "49"
+            'ed22': "49",
+            'ed23': "17",
+            'ed24': "25"
         }
 
         # number of WiFi
         self.wifinum = {
             'ed20': "0",
             'ed21': "0",
-            'ed22': "0"
+            'ed22': "0",
+            'ed23': "0",
+            'ed24': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ed20': "0",
             'ed21': "0",
-            'ed22': "0"
+            'ed22': "0",
+            'ed23': "0",
+            'ed24': "0"
         }
 
         self.netif = {
             'ed20': "ifconfig eth0 ",
             'ed21': "ifconfig eth0 ",
-            'ed22': "ifconfig eth0 "
+            'ed22': "ifconfig eth0 ",
+            'ed23': "ifconfig eth0 ",
+            'ed24': "ifconfig eth0 "
         }
 
     def data_provision(self):
@@ -355,7 +363,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         if WAIT_LCMUPGRADE_ENABLE is True:
             msg(90, "Waiting LCM upgrading ...")
             self.wait_lcm_upgrade()
-        
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
