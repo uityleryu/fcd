@@ -30,12 +30,7 @@ class ScriptBase(object):
         self.__pexpect_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
 
-        k = []
-        for c in self.input_args.pass_phrase:
-            k.append('{:02x}'.format(ord(c)))
-
-        self.input_args.pass_phrase = ''.join(k)
-
+        self._process_passphrase()
         log_debug(str(self.input_args))
 
     @property
@@ -139,6 +134,16 @@ class ScriptBase(object):
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         return args
+
+    def _process_passphrase(self):
+        if self.input_args.pass_phrase is not None:
+            k = []
+            for c in self.input_args.pass_phrase:
+                k.append('{:02x}'.format(ord(c)))
+            self.input_args.pass_phrase = ''.join(k)
+            self.pass_phrase = ''.join(k)
+        else:
+            log_debug("No passphrase input!")
 
     def login(self, username="ubnt", password="ubnt", timeout=10):
         """
