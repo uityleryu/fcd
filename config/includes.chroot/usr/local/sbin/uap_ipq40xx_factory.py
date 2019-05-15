@@ -134,19 +134,20 @@ class UAPIPQ40XXFactory(ScriptBase):
         else:
             error_critical("Board is not callibrated")
 
-        output = self.pexp.expect_get_output("md.b 0x84005006 6", self.ubpmt[self.board_id])
-        out_list = output.split('\r')
-        outmac = ""
-        for line in out_list:
-            if("84005006:" in line):
-                out = line.split(' ')
-                outmac = out[1] + out[2] + out[3] + out[4] + out[5] + out[6]
-        
-        if (self.mac in outmac):
-            log_debug("Board calibration MAC correct")
-        else:
-            error_critical("Board calibration MAC incorrect %s %s" %(self.mac, outmac))
-        self.pexp.expect_only(30, self.ubpmt[self.board_id])
+        if (False) :
+            output = self.pexp.expect_get_output("md.b 0x84005006 6", self.ubpmt[self.board_id])
+            out_list = output.split('\r')
+            outmac = ""
+            for line in out_list:
+                if("84005006:" in line):
+                    out = line.split(' ')
+                    outmac = out[1] + out[2] + out[3] + out[4] + out[5] + out[6]
+            
+            if (self.mac in outmac):
+                log_debug("Board calibration MAC correct")
+            else:
+                error_critical("Board calibration MAC incorrect %s %s" %(self.mac, outmac))
+            self.pexp.expect_only(30, self.ubpmt[self.board_id])
 
         msg(20, "Do ubntw")
 
