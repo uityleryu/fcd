@@ -1,5 +1,8 @@
 IMAGE-UAP-FLEX= \
     images/ec26* \
+    uap-fw/unifiap-mt7621* \
+    uap-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
 

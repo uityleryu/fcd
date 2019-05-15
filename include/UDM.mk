@@ -30,6 +30,7 @@ IMAGE-UDMXG=
 IMAGE-UDMB= \
     images/ec25* \
     udm-fw/udm-b-* \
+    udm-fw/Unifi-ONE-* \
     udm-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     udm-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
     udm-fw/BZ.mt7621.*
