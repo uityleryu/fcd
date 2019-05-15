@@ -9,7 +9,7 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
-INSTALL_SPI_FLASH = True  # this is temp solution, will remove after next build
+INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
 INSTALL_NAND_FW_ENABLE = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
@@ -128,8 +128,11 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
         self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
-        # clean up config block, trap into "factory install" mode
+        # clean up config block and nand flash
+        self.pexp.expect_action(30, self.ubpmt, "nand erase.chip")
+        self.pexp.expect_only(60, "Erasing at 0x3ffc0000", err_msg="Erase nand flash failed")
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
+        self.pexp.expect_only(60, "Erased: OK", err_msg="Erase config failed")
         self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra server=" + self.tftp_server)
         self.pexp.expect_action(10, self.ubpmt, "boot")
         msg(15, "Installing fw on nand")
@@ -303,7 +306,7 @@ class UNASALPINEFactory(ScriptBase):
             self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        self.pexp.expect_action(600, "login:", self.user)
+        self.pexp.expect_action(300, "login:", self.user)
         self.pexp.expect_action(10, "Password:", self.password)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
