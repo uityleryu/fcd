@@ -105,6 +105,7 @@ class MT7621MFGGeneral(ScriptBase):
         return is_alive
 
     def set_boot_netenv(self):
+        self.pexp.expect_action(10, self.bootloader_prompt, "mtk network on")
         self.pexp.expect_action(10, self.bootloader_prompt, "set ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "set serverip " + self.tftp_server)
 
