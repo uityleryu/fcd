@@ -73,6 +73,8 @@ class UAPIPQ40XXFactory(ScriptBase):
         self.bomrev = "13-" + self.bom_rev
         helperexe = "helper_IPQ40xx"
         self.dut_helper_path = os.path.join(self.uap_dir , helperexe)
+        eeexe = "x86-4k-ee"
+        self.eetool = os.path.join(self.uap_dir , eeexe)
         self.uboot_address =  "0xf0000"
         self.uboot_size =  "0x80000"
         self.cfg_address = "0x1fc0000"
@@ -247,7 +249,6 @@ class UAPIPQ40XXFactory(ScriptBase):
         regparamj = ' '.join(regparam)
 
         cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
-        print("cmd: " + cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(6)
         if (int(rtc) > 0):
@@ -266,7 +267,25 @@ class UAPIPQ40XXFactory(ScriptBase):
         time.sleep(3)
         self._set_uboot_network()
 
-        msg(60, "Write signed EEPROM")
+        msg(60, "Add RSA Key")
+
+        cmd = "rm /tmp/dropbear_key.rsa; dropbearkey -t rsa -f /tmp/dropbear_key.rsa"
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if (int(rtc) > 0):
+            error_critical("Generate RSA key failed!!")
+        else:
+            log_debug("Generate RSA key successfully")
+
+        cmd = self.eetool + " -K -f " + self.tftpdir + self.eeprom_signed
+        log_debug("cmd: " + cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if (int(rtc) > 0):
+            error_critical("Append RSA key failed!!")
+        else:
+            log_debug("Addend RSA key successfully")
+
+        msg(70, "Write signed EEPROM")
+
         cmd = "tftpboot 84000000 " + self.eeprom_signed
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
         self.pexp.expect_action(30, "Bytes transferred", "usetprotect spm off")

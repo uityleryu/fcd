@@ -33,7 +33,8 @@ TOOLS-UBB+= \
     uap/cfg_part.bin \
     uap/helper_IPQ40xx \
     uap/id_rsa \
-    uap/id_rsa.pub
+    uap/id_rsa.pub \
+    uap/x86-4k-ee
 
 TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UAP+=$(TOOLS-UBB)
