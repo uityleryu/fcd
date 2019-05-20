@@ -37,9 +37,8 @@ IMAGE-USW-16-24= \
 
 IMAGE-USW-LEAF= \
     images/f060* \
-    usw-fw/usw-leaf* \
-    usw-fw/udc* \
-    usw-fw/UDC*
+    usw-fw/fw.UDC* \
+    usw-fw/bsp.UDC*
 
 IMAGE-USW+=$(IMAGE-USW-24)
 IMAGE-USW+=$(IMAGE-USW-6XG)
@@ -68,8 +67,9 @@ TOOLS-USW-16-24+= \
     usw_rtl838x/helper_rtl838x \
     usw_rtl838x/rtl838x-ee
 
-TOOLS-USW-LEAF+=$(TOOLS-USW)
-TOOLS-USW-LEAF+= usw-leaf/*
+TOOLS-USW-LEAF=$(TOOLS-USW)
+TOOLS-USW-LEAF+= \
+    usw_leaf/*
 
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-24=$(TOOLS-USW)
@@ -93,5 +93,5 @@ $(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)))
 $(eval $(call ProductImage,USW-16-24,FCD-USW-16-24-$(VER)))
-$(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)))
+$(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-MINI,FCD-USW-MINI-$(VER)-$(FWVER)))

@@ -10,62 +10,55 @@ import os
 import stat
 import filecmp
 
-NEED_DROPBEAR = False
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-
 NEED_UBUPDATE_ENABLE = True
 FWUPDATE_ENABLE = True
-
 DATAVERIFY_ENABLE = True
 
-dut_util_dir = ""
-tftpdir = ""
-
-bomrev = ""
-eepmexe = "al324-arm64-ee"
-helperexe = "helper_f060_AL324_release"
 diagsh = ""
-
-# number of Ethernet
-ethnum = {
-    'f060': "73"
-}
-
-# number of WiFi
-wifinum = {
-    'f060': "0"
-}
-
-# number of Bluetooth
-btnum = {
-    'f060': "0"
-}
-
-netif = {
-    'f060': "ifconfig eth0 "
-}
-
-infover = {
-    'f060': "Version:"
-}
 
 
 class USUDCALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(USUDCALPINEFactoryGeneral, self).__init__()
-        global tftpdir
-        global bomrev
         global diagsh
-        global dut_util_dir
 
-        tftpdir = self.tftpdir + "/"
-        bomrev = "113-" + self.bom_rev
-        dut_util_dir = os.path.join(self.dut_tmpdir, "usw-leaf")
+        self.ver_extract('UniFiSwitch', 'USW-LEAF')
+        self.bomrev = "113-" + self.bom_rev
+        self.dut_util_dir = os.path.join(self.dut_tmpdir, "usw_leaf")
+        self.host_util_dir = os.path.join(self.tftpdir, "tools", "usw_leaf")
         self.bootloader_prompt = "UDC"
         self.devregpart = "/dev/mtdblock4"
-        diagsh = "UBNT"
+        self.diagsh = "UBNT"
+        self.eepmexe = "x86-64k-ee"
+        self.helperexe = "helper_f060_AL324_release"
+        self.eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+        self.eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+
+        # number of Ethernet
+        self.ethnum = {
+            'f060': "73"
+        }
+
+        # number of WiFi
+        self.wifinum = {
+            'f060': "0"
+        }
+
+        # number of Bluetooth
+        self.btnum = {
+            'f060': "0"
+        }
+
+        self.netif = {
+            'f060': "ifconfig eth0 "
+        }
+
+        self.infover = {
+            'f060': "Version:"
+        }
 
     def stop_at_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -88,10 +81,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
         self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
 
-    def lnx_netcheck(self, netifen):
+    def lnx_netcheck(self, netifen=False):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 down", self.linux_prompt)
         if netifen is True:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, netif[self.board_id] + self.dutip, self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
             time.sleep(2)
 
         postexp = [
@@ -102,112 +96,91 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
     def data_provision(self):
         log_debug("Change files permission ...")
-        util_path = os.path.join(dut_util_dir, "*")
+        util_path = os.path.join(self.dut_util_dir, "*")
+
+        cmd = "chmod 777 {0}".format(util_path)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+
+        self.gen_rsa_key()
+
+        otmsg = "Starting to do {0} ...".format(self.eepmexe)
+        log_debug(otmsg)
+        flasheditor = os.path.join(self.host_util_dir, self.eepmexe)
         sstr = [
-            "chmod 777",
-            util_path
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
-
-        if NEED_DROPBEAR is True:
-            log_debug("Copying the dropbearkey to /usr/bin ...")
-            dropbearkey_arm64_path = os.path.join(dut_util_dir, "dropbearkey_arm64")
-            sstr = [
-                "cp",
-                dropbearkey_arm64_path,
-                "/usr/bin/dropbearkey"
-            ]
-            sstr = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
-
-            log_debug("Starting to initialize the dropbear")
-            sstr = [
-                "mkdir",
-                "-p",
-                "/var/run/dropbear; ",
-                "dropbear -R"
-            ]
-            sstr = ' '.join(sstr)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
-
-        log_debug("Starting to do " + eepmexe + "...")
-        eepmexe_path = os.path.join(dut_util_dir, eepmexe)
-        sstr = [
-            eepmexe_path,
+            flasheditor,
             "-F",
-            "-q " + self.devregpart,
-            "-r " + bomrev,
+            "-f " + self.eegenbin_path,
+            "-r " + self.bomrev,
             "-s 0x" + self.board_id,
             "-m " + self.mac,
             "-c 0x" + self.region,
-            "-e " + ethnum[self.board_id],
-            "-w " + wifinum[self.board_id],
-            "-b " + btnum[self.board_id],
-            "-k",
-            "-p Factory"
+            "-e " + self.ethnum[self.board_id],
+            "-w " + self.wifinum[self.board_id],
+            "-b " + self.btnum[self.board_id],
+            "-k " + self.rsakey_path
         ]
         sstr = ' '.join(sstr)
+        log_debug("flash editor cmd: " + sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        time.sleep(1)
+        if int(rtc) > 0:
+            otmsg = "Generating {0} file failed!!".format(self.eegenbin_path)
+            error_critical(otmsg)
+        else:
+            otmsg = "Generating {0} files successfully".format(self.eegenbin_path)
+            log_debug(otmsg)
 
-        postexp = [
-            "ssh-rsa",
-            "Fingerprint",
-            self.linux_prompt
-        ]
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, post_exp=postexp)
+        cmd = "tftp -g -r {0} -l /tmp/{0} {1}".format(self.eegenbin, self.tftp_server)
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+
+        cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
     def prepare_server_need_files(self):
-        log_debug("Starting to do " + helperexe + "...")
-        helperexe_path = os.path.join(dut_util_dir, helperexe)
+        log_debug("Starting to do " + self.helperexe + "...")
+        helperexe_path = os.path.join(self.dut_util_dir, self.helperexe)
         sstr = [
             helperexe_path,
             "-q",
             "-c product_class=basic",
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin,
+            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin_dut_path,
             ">",
-            self.eetxt
+            self.eetxt_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr)
+        self.pexp.expect_only(10, self.linux_prompt)
         time.sleep(1)
 
-        sstr = [
-            "tar",
-            "cf",
-            self.eetgz,
-            self.eebin,
-            self.eetxt
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
+        cmd = "cd /tmp; tar cf {0} {1} {2}".format(self.eetgz, self.eebin, self.eetxt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
         os.mknod(self.eetgz_path)
         os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
         log_debug("Send helper output tgz file from DUT to host ...")
-        sstr = [
-            "tftp",
-            "-p",
-            "-r " + self.eetgz,
-            "-l " + self.eetgz,
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, self.linux_prompt)
+
+        cmd = "tftp -p -r {0} -l /tmp/{0} {1}".format(self.eetgz, self.tftp_server)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         time.sleep(1)
 
-        sstr = [
-            "tar",
-            "xvf " + self.eetgz_path,
-            "-C " + tftpdir
-        ]
-        sstr = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        cmd = "tar xvf {0} -C {1}/".format(self.eetgz_path, self.tftpdir)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(1)
         if int(rtc) > 0:
-            error_critical("Decompressing " + self.eetgz + " file failed!!")
+            otmsg = "Decompressing {0} file failed!!".format(self.eetgz)
+            error_critical(otmsg)
         else:
-            log_debug("Decompressing " + self.eetgz + " files successfully")
+            otmsg = "Decompressing {0} files successfully".format(self.eetgz)
+            log_debug(otmsg)
+
+        rtc = filecmp.cmp(self.eebin_path, self.eegenbin_path)
+        if rtc is True:
+            otmsg = "Comparing files {0} and {1} are the same".format(self.eebin, self.eegenbin)
+            log_debug(otmsg)
+        else:
+            otmsg = "Comparing files failed!! {0}, {1} are not the same".format(self.eebin, self.eegenbin)
+            error_critical(otmsg)
 
     def registration(self):
         log_debug("Starting to do registration ...")
@@ -234,6 +207,10 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             regsubparams,
             "-i field=qr_code,format=hex,value=" + self.qrhex,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
+            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
+            "-i field=fcd_version,format=hex,value=" + self.sem_ver,
+            "-i field=sw_id,format=hex,value=" + self.sw_id,
+            "-i field=sw_version,format=hex,value=" + self.fw_ver,
             "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
             "-o field=registration_id",
             "-o field=result",
@@ -248,7 +225,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         regparamj = ' '.join(regparam)
 
-        cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
+        cmd = "sudo /usr/local/sbin/client_x86_release_20190507 {0}".format(regparamj)
         print("cmd: " + cmd)
         clit = ExpttyProcess(self.row_id, cmd, "\n")
         clit.expect_only(30, "Ubiquiti Device Security Client")
@@ -262,58 +239,60 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             error_critical("Can't find " + self.eesign)
 
     def fwupdate(self):
-        if NEED_UBUPDATE_ENABLE is True:
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot", "SIGKILL")
-            self.ubupdate()
-            self.stop_at_uboot()
-            self.set_boot_net()
+        cmd = "tftp -g -r images/{0}-fw-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, self.linux_prompt)
 
-        sstr = [
-            "tftpboot",
-            "$loadaddr",
-            "images/" + self.board_id + "-fw-uImage"
+        cmd = "tftp -g -r images/{0}-fw-boot.img -l /tmp/boot.img {1}".format(self.board_id, self.tftp_server)
+        self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
+
+        log_debug("Is flashing U-boot")
+        postexp = [
+            r"Erasing blocks:.*\(50%\)",
+            r"Erasing blocks:.*\(100%\)",
+            r"Writing data:.*\(50%\)",
+            r"Writing data:.*\(100%\)",
+            r"Verifying data:.*\(50%\)",
+            r"Verifying data:.*\(100%\)",
+            self.linux_prompt
         ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_action(30, self.bootloader_prompt, sstr)
+        cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
+        self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
 
-        sstr = [
-            "setenv",
-            "bootargs",
-            "pci=pcie_bus_perf",
-            "console=ttyS0,115200",
-            "panic=3",
-            "$bootargsextra"
+        log_debug("Is flashing recovery image")
+        postexp = [
+            r"Erasing blocks:.*\(50%\)",
+            r"Erasing blocks:.*\(100%\)",
+            r"Writing data:.*\(50%\)",
+            r"Writing data:.*\(100%\)",
+            r"Verifying data:.*\(50%\)",
+            r"Verifying data:.*\(100%\)",
+            self.linux_prompt
         ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, sstr)
-        self.pexp.expect_action(30, self.bootloader_prompt, "bootm $loadaddr#udc@1")
+        cmd = "flashcp -v /tmp/uImage.r {0}".format("/dev/mtd5")
+        self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, postexp)
 
-        self.login(username="root", password="ubnt", timeout=100)
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, "reboot", self.linux_prompt)
 
-        upgradebin_path = os.path.join(self.dut_tmpdir, "upgrade.bin")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r images/" + self.board_id + "-fw.bin",
-            "-l " + upgradebin_path,
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, self.linux_prompt)
+        self.login(username="ubnt", password="ubnt", timeout=80)
 
         log_debug("Starting to do fwupdate ... ")
-        sstr = [
-            "sh",
-            "/usr/bin/ubnt-upgrade",
-            "-d",
-            "/tmp/upgrade.bin"
+
+        postexp = [
+            "64 bytes from",
+            self.linux_prompt
         ]
-        sstr = ' '.join(sstr)
+        cmd = "ping -c 1 {0}".format(self.tftp_server)
+        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, cmd, postexp)
+
+        cmd = "tftp -g -r images/{0}-fw.bin -l /tmp/upgrade.bin {1}".format(self.board_id, self.tftp_server)
+        self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
 
         postexp = [
             "Firmware version",
         ]
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
+        cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, postexp)
+        self.login(username="root", password="ubnt", timeout=100)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info")
@@ -340,8 +319,12 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Boot from tftp with installer ...")
+        # detect the BSP U-boot
+        self.pexp.expect_only(30, "May 06 2019 - 12:15:33")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, diagsh, "exit", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, diagsh, "diag", "DIAG")
+        self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
+        self.pexp.expect_lnxcmd(10, "DIAG", "shell", self.linux_prompt)
 
         self.lnx_netcheck(True)
         msg(10, "Boot up to linux console and network is good ...")
@@ -365,8 +348,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
-
-        self.login(username="root", password="ubnt", timeout=100)
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()

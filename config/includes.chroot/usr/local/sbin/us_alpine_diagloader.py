@@ -4,6 +4,9 @@ import time
 import os
 import stat
 import filecmp
+import re
+
+from ubntlib.fcd.ssh_client import SSHClient
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -30,22 +33,45 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         time.sleep(1)
 
-    def set_boot_net(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "-diag-")
-        time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+    def lnx_netcheck(self):
+        postexp = [
+            "64 bytes from",
+            self.linux_prompt
+        ]
+        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
 
-    def ubupdate(self):
-        self.stop_at_uboot()
-        self.set_boot_net()
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootupd")
-        self.pexp.expect_only(30, "bootupd done")
-        self.pexp.expect_only(30, "variables are deleted from flash using the delenv script")
-        time.sleep(1)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+    # loading the diag U-boot and diag recovery image basing on formal FW
+    def load_diag_ub_uimg(self):
+        self.login(username="ubnt", password="ubnt", timeout=100)
+        self.lnx_netcheck()
+
+        cmd = "tftp -g -r images/{0}-diag-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, self.linux_prompt)
+
+        cmd = "tftp -g -r images/{0}-diag-boot.img -l /tmp/boot.img {1}".format(self.board_id, self.tftp_server)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, self.linux_prompt)
+
+        postexp = [
+            r"Erasing blocks:.*\(100%\)",
+            r"Writing data:.*\(100%\)",
+            r"Verifying data:.*\(100%\)",
+            self.linux_prompt
+        ]
+        cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
+        self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
+        msg(20, "U-boot loading successfully")
+
+        postexp = [
+            r"Erasing blocks:.*\(100%\)",
+            r"Writing data:.*\(100%\)",
+            r"Verifying data:.*\(100%\)",
+            self.linux_prompt
+        ]
+        cmd = "flashcp -v /tmp/uImage.r {0}".format("/dev/mtd5")
+        self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, postexp)
+        msg(20, "uImage loading successfully")
+
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, "reboot", self.linux_prompt)
 
     def run(self):
         """
@@ -60,18 +86,27 @@ class USALPINEDiagloader(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        msg(10, "Updating diagnostic U-boot ...")
-        self.ubupdate()
+        expit = [
+            "May 06 2019 - 12:15:33",
+            "May 16 2019 - 09:50:32"
+        ]
+        rt = self.pexp.expect_get_index(30, expit)
+        if rt == 1:
+            self.load_diag_ub_uimg()
+        msg(40, "Diag U-boot/uImage updating completing ...")
+
         self.stop_at_uboot()
-        msg(40, "Diagnostic U-boot updating completing ...")
-
-        self.set_boot_net()
-        msg(50, "network configuration done in U-Boot ...")
-
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run boottftp")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootspi")
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, diagsh, "exit", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, diagsh, "diag", "DIAG")
+        self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
+        self.pexp.expect_lnxcmd(10, "DIAG", "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 down", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.dutip, self.linux_prompt)
+        self.lnx_netcheck()
+        msg(50, "network configuration done in U-Boot ...")
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "/ubnt/diag-ssd.sh format", "done")
         msg(70, "SSD format Completing ...")
 
@@ -85,7 +120,8 @@ class USALPINEDiagloader(ScriptBase):
         if os.path.isfile(dst_path) is not True:
             os.symlink(src_path, dst_path)
 
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "/ubnt/diag-ssd.sh tftp " + self.tftp_server, self.linux_prompt)
+        cmd = "/ubnt/diag-ssd.sh tftp {0}".format(self.tftp_server)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
         self.pexp.expect_lnxcmd(20, self.linux_prompt, "reboot", self.linux_prompt)
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
