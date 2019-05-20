@@ -170,7 +170,7 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eebin, self.eetxt, self.eechk, self.eetgz]
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey]
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -358,9 +358,7 @@ class ScriptBase(object):
         self.is_dutfile_exist(dest)
 
     def gen_rsa_key(self):
-        src = os.path.join(self.tftpdir, self.rsakey)
-
-        cmd = "dropbearkey -t rsa -f {0}".format(src)
+        cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         self.fcd.common.pcmd(cmd)
         time.sleep(4)
 
