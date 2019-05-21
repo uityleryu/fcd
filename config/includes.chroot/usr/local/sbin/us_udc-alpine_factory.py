@@ -36,6 +36,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.helperexe = "helper_f060_AL324_release"
         self.eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
         self.eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+        self.lcmfwver = "v2.0.1-0-g8cc9eeb"
 
         # number of Ethernet
         self.ethnum = {
@@ -302,6 +303,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, "qrid=" + self.qrcode)
         self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver)
 
     def run(self):
         """
