@@ -8,7 +8,7 @@ IMAGE-UAP-FLEX= \
 
 IMAGE-UBB= \
     images/dc98* \
-    uap-fw/UBB.v0.9.10.40735.190503.1747.bin \
+    uap-fw/UBB.* \
     uap-fw/ubntubb-u-boot.rom
 
 
@@ -34,7 +34,7 @@ TOOLS-UBB+= \
     uap/helper_IPQ40xx \
     uap/id_rsa \
     uap/id_rsa.pub \
-    uap/x86-4k-ee
+    uap/x86-64k-ee
 
 TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UAP+=$(TOOLS-UBB)

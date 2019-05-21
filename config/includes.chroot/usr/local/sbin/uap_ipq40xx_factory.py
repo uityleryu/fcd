@@ -73,7 +73,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         self.bomrev = "13-" + self.bom_rev
         helperexe = "helper_IPQ40xx"
         self.dut_helper_path = os.path.join(self.uap_dir , helperexe)
-        eeexe = "x86-4k-ee"
+        eeexe = "x86-64k-ee"
         self.eetool = os.path.join(self.uap_dir , eeexe)
         self.uboot_address =  "0xf0000"
         self.uboot_size =  "0x80000"
@@ -81,7 +81,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         self.cfg_size = "0x40000"
         self.eeprom_address = "0x170000"
         self.eeprom_size = "0x10000"
-
+        self.dropbear_key = "/tmp/dropbear_key.rsa." + self.row_id
         self.fcd.common.config_stty(self.dev)
 
     def _stop_uboot(self):
@@ -269,14 +269,14 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         msg(60, "Add RSA Key")
 
-        cmd = "rm /tmp/dropbear_key.rsa; dropbearkey -t rsa -f /tmp/dropbear_key.rsa"
+        cmd = "rm " + self.dropbear_key + "; dropbearkey -t rsa -f " + self.dropbear_key
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if (int(rtc) > 0):
             error_critical("Generate RSA key failed!!")
         else:
             log_debug("Generate RSA key successfully")
 
-        cmd = self.eetool + " -K -f " + self.tftpdir + self.eeprom_signed
+        cmd = self.eetool + " -f " + self.tftpdir + self.eeprom_signed + " -K " + self.dropbear_key
         log_debug("cmd: " + cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if (int(rtc) > 0):
