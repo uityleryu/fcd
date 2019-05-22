@@ -196,7 +196,7 @@ class Transaction(object):
     def received_dhcp_discover(self, discovery):
         if self.is_done():
             return
-        self.configuration.debug('discover:\n {}'.format(str(discovery).replace('\n', '\n\t')))
+        #self.configuration.debug('discover:\n {}'.format(str(discovery).replace('\n', '\n\t')))
         self.send_offer(discovery)
 
     def send_offer(self, discovery):
@@ -343,7 +343,7 @@ class CSVDatabase(object):
 
     def __init__(self, file_name):
         self.file_name = file_name
-        self.file('a').close()  # create file
+        self.file('w').close()  # create file
 
     def file(self, mode='r'):
         return open(self.file_name, mode)
@@ -487,10 +487,11 @@ class DHCPServer(object):
 
     def received(self, packet):
         if not self.transactions[packet.transaction_id].receive(packet):
-            self.configuration.debug('received:\n {}'.format(str(packet).replace('\n', '\n\t')))
+            return
+            #self.configuration.debug('received:\n {}'.format(str(packet).replace('\n', '\n\t')))
 
     def client_has_chosen(self, packet):
-        self.configuration.debug('client_has_chosen:\n {}'.format(str(packet).replace('\n', '\n\t')))
+        #self.configuration.debug('client_has_chosen:\n {}'.format(str(packet).replace('\n', '\n\t')))
         host = Host.from_packet(packet)
         if not host.has_valid_ip():
             return
@@ -544,7 +545,7 @@ class DHCPServer(object):
         return get_host_ip_addresses()
 
     def broadcast(self, packet):
-        self.configuration.debug('broadcasting:\n {}'.format(str(packet).replace('\n', '\n\t')))
+        #self.configuration.debug('broadcasting:\n {}'.format(str(packet).replace('\n', '\n\t')))
         for addr in self.server_identifiers:
             broadcast_socket = socket(type=SOCK_DGRAM)
             broadcast_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -584,7 +585,7 @@ class DHCPServer(object):
         while len(cur_hosts) < amount:
             cur_hosts = self.get_current_hosts()
             time.sleep(1)
-        print("dhcp done. total %d devices" % len(cur_hosts))
+        print("DHCP done. total %d devices" % len(cur_hosts))
         cb(cur_hosts)
         self.monitor_run = False
 

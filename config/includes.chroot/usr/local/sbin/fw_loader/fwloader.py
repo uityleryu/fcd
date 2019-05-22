@@ -24,10 +24,6 @@ from ubntlib.Commonlib import *
 login_account = "ubnt"
 login_passwd = "ubnt"
 
-ubidiag_prompt = "UBNT-US.ubidiag"
-formal_prompt = {'ed04': "UBNT-US.v4.0.5#",
-                 'ed01': "UBNT-US.v4.0.5#",
-                 'ed10': "UBNT-US.pr-2291#"}
 re_promt = r'UBNT-.+\..+#'
 
 tftpdir = "/tftpboot/"
@@ -117,7 +113,6 @@ class fwloader():
         if self.loadcnt != 3:
             msg(str(10+progval_base), "Connecting via ssh to devices for the {} time".format(self.loadcnt))
             self.sshlogin(prompt)
-            self.ckburninflag(prompt)
 
             msg(str(20+progval_base), "Transferring fw image for the {} time".format(self.loadcnt))
             self.xsferfile(prompt)

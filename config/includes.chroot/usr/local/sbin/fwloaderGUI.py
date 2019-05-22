@@ -120,13 +120,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.pgrbprogress.set_show_text(True)
         self.pgrbprogress.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("black"))
         self.hboxpgrs.pack_start(self.pgrbprogress, True, True, 0)
-        '''
-        # start button
-        self.btnstart = Gtk.Button()
-        self.btnstart.set_label(" Start ")
-        self.btnstart.set_focus_on_click(False)
-        self.btnstart.connect("clicked", self.on_start_button_click)
-        '''
+
         # Text view for showing log
         self.txvlog = Gtk.TextView()
         self.txvlog.set_editable(False)
@@ -192,6 +186,10 @@ class fraMonitorPanel(Gtk.Frame):
 
     def set_mac(self, mac):
         self.etymac.set_text(mac)
+
+    def clear_dut_info(self):
+        self.fwload_cnt = 0
+        self.dev_mac = ""
 
     def get_tty(self):
         combo = self.cmbbcomport
@@ -284,13 +282,6 @@ class fraMonitorPanel(Gtk.Frame):
         self.templogfile = open(GPath.reportdir+"/"+GCommon.macaddr+".log", "a")
         print("Joe: templogfile: "+self.templogfile.name)
 
-    def on_start_button_click(self, button):
-        # self.starttime = time.time()
-        self.x = True
-        # self.dhcpsrv  = DHCPServer()
-        # self.dhcpsrv.run_in_thread()
-        # self.dhcpsrv.monitor_in_thread(int(dlgUserInput.deviceamount), self.fwloader_start)
-
     def fwloader_start(self, host):
         print("Connecting to device => mac={} ip={}".format(host.mac, host.ip))
 
@@ -344,6 +335,8 @@ class fraMonitorPanel(Gtk.Frame):
             proc.poll()
             print("pid = {}, rt = {}".format(proc.pid, proc.returncode))
             if (proc.returncode == 0):
+                window.mac_list.remove(self.dev_mac)
+                window.dhcpsrv.mac_filter_set(window.mac_list)
                 self.w = "good"
                 self.y = True
                 self.savelog("Pass")
@@ -424,21 +417,6 @@ class dlgUserInput(Gtk.Dialog):
         self.etybomrev = Gtk.Entry()
         self.etybomrev.connect("changed", self.on_bomrev_changed)
 
-        # amount of devices
-        # self.lblamount = Gtk.Label("Enter amount of devices (max=4)")
-        # self.etyamount = Gtk.Entry()
-        # self.etyamount.connect("changed", self.on_amount_changed)
-
-        self.lblbarcde = Gtk.Label("Enter Bar-code of devices (max=4)")
-        self.etybarcde1 = Gtk.Entry()
-        self.etybarcde2 = Gtk.Entry()
-        self.etybarcde3 = Gtk.Entry()
-        self.etybarcde4 = Gtk.Entry()
-        self.etybarcde1.connect("changed", self.on_barcde1_changed)
-        self.etybarcde2.connect("changed", self.on_barcde2_changed)
-        self.etybarcde3.connect("changed", self.on_barcde3_changed)
-        self.etybarcde4.connect("changed", self.on_barcde4_changed)
-
         self.vboxuserauth.pack_start(self.lblpds, False, False, 0)
         self.vboxuserauth.pack_start(self.cmbbpds, False, False, 0)
         self.vboxuserauth.pack_start(self.lblallpd, False, False, 0)
@@ -446,50 +424,10 @@ class dlgUserInput(Gtk.Dialog):
         self.vboxuserauth.pack_start(self.lblbomrev, False, False, 0)
         self.vboxuserauth.pack_start(self.etybomrev, False, False, 0)
         self.vboxuserauth.pack_start(self.cmbballpd, False, False, 0)
-        # self.vboxuserauth.pack_start(self.lblamount, False, False, 0)
-        # self.vboxuserauth.pack_start(self.etyamount, False, False, 0)
-        self.vboxuserauth.pack_start(self.lblbarcde, False, False, 0)
-        self.vboxuserauth.pack_start(self.etybarcde1, False, False, 0)
-        self.vboxuserauth.pack_start(self.etybarcde2, False, False, 0)
-        self.vboxuserauth.pack_start(self.etybarcde3, False, False, 0)
-        self.vboxuserauth.pack_start(self.etybarcde4, False, False, 0)
 
         self.area = self.get_content_area()
         self.area.add(self.vboxuserauth)
         self.show_all()
-
-    def on_amount_changed(self, entry):
-        maxamount = 4
-        dlgUserInput.deviceamount = int(self.etyamount.get_text())
-        if dlgUserInput.deviceamount:
-            if dlgUserInput.deviceamount > maxamount:
-                dlgUserInput.deviceamount = maxamount
-
-        print("The amount of devices: " + str(dlgUserInput.deviceamount))
-
-    def on_barcde1_changed(self, entry):
-        barcode = self.etybarcde1.get_text()
-        barcode = barcode.strip()
-        mac = barcode.split("-")[0]
-        dlgUserInput.dev_macs[0] = mac.upper()
-
-    def on_barcde2_changed(self, entry):
-        barcode = self.etybarcde2.get_text()
-        barcode = barcode.strip()
-        mac = barcode.split("-")[0]
-        dlgUserInput.dev_macs[1] = mac.upper()
-
-    def on_barcde3_changed(self, entry):
-        barcode = self.etybarcde3.get_text()
-        barcode = barcode.strip()
-        mac = barcode.split("-")[0]
-        dlgUserInput.dev_macs[2] = mac.upper()
-
-    def on_barcde4_changed(self, entry):
-        barcode = self.etybarcde4.get_text()
-        barcode = barcode.strip()
-        mac = barcode.split("-")[0]
-        dlgUserInput.dev_macs[3] = mac.upper()
 
     def on_pds_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -545,48 +483,82 @@ class dlgUserInput(Gtk.Dialog):
 
 
 class dlgBarcodeinput(Gtk.Dialog):
+    deviceamount = 0
+    dev_macs = ["", "", "", ""]
+
     def __init__(self, parent):
         Gtk.Dialog.__init__(self,
-                            "Waiting for barcode",
+                            "Devices' MAC Input Dialog",
                             parent,
                             0,
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK))
 
-        self.vboxbarcode = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
-        # self.set_default_response("ok")
+        self.set_default_size(150, 100)
+        self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 
-        self.lbltitle = Gtk.Label("Waiting for barcode")
-        self.lblmac = Gtk.Label("------------")
-        self.etymacedit = Gtk.Entry()
-        self.etymacedit.set_visibility(True)
-        self.etymacedit.set_activates_default(True)
-        self.etymacedit.connect("changed", self.on_etymacedit_changed)
+        self.lblbarcde = Gtk.Label("Enter Bar-code of devices (max=4)")
+        self.etybarcde1 = Gtk.Entry()
+        self.etybarcde2 = Gtk.Entry()
+        self.etybarcde3 = Gtk.Entry()
+        self.etybarcde4 = Gtk.Entry()
+        self.etybarcde1.connect("changed", self.on_barcde1_changed)
+        self.etybarcde2.connect("changed", self.on_barcde2_changed)
+        self.etybarcde3.connect("changed", self.on_barcde3_changed)
+        self.etybarcde4.connect("changed", self.on_barcde4_changed)
 
-        self.vboxbarcode.pack_start(self.lbltitle, False, False, 0)
-        self.vboxbarcode.pack_start(self.lblmac, False, False, 0)
-        self.vboxbarcode.pack_start(self.etymacedit, False, False, 0)
+        self.vboxuserauth.pack_start(self.lblbarcde, False, False, 0)
+        self.vboxuserauth.pack_start(self.etybarcde1, False, False, 0)
+        self.vboxuserauth.pack_start(self.etybarcde2, False, False, 0)
+        self.vboxuserauth.pack_start(self.etybarcde3, False, False, 0)
+        self.vboxuserauth.pack_start(self.etybarcde4, False, False, 0)
 
         self.area = self.get_content_area()
-        self.area.add(self.vboxbarcode)
+        self.area.add(self.vboxuserauth)
         self.show_all()
+        dlgBarcodeinput.dev_macs = ["", "", "", ""]
 
-    def on_etymacedit_changed(self, entry):
-        barcode = self.etymacedit.get_text()
+    def on_barcde1_changed(self, entry):
+        barcode = self.etybarcde1.get_text()
         barcode = barcode.strip()
-        GCommon.barcode = barcode
-        GCommon.barcodelen = len(barcode)
-        print("The barcode: %s" % GCommon.barcode)
-        print("The barcode: %d" % GCommon.barcodelen)
+        mac = barcode.split("-")[0]
+        dlgBarcodeinput.dev_macs[0] = mac.upper()
+
+    def on_barcde2_changed(self, entry):
+        barcode = self.etybarcde2.get_text()
+        barcode = barcode.strip()
+        mac = barcode.split("-")[0]
+        dlgBarcodeinput.dev_macs[1] = mac.upper()
+
+    def on_barcde3_changed(self, entry):
+        barcode = self.etybarcde3.get_text()
+        barcode = barcode.strip()
+        mac = barcode.split("-")[0]
+        dlgBarcodeinput.dev_macs[2] = mac.upper()
+
+    def on_barcde4_changed(self, entry):
+        barcode = self.etybarcde4.get_text()
+        barcode = barcode.strip()
+        mac = barcode.split("-")[0]
+        dlgBarcodeinput.dev_macs[3] = mac.upper()
 
 
 class winFcdFactory(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self)
+        self.mac_list = []
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.hboxdashboard = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self.lblprod = Gtk.Label('')
         # self.lblprod.set_text(prodlist[0][4])
+
+        # start button
+        self.btnStartFWldr = Gtk.Button()
+        self.btnStartFWldr.set_label("Start FW Loader")
+        self.btnStartFWldr.set_focus_on_click(False)
+        self.btnStartFWldr.connect("clicked", self.on_StartFWldr_button_click)
+        self.hboxdashboard.pack_start(self.btnStartFWldr, False, False, 0)
 
         self.frame1 = fraMonitorPanel("0", "Slot 1")
         self.frame2 = fraMonitorPanel("1", "Slot 2")
@@ -594,6 +566,7 @@ class winFcdFactory(Gtk.Window):
         self.frame4 = fraMonitorPanel("3", "Slot 4")
 
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
+        self.vboxdashboard.pack_start(self.hboxdashboard, False, False, 0)
         self.vboxdashboard.pack_start(self.frame1, False, False, 0)
         self.vboxdashboard.pack_start(self.frame2, False, False, 0)
         self.vboxdashboard.pack_start(self.frame3, False, False, 0)
@@ -753,6 +726,31 @@ class winFcdFactory(Gtk.Window):
             id += +1
         return True
 
+    def on_StartFWldr_button_click(self, button):
+        if len(self.mac_list):
+            msgerrror(self, "The process is on going.Please waiting until it completed.")
+            return
+
+        dialog = dlgBarcodeinput(self)
+        response = dialog.run()
+        if (response == Gtk.ResponseType.OK):
+            self.mac_list.clear()
+            self.mac_list = []
+            self.frame1.clear_dut_info()
+            self.frame2.clear_dut_info()
+            self.frame3.clear_dut_info()
+            self.frame4.clear_dut_info()
+
+            if self.get_mac_list(self.mac_list) is True:
+                self.dhcpsrv = dhcp.DHCPServer(mac_filter_list=self.mac_list)
+                self.dhcpsrv.mac_filter_set(self.mac_list)
+                self.dhcpsrv.run_in_thread()
+                self.dhcpsrv.monitor_in_thread(len(self.mac_list), self.dhcp_done)
+        else:
+            print("Cancled button was clicked")
+        dialog.destroy()
+        return
+
     def dhcp_done(self, current_hosts):
         for idx, host in enumerate(current_hosts):
             if host.mac == self.frame1.dev_mac and self.frame1.w != "bad":
@@ -781,10 +779,10 @@ class winFcdFactory(Gtk.Window):
     def get_mac_list(self, mac_list):
 
         rt = True
-        m1 = dlgUserInput.dev_macs[0]
-        m2 = dlgUserInput.dev_macs[1]
-        m3 = dlgUserInput.dev_macs[2]
-        m4 = dlgUserInput.dev_macs[3]
+        m1 = dlgBarcodeinput.dev_macs[0]
+        m2 = dlgBarcodeinput.dev_macs[1]
+        m3 = dlgBarcodeinput.dev_macs[2]
+        m4 = dlgBarcodeinput.dev_macs[3]
 
         mac_seen = set()
         if m1 != "" and (m1 not in mac_seen):
@@ -846,14 +844,7 @@ class winFcdFactory(Gtk.Window):
                     idx = GCommon.active_productidx
                     title = "%s, %s" % (GCommon.active_product_obj['DESC'], GCommon.active_product_obj['BOMREV'])
                     self.lblprod.set_text(title)
-                    self.mac_list = []
-                    if self.get_mac_list(self.mac_list) is True:
-                        self.dhcpsrv = dhcp.DHCPServer(mac_filter_list=self.mac_list)
-                        self.dhcpsrv.run_in_thread()
-                        self.dhcpsrv.monitor_in_thread(len(self.mac_list), self.dhcp_done)
-                        rt = True
-                    else:
-                        rt = False
+                    rt = True
             else:
                 print("The Cancel button was clicked")
                 rt = True
