@@ -202,7 +202,7 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey]
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin]
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
