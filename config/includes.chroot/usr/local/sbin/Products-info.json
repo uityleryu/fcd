@@ -287,7 +287,9 @@
       "DESC"        : "UniFi VOIP FLEX",
       "FILE"        : "uvp_dvf9918_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True"
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
     }
   }
 }
