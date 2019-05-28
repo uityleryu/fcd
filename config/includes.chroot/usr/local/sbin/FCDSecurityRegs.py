@@ -3,6 +3,7 @@
 from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.gui.gui_variable import GPath, GCommon
 from time import sleep
+from threading import Thread
 from ubntlib.gui.msgdialog import msgerrror, msginfo
 from ubntlib.fcd.common import Common
 
@@ -14,7 +15,6 @@ import sys
 import subprocess
 import time
 import random
-import threading
 import shutil
 import json
 import logging
@@ -102,6 +102,7 @@ class fraMonitorPanel(Gtk.Frame):
         self.z = False
         self.w = "na"
         self.proc = ""
+        self.stdout_stream_stop = False
 
         self.provider = Gtk.CssProvider()
         self.provider.load_from_data(css)
@@ -238,6 +239,7 @@ class fraMonitorPanel(Gtk.Frame):
 
     def appendlog(self, text):
         self.txblog.insert(self.txilog, text)
+        return False
 
     def panelstartconf(self, user_data):
         if self.x is True:
@@ -453,53 +455,58 @@ class fraMonitorPanel(Gtk.Frame):
         str1 = " ".join(str(x) for x in cmd)
         self.log.info("In run_streamcmd(), cmd: " + str1)
         self.proc = subprocess.Popen(str1, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+
         GObject.io_add_watch(
             self.proc.stdout,
-            GLib.IO_IN | GLib.IO_HUP,
+            GLib.IO_HUP,
             self.inspection, self.proc)
 
+        self.stdout_stream_stop = False
+        t = Thread(target=self.update_progress)
+        t.setDaemon(True)
+        t.start()
+
     def inspection(self, fd, cond, proc):
-        if (cond == GLib.IO_HUP):
-            proc.poll()
-            self.y = True
-            if (proc.returncode == 0):
-                self.w = "good"
-                passdir = GPath.reportdir + "/Pass"
-                if not os.path.isdir(passdir):
-                    os.makedirs(passdir)
+        proc.poll()
+        self.y = True
+        self.stdout_stream_stop = True
+        if (proc.returncode == 0):
+            self.w = "good"
+            passdir = GPath.reportdir + "/Pass"
+            if not os.path.isdir(passdir):
+                os.makedirs(passdir)
 
-                tfile = passdir + "/" + GPath.templogfile[int(self.id)]
-            else:
-                self.w = "bad"
-                faildir = GPath.reportdir + "/Fail"
-                if not os.path.isdir(faildir):
-                    os.makedirs(faildir)
-
-                tfile = faildir + "/" + GPath.templogfile[int(self.id)]
-
-            self.log.info("In inspection(), target file: " + tfile)
-            sfile = os.path.join(
-                "/tftpboot/",
-                "log_slot" + self.id + ".log")
-            self.log.info("In inspection(), source file: " + sfile)
-
-            if os.path.isfile(sfile):
-                shutil.copy2(sfile, tfile)
-            else:
-                self.log.info("In inspection(), can't find the source file")
-
-            return False
+            tfile = passdir + "/" + GPath.templogfile[int(self.id)]
         else:
-            x = fd.readline()
+            self.w = "bad"
+            faildir = GPath.reportdir + "/Fail"
+            if not os.path.isdir(faildir):
+                os.makedirs(faildir)
+
+            tfile = faildir + "/" + GPath.templogfile[int(self.id)]
+
+        self.log.info("In inspection(), target file: " + tfile)
+        sfile = os.path.join(
+            "/tftpboot/",
+            "log_slot" + self.id + ".log")
+        self.log.info("In inspection(), source file: " + sfile)
+        if os.path.isfile(sfile):
+            shutil.copy2(sfile, tfile)
+        else:
+            self.log.info("In inspection(), can't find the source file")
+
+        return False
+
+    def update_progress(self):
+        while self.stdout_stream_stop is False:
+            x = self.proc.stdout.readline()
             raw2str = x.decode()
-            self.appendlog(str(raw2str))
+            GObject.idle_add(self.appendlog, str(raw2str))
             pattern = re.compile(r"^=== (\d+) .*$")
             pgvalue = pattern.match(raw2str)
             if pgvalue is not None:
                 self.z = True
                 self.progressvalue = int(pgvalue.group(1))
-
-            return True
 
 
 class dlgUserInput(Gtk.Dialog):
