@@ -1,6 +1,6 @@
 # UDM
 IMAGE-UDM-BASIC= \
-    udm-fw/ubnt-upgrade-compat.tgz 
+    udm-fw/ubnt-upgrade-compat.tgz
 
 IMAGE-UDM+=$(IMAGE-UDM-BASIC)
 IMAGE-UDM+= \
@@ -36,6 +36,8 @@ IMAGE-UDMB= \
     udm-fw/BZ.mt7621.*
 
 IMAGE-UDMLOCO= \
+    images/ec28* \
+    udm-fw/uImage-LoCo
 
 IMAGE-UDMALL+=$(IMAGE-UDM)
 IMAGE-UDMALL+=$(IMAGE-UDMSE)
@@ -46,7 +48,7 @@ DIAG_UI_MODEL=UniFiDream
 BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
-UPYFCD_VER = 
+UPYFCD_VER =
 FCDIMG_VER = 0c6e6da81274de2885e47ffebfe4aa023daa935f
 UBNTLIB_VER= e485b83efa89f36b25a67aba6f4216c75862042c
 TOOL_VER   = caafecb9b0bdd72219b3750417b7a76ae2e3848e
@@ -68,7 +70,7 @@ TOOLS-UDMB+=$(TOOLS-CONFIG)
 TOOLS-UDMB+= udm_b/*
 
 TOOLS-UDMLOCO+=$(TOOLS-CONFIG)
-TOOLS-UDMLOCO+= udm_loco/*
+TOOLS-UDMLOCO+= udm/*
 
 TOOLS-UDMALL+=$(TOOLS-UDM)
 #TOOLS-UDMALL+=$(TOOLS-UDMXG)
