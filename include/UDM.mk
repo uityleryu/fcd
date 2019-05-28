@@ -14,7 +14,7 @@ IMAGE-UDMSE+= \
     images/ea13* \
 	udm-fw/ubnt_udm_all_v1_sigined_20181017_boot.img \
 	udm-fw/uImage-0.9.4-a9df305.r \
-    udm-fw/UDM.alpinev2.v0.10.1.879a225.190311.0833.bin
+    udm-fw/UDM.alpinev2.v0.12.0-dummy+builder.1263.f01062a.190524.2138.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
@@ -47,9 +47,9 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER = 
-FCDIMG_VER = 193b7a02781f802aaee6cb3c1c47d8b1a175ba21
-UBNTLIB_VER= e5cc1b6c38c3f56b5c7c0438f10e21f05729c4bb
-TOOL_VER   = d5bbf1c8e55ec9087d1c5d1ac4dcd5f2ee2122a9
+FCDIMG_VER = 0c6e6da81274de2885e47ffebfe4aa023daa935f
+UBNTLIB_VER= e485b83efa89f36b25a67aba6f4216c75862042c
+TOOL_VER   = caafecb9b0bdd72219b3750417b7a76ae2e3848e
 
 TOOLS-CONFIG= \
     common/sshd_config \
