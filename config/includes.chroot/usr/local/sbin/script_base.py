@@ -510,7 +510,7 @@ class ScriptBase(object):
         self.pexp.expect_only(10, self.linux_prompt)
         time.sleep(1)
 
-        files = [self.eebin, self.eetxt]
+        files = [self.eebin, self.eetxt, self.eegenbin]
         for fh in files:
             fh_path = os.path.join(self.tftpdir, fh)
             os.mknod(fh_path)

@@ -20,10 +20,6 @@ CHECK_UBOOT_EN = True
 class UVPDVF99FactoryGeneral(ScriptBase):
     def __init__(self):
         super(UVPDVF99FactoryGeneral, self).__init__()
-        '''
-           dut_util_dir is the directory where to put the utilities in the DUT
-           EX: /tmp/uvp/
-        '''
         self.ver_extract('UniFiVOIP', 'UVP-FLEX')
         self.devregpart = "/dev/mtdblock2"
         self.user = "root"

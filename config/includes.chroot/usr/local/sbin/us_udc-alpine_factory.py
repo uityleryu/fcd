@@ -10,55 +10,52 @@ import os
 import stat
 import filecmp
 
-PROVISION_ENABLE = True
-DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
-NEED_UBUPDATE_ENABLE = True
-FWUPDATE_ENABLE = True
-DATAVERIFY_ENABLE = True
-
-diagsh = ""
+PROVISION_EN = True
+DOHELPER_EN = True
+REGISTER_EN = True
+NEED_UBUPDATE_EN = True
+FWUPDATE_EN = True
+DATAVERIFY_EN = True
 
 
 class USUDCALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(USUDCALPINEFactoryGeneral, self).__init__()
-        global diagsh
 
         self.ver_extract('UniFiSwitch', 'USW-LEAF')
-        self.bomrev = "113-" + self.bom_rev
-        self.dut_util_dir = os.path.join(self.dut_tmpdir, "usw_leaf")
-        self.host_util_dir = os.path.join(self.tftpdir, "tools", "usw_leaf")
         self.bootloader_prompt = "UDC"
         self.devregpart = "/dev/mtdblock4"
         self.diagsh = "UBNT"
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
-        self.eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
-        self.eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
         self.lcmfwver = "v2.0.1-0-g8cc9eeb"
+        self.prodl = "usw_leaf"
 
         # number of Ethernet
-        self.ethnum = {
+        ethnum = {
             'f060': "73"
         }
 
         # number of WiFi
-        self.wifinum = {
+        wifinum = {
             'f060': "0"
         }
 
         # number of Bluetooth
-        self.btnum = {
+        btnum = {
             'f060': "0"
+        }
+
+        flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
+        self.devnetmeta = {
+            'ethnum'          : ethnum,
+            'wifinum'         : wifinum,
+            'btnum'           : btnum,
+            'flashed_dir'     : flashed_dir
         }
 
         self.netif = {
             'f060': "ifconfig eth0 "
-        }
-
-        self.infover = {
-            'f060': "Version:"
         }
 
     def stop_at_uboot(self):
@@ -94,150 +91,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.linux_prompt
         ]
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
-
-    def data_provision(self):
-        log_debug("Change files permission ...")
-        util_path = os.path.join(self.dut_util_dir, "*")
-
-        cmd = "chmod 777 {0}".format(util_path)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-
-        self.gen_rsa_key()
-
-        otmsg = "Starting to do {0} ...".format(self.eepmexe)
-        log_debug(otmsg)
-        flasheditor = os.path.join(self.host_util_dir, self.eepmexe)
-        sstr = [
-            flasheditor,
-            "-F",
-            "-f " + self.eegenbin_path,
-            "-r " + self.bomrev,
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + self.ethnum[self.board_id],
-            "-w " + self.wifinum[self.board_id],
-            "-b " + self.btnum[self.board_id],
-            "-k " + self.rsakey_path
-        ]
-        sstr = ' '.join(sstr)
-        log_debug("flash editor cmd: " + sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstr)
-        time.sleep(1)
-        if int(rtc) > 0:
-            otmsg = "Generating {0} file failed!!".format(self.eegenbin_path)
-            error_critical(otmsg)
-        else:
-            otmsg = "Generating {0} files successfully".format(self.eegenbin_path)
-            log_debug(otmsg)
-
-        cmd = "tftp -g -r {0} -l /tmp/{0} {1}".format(self.eegenbin, self.tftp_server)
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
-
-        cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-
-    def prepare_server_need_files(self):
-        log_debug("Starting to do " + self.helperexe + "...")
-        helperexe_path = os.path.join(self.dut_util_dir, self.helperexe)
-        sstr = [
-            helperexe_path,
-            "-q",
-            "-c product_class=basic",
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin_dut_path,
-            ">",
-            self.eetxt_dut_path
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr)
-        self.pexp.expect_only(10, self.linux_prompt)
-        time.sleep(1)
-
-        cmd = "cd /tmp; tar cf {0} {1} {2}".format(self.eetgz, self.eebin, self.eetxt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-
-        os.mknod(self.eetgz_path)
-        os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
-        log_debug("Send helper output tgz file from DUT to host ...")
-
-        cmd = "tftp -p -r {0} -l /tmp/{0} {1}".format(self.eetgz, self.tftp_server)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-        time.sleep(1)
-
-        cmd = "tar xvf {0} -C {1}/".format(self.eetgz_path, self.tftpdir)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
-        time.sleep(1)
-        if int(rtc) > 0:
-            otmsg = "Decompressing {0} file failed!!".format(self.eetgz)
-            error_critical(otmsg)
-        else:
-            otmsg = "Decompressing {0} files successfully".format(self.eetgz)
-            log_debug(otmsg)
-
-        rtc = filecmp.cmp(self.eebin_path, self.eegenbin_path)
-        if rtc is True:
-            otmsg = "Comparing files {0} and {1} are the same".format(self.eebin, self.eegenbin)
-            log_debug(otmsg)
-        else:
-            otmsg = "Comparing files failed!! {0}, {1} are not the same".format(self.eebin, self.eegenbin)
-            error_critical(otmsg)
-
-    def registration(self):
-        log_debug("Starting to do registration ...")
-        cmd = [
-            "cat " + self.eetxt_path,
-            "|",
-            'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
-            "|",
-            'grep -v \"eeprom\"',
-            "|",
-            "tr '\\n' ' '"
-        ]
-        cmdj = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        regsubparams = sto.decode('UTF-8')
-        if int(rtc) > 0:
-            error_critical("Extract parameters failed!!")
-        else:
-            log_debug("Extract parameters successfully")
-
-        regparam = [
-            "-h devreg-prod.ubnt.com",
-            "-k " + self.pass_phrase,
-            regsubparams,
-            "-i field=qr_code,format=hex,value=" + self.qrhex,
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
-            "-i field=fcd_version,format=hex,value=" + self.sem_ver,
-            "-i field=sw_id,format=hex,value=" + self.sw_id,
-            "-i field=sw_version,format=hex,value=" + self.fw_ver,
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
-            "-o field=registration_id",
-            "-o field=result",
-            "-o field=device_id",
-            "-o field=registration_status_id",
-            "-o field=registration_status_msg",
-            "-o field=error_message",
-            "-x " + self.key_dir + "ca.pem",
-            "-y " + self.key_dir + "key.pem",
-            "-z " + self.key_dir + "crt.pem"
-        ]
-
-        regparamj = ' '.join(regparam)
-
-        cmd = "sudo /usr/local/sbin/client_x86_release_20190507 {0}".format(regparamj)
-        print("cmd: " + cmd)
-        clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
-        clit.expect_only(30, "Hostname")
-        clit.expect_only(30, "field=result,format=u_int,value=1")
-
-        log_debug("Excuting client_x86 registration successfully")
-
-        rtf = os.path.isfile(self.eesign_path)
-        if rtf is not True:
-            error_critical("Can't find " + self.eesign)
 
     def fwupdate(self):
         cmd = "tftp -g -r images/{0}-fw-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
@@ -324,34 +177,41 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         # detect the BSP U-boot
         self.pexp.expect_only(30, "May 06 2019 - 12:15:33")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, diagsh, "diag", "DIAG")
+        self.pexp.expect_lnxcmd(10, self.diagsh, "diag", "DIAG")
         self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
         self.pexp.expect_lnxcmd(10, "DIAG", "shell", self.linux_prompt)
 
         self.lnx_netcheck(True)
         msg(10, "Boot up to linux console and network is good ...")
 
-        if PROVISION_ENABLE is True:
+        '''
+            ============ Registration start ============
+              The following flow almost become a regular procedure for the registration.
+              So, it doesn't have to change too much. All APIs are came from script_base.py
+        '''
+        if PROVISION_EN is True:
             msg(20, "Send tools to DUT and data provision ...")
-            self.copy_and_unzipping_tools_to_dut()
-            self.data_provision()
+            self.data_provision_64k(self.devnetmeta)
 
-        if DOHELPER_ENABLE is True:
+        if DOHELPER_EN is True:
             self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
-        if REGISTER_ENABLE is True:
+        if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+        '''
+            ============ Registration End ============
+        '''
 
-        if FWUPDATE_ENABLE is True:
+        if FWUPDATE_EN is True:
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
 
-        if DATAVERIFY_ENABLE is True:
+        if DATAVERIFY_EN is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
