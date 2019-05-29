@@ -87,11 +87,18 @@ class USALPINEDiagloader(ScriptBase):
 
         expit = [
             "May 06 2019 - 12:15:33",
+            "May 17 2019 - 13:22:41",
             "May 16 2019 - 09:50:32"
         ]
         rt = self.pexp.expect_get_index(30, expit)
-        if rt == 1:
+        if rt == 2:
+            log_debug("Detect the FW U-boot version")
             self.load_diag_ub_uimg()
+        elif rt == -1:
+            error_critical("Timeout can't find the correct U-boot!!")
+        else:
+            log_debug("Find the correct U-boot version")
+
         msg(40, "Diag U-boot/uImage updating completing ...")
 
         self.stop_at_uboot()
