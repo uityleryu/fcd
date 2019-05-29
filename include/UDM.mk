@@ -21,7 +21,7 @@ IMAGE-UDMPRO+= \
     images/ea15* \
     udm-fw/udm_pro_hw7_boot_02d0578.img \
     udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v0.11.0.3e8dcdc.190503.0829.bin
+    udm-fw/UDM.alpinev2.v0.11.0+builder.1166.54cb6ca.190528.1407.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
@@ -49,9 +49,9 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER =
-FCDIMG_VER = 0c6e6da81274de2885e47ffebfe4aa023daa935f
-UBNTLIB_VER= e485b83efa89f36b25a67aba6f4216c75862042c
-TOOL_VER   = caafecb9b0bdd72219b3750417b7a76ae2e3848e
+FCDIMG_VER = c3f38fc2ca59bebbb160c7eb4602548bb4256a3b
+UBNTLIB_VER= 06c259e5f4cabe3b4b3309a7f193b32d9c07bef9
+TOOL_VER   = 67c5865f3a621c18b86c2d7658e2f57196d2c34f
 
 TOOLS-CONFIG= \
     common/sshd_config \
