@@ -147,6 +147,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def init_recovery_image(self):
         self.login(self.username, self.password, 60)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
+        tmp_mac = "fc:ec:da:00:00:1"+self.row_id
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 hw ether " + tmp_mac, self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
         postexp = [
