@@ -724,14 +724,15 @@ proc turn_on_burnin_mode { boardid } {
         sleep 1
         expect timeout { error_critical "Command promt not found" } "#"
 
+        # save config
+        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
+        expect timeout { error_critical "Command promt not found" } "setup_lte done"
+
+        sleep 10
         send "grep \"burnin\" system.cfg\r"
         expect timeout {
             error_critical "Burnin config is not set correctly"
         } -re $burnin_flag
-
-        # save config
-        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
-        expect timeout { error_critical "Command promt not found" } "#"
 
     } else {
         log_debug "Skip burnin mode enabling"
