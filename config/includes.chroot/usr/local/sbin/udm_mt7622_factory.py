@@ -64,7 +64,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         }
 
     def boot_recovery_image(self):
-        self.pexp.expect_action(10, "Hit any key to stop autoboot", "\033\033")
+        self.pexp.expect_action(300, "Hit any key to stop autoboot", "")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         time.sleep(2)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
