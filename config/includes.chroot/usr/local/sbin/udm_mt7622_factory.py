@@ -64,23 +64,30 @@ class UDMALPINEMT7622Factory(ScriptBase):
         }
 
     def boot_recovery_image(self):
-        self.pexp.expect_action(300, "Hit any key to stop autoboot", "")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(300, "Hit any key to", "")
         time.sleep(2)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        time.sleep(2)
+        self.pexp.expect_action(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        time.sleep(2)
         self.pexp.expect_only(15, "host " + self.tftp_server + " is alive")
+        time.sleep(2)
         self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot images/" + self.board_id + "-recovery")
-        self.pexp.expect_only(30, "Bytes transferred")
+        time.sleep(2)
+        self.pexp.expect_only(120, "Bytes transferred")
+        time.sleep(2)
         self.pexp.expect_action(10, self.bootloader_prompt, "bootm 0x4007ff28")
 
     def init_recovery_image(self):
         self.login(self.user, self.password, 60)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
+        time.sleep(2)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, "64 bytes from")
+        time.sleep(2)
 
     def do_eepmexe(self):
         log_debug("Starting to do " + self.eepmexe + "...")
@@ -106,6 +113,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
             self.linux_prompt
         ]
         self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr, post_exp=postexp)
+        time.sleep(2)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
@@ -119,6 +127,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
+        time.sleep(2)
         self.pexp.expect_only(10, self.linux_prompt)
         time.sleep(1)
 
@@ -230,7 +239,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
         if BOOT_RECOVERY_IMAGE is True:
