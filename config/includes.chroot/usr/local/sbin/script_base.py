@@ -161,6 +161,7 @@ class ScriptBase(object):
         self.board_id = args.board_id if args.board_id is not None else "na"
         self.erasecal = args.erasecal
         self.mac = args.mac.lower() if args.mac is not None else args.mac
+        self.premac = "fc:ec:da:00:00:1" + self.row_id
         self.pass_phrase = args.pass_phrase
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
