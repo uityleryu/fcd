@@ -86,9 +86,9 @@ class USALPINEDiagloader(ScriptBase):
         time.sleep(1)
 
         expit = [
-            "May 06 2019 - 12:15:33",
-            "May 17 2019 - 13:22:41",
-            "May 16 2019 - 09:50:32"
+            "May 06 2019 - 12:15:33",    # BSP U-boot-1
+            "May 17 2019 - 13:22:41",    # BSP U-boot-2
+            "May 16 2019 - 09:50:32"     # FW U-boot
         ]
         rt = self.pexp.expect_get_index(30, expit)
         if rt == 2:

@@ -136,7 +136,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.linux_prompt
         ]
         cmd = "ping -c 1 {0}".format(self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, cmd, postexp)
+        self.pexp.expect_lnxcmd_retry(20, self.linux_prompt, cmd, postexp)
 
         cmd = "tftp -g -r images/{0}-fw.bin -l /tmp/upgrade.bin {1}".format(self.board_id, self.tftp_server)
         self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
@@ -156,7 +156,8 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, "qrid=" + self.qrcode)
         self.pexp.expect_only(10, self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver)
+        time.sleep(90)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
 
     def run(self):
         """
@@ -175,7 +176,20 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         msg(5, "Boot from tftp with installer ...")
         # detect the BSP U-boot
-        self.pexp.expect_only(30, "May 06 2019 - 12:15:33")
+        expit = [
+            "May 06 2019 - 12:15:33",    # BSP U-boot-1
+            "May 17 2019 - 13:22:41",    # BSP U-boot-2
+            "May 16 2019 - 09:50:32"     # FW U-boot
+        ]
+        rt = self.pexp.expect_get_index(30, expit)
+        if rt == 2:
+            log_debug("Detect the FW U-boot version")
+            self.load_diag_ub_uimg()
+        elif rt == -1:
+            error_critical("Timeout can't find the correct U-boot!!")
+        else:
+            log_debug("Find the correct U-boot version")
+
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
         self.pexp.expect_lnxcmd(10, self.diagsh, "diag", "DIAG")
         self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
