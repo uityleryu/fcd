@@ -264,12 +264,23 @@
 
   "AirFiber":
   {
-    "LTU-5":{
+    "LTU-LR":{
       "INDEX"       : 0,
-      "NAME"        : "LTU-5",
+      "NAME"        : "LTU-LR",
       "BOARDID"     : "0000",
       "BOMREV"      : "113-00680",
-      "DESC"        : "AirFiber LTU-5",
+      "DESC"        : "AirFiber LTU-LR",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+    "LTU-Lite":{
+      "INDEX"       : 0,
+      "NAME"        : "LTU-Lite",
+      "BOARDID"     : "0000",
+      "BOMREV"      : "113-00708",
+      "DESC"        : "AirFiber LTU-Lite",
       "FILE"        : "af_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False"
