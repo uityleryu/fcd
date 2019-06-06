@@ -20,13 +20,13 @@ CHECK_UBOOT_EN = True
 class UVPDVF99FactoryGeneral(ScriptBase):
     def __init__(self):
         super(UVPDVF99FactoryGeneral, self).__init__()
-        self.ver_extract('UniFiVOIP', 'UVP-FLEX')
+        self.ver_extract()
         self.devregpart = "/dev/mtdblock2"
         self.user = "root"
         self.bootloader_prompt = "DVF99 #"
         self.linux_prompt = "root@dvf9918:~#"
         self.helperexe = "helper_DVF99_release"
-        self.prodl = "uvp"
+        self.helper_path = "uvp"
 
         # number of Ethernet
         ethnum = {

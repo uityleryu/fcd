@@ -15,6 +15,7 @@ from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.expect_tty import ExpttyProcess
+from pathlib import Path
 
 
 class ScriptBase(object):
@@ -63,7 +64,7 @@ class ScriptBase(object):
         self.password = "ubnt"
 
         # fcd related
-        self.fcd_user = "user"
+        self.fcd_user = str(Path.home())
         self.fcd_version_info_file = "version.txt"
         self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
@@ -72,7 +73,7 @@ class ScriptBase(object):
         self.dut_tmpdir = "/tmp"
         self.image = "images"
         self.tools = "tools"
-        self.prodl = ""
+        self.helper_path = ""
         self.fwdir = os.path.join(self.tftpdir, self.image)
         self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
         self.eepmexe = "x86-64k-ee"
@@ -142,6 +143,8 @@ class ScriptBase(object):
 
     def _init_parse_inputs(self):
         parse = argparse.ArgumentParser(description="FCD tool args Parser")
+        parse.add_argument('--prdline', '-pline', dest='product_line', help='Active Product Line', default=None)
+        parse.add_argument('--prdname', '-pname', dest='product_name', help='Active Product Name', default=None)
         parse.add_argument('--slot', '-s', dest='row_id', help='Slot id', default=None)
         parse.add_argument('--dev', '-d', dest='dev', help='UART device number. ex:ttyUSB0, ttyUSB1', default=None)
         parse.add_argument('--tftp_server', '-ts', dest='tftp_server', help='FCD host IP', default=None)
@@ -155,6 +158,8 @@ class ScriptBase(object):
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
 
         args, _ = parse.parse_known_args()
+        self.product_line = args.product_line
+        self.product_name = args.product_name
         self.row_id = args.row_id if args.row_id is not None else "0"
         self.dev = args.dev
         self.tftp_server = args.tftp_server
@@ -214,10 +219,9 @@ class ScriptBase(object):
             else:
                 log_debug("File - " + f + " doesn't exist ...")
 
-    def ver_extract(self, productline, productname):
+    def ver_extract(self):
         fh = open(self.fcd_version_info_file_path, "r")
         complete_ver = fh.readline()
-        msg(no="", out="FCD version: " + complete_ver)
         fh.close()
         complete_ver_s = complete_ver.split("-")
         self.sem_dotver = complete_ver_s[3]
@@ -229,10 +233,10 @@ class ScriptBase(object):
         fh.close()
 
         # FCD_ID (this name is called by Mike) like product line
-        self.fcd_id = self.fsiw[productline][productname]['FCD_ID']
+        self.fcd_id = self.fsiw[self.product_line][self.product_name]['FCD_ID']
 
         # SW_ID (this name is called by Mike) like product model
-        self.sw_id = self.fsiw[productline][productname]['SW_ID']
+        self.sw_id = self.fsiw[self.product_line][self.product_name]['SW_ID']
 
         # Semantic version (this name is called by Mike) like FCD version
         spt = self.sem_dotver.split(".")
@@ -487,7 +491,7 @@ class ScriptBase(object):
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
 
-        src = os.path.join(self.tools, self.prodl, self.helperexe)
+        src = os.path.join(self.tools, self.helper_path, self.helperexe)
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
 
         cmd = "tftp -g -r {0} -l {1} {2}".format(src, helperexe_path, self.tftp_server)

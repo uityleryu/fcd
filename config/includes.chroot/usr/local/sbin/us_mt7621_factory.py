@@ -11,6 +11,7 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.common import Common
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
+
 class USFLEXFactory(ScriptBase):
     def __init__(self):
         super(USFLEXFactory, self).__init__()
@@ -18,13 +19,13 @@ class USFLEXFactory(ScriptBase):
 
     def init_vars(self):
         # common variable
-        self.ver_extract('UniFiAP', 'UAP-Industrial')
+        self.ver_extract()
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_UNIFI_MT7621_release"
         self.bootloader_prompt = "MT7621 #"
         self.fcdimg = self.board_id + "-fcd.bin"
-        self.prodl = "uap"
-        
+        self.helper_path = "common"
+
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
@@ -109,11 +110,13 @@ class USFLEXFactory(ScriptBase):
             time.sleep(5)
         if is_network_alive is not True:
             error_critical("Network is not good")
-    
+
     def login_kernel(self):
-        rt = self.pexp.expect_action(90, "Please press Enter to activate this console","")
+        rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
         if rt != 0:
             error_critical("Failed to boot manufacturing kernel")
+        os.system("sleep 5")
+        self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, "UBNT login: ", "ubnt")
         self.pexp.expect_action(30, "Password: ", "ubnt")
 
@@ -167,14 +170,14 @@ class USFLEXFactory(ScriptBase):
     def wait_lcm_upgrade(self):                                                                                                     
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
-    
+
     def update_uboot(self):
         self.pexp.expect_action(30, self.bootloader_prompt, "set loadaddr 0x84000000")
         self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot ${loadaddr} images/" + self.board_id + '-uboot.bin')
         self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
         sf write ${loadaddr} 0x0 ${filesize}")
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
-    
+
     def enter_uboot(self):
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
         if rt != 0:
@@ -229,9 +232,9 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "sed -i \'/mgmt.is_default=true/d\' /tmp/system.cfg")
         self.pexp.expect_action(30, self.linux_prompt, "syswrapper.sh save-config")
         self.pexp.expect_only(30, r'Storing Active.+\[%100\]')
-   
+
     def check_info(self):
-        self.pexp.expect_action(30, "", "")
+        self.login_kernel()
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
         self.pexp.expect_only(30, "systemid="+self.board_id)
@@ -256,7 +259,7 @@ class USFLEXFactory(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_UBOOT_ENABLE == True:
-            if self.board_id in uboot_upgrade_en:
+            if self.board_id in self.uboot_upgrade_en:
                 self.enter_uboot()
                 self.update_uboot()
                 msg(10, "Update uboot successfully ...")
@@ -281,7 +284,7 @@ class USFLEXFactory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-        
+
         if self.FWUPDATE_ENABLE == True:
             msg(60, "Updating released firmware ...")
             self.fwupdate()
@@ -292,17 +295,18 @@ class USFLEXFactory(ScriptBase):
             msg(80, "Succeeding in checking the devreg information ...")
 
         if self.CONF_ZEROIP_ENABLE == True:
-            if self.board_id in zeroip_en:
+            if self.board_id in self.zeroip_en:
                 self.configure_zeroip()
                 msg(80, "Configure zeroip done ...")
 
         if self.WAIT_LCMUPGRADE_ENABLE == True:
-            if self.board_id in wait_LCM_upgrade_en:
+            if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Wait LCM upgrading ...")
                 self.wait_lcm_upgrade()            
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
+
 
 def main():
     us_flex_factory = USFLEXFactory()

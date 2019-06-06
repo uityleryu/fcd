@@ -22,14 +22,14 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(USUDCALPINEFactoryGeneral, self).__init__()
 
-        self.ver_extract('UniFiSwitch', 'USW-LEAF')
+        self.ver_extract()
         self.bootloader_prompt = "UDC"
         self.devregpart = "/dev/mtdblock4"
         self.diagsh = "UBNT"
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
         self.lcmfwver = "v2.0.1-0-g8cc9eeb"
-        self.prodl = "usw_leaf"
+        self.helper_path = "usw_leaf"
 
         # number of Ethernet
         ethnum = {
