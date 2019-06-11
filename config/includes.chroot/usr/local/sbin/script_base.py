@@ -11,7 +11,6 @@ import argparse
 import json
 
 from ubntlib.fcd.common import Tee
-from ubntlib.variable.helper import VariableHelper
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.expect_tty import ExpttyProcess
@@ -21,9 +20,6 @@ from pathlib import Path
 class ScriptBase(object):
     def __init__(self):
         self.input_args = self._init_parse_inputs()
-        # shared variable object
-        # example usuage - self.var.{toolspecific}.{variable}
-        self.var = VariableHelper(self.input_args)
         self._init_share_var()
         self.fcd = FCDHelper()
         self._init_log()
