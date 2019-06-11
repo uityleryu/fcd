@@ -70,8 +70,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ea11': "5",
-            'ea13': "7",
-            'ea15': "9"
+            'ea13': "8",
+            'ea15': "11"
         }
         
         # number of WiFi
