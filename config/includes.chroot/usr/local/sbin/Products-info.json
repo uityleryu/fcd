@@ -246,7 +246,7 @@
       "FILE"        : "us_mt7621_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",                                                                                        
+      "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     }
   },
@@ -315,7 +315,9 @@
       "DESC"        : "UniFi NAS 4-Bay",
       "FILE"        : "unas_alpine_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True"
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
     },
 
     "UNAS-8":{
@@ -326,7 +328,9 @@
       "DESC"        : "UniFi NAS 8-Bay",
       "FILE"        : "unas_alpine_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True"
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
     }
   },
 

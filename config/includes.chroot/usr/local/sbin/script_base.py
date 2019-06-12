@@ -62,7 +62,7 @@ class ScriptBase(object):
         # fcd related
         self.fcd_user = str(Path.home())
         self.fcd_version_info_file = "version.txt"
-        self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
+        self.fcd_version_info_file_path = os.path.join(self.fcd_user, "Desktop", self.fcd_version_info_file)
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
         self.tftpdir = "/tftpboot"
@@ -497,7 +497,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
-        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)        
+        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
         sstr = [
             helperexe_path,
             "-q",

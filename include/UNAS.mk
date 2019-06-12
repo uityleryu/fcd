@@ -31,6 +31,6 @@ TOOLS-UNAS+= \
 TOOLS-UNAS4+=$(TOOLS-UNAS)
 TOOLS-UNAS8+=$(TOOLS-UNAS)
 
-$(eval $(call ProductImage,UNAS,FCD-UNAS-$(VER)))
-$(eval $(call ProductImage,UNAS4,FCD-UNAS4-$(VER)))
-$(eval $(call ProductImage,UNAS8,FCD-UNAS8-$(VER)))
+$(eval $(call ProductImage,UNAS,FCD-UNAS-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UNAS4,FCD-UNAS4-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UNAS8,FCD-UNAS8-$(VER)-$(FWVER)))
