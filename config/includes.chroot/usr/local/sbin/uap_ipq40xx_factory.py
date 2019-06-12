@@ -15,6 +15,7 @@ import shutil
 class UAPIPQ40XXFactory(ScriptBase):
     def __init__(self):
         super(UAPIPQ40XXFactory, self).__init__()
+        self.ver_extract()
         self._init_vars()
 
     def _init_vars(self):
@@ -64,6 +65,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         tmpdir = "/tmp/"
         self.tftpdir = self.tftpdir + "/"
         self.uap_dir = os.path.join(self.fcd_toolsdir, "uap")
+        self.common_dir = os.path.join(self.fcd_toolsdir, "common")
         self.id_rsa = self.uap_dir + "/id_rsa"
         self.eeprom_bin = "e.b." + self.row_id
         self.eeprom_txt = "e.t." + self.row_id
@@ -74,7 +76,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         helperexe = "helper_IPQ40xx"
         self.dut_helper_path = os.path.join(self.uap_dir , helperexe)
         eeexe = "x86-64k-ee"
-        self.eetool = os.path.join(self.uap_dir , eeexe)
+        self.eetool = os.path.join(self.common_dir , eeexe)
         self.uboot_address =  "0xf0000"
         self.uboot_size =  "0x80000"
         self.cfg_address = "0x1fc0000"
@@ -234,6 +236,10 @@ class UAPIPQ40XXFactory(ScriptBase):
             regsubparams,
             "-i field=qr_code,format=hex,value=" + self.qrhex,
             "-i field=flash_eeprom,format=binary,pathname=" + self.tftpdir + self.eeprom_bin,
+            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
+            "-i field=fcd_version,format=hex,value=" + self.sem_ver,
+            "-i field=sw_id,format=hex,value=" + self.sw_id,
+            "-i field=sw_version,format=hex,value=" + self.fw_ver,
             "-o field=flash_eeprom,format=binary,pathname=" + self.tftpdir + self.eeprom_signed,
             "-o field=registration_id",
             "-o field=result",
@@ -248,7 +254,7 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         regparamj = ' '.join(regparam)
 
-        cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
+        cmd = "sudo /usr/local/sbin/client_x86_release_20190507 " + regparamj
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(6)
         if (int(rtc) > 0):

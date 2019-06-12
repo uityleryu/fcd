@@ -19,4 +19,4 @@ TOOLS-CONFIG= \
 TOOLS-AF+=$(TOOLS-CONFIG)
 TOOLS-AF+= af_ltu5/helper_UBNTAME
 
-$(eval $(call ProductImage,AF,FCD-AF-$(VER)))
+$(eval $(call ProductImage,AF,FCD-AF-ALL-$(VER)))
