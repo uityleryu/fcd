@@ -64,7 +64,9 @@
       "DESC" : "UniFi One Dream Machine LOCO",
       "FILE" : "udm_mt7622_factory.py",
       "T1FILE" : "",
-      "QRCHECK" : "True"
+      "QRCHECK" : "True",
+      "FCD_ID" : "0005",
+      "SW_ID" : "0701"
     }
   },
 
