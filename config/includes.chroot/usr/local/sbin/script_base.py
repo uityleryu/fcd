@@ -5,6 +5,7 @@ Base script class
 import sys
 import time
 import os
+import re
 import stat
 import filecmp
 import argparse
@@ -216,12 +217,20 @@ class ScriptBase(object):
                 log_debug("File - " + f + " doesn't exist ...")
 
     def ver_extract(self):
+        self.sem_dotver = ""
+        self.fw_dotver = ""
         fh = open(self.fcd_version_info_file_path, "r")
         complete_ver = fh.readline()
         fh.close()
-        complete_ver_s = complete_ver.split("-")
-        self.sem_dotver = complete_ver_s[3]
-        self.fw_dotver = complete_ver_s[4]
+        ver_re = "\d+\.\d+\.\d+"
+        match = re.findall(ver_re, complete_ver)
+        if match:
+            print("Found matched version info " + str(match))
+            if len(match) >= 2:
+                self.sem_dotver = match[0]
+                self.fw_dotver = match[1]
+        else:
+            print("No semantic version and fw version found in version.txt")
 
         # version mapping
         fh = open('/usr/local/sbin/Products-info.json')
