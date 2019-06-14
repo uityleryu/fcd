@@ -59,7 +59,8 @@ TOOL_VER   =
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/helper_UNIFI_MT7621_release
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 

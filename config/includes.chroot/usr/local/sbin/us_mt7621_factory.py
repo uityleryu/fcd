@@ -64,8 +64,8 @@ class USFLEXFactory(ScriptBase):
                            'ed11' : "16777216"}
         # firmware image
         self.fwimg = {'ed10' : self.board_id + "-diag.bin",
-                      'ed25' : self.board_id + ".bin",
-                      'ed26' : self.board_id + ".bin",
+                      'ec25' : self.board_id + ".bin",
+                      'ec26' : self.board_id + ".bin",
                       'ec2a' : self.board_id + ".bin",
                       'ed11' : self.board_id + ".bin"}
 

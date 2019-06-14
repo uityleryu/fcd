@@ -42,7 +42,9 @@
       "DESC"        : "UniFi One Dream Machine Beacon",
       "FILE"        : "us_mt7621_factory.py",
       "T1FILE"      : "unifi_mt7621_mfg.py",
-      "QRCHECK"     : "True"
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     },
 
     "UDM-XG":{

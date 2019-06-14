@@ -49,13 +49,15 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER =
-FCDIMG_VER = c3f38fc2ca59bebbb160c7eb4602548bb4256a3b
-UBNTLIB_VER= 06c259e5f4cabe3b4b3309a7f193b32d9c07bef9
-TOOL_VER   = 67c5865f3a621c18b86c2d7658e2f57196d2c34f
+FCDIMG_VER =
+UBNTLIB_VER=
+TOOL_VER   =
 
 TOOLS-CONFIG= \
     common/sshd_config \
-    common/tmux.conf
+    common/tmux.conf \
+    common/x86-64k-ee \
+    common/helper_UNIFI_MT7621_release
 
 TOOLS-UDM+=$(TOOLS-CONFIG)
 TOOLS-UDM+= udm/*
@@ -79,6 +81,6 @@ $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
 $(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
 $(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
-$(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)))
+$(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UDMLOCO,FCD-UDMLOCO-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))
