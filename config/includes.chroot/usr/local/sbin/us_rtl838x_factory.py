@@ -241,17 +241,17 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
         msg(60, "Reboot into Uboot for resetting to default environment")
-        self.pexp.expect_action(10, self.bootloader_prompt, "env set boardmodel")
-        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt")
-        self.pexp.expect_only(10, "Resetting to default environment")
-        self.pexp.expect_only(10, "done")
-        self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
+        self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel")
+        self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_only(60, "Resetting to default environment")
+        self.pexp.expect_only(60, "done")
+        self.pexp.expect_action(120, "Hit Esc key to stop autoboot", "\x1b")
         msg(63, "Reboot into Uboot again for urescue")
-        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ubntrescue")
-        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt")
-        self.pexp.expect_only(30, "Listening for TFTP transfer on")
+        self.pexp.expect_action(15, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(15, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt ubntrescue")
+        self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_only(60, "Listening for TFTP transfer on")
 
         cmd = ["atftp",
                "-p",
@@ -272,7 +272,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(30, "Signature Verfied, Success.")
 
         msg(70, "Updating released firmware...")
-        self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
+        self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
         self.pexp.expect_only(120, "done")
 
     def check_info(self):
