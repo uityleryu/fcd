@@ -241,7 +241,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
         msg(60, "Reboot into Uboot for resetting to default environment")
-        self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel")
+        self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel unknown")
         self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")
         self.pexp.expect_only(60, "Resetting to default environment")
         self.pexp.expect_only(60, "done")
@@ -337,7 +337,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             self.check_devreg_data(dut_tmp_subdir="usw_rtl838x")
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        # reboot anyway 
+        # reboot anyway
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "reboot -f")
 
         if FWUPGRADE_ENABLE is True:
@@ -351,7 +351,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         #pexpect_115200_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         #self.set_pexpect_helper(pexpect_obj=pexpect_115200_obj)
         #time.sleep(1)
-        # login 
+        # login
         self.pexp.expect_lnxcmd_retry(240, "Please press Enter to activate this console", "")
         self.login()
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
