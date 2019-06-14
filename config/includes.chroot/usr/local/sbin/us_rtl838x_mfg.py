@@ -31,7 +31,7 @@ class USW_RTL838X_MFG(ScriptBase):
         self.pexpect_obj.close()
 
     def stop_at_uboot(self):
-        self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
+        self.pexp.expect_action(60, "Hit Esc key to stop autoboot", "\x1b")
 
     def setenv_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -44,8 +44,8 @@ class USW_RTL838X_MFG(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ubntrescue")
-        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt")
-        self.pexp.expect_only(30, "Listening for TFTP transfer on")
+        self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_only(60, "Listening for TFTP transfer on")
 
     def fwupload(self):
         cmd = ["atftp",
@@ -63,7 +63,7 @@ class USW_RTL838X_MFG(ScriptBase):
 
         self.pexp.expect_only(30, "Bytes transferred = ")
         self.pexp.expect_only(30, "Firmware Version:")
-        self.pexp.expect_only(30, "Signature Verfied, Success.")        
+        self.pexp.expect_only(30, "Signature Verfied, Success.")
 
     def fwupgrade(self):
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
