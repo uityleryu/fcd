@@ -16,6 +16,12 @@ apt-get -y install tftp
 # packages install checking
 apt-get -y install pkg-config
 
+# python packages
+apt-get -y install libffi-dev
+apt-get -y install libssl-dev
+apt-get -y install python3-dev
+apt-get -y install build-essential
+
 # python2 required packages
 apt-get -y install python-gi
 apt-get -y install python-gi-cairo
