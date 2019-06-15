@@ -28,7 +28,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.diagsh = "UBNT"
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
-        self.lcmfwver = "v2.0.1-0-g8cc9eeb"
+        self.lcmfwver = "v2.0.3-0-gecae630"
         self.helper_path = "usw_leaf"
 
         # number of Ethernet
@@ -136,7 +136,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.linux_prompt
         ]
         cmd = "ping -c 1 {0}".format(self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(20, self.linux_prompt, cmd, postexp)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, cmd, postexp, retry=15)
 
         cmd = "tftp -g -r images/{0}-fw.bin -l /tmp/upgrade.bin {1}".format(self.board_id, self.tftp_server)
         self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
