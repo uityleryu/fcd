@@ -14,6 +14,7 @@ import json
 import socket
 import struct
 import binascii
+import subprocess
 
 NEED_DROPBEAR = True
 PROVISION_ENABLE = True
@@ -47,8 +48,6 @@ class USM487FactoryGeneral(ScriptBase):
         self.linux_prompt = "/>"
         self.prodclass = "0015"
         self.flashjedecid = "0007f116"
-        self.fw_dotver = ""
-        self.sem_dotver = ""
         self.dut_dhcp_ip = ""
         self.dut_port = ""
 
@@ -80,40 +79,6 @@ class USM487FactoryGeneral(ScriptBase):
         self.btnum = {
             'ed30': "0",
         }
-
-    def ver_extract(self):
-        fh = open(self.fcd_version_info_file_path, "r")
-        complete_ver = fh.readline()
-        msg(no="", out="FCD version: " + complete_ver)
-        fh.close()
-        complete_ver_s = complete_ver.split("-")
-        self.sem_dotver = complete_ver_s[3]
-        self.fw_dotver = complete_ver_s[4]
-
-        # version mapping
-        fh = open('/usr/local/sbin/' + 'Products-info.json')
-        self.fsiw = json.load(fh)
-        fh.close()
-
-        # FCD_ID (this name is called by Mike) like product line
-        self.fcd_id = self.fsiw['UniFiSwitch']['USW-MINI']['FCD_ID']
-
-        # SW_ID (this name is called by Mike) like product model
-        self.sw_id = self.fsiw['UniFiSwitch']['USW-MINI']['SW_ID']
-
-        # Semantic version (this name is called by Mike) like FCD version
-        spt = self.sem_dotver.split(".")
-        sem_a = '{:04x}'.format(int(spt[0]))
-        sem_b = '{:02x}'.format(int(spt[1]))
-        sem_c = '{:02x}'.format(int(spt[2]))
-        self.sem_ver = sem_a + sem_b + sem_c
-
-        # Firmware version
-        spt = self.fw_dotver.split(".")
-        wr_a = '{:04x}'.format(int(spt[0]))
-        wr_b = '{:02x}'.format(int(spt[1]))
-        wr_c = '{:02x}'.format(int(spt[2]))
-        self.fw_ver = wr_a + wr_b + wr_c
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.eepmexe + "...")
@@ -304,6 +269,8 @@ class USM487FactoryGeneral(ScriptBase):
             error_critical("DevReg Verify .... FAILED!")
 
     def create_socket(self):
+        self.pexp.expect_action(10, self.linux_prompt, "ip dhcp")
+        time.sleep(2)
         netinfo = self.pexp.expect_get_output("ip", self.linux_prompt, 10)
         res = re.search(r"IP      : (.*)", netinfo, re.S)
         self.dut_dhcp_ip = res.group(1)
@@ -392,19 +359,65 @@ class USM487FactoryGeneral(ScriptBase):
             error_critical("Key cert Verify .... FAILED!")
 
     def check_info(self):
-        postexp = [
-            "Security check result: Pass",
-            "Setting up the SSL data.... ok"
-        ]
-        self.pexp.expect_lnxcmd(60, self.linux_prompt, "reset", postexp)
-        self.pexp.expect_action(20, "", "")
+        self.pexp.expect_only(60, "Security check result: Pass")
+        self.pexp.expect_only(60, "Setting up the SSL data.... ok")
+        self.pexp.expect_action(10, "", "")
         out = self.pexp.expect_get_output("version", self.linux_prompt, 20)
-        res = re.search(r"Version = (.*)", out, re.S)
+        res = re.search(r"Version = (\d+\.\d+\.\d+)", out, re.S)
         catfw = res.group(1).split(" ")
-        if catfw[0] == dfwver:
+
+        if catfw[0] == self.fw_dotver:
             log_debug("FW version check PASS")
         else:
             error_critical("FW version check FAILED !!!")
+
+        self.pexp.expect_action(10, self.linux_prompt, "resetenv")
+        self.pexp.expect_action(10, self.linux_prompt, "saveenv")
+        env = self.pexp.expect_get_output("printenv", self.linux_prompt, 10)
+        if "fw_url" in env:
+            error_critical("Reset environment FAILED!!!")
+        else:
+            log_debug("Reset environment check PASS")
+
+    def _kill_http_server(self):
+        [sto, rtc] = self.fcd.common.xcmd("pgrep -f \"python3 -m http\.server\"")
+        http_pid = sto.decode("utf-8").splitlines()
+        log_debug("http server process should be killed: "+str(http_pid))
+        for p in http_pid:
+            self.fcd.common.xcmd("kill "+str(p))
+
+    def fwupdate(self, backtoT1=False):
+        os.chdir(self.fwdir)
+        self._kill_http_server()
+
+        fw_url = "http://{}:8000/{}-fw.bin".format(self.tftp_server, self.board_id)
+
+        if backtoT1 is True:
+            # rename mfg to fw for updating
+            log_debug("rename mfg img")
+            os.rename("{}-fw.bin".format(self.board_id), "{}-fw.bin.bk".format(self.board_id))
+            os.rename("{}-mfg.bin".format(self.board_id), "{}-fw.bin".format(self.board_id))
+        else:
+            self.pexp.expect_action(10, self.linux_prompt, "setenv fw_url "+fw_url, send_action_delay=True)
+            self.pexp.expect_action(10, self.linux_prompt, "setenv do_fwupgrade 1", send_action_delay=True)
+            self.pexp.expect_action(10, self.linux_prompt, "saveenv")
+            ret = self.pexp.expect_get_output("printenv", self.linux_prompt)
+            log_debug("printenv ret:\n"+ret)
+            self.pexp.expect_action(10, self.linux_prompt, "reset")
+
+        proc = subprocess.Popen("python3 -m http.server",
+                                shell=True, stderr=None, stdout=subprocess.PIPE)
+
+        log_debug("fw_url:\n" + fw_url)
+        try:
+            self.pexp.expect_only(60, "Update ENV completed")
+        finally:
+            self._kill_http_server()
+            if backtoT1 is True:
+                # restore name of mfg and fw
+                log_debug("restore name of mfg img")
+                os.rename("{}-fw.bin".format(self.board_id), "{}-mfg.bin".format(self.board_id))
+                os.rename("{}-fw.bin.bk".format(self.board_id), "{}-fw.bin".format(self.board_id))
 
     def run(self):
         """
@@ -421,7 +434,17 @@ class USM487FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
-        self.pexp.expect_only(60, self.linux_prompt)
+        self.pexp.expect_only(60, "# Bootloader #")
+        try:
+            # do_fwupgrade = 1 means the fwupdate have been failed before
+            self.pexp.expect_only(5, "do_fwupgrade=1")
+            log_debug(msg="Update to MFG img first!")
+            self.fwupdate(backtoT1=True)
+        except Exception as e:
+            log_debug("Skip back to MFG img")
+        finally:
+            pass
+
         self.create_socket()
 
         if DOHELPER_ENABLE is True:
@@ -437,6 +460,10 @@ class USM487FactoryGeneral(ScriptBase):
             self.genkey()
             self.check_keycert()
             msg(60, "Finish doing key cert checking ...")
+
+        if FWUPDATE_ENABLE is True:
+            msg(70, "Updating formal firmware ...")
+            self.fwupdate()
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()

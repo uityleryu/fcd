@@ -40,12 +40,18 @@ IMAGE-USW-LEAF= \
     usw-fw/fw.UDC* \
     usw-fw/bsp.UDC*
 
+IMAGE-USW-MINI= \
+    images/ed30* \
+    usw-fw/unifiswitch-mini-* \
+    usw-fw/US.m487.*
+
 IMAGE-USW+=$(IMAGE-USW-24)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
 IMAGE-USW+=$(IMAGE-USW-16-24)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
+IMAGE-USW+=$(IMAGE-USW-MINI)
 
 DIAG_UI_MODEL=UniFiSwitch
 BACKT1_PRDSRL=$(DIAG_UI_MODEL)
