@@ -354,5 +354,34 @@
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
     }
+  },
+
+  "airMAX":
+  {
+    "GBE":{
+      "INDEX"       : 0,
+      "NAME"        : "GBE",
+      "BOARDID"     : "dc9a",
+      "BOMREV"      : "113-00714",
+      "DESC"        : "GBE",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    },
+
+    "GBE-LR":{
+      "INDEX"       : 0,
+      "NAME"        : "GBE-LR",
+      "BOARDID"     : "dc99",
+      "BOMREV"      : "113-00709",
+      "DESC"        : "GBE",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    }
   }
 }
