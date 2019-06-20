@@ -29,8 +29,6 @@ FCD_CMD_READ_DEVREG = 0x2
 FCD_CMD_WRITE_KEYCERT = 0x3
 FCD_CMD_READ_KEYCERT = 0x4
 
-dfwver = "1.1.1"
-
 
 class USM487FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -388,7 +386,6 @@ class USM487FactoryGeneral(ScriptBase):
 
     def fwupdate(self, backtoT1=False):
         os.chdir(self.fwdir)
-        self._kill_http_server()
 
         fw_url = "http://{}:8000/{}-fw.bin".format(self.tftp_server, self.board_id)
 
@@ -405,14 +402,18 @@ class USM487FactoryGeneral(ScriptBase):
             log_debug("printenv ret:\n"+ret)
             self.pexp.expect_action(10, self.linux_prompt, "reset")
 
-        proc = subprocess.Popen("python3 -m http.server",
-                                shell=True, stderr=None, stdout=subprocess.PIPE)
+        [sto, rtc] = self.fcd.common.xcmd("pgrep -f \"python3 -m http\.server\"")
+        http_pid = sto.decode("utf-8").splitlines()
+        log_debug("http server have been created: "+str(http_pid))
+        if len(http_pid) == 0:
+            log_debug("Creating a http server")
+            proc = subprocess.Popen("python3 -m http.server",
+                                    shell=True, stderr=None, stdout=subprocess.PIPE)
 
         log_debug("fw_url:\n" + fw_url)
         try:
             self.pexp.expect_only(60, "Update ENV completed")
         finally:
-            self._kill_http_server()
             if backtoT1 is True:
                 # restore name of mfg and fw
                 log_debug("restore name of mfg img")
@@ -433,6 +434,7 @@ class USM487FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+
         msg(5, "Open serial port successfully ...")
         self.pexp.expect_only(60, "# Bootloader #")
         try:
