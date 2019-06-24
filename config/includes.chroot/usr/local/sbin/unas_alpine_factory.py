@@ -106,7 +106,7 @@ class UNASALPINEFactory(ScriptBase):
 
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
-        nand_path_for_dut = os.path.join(self.tftpdir, "firmware.bin")
+        nand_path_for_dut = os.path.join(self.tftpdir, "fw-image.bin")
         if not os.path.isfile(nand_path_for_dut):
             sstr = [
                 "cp",
