@@ -122,20 +122,24 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         if SETUBMACID_EN is True:
             mcf = self.mac_colon_format(self.mac)
-            cmd = "fw_setenv ethaddr {0}".format(mcf)
+            cmd = "fw_setenv ethaddr {0}; sync".format(mcf)
             self.pexp.expect_lnxcmd(90, self.linux_prompt, cmd, self.linux_prompt)
+            time.sleep(1)
+            cmd = "fw_printenv ethaddr"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, mcf)
 
         if CHECK_UBOOT_EN is True:
             mcf = self.mac_colon_format(self.mac)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
             self.pexp.expect_action(60, "stop autoboot", "\033")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv ethaddr")
             self.pexp.expect_only(30, "ethaddr=" + mcf)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "securedev")
             postexp = [
                 "program OTP values... ok",
                 "verify OTP values... ok",
-                "device seems to be partially/secured!"
+                "device seems to be partially/secured!",
+                self.bootloader_prompt
             ]
             index = self.pexp.expect_get_index(30, postexp)
             log_debug("OTP index: " + str(index))
