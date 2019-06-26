@@ -12,9 +12,9 @@ import stat
 import shutil
 
 
-class UAPIPQ40XXFactory(ScriptBase):
+class AFIPQ40XXFactory(ScriptBase):
     def __init__(self):
-        super(UAPIPQ40XXFactory, self).__init__()
+        super(AFIPQ40XXFactory, self).__init__()
         self.ver_extract()
         self._init_vars()
 
@@ -22,16 +22,16 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         # U-boot prompt
         self.ubpmt = {
-            'dc98': "\(IPQ40xx\) # "
+            'dc9b': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'dc98': "UBB#"
+            'dc9b': "GP#",
         }
 
         self.bootloader = {
-            'dc98': "dc98-bootloader.bin"
+            'dc9b': "dc9b-bootloader.bin"
         }
 
         baseip = 20
@@ -39,9 +39,9 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         tmpdir = "/tmp/"
         self.tftpdir = self.tftpdir + "/"
-        self.uap_dir = os.path.join(self.fcd_toolsdir, "uap")
+        self.af_dir = os.path.join(self.fcd_toolsdir, "af_af60")
         self.common_dir = os.path.join(self.fcd_toolsdir, "common")
-        self.id_rsa = self.uap_dir + "/id_rsa"
+        self.id_rsa = self.af_dir + "/id_rsa"
         self.eeprom_bin = "e.b." + self.row_id
         self.eeprom_txt = "e.t." + self.row_id
         self.eeprom_tgz = "e." + self.row_id + ".tgz"
@@ -49,7 +49,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         self.eeprom_check = "e.c." + self.row_id
         self.bomrev = "13-" + self.bom_rev
         helperexe = "helper_IPQ40xx"
-        self.dut_helper_path = os.path.join(self.uap_dir , helperexe)
+        self.dut_helper_path = os.path.join(self.af_dir , helperexe)
         eeexe = "x86-64k-ee"
         self.eetool = os.path.join(self.common_dir , eeexe)
         self.uboot_address =  "0xf0000"
@@ -138,7 +138,7 @@ class UAPIPQ40XXFactory(ScriptBase):
         msg(25, "Flash a temporary config")
         self._set_uboot_network()
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "printenv")
-        self.pexp.expect_action(30, self.ubpmt[self.board_id], "tftpboot 0x84000000 tools/uap/cfg_part.bin")
+        self.pexp.expect_action(30, self.ubpmt[self.board_id], "tftpboot 0x84000000 tools/af_af60/cfg_part.bin")
         self.pexp.expect_action(30, "Bytes transferred", "usetprotect spm off")
 
         cmd = "sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.cfg_address, self.cfg_size)
@@ -209,7 +209,6 @@ class UAPIPQ40XXFactory(ScriptBase):
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
             regsubparams,
-            "-i field=qr_code,format=hex,value=" + self.qrhex,
             "-i field=flash_eeprom,format=binary,pathname=" + self.tftpdir + self.eeprom_bin,
             "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
@@ -301,8 +300,8 @@ class UAPIPQ40XXFactory(ScriptBase):
 
 
 def main():
-    ubb_ipq840xx_factory = UAPIPQ40XXFactory()
-    ubb_ipq840xx_factory.run()
+    af_ipq840xx_factory = AFIPQ40XXFactory()
+    af_ipq840xx_factory.run()
 
 if __name__ == "__main__":
     main()

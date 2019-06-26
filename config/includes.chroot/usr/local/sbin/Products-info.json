@@ -291,23 +291,40 @@
     "LTU-LR":{
       "INDEX"       : 0,
       "NAME"        : "LTU-LR",
-      "BOARDID"     : "0000",
+      "BOARDID"     : "ae06",
       "BOMREV"      : "113-00680",
       "DESC"        : "AirFiber LTU-LR",
       "FILE"        : "af_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False"
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     },
 
     "LTU-Lite":{
-      "INDEX"       : 0,
+      "INDEX"       : 1,
       "NAME"        : "LTU-Lite",
-      "BOARDID"     : "0000",
+      "BOARDID"     : "ae08",
       "BOMREV"      : "113-00708",
       "DESC"        : "AirFiber LTU-Lite",
       "FILE"        : "af_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False"
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60":{
+      "INDEX"       : 2,
+      "NAME"        : "AF60",
+      "BOARDID"     : "dc9b",
+      "BOMREV"      : "113-00720",
+      "DESC"        : "AirFiber 60",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     }
   },
 

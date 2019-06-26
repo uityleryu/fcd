@@ -12,9 +12,9 @@ import stat
 import shutil
 
 
-class AMPQ40XXFactory(ScriptBase):
+class AMIPQ40XXFactory(ScriptBase):
     def __init__(self):
-        super(AMPQ40XXFactory, self).__init__()
+        super(AMIPQ40XXFactory, self).__init__()
         self.ver_extract()
         self._init_vars()
 
@@ -289,17 +289,21 @@ class AMPQ40XXFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "setenv ipaddr 192.168.1.20")
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "setenv bootargs root=/dev/mtdblock5 init=/init")
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "saveenv")
+        time.sleep(3)
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "ubntw dump")
 
         msg(90, "Final Boot")
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "reset\r")
         self.pexp.expect_action(240, "Please press Enter to activate this console.", "")
+        self.pexp.expect_action(10, "login:", "ubnt")
+        self.pexp.expect_action(10, "Password:", "ubnt")
+        self.pexp.expect_only(10, self.lnxpmt[self.board_id])
 
         msg(100, "Formal firmware completed...")
 
 
 def main():
-    gbe_ipq840xx_factory = AMPQ40XXFactory()
+    gbe_ipq840xx_factory = AMIPQ40XXFactory()
     gbe_ipq840xx_factory.run()
 
 if __name__ == "__main__":
