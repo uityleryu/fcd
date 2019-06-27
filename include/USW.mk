@@ -22,7 +22,7 @@ IMAGE-ULS-RPS= \
     usw-fw/unifiswitch-ulsrps-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
-    usw-fw/US.mt7621.v4.0.34.10356.190429.2348-uboot.bin
+    usw-fw/US.mt7621.*
 
 IMAGE-USW-16-24= \
     images/ed20* \
@@ -58,7 +58,7 @@ BACKT1_PRDSRL=$(DIAG_UI_MODEL)
 DRVREG_PRDSRL=$(DIAG_UI_MODEL)
 
 UPYFCD_VER=
-FCDIMG_VER=20309140a0c5d8ccd9b4bce256680349a03dbeb1
+FCDIMG_VER=
 UBNTLIB_VER=
 TOOL_VER=
 
