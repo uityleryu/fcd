@@ -23,7 +23,7 @@ class AFIIPQ807XFactory(ScriptBase):
         # Common folder
         tmpdir = "/tmp/"
         tftpdir = self.tftpdir + "/"
-        self.afi_dir = os.path.join(self.toolsdir, "afi_aln")
+        self.afi_dir = os.path.join(self.fcd_toolsdir, "afi_aln")
         self.dut_afi_dir = os.path.join(self.dut_tmpdir, "afi_aln")
         wifi_cal_data_dir = os.path.join(tmpdir, "IPQ8074")
 
@@ -184,7 +184,7 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug("Send tools.tar from host to DUT ...")
         sstr = [
             "scp",
-            fcdssh + self.toolsdir + "/tools.tar",
+            fcdssh + self.fcd_toolsdir + "/tools.tar",
             tmpdir
         ]
         sstrj = ' '.join(sstr)
@@ -205,13 +205,13 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(10, lnxpmt[self.board_id], sstrj)
 
         log_debug("Change file permission - " + helperexe + " ...")
-        sstr = ["chmod 777", self.dut_afi_dir + helperexe]
+        sstr = ["chmod 777", self.dut_helper_path]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         log_debug("Change file permission - " + eepmexe + " ...")
-        sstr = ["chmod 777", self.dut_afi_dir + eepmexe]
+        sstr = ["chmod 777", self.dut_eepmexe_path]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
