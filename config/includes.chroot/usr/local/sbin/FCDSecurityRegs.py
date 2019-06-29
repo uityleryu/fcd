@@ -866,7 +866,7 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def check_comport(self):
-        cmd = "ls /dev | grep ttyUSB"
+        cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
@@ -881,7 +881,7 @@ class winFcdFactory(Gtk.Window):
 
         exist_tty = stdout.decode().splitlines()
         for itty in exist_tty:
-            cmd = "stty -F /dev/" + itty + " speed 115200 > /dev/null 2>/dev/null"
+            cmd = "stty -F /dev/{0} speed 115200 > /dev/null 2>/dev/null".format(itty)
             output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             output.wait()
             [stdout, stderr] = output.communicate()

@@ -48,27 +48,27 @@
     },
 
     "UDM-XG":{
-      "INDEX" : 4,
-      "NAME" : "UDM-XG",
-      "BOARDID" : "ea17",
-      "BOMREV" : "113-02719",
-      "DESC" : "UniFi One Dream Machine XG",
-      "FILE" : "udm_xeon1521_factory.py",
-      "T1FILE" : "",
-      "QRCHECK" : "True"
+      "INDEX"       : 4,
+      "NAME"        : "UDM-XG",
+      "BOARDID"     : "ea17",
+      "BOMREV"      : "113-02719",
+      "DESC"        : "UniFi One Dream Machine XG",
+      "FILE"        : "udm_xeon1521_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True"
     },
 
     "UDM-LOCO":{
-      "INDEX" : 5,
-      "NAME" : "UDM-LOCO",
-      "BOARDID" : "ec28",
-      "BOMREV" : "113-00633",
-      "DESC" : "UniFi One Dream Machine LOCO",
-      "FILE" : "udm_mt7622_factory.py",
-      "T1FILE" : "",
-      "QRCHECK" : "True",
-      "FCD_ID" : "0005",
-      "SW_ID" : "0701"
+      "INDEX"       : 5,
+      "NAME"        : "UDM-LOCO",
+      "BOARDID"     : "ec28",
+      "BOMREV"      : "113-00633",
+      "DESC"        : "UniFi One Dream Machine LOCO",
+      "FILE"        : "udm_mt7622_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     }
   },
 
@@ -399,6 +399,22 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1201"
+    }
+  },
+
+  "UniFiProtect":
+  {
+    "UFP-SENSE":{
+      "INDEX"       : 0,
+      "NAME"        : "UFP-SENSE",
+      "BOARDID"     : "a912",
+      "BOMREV"      : "113-02823",
+      "DESC"        : "UniFi Protect Sensor",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1601"
     }
   }
 }

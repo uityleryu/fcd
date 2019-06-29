@@ -42,6 +42,7 @@ pip3 install lazy
 pip3 install paramiko
 pip3 install paramiko-expect
 pip3 install scp
+pip3 install xmodem
 
 # serial console packages
 apt-get -y install picocom

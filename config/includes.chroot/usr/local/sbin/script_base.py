@@ -27,6 +27,7 @@ class ScriptBase(object):
         # must be set by set_pexpect_helper()
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
+        self.__serial_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
 
         self._encrpyt_passphrase_for_log()
@@ -39,9 +40,20 @@ class ScriptBase(object):
         else:
             error_critical("No pexpect obj exists!")
 
+    @property
+    def ser(self):
+        if self.__serial_obj is not None:
+            return self.__serial_obj
+        else:
+            error_critical("No serial obj exists!")
+
     def set_pexpect_helper(self, pexpect_obj):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
+
+    def set_serial_helper(self, serial_obj):
+        self.__serial_obj = serial_obj
+        self.fcd.set_serial_obj(serial_obj)
 
     def _init_log(self, log_file_path=None):
         if log_file_path is None:
