@@ -85,6 +85,7 @@ class ScriptBase(object):
         self.helper_path = ""
         self.fwdir = os.path.join(self.tftpdir, self.image)
         self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
+        self.fcd_commondir = os.path.join(self.tftpdir, self.tools, "common")
         self.eepmexe = "x86-64k-ee"
 
         '''
@@ -109,6 +110,9 @@ class ScriptBase(object):
         # Get the signed EEPROM from security server
         self.eesign = "e.s." + self.row_id
 
+        # After adding date code on signed 64KB
+        self.eesigndate = "e.sd." + self.row_id
+
         # retrieve the content from EEPROM partition of DUT
         self.eechk = "e.c." + self.row_id
 
@@ -130,6 +134,9 @@ class ScriptBase(object):
 
         # EX: /tftpboot/e.s.0
         self.eesign_path = os.path.join(self.tftpdir, self.eesign)
+
+        # EX: /tftpboot/e.sd.0
+        self.eesigndate_path = os.path.join(self.tftpdir, self.eesigndate)
 
         # EX: /tftpboot/e.c.0
         self.eechk_path = os.path.join(self.tftpdir, self.eechk)
@@ -217,7 +224,7 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin]
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -343,6 +350,18 @@ class ScriptBase(object):
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
 
+        nowtime = time.strftime("%Y%m%d", time.gmtime())
+        flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
+        cmd = "{0} -B {1} -d {2}".format(flasheditor, self.eesign_path, nowtime)
+        self.fcd.common.pcmd(cmd)
+
+        rtf = os.path.isfile("{0}.FCD".format(self.eesign_path))
+        if rtf is not True:
+            error_critical("Can't find " + self.eesigndate)
+        else:
+            cmd = "mv {0}.FCD {1}".format(self.eesign_path, self.eesigndate_path)
+            self.fcd.common.pcmd(cmd)
+
     def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_exp=True, timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
@@ -353,22 +372,27 @@ class ScriptBase(object):
         Keyword Arguments:
             dut_subdir {[str]} -- like udm, unas, afi_aln...etc, take refer to structure of fcd-script-tools repo
         """
-        log_debug("Send signed eeprom file from host to DUT ...")
+        log_debug("Send signed eeprom file adding date code from host to DUT ...")
         post_txt = self.linux_prompt if post_exp is True else None
-        eechk_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eechk) if dut_tmp_subdir is not None \
-            else os.path.join(self.dut_tmpdir, self.eechk)
-        eesign_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eesign) if dut_tmp_subdir is not None \
-            else os.path.join(self.dut_tmpdir, self.eesign)
+        if dut_tmp_subdir is not None:
+            eechk_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eechk)
+        else:
+            eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
 
-        cmd = "tftp -g -r {0} -l {1} {2}".format(self.eesign, eesign_dut_path, self.tftp_server)
+        if dut_tmp_subdir is not None:
+            eesigndate_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eesigndate)
+        else:
+            eesigndate_dut_path = os.path.join(self.dut_tmpdir, self.eesigndate)
+
+        cmd = "tftp -g -r {0} -l {1} {2}".format(self.eesigndate, eesigndate_dut_path, self.tftp_server)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
 
-        log_debug("Change file permission - " + self.eesign + " ...")
-        cmd = "chmod 777 {0}".format(eesign_dut_path)
+        log_debug("Change file permission - {0} ...".format(self.eesigndate))
+        cmd = "chmod 777 {0}".format(eesigndate_dut_path)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
 
         log_debug("Starting to write signed info to SPI flash ...")
-        cmd = "dd if={0} of={1} bs=1k count=64".format(eesign_dut_path, self.devregpart)
+        cmd = "dd if={0} of={1} bs=1k count=64".format(eesigndate_dut_path, self.devregpart)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
@@ -383,15 +407,15 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         time.sleep(3)  # in case the e.c.0 is still in transfering
         if os.path.isfile(self.eechk_path):
-            otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesign)
+            otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesigndate)
             log_debug(otmsg)
-            rtc = filecmp.cmp(self.eechk_path, self.eesign_path)
+            rtc = filecmp.cmp(self.eechk_path, self.eesigndate_path)
             if rtc is True:
                 log_debug("Comparing files successfully")
             else:
                 error_critical("Comparing files failed!!")
         else:
-            otmsg = "Can't find the {0} and {1} files ...".format(self.eechk, self.eesign)
+            otmsg = "Can't find the {0} and {1} files ...".format(self.eechk, self.eesigndate)
             log_debug(otmsg)
 
     def gen_and_load_key_to_dut(self):
@@ -474,7 +498,7 @@ class ScriptBase(object):
 
         otmsg = "Starting to do {0} ...".format(self.eepmexe)
         log_debug(otmsg)
-        flasheditor = os.path.join(netmeta['flashed_dir'], self.eepmexe)
+        flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
         sstr = [
             flasheditor,
             "-F",

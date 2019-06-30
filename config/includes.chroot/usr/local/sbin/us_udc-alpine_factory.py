@@ -13,7 +13,6 @@ import filecmp
 PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
-NEED_UBUPDATE_EN = True
 FWUPDATE_EN = True
 DATAVERIFY_EN = True
 
@@ -25,10 +24,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.ver_extract()
         self.bootloader_prompt = "UDC"
         self.devregpart = "/dev/mtdblock4"
-        self.diagsh = "UBNT"
+        self.diagsh1 = "UBNT"
+        self.diagsh2 = "DIAG"
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
-        self.lcmfwver = "v2.0.3-0-gecae630"
+        self.lcmfwver = "v3.0.4-0-gf89bc2b"
         self.helper_path = "usw_leaf"
 
         # number of Ethernet
@@ -46,12 +46,10 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             'f060': "0"
         }
 
-        flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
             'ethnum'          : ethnum,
             'wifinum'         : wifinum,
             'btnum'           : btnum,
-            'flashed_dir'     : flashed_dir
         }
 
         self.netif = {
@@ -126,10 +124,26 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, postexp)
 
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "reboot", self.linux_prompt)
-
         self.login(username="ubnt", password="ubnt", timeout=80)
 
         log_debug("Starting to do fwupdate ... ")
+        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/gfl start", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/npos start", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vtysh", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "configure terminal", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface swp1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "switchport access vlan 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "bridge-domain 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vlan 1 swp1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface bridge 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", self.linux_prompt)
 
         postexp = [
             "64 bytes from",
@@ -175,11 +189,12 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Boot from tftp with installer ...")
+
         # detect the BSP U-boot
         expit = [
-            "May 06 2019 - 12:15:33",    # BSP U-boot-1
+            "Jun 19 2019 - 18:36:28",    # BSP U-boot-1
             "May 17 2019 - 13:22:41",    # BSP U-boot-2
-            "May 16 2019 - 09:50:32"     # FW U-boot
+            "Jul 03 2019 - 05:58:38"     # FW U-boot
         ]
         rt = self.pexp.expect_get_index(30, expit)
         if rt == 2:
@@ -191,9 +206,9 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             log_debug("Find the correct U-boot version")
 
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, self.diagsh, "diag", "DIAG")
-        self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
-        self.pexp.expect_lnxcmd(10, "DIAG", "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk speed 0 10", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
 
         self.lnx_netcheck(True)
         msg(10, "Boot up to linux console and network is good ...")

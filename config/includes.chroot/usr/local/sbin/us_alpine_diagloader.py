@@ -17,16 +17,17 @@ REGISTER_ENABLE = True
 FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = False
 
-diagsh = ""
+DIAG_VER = "usw-100g-v1.0.8"
+IMAG_VER = "USW-100G_v1.0.5_20190620"
 
 
 class USALPINEDiagloader(ScriptBase):
     def __init__(self):
         super(USALPINEDiagloader, self).__init__()
-        global diagsh
 
         self.bootloader_prompt = "UDC"
-        diagsh = "UBNT"
+        self.diagsh1 = "UBNT"
+        self.diagsh2 = "DIAG"
 
     def stop_at_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -42,6 +43,25 @@ class USALPINEDiagloader(ScriptBase):
     # loading the diag U-boot and diag recovery image basing on formal FW
     def load_diag_ub_uimg(self):
         self.login(username="ubnt", password="ubnt", timeout=100)
+
+        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/gfl start", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/npos start", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vtysh", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "configure terminal", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface swp1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "switchport access vlan 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "bridge-domain 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vlan 1 swp1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface bridge 1", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", self.linux_prompt)
+
         self.lnx_netcheck()
 
         cmd = "tftp -g -r images/{0}-diag-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
@@ -86,9 +106,9 @@ class USALPINEDiagloader(ScriptBase):
         time.sleep(1)
 
         expit = [
-            "May 06 2019 - 12:15:33",    # BSP U-boot-1
+            "Jun 19 2019 - 18:36:28",    # BSP U-boot-1
             "May 17 2019 - 13:22:41",    # BSP U-boot-2
-            "May 16 2019 - 09:50:32"     # FW U-boot
+            "Jul 03 2019 - 05:58:38"     # FW U-boot
         ]
         rt = self.pexp.expect_get_index(30, expit)
         if rt == 2:
@@ -105,9 +125,9 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootspi")
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, diagsh, "diag", "DIAG")
-        self.pexp.expect_lnxcmd(10, "DIAG", "npsdk speed 0 10", "DIAG")
-        self.pexp.expect_lnxcmd(10, "DIAG", "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk speed 0 10", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 down", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.dutip, self.linux_prompt)
         self.lnx_netcheck()
@@ -131,6 +151,11 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_lnxcmd(20, self.linux_prompt, "reboot", self.linux_prompt)
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
+        self.pexp.expect_lnxcmd(20, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(20, self.diagsh2, "show version", DIAG_VER)
+        self.pexp.expect_lnxcmd(20, self.diagsh2, "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, "cat /etc/version", IMAG_VER)
+
         msg(100, "Completing firmware upgrading ...")
 
         self.close_fcd()
