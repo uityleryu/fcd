@@ -40,7 +40,8 @@ class ScriptBase(object):
             return self.__pexpect_obj
         else:
             error_critical("No pexpect obj exists!")
-
+            
+    @property
     def ser(self):
         if self.__serial_obj is not None:
             return self.__serial_obj
