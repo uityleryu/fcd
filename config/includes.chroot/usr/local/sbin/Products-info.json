@@ -401,7 +401,6 @@
       "SW_ID"       : "1201"
     }
   },
-
   "UniFiProtect":
   {
     "UFP-SENSE":{
@@ -431,6 +430,20 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
-    }
+    },
+  "UniFiVideo":
+  {
+    "UVC-G4PRO":{
+      "INDEX"       : 0,
+      "NAME"        : "UVC-G4",
+      "BOARDID"     : "a563",
+      "BOMREV"      : "113-02574",
+      "DESC"        : "GBE",
+      "FILE"        : "uvc_g4_pro_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e04"
+     }
   }
 }
