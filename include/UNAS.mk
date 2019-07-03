@@ -25,8 +25,8 @@ TOOLS-CONFIG= \
 
 TOOLS-UNAS+=$(TOOLS-CONFIG)
 TOOLS-UNAS+= \
-    unas/helper_UNAS-AL324_release \
-    unas/al324-ee
+    unas/*
+
 
 TOOLS-UNAS4+=$(TOOLS-UNAS)
 TOOLS-UNAS8+=$(TOOLS-UNAS)
