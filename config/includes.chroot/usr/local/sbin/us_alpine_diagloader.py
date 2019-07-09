@@ -11,14 +11,12 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
-PROVISION_ENABLE = True
-DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
-FWUPDATE_ENABLE = True
-DATAVERIFY_ENABLE = False
+UPDATEUB_EN = True
+BOOTTFTP_EN = True
 
-DIAG_VER = "usw-100g-v1.0.8"
-IMAG_VER = "USW-100G_v1.0.5_20190620"
+DIAG_VER = "usw-100g-v1.0.10"
+IMAG_VER = "USW-100G_v1.0.7_20190722"
+BOARDNAME = "usw-leaf-rev8"
 
 
 class USALPINEDiagloader(ScriptBase):
@@ -33,6 +31,14 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         time.sleep(1)
 
+    def set_boot_net(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "-diag-")
+        time.sleep(2)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+
     def lnx_netcheck(self):
         postexp = [
             "64 bytes from",
@@ -45,23 +51,6 @@ class USALPINEDiagloader(ScriptBase):
         self.login(username="ubnt", password="ubnt", timeout=100)
 
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/gfl start", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/npos start", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vtysh", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "configure terminal", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface swp1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "switchport access vlan 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "bridge-domain 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vlan 1 swp1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface bridge 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", self.linux_prompt)
-
         self.lnx_netcheck()
 
         cmd = "tftp -g -r images/{0}-diag-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
@@ -107,22 +96,24 @@ class USALPINEDiagloader(ScriptBase):
 
         expit = [
             "Jun 19 2019 - 18:36:28",    # BSP U-boot-1
-            "May 17 2019 - 13:22:41",    # BSP U-boot-2
+            "Jul 22 2019 - 11:59:31",    # BSP U-boot-2
             "Jul 03 2019 - 05:58:38"     # FW U-boot
         ]
         rt = self.pexp.expect_get_index(30, expit)
         if rt == 2:
             log_debug("Detect the FW U-boot version")
             self.load_diag_ub_uimg()
-        elif rt == -1:
-            error_critical("Timeout can't find the correct U-boot!!")
+            msg(40, "Diag U-boot/uImage updating completing ...")
         else:
-            log_debug("Find the correct U-boot version")
-
-        msg(40, "Diag U-boot/uImage updating completing ...")
+            pass
 
         self.stop_at_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootspi")
+        if BOOTTFTP_EN is True:
+            self.set_boot_net()
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run boottftp")
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootspi")
+
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(80, "Welcome to UBNT PyShell")
         self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
@@ -132,6 +123,23 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.dutip, self.linux_prompt)
         self.lnx_netcheck()
         msg(50, "network configuration done in U-Boot ...")
+
+        if UPDATEUB_EN is True:
+            log_debug("downloading diag U-boot")
+            cmd = "tftp -g -r images/f060-diag-boot.img -l /tmp/boot.img {0}".format(self.tftp_server)
+            self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
+            log_debug("flashing diag U-boot")
+            postexp = [
+                r"Erasing blocks:.*\(50%\)",
+                r"Erasing blocks:.*\(100%\)",
+                r"Writing data:.*\(50%\)",
+                r"Writing data:.*\(100%\)",
+                r"Verifying data:.*\(50%\)",
+                r"Verifying data:.*\(100%\)",
+                self.linux_prompt
+            ]
+            cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
+            self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "/ubnt/diag-ssd.sh format", "done")
         msg(70, "SSD format Completing ...")
@@ -155,6 +163,9 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_lnxcmd(20, self.diagsh2, "show version", DIAG_VER)
         self.pexp.expect_lnxcmd(20, self.diagsh2, "shell", self.linux_prompt)
         self.pexp.expect_lnxcmd(20, self.linux_prompt, "cat /etc/version", IMAG_VER)
+        cmd = "/ubnt/boardname.sh {}".format(BOARDNAME)
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, "cat /logs/boardname", BOARDNAME)
 
         msg(100, "Completing firmware upgrading ...")
 

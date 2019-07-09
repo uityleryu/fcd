@@ -43,7 +43,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         # number of Bluetooth
         btnum = {
-            'f060': "0"
+            'f060': "1"
         }
 
         self.devnetmeta = {
@@ -193,19 +193,18 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         # detect the BSP U-boot
         expit = [
             "Jun 19 2019 - 18:36:28",    # BSP U-boot-1
-            "May 17 2019 - 13:22:41",    # BSP U-boot-2
+            "Jul 22 2019 - 11:59:31",    # BSP U-boot-2
             "Jul 03 2019 - 05:58:38"     # FW U-boot
         ]
         rt = self.pexp.expect_get_index(30, expit)
         if rt == 2:
             log_debug("Detect the FW U-boot version")
             self.load_diag_ub_uimg()
-        elif rt == -1:
-            error_critical("Timeout can't find the correct U-boot!!")
+            msg(40, "Diag U-boot/uImage updating completing ...")
         else:
-            log_debug("Find the correct U-boot version")
+            pass
 
-        self.pexp.expect_only(80, "Welcome to UBNT PyShell")
+        self.pexp.expect_only(120, "Welcome to UBNT PyShell")
         self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
         self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk speed 0 10", self.diagsh2)
         self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
