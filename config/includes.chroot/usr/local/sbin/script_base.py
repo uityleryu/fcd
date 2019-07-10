@@ -353,7 +353,8 @@ class ScriptBase(object):
         nowtime = time.strftime("%Y%m%d", time.gmtime())
         flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
         cmd = "{0} -B {1} -d {2}".format(flasheditor, self.eesign_path, nowtime)
-        self.fcd.common.pcmd(cmd)
+        sto, rtc = self.fcd.common.xcmd(cmd)
+        print(sto)
 
         rtf = os.path.isfile("{0}.FCD".format(self.eesign_path))
         if rtf is not True:
@@ -493,7 +494,7 @@ class ScriptBase(object):
             otmsg = "Can't find the RSA key file"
             error_critical(otmsg)
 
-    def data_provision_64k(self, netmeta):
+    def data_provision_64k(self, netmeta, post_expect=True):
         self.gen_rsa_key()
 
         otmsg = "Starting to do {0} ...".format(self.eepmexe)
@@ -524,10 +525,16 @@ class ScriptBase(object):
             log_debug(otmsg)
 
         cmd = "tftp -g -r {0} -l /tmp/{0} {1}".format(self.eegenbin, self.tftp_server)
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        if post_expect is True:
+            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
 
         cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+        if post_expect is True:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")

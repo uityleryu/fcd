@@ -32,7 +32,6 @@ class UNASALPINEFactory(ScriptBase):
         # script specific vars
         self.devregpart = "/dev/mtdblock9"
         self.bomrev = "113-" + self.bom_rev
-        self.eepmexe = "al324-ee"
         self.helperexe = "helper_UNAS-AL324_release"
         self.dut_nasdir = os.path.join(self.dut_tmpdir, "unas")
         self.helper_path = os.path.join(self.dut_nasdir, self.helperexe)
@@ -68,6 +67,11 @@ class UNASALPINEFactory(ScriptBase):
         self.netif = {
             'ea16': "ifconfig enp0s1 ",
             'ea18': "ifconfig enp0s1 "
+        }
+        self.devnetmeta = {
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
         }
 
     def install_uboot_on_spi(self):
@@ -138,46 +142,6 @@ class UNASALPINEFactory(ScriptBase):
         msg(15, "Installing fw on nand")
         self.pexp.expect_only(10, "bootargs=", err_msg="Cannot see reboot msg after enter boot cmd in uboot")
         self.pexp.expect_only(10, "Starting kernel", err_msg="No msg of process of installation")
-
-    def data_provision(self):
-        log_debug("Change file permission - " + self.helperexe + " ...")
-        sstr = [
-            "chmod 777",
-            self.helper_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Change file permission - " + self.eepmexe + " ...")
-        sstr = [
-            "chmod 777",
-            self.eepmexe_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj)
-
-        log_debug("Starting to do " + self.eepmexe + "...")
-        sstr = [
-            self.eepmexe_path,
-            "-F",
-            "-r " + self.bomrev,
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + self.ethnum[self.board_id],
-            "-w " + self.wifinum[self.board_id],
-            "-b " + self.btnum[self.board_id],
-            "-k",
-            "-p Factory"
-        ]
-        sstrj = ' '.join(sstr)
-
-        postexp = [
-            "ssh-dss",
-            "ssh-rsa",
-            "Fingerprint",
-        ]
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstrj, post_exp=postexp)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
@@ -318,7 +282,7 @@ class UNASALPINEFactory(ScriptBase):
         if PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=30, post_exp=False)
-            self.data_provision()
+            self.data_provision_64k(netmeta=self.devnetmeta, post_expect=False)
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
