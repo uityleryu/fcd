@@ -43,6 +43,7 @@ pip3 install paramiko
 pip3 install paramiko-expect
 pip3 install scp
 pip3 install xmodem
+pip3 install esptool==1.3
 
 # serial console packages
 apt-get -y install picocom
