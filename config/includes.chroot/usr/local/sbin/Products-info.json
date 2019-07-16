@@ -416,5 +416,21 @@
       "FCD_ID"      : "000d",
       "SW_ID"       : "1601"
     }
+  },
+
+  "USP":
+  {
+    "USP-Plug":{
+      "INDEX"       : 0,
+      "NAME"        : "USP-Plug",
+      "BOARDID"     : "ee71",
+      "BOMREV"      : "113-00645",
+      "DESC"        : "UniFi smart plug",
+      "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    }
   }
 }

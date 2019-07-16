@@ -272,7 +272,7 @@ class ScriptBase(object):
         self.fw_ver = '{:04x}{:02x}{:02x}'.format(int(spt[0]), int(spt[1]), int(spt[2]))
         print("fw_ver: " + self.fw_ver)
 
-    def registration(self):
+    def registration(self, registration_only=False):
         log_debug("Starting to do registration ...")
         cmd = [
             "cat " + self.eetxt_path,
@@ -291,13 +291,19 @@ class ScriptBase(object):
         else:
             log_debug("Extract parameters successfully")
 
+        # The HEX of the QR code
+        if self.qrcode is None:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
+
         if self.fcd_id == "" or self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
             clientbin = "/usr/local/sbin/client_x86_release"
             regparam = [
                 "-h devreg-prod.ubnt.com",
                 "-k " + self.pass_phrase,
                 regsubparams,
-                "-i field=qr_code,format=hex,value=" + self.qrhex,
+                reg_qr_field,
                 "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
                 "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
                 "-o field=registration_id",
@@ -317,7 +323,7 @@ class ScriptBase(object):
                 "-h devreg-prod.ubnt.com",
                 "-k " + self.pass_phrase,
                 regsubparams,
-                "-i field=qr_code,format=hex,value=" + self.qrhex,
+                reg_qr_field,
                 "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
                 "-i field=fcd_id,format=hex,value=" + self.fcd_id,
                 "-i field=fcd_version,format=hex,value=" + self.sem_ver,
@@ -346,6 +352,10 @@ class ScriptBase(object):
 
         log_debug("Excuting client_x86 registration successfully")
 
+        if not registration_only:
+            self.gen_eesign_related_files()
+
+    def gen_eesign_related_files(self):
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
