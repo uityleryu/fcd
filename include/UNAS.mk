@@ -20,7 +20,9 @@ UBNTLIB_VER=
 TOOL_VER=
 
 TOOLS-CONFIG= \
-    common/*
+    common/sshd_config \
+    common/tmux.conf \
+    common/x86-64k-ee
 
 TOOLS-UNAS+=$(TOOLS-CONFIG)
 TOOLS-UNAS+= \
