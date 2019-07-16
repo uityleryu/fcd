@@ -47,6 +47,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.key_path = os.path.join(self.tftpdir, self.nkey)
         self.keycert_path = os.path.join(self.tftpdir, self.nkeycert)
         self.keycertchk_path = os.path.join(self.tftpdir, self.nkeycertchk)
+        self.flasheditor = os.path.join(self.common_dir, self.eepmexe)
 
         # number of Ethernet
         self.ethnum = {
@@ -67,14 +68,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         }
 
     def prepare_server_need_files(self):
-        log_debug("Starting to do " + self.eepmexe + "...")
+        log_debug("Starting to create a 64KB binary file ...")
         self.gen_rsa_key()
 
-        otmsg = "Starting to do {0} ...".format(self.eepmexe)
-        log_debug(otmsg)
-        flasheditor = os.path.join(self.common_dir, self.eepmexe)
         sstr = [
-            flasheditor,
+            self.flasheditor,
             "-F",
             "-f " + self.eebin_path,
             "-r " + self.bomrev,
@@ -151,6 +149,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign_path)
+
+        log_debug("Add the date code in the devreg binary file")
+        sstr = [
+            self.flasheditor,
+        ]
 
     def check_devreg_data(self):
         log_debug("DUT request the signed 64KB file ...")
