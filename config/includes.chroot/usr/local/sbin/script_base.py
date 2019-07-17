@@ -292,7 +292,7 @@ class ScriptBase(object):
             log_debug("Extract parameters successfully")
 
         # The HEX of the QR code
-        if self.qrcode is None:
+        if self.qrcode is None or not self.qrcode:
             reg_qr_field = ""
         else:
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
