@@ -423,7 +423,7 @@
     "USP-Plug":{
       "INDEX"       : 0,
       "NAME"        : "USP-Plug",
-      "BOARDID"     : "ee71",
+      "BOARDID"     : "ee73",
       "BOMREV"      : "113-00645",
       "DESC"        : "UniFi smart plug",
       "FILE"        : "usp_esp8266_factory.py",
