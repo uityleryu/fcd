@@ -130,7 +130,14 @@ class AFIPQ40XXFactory(ScriptBase):
 
         msg(20, "Do ubntw")
 
-        cmd = "ubntw all {0} {1} {2} 0".format(self.mac, self.board_id, self.bomrev) 
+        reg_code = 0
+
+        if self.region == '0000':
+            reg_code = 0
+        elif self.region == '002a':
+            reg_code = 42
+
+        cmd = "ubntw all {0} {1} {2} {3}".format(self.mac, self.board_id, self.bomrev, reg_code) 
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
         time.sleep(1)
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "ubntw dump")
@@ -277,7 +284,8 @@ class AFIPQ40XXFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
 
         msg(70, "Erase tempoarary config")
-        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1}".format(self.cfg_address, self.cfg_size))	
+        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1}".format(self.cfg_address, self.cfg_size))
+        time.sleep(3)
         #log_progress 95 "Configuration erased"
 
         msg(80, "Write default setting")
