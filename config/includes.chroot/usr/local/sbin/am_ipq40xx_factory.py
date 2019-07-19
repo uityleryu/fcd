@@ -287,8 +287,8 @@ class AMIPQ40XXFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
 
         msg(70, "Erase tempoarary config")
-        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1}".format(self.cfg_address, self.cfg_size))
-        time.sleep(3)
+        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1};\r\r".format(self.cfg_address, self.cfg_size))
+        time.sleep(10)
         #log_progress 95 "Configuration erased"
 
         msg(80, "Write default setting")
