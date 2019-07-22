@@ -22,8 +22,8 @@ class AMIPQ40XXFactory(ScriptBase):
 
         # U-boot prompt
         self.ubpmt = {
-            'dc99': "\(IPQ40xx\) # ",
-            'dc9a': "\(IPQ40xx\) # "
+            'dc99': ".*IPQ40xx.* # ",
+            'dc9a': ".*IPQ40xx.* # "
         }
 
         # linux console prompt
