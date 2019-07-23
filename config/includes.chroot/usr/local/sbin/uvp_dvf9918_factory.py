@@ -7,6 +7,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 import sys
 import time
 import os
+import re
 import stat
 import filecmp
 
@@ -15,6 +16,7 @@ DOHELPER_EN = True
 REGISTER_EN = True
 SETUBMACID_EN = True
 CHECK_UBOOT_EN = True
+FWUPDATE_EN = True
 
 
 class UVPDVF99FactoryGeneral(ScriptBase):
@@ -27,6 +29,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.linux_prompt = "root@dvf9918:~#"
         self.helperexe = "helper_DVF99_release"
         self.helper_path = "uvp"
+        self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.8"
 
         # number of Ethernet
         ethnum = {
@@ -66,6 +69,13 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         ]
         mcf = ':'.join(mcf)
         return mcf
+
+    def set_boot_net(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        time.sleep(2)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
 
     def run(self):
         """
@@ -144,6 +154,24 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             index = self.pexp.expect_get_index(30, postexp)
             log_debug("OTP index: " + str(index))
             if index < 0:
+                error_critical("OTP program/verify failed")
+
+        if FWUPDATE_EN is True:
+            self.set_boot_net()
+            cmd = "tftp 0xc8800000 images/ef0d-fw.bin.unsign"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_only(30, "done")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run dfu_manifest_system")
+            self.pexp.expect_only(60, "Copy to Flash... done")
+            self.pexp.expect_only(60, "U-Boot")
+            self.pexp.expect_action(60, "login:", self.user)
+            self.pexp.expect_lnxcmd(10, "", "", "")
+            cmd = "cat /etc/uvp-flex.version"
+            output = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            match = re.findall(self.fwversion, output)
+            if match:
+                log_debug("FW version is correct " + self.fwversion)
+            else:
                 error_critical("OTP program/verify failed")
 
         msg(100, "Completing firmware upgrading ...")
