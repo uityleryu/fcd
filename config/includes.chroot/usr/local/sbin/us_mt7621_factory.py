@@ -30,7 +30,7 @@ class USFLEXFactory(ScriptBase):
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
-        self.uboot_upgrade_en = {'ed11', 'ec2a'}
+        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec25', 'ec26'}
 
         # number of mac
         self.macnum = {'ed10': "3",

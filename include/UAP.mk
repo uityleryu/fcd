@@ -56,6 +56,6 @@ TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
 
 
 $(eval $(call ProductImage,UAP,FCD-UAP-ALL-$(VER)))
-$(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)))
+$(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UBB,FCD-UAP-UBB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD-UAP-INDUSTRIAL-$(VER)))
