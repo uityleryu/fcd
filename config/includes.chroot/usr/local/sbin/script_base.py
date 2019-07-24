@@ -27,6 +27,7 @@ class ScriptBase(object):
         # must be set by set_pexpect_helper()
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
+        self.__ssh_client_obj = None
         self.__serial_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
 
@@ -41,6 +42,11 @@ class ScriptBase(object):
             error_critical("No pexpect obj exists!")
 
     @property
+    def session(self):
+        if self.__ssh_client_obj is not None:
+            return self.__ssh_client_obj
+        else:
+            error_critical("No ssh client obj exists!")
     def ser(self):
         if self.__serial_obj is not None:
             return self.__serial_obj
@@ -50,6 +56,9 @@ class ScriptBase(object):
     def set_pexpect_helper(self, pexpect_obj):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
+
+    def set_sshclient_helper(self, ssh_client):
+        self.__ssh_client_obj = ssh_client
 
     def set_serial_helper(self, serial_obj):
         self.__serial_obj = serial_obj
@@ -156,6 +165,10 @@ class ScriptBase(object):
         self.sem_ver = ""
         self.sw_id = ""
         self.fw_ver = ""
+
+        # The HEX of the QR code
+        if self.qrcode is not None:
+            self.qrhex = self.qrcode.encode('utf-8').hex()
 
     def _init_parse_inputs(self):
         parse = argparse.ArgumentParser(description="FCD tool args Parser")
