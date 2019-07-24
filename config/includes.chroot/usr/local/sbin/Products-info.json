@@ -454,7 +454,7 @@
       "BOARDID"     : "a563",
       "BOMREV"      : "113-02574",
       "DESC"        : "GBE",
-      "FILE"        : "uvc_g3bat_g4pro_factory.py",
+      "FILE"        : "uvc_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
@@ -467,11 +467,11 @@
       "BOARDID"     : "a580",
       "BOMREV"      : "113-02692",
       "DESC"        : "GBE",
-      "FILE"        : "uvc_g3bat_g4pro_factory.py",
+      "FILE"        : "uvc_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     }    
+     }
   }
 }
