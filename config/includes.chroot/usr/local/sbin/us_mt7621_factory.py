@@ -67,7 +67,7 @@ class USFLEXFactory(ScriptBase):
                       'ec25' : self.board_id + ".bin",
                       'ec26' : self.board_id + ".bin",
                       'ec2a' : self.board_id + ".bin",
-                      'ed11' : self.board_id + ".bin"}
+                      'ed11' : self.board_id + "-diag.bin"}
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
