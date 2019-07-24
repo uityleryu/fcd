@@ -14,7 +14,6 @@ import os
 import stat
 import filecmp
 # import argparse
-# import json
 
 
 PROVISION_EN = True
