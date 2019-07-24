@@ -1,9 +1,9 @@
 IMAGE-USP-PLUG= \
     images/ee71*
 
-
-IMAGE-USP+=$(IMAGE-USP-PLUG)
-
+IMAGE-USP3= \
+    images/e643* \
+	usp/vport-fw.bin
 
 DIAG_MODEL=null
 DIAG_UI_MODEL=USP
@@ -18,14 +18,15 @@ TOOL_VER=
 TOOLS-CONFIG= \
     common/*
 
-TOOLS-USP-PLUG+=$(TOOLS-CONFIG)
+TOOLS-USP-PLUG +=$(TOOLS-CONFIG)
+TOOLS-USP3     +=$(TOOLS-CONFIG)
+
 TOOLS-USP-PLUG+= \
     usp/*
 
+TOOLS-USP3+= \
+    usp/helper_mips32
 
-TOOLS-USP+=$(TOOLS-USP-PLUG)
-
-
-$(eval $(call ProductImage,USP,FCD-USP-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USP-PLUG,FCD-USP-PLUG-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USP3,FCD-USP3-$(VER)-$(FWVER)))
 
