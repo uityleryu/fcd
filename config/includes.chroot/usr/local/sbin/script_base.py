@@ -41,6 +41,7 @@ class ScriptBase(object):
         else:
             error_critical("No pexpect obj exists!")
 
+    @property
     def ser(self):
         if self.__serial_obj is not None:
             return self.__serial_obj
@@ -53,7 +54,7 @@ class ScriptBase(object):
             return self.__ssh_client_obj
         else:
             error_critical("No ssh client obj exists!")
-            
+
     def set_pexpect_helper(self, pexpect_obj):
         self.__pexpect_obj = pexpect_obj
         self.fcd.set_pexpect_obj(pexpect_obj)
@@ -61,6 +62,7 @@ class ScriptBase(object):
     def set_serial_helper(self, serial_obj):
         self.__serial_obj = serial_obj
         self.fcd.set_serial_obj(serial_obj)
+
     def set_sshclient_helper(self, ssh_client):
         self.__ssh_client_obj = ssh_client
 
