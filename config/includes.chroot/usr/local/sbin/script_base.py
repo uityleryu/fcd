@@ -157,6 +157,11 @@ class ScriptBase(object):
         self.sw_id = ""
         self.fw_ver = ""
 
+        self.qrhex = ""
+        # The HEX of the QR code
+        if self.qrcode is not None:
+            self.qrhex = self.qrcode.encode('utf-8').hex()
+
     def _init_parse_inputs(self):
         parse = argparse.ArgumentParser(description="FCD tool args Parser")
         parse.add_argument('--prdline', '-pline', dest='product_line', help='Active Product Line', default=None)
@@ -296,7 +301,6 @@ class ScriptBase(object):
         if self.qrcode is None or not self.qrcode:
             reg_qr_field = ""
         else:
-            self.qrhex = self.qrcode.encode('utf-8').hex()
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
         # Overwrite all "EEPROM" partition data
