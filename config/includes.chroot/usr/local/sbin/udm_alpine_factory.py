@@ -106,7 +106,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def set_fake_EEPROM(self):
-        self.pexp.expect_action(10, "to stop", "\033\033")
+        self.pexp.expect_action(20, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
         if self.board_id == 'ea15':
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 19000000")
