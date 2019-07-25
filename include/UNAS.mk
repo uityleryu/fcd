@@ -29,8 +29,8 @@ TOOLS-UNAS+= \
     unas/al324-ee \
     unas/helper_UNAS-AL324_release \
     unas/config_gu.sh \
-    unas/79-enp0s1.network \
-    unas/79-enp0s2.network
+    unas/enp0s1.network \
+    unas/enp0s2.network
 
 
 
