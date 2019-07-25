@@ -870,6 +870,26 @@ proc check_booting { boardid } {
     } "Starting kernel"
 }
 
+proc cmd_exp_retry { cmd strexp retry } {
+    for { set i 0 } { $i < $retry } { incr i } {
+        set timeout 10
+        send "$cmd\r"
+        expect {
+            $strexp {
+                break
+            } timeout {
+                set rty [expr $i + 1]
+                log_debug "Can't find $strexp"
+                log_debug "retry: $rty"
+
+                if { $i eq [expr $retry - 1]} {
+                    error_critical "Eventually can't found $strexp"
+                }
+            }
+        }
+    }
+}
+
 proc handle_uboot { } {
     global cmd_prefix
     global bootloader_prompt
@@ -1049,10 +1069,7 @@ proc handle_uboot { } {
 
     expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
-    send "lcm-ctrl -t dump\r"
-
-    expect timeout { error_critical "Cannot found lcm version" } "version"
-    expect timeout { error_critical "E02502 Linux prompt not found" } "#"
+    cmd_exp_retry "lcm-ctrl -t dump" "version" 10
 
     sleep 5
 
