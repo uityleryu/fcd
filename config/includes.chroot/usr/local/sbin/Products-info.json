@@ -443,6 +443,18 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
+    },
+    "USP8":{
+      "INDEX"       : 1,
+      "NAME"        : "USP8",
+      "BOARDID"     : "e648",
+      "BOMREV"      : "113-00365",
+      "DESC"        : "Unifi Smart Plug 8",
+      "FILE"        : "unifi_ar9331_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
     }
   }
 }

@@ -3,16 +3,12 @@
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
-
-import sys
 import time
-import os
-import stat
-import filecmp
 
-class UNIFIAR9331FactoryGeneral(ScriptBase):
+
+class UNIFIAR9331Factory(ScriptBase):
     def __init__(self):
-        super(UNIFIAR9331FactoryGeneral, self).__init__()
+        super(UNIFIAR9331Factory, self).__init__()
 
         self.ver_extract()
         self.fwimg = self.board_id + "-fw.bin"
@@ -52,7 +48,7 @@ class UNIFIAR9331FactoryGeneral(ScriptBase):
 
         self.netif = {
             'e643': "ifconfig eth1 ",
-            'e648': "ifconfig br0 ",
+            'e648': "ifconfig eth1 ",
         }
 
         self.UPDATE_UBOOT_ENABLE    = False
@@ -93,7 +89,6 @@ class UNIFIAR9331FactoryGeneral(ScriptBase):
         self.pexp.expect_only(15, "Copying partition")
         self.pexp.expect_only(120, "Firmware update complete")
 
-
     def init_fw(self):
         self.pexp.expect_lnxcmd(60, "Please press Enter to activate this console.", "")
         self.login(self.user, self.password, 10)
@@ -107,11 +102,9 @@ class UNIFIAR9331FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
-        """
-        Main procedure of factory
+        """main procedure of factory
         """
         self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -128,7 +121,7 @@ class UNIFIAR9331FactoryGeneral(ScriptBase):
         if self.INIT_FW_ENABLE is True:
             msg(15, "Init FW ...")
             self.init_fw()
- 
+
         if self.PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
@@ -159,12 +152,13 @@ class UNIFIAR9331FactoryGeneral(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        msg(100, "Completing firmware upgrading ...")
+        msg(100, "Completing FCD security process...")
         self.close_fcd()
 
+
 def main():
-    unifi_ar9331_factory_general = UNIFIAR9331FactoryGeneral()
-    unifi_ar9331_factory_general.run()
+    unifi_ar9331_factory = UNIFIAR9331Factory()
+    unifi_ar9331_factory.run()
 
 if __name__ == "__main__":
     main()
