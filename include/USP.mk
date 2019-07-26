@@ -3,6 +3,7 @@ IMAGE-USP-PLUG= \
 
 IMAGE-USP-3-8= \
     images/e643* \
+    images/e648* \
 	usp/vport-fw.bin
 
 DIAG_MODEL=null
