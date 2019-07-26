@@ -10,13 +10,6 @@ import os
 import stat
 import filecmp
 
-PROVISION_ENABLE = True
-DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
-FWUPGRADE_ENABLE = True
-DATAVERIFY_ENABLE = True
-WAIT_LCMUPGRADE_ENABLE = True
-
 
 class USW_RTL838X_FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -25,33 +18,22 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
     def init_vars(self):
         # script specific vars
+        self.ver_extract()
         self.ubpmt = "UBNT"
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
-        self.eepmexe = "rtl838x-ee"
         self.helperexe = "helper_rtl838x"
-        self.dut_uswdir = os.path.join(self.dut_tmpdir, "usw_rtl838x")
-        self.helper_path = os.path.join(self.dut_uswdir, self.helperexe)
-        self.eepmexe_path = os.path.join(self.dut_uswdir, self.eepmexe)
+        self.helper_path = "usw_rtl838x"
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-fw.bin"
 
-        # EEPROM related files path on DUT
-        self.eesign_dut_path = os.path.join(self.dut_uswdir, self.eesign)
-        self.eetgz_dut_path = os.path.join(self.dut_uswdir, self.eetgz)
-        self.eechk_dut_path = os.path.join(self.dut_uswdir, self.eechk)
-        self.eebin_dut_path = os.path.join(self.dut_uswdir, self.eebin)
-        self.eetxt_dut_path = os.path.join(self.dut_uswdir, self.eetxt)
-
-        self.fcd_uswdir = os.path.join(self.tftpdir, "tmp", "usw_rtl838x")
-
         # number of Ethernet
-        self.ethnum = {
-            'ed20': "17",
-            'ed21': "25",
-            'ed22': "49",
-            'ed23': "17",
-            'ed24': "25"
+        self.macnum = {
+            'ed20': "3",
+            'ed21': "3",
+            'ed22': "3",
+            'ed23': "3",
+            'ed24': "3"
         }
 
         # number of WiFi
@@ -80,163 +62,23 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed24': "ifconfig eth0 "
         }
 
-    def data_provision(self):
-        log_debug("Change file permission - " + self.helperexe + " ...")
-        self.is_dutfile_exist(self.helper_path)
-        self.is_dutfile_exist(self.eepmexe_path)
-        sstr = [
-            "chmod 777",
-            self.helper_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
+        self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
+        self.devnetmeta = {
+            'ethnum'          : self.macnum,
+            'wifinum'         : self.wifinum,
+            'btnum'           : self.btnum,
+            'flashed_dir'     : self.flashed_dir
+        }
 
-        log_debug("Change file permission - " + self.eepmexe + " ...")
-        sstr = [
-            "chmod 777",
-            self.eepmexe_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
-
-        log_debug("Starting to do " + self.eepmexe + "...")
-        sstr = [
-            self.eepmexe_path,
-            "-F",
-            "-r " + self.bomrev,
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + self.ethnum[self.board_id],
-            "-w " + self.wifinum[self.board_id],
-            "-b " + self.btnum[self.board_id],
-            "-k"
-        ]
-        sstrj = ' '.join(sstr)
-
-        log_debug("Starting to do " + self.eepmexe + "...")
-        self.pexp.expect_lnxcmd_retry(120, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
-
-    def prepare_sever_need_files(self):
-        log_debug("Starting to do " + self.helperexe + "...")
-        sstr = [
-            self.helper_path,
-            "-q",
-            "-c product_class=basic",
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eebin_dut_path,
-            ">",
-            self.eetxt_dut_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
-
-        sstr = [
-            "tar",
-            "cf",
-            self.eetgz_dut_path,
-            self.eebin_dut_path,
-            self.eetxt_dut_path
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
-
-        os.mknod(self.eetgz_path)
-        os.chmod(self.eetgz_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
-        log_debug("Send helper output tgz file from DUT to host ...")
-        sstr = [
-            "tftp",
-            "-p",
-            "-r " + self.eetgz,
-            "-l " + self.eetgz_dut_path,
-            self.tftp_server
-        ]
-        sstrj = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp=self.linux_prompt)
-        time.sleep(5)
-
-        sstr = [
-            "tar",
-            "xvf " + self.eetgz_path,
-            "-C " + self.tftpdir
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
-        if int(rtc) > 0:
-            error_critical("Decompressing " + self.eetgz + " file failed!!")
-        else:
-            log_debug("Decompressing " + self.eetgz + " files successfully")
-        eetxt = os.path.join(self.fcd_uswdir, self.eetxt)
-        eebin = os.path.join(self.fcd_uswdir, self.eebin)
-        sstr = [
-            "mv",
-            eetxt,
-            self.eetxt_path
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
-        sstr = [
-            "mv",
-            eebin,
-            self.eebin_path
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
-
-    def registration(self):
-        log_debug("Starting to do registration ...")
-        cmd = [
-            "cat " + self.eetxt_path,
-            "|",
-            'sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\"',
-            "|",
-            'grep -v \"eeprom\"',
-            "|",
-            "tr '\\n' ' '"
-        ]
-        cmdj = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        regsubparams = sto.decode('UTF-8')
-        if int(rtc) > 0:
-            error_critical("Extract parameters failed!!")
-        else:
-            log_debug("Extract parameters successfully")
-
-        regparam = [
-            "-h devreg-prod.ubnt.com",
-            "-k " + self.pass_phrase,
-            regsubparams,
-            "-i field=qr_code,format=hex,value=" + self.qrhex,
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
-            "-o field=registration_id",
-            "-o field=result",
-            "-o field=device_id",
-            "-o field=registration_status_id",
-            "-o field=registration_status_msg",
-            "-o field=error_message",
-            "-x " + self.key_dir + "ca.pem",
-            "-y " + self.key_dir + "key.pem",
-            "-z " + self.key_dir + "crt.pem"
-        ]
-
-        regparamj = ' '.join(regparam)
-
-        cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
-        print("cmd: " + cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
-        time.sleep(6)
-        if int(rtc) > 0:
-            error_critical("client_x86 registration failed!!")
-        else:
-            log_debug("Excuting client_x86 registration successfully")
-
-        rtf = os.path.isfile(self.eesign_path)
-        if rtf is not True:
-            error_critical("Can't find " + self.eesign)
+        self.UPDATE_UBOOT_ENABLE    = False
+        self.BOOT_RECOVERY_IMAGE    = False
+        self.PROVISION_ENABLE       = True
+        self.DOHELPER_ENABLE        = True
+        self.REGISTER_ENABLE        = True
+        self.FWUPDATE_ENABLE        = True
+        self.DATAVERIFY_ENABLE      = True
+        self.CONF_ZEROIP_ENABLE     = False
+        self.WAIT_LCMUPGRADE_ENABLE = True
 
     def fwupdate(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
@@ -284,8 +126,30 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd_retry(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+
+    def login_kernel(self):
+        self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
+        self.login()
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+
+    def SetNetEnv(self):
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
+        self.CheckNet()
+
+    def CheckNet(self):
+        for _ in range(3):
+            is_network_alive = self.is_network_alive_in_linux()
+            if is_network_alive is True:
+                break
+            time.sleep(5)
+        if is_network_alive is not True:
+            error_critical("Network is not good")
 
     def run(self):
         """
@@ -302,65 +166,46 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
-        self.login()
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
+        if self.UPDATE_UBOOT_ENABLE == True:
+            pass
+        if self.BOOT_RECOVERY_IMAGE == True:
+            pass
 
-        for _ in range(3):
-            is_network_alive = self.is_network_alive_in_linux()
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
-
+        self.login_kernel()
+        self.SetNetEnv()
         msg(10, "Boot up to linux console and network is good ...")
 
-        if PROVISION_ENABLE is True:
+        if self.PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=60)
-            self.data_provision()
+            self.data_provision_64k(self.devnetmeta)
 
-        if DOHELPER_ENABLE is True:
+        if self.DOHELPER_ENABLE is True:
             msg(30, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
-            self.prepare_sever_need_files()
+            self.prepare_server_need_files()
 
-        if REGISTER_ENABLE is True:
+        if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(dut_tmp_subdir="usw_rtl838x")
+            self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         # reboot anyway
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "reboot -f")
 
-        if FWUPGRADE_ENABLE is True:
+        if self.FWUPDATE_ENABLE is True:
             msg(55, "Starting firmware upgrade process...")
             self.fwupdate()
             msg(75, "Completing firmware upgrading ...")
 
-        #pexpect_obj.close()
-        #pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
-        #log_debug(msg=pexpect_cmd)
-        #pexpect_115200_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        #self.set_pexpect_helper(pexpect_obj=pexpect_115200_obj)
-        #time.sleep(1)
-        # login
-        self.pexp.expect_lnxcmd_retry(240, "Please press Enter to activate this console", "")
-        self.login()
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        self.login_kernel()
 
-        if DATAVERIFY_ENABLE is True:
+        if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if WAIT_LCMUPGRADE_ENABLE is True:
+        if self.WAIT_LCMUPGRADE_ENABLE is True:
             msg(90, "Waiting LCM upgrading ...")
             self.wait_lcm_upgrade()
 
