@@ -16,7 +16,7 @@ DOHELPER_EN = True
 REGISTER_EN = True
 SETUBMACID_EN = True
 CHECK_UBOOT_EN = True
-FWUPDATE_EN = True
+FWUPDATE_EN = False
 
 
 class UVPDVF99FactoryGeneral(ScriptBase):
