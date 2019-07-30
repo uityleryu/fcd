@@ -90,7 +90,7 @@ class UNIFIAR9331Factory(ScriptBase):
         self.pexp.expect_only(120, "Firmware update complete")
 
     def init_fw(self):
-        self.pexp.expect_lnxcmd(60, "Please press Enter to activate this console.", "")
+        self.pexp.expect_lnxcmd(120, "Please press Enter to activate this console.", "")
         self.login(self.user, self.password, 10)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
