@@ -89,8 +89,27 @@ class UNIFIAR9331Factory(ScriptBase):
         self.pexp.expect_only(15, "Copying partition")
         self.pexp.expect_only(120, "Firmware update complete")
 
+    def set_info(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "")
+        self.pexp.expect_action(10, self.bootloader_prompt, "usetbid " + self.board_id,
+                                err_msg="Fail set board id in uboot")
+        time.sleep(1)
+        self.pexp.expect_action(10, self.bootloader_prompt, "usetrd " + self.region,
+                                err_msg="Fail set region domain in uboot")
+        time.sleep(1)
+        self.pexp.expect_action(10, self.bootloader_prompt, "erase 0x9f7b0000 +40000",
+                                err_msg="Fail erase Linux configuration data")
+        time.sleep(1)
+        self.pexp.expect_only(30, "done")
+        self.pexp.expect_action(10, self.bootloader_prompt, "usetmac " + self.mac,
+                                err_msg="Fail set mac info in uboot", send_action_delay=True)
+        self.pexp.expect_only(30, "Done")
+        log_debug(msg="MAC setting succeded")
+        self.pexp.expect_action(15, self.bootloader_prompt, "reset")
+
     def init_fw(self):
-        self.pexp.expect_lnxcmd(120, "Please press Enter to activate this console.", "")
+        self.pexp.expect_lnxcmd(240, "Please press Enter to activate this console.", "")
         self.login(self.user, self.password, 10)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
@@ -117,17 +136,18 @@ class UNIFIAR9331Factory(ScriptBase):
         if self.PROGRAM_FW_ENABLE is True:
             msg(10, "Program FW ...")
             self.program_fw()
+            self.set_info()
 
         if self.INIT_FW_ENABLE is True:
-            msg(15, "Init FW ...")
+            msg(20, "Init FW ...")
             self.init_fw()
 
         if self.PROVISION_ENABLE is True:
-            msg(20, "Send tools to DUT and data provision ...")
+            msg(25, "Send tools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
 
         if self.GET_CAL_DATA_ENABLE is True:
-            msg(25, "Put calibration data into eeprom")
+            msg(30, "Put calibration data into eeprom")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=" + self.devregpart + " bs=1 skip=" + str(self.cal_data_beg_ofs) + " count=" + str(self.cal_data_size) + " > /tmp/EEPROM_CAL")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/e.gen." + self.row_id + " bs=1 skip=0 count=" + str(self.cal_data_beg_ofs) + " > /tmp/e.gen." + self.row_id + ".PartA")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/e.gen." + self.row_id + " bs=1 skip=" + str(self.cal_data_end_ofs) + " > /tmp/e.gen." + self.row_id + ".PartB")
@@ -136,17 +156,21 @@ class UNIFIAR9331Factory(ScriptBase):
 
         if self.DOHELPER_ENABLE is True:
             self.erase_eefiles()
-            msg(30, "Do helper to get the output file to devreg server ...")
+            msg(35, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
         if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.check_devreg_data(post_exp=False)
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
             msg(70, "Succeeding in downloading the upgrade tar file ...")
+        else:
+            msg(75, "Succeeding in checking the devreg information ...rebooting")
+            self.pexp.expect_action(30, self.linux_prompt, "reboot")
+            self.init_fw()
 
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
