@@ -27,7 +27,7 @@ class UNASALPINEFactory(ScriptBase):
         # override the base vars
         self.user = "root"
         self.ubpmt = "UBNT_NAS"
-        self.linux_prompt = ["UniFi-NAS", "Error-A12"]
+        self.linux_prompt = ["UniFi-NAS-FCD", "Error-A12"]
 
         # script specific vars
         self.devregpart = "/dev/mtdblock9"

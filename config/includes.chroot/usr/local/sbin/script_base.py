@@ -554,7 +554,10 @@ class ScriptBase(object):
 
         if self.force_update_eeprom is True:
             cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            if post_expect is True:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            else:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
