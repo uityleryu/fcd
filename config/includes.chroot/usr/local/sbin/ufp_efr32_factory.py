@@ -3,19 +3,20 @@
 from script_base import ScriptBase
 from ubntlib.fcd.pserial import SerialExpect
 from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from ubntlib.fcd.logger import log_debug, msg, error_critical
 from xmodem import XMODEM
 
 import sys
 import time
 import os
 import re
-import stat
+# import stat
 
 NEED_DROPBEAR = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
+QRCODE_ENABLE = False
 
 
 class UFPEFR32FactoryGeneral(ScriptBase):
@@ -35,8 +36,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         # Base path
         self.toolsdir = "tools/"
-        self.dut_dir = os.path.join(self.dut_tmpdir, "tools", "ufp_sense")
-        self.host_dir = os.path.join(self.tftpdir, "tools", "ufp_sense")
+        # self.dut_dir = os.path.join(self.dut_tmpdir, "tools", "ufp_sense")
+        # self.host_dir = os.path.join(self.tftpdir, "tools", "ufp_sense")
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -115,7 +116,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-i field=flash_jedec_id,format=hex,value=" + jedecids,
             "-i field=flash_uid,format=hex,value=" + uids,
             "-i field=cpu_rev_id,format=hex,value=" + cpuids,
-            "-i field=qr_code,format=hex,value=" + self.qrhex,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
             "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
@@ -132,9 +132,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-y " + self.key_dir + "key.pem",
             "-z " + self.key_dir + "crt.pem"
         ]
+        if QRCODE_ENABLE:
+            cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
 
         cmdj = ' '.join(cmd)
 
+        log_debug(cmdj)
         clit = ExpttyProcess(self.row_id, cmdj, "\n")
         clit.expect_only(30, "Ubiquiti Device Security Client")
         clit.expect_only(30, "Hostname")
@@ -151,15 +154,21 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             error_critical("Can't find " + self.eesign_path)
 
         log_debug("Add the date code in the devreg binary file")
-        sstr = [
-            self.flasheditor,
-        ]
+        # sstr = [
+        #     self.flasheditor,
+        # ]
 
     def check_devreg_data(self):
         log_debug("DUT request the signed 64KB file ...")
-        self.ser.execmd_expect("xstartdevreg", "begin upload")
+
+        if self.board_id == "a912":
+            self.ser.execmd_expect("xstartdevreg", "begin upload")
+        elif self.board_id == "a911":
+            self.ser.execmd("xstartdevreg")
+            time.sleep(0.5)
 
         log_debug("Starting xmodem file transfer ...")
+
         modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
@@ -171,7 +180,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         """
         Main procedure of factory
         """
-        log_debug(msg="The HEX of the QR code=" + self.qrhex)
+        # log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
 
@@ -182,7 +191,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Open serial port successfully ...")
-        self.ser.expect_only("Protect Sensor APP STARTUP", 60)
+        time.sleep(10)
         self.ser.execmd("")
 
         if DOHELPER_ENABLE is True:
@@ -196,7 +205,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        msg(100, "Completing firmware upgrading ...")
+        msg(100, "Completing registration ...")
+        # msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
 
 

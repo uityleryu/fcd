@@ -426,9 +426,21 @@
       "DESC"        : "UniFi Protect Sensor",
       "FILE"        : "ufp_efr32_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True",
+      "QRCHECK"     : "False",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1601"
+    },
+    "UFP-LOCK-R":{
+      "INDEX"       : 1,
+      "NAME"        : "UFP-LOCK-R",
+      "BOARDID"     : "a911",
+      "BOMREV"      : "113-02765",
+      "DESC"        : "UniFi Protect Doorlock",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1602"
     }
   },
 
