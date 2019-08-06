@@ -5,4 +5,6 @@
 1, "boardrevision=${board_rev}", ''
 1, "serialno=${board_serial_lc}", ''
 1, "qrid=${qrcode}", ''
-'', "info\n"
+'', "sudo ubnt-hal compatLevelSupported 20005:2\n"
+3, "1", ''
+'', "cat /etc/version\n"
