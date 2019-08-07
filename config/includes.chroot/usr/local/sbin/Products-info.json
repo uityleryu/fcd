@@ -204,6 +204,19 @@
       "SW_ID"       : "0201"
     },
 
+    "USW-LITE-16-POE":{
+      "INDEX"       : 4,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-02945",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
     "USW-LEAF":{
       "INDEX"       : 7,
       "NAME"        : "USW-LEAF",

@@ -27,13 +27,17 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-fw.bin"
 
+        # customize variable for different products
+        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24'}
+
         # number of Ethernet
         self.macnum = {
             'ed20': "3",
             'ed21': "3",
             'ed22': "3",
             'ed23': "3",
-            'ed24': "3"
+            'ed24': "3",
+            'ed26': "3"
         }
 
         # number of WiFi
@@ -42,7 +46,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed21': "0",
             'ed22': "0",
             'ed23': "0",
-            'ed24': "0"
+            'ed24': "0",
+            'ed26': "0"
         }
 
         # number of Bluetooth
@@ -51,7 +56,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed21': "0",
             'ed22': "0",
             'ed23': "0",
-            'ed24': "0"
+            'ed24': "0",
+            'ed26': "0"
         }
 
         self.netif = {
@@ -59,7 +65,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed21': "ifconfig eth0 ",
             'ed22': "ifconfig eth0 ",
             'ed23': "ifconfig eth0 ",
-            'ed24': "ifconfig eth0 "
+            'ed24': "ifconfig eth0 ",
+            'ed26': "ifconfig eth0 "
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -206,8 +213,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             msg(80, "Succeeding in checking the devreg information ...")
 
         if self.WAIT_LCMUPGRADE_ENABLE is True:
-            msg(90, "Waiting LCM upgrading ...")
-            self.wait_lcm_upgrade()
+            if self.board_id in self.wait_LCM_upgrade_en:
+                msg(90, "Waiting LCM upgrading ...")
+                self.wait_lcm_upgrade()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
