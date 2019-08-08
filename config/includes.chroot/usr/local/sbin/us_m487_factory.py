@@ -94,6 +94,7 @@ class USM487FactoryGeneral(ScriptBase):
             "-b " + self.btnum[self.board_id],
         ]
         sstr = ' '.join(sstr)
+        log_debug(sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
         time.sleep(1)
         if int(rtc) > 0:
@@ -266,17 +267,18 @@ class USM487FactoryGeneral(ScriptBase):
         else:
             error_critical("DevReg Verify .... FAILED!")
 
-    def create_socket(self):
+    def get_dhcp_ip(self):
         self.pexp.expect_action(10, self.linux_prompt, "ip dhcp")
-        time.sleep(2)
+        self.pexp.expect_only(60, "Connected")
         netinfo = self.pexp.expect_get_output("ip", self.linux_prompt, 10)
         res = re.search(r"IP      : (.*)", netinfo, re.S)
         self.dut_dhcp_ip = res.group(1)
-        postexp = [
-            "Server is started",
-            self.linux_prompt
-        ]
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, "fcd enable", postexp)
+
+    def create_socket(self):
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "fcd enable")
+
+        self.get_dhcp_ip()
 
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -357,8 +359,9 @@ class USM487FactoryGeneral(ScriptBase):
             error_critical("Key cert Verify .... FAILED!")
 
     def check_info(self):
+        self.pexp.expect_only(60, "Setting up the SSL data....")
+        self.pexp.expect_only(60, "ok")
         self.pexp.expect_only(60, "Security check result: Pass")
-        self.pexp.expect_only(60, "Setting up the SSL data.... ok")
         self.pexp.expect_action(10, "", "")
         out = self.pexp.expect_get_output("version", self.linux_prompt, 20)
         res = re.search(r"Version = (\d+\.\d+\.\d+)", out, re.S)
@@ -384,24 +387,7 @@ class USM487FactoryGeneral(ScriptBase):
         for p in http_pid:
             self.fcd.common.xcmd("kill "+str(p))
 
-    def fwupdate(self, backtoT1=False):
-        os.chdir(self.fwdir)
-
-        fw_url = "http://{}:8000/{}-fw.bin".format(self.tftp_server, self.board_id)
-
-        if backtoT1 is True:
-            # rename mfg to fw for updating
-            log_debug("rename mfg img")
-            os.rename("{}-fw.bin".format(self.board_id), "{}-fw.bin.bk".format(self.board_id))
-            os.rename("{}-mfg.bin".format(self.board_id), "{}-fw.bin".format(self.board_id))
-        else:
-            self.pexp.expect_action(10, self.linux_prompt, "setenv fw_url "+fw_url, send_action_delay=True)
-            self.pexp.expect_action(10, self.linux_prompt, "setenv do_fwupgrade 1", send_action_delay=True)
-            self.pexp.expect_action(10, self.linux_prompt, "saveenv")
-            ret = self.pexp.expect_get_output("printenv", self.linux_prompt)
-            log_debug("printenv ret:\n"+ret)
-            self.pexp.expect_action(10, self.linux_prompt, "reset")
-
+    def create_HTTP_Server(self):
         [sto, rtc] = self.fcd.common.xcmd("pgrep -f \"python3 -m http\.server\"")
         http_pid = sto.decode("utf-8").splitlines()
         log_debug("http server have been created: "+str(http_pid))
@@ -410,9 +396,28 @@ class USM487FactoryGeneral(ScriptBase):
             proc = subprocess.Popen("python3 -m http.server",
                                     shell=True, stderr=None, stdout=subprocess.PIPE)
 
+    def fwupdate(self, backtoT1=False):
+        os.chdir(self.fwdir)
+        self.create_HTTP_Server()
+
+        fw_url = "http://{}:8000/{}-fw.bin".format(self.tftp_server, self.board_id)
         log_debug("fw_url:\n" + fw_url)
+
+        if backtoT1 is True:
+            # rename mfg to fw for updating
+            log_debug("rename mfg img")
+            os.rename("{}-fw.bin".format(self.board_id), "{}-fw.bin.bk".format(self.board_id))
+            os.rename("{}-mfg.bin".format(self.board_id), "{}-fw.bin".format(self.board_id))
+        else:
+            # Reset for clear FCD enable which make fwupdate fail
+            self.pexp.expect_action(10, self.linux_prompt, "reset")
+            self.pexp.expect_only(60, "Service Started")
+            self.pexp.expect_action(10, "", "")
+            self.get_dhcp_ip()
+            self.pexp.expect_action(10, self.linux_prompt, "fwupdate "+fw_url, send_action_delay=True)
+
         try:
-            self.pexp.expect_only(60, "Update ENV completed")
+            self.pexp.expect_only(90, "Run application from")
         finally:
             if backtoT1 is True:
                 # restore name of mfg and fw
@@ -447,6 +452,7 @@ class USM487FactoryGeneral(ScriptBase):
         finally:
             pass
 
+        self.pexp.expect_only(60, "Service Started")
         self.create_socket()
 
         if DOHELPER_ENABLE is True:
