@@ -495,5 +495,33 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     }
+  },
+
+  "UniFiVideo":
+  {
+    "UVC-G4PRO":{
+      "INDEX"       : 0,
+      "NAME"        : "UVC-G4",
+      "BOARDID"     : "a563",
+      "BOMREV"      : "113-02574",
+      "DESC"        : "GBE",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e04"
+     },
+     "UVC-G3BATTERY":{
+      "INDEX"       : 1,
+      "NAME"        : "UVC-G3",
+      "BOARDID"     : "a580",
+      "BOMREV"      : "113-02692",
+      "DESC"        : "GBE",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     }
   }
 }

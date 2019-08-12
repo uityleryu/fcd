@@ -28,6 +28,7 @@ class ScriptBase(object):
         # example usuage - self.pexp.{function}(...)
         self.__pexpect_obj = None
         self.__serial_obj = None
+        self.__ssh_client_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
 
         self._encrpyt_passphrase_for_log()
@@ -46,6 +47,16 @@ class ScriptBase(object):
             return self.__serial_obj
         else:
             error_critical("No serial obj exists!")
+
+    @property
+    def session(self):
+        if self.__ssh_client_obj is not None:
+            return self.__ssh_client_obj
+        else:
+            error_critical("No ssh client obj exists!")
+
+    def set_sshclient_helper(self, ssh_client):
+        self.__ssh_client_obj = ssh_client
 
     def set_pexpect_helper(self, pexpect_obj):
         self.__pexpect_obj = pexpect_obj
