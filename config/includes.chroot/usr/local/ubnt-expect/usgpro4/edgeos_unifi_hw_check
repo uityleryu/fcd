@@ -5,8 +5,8 @@
 1, "boardrevision=${board_rev}", ''
 1, "serialno=${board_serial_lc}", ''
 1, "qrid=${qrcode}", ''
-'', "sudo ubnt-hal compatLevelSupported 20005:2 > checkcompatlevel\n"
-'', "sudo echo compatlevel >> checkcompatlevel\n"
-'', "cat compatlevel\n"
+'', "sudo ubnt-hal compatLevelSupported 20005:2 > /tmp/checkcompatlevel\n"
+'', "sudo echo compatlevel >> /tmp/checkcompatlevel\n"
+'', "cat /tmp/checkcompatlevel\n"
 3, "1compatlevel", ''
 '', "cat /etc/version\n"
