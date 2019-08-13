@@ -281,12 +281,13 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf probe")
 
-        cmd = "sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.eeprom_address, self.eeprom_size)
+        cmd = "sf erase {0} {1}; sf write 0x84000000 {0} {1}\r\r".format(self.eeprom_address, self.eeprom_size)
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
+        time.sleep(5)
 
         msg(70, "Erase tempoarary config")
-        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1};\r\r".format(self.cfg_address, self.cfg_size))
-        time.sleep(10)
+        self.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase {0} {1}\r\r".format(self.cfg_address, self.cfg_size))
+        time.sleep(5)
         #log_progress 95 "Configuration erased"
 
         msg(80, "Write default setting")
