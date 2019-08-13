@@ -417,7 +417,7 @@ class USM487FactoryGeneral(ScriptBase):
             self.pexp.expect_action(10, self.linux_prompt, "fwupdate "+fw_url, send_action_delay=True)
 
         try:
-            self.pexp.expect_only(90, "Run application from")
+            self.pexp.expect_only(200, "Run application from")
         finally:
             if backtoT1 is True:
                 # restore name of mfg and fw
