@@ -374,6 +374,7 @@ class USM487FactoryGeneral(ScriptBase):
 
         self.pexp.expect_action(10, self.linux_prompt, "resetenv")
         self.pexp.expect_action(10, self.linux_prompt, "saveenv")
+        time.sleep(2)
         env = self.pexp.expect_get_output("printenv", self.linux_prompt, 10)
         if "fw_url" in env:
             error_critical("Reset environment FAILED!!!")
@@ -478,6 +479,7 @@ class USM487FactoryGeneral(ScriptBase):
             msg(80, "Succeeding in checking the devreg information ...")
 
         msg(100, "Completing firmware upgrading ...")
+        self.pexp.expect_action(10, "", "")
         self.close_fcd()
 
 
