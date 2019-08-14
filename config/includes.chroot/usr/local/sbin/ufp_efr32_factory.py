@@ -10,7 +10,6 @@ import sys
 import time
 import os
 import re
-# import stat
 
 NEED_DROPBEAR = True
 PROVISION_ENABLE = True
@@ -33,11 +32,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.prodclass = "0014"
         self.dut_dhcp_ip = ""
         self.dut_port = ""
+        self.baudrate = 921600
 
         # Base path
         self.toolsdir = "tools/"
-        # self.dut_dir = os.path.join(self.dut_tmpdir, "tools", "ufp_sense")
-        # self.host_dir = os.path.join(self.tftpdir, "tools", "ufp_sense")
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -108,6 +106,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         res = re.search(r"JEDECID:(.*)\n", jedecid, re.S)
         jedecids = res.group(1)
 
+        log_debug("Extract UID, CPUID and JEDEC successfully")
+
         cmd = [
             "sudo /usr/local/sbin/client_x86_release_20190507",
             "-h devreg-prod.ubnt.com",
@@ -154,9 +154,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             error_critical("Can't find " + self.eesign_path)
 
         log_debug("Add the date code in the devreg binary file")
-        # sstr = [
-        #     self.flasheditor,
-        # ]
 
     def check_devreg_data(self):
         log_debug("DUT request the signed 64KB file ...")
@@ -180,13 +177,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         """
         Main procedure of factory
         """
-        # log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
         serialcomport = "/dev/{0}".format(self.dev)
-        serial_obj = SerialExpect(port=serialcomport, baudrate=115200)
+        serial_obj = SerialExpect(port=serialcomport, baudrate=self.baudrate)
         self.set_serial_helper(serial_obj=serial_obj)
         time.sleep(1)
 
@@ -206,7 +202,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         msg(100, "Completing registration ...")
-        # msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
 
 

@@ -18,9 +18,9 @@ FWUPDATE_EN = True
 DATAVERIFY_EN = True
 
 
-class USUDCALPINEFactoryGeneral(ScriptBase):
+class UVCFactoryGeneral(ScriptBase):
     def __init__(self):
-        super(USUDCALPINEFactoryGeneral, self).__init__()
+        super(UVCFactoryGeneral, self).__init__()
 
         if self.product_name == "UVC-G3BATTERY":
 
@@ -523,7 +523,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
 
 def main():
-    uvc_factory_general = USUDCALPINEFactoryGeneral()
+    uvc_factory_general = UVCFactoryGeneral()
     uvc_factory_general.run()
 
 
