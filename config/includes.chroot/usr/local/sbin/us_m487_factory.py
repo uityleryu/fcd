@@ -3,6 +3,8 @@
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+from threading import Thread
 
 import sys
 import time
@@ -381,27 +383,23 @@ class USM487FactoryGeneral(ScriptBase):
         else:
             log_debug("Reset environment check PASS")
 
-    def _kill_http_server(self):
-        [sto, rtc] = self.fcd.common.xcmd("pgrep -f \"python3 -m http\.server\"")
-        http_pid = sto.decode("utf-8").splitlines()
-        log_debug("http server process should be killed: "+str(http_pid))
-        for p in http_pid:
-            self.fcd.common.xcmd("kill "+str(p))
+    def stop_HTTP_Server(self):
+        self.http_srv.shutdown()
 
-    def create_HTTP_Server(self):
-        [sto, rtc] = self.fcd.common.xcmd("pgrep -f \"python3 -m http\.server\"")
-        http_pid = sto.decode("utf-8").splitlines()
-        log_debug("http server have been created: "+str(http_pid))
-        if len(http_pid) == 0:
-            log_debug("Creating a http server")
-            proc = subprocess.Popen("python3 -m http.server",
-                                    shell=True, stderr=None, stdout=subprocess.PIPE)
+    def create_HTTP_Server(self, port):
+        self.http_srv = HTTPServer(('', port), SimpleHTTPRequestHandler)
+        t = Thread(target=self.http_srv.serve_forever)
+        t.setDaemon(True)
+        t.start()
+        log_debug('http server running on port {}'.format(self.http_srv.server_port))
 
     def fwupdate(self, backtoT1=False):
         os.chdir(self.fwdir)
-        self.create_HTTP_Server()
 
-        fw_url = "http://{}:8000/{}-fw.bin".format(self.tftp_server, self.board_id)
+        port = "800"+self.row_id
+        self.create_HTTP_Server(int(port))
+
+        fw_url = "http://{}:{}/{}-fw.bin".format(self.tftp_server, port, self.board_id)
         log_debug("fw_url:\n" + fw_url)
 
         if backtoT1 is True:
@@ -419,6 +417,7 @@ class USM487FactoryGeneral(ScriptBase):
 
         try:
             self.pexp.expect_only(200, "Run application from")
+            self.stop_HTTP_Server()
         finally:
             if backtoT1 is True:
                 # restore name of mfg and fw
@@ -443,6 +442,7 @@ class USM487FactoryGeneral(ScriptBase):
 
         msg(5, "Open serial port successfully ...")
         self.pexp.expect_only(60, "# Bootloader #")
+
         try:
             # do_fwupgrade = 1 means the fwupdate have been failed before
             self.pexp.expect_only(5, "do_fwupgrade=1")
@@ -479,7 +479,6 @@ class USM487FactoryGeneral(ScriptBase):
             msg(80, "Succeeding in checking the devreg information ...")
 
         msg(100, "Completing firmware upgrading ...")
-        self.pexp.expect_action(10, "", "")
         self.close_fcd()
 
 
