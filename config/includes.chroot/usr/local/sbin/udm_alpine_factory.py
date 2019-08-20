@@ -109,7 +109,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(20, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
         if self.board_id == 'ea15':
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 19000000")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
