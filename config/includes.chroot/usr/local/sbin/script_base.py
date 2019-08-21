@@ -16,9 +16,14 @@ from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from pathlib import Path
+import ubntlib
 
 
 class ScriptBase(object):
+    __version__ = "1.0.0"
+    __authors__ = "FCD team"
+    __contact__ = "fcd@ubnt.com"
+
     def __init__(self):
         self.input_args = self._init_parse_inputs()
         self._init_share_var()
@@ -30,7 +35,8 @@ class ScriptBase(object):
         self.__serial_obj = None
         self.__ssh_client_obj = None
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
-
+        print("framework version: " + self.__version__)
+        print("ubntlib version: " + ubntlib.__version__)
         self._encrpyt_passphrase_for_log()
         log_debug(str(self.input_args))
 
