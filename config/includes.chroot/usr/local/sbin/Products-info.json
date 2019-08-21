@@ -224,7 +224,7 @@
       "BOMREV"      : "113-02759",
       "DESC"        : "UniFi Super Switch 48-port",
       "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py.py",
+      "T1FILE"      : "us_udc-alpine_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
