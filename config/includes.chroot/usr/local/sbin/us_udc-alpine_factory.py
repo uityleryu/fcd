@@ -24,8 +24,8 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.ver_extract()
         self.bootloader_prompt = "UDC"
         self.devregpart = "/dev/mtdblock4"
-        self.diagsh1 = "UBNT"
-        self.diagsh2 = "DIAG"
+        self.diagsh1 = "UBNT> "
+        self.diagsh2 = "DIAG# "
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
         self.lcmfwver = "v3.0.4-0-gf89bc2b"
@@ -60,6 +60,16 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         time.sleep(1)
 
+    def boot_recovery_spi(self):
+        cmdset = [
+            "sf probe; sf read $loadaddr_payload 0x200000 0x3e00000",
+            "setenv fitbootconf 0x08000004#udc@1",
+            "run bootargsrecovery",
+            "bootm $fitbootconf"
+        ]
+        for idx in range(len(cmdset)):
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
+
     def ubupdate(self):
         self.stop_at_uboot()
         self.set_boot_net()
@@ -70,96 +80,86 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def set_boot_net(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "-fw-")
+        cmdset = [
+            "setenv ipaddr {0}".format(self.dutip),
+            "setenv serverip {0}".format(self.tftp_server),
+            "setenv tftpdir images/{0}-fw-".format(self.board_id)
+        ]
+        for idx in range(len(cmdset)):
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
+
         time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        cmd = "ping {0}".format(self.tftp_server)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
 
-    def lnx_netcheck(self, netifen=False):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 down", self.linux_prompt)
-        if netifen is True:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
-            time.sleep(2)
+    def set_lnx_net(self):
+        log_debug("Starting to configure the networking ... ")
+        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
 
+        cmdset = [
+            "/etc/init.d/gfl start",
+            "/etc/init.d/npos start",
+            "vtysh",
+            "configure terminal",
+            "interface swp1",
+            "no shutdown",
+            "switchport access vlan 1",
+            "exit",
+            "bridge-domain 1",
+            "vlan 1 swp1",
+            "exit",
+            "interface bridge 1",
+            "no shutdown",
+            "exit",
+            "exit",
+            "exit",
+            "ifconfig br1 {0}".format(self.dutip),
+            "ifconfig | grep -C 5 br1"
+        ]
+
+        for idx in range(len(cmdset)):
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
+            time.sleep(1)
+
+    def set_lnx_net_devreg(self):
+        log_debug("Starting to configure the networking ... ")
+        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
+
+        cmdset = [
+            "vtysh",
+            "configure terminal",
+            "in swp1",
+            "no switchport",
+            "switchport mode access",
+            "switchport access vlan 1",
+            "exit",
+            "bridge-domain 1",
+            "vlan 1 swp1",
+            "exit",
+            "exit",
+            "exit",
+            "ifconfig br1 {0}".format(self.dutip),
+            "ifconfig | grep -C 5 br1"
+        ]
+
+        for idx in range(len(cmdset)):
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
+            time.sleep(1)
+
+    def lnx_netcheck(self, netifen=False):
         postexp = [
             "64 bytes from",
             self.linux_prompt
         ]
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
 
     def fwupdate(self):
-        cmd = "tftp -g -r images/{0}-fw-uImage -l /tmp/uImage.r {1}".format(self.board_id, self.tftp_server)
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, self.linux_prompt)
-
-        cmd = "tftp -g -r images/{0}-fw-boot.img -l /tmp/boot.img {1}".format(self.board_id, self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
-
-        log_debug("Is flashing U-boot")
-        postexp = [
-            r"Erasing blocks:.*\(50%\)",
-            r"Erasing blocks:.*\(100%\)",
-            r"Writing data:.*\(50%\)",
-            r"Writing data:.*\(100%\)",
-            r"Verifying data:.*\(50%\)",
-            r"Verifying data:.*\(100%\)",
-            self.linux_prompt
-        ]
-        cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
-        self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
-
-        log_debug("Is flashing recovery image")
-        postexp = [
-            r"Erasing blocks:.*\(50%\)",
-            r"Erasing blocks:.*\(100%\)",
-            r"Writing data:.*\(50%\)",
-            r"Writing data:.*\(100%\)",
-            r"Verifying data:.*\(50%\)",
-            r"Verifying data:.*\(100%\)",
-            self.linux_prompt
-        ]
-        cmd = "flashcp -v /tmp/uImage.r {0}".format("/dev/mtd5")
-        self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, postexp)
-
-        self.pexp.expect_lnxcmd(60, self.linux_prompt, "reboot", self.linux_prompt)
-        self.login(username="ubnt", password="ubnt", timeout=80)
-
-        log_debug("Starting to do fwupdate ... ")
-        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/gfl start", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/npos start", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vtysh", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "configure terminal", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface swp1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "switchport access vlan 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "bridge-domain 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "vlan 1 swp1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "interface bridge 1", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "no shutdown", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", "#")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "exit", self.linux_prompt)
-
-        postexp = [
-            "64 bytes from",
-            self.linux_prompt
-        ]
-        cmd = "ping -c 1 {0}".format(self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, cmd, postexp, retry=15)
-
         cmd = "tftp -g -r images/{0}-fw.bin -l /tmp/upgrade.bin {1}".format(self.board_id, self.tftp_server)
         self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
 
-        postexp = [
-            "Firmware version",
-        ]
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, postexp)
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
         self.login(username="root", password="ubnt", timeout=100)
 
     def check_info(self):
@@ -188,28 +188,17 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        msg(5, "Boot from tftp with installer ...")
+        self.stop_at_uboot()
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run delenv")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
-        # detect the BSP U-boot
-        expit = [
-            "Jun 19 2019 - 18:36:28",    # BSP U-boot-1
-            "Jul 22 2019 - 11:59:31",    # BSP U-boot-2
-            "Jul 03 2019 - 05:58:38"     # FW U-boot
-        ]
-        rt = self.pexp.expect_get_index(30, expit)
-        if rt == 2:
-            log_debug("Detect the FW U-boot version")
-            self.load_diag_ub_uimg()
-            msg(40, "Diag U-boot/uImage updating completing ...")
-        else:
-            pass
+        self.stop_at_uboot()
+        self.boot_recovery_spi()
+        msg(5, "Boot from SPI recovery image ...")
 
-        self.pexp.expect_only(120, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
-        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk speed 0 10", self.diagsh2)
-        self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
-
-        self.lnx_netcheck(True)
+        self.login(username="root", password="ubnt", timeout=80)
+        self.set_lnx_net()
+        self.lnx_netcheck()
         msg(10, "Boot up to linux console and network is good ...")
 
         '''
@@ -236,6 +225,10 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         '''
 
         if FWUPDATE_EN is True:
+            self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
+            self.login(username="root", password="ubnt", timeout=100)
+            self.set_lnx_net_devreg()
+            self.lnx_netcheck()
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
 
