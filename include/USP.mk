@@ -1,5 +1,6 @@
 IMAGE-USP-PLUG= \
-    images/ee71*
+    images/ee73* \
+    usp/plug/*
 
 IMAGE-USP-3-8= \
     images/e643* \
