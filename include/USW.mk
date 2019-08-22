@@ -35,6 +35,11 @@ IMAGE-USW-16-24= \
     usw-fw/unifiswitch-24poe-* \
     usw-fw/US.rtl838x.*
 
+IMAGE-USW-48= \
+    images/ed22* \
+    usw-fw/unifiswitch-48poe-* \
+    usw-fw/US.rtl838x.pcb*
+
 IMAGE-USW-LEAF= \
     images/f060* \
     usw-fw/fw.UDC* \
@@ -75,6 +80,11 @@ TOOLS-USW-16-24+= \
     usw_rtl838x/helper_rtl838x \
     usw_rtl838x/rtl838x-ee
 
+TOOLS-USW-48+=$(TOOLS-USW)
+TOOLS-USW-48+= \
+    usw_rtl838x/helper_rtl838x \
+    usw_rtl838x/rtl838x-ee
+
 TOOLS-USW-LEAF=$(TOOLS-USW)
 TOOLS-USW-LEAF+= \
     usw_leaf/*
@@ -101,5 +111,6 @@ $(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-16-24,FCD-USW-16-24-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-48,FCD-USW-48-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-MINI,FCD-USW-MINI-$(VER)-$(FWVER)))
