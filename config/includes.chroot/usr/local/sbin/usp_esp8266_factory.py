@@ -24,14 +24,15 @@ class USPESP8266Factory(ScriptBase):
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_esp8266"
 
-        self.fcd_uhtools = os.path.join(self.fcd_toolsdir, "usp")
-        self.helper_path = os.path.join(self.fcd_uhtools, self.helperexe)
+        self.fcd_uhtools = os.path.join(self.tftpdir, "usp", "plug")
+        self.helper_path = os.path.join(self.fcd_toolsdir, "usp", self.helperexe)
 
-        self.fwbin_1 = os.path.join(self.fcd_uhtools, "user1.bin")
-        self.fwbin_2 = os.path.join(self.fcd_uhtools, "user2.bin")
-        self.boot_bin = os.path.join(self.fcd_uhtools, "boot_v1.7.bin")
-        self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper", "user1.bin")
-        self.helper_bin_2 = os.path.join(self.fcd_uhtools, "helper", "user2.bin")
+        self.fwbin_1 = os.path.join(self.fwdir, "ee73_user1.bin")
+        self.fwbin_2 = os.path.join(self.fwdir, "ee73_user2.bin")
+        self.recovery_bin = os.path.join(self.fwdir, "ee73_recovery.bin")
+
+        self.boot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
+        self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper.bin")
         self.blank_bin = os.path.join(self.fcd_uhtools, "blank.bin")
         self.esp_init_data_default_bin = os.path.join(self.fcd_uhtools, "esp_init_data_default.bin")
         self.mac_with_colon = ":".join(self.mac[i:i+2] for i in range(0, len(self.mac), 2))
@@ -58,13 +59,13 @@ class USPESP8266Factory(ScriptBase):
 
     def flash_helper(self):
         self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._8M)
+        self.ser.set_flash_size(self.ser._16M)
         self.ser.set_flash_mode(self.ser.DOUT)
 
         msg(10, "Initializing flash")
+
         self.ser.add_arg(option="0x00000", value=self.boot_bin)
         self.ser.add_arg(option="0x01000", value=self.helper_bin_1)
-        self.ser.add_arg(option="0x81000", value=self.helper_bin_2)
         self.ser.add_arg(option="0x76000", value=self.blank_bin)
         self.ser.add_arg(option="0x77000", value=self.blank_bin)
         self.ser.add_arg(option="0x78000", value=self.blank_bin)
@@ -73,7 +74,7 @@ class USPESP8266Factory(ScriptBase):
         self.ser.add_arg(option="0xFD000", value=self.blank_bin)
         self.ser.add_arg(option="0xFE000", value=self.blank_bin)
         self.ser.add_arg(option="0xFF000", value=self.blank_bin)
-        self.ser.add_arg(option="0xFC000", value=self.esp_init_data_default_bin)
+        self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
 
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
@@ -158,7 +159,7 @@ class USPESP8266Factory(ScriptBase):
 
         msg(70, "Flashing firmware and eeprom files")
         self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._8M)
+        self.ser.set_flash_size(self.ser._16M)
         self.ser.set_flash_mode(self.ser.DOUT)
 
         self.ser.add_arg(option="0x00000", value=self.boot_bin)
@@ -174,7 +175,8 @@ class USPESP8266Factory(ScriptBase):
         self.ser.add_arg(option="0xFD000", value=self.blank_bin)
         self.ser.add_arg(option="0xFE000", value=self.blank_bin)
         self.ser.add_arg(option="0xFF000", value=self.blank_bin)
-        self.ser.add_arg(option="0xFC000", value=self.esp_init_data_default_bin)
+        self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
+        self.ser.add_arg(option="0x101000", value=self.recovery_bin)
 
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
