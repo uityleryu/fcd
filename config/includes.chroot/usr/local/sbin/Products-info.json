@@ -330,9 +330,9 @@
 
   "AirFiber":
   {
-    "LTU-LR":{
+    "LTU-Pro":{
       "INDEX"       : 0,
-      "NAME"        : "LTU-LR",
+      "NAME"        : "LTU-Pro",
       "BOARDID"     : "ae06",
       "BOMREV"      : "113-00680",
       "DESC"        : "AirFiber LTU-LR",
@@ -363,6 +363,19 @@
       "BOMREV"      : "113-00720",
       "DESC"        : "AirFiber 60",
       "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "LTU-LR":{
+      "INDEX"       : 3,
+      "NAME"        : "LTU-LR",
+      "BOARDID"     : "ae0b",
+      "BOMREV"      : "113-00727",
+      "DESC"        : "AirFiber LTU-LR",
+      "FILE"        : "af_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
