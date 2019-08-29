@@ -1,4 +1,4 @@
-IMAGE-UAP-FLEX= \
+IMAGE-UAP-FLEXHD= \
     images/ec26* \
     uap-fw/unifiap-mt7621* \
     uap-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
@@ -16,7 +16,7 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
 
-IMAGE-UAP+=$(IMAGE-UAP-FLEX)
+IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 
@@ -45,6 +45,8 @@ TOOLS-UBB+= \
 
 TOOLS-UAP-INDUSTRIAL+= \
     uap/helper_UNIFI_MT7621_release
+
+TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
 
 # Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
