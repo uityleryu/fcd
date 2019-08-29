@@ -121,9 +121,9 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "Password: ", "ubnt")
 
     def SetBootNet(self):
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ethaddr " + self.premac)
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ipaddr " + self.dutip)
-        self.pexp.expect_action(30, self.bootloader_prompt, "set serverip " + self.tftp_server)
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ethaddr " + self.premac)
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def CheckBootNet(self, MaxCnt):
         cnt = 0
@@ -172,7 +172,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def update_uboot(self):
-        self.pexp.expect_action(30, self.bootloader_prompt, "set loadaddr 0x84000000")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv loadaddr 0x84000000")
         self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot ${loadaddr} images/" + self.board_id + '-uboot.bin')
         self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
         sf write ${loadaddr} 0x0 ${filesize}")
@@ -194,9 +194,9 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
         self.enter_uboot()
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearcfg TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "set ubnt_clearenv TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "set do_urescue TRUE")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv do_urescue TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
