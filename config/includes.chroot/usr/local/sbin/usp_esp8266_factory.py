@@ -156,7 +156,8 @@ class USPESP8266Factory(ScriptBase):
         [sto, _] = self.fcd.common.xcmd(sstrj)
         time.sleep(1)
         print(sto)
-
+        msg(65, "Ready to flash firmware and eeprom files, please reboot plug! will be waiting 10 secs")
+        time.sleep(15)
         msg(70, "Flashing firmware and eeprom files")
         self.ser.set_baudrate("460800")
         self.ser.set_flash_size(self.ser._16M)
