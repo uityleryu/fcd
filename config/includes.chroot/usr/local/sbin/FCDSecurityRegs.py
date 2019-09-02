@@ -448,7 +448,7 @@ class fraMonitorPanel(Gtk.Frame):
             "-ts=" + GCommon.fcdhostip,
             "-b=" + GCommon.active_product_obj['BOARDID'],
             "-m=" + GCommon.macaddr,
-            "-p=" + GCommon.active_passphrase,
+            "-p='" + GCommon.active_passphrase + "'",
             "-k=" + GPath.keydir,
             "-bom=" + GCommon.active_bomrev[4:],
             "-q=" + GCommon.qrcode,
