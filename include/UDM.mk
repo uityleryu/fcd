@@ -14,7 +14,7 @@ IMAGE-UDMSE+= \
     images/ea13* \
 	udm-fw/ubnt_udm_all_rev1_boot.img \
 	udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v1.0.17.ed2d696.190819.0910.bin
+    udm-fw/UDM.alpinev2.v1.0.23+builder.1657.dce6c7a.190829.0154.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
