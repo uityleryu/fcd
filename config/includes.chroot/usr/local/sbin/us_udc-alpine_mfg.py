@@ -19,7 +19,7 @@ VERCHECK_EN = True
 SETDIAGDF_EN = True
 LOADLCMFW_EN = True
 
-IMAG_VER = "v4.1.16-preload-rc8"
+IMAG_VER = "v4.1.16-preload-rc10"
 BOARDNAME = "usw-100g-mfg"
 
 
@@ -113,10 +113,20 @@ class USALPINEDiagloader(ScriptBase):
         self.lnx_netcheck()
         msg(20, "Linux networking is good ...")
 
+        rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+        match = re.findall(IMAG_VER, rtmsg)
+        if match:
+            UPDATEUB_EN = False
+            UPDATEDIAG_EN = False
+        else:
+            UPDATEUB_EN = True
+            UPDATEDIAG_EN = True
+
         if UPDATEUB_EN is True:
             log_debug("downloading FW U-boot")
             cmd = "tftp -g -r images/f060-fw-boot.img -l /tmp/boot.img {0}".format(self.tftp_server)
             self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
+            self.is_dutfile_exist("/tmp/boot.img")
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -135,6 +145,7 @@ class USALPINEDiagloader(ScriptBase):
             log_debug("downloading the FW DIAG")
             cmd = "tftp -g -r images/f060-fw-uImage -l /tmp/uImage {0}".format(self.tftp_server)
             self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
+            self.is_dutfile_exist("/tmp/uImage")
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -154,6 +165,11 @@ class USALPINEDiagloader(ScriptBase):
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
             self.is_dutfile_exist("/tmp/fwdiag-ssd.sh")
 
+            '''
+                To check if the SSD component is existed
+            '''
+            self.is_dutfile_exist("/dev/sda")
+
             cmdset = [
                 "sh /tmp/fwdiag-ssd.sh partition",
                 "sh /tmp/fwdiag-ssd.sh format",
@@ -172,6 +188,7 @@ class USALPINEDiagloader(ScriptBase):
         if WRITEFAKEBIN_EN is True:
             cmd = "tftp -g -r tools/usw_leaf/{0} -l /tmp/{0} {1}".format("fake.bin", self.tftp_server)
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            self.is_dutfile_exist("/tmp/fake.bin")
 
             cmd = "dd if=/tmp/fake.bin of=/dev/mtdblock4"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
