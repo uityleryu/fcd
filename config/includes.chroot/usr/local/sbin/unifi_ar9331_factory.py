@@ -21,7 +21,6 @@ class UNIFIAR9331Factory(ScriptBase):
         self.cal_data_beg_ofs = 4096 * 1
         self.cal_data_size = 4096 * 8
         self.cal_data_end_ofs = self.cal_data_beg_ofs + self.cal_data_size
-
         # number of Ethernet
         ethnum = {
             'e643': "1",
@@ -95,7 +94,9 @@ class UNIFIAR9331Factory(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "usetbid " + self.board_id,
                                 err_msg="Fail set board id in uboot")
         time.sleep(1)
-        self.pexp.expect_action(10, self.bootloader_prompt, "usetrd " + self.region,
+        # swap country code for fw usage,
+        region = self.region[2:4] + self.region[0:2]
+        self.pexp.expect_action(10, self.bootloader_prompt, "usetrd " + region,
                                 err_msg="Fail set region domain in uboot")
         time.sleep(1)
         self.pexp.expect_action(10, self.bootloader_prompt, "erase 0x9f7b0000 +40000",

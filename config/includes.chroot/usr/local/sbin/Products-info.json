@@ -512,6 +512,18 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
+    "USP3":{
+      "INDEX"       : 1,
+      "NAME"        : "USP3",
+      "BOARDID"     : "e643",
+      "BOMREV"      : "113-00364",
+      "DESC"        : "Unifi Smart Plug 3",
+      "FILE"        : "unifi_ar9331_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
     "USP8":{
       "INDEX"       : 1,
       "NAME"        : "USP8",
