@@ -391,7 +391,7 @@ class ScriptBase(object):
 
         nowtime = time.strftime("%Y%m%d", time.gmtime())
         flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
-        cmd = "{0} -B {1} -d {2}".format(flasheditor, self.eesign_path, nowtime)
+        cmd = "{0} -B {1} -d {2} -r 113-{3}".format(flasheditor, self.eesign_path, nowtime, self.bom_rev)
         sto, rtc = self.fcd.common.xcmd(cmd)
         print(sto)
 
