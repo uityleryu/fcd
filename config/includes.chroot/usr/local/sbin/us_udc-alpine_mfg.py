@@ -86,6 +86,18 @@ class USALPINEDiagloader(ScriptBase):
         ]
         self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
 
+    def check_registered(self):
+        #rtmsg = self.pexp.expect_get_output("hexdump /dev/mtd4 | head", self.linux_prompt)
+        #match = re.findall("0008000 4255 544e", rtmsg)
+        rtmsg = self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
+        match = re.findall("qrid=000000", rtmsg)
+        if match:
+            log_debug("The board hasn't been signed")
+            return False
+        else:
+            log_debug("The board has been signed")
+            return True
+
     def run(self):
         """
         Main procedure of factory
@@ -109,7 +121,18 @@ class USALPINEDiagloader(ScriptBase):
         msg(10, "Recovery booting ...")
 
         self.login(username="root", password="ubnt", timeout=100)
-        self.set_lnx_net()
+        '''
+            If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
+        '''
+        rtc = self.check_registered()
+        if rtc is False:
+            self.set_lnx_net()
+        else:
+            cmd = "ifconfig br1 {0}".format(self.dutip)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            cmd = "ifconfig | grep -C 5 br1"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+
         self.lnx_netcheck()
         msg(20, "Linux networking is good ...")
 
@@ -124,9 +147,9 @@ class USALPINEDiagloader(ScriptBase):
 
         if UPDATEUB_EN is True:
             log_debug("downloading FW U-boot")
-            cmd = "tftp -g -r images/f060-fw-boot.img -l /tmp/boot.img {0}".format(self.tftp_server)
-            self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
-            self.is_dutfile_exist("/tmp/boot.img")
+            srcp = "images/f060-fw-boot.img"
+            dstp = "/tmp/boot.img"
+            self.tftp_get(remote=srcp, local=dstp, timeout=300)
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -143,9 +166,9 @@ class USALPINEDiagloader(ScriptBase):
 
         if UPDATEDIAG_EN is True:
             log_debug("downloading the FW DIAG")
-            cmd = "tftp -g -r images/f060-fw-uImage -l /tmp/uImage {0}".format(self.tftp_server)
-            self.pexp.expect_lnxcmd_retry(300, self.linux_prompt, cmd, self.linux_prompt)
-            self.is_dutfile_exist("/tmp/uImage")
+            srcp = "images/f060-fw-uImage"
+            dstp = "/tmp/uImage"
+            self.tftp_get(remote=srcp, local=dstp, timeout=300)
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -161,9 +184,9 @@ class USALPINEDiagloader(ScriptBase):
             msg(40, "FW DIAG download completing ...")
 
         if SSDFDISK_EN is True:
-            cmd = "tftp -g -r tools/usw_leaf/{0} -l /tmp/{0} {1}".format("fwdiag-ssd.sh", self.tftp_server)
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
-            self.is_dutfile_exist("/tmp/fwdiag-ssd.sh")
+            srcp = "tools/usw_leaf/fwdiag-ssd.sh"
+            dstp = "/tmp/fwdiag-ssd.sh"
+            self.tftp_get(remote=srcp, local=dstp, timeout=30)
 
             '''
                 To check if the SSD component is existed
@@ -181,14 +204,25 @@ class USALPINEDiagloader(ScriptBase):
             self.stop_at_uboot()
             self.boot_diag_from_spi()
             self.login(username="root", password="ubnt", timeout=100)
-            self.set_lnx_net()
+            '''
+                If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
+            '''
+            rtc = self.check_registered()
+            if rtc is False:
+                self.set_lnx_net()
+            else:
+                cmd = "ifconfig br1 {0}".format(self.dutip)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+                cmd = "ifconfig | grep -C 5 br1"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+
             self.lnx_netcheck()
             msg(50, "SSD partition and format completing ...")
 
         if WRITEFAKEBIN_EN is True:
-            cmd = "tftp -g -r tools/usw_leaf/{0} -l /tmp/{0} {1}".format("fake.bin", self.tftp_server)
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
-            self.is_dutfile_exist("/tmp/fake.bin")
+            srcp = "tools/usw_leaf/fake.bin"
+            dstp = "/tmp/fake.bin"
+            self.tftp_get(remote=srcp, local=dstp, timeout=30)
 
             cmd = "dd if=/tmp/fake.bin of=/dev/mtdblock4"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
@@ -203,9 +237,8 @@ class USALPINEDiagloader(ScriptBase):
 
         if LOADLCMFW_EN is True:
             log_debug("loading LCM FW to DUT")
-            cmd = "tftp -g -r images/f060-fw-lcm -l {0} {1}".format(self.lcmfw, self.tftp_server)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-            self.is_dutfile_exist(self.lcmfw)
+            srcp = "images/f060-fw-lcm"
+            self.tftp_get(remote=srcp, local=self.lcmfw, timeout=30)
             self.pexp.expect_lnxcmd(60, self.linux_prompt, "/etc/init.d/upydiag.sh", self.diagsh1)
 
             log_debug("downloading LCM FW")

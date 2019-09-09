@@ -20,7 +20,7 @@ import ubntlib
 
 
 class ScriptBase(object):
-    __version__ = "1.0.0"
+    __version__ = "1.0.1"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -244,6 +244,7 @@ class ScriptBase(object):
         # ls "<filename>"; echo "RV="$?
         sstrj = 'ls "' + filename + '"; echo "RV="$?'
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="RV=0")
+        return True
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
@@ -402,7 +403,7 @@ class ScriptBase(object):
             cmd = "mv {0}.FCD {1}".format(self.eesign_path, self.eesigndate_path)
             self.fcd.common.pcmd(cmd)
 
-    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_exp=True, timeout=10):
+    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
         but if there is sub dir in your tools.tar, you should set dut_subdir
@@ -413,7 +414,10 @@ class ScriptBase(object):
             dut_subdir {[str]} -- like udm, unas, afi_aln...etc, take refer to structure of fcd-script-tools repo
         """
         log_debug("Send signed eeprom file adding date code from host to DUT ...")
-        post_txt = self.linux_prompt if post_exp is True else None
+        post_txt = None
+        if post_en is True:
+            post_txt = self.linux_prompt
+
         if dut_tmp_subdir is not None:
             eechk_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eechk)
         else:
@@ -424,8 +428,7 @@ class ScriptBase(object):
         else:
             eesigndate_dut_path = os.path.join(self.dut_tmpdir, self.eesigndate)
 
-        cmd = "tftp -g -r {0} -l {1} {2}".format(self.eesigndate, eesigndate_dut_path, self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, retry_en=True)
 
         log_debug("Change file permission - {0} ...".format(self.eesigndate))
         cmd = "chmod 777 {0}".format(eesigndate_dut_path)
@@ -439,66 +442,35 @@ class ScriptBase(object):
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
 
-        os.mknod(self.eechk_path)
-        os.chmod(self.eechk_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
         log_debug("Send " + self.eechk + " from DUT to host ...")
-        cmd = "tftp -p -r {0} -l {1} {2}".format(self.eechk, eechk_dut_path, self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
-        time.sleep(3)  # in case the e.c.0 is still in transfering
-        if os.path.isfile(self.eechk_path):
-            otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesigndate)
-            log_debug(otmsg)
-            rtc = filecmp.cmp(self.eechk_path, self.eesigndate_path)
-            if rtc is True:
-                log_debug("Comparing files successfully")
-            else:
-                error_critical("Comparing files failed!!")
+        self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, retry_en=True, post_en=post_en)
+
+        otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesigndate)
+        log_debug(otmsg)
+        rtc = filecmp.cmp(self.eechk_path, self.eesigndate_path)
+        if rtc is True:
+            log_debug("Comparing files successfully")
         else:
-            otmsg = "Can't find the {0} and {1} files ...".format(self.eechk, self.eesigndate)
-            log_debug(otmsg)
+            error_critical("Comparing files failed!!")
 
     def gen_and_load_key_to_dut(self):
         src = os.path.join(self.tftpdir, "dropbear_key.rsa")
-        sstr = [
-            "dropbearkey",
-            "-t rsa",
-            "-f",
-            src
-        ]
-        sstr = ' '.join(sstr)
-        self.fcd.common.pcmd(sstr)
+        cmd = "dropbearkey -t rsa -f {0}".format(src)
+        self.fcd.common.pcmd(cmd)
 
-        sstr = [
-            "chmod 777",
-            src
-        ]
-        sstr = ' '.join(sstr)
-        self.fcd.common.pcmd(sstr)
+        cmd = "chmod 777 {0}".format(src)
+        self.fcd.common.pcmd(cmd)
 
-        dest = os.path.join(self.dut_tmpdir, "dropbear_key.rsa")
-        sstr = [
-            "tftp",
-            "-g",
-            "-r dropbear_key.rsa",
-            "-l " + dest,
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd_retry(timeout=15, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt)
-        self.is_dutfile_exist(dest)
+        srcp = "dropbear_key.rsa"
+        dstp = os.path.join(self.dut_tmpdir, "dropbear_key.rsa")
+        self.tftp_get(remote=srcp, local=dstp, timeout=15, retry_en=True)
 
     def copy_and_unzipping_tools_to_dut(self, timeout=15, post_exp=True):
         log_debug("Send tools.tar from host to DUT ...")
         post_txt = self.linux_prompt if post_exp is True else None
         source = os.path.join(self.tools, "tools.tar")
         target = os.path.join(self.dut_tmpdir, "tools.tar")
-
-        cmd = "tftp -g -r {0} -l {1} {2}".format(source, target, self.tftp_server)
-        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
-        time.sleep(1)
-
-        self.is_dutfile_exist(target)
+        self.tftp_get(remote=source, local=target, timeout=timeout, retry_en=True)
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
         self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
@@ -533,8 +505,12 @@ class ScriptBase(object):
             otmsg = "Can't find the RSA key file"
             error_critical(otmsg)
 
-    def data_provision_64k(self, netmeta, post_expect=True):
+    def data_provision_64k(self, netmeta, post_en=True):
         self.gen_rsa_key()
+
+        post_exp = None
+        if post_en is True:
+            post_exp = self.linux_prompt
 
         otmsg = "Starting to do {0} ...".format(self.eepmexe)
         log_debug(otmsg)
@@ -563,27 +539,18 @@ class ScriptBase(object):
             otmsg = "Generating {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
-        cmd = "tftp -g -r {0} -l /tmp/{0} {1}".format(self.eegenbin, self.tftp_server)
-        if post_expect is True:
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
-        else:
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
+        dstp = "/tmp/{0}".format(self.eegenbin)
+        self.tftp_get(remote=self.eegenbin, local=dstp, timeout=20, retry_en=False, post_en=post_en)
 
         if self.force_update_eeprom is True:
             cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
-            if post_expect is True:
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-            else:
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
-
-        src = os.path.join(self.tools, self.helper_path, self.helperexe)
+        srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
-
-        cmd = "tftp -g -r {0} -l {1} {2}".format(src, helperexe_path, self.tftp_server)
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        self.tftp_get(remote=srcp, local=helperexe_path, timeout=20, retry_en=False)
 
         cmd = "chmod 777 {}".format(helperexe_path)
         self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
@@ -605,12 +572,9 @@ class ScriptBase(object):
 
         files = [self.eebin, self.eetxt, self.eegenbin]
         for fh in files:
-            fh_path = os.path.join(self.tftpdir, fh)
-            os.mknod(fh_path)
-            os.chmod(fh_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-            cmd = "tftp -p -r {0} -l /tmp/{0} {1}".format(fh, self.tftp_server)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-            time.sleep(1)
+            srcp = os.path.join(self.tftpdir, fh)
+            dstp = "/tmp/{0}".format(fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10, retry_en=True)
 
         log_debug("Send helper output tgz file from DUT to host ...")
 
@@ -622,6 +586,84 @@ class ScriptBase(object):
             else:
                 otmsg = "Comparing files failed!! {0}, {1} are not the same".format(self.eebin, self.eegenbin)
                 error_critical(otmsg)
+
+    '''
+        DUT view point
+        To get the file from the host by tftp command
+        input parameters:
+            remote: absolute path of the source file
+            local: absolute path of the destination file
+            timeout: timeout for expect_lnxcmd API
+            retry_en: to determine which API to use expect_lnxcmd_retry() or expect_lnxcmd()
+    '''
+    def tftp_get(self, remote, local, timeout=300, retry_en=False, post_en=True):
+        post_exp = None
+        if post_en is True:
+            post_exp = self.linux_prompt
+
+        __func_name = "tftp_get: "
+        if remote == "" or local == "":
+            log_debug(__func_name + "source file and destination file can't be empty")
+            return False
+
+        cmd = "tftp -g -r {0} -l {1} {2}".format(remote, local, self.tftp_server)
+        if retry_en is True:
+            self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        else:
+            self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+
+        time.sleep(2)
+        self.is_dutfile_exist(local)
+        '''
+            In order to avoid escaping this API too earlier, adding a delay here.
+            Somehow this should be the property of the Python script
+        '''
+        time.sleep(1)
+        return True
+
+    '''
+        DUT view point
+        To put the file from the host by tftp command
+        input parameters:
+            remote: absolute path of the source file
+            local: absolute path of the destination file
+            timeout: timeout for expect_lnxcmd API
+            retry_en: to determine which API to use expect_lnxcmd_retry() or expect_lnxcmd()
+    '''
+    def tftp_put(self, remote, local, timeout=300, retry_en=False, post_en=True):
+        __func_name = "tftp_put: "
+        post_exp = None
+        if post_en is True:
+            post_exp = self.linux_prompt
+
+        if remote == "" or local == "":
+            log_debug(__func_name + "source file and destination file can't be empty")
+            return False
+
+        os.mknod(remote)
+        os.chmod(remote, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        time.sleep(2)
+
+        cmd = "tftp -p -r {0} -l {1} {2}".format(os.path.basename(remote), local, self.tftp_server)
+        if retry_en is True:
+            self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        else:
+            self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+
+        '''
+            To give a few delays to let the file transfer to the FCD host.
+        '''
+        time.sleep(3)
+        rtc = os.path.isfile(remote)
+        if rtc is True:
+            '''
+                In order to avoid escaping this API too earlier, adding a delay here.
+                Somehow this should be the property of the Python script
+            '''
+            time.sleep(1)
+            return rtc
+        else:
+            raise Exception(__func_name + "can't find the file")
 
     def close_fcd(self):
         time.sleep(3)

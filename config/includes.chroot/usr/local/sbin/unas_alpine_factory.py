@@ -282,7 +282,7 @@ class UNASALPINEFactory(ScriptBase):
         if PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=30, post_exp=False)
-            self.data_provision_64k(netmeta=self.devnetmeta, post_expect=False)
+            self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
@@ -292,7 +292,7 @@ class UNASALPINEFactory(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(60, "Finish doing registration ...")
-            self.check_devreg_data(dut_tmp_subdir="unas", post_exp=False)
+            self.check_devreg_data(dut_tmp_subdir="unas", post_en=False)
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPDATE_ENABLE is True:

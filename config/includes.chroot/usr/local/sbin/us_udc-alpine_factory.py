@@ -7,6 +7,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 import sys
 import time
 import os
+import re
 import stat
 import filecmp
 
@@ -155,8 +156,10 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
 
     def fwupdate(self):
-        cmd = "tftp -g -r images/{0}-fw.bin -l /tmp/upgrade.bin {1}".format(self.board_id, self.tftp_server)
-        self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
+        log_debug("tftp get formal FW starting ... ")
+        srcp = "images/{0}-fw.bin".format(self.board_id)
+        self.tftp_get(remote=srcp, local="/tmp/upgrade.bin", timeout=600)
+        log_debug("tftp get formal FW finishing ... ")
 
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
         self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
@@ -172,6 +175,18 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, self.linux_prompt)
         time.sleep(90)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
+
+    def check_registered(self):
+        #rtmsg = self.pexp.expect_get_output("hexdump /dev/mtd4 | head", self.linux_prompt)
+        #match = re.findall("0008000 4255 544e", rtmsg)
+        rtmsg = self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
+        match = re.findall("qrid=000000", rtmsg)
+        if match:
+            log_debug("The board hasn't been signed")
+            return False
+        else:
+            log_debug("The board has been signed")
+            return True
 
     def run(self):
         """
@@ -197,7 +212,18 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         msg(5, "Boot from SPI recovery image ...")
 
         self.login(username="root", password="ubnt", timeout=80)
-        self.set_lnx_net()
+        '''
+            If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
+        '''
+        rtc = self.check_registered()
+        if rtc is False:
+            self.set_lnx_net()
+        else:
+            cmd = "ifconfig br1 {0}".format(self.dutip)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            cmd = "ifconfig | grep -C 5 br1"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+
         self.lnx_netcheck()
         msg(10, "Boot up to linux console and network is good ...")
 
@@ -227,7 +253,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         if FWUPDATE_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
             self.login(username="root", password="ubnt", timeout=100)
-            self.set_lnx_net_devreg()
             self.lnx_netcheck()
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")

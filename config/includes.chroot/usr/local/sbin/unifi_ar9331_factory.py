@@ -163,7 +163,7 @@ class UNIFIAR9331Factory(ScriptBase):
         if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(post_exp=False)
+            self.check_devreg_data(post_en=False)
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
