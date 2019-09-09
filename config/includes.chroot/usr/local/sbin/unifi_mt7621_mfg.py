@@ -21,6 +21,12 @@ addr_map_uap: partitially erase partition, the order is bs2kernel0 -> factory ->
 format : board_id: {partition: (start_addr, len)}
 '''
 addr_map_uap = {
+                  'ec22': {
+                    'uboot': ('0', '0x60000'),
+                    'factory': ('0x70000', '0x10000'),
+                    'bs': ('0x90000', '0x10000'),
+                    'kernel0': ('0x1a0000', '0xf30000')
+                  },
                   'ec25': {
                     'uboot': ('0', '0x60000'),
                     'factory': ('0x70000', '0x10000'),
@@ -106,8 +112,8 @@ class MT7621MFGGeneral(ScriptBase):
 
     def set_boot_netenv(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "mtk network on")
-        self.pexp.expect_action(10, self.bootloader_prompt, "set ipaddr " + self.dutip)
-        self.pexp.expect_action(10, self.bootloader_prompt, "set serverip " + self.tftp_server)
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def transfer_img(self, filename):
         img = os.path.join(self.image, filename)

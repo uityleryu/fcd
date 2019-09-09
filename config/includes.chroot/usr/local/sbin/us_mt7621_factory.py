@@ -30,40 +30,46 @@ class USFLEXFactory(ScriptBase):
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
-        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec25', 'ec26'}
+        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec25', 'ec22', 'ec26'}
 
         # number of mac
         self.macnum = {'ed10': "3",
+                       'ec22': "1",
                        'ec25': "1",
                        'ec26': "1",
                        'ec2a': "1",
                        'ed11': "2"}
         # number of WiFi
         self.wifinum = {'ed10': "0",
+                        'ec22': "2",
                         'ec25': "2",
                         'ec26': "2",
                         'ec2a': "2",
                         'ed11': "0"}
         # number of Bluetooth
         self.btnum = {'ed10': "0",
+                      'ec22': "1",
                       'ec25': "1",
                       'ec26': "1",
                       'ec2a': "0",
                       'ed11': "0"}
         # vlan port mapping
         self.vlanport_idx = {'ed10': "'6 4'",
+                             'ec22': "'6 0'",
                              'ec25': "'6 0'",
                              'ec26': "'6 0'",
                              'ec2a': "'6 0'",
                              'ed11': "'6 0'"}
         # flash size map
         self.flash_size = {'ed10' : "33554432",
+                           'ec22' : "33554432",
                            'ec25' : "33554432",
                            'ec26' : "33554432",
                            'ec2a' : "33554432",
                            'ed11' : "16777216"}
         # firmware image
         self.fwimg = {'ed10' : self.board_id + "-diag.bin",
+                      'ec22' : self.board_id + ".bin",
                       'ec25' : self.board_id + ".bin",
                       'ec26' : self.board_id + ".bin",
                       'ec2a' : self.board_id + ".bin",

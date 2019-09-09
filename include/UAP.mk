@@ -6,6 +6,14 @@ IMAGE-UAP-FLEXHD= \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
 
+IMAGE-UAP-IWHD= \
+    images/ec22* \
+    uap-fw/unifiap-mt7621* \
+    uap-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
+    uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+    uap-fw/BZ.mt7621.*
+
 IMAGE-UBB= \
     images/dc98* \
     uap-fw/UBB.* \
@@ -17,6 +25,7 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
+IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 
@@ -47,6 +56,7 @@ TOOLS-UAP-INDUSTRIAL+= \
     uap/helper_UNIFI_MT7621_release
 
 TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
+TOOLS-UAP-IWHD+=$(TOOLS-CONFIG)
 
 # Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
@@ -59,5 +69,6 @@ TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
 
 $(eval $(call ProductImage,UAP,FCD-UAP-ALL-$(VER)))
 $(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UAP-IWHD,FCD-UAP-IWHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UBB,FCD-UAP-UBB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD-UAP-INDUSTRIAL-$(VER)))

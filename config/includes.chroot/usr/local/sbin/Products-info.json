@@ -296,6 +296,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
+    },
+
+    "UAP-IW-HD":{
+      "INDEX"       : 0,
+      "NAME"        : "UAP-IWHD",
+      "BOARDID"     : "ec22",
+      "BOMREV"      : "113-00600",
+      "DESC"        : "UniFi AP IW HD",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     }
   },
 
