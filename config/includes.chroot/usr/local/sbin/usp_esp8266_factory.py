@@ -176,6 +176,8 @@ class USPESP8266Factory(ScriptBase):
         self.ser.add_arg(option="0xFE000", value=self.blank_bin)
         self.ser.add_arg(option="0xFF000", value=self.blank_bin)
         self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
+        self.ser.add_arg(option="0x1FD000", value=self.blank_bin)
+        self.ser.add_arg(option="0x1FE000", value=self.blank_bin)
         self.ser.add_arg(option="0x101000", value=self.recovery_bin)
 
         stdout, rtc = self.ser.write_flash()
