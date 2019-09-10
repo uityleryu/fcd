@@ -16,7 +16,7 @@ IMAGE-UAP-IWHD= \
 
 IMAGE-UBB= \
     images/dc98* \
-    uap-fw/UBB.* \
+    uap-fw/UBB* \
     uap-fw/ubntubb-u-boot.rom
 
 IMAGE-UAP-INDUSTRIAL= \
