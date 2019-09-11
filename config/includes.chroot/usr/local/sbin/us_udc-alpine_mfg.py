@@ -86,22 +86,11 @@ class USALPINEDiagloader(ScriptBase):
         ]
         self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
 
-    def check_registered(self):
-        #rtmsg = self.pexp.expect_get_output("hexdump /dev/mtd4 | head", self.linux_prompt)
-        #match = re.findall("0008000 4255 544e", rtmsg)
-        rtmsg = self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
-        match = re.findall("qrid=000000", rtmsg)
-        if match:
-            log_debug("The board hasn't been signed")
-            return False
-        else:
-            log_debug("The board has been signed")
-            return True
-
     def run(self):
         """
         Main procedure of factory
         """
+        global WRITEFAKEBIN_EN
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
@@ -120,14 +109,14 @@ class USALPINEDiagloader(ScriptBase):
         self.boot_diag_from_spi()
         msg(10, "Recovery booting ...")
 
-        self.login(username="root", password="ubnt", timeout=100)
+        rtc = self.login(username="root", password="ubnt", timeout=100)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
-        rtc = self.check_registered()
-        if rtc is False:
+        if rtc == 1:
             self.set_lnx_net()
         else:
+            WRITEFAKEBIN_EN = False
             cmd = "ifconfig br1 {0}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
             cmd = "ifconfig | grep -C 5 br1"
@@ -203,14 +192,14 @@ class USALPINEDiagloader(ScriptBase):
 
             self.stop_at_uboot()
             self.boot_diag_from_spi()
-            self.login(username="root", password="ubnt", timeout=100)
+            rtc = self.login(username="root", password="ubnt", timeout=100)
             '''
                 If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
             '''
-            rtc = self.check_registered()
-            if rtc is False:
+            if rtc == 1:
                 self.set_lnx_net()
             else:
+                WRITEFAKEBIN_EN = False
                 cmd = "ifconfig br1 {0}".format(self.dutip)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
                 cmd = "ifconfig | grep -C 5 br1"

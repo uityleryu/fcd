@@ -20,7 +20,7 @@ import ubntlib
 
 
 class ScriptBase(object):
-    __version__ = "1.0.1"
+    __version__ = "1.0.2"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -227,11 +227,22 @@ class ScriptBase(object):
         """
         should be called at login console
         """
-        self.pexp.expect_action(timeout, "login:", username)
-        self.pexp.expect_only(10, username)
-        time.sleep(1)
-        self.pexp.expect_action(10, "Password:", password)
-        time.sleep(2)
+        post = [
+            "login:",
+            "Error-A12 login"
+        ]
+        ridx = self.pexp.expect_get_index(timeout, post)
+        if ridx >= 0:
+            '''
+                To give twice in order to make sure of that the username has been keyed in
+            '''
+            self.pexp.expect_action(10, "", username)
+            self.pexp.expect_only(10, username)
+            time.sleep(1)
+            self.pexp.expect_action(10, "Password:", password)
+            time.sleep(2)
+
+        return ridx
 
     def set_bootloader_prompt(self, prompt=None):
         if prompt is not None:

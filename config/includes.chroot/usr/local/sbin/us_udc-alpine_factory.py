@@ -176,18 +176,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         time.sleep(90)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
 
-    def check_registered(self):
-        #rtmsg = self.pexp.expect_get_output("hexdump /dev/mtd4 | head", self.linux_prompt)
-        #match = re.findall("0008000 4255 544e", rtmsg)
-        rtmsg = self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
-        match = re.findall("qrid=000000", rtmsg)
-        if match:
-            log_debug("The board hasn't been signed")
-            return False
-        else:
-            log_debug("The board has been signed")
-            return True
-
     def run(self):
         """
         Main procedure of factory
@@ -211,12 +199,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.boot_recovery_spi()
         msg(5, "Boot from SPI recovery image ...")
 
-        self.login(username="root", password="ubnt", timeout=80)
+        rtc = self.login(username="root", password="ubnt", timeout=80)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
-        rtc = self.check_registered()
-        if rtc is False:
+        if rtc == 1:
             self.set_lnx_net()
         else:
             cmd = "ifconfig br1 {0}".format(self.dutip)
@@ -252,7 +239,10 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         if FWUPDATE_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
-            self.login(username="root", password="ubnt", timeout=100)
+            rtc = self.login(username="root", password="ubnt", timeout=100)
+            if rtc == 1:
+                error_critical("The DUT has been registered!!!")
+
             self.lnx_netcheck()
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
