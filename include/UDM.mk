@@ -21,7 +21,7 @@ IMAGE-UDMPRO+= \
     images/ea15* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
     udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v1.0.17.ed2d696.190819.0910.bin
+    udm-fw/UDM.alpinev2.v1.0.30.f31b3a4.190909.1827.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
