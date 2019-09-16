@@ -279,7 +279,7 @@
       "BOMREV"      : "113-00694",
       "DESC"        : "UniFi AP Building Bridge",
       "FILE"        : "uap_ipq40xx_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "uap_ipq40xx_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"

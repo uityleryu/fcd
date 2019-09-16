@@ -17,7 +17,8 @@ IMAGE-UAP-IWHD= \
 IMAGE-UBB= \
     images/dc98* \
     uap-fw/UBB* \
-    uap-fw/ubntubb-u-boot.rom
+    uap-fw/ubntubb-u-boot.rom \
+    uap-fw/Unifi_bridge-spf6.1.1_nor-v4.bin
 
 IMAGE-UAP-INDUSTRIAL= \
     images/ec2a* \
