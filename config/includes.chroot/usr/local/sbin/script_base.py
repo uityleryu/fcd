@@ -20,7 +20,7 @@ import ubntlib
 
 
 class ScriptBase(object):
-    __version__ = "1.0.2"
+    __version__ = "1.0.3"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -140,6 +140,9 @@ class ScriptBase(object):
         # RSA key file
         self.rsakey = "dropbear_key.rsa." + self.row_id
 
+        # DSS key file
+        self.dsskey = "dropbear_key.dss." + self.row_id
+
         # EEPROM related files path on FCD
         # EX: /tftpboot/e.gen.0
         self.eegenbin_path = os.path.join(self.tftpdir, self.eegenbin)
@@ -164,6 +167,7 @@ class ScriptBase(object):
 
         # EX: /tftpboot/dropbear_key.rsa.0
         self.rsakey_path = os.path.join(self.tftpdir, self.rsakey)
+        self.dsskey_path = os.path.join(self.tftpdir, self.dsskey)
 
         # DUT IP
         baseip = 31
@@ -414,7 +418,7 @@ class ScriptBase(object):
             cmd = "mv {0}.FCD {1}".format(self.eesign_path, self.eesigndate_path)
             self.fcd.common.pcmd(cmd)
 
-    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, timeout=10):
+    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, zmodem=False, timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
         but if there is sub dir in your tools.tar, you should set dut_subdir
@@ -439,7 +443,10 @@ class ScriptBase(object):
         else:
             eesigndate_dut_path = os.path.join(self.dut_tmpdir, self.eesigndate)
 
-        self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, retry_en=True)
+        if zmodem is False:
+            self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, retry_en=True)
+        else:
+            self.zmodem_send_to_dut(file=self.eesigndate_path, dest_path=self.dut_tmpdir)
 
         log_debug("Change file permission - {0} ...".format(self.eesigndate))
         cmd = "chmod 777 {0}".format(eesigndate_dut_path)
@@ -454,7 +461,11 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
-        self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, retry_en=True, post_en=post_en)
+
+        if zmodem is False:
+            self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, retry_en=True, post_en=post_en)
+        else:
+            self.zmodem_recv_from_dut(file=eechk_dut_path, dest_path=self.tftpdir)
 
         otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesigndate)
         log_debug(otmsg)
@@ -514,6 +525,19 @@ class ScriptBase(object):
         rt = os.path.isfile(self.rsakey_path)
         if rt is not True:
             otmsg = "Can't find the RSA key file"
+            error_critical(otmsg)
+
+    def gen_dss_key(self):
+        cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
+        self.fcd.common.pcmd(cmd)
+        time.sleep(4)
+
+        cmd = "chmod 777 {0}".format(self.dsskey_path)
+        self.fcd.common.pcmd(cmd)
+
+        rt = os.path.isfile(self.dsskey_path)
+        if rt is not True:
+            otmsg = "Can't find the DSS key file"
             error_critical(otmsg)
 
     def data_provision_64k(self, netmeta, post_en=True):
@@ -675,6 +699,45 @@ class ScriptBase(object):
             return rtc
         else:
             raise Exception(__func_name + "can't find the file")
+
+    def zmodem_send_to_dut(self, file, dest_path, timeout=60):
+        # chdir to dest path
+        self.pexp.expect_action(timeout, "", "")
+        self.pexp.expect_action(timeout, self.linux_prompt, "cd {}".format(dest_path))
+
+        # exe receive cmd on dut
+        cmd = "lrz -v -b"
+        self.pexp.expect_action(timeout, "", "")
+        self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+
+        # exe send cmd on host
+        cmd = ["sz", "-e -v -b",
+               file,
+               "< /dev/" + self.dev,
+               "> /dev/" + self.dev]
+        cmd = ' '.join(cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) != 0:
+            error_critical("Failed to send {} to DUT".format(file))
+
+    def zmodem_recv_from_dut(self, file, dest_path, timeout=60):
+        # exe send cmd on dut
+        cmd = ["lsz", "-e -v -b", file]
+        cmd = ' '.join(cmd)
+        self.pexp.expect_action(timeout, "", "")
+        self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+
+        # chdif to dest path on host
+        os.chdir(dest_path)
+
+        # exe receive cmd on host
+        cmd = ["rz", "-y -v -b",
+               "< /dev/" + self.dev,
+               "> /dev/" + self.dev]
+        cmd = ' '.join(cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) != 0:
+            error_critical("Failed to receive {} from DUT".format(file))
 
     def close_fcd(self):
         time.sleep(3)

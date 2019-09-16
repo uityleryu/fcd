@@ -1,8 +1,11 @@
-IMAGE-USW-24= \
+IMAGE-USW-PRO= \
     images/eb36* \
+    images/eb37* \
     images/eb67* \
-    usw-fw/unifiswitch-us* \
-    usw-fw/US.bcm5616x.feature-usw-pro-dev.*
+    images/eb68* \
+    usw-fw/unifiswitch-us24pro* \
+    usw-fw/unifiswitch-us48pro* \
+    usw-fw/US.bcm5616x.*
 
 IMAGE-USW-6XG= \
     images/eb23* \
@@ -50,7 +53,7 @@ IMAGE-USW-MINI= \
     usw-fw/unifiswitch-mini-* \
     usw-fw/US.m487.*
 
-IMAGE-USW+=$(IMAGE-USW-24)
+IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
@@ -90,7 +93,7 @@ TOOLS-USW-LEAF+= \
     usw_leaf/*
 
 TOOLS-USW-6XG=$(TOOLS-USW)
-TOOLS-USW-24=$(TOOLS-USW)
+TOOLS-USW-PRO=$(TOOLS-USW)
 TOOLS-USW-FLEX=$(TOOLS-USW)
 TOOLS-ULS-RPS=$(TOOLS-USW)
 TOOLS-ULS-RPS+= \
@@ -107,7 +110,7 @@ TOOLS-USW-MINI+= \
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
-$(eval $(call ProductImage,USW-24,FCD-USW-24-$(VER)))
+$(eval $(call ProductImage,USW-PRO,FCD-USW-PRO-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-16-24,FCD-USW-16-24-$(VER)-$(FWVER)))
