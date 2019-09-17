@@ -221,7 +221,7 @@
       "INDEX"       : 7,
       "NAME"        : "USW-LEAF",
       "BOARDID"     : "f060",
-      "BOMREV"      : "113-02759",
+      "BOMREV"      : "113-02997",
       "DESC"        : "UniFi Super Switch 48-port",
       "FILE"        : "us_udc-alpine_factory.py",
       "T1FILE"      : "us_udc-alpine_mfg.py",
@@ -238,19 +238,6 @@
       "DESC"        : "UniFi Switch Mini",
       "FILE"        : "us_m487_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0002",
-      "SW_ID"       : "0201"
-    },
-
-    "USW-LEAF-2997":{
-      "INDEX"       : 9,
-      "NAME"        : "USW-LEAF-2997",
-      "BOARDID"     : "f060",
-      "BOMREV"      : "113-02997",
-      "DESC"        : "UniFi Super Switch 48-port",
-      "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"

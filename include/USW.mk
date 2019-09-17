@@ -45,8 +45,7 @@ IMAGE-USW-48= \
 
 IMAGE-USW-LEAF= \
     images/f060* \
-    usw-fw/fw.UDC* \
-    usw-fw/bsp.UDC*
+    usw-fw/fw.UDC*
 
 IMAGE-USW-MINI= \
     images/ed30* \
