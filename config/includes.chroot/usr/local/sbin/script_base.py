@@ -20,7 +20,7 @@ import ubntlib
 
 
 class ScriptBase(object):
-    __version__ = "1.0.3"
+    __version__ = "1.0.4"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -444,7 +444,7 @@ class ScriptBase(object):
             eesigndate_dut_path = os.path.join(self.dut_tmpdir, self.eesigndate)
 
         if zmodem is False:
-            self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, retry_en=True)
+            self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, retry_en=True, post_en=post_en)
         else:
             self.zmodem_send_to_dut(file=self.eesigndate_path, dest_path=self.dut_tmpdir)
 
@@ -492,7 +492,7 @@ class ScriptBase(object):
         post_txt = self.linux_prompt if post_exp is True else None
         source = os.path.join(self.tools, "tools.tar")
         target = os.path.join(self.dut_tmpdir, "tools.tar")
-        self.tftp_get(remote=source, local=target, timeout=timeout, retry_en=True)
+        self.tftp_get(remote=source, local=target, timeout=timeout, retry_en=True, post_en=post_exp)
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
         self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
