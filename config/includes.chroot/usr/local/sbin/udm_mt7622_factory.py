@@ -24,7 +24,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         # script specific vars
         self.devregpart = "/dev/mtdblock4"
         self.bomrev = "113-" + self.bom_rev
-        self.eepmexe = "al324-ee"
+        #self.eepmexe = "al324-ee"
         self.helperexe = "helper_MT7622_release"
         self.user = "root"
         self.bootloader_prompt = "MT7622"
@@ -61,6 +61,11 @@ class UDMALPINEMT7622Factory(ScriptBase):
 
         self.infover = {
             'ec28': "Version:"
+        }
+        self.devnetmeta = {
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
         }
 
     def boot_recovery_image(self):
@@ -250,7 +255,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         if PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=60)
-            self.do_eepmexe()
+            self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
@@ -266,9 +271,6 @@ class UDMALPINEMT7622Factory(ScriptBase):
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
-
-        #self.login(self.username, self.password, 200)
-        #self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
