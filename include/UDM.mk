@@ -16,7 +16,7 @@ IMAGE-UDMSE+= \
     images/ea13* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
     udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v1.0.23+builder.1657.dce6c7a.190829.0154.bin
+    udm-fw/UDM.alpinev2.v1.0.30+builder.1762.cfb07db.190916.1318.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
@@ -41,11 +41,6 @@ IMAGE-UDMLOCO= \
     images/ec28* \
     udm-fw/uImage-LoCo
 
-IMAGE-UDMALL+=$(IMAGE-UDM)
-IMAGE-UDMALL+=$(IMAGE-UDMSE)
-IMAGE-UDMALL+=$(IMAGE-UDMPRO)
-#IMAGE-UDMALL+=$(IMAGE-UDMXG)
-
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -57,9 +52,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 # FCD images repo hash
 # git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
 
-UDM-BASIC_FCDIMG_HASH=
 UDM_FCDIMG_HASH=
-UDMSE_FCDIMG_HASH=
+UDMSE_FCDIMG_HASH=995cc72c28a126be68aeddc3510a16d64cd25096
 UDMPRO_FCDIMG_HASH=
 UDMXG_FCDIMG_HASH=
 UDMB_FCDIMG_HASH=
@@ -70,9 +64,8 @@ FCDIMG_VER=
 # UBNTLIB repo hash
 # git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
 
-UDM-BASIC_UBNTLIB_HASH=
 UDM_UBNTLIB_HASH=
-UDMSE_UBNTLIB_HASH=
+UDMSE_UBNTLIB_HASH=751b6c6a3e79c914f4b32edeb5c4b2193cd262ca
 UDMPRO_UBNTLIB_HASH=
 UDMXG_UBNTLIB_HASH=
 UDMB_UBNTLIB_HASH=
@@ -83,15 +76,12 @@ UBNTLIB_VER=
 # TOOL repo hash
 # git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
 
-UDM-BASIC_TOOL_HASH=
 UDM_TOOL_HASH=
-UDMSE_TOOL_HASH=
+UDMSE_TOOL_HASH=1a1436298c288312e2152d1baf0f6af02c9424b3
 UDMPRO_TOOL_HASH=
 UDMXG_TOOL_HASH=
 UDMB_TOOL_HASH=
 UDMLOCO_TOOL_HASH=
-
-TOOL_VER=
 
 # Common tools
 
@@ -118,9 +108,6 @@ TOOLS-UDMB+= udm_b/*
 TOOLS-UDMLOCO+=$(TOOLS-CONFIG)
 TOOLS-UDMLOCO+= udm/*
 
-TOOLS-UDMALL+=$(TOOLS-UDM)
-#TOOLS-UDMALL+=$(TOOLS-UDMXG)
-
 # Project target
 
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
@@ -129,4 +116,3 @@ $(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
 $(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
 $(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UDMLOCO,FCD-UDMLOCO-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UDMALL,FCD-UDMALL-$(VER)))
