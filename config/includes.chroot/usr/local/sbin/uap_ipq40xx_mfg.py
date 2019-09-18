@@ -95,6 +95,10 @@ class UAPIPQ40XXMFG(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
         time.sleep(5)
 
+        if self.erasecal == "True":
+            elf.pexp.expect_action(30, self.ubpmt[self.board_id], "sf erase 0x170000 0x10000")
+            time.sleep(5)
+
         msg(50, "Clean RootFS")
 
         cmd = "sf erase {0} {1}".format(self.rootfs_address, self.rootfs_size)
