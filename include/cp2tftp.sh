@@ -9,7 +9,6 @@ STAGEDIR="${OUTDIR}/stage"
 NEWLIVEDCD="${STAGEDIR}/NewLiveCD"
 NEWSQUASHFS="${STAGEDIR}/NewSquashfs"
 FWIMG_DIR="${BUILD_DIR}/fcd-image"
-FTU_DIR="${BUILD_DIR}/DIAG"
 
 BUILD_DIR=$(pwd)
 FCDAPP_DIR="${BUILD_DIR}/config/includes.chroot"

@@ -134,19 +134,13 @@ new_livedcd_pkg: check_root
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(VERSION) .
 
-gitrepo: UPyFCD fcd-image fcd-script-tools fcd-ubntlib
+gitrepo: fcd-image fcd-script-tools fcd-ubntlib
 
 dev-tools-check:
 	@if [ -d $(FWIMG_DIR) ]; then \
 		echo "fcd-image is exited"; \
 	else \
 		echo "fcd-image is not exited"; \
-		exit 1; \
-	fi
-	@if [ -d $(FTU_DIR) ]; then \
-		echo "diag tool is exited"; \
-	else \
-		echo "diag tool is not exited"; \
 		exit 1; \
 	fi
 
@@ -163,20 +157,6 @@ fcd-image:
 		fi \
 	fi
 	touch $(OUTDIR)/.clone-fcd-image-done
-
-UPyFCD:
-	@if [ -d "$(BUILD_DIR)/$@" ]; then \
-		cd $(BUILD_DIR)/$@; git pull; \
-		if [ $(UPYFCD_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
-		fi \
-	else \
-		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
-		if [ $(UPYFCD_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(UPYFCD_VER); \
-		fi \
-	fi
-	touch $(OUTDIR)/.clone-diag-done
 
 fcd-script-tools:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \

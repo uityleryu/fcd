@@ -121,7 +121,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         for idx in range(len(cmdset)):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
-            time.sleep(1)
 
     def set_lnx_net_devreg(self):
         log_debug("Starting to configure the networking ... ")
@@ -146,7 +145,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         for idx in range(len(cmdset)):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
-            time.sleep(1)
 
     def lnx_netcheck(self, netifen=False):
         postexp = [

@@ -1,3 +1,6 @@
+
+# Images
+
 IMAGE-UAP-FLEXHD= \
     images/ec26* \
     uap-fw/unifiap-mt7621* \
@@ -30,22 +33,53 @@ IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 
-DIAG_MODEL=UniFiAP
-DIAG_UI_MODEL=UniFiAP
-BACKT1_PRDSRL=$(DIAG_UI_MODEL)
-DRVREG_PRDSRL=$(DIAG_UI_MODEL)
+# Model
+# This is used for adding an option in the file of BackT1.desktop
+# and Factory.desktop
 
-UPYFCD_VER=
+PRD_MODEL=UniFiAP
+BACKT1_PRDSRL=$(PRD_MODEL)
+DRVREG_PRDSRL=$(PRD_MODEL)
+
+# FCD images repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
+
+UAP-FLEXHD_FCDIMG_HASH=
+UAP-IWHD_FCDIMG_HASH=
+UBB_FCDIMG_HASH=
+UAP-INDUSTRIAL_FCDIMG_HASH=
+
 FCDIMG_VER=
+
+# UBNTLIB repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
+
+UAP-FLEXHD_UBNTLIB_HASH=
+UAP-IWHD_UBNTLIB_HASH=
+UBB_UBNTLIB_HASH=
+UAP-INDUSTRIAL_UBNTLIB_HASH=
+
 UBNTLIB_VER=
+
+# TOOL repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
+
+UAP-FLEXHD_TOOL_HASH=
+UAP-IWHD_TOOL_HASH=
+UBB_TOOL_HASH=
+UAP-INDUSTRIAL_TOOL_HASH=
+
 TOOL_VER=
 
-# Assign tools for every product
+# Common tools
+
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release
+
+# Project specific tools
 
 TOOLS-UBB+= \
     uap/cfg_part.bin \
@@ -67,6 +101,7 @@ TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UAP+=$(TOOLS-UBB)
 TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
 
+# Project target
 
 $(eval $(call ProductImage,UAP,FCD-UAP-ALL-$(VER)))
 $(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)-$(FWVER)))

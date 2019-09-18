@@ -1,3 +1,6 @@
+
+# Images
+
 IMAGE-GBE= \
     images/dc9* \
     am-fw/GBE.* \
@@ -11,21 +14,46 @@ IMAGE-PRISMAP= \
 IMAGE-AIRMAX+=$(IMAGE-GBE)
 IMAGE-AIRMAX+=$(IMAGE-PRISMAP)
 
-DIAG_MODEL=airMAX
-DIAG_UI_MODEL=airMAX
-BACKT1_PRDSRL=$(DIAG_UI_MODEL)
-DRVREG_PRDSRL=$(DIAG_UI_MODEL)
+# Model
+# This is used for adding an option in the file of BackT1.desktop
+# and Factory.desktop
 
-UPYFCD_VER=
+PRD_MODEL=airMAX
+BACKT1_PRDSRL=$(PRD_MODEL)
+DRVREG_PRDSRL=$(PRD_MODEL)
+
+# FCD images repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
+
+GBE_FCDIMG_HASH=
+PRISMAP_FCDIMG_HASH=
+
 FCDIMG_VER=
+
+# UBNTLIB repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
+
+GBE_UBNTLIB_HASH=
+PRISMAP_UBNTLIB_HASH=
+
 UBNTLIB_VER=
+
+# TOOL repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
+
+GBE_TOOL_HASH=
+PRISMAP_TOOL_HASH=
+
 TOOL_VER=
 
-# Assign tools for every product
+# Common tools
+
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee
+
+# Project specific tools
 
 TOOLS-GBE= \
     am/cfg_part.bin \
@@ -47,6 +75,8 @@ TOOLS-PRISMAP+=$(TOOLS-CONFIG)
 # Assign UAP series tools
 TOOLS-AIRMAX+=$(TOOLS-GBE)
 TOOLS-AIRMAX+=$(TOOLS-PRISMAP)
+
+# Project target
 
 $(eval $(call ProductImage,AIRMAX,FCD-AIRMAX-ALL-$(VER)))
 $(eval $(call ProductImage,GBE,FCD-AIRMAX-GBE-$(VER)-$(FWVER)))

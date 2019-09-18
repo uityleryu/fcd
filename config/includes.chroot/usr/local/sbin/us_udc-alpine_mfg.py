@@ -19,7 +19,7 @@ VERCHECK_EN = True
 SETDIAGDF_EN = True
 LOADLCMFW_EN = True
 
-IMAG_VER = "v4.1.16-preload-rc10"
+IMAG_VER = "UDC.alpinev2.v4.1.16-preload-rc10.683acca.190827.0849"
 BOARDNAME = "usw-100g-mfg"
 
 
@@ -74,7 +74,6 @@ class USALPINEDiagloader(ScriptBase):
             ]
             for idx in range(len(cmdset)):
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
-                time.sleep(1)
         else:
             cmd = "ifconfig eth0 {}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
@@ -230,16 +229,23 @@ class USALPINEDiagloader(ScriptBase):
             self.tftp_get(remote=srcp, local=self.lcmfw, timeout=30)
             self.pexp.expect_lnxcmd(60, self.linux_prompt, "/etc/init.d/upydiag.sh", self.diagsh1)
 
-            log_debug("downloading LCM FW")
             self.pexp.expect_lnxcmd(60, self.diagsh1, "diag", self.diagsh2)
-            self.pexp.expect_lnxcmd(10, self.diagsh2, "lcm LCM1P3 state dfu", self.diagsh2)
-            cmd = "lcm LCM1P3 dfu {}".format(self.lcmfw)
-            self.pexp.expect_lnxcmd(300, self.diagsh2, cmd, self.diagsh2)
-            cmd = "lcm LCM1P3 state init"
-            self.pexp.expect_lnxcmd(120, self.diagsh2, cmd, self.diagsh2)
             cmd = "lcm LCM1P3 sys version"
-            self.pexp.expect_lnxcmd_retry(15, self.diagsh2, cmd, self.lcmfwver)
-            msg(80, "LCM FW upgrade completing ...")
+            rtmsg = self.pexp.expect_get_output(cmd, self.diagsh2)
+            match = re.findall(self.lcmfwver, rtmsg)
+            if match:
+                log_debug("The version of the testing LCM FW is correct")
+            else:
+                log_debug("downloading LCM FW")
+                cmd = "lcm LCM1P3 state dfu"
+                self.pexp.expect_lnxcmd(10, self.diagsh2, cmd, self.diagsh2)
+                cmd = "lcm LCM1P3 dfu {}".format(self.lcmfw)
+                self.pexp.expect_lnxcmd(300, self.diagsh2, cmd, self.diagsh2)
+                cmd = "lcm LCM1P3 state init"
+                self.pexp.expect_lnxcmd(120, self.diagsh2, cmd, self.diagsh2)
+                cmd = "lcm LCM1P3 sys version"
+                self.pexp.expect_lnxcmd_retry(15, self.diagsh2, cmd, self.lcmfwver)
+                msg(80, "LCM FW upgrade completing ...")
 
         if SETDIAGDF_EN is True:
             self.pexp.expect_lnxcmd(20, self.diagsh2, "shell", self.linux_prompt)

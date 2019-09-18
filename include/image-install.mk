@@ -6,30 +6,18 @@ $1-update: dev-tools-check image-install-$1 packiso-$1
 image-install-$1:
 	@echo " ****************************************************************** "
 	@echo "   FCD ISO NAME   = $2                                              "
-	@echo "   DIAG MODEL     = $(DIAG_MODEL)                                   "
-	@echo "   DIAG UI MODEL     = $(DIAG_UI_MODEL)                                   "
+	@echo "   PRD_MODEL      = $(PRD_MODEL)                                    "
 	@echo " ****************************************************************** "
-	if [ ! -d ${BUILD_DIR}/UPyFCD ]; then \
-		echo "${BUILD_DIR}/UPyFCD doesn't exist, "; \
-		echo "please do, make PRD=UDM -f fcdmaker32.mk gitrepo"; \
-		exit 1; \
-	fi
 	@echo " >> copy prep scripts to new squashfs "
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
-	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
-	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
 	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
-	sed -i s/MODEL/$(DIAG_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop
-	sed -i s/MODEL/$(DIAG_UI_MODEL)/g $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop
 	sed -i s/PRODUCTSRL/$(BACKT1_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
 	sed -i s/PRODUCTSRL/$(DRVREG_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*
-	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-CLI.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
-	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/DIAG-GUI.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
@@ -41,8 +29,6 @@ image-install-$1:
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	sh include/cp2tftp.sh $(IMAGE-$1)
 	sh include/tar2tftp.sh $(TOOLS-$1)
-	@rm -rf $(NEWSQUASHFS)/usr/local/sbin/DIAG
-	cp -rf $(FTU_DIR) $(NEWSQUASHFS)/usr/local/sbin/
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg

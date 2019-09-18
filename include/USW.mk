@@ -1,3 +1,6 @@
+
+# Images
+
 IMAGE-USW-PRO= \
     images/eb36* \
     images/eb37* \
@@ -60,20 +63,65 @@ IMAGE-USW+=$(IMAGE-USW-16-24)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-MINI)
 
-DIAG_UI_MODEL=UniFiSwitch
-BACKT1_PRDSRL=$(DIAG_UI_MODEL)
-DRVREG_PRDSRL=$(DIAG_UI_MODEL)
+# Model
+# This is used for adding an option in the file of BackT1.desktop
+# and Factory.desktop
 
-UPYFCD_VER=
+PRD_MODEL=UniFiSwitch
+BACKT1_PRDSRL=$(PRD_MODEL)
+DRVREG_PRDSRL=$(PRD_MODEL)
+
+# FCD images repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
+
+USW-PRO_FCDIMG_HASH=
+USW-6XG_FCDIMG_HASH=
+USW-FLEX_FCDIMG_HASH=
+ULS-RPS_FCDIMG_HASH=
+USW-16-24_FCDIMG_HASH=
+USW-48_FCDIMG_HASH=
+USW-LEAF_FCDIMG_HASH=
+USW-MINI_FCDIMG_HASH=
+
 FCDIMG_VER=
+
+# UBNTLIB repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
+
+USW-PRO_UBNTLIB_HASH=
+USW-6XG_UBNTLIB_HASH=
+USW-FLEX_UBNTLIB_HASH=
+ULS-RPS_UBNTLIB_HASH=
+USW-16-24_UBNTLIB_HASH=
+USW-48_UBNTLIB_HASH=
+USW-LEAF_UBNTLIB_HASH=
+USW-MINI_UBNTLIB_HASH=
+
 UBNTLIB_VER=
+
+# TOOL repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
+
+USW-PRO_TOOL_HASH=
+USW-6XG_TOOL_HASH=
+USW-FLEX_TOOL_HASH=
+ULS-RPS_TOOL_HASH=
+USW-16-24_TOOL_HASH=
+USW-48_TOOL_HASH=
+USW-LEAF_TOOL_HASH=
+USW-MINI_TOOL_HASH=
+
 TOOL_VER=
+
+# Common tools
 
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release
+
+# Project specific tools
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 
@@ -106,6 +154,8 @@ TOOLS-ULS-RPS+= \
 TOOLS-USW-MINI=$(TOOLS-USW)
 TOOLS-USW-MINI+= \
     usw_mini/x86-4k-ee
+
+# Project target
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
 $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))

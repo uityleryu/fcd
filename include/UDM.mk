@@ -1,4 +1,6 @@
-# UDM
+
+# Images
+
 IMAGE-UDM-BASIC= \
     udm-fw/ubnt-upgrade-compat.tgz
 
@@ -12,8 +14,8 @@ IMAGE-UDM+= \
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
     images/ea13* \
-	udm-fw/ubnt_udm_all_rev1_boot.img \
-	udm-fw/uImage.r \
+    udm-fw/ubnt_udm_all_rev1_boot.img \
+    udm-fw/uImage.r \
     udm-fw/UDM.alpinev2.v1.0.23+builder.1657.dce6c7a.190829.0154.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
@@ -44,20 +46,62 @@ IMAGE-UDMALL+=$(IMAGE-UDMSE)
 IMAGE-UDMALL+=$(IMAGE-UDMPRO)
 #IMAGE-UDMALL+=$(IMAGE-UDMXG)
 
-DIAG_UI_MODEL=UniFiDream
-BACKT1_PRDSRL=$(DIAG_UI_MODEL)
-DRVREG_PRDSRL=$(DIAG_UI_MODEL)
+# Model
+# This is used for adding an option in the file of BackT1.desktop
+# and Factory.desktop
 
-UPYFCD_VER =
-FCDIMG_VER =
+PRD_MODEL=UniFiDream
+BACKT1_PRDSRL=$(PRD_MODEL)
+DRVREG_PRDSRL=$(PRD_MODEL)
+
+# FCD images repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
+
+UDM-BASIC_FCDIMG_HASH=
+UDM_FCDIMG_HASH=
+UDMSE_FCDIMG_HASH=
+UDMPRO_FCDIMG_HASH=
+UDMXG_FCDIMG_HASH=
+UDMB_FCDIMG_HASH=
+UDMLOCO_FCDIMG_HASH=
+
+FCDIMG_VER=
+
+# UBNTLIB repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
+
+UDM-BASIC_UBNTLIB_HASH=
+UDM_UBNTLIB_HASH=
+UDMSE_UBNTLIB_HASH=
+UDMPRO_UBNTLIB_HASH=
+UDMXG_UBNTLIB_HASH=
+UDMB_UBNTLIB_HASH=
+UDMLOCO_UBNTLIB_HASH=
+
 UBNTLIB_VER=
-TOOL_VER   =
+
+# TOOL repo hash
+# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
+
+UDM-BASIC_TOOL_HASH=
+UDM_TOOL_HASH=
+UDMSE_TOOL_HASH=
+UDMPRO_TOOL_HASH=
+UDMXG_TOOL_HASH=
+UDMB_TOOL_HASH=
+UDMLOCO_TOOL_HASH=
+
+TOOL_VER=
+
+# Common tools
 
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release
+
+# Project specific tools
 
 TOOLS-UDM+=$(TOOLS-CONFIG)
 TOOLS-UDM+= udm/*
@@ -76,6 +120,8 @@ TOOLS-UDMLOCO+= udm/*
 
 TOOLS-UDMALL+=$(TOOLS-UDM)
 #TOOLS-UDMALL+=$(TOOLS-UDMXG)
+
+# Project target
 
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
