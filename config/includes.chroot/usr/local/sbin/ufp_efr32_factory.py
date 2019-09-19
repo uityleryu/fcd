@@ -10,6 +10,7 @@ import sys
 import time
 import os
 import re
+import traceback
 
 NEED_DROPBEAR = True
 PROVISION_ENABLE = True
@@ -94,17 +95,34 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def registration(self):
         log_debug("Starting to do registration ...")
 
-        uid = self.ser.execmd_getmsg("GETUID")
-        res = re.search(r"UNIQUEID:27-(.*)\n", uid, re.S)
-        uids = res.group(1)
+        log_debug("check dut connection".center(60, "="))
+        rtv = self.ser.execmd_getmsg(cmd="app 20", waitperiod=0, sleep_time=0.5)
+        log_debug('command "app 20" rtv = {}'.format([rtv]))
+        if rtv == "" or rtv == "app 20\n":
+            error_critical("DUT is not connected, please check the connection")
+        log_debug("DUT is connected")
 
-        cpuid = self.ser.execmd_getmsg("GETCPUID")
-        res = re.search(r"CPUID:(.*)\n", cpuid, re.S)
-        cpuids = res.group(1)
+        log_debug("disable all sensors".center(60, "="))
+        cmd_clr_all_disable = "app 43 02 05 00 00 32 00 00 96 00 00 05 20 03 23 05 0F 15 04 05 07 00 00 0F 0A 3C"
+        log_debug(cmd_clr_all_disable+"\n")
+        self.ser.execmd(cmd=cmd_clr_all_disable)
+        time.sleep(2)
 
-        jedecid = self.ser.execmd_getmsg("GETJEDEC")
-        res = re.search(r"JEDECID:(.*)\n", jedecid, re.S)
-        jedecids = res.group(1)
+        try:
+            uid = self.ser.execmd_getmsg("GETUID")
+            res = re.search(r"UNIQUEID:27-(.*)\n", uid, re.S)
+            uids = res.group(1)
+
+            cpuid = self.ser.execmd_getmsg("GETCPUID")
+            res = re.search(r"CPUID:(.*)\n", cpuid, re.S)
+            cpuids = res.group(1)
+
+            jedecid = self.ser.execmd_getmsg("GETJEDEC")
+            res = re.search(r"JEDECID:(.*)\n", jedecid, re.S)
+            jedecids = res.group(1)
+        except Exception as e:
+            log_debug("{}".format(traceback.format_exc()))
+            error_critical("{}\n{}".format(sys.exc_info()[0], e))
 
         log_debug("Extract UID, CPUID and JEDEC successfully")
 
