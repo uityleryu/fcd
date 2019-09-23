@@ -521,7 +521,7 @@
       "DESC"        : "UniFi smart plug",
       "FILE"        : "usp_esp8266_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False",
+      "QRCHECK"     : "True",
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
@@ -533,7 +533,7 @@
       "DESC"        : "Unifi Smart Plug 3",
       "FILE"        : "unifi_ar9331_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False",
+      "QRCHECK"     : "True",
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
@@ -545,7 +545,7 @@
       "DESC"        : "Unifi Smart Plug 8",
       "FILE"        : "unifi_ar9331_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False",
+      "QRCHECK"     : "True",
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     }
