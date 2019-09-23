@@ -62,6 +62,9 @@ apt-get -y install sshpass
 apt-get -y install tmux
 apt-get -y install terminator
 
+# networking filesystem tool
+apt-get -y cifs-utils
+
 # mkdir /media/FCDUSB
 # usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"
 # echo $usbdv >> /etc/fstab
