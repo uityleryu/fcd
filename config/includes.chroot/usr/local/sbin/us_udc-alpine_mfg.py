@@ -77,6 +77,7 @@ class USALPINEDiagloader(ScriptBase):
         else:
             cmd = "ifconfig eth0 {}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
 
     def lnx_netcheck(self):
         postexp = [
@@ -84,6 +85,7 @@ class USALPINEDiagloader(ScriptBase):
             self.linux_prompt
         ]
         self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.chk_lnxcmd_valid()
 
     def run(self):
         """
@@ -118,8 +120,11 @@ class USALPINEDiagloader(ScriptBase):
             WRITEFAKEBIN_EN = False
             cmd = "ifconfig br1 {0}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
             cmd = "ifconfig | grep -C 5 br1"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
 
         self.lnx_netcheck()
         msg(20, "Linux networking is good ...")
@@ -132,12 +137,21 @@ class USALPINEDiagloader(ScriptBase):
         else:
             UPDATEUB_EN = True
             UPDATEDIAG_EN = True
+            os.chdir(self.fwdir)
+            self.create_http_server()
 
         if UPDATEUB_EN is True:
-            log_debug("downloading FW U-boot")
-            srcp = "images/f060-fw-boot.img"
-            dstp = "/tmp/boot.img"
-            self.tftp_get(remote=srcp, local=dstp, timeout=300)
+            log_debug("wget FW U-boot starting ... ")
+            fw_url = "http://{0}:{1}/{2}-fw-boot.img".format(self.tftp_server, self.http_port, self.board_id)
+            cmd = "cd /tmp; wget {0}".format(fw_url)
+            self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
+            cmd = "mv /tmp/{0}-fw-boot.img /tmp/boot.img".format(self.board_id)
+            self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+            log_debug("wget FW U-boot finishing ... ")
+
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -150,13 +164,22 @@ class USALPINEDiagloader(ScriptBase):
             ]
             cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
             self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
             msg(30, "FW U-boot download completing ...")
 
         if UPDATEDIAG_EN is True:
-            log_debug("downloading the FW DIAG")
-            srcp = "images/f060-fw-uImage"
-            dstp = "/tmp/uImage"
-            self.tftp_get(remote=srcp, local=dstp, timeout=300)
+            log_debug("wget FW DIAG starting ... ")
+            fw_url = "http://{0}:{1}/{2}-fw-uImage".format(self.tftp_server, self.http_port, self.board_id)
+            cmd = "cd /tmp; wget {0}".format(fw_url)
+            self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
+            cmd = "mv /tmp/{0}-fw-uImage /tmp/uImage".format(self.board_id)
+            self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+            self.stop_http_server()
+            log_debug("wget FW DIAG finishing ... ")
+
             log_debug("flashing diag U-boot")
             postexp = [
                 r"Erasing blocks:.*\(50%\)",
@@ -169,6 +192,7 @@ class USALPINEDiagloader(ScriptBase):
             ]
             cmd = "flashcp -v /tmp/uImage {0}".format("/dev/mtd5")
             self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
             msg(40, "FW DIAG download completing ...")
 
         if SSDFDISK_EN is True:
@@ -181,13 +205,24 @@ class USALPINEDiagloader(ScriptBase):
             '''
             self.is_dutfile_exist("/dev/sda")
 
-            cmdset = [
-                "sh /tmp/fwdiag-ssd.sh partition",
-                "sh /tmp/fwdiag-ssd.sh format",
-                "reboot"
+            cmd = "sh /tmp/fwdiag-ssd.sh partition"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
+            postexp = [
+                "/dev/sda1     2048   133119   131072   64M",
+                "/dev/sda2   133120  2230271  2097152    1G",
+                "/dev/sda3  2230272  4327423  2097152    1G",
+                "/dev/sda4  4327424  4589567   262144  128M",
+                "/dev/sda5  4589568  4720639   131072   64M",
+                "/dev/sda6  4720640 58626254 53905615 25.7G",
+                self.linux_prompt
             ]
-            for idx in range(len(cmdset)):
-                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmdset[idx], self.linux_prompt)
+
+            cmd = "sh /tmp/fwdiag-ssd.sh format"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, postexp)
+            self.chk_lnxcmd_valid()
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot", self.linux_prompt)
 
             self.stop_at_uboot()
             self.boot_diag_from_spi()
@@ -201,8 +236,11 @@ class USALPINEDiagloader(ScriptBase):
                 WRITEFAKEBIN_EN = False
                 cmd = "ifconfig br1 {0}".format(self.dutip)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+                self.chk_lnxcmd_valid()
+
                 cmd = "ifconfig | grep -C 5 br1"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+                self.chk_lnxcmd_valid()
 
             self.lnx_netcheck()
             msg(50, "SSD partition and format completing ...")
@@ -214,13 +252,21 @@ class USALPINEDiagloader(ScriptBase):
 
             cmd = "dd if=/tmp/fake.bin of=/dev/mtdblock4"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
             msg(60, "Writing fake content to EEPROM completing ...")
 
         if VERCHECK_EN is True:
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, "cat /usr/lib/version", IMAG_VER)
+            rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+            match = re.findall(IMAG_VER, rtmsg)
+            if not match:
+                error_critical("The version of DIAG image is not correct")
+
             cmd = "echo {0} > /logs/boardname".format(BOARDNAME)
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, "cat /logs/boardname", BOARDNAME)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /logs/boardname", BOARDNAME)
+            self.chk_lnxcmd_valid()
             msg(70, "Boardname setting completing ...")
 
         if LOADLCMFW_EN is True:

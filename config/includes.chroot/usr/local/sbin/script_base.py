@@ -10,17 +10,19 @@ import stat
 import filecmp
 import argparse
 import json
+import ubntlib
 
 from ubntlib.fcd.common import Tee
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from pathlib import Path
-import ubntlib
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+from threading import Thread
 
 
 class ScriptBase(object):
-    __version__ = "1.0.4"
+    __version__ = "1.0.5"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -183,6 +185,11 @@ class ScriptBase(object):
         if self.qrcode is not None:
             self.qrhex = self.qrcode.encode('utf-8').hex()
 
+        # HTTP server
+        baseport = 8000
+        self.http_port = int(self.row_id) + baseport
+        self.http_srv = ""
+
     def _init_parse_inputs(self):
         parse = argparse.ArgumentParser(description="FCD tool args Parser")
         parse.add_argument('--prdline', '-pline', dest='product_line', help='Active Product Line', default=None)
@@ -257,8 +264,8 @@ class ScriptBase(object):
     def is_dutfile_exist(self, filename):
         """check if file exist on dut by shell script"""
         # ls "<filename>"; echo "RV="$?
-        sstrj = 'ls "' + filename + '"; echo "RV="$?'
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, sstrj, post_exp="RV=0")
+        cmd = "ls {0}; echo \"RV\"=$?".format(filename)
+        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, cmd, post_exp="RV=0")
         return True
 
     def erase_eefiles(self):
@@ -451,14 +458,17 @@ class ScriptBase(object):
         log_debug("Change file permission - {0} ...".format(self.eesigndate))
         cmd = "chmod 777 {0}".format(eesigndate_dut_path)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
 
         log_debug("Starting to write signed info to SPI flash ...")
         cmd = "dd if={0} of={1} bs=1k count=64".format(eesigndate_dut_path, self.devregpart)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
         self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
 
@@ -496,10 +506,12 @@ class ScriptBase(object):
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
         self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
 
         src = os.path.join(self.dut_tmpdir, "*")
         cmd = "chmod -R 777 {0}".format(src)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
 
     def is_network_alive_in_linux(self):
         time.sleep(3)
@@ -580,6 +592,7 @@ class ScriptBase(object):
         if self.force_update_eeprom is True:
             cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eegenbin, self.devregpart)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+            self.chk_lnxcmd_valid()
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
@@ -588,7 +601,8 @@ class ScriptBase(object):
         self.tftp_get(remote=srcp, local=helperexe_path, timeout=20, retry_en=False)
 
         cmd = "chmod 777 {}".format(helperexe_path)
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        self.chk_lnxcmd_valid()
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
         eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
@@ -601,8 +615,8 @@ class ScriptBase(object):
             eetxt_dut_path
         ]
         sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, sstr)
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt)
+        self.chk_lnxcmd_valid()
         time.sleep(1)
 
         files = [self.eebin, self.eetxt, self.eegenbin]
@@ -647,6 +661,7 @@ class ScriptBase(object):
         else:
             self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
 
+        self.chk_lnxcmd_valid()
         time.sleep(2)
         self.is_dutfile_exist(local)
         '''
@@ -685,6 +700,7 @@ class ScriptBase(object):
         else:
             self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
 
+        self.chk_lnxcmd_valid()
         '''
             To give a few delays to let the file transfer to the FCD host.
         '''
@@ -738,6 +754,20 @@ class ScriptBase(object):
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if int(rtc) != 0:
             error_critical("Failed to receive {} from DUT".format(file))
+
+    def stop_http_server(self):
+        self.http_srv.shutdown()
+
+    def create_http_server(self):
+        self.http_srv = HTTPServer(('', self.http_port), SimpleHTTPRequestHandler)
+        t = Thread(target=self.http_srv.serve_forever)
+        t.setDaemon(True)
+        t.start()
+        log_debug('http server running on port {}'.format(self.http_srv.server_port))
+
+    def chk_lnxcmd_valid(self):
+        cmd = "echo \"RV\"=$?"
+        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0")
 
     def close_fcd(self):
         time.sleep(3)

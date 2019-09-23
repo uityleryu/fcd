@@ -152,12 +152,22 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.linux_prompt
         ]
         self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.chk_lnxcmd_valid()
 
     def fwupdate(self):
-        log_debug("tftp get formal FW starting ... ")
-        srcp = "images/{0}-fw.bin".format(self.board_id)
-        self.tftp_get(remote=srcp, local="/tmp/upgrade.bin", timeout=600)
-        log_debug("tftp get formal FW finishing ... ")
+        log_debug("wget formal FW starting ... ")
+        os.chdir(self.fwdir)
+        self.create_http_server()
+        fw_url = "http://{0}:{1}/{2}-fw.bin".format(self.tftp_server, self.http_port, self.board_id)
+        cmd = "cd /tmp; wget {0}".format(fw_url)
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+        self.chk_lnxcmd_valid()
+
+        cmd = "mv /tmp/{0}-fw.bin /tmp/upgrade.bin".format(self.board_id)
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+        self.chk_lnxcmd_valid()
+        self.stop_http_server()
+        log_debug("wget formal FW finishing ... ")
 
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
         self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
@@ -165,14 +175,21 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info")
+        self.chk_lnxcmd_valid()
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, "qrid=" + self.qrcode)
         self.pexp.expect_only(10, self.linux_prompt)
+        self.chk_lnxcmd_valid()
+        '''
+            Adding sleep to wait for the LCM FW being upgraded completed
+        '''
         time.sleep(90)
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
+        self.chk_lnxcmd_valid()
 
     def run(self):
         """
@@ -206,8 +223,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         else:
             cmd = "ifconfig br1 {0}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
             cmd = "ifconfig | grep -C 5 br1"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
 
         self.lnx_netcheck()
         msg(10, "Boot up to linux console and network is good ...")
