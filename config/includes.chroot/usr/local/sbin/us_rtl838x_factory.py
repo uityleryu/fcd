@@ -37,7 +37,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "3",
             'ed23': "3",
             'ed24': "3",
-            'ed26': "3"
+            'ed26': "3",
+            'ed2a': "3"
         }
 
         # number of WiFi
@@ -47,7 +48,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "0",
             'ed23': "0",
             'ed24': "0",
-            'ed26': "0"
+            'ed26': "0",
+            'ed2a': "0"
         }
 
         # number of Bluetooth
@@ -57,7 +59,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "0",
             'ed23': "0",
             'ed24': "0",
-            'ed26': "0"
+            'ed26': "0",
+            'ed2a': "0"
         }
 
         self.netif = {
@@ -66,7 +69,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "ifconfig eth0 ",
             'ed23': "ifconfig eth0 ",
             'ed24': "ifconfig eth0 ",
-            'ed26': "ifconfig eth0 "
+            'ed26': "ifconfig eth0 ",
+            'ed2a': "ifconfig eth0 "
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -82,10 +86,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.PROVISION_ENABLE       = True
         self.DOHELPER_ENABLE        = True
         self.REGISTER_ENABLE        = True
-        self.FWUPDATE_ENABLE        = True
+        self.FWUPDATE_ENABLE        = False
         self.DATAVERIFY_ENABLE      = True
         self.CONF_ZEROIP_ENABLE     = False
-        self.WAIT_LCMUPGRADE_ENABLE = True
+        self.WAIT_LCMUPGRADE_ENABLE = False
 
     def fwupdate(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
