@@ -31,7 +31,7 @@ class UAPIPQ40XXMFG(ScriptBase):
         }
 
         self.artimg = {
-            'dc98': "dc98-mfg.bin"
+            'dc98': "dc9a-mfg.bin"
         }
 
         baseip = 20
@@ -44,7 +44,7 @@ class UAPIPQ40XXMFG(ScriptBase):
         self.kernel_address =  "0x0"
         self.kernel_size =  "0x170000"
         self.rootfs_address = "0x180000"
-        self.rootfs_size = "0x1d00000"
+        self.rootfs_size = "0x1a00000"
 
         self.fcd.common.config_stty(self.dev)
 

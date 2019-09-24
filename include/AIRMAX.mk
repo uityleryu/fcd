@@ -5,7 +5,8 @@ IMAGE-GBE= \
     images/dc9* \
     am-fw/GBE.* \
     am-fw/GP.* \
-    am-fw/ubnthd-u-boot.rom
+    am-fw/ubnthd-u-boot.rom \
+    am-fw/gigabeam*
 
 IMAGE-PRISMAP= \
     images/dc9* \
