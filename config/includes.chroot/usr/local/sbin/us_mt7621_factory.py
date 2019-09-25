@@ -178,10 +178,22 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def update_uboot(self):
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv loadaddr 0x84000000")
-        self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot ${loadaddr} images/" + self.board_id + '-uboot.bin')
-        self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
-        sf write ${loadaddr} 0x0 ${filesize}")
+        uboot_img = os.path.join(self.image, self.board_id+'-uboot.bin')
+        uboot_size = os.stat(os.path.join(self.tftpdir, uboot_img)).st_size
+        try:
+            self.pexp.expect_action(30, self.bootloader_prompt, "setenv loadaddr 0x84000000")
+            self.pexp.expect_lnxcmd_retry(15, self.bootloader_prompt,
+                                          "tftpboot ${loadaddr} "+uboot_img,
+                                          post_exp="Bytes transferred = {}".format(uboot_size))
+        except Exception as e:
+            error_critical("Failed to transfer boot img")
+
+        self.pexp.expect_lnxcmd_retry(60, self.bootloader_prompt,
+                                      "sf probe; sf erase 0x0 0x60000; \
+                                      sf write ${loadaddr} 0x0 ${filesize}",
+                                      post_exp=self.bootloader_prompt,
+                                      retry=0)
+        self.pexp.expect_action(10, "", "\003")
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def enter_uboot(self):
