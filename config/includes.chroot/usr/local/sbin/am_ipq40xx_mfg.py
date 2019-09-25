@@ -11,10 +11,9 @@ import os
 import stat
 import shutil
 
-
-class UAPIPQ40XXMFG(ScriptBase):
+class AMIPQ40XXMFG(ScriptBase):
     def __init__(self):
-        super(UAPIPQ40XXMFG, self).__init__()
+        super(AMIPQ40XXMFG, self).__init__()
         #self.ver_extract()
         self._init_vars()
 
@@ -22,23 +21,26 @@ class UAPIPQ40XXMFG(ScriptBase):
 
         # U-boot prompt
         self.ubpmt = {
-            'dc98': "\(IPQ40xx\) # "
+            'dc99': "\(IPQ40xx\) # ",
+            'dc9a': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'dc98': "root@OpenWrt"
+            'dc99': "root@OpenWrt",
+            'dc9a': "root@OpenWrt"
         }
 
         self.artimg = {
-            'dc98': "dc9a-mfg.bin"
+            'dc99': "dc99-mfg.bin",
+            'dc9a': "dc9a-mfg.bin"
         }
 
         baseip = 20
         self.prod_dev_ip = "192.168.1." + str((int(self.row_id) + baseip))
 
         self.tftpdir = self.tftpdir + "/"
-        self.uap_dir = os.path.join(self.fcd_toolsdir, "uap")
+        self.uap_dir = os.path.join(self.fcd_toolsdir, "am")
         self.common_dir = os.path.join(self.fcd_toolsdir, "common")
 
         self.kernel_address =  "0x0"
@@ -76,6 +78,9 @@ class UAPIPQ40XXMFG(ScriptBase):
         self._stop_uboot()
         time.sleep(3)
         self._set_uboot_network()
+
+        cmd = "ubntw all {0} {1} 13-00714-07 0".format(self.mac, self.board_id,) 
+        self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
 
         msg(10, "Get ART Image")
 
@@ -124,8 +129,8 @@ class UAPIPQ40XXMFG(ScriptBase):
 
 
 def main():
-    ubb_ipq840xx_mfg = UAPIPQ40XXMFG()
-    ubb_ipq840xx_mfg.run()
+    am_ipq840xx_mfg = AMIPQ40XXMFG()
+    am_ipq840xx_mfg.run()
 
 if __name__ == "__main__":
     main()

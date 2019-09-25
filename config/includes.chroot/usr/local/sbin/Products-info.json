@@ -450,7 +450,7 @@
       "BOMREV"      : "113-00714",
       "DESC"        : "GBE",
       "FILE"        : "am_ipq40xx_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1201"
@@ -463,7 +463,7 @@
       "BOMREV"      : "113-00709",
       "DESC"        : "GBE",
       "FILE"        : "am_ipq40xx_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1201"
