@@ -188,12 +188,9 @@ class USFLEXFactory(ScriptBase):
         except Exception as e:
             error_critical("Failed to transfer boot img")
 
-        self.pexp.expect_lnxcmd_retry(60, self.bootloader_prompt,
-                                      "sf probe; sf erase 0x0 0x60000; \
-                                      sf write ${loadaddr} 0x0 ${filesize}",
-                                      post_exp=self.bootloader_prompt,
-                                      retry=0)
-        self.pexp.expect_action(10, "", "\003")
+        self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
+                                                            sf write ${loadaddr} 0x0 ${filesize}")
+
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def enter_uboot(self):
