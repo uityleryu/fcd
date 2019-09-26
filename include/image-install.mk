@@ -21,6 +21,7 @@ image-install-$1:
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Logsync.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
 	if [ ! -d $(NEWSQUASHFS)/usr/local/sbin/ubntlib ]; then \
 		mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib; \

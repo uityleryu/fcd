@@ -6,6 +6,7 @@ from time import sleep
 from threading import Thread
 from ubntlib.gui.msgdialog import msgerrror, msginfo
 from ubntlib.fcd.common import Common
+from threading import Thread
 
 import argparse
 import gi
@@ -380,8 +381,8 @@ class fraMonitorPanel(Gtk.Frame):
             MAC address + QR code format:
             XX:XX:XX:XX:XX:XX-XXXXXX
         """
-        info = g[0:2] + ":" + g[2:4] + ":" + g[4:6] + ":" + g[6:8] + ":" + g[8:10] + ":" + g[10:12] + "-" + GCommon.qrcode
-        self.log.info("In setdirfl(), mac+qr: " + info)
+        info = "{0}:{1}:{2}:{3}:{4}:{5}-{6}".format(g[0:2], g[2:4], g[4:6], g[6:8], g[8:10], g[10:12], GCommon.qrcode)
+        self.log.info("In setdirfl(), mac-qr: " + info)
         self.lblmacqr.set_label(info)
 
         # Set time
@@ -391,7 +392,7 @@ class fraMonitorPanel(Gtk.Frame):
         date = time.strftime("%Y-%m-%d", time.gmtime())
 
         # Create the report directory
-        reportdir = GPath.logdir + "/" + GCommon.active_product + "/rev" + GCommon.active_bomrev + "/" + GCommon.active_region + "/" + date
+        reportdir = "{0}/{1}/rev-{2}/{3}/{4}".format(GPath.logdir, GCommon.active_product, GCommon.active_bomrev, GCommon.active_region, date)
         self.log.info("In setdirfl(), report dir: " + reportdir)
         GPath.reportdir = reportdir
 
@@ -474,26 +475,24 @@ class fraMonitorPanel(Gtk.Frame):
         self.stdout_stream_stop = True
         if (proc.returncode == 0):
             self.w = "good"
-            passdir = GPath.reportdir + "/Pass"
-            if not os.path.isdir(passdir):
-                os.makedirs(passdir)
-
-            tfile = passdir + "/" + GPath.templogfile[int(self.id)]
+            tempdir = os.path.join(GPath.reportdir, "Pass")
         else:
             self.w = "bad"
-            faildir = GPath.reportdir + "/Fail"
-            if not os.path.isdir(faildir):
-                os.makedirs(faildir)
+            tempdir = os.path.join(GPath.reportdir, "Fail")
 
-            tfile = faildir + "/" + GPath.templogfile[int(self.id)]
+        if not os.path.isdir(tempdir):
+            os.makedirs(tempdir)
 
+        tfile = os.path.join(tempdir, GPath.templogfile[int(self.id)])
         self.log.info("In inspection(), target file: " + tfile)
-        sfile = os.path.join(
-            "/tftpboot/",
-            "log_slot" + self.id + ".log")
+
+        sfile = "/tftpboot/log_slot{0}.log".format(self.id)
         self.log.info("In inspection(), source file: " + sfile)
+
         if os.path.isfile(sfile):
             shutil.copy2(sfile, tfile)
+            time.sleep(1)
+            os.remove(sfile)
         else:
             self.log.info("In inspection(), can't find the source file")
 
@@ -528,12 +527,16 @@ class dlgUserInput(Gtk.Dialog):
         self.etypassphrase.connect("changed", self.on_phassphrase_changed)
 
         # Load test items
-        f = open('/usr/local/sbin/' + 'Products-info.json')
+        f = open('/usr/local/sbin/Products-info.json')
         self.prods = json.load(f)
         f.close()
 
         GCommon.active_product_series = args.product
-        self.log.info("The Product Series: " + GCommon.active_product_series)
+        if GCommon.active_product_series == "":
+            self.log.info("The Product Series is empty ")
+            exit(1)
+        else:
+            self.log.info("The Product Series: " + GCommon.active_product_series)
 
         # Product combo box
         self.lblallpd = Gtk.Label("Select a product:")
@@ -799,7 +802,8 @@ class winFcdFactory(Gtk.Window):
                                         Gtk.ButtonsType.CANCEL,
                                         "Initializing environment, please wait.")
         self.dialog.format_secondary_text("Press cancel button to stop setting and close program")
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
+
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh {0}".format(GCommon.fcdhostip)
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
         GObject.io_add_watch(output.stdout,
@@ -834,16 +838,17 @@ class winFcdFactory(Gtk.Window):
         stdoutarray = stdout.decode().splitlines()
         for row in stdoutarray:
             device = row.split("/")[-1]
-            print(device)
+            self.log.info("device: " + device)
             file = open("/proc/mounts", "r")
             line = file.readline()
             while line:
-                print(line)
+                self.log.info("line: " + line)
                 if re.search(device, line):
                     tmp = line.split(" ")
                     if (tmp[1] and tmp[1] != "/cdrom"):
-                        GPath.logdir = tmp[1]
-                        self.log.info("In find_usb_storage(), found storage at " + GPath.logdir + "\n")
+                        GPath.usbrootdir = tmp[1]
+                        GPath.logdir = os.path.join(tmp[1], "reg_logs")
+                        self.log.info("In find_usb_storage(), found storage at " + GPath.logdir)
                         file.close()
                         return True
 
@@ -855,7 +860,7 @@ class winFcdFactory(Gtk.Window):
         return False
 
     def check_key_files(self):
-        GPath.keydir = GPath.logdir + "/keys/"
+        GPath.keydir = "{0}/keys/".format(GPath.usbrootdir)
         print(GPath.keydir)
         for name in GCommon.keyfilenames:
             self.log.info("In check_key_files(), check keyfile: " + name)
@@ -867,6 +872,7 @@ class winFcdFactory(Gtk.Window):
 
     def check_comport(self):
         cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
+        self.log.info("search tty cmd: " + cmd)
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
@@ -956,11 +962,14 @@ class winFcdFactory(Gtk.Window):
 
     def init_logs(self, usb_dir=None):
         if usb_dir is None:
-            usb_dir = "/media/usbdisk/logs"
+            usb_dir = "/media/usbdisk/gui_logs"
             timestamp = time.strftime('%Y-%m-%d-%H')
-            log_file_name = usb_dir + '/' + 'FCDSecurityRegGUI_' + timestamp + '.log'
+            log_file_name = "{0}/FCDSecurityRegGUI_{1}.log".format(usb_dir, timestamp)
 
-        self.log = logging.getLogger('FCDSecurityRegGUI_')
+        if not os.path.exists(usb_dir):
+            os.makedirs(usb_dir)
+
+        self.log = logging.getLogger('FCDSecurityRegGUI')
         self.log.setLevel(logging.INFO)
 
         # console log handler
@@ -968,9 +977,6 @@ class winFcdFactory(Gtk.Window):
         log_stream.setLevel(logging.DEBUG)
 
         # file log handler
-        if not os.path.exists(usb_dir):
-            os.makedirs(usb_dir)
-
         log_file = logging.FileHandler(log_file_name)
         log_file.setFormatter(logging.Formatter('[%(asctime)s - %(filename)s:%(lineno)d] %(message)s', '%Y-%m-%d %H:%M:%S'))
         log_file.setLevel(logging.DEBUG)

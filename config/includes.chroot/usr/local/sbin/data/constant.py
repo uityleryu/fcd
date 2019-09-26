@@ -1,0 +1,7 @@
+
+SRV_IP = ""
+SRV_PORT = ""
+SRV_SHAREDOC = ""
+SRV_USER = ""
+SRV_PWD = ""
+SYNC_PERIOD = ""

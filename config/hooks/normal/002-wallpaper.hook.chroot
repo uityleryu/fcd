@@ -2,6 +2,8 @@
 set -x
 set -e
 
+apt-get update
+
 # GTK3 packages
 apt-get -y install gtk+3.0
 apt-get -y install libgtk-3-dev
@@ -63,7 +65,7 @@ apt-get -y install tmux
 apt-get -y install terminator
 
 # networking filesystem tool
-apt-get -y cifs-utils
+apt-get -y install cifs-utils
 
 # mkdir /media/FCDUSB
 # usbdv="/dev/sdb1 /media/FCDUSB auto rw,user,noauto 0 0"

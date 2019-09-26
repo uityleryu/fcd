@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Logs-Upload
+Type=Application
+Exec=sudo python3 /usr/local/sbin/logsync.py
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=Logs-Upload
+GenericName[en_US]=
+Comment[en_US]=Utility for production of Ubiquiti units
+GenericName=
+Comment=Utility for production
+Icon=/usr/local/sbin/icons/upload.png
+StartupNotify=false

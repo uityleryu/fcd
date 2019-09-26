@@ -222,6 +222,21 @@ class USALPINEDiagloader(ScriptBase):
             cmd = "sh /tmp/fwdiag-ssd.sh format"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, postexp)
             self.chk_lnxcmd_valid()
+
+            postexp = [
+                "sda1      64M boot",
+                "sda2       1G",
+                "sda3       1G",
+                "sda4     128M persistent",
+                "sda5      64M recovery",
+                "sda6    25.7G data",
+                self.linux_prompt
+            ]
+
+            cmd = "lsblk -o NAME,SIZE,LABEL"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, postexp)
+            self.chk_lnxcmd_valid()
+
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot", self.linux_prompt)
 
             self.stop_at_uboot()
@@ -272,7 +287,7 @@ class USALPINEDiagloader(ScriptBase):
         if LOADLCMFW_EN is True:
             log_debug("loading LCM FW to DUT")
             srcp = "images/f060-fw-lcm"
-            self.tftp_get(remote=srcp, local=self.lcmfw, timeout=30)
+            self.tftp_get(remote=srcp, local=self.lcmfw, timeout=60)
             self.pexp.expect_lnxcmd(60, self.linux_prompt, "/etc/init.d/upydiag.sh", self.diagsh1)
 
             self.pexp.expect_lnxcmd(60, self.diagsh1, "diag", self.diagsh2)

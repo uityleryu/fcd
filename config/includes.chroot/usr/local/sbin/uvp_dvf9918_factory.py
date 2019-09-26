@@ -29,7 +29,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.linux_prompt = "root@dvf9918:~#"
         self.helperexe = "helper_DVF99_release"
         self.helper_path = "uvp"
-        self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.8"
+        self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.13"
 
         # number of Ethernet
         ethnum = {

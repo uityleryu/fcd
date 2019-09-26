@@ -4,6 +4,12 @@ STATUS=/tmp/prod-setup.done
 DHCPOUT=/tmp/dhcp_out.txt
 WGETOUT=/tmp/wget_out.txt
 IFINFO=/tmp/ifinfo.txt
+DEVNET=/usr/local/sbin/devnet.txt
+MDIR=/media/usbdisk
+
+if [ -f ${DEVNET} ]; then
+    rm -rf ${DEVNET}
+fi
 
 if [ -f /tftpboot/tools/tools.tar ]; then
     echo "Unzipping the tools.tar to /tftpboot/tools"
@@ -33,7 +39,8 @@ if [ -f /tftpboot/tools/common/tmux.conf ]; then
 fi
 
 echo " configuring the USB disk "
-MDIR=/media/usbdisk
+echo "USB device: $MDIR" > ${DEVNET}
+chmod 777 ${DEVNET}
 mkdir -p $MDIR
 if ! grep -q usbdisk /proc/mounts; then
     udev=$(find /dev/disk/by-id -name 'usb-*' | xargs -n1 readlink -f \
@@ -107,6 +114,7 @@ for iface in $ifaces; do
                 networkdomain=`grep -c "192\.168\.1\." ${IFINFO}`
                 if [ ${networkdomain} -eq 0 ]; then
                     echo " dhcp_iface: "$dhcp_iface
+                    echo "external_iface: $dhcp_iface" >> ${DEVNET}
                     dhcp_found=1
                     break
                 else
@@ -126,7 +134,8 @@ fi
 
 #find first "free" eth interface for device production
 prod_iface=`cat /tmp/iface | grep -v $dhcp_iface`
-echo " prod_iface: "$prod_iface
+echo "prod_iface: "$prod_iface
+echo "internal_iface: $prod_iface" >> ${DEVNET}
 
 sudo ip addr flush dev $prod_iface
 sudo ip addr add ${host_ip}/24 dev $prod_iface

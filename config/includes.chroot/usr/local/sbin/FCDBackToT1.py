@@ -360,13 +360,14 @@ class fraMonitorPanel(Gtk.Frame):
         GPath.reportdir = reportdir
 
         if not (os.path.isdir(GPath.reportdir)):
-            result = self.pcmd("mkdir -p " + GPath.reportdir)
+            cmd = "mkdir -p {0}".format(GPath.reportdir)
+            result = self.pcmd(cmd)
             if result is False:
                 msgerrror(self, "Can't create a log directory in the USB disk")
 
         # Create the temporary report file
         nowtime = time.strftime("%Y-%m-%d-%H%M", time.gmtime())
-        GPath.templogfile[int(self.id)] = GCommon.macaddr + "_" + nowtime + ".log"
+        GPath.templogfile[int(self.id)] = "BackToT1_{0}_{1}.log".format(GCommon.macaddr, nowtime)
         self.log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
@@ -422,32 +423,29 @@ class fraMonitorPanel(Gtk.Frame):
         t.start()
 
     def inspection(self, fd, cond, proc):
-        while proc.poll() is None:
-            time.sleep(0.5)
+        proc.poll()
         self.y = True
         self.stdout_stream_stop = True
         if (proc.returncode == 0):
             self.w = "good"
-            passdir = os.path.join(GPath.reportdir, "Pass")
-            if not os.path.isdir(passdir):
-                os.makedirs(passdir)
-
-            tfile = os.path.join(passdir, GPath.templogfile[int(self.id)])
+            tempdir = os.path.join(GPath.reportdir, "Pass")
         else:
             self.w = "bad"
-            faildir = os.path.join(GPath.reportdir, "Fail")
-            if not os.path.isdir(faildir):
-                os.makedirs(faildir)
+            tempdir = os.path.join(GPath.reportdir, "Fail")
 
-            tfile = os.path.join(faildir, GPath.templogfile[int(self.id)])
+        if not os.path.isdir(tempdir):
+            os.makedirs(tempdir)
 
+        tfile = os.path.join(tempdir, GPath.templogfile[int(self.id)])
         self.log.info("In inspection(), target file: " + tfile)
-        sfile = os.path.join(
-            "/tftpboot/",
-            "log_slot" + self.id + ".log")
+
+        sfile = "/tftpboot/log_slot{0}.log".format(self.id)
         self.log.info("In inspection(), source file: " + sfile)
+
         if os.path.isfile(sfile):
             shutil.copy2(sfile, tfile)
+            time.sleep(1)
+            os.remove(sfile)
         else:
             self.log.info("In inspection(), can't find the source file")
 
@@ -477,7 +475,7 @@ class dlgUserInput(Gtk.Dialog):
         self.vboxuserauth = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         self.log = log
         # Load test items
-        f = open('/usr/local/sbin/' + 'Products-info.json')
+        f = open('/usr/local/sbin/Products-info.json')
         self.prods = json.load(f)
         f.close()
 
@@ -687,7 +685,7 @@ class winFcdFactory(Gtk.Window):
                                         Gtk.ButtonsType.CANCEL,
                                         "Initializing environment, please wait.")
         self.dialog.format_secondary_text("Press cancel button to stop setting and close program")
-        cmd = "sudo sh /usr/local/sbin/prod-network.sh " + GCommon.fcdhostip
+        cmd = "sudo sh /usr/local/sbin/prod-network.sh {0}".format(GCommon.fcdhostip)
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
         GObject.io_add_watch(output.stdout,
@@ -730,8 +728,9 @@ class winFcdFactory(Gtk.Window):
                 if re.search(device, line):
                     tmp = line.split(" ")
                     if (tmp[1] and tmp[1] != "/cdrom"):
-                        GPath.logdir = tmp[1]
-                        print("Found storage at " + GPath.logdir + "\n")
+                        GPath.usbrootdir = tmp[1]
+                        GPath.logdir = os.path.join(tmp[1], "reg_logs")
+                        print("In find_usb_storage(), Found storage at " + GPath.logdir + "\n")
                         file.close()
                         return True
 
@@ -743,7 +742,8 @@ class winFcdFactory(Gtk.Window):
         return False
 
     def check_comport(self):
-        cmd = "ls /dev | grep ttyUSB"
+        cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
+        self.log.info("search tty cmd: " + cmd)
         output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         output.wait()
         [stdout, stderr] = output.communicate()
@@ -753,17 +753,17 @@ class winFcdFactory(Gtk.Window):
             failed: 1
         """
         if (output.returncode == 1):
-            self.log.info("returncode: " + str(output.returncode))
+            self.log.info("In check_comport(), returncode: " + str(output.returncode))
             return False
 
         exist_tty = stdout.decode().splitlines()
         for itty in exist_tty:
-            cmd = "stty -F /dev/" + itty + " speed 115200 > /dev/null 2>/dev/null"
+            cmd = "stty -F /dev/{0} speed 115200 > /dev/null 2>/dev/null".format(itty)
             output = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
             output.wait()
             [stdout, stderr] = output.communicate()
             if (output.returncode == 1):
-                self.log.info("returncode: " + str(output.returncode))
+                self.log.info("In check_comport(), returncode: " + str(output.returncode))
                 return False
 
             GCommon.active_tty.append(itty)
@@ -800,7 +800,7 @@ class winFcdFactory(Gtk.Window):
         while rt is False:
             response = dialog.run()
             if (response == Gtk.ResponseType.OK):
-                self.log.info("The OK button was clicked")
+                self.log.info("In call_input_dlg(), The OK button was clicked")
                 result = dialog.check_inputs()
                 if result is False:
                     msgerrror(self, "Any one of inputs is not correct")
@@ -815,7 +815,7 @@ class winFcdFactory(Gtk.Window):
                     self.frame4.set_product(GCommon.active_product)
                     rt = True
             else:
-                self.log.info("The Cancel button was clicked")
+                self.log.info("In call_input_dlg(), The Cancel button was clicked")
                 rt = True
 
         dialog.destroy()
@@ -824,9 +824,9 @@ class winFcdFactory(Gtk.Window):
 
     def init_logs(self, usb_dir=None):
         if usb_dir is None:
-            usb_dir = "/media/usbdisk/logs"
+            usb_dir = "/media/usbdisk/gui_logs"
             timestamp = time.strftime('%Y-%m-%d-%H')
-            log_file_name = usb_dir + '/' + 'FCDBackToT1GUI_' + timestamp + '.log'
+            log_file_name = "{0}/FCDSecurityRegGUI_{1}.log".format(usb_dir, timestamp)
 
         self.log = logging.getLogger('FCDBackToT1GUI')
         self.log.setLevel(logging.INFO)

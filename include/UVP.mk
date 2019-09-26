@@ -3,7 +3,7 @@
 
 IMAGE-UVP-FLEX= \
     images/ef0d* \
-    uvp-fw/uvp-flex_1.0.8.bin.unsign
+    uvp-fw/uvp-flex_1.0.13.bin.unsign
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
