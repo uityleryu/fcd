@@ -3,7 +3,8 @@
 
 IMAGE-AF= \
     images/dc9b* \
-    af-fw/*.bin
+    af-fw/*.bin \
+    af-fw/af60*.bin
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
