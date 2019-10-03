@@ -265,7 +265,7 @@ class ScriptBase(object):
         """check if file exist on dut by shell script"""
         # ls "<filename>"; echo "RV="$?
         cmd = "ls {0}; echo \"RV\"=$?".format(filename)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, cmd, post_exp="RV=0")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp="RV=0")
         return True
 
     def erase_eefiles(self):
@@ -457,17 +457,17 @@ class ScriptBase(object):
 
         log_debug("Change file permission - {0} ...".format(self.eesigndate))
         cmd = "chmod 777 {0}".format(eesigndate_dut_path)
-        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
         log_debug("Starting to write signed info to SPI flash ...")
         cmd = "dd if={0} of={1} bs=1k count=64".format(eesigndate_dut_path, self.devregpart)
-        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
-        self.pexp.expect_lnxcmd_retry(timeout, self.linux_prompt, cmd, post_exp=post_txt)
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
@@ -505,7 +505,7 @@ class ScriptBase(object):
         self.tftp_get(remote=source, local=target, timeout=timeout, retry_en=True, post_en=post_exp)
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
-        self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
         src = os.path.join(self.dut_tmpdir, "*")
@@ -643,9 +643,9 @@ class ScriptBase(object):
             remote: absolute path of the source file
             local: absolute path of the destination file
             timeout: timeout for expect_lnxcmd API
-            retry_en: to determine which API to use expect_lnxcmd_retry() or expect_lnxcmd()
+            retry_en: to determine which API to use expect_lnxcmd() or expect_lnxcmd()
     '''
-    def tftp_get(self, remote, local, timeout=300, retry_en=False, post_en=True):
+    def tftp_get(self, remote, local, timeout=300, retry_en=3, post_en=True):
         post_exp = None
         if post_en is True:
             post_exp = self.linux_prompt
@@ -656,10 +656,7 @@ class ScriptBase(object):
             return False
 
         cmd = "tftp -g -r {0} -l {1} {2}".format(remote, local, self.tftp_server)
-        if retry_en is True:
-            self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
-        else:
-            self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp, retry=retry)
 
         self.chk_lnxcmd_valid()
         time.sleep(2)
@@ -678,9 +675,9 @@ class ScriptBase(object):
             remote: absolute path of the source file
             local: absolute path of the destination file
             timeout: timeout for expect_lnxcmd API
-            retry_en: to determine which API to use expect_lnxcmd_retry() or expect_lnxcmd()
+            retry_en: to determine which API to use expect_lnxcmd() or expect_lnxcmd()
     '''
-    def tftp_put(self, remote, local, timeout=300, retry_en=False, post_en=True):
+    def tftp_put(self, remote, local, timeout=300, retry=3, post_en=True):
         __func_name = "tftp_put: "
         post_exp = None
         if post_en is True:
@@ -695,10 +692,7 @@ class ScriptBase(object):
         time.sleep(2)
 
         cmd = "tftp -p -r {0} -l {1} {2}".format(os.path.basename(remote), local, self.tftp_server)
-        if retry_en is True:
-            self.pexp.expect_lnxcmd_retry(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
-        else:
-            self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp, retry=retry)
 
         self.chk_lnxcmd_valid()
         '''
