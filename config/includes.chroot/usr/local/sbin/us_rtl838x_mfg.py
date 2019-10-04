@@ -70,13 +70,13 @@ class USW_RTL838X_MFG(ScriptBase):
         self.pexp.expect_only(120, "done")
 
     def imagecheck(self):
-        self.pexp.expect_lnxcmd_retry(240, "Please press Enter to activate this console", "")
+        self.pexp.expect_lnxcmd(240, "Please press Enter to activate this console", "")
         self.login()
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
     def eerase_eeprom(self):
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "dd if=/dev/zero ibs=1k skip=16320 count=64 of=/dev/mtdblock6", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "md5sum /dev/mtd6", post_exp=self.empty_eeprom_md5sum)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/dev/zero ibs=1k skip=16320 count=64 of=/dev/mtdblock6", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "md5sum /dev/mtd6", post_exp=self.empty_eeprom_md5sum)
 
     def run(self):
         """

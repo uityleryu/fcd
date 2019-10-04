@@ -84,7 +84,7 @@ class USALPINEDiagloader(ScriptBase):
             "64 bytes from",
             self.linux_prompt
         ]
-        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
         self.chk_lnxcmd_valid()
 
     def run(self):
@@ -129,7 +129,7 @@ class USALPINEDiagloader(ScriptBase):
         self.lnx_netcheck()
         msg(20, "Linux networking is good ...")
 
-        rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+        rtmsg = self.pexp.expect_get_outp`ut("cat /usr/lib/version", self.linux_prompt)
         match = re.findall(IMAG_VER, rtmsg)
         if match:
             UPDATEUB_EN = False
@@ -163,7 +163,7 @@ class USALPINEDiagloader(ScriptBase):
                 self.linux_prompt
             ]
             cmd = "flashcp -v /tmp/boot.img {0}".format("/dev/mtd0")
-            self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
             msg(30, "FW U-boot download completing ...")
 
@@ -191,7 +191,7 @@ class USALPINEDiagloader(ScriptBase):
                 self.linux_prompt
             ]
             cmd = "flashcp -v /tmp/uImage {0}".format("/dev/mtd5")
-            self.pexp.expect_lnxcmd_retry(600, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
             msg(40, "FW DIAG download completing ...")
 

@@ -432,7 +432,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())

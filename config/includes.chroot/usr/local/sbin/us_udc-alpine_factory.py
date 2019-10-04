@@ -151,7 +151,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             "64 bytes from",
             self.linux_prompt
         ]
-        self.pexp.expect_lnxcmd_retry(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
         self.chk_lnxcmd_valid()
 
     def fwupdate(self):
@@ -188,7 +188,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             Adding sleep to wait for the LCM FW being upgraded completed
         '''
         time.sleep(90)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
         self.chk_lnxcmd_valid()
 
     def run(self):

@@ -131,26 +131,26 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def check_info(self):
         """under developing
         """
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd_retry(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login_kernel(self):
-        self.pexp.expect_lnxcmd_retry(300, "Please press Enter to activate this console", "")
+        self.pexp.expect_lnxcmd(300, "Please press Enter to activate this console", "")
         self.login()
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
     def SetNetEnv(self):
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
         self.CheckNet()
 
     def CheckNet(self):
@@ -203,7 +203,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         # reboot anyway
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "reboot -f")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
 
         if self.FWUPDATE_ENABLE is True:
             msg(55, "Starting firmware upgrade process...")
