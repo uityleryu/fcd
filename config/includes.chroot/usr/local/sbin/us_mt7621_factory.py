@@ -174,17 +174,17 @@ class USFLEXFactory(ScriptBase):
             print("Pass checking radio status")
 
     def wait_lcm_upgrade(self):                                                                                                     
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
-        self.pexp.expect_lnxcmd_retry(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def update_uboot(self):
         uboot_img = os.path.join(self.image, self.board_id+'-uboot.bin')
         uboot_size = os.stat(os.path.join(self.tftpdir, uboot_img)).st_size
         try:
             self.pexp.expect_action(30, self.bootloader_prompt, "setenv loadaddr 0x84000000")
-            self.pexp.expect_lnxcmd_retry(15, self.bootloader_prompt,
-                                          "tftpboot ${loadaddr} "+uboot_img,
-                                          post_exp="Bytes transferred = {}".format(uboot_size))
+            self.pexp.expect_lnxcmd(15, self.bootloader_prompt,
+                                    "tftpboot ${loadaddr} "+uboot_img,
+                                    post_exp="Bytes transferred = {}".format(uboot_size))
         except Exception as e:
             error_critical("Failed to transfer boot img")
 
