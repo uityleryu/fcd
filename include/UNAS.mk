@@ -16,7 +16,7 @@ IMAGE-UNVR+=$(IMAGE-UNVR8)
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
 
-PRD_MODEL=UniFiNAS
+PRD_MODEL=UniFiNVR
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
