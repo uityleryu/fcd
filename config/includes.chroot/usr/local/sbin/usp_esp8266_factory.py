@@ -102,7 +102,7 @@ class USPESP8266Factory(ScriptBase):
         cmdj = ' '.join(cmd)
         log_debug(cmdj)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        log_debug(sto.decode('UTF-8'))
+        log_debug(sto)
         if int(rtc) > 0:
             error_critical("Running helper failed")
 

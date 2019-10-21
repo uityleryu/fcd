@@ -67,7 +67,7 @@ class LogsyncFunc(object):
         #cmd = "ping -c 1 {0}".format(Constant.SRV_IP)
         #[rtmsg, rtc] = self.common.xcmd(cmd)
         #if rtc == 0:
-        #    match = re.findall("64 bytes from", rtmsg.decode())
+        #    match = re.findall("64 bytes from", rtmsg)
         #    if match:
         #        print("Find the server")
         #    else:
@@ -161,7 +161,7 @@ class LogsyncFunc(object):
             print("Can't find the FCD host MAC address")
             exit(1)
         else:
-            temp = rtmsg.decode().split()
+            temp = rtmsg.split()
             hostmac = temp[1].replace(":", "-")
             print("Host MAC: " + hostmac)
 
@@ -210,7 +210,7 @@ class LogsyncFunc(object):
             cmd = "rsync -av --ignore-existing {0} {1}".format(reglogpath, self.srvmacdir)
             [rtmsg, rtc] = self.common.xcmd(cmd)
             if rtc == 0:
-                self.root.scl_log.insert(tk.END, rtmsg.decode())
+                self.root.scl_log.insert(tk.END, rtmsg)
                 self.root.scl_log.insert(tk.END, "\n\n")
             else:
                 print("Command executed failed, do next time ... ")

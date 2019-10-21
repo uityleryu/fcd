@@ -58,7 +58,6 @@ class fwloader():
         if (int(rtc) > 0):
             error_critical("Get md5sum of FW img in host failed!!")
         else:
-            md5sum = md5sum.decode('utf-8')
             print("md5sum of FW img = {}".format(md5sum))
 
         # transfer fw img using tftp

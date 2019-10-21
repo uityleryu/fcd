@@ -491,7 +491,7 @@ class USFactoryGeneral(ScriptBase):
         log_debug(msg="qrcode_hex=" + self.var.us.qrcode_hex)
         cmd = "xset -q | grep -c '00:\ Caps\ Lock:\ \ \ on'"
         [sto, _] = self.fcd.common.xcmd(cmd)
-        if (int(sto.decode()) > 0):
+        if (int(sto) > 0):
             error_critical("Caps Lock is on")
 
         self.fcd.common.config_stty(self.dev)

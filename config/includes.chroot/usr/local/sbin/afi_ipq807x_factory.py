@@ -344,7 +344,7 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         cmdj = ' '.join(cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        regsubparams = sto.decode('UTF-8')
+        regsubparams = sto
         if (int(rtc) > 0):
             error_critical("Extract parameters failed!!")
         else:
