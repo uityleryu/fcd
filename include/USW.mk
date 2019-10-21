@@ -30,21 +30,26 @@ IMAGE-ULS-RPS= \
     usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
     usw-fw/US.mt7621.*
 
-IMAGE-USW-16-24= \
+IMAGE-USW-16-24-48= \
     images/ed20* \
     images/ed21* \
+    images/ed22* \
     images/ed23* \
     images/ed24* \
     usw-fw/unifiswitch-16-* \
     usw-fw/unifiswitch-24-* \
     usw-fw/unifiswitch-16poe-* \
     usw-fw/unifiswitch-24poe-* \
+    usw-fw/unifiswitch-48poe-* \
     usw-fw/US.rtl838x.*
 
-IMAGE-USW-48= \
-    images/ed22* \
-    usw-fw/unifiswitch-48poe-* \
-    usw-fw/US.rtl838x.pcb*
+IMAGE-USW-LITE= \
+    images/ed26* \
+    images/ed2a* \
+    usw-fw/unifiswitch-lite-16poe-* \
+    usw-fw/unifiswitch-lite-8poe-* \
+    usw-fw/unifiswitch-16poe-* \
+    usw-fw/US.rtl838x.*
 
 IMAGE-USW-LEAF= \
     images/f060* \
@@ -59,7 +64,8 @@ IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
-IMAGE-USW+=$(IMAGE-USW-16-24)
+IMAGE-USW+=$(IMAGE-USW-16-24-48)
+IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-MINI)
 
@@ -78,8 +84,8 @@ USW-PRO_FCDIMG_HASH=
 USW-6XG_FCDIMG_HASH=
 USW-FLEX_FCDIMG_HASH=
 ULS-RPS_FCDIMG_HASH=
-USW-16-24_FCDIMG_HASH=
-USW-48_FCDIMG_HASH=
+USW-16-24-48_FCDIMG_HASH=
+USW-LITE_FCDIMG_HASH=
 USW-LEAF_FCDIMG_HASH=
 USW-MINI_FCDIMG_HASH=
 
@@ -92,8 +98,8 @@ USW-PRO_UBNTLIB_HASH=
 USW-6XG_UBNTLIB_HASH=
 USW-FLEX_UBNTLIB_HASH=
 ULS-RPS_UBNTLIB_HASH=
-USW-16-24_UBNTLIB_HASH=
-USW-48_UBNTLIB_HASH=
+USW-16-24-48_UBNTLIB_HASH=
+USW-LITE_UBNTLIB_HASH=
 USW-LEAF_UBNTLIB_HASH=
 USW-MINI_UBNTLIB_HASH=
 
@@ -106,8 +112,8 @@ USW-PRO_TOOL_HASH=
 USW-6XG_TOOL_HASH=
 USW-FLEX_TOOL_HASH=
 ULS-RPS_TOOL_HASH=
-USW-16-24_TOOL_HASH=
-USW-48_TOOL_HASH=
+USW-16-24-48_TOOL_HASH=
+USW-LITE_TOOL_HASH=
 USW-LEAF_TOOL_HASH=
 USW-MINI_TOOL_HASH=
 
@@ -125,13 +131,13 @@ TOOLS-CONFIG= \
 
 TOOLS-USW+=$(TOOLS-CONFIG)
 
-TOOLS-USW-16-24+=$(TOOLS-USW)
-TOOLS-USW-16-24+= \
+TOOLS-USW-16-24-48+=$(TOOLS-USW)
+TOOLS-USW-16-24-48+= \
     usw_rtl838x/helper_rtl838x \
     usw_rtl838x/rtl838x-ee
 
-TOOLS-USW-48+=$(TOOLS-USW)
-TOOLS-USW-48+= \
+TOOLS-USW-LITE+=$(TOOLS-USW)
+TOOLS-USW-LITE+= \
     usw_rtl838x/helper_rtl838x \
     usw_rtl838x/rtl838x-ee
 
@@ -162,7 +168,7 @@ $(eval $(call ProductImage,USW-6XG,FCD-USW-6XG-$(VER)))
 $(eval $(call ProductImage,USW-PRO,FCD-USW-PRO-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD-USW-FLEX-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USW-16-24,FCD-USW-16-24-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USW-48,FCD-USW-48-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-16-24-48,FCD-USW-16-24-48-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-MINI,FCD-USW-MINI-$(VER)-$(FWVER)))
