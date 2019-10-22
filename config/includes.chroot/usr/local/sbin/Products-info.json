@@ -230,7 +230,7 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-MINI":{
+    "USW-FLEX-MINI":{
       "INDEX"       : 12,
       "NAME"        : "USW-FLEX-MINI",
       "BOARDID"     : "ed30",
