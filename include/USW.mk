@@ -55,7 +55,7 @@ IMAGE-USW-LEAF= \
     images/f060* \
     usw-fw/fw.UDC*
 
-IMAGE-USW-MINI= \
+IMAGE-USW-FLEX-MINI= \
     images/ed30* \
     usw-fw/unifiswitch-mini-* \
     usw-fw/US.m487.*
@@ -67,7 +67,7 @@ IMAGE-USW+=$(IMAGE-ULS-RPS)
 IMAGE-USW+=$(IMAGE-USW-16-24-48)
 IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
-IMAGE-USW+=$(IMAGE-USW-MINI)
+IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -87,7 +87,7 @@ ULS-RPS_FCDIMG_HASH=
 USW-16-24-48_FCDIMG_HASH=
 USW-LITE_FCDIMG_HASH=
 USW-LEAF_FCDIMG_HASH=
-USW-MINI_FCDIMG_HASH=
+USW-FLEX-MINI_FCDIMG_HASH=
 
 FCDIMG_VER=
 
@@ -101,7 +101,7 @@ ULS-RPS_UBNTLIB_HASH=
 USW-16-24-48_UBNTLIB_HASH=
 USW-LITE_UBNTLIB_HASH=
 USW-LEAF_UBNTLIB_HASH=
-USW-MINI_UBNTLIB_HASH=
+USW-FLEX-MINI_UBNTLIB_HASH=
 
 UBNTLIB_VER=
 
@@ -115,7 +115,7 @@ ULS-RPS_TOOL_HASH=
 USW-16-24-48_TOOL_HASH=
 USW-LITE_TOOL_HASH=
 USW-LEAF_TOOL_HASH=
-USW-MINI_TOOL_HASH=
+USW-FLEX-MINI_TOOL_HASH=
 
 TOOL_VER=
 
@@ -157,8 +157,8 @@ TOOLS-ULS-RPS+= \
     uls_rps/uls_get_power_status_fcd.sh \
     uls_rps/uls_power.sh
 
-TOOLS-USW-MINI=$(TOOLS-USW)
-TOOLS-USW-MINI+= \
+TOOLS-USW-FLEX-MINI=$(TOOLS-USW)
+TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
 # Project target
@@ -171,4 +171,4 @@ $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-16-24-48,FCD-USW-16-24-48-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USW-MINI,FCD-USW-MINI-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-FLEX-MINI,FCD-USW-FLEX-MINI-$(VER)-$(FWVER)))

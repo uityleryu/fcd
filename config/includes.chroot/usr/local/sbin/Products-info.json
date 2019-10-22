@@ -232,10 +232,10 @@
 
     "USW-MINI":{
       "INDEX"       : 12,
-      "NAME"        : "USW-MINI",
+      "NAME"        : "USW-FLEX-MINI",
       "BOARDID"     : "ed30",
       "BOMREV"      : "113-02851",
-      "DESC"        : "UniFi Switch Mini",
+      "DESC"        : "UniFi Switch Flex Mini",
       "FILE"        : "us_m487_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

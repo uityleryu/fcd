@@ -361,8 +361,9 @@ class USM487FactoryGeneral(ScriptBase):
             error_critical("Key cert Verify .... FAILED!")
 
     def check_info(self):
-        self.pexp.expect_only(60, "Setting up the SSL data....")
-        self.pexp.expect_only(60, "ok")
+        self.pexp.expect_only(80, "Send normal inform to")  # ensure devreg thread is started
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "fcd devreg")
         self.pexp.expect_only(60, "Security check result: Pass")
         self.pexp.expect_action(10, "", "")
         out = self.pexp.expect_get_output("version", self.linux_prompt, 20)
