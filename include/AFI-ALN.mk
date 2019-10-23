@@ -26,7 +26,7 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 AFI-ALN-R_FCDIMG_HASH=
 AFI-ALN-P_FCDIMG_HASH=
 
-FCDIMG_VER=41bb33f96a289c1a94b686c79271dd183e1dfcd6
+FCDIMG_VER=e3dbe3d0f7c6f0eba69f3b5dbeba35814c55d258
 
 # UBNTLIB repo hash
 # git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git

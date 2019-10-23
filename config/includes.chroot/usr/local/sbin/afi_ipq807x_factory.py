@@ -477,8 +477,9 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(10, lnxpmt[self.board_id], ssh_unlock_cmd)
         self.pexp.expect_only(10, "pairing erased")
         self.pexp.expect_action(120, bootmsg[self.board_id], "")
-        self.pexp.expect_action(10, lnxpmt[self.board_id], "ubus call firmware info")
-        self.pexp.expect_get_index(5, "version")
+        self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "ubus call firmware info", retry=12)
+        self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "cat /proc/ubnthal/system.info")
+        self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "cat /proc/ubnthal/board")
         msg(100, "Formal firmware completed...")
 
 
