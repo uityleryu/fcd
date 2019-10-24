@@ -32,13 +32,13 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         self.macnum = {
-            'ed20': "3",
-            'ed21': "3",
-            'ed22': "3",
-            'ed23': "3",
-            'ed24': "3",
-            'ed26': "3",
-            'ed2a': "3"
+            'ed20': "3",  # usw-16-poe
+            'ed21': "3",  # usw-24-poe
+            'ed22': "3",  # usw-48-poe
+            'ed23': "3",  # usw-16
+            'ed24': "3",  # usw-24
+            'ed26': "3",  # usw-lite-16-poe
+            'ed2a': "3"   # usw-lite-8-poe
         }
 
         # number of WiFi
@@ -86,10 +86,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.PROVISION_ENABLE       = True
         self.DOHELPER_ENABLE        = True
         self.REGISTER_ENABLE        = True
-        self.FWUPDATE_ENABLE        = False
+        self.FWUPDATE_ENABLE        = True
         self.DATAVERIFY_ENABLE      = True
         self.CONF_ZEROIP_ENABLE     = False
-        self.WAIT_LCMUPGRADE_ENABLE = False
+        self.WAIT_LCMUPGRADE_ENABLE = True
 
     def fwupdate(self):
         self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
