@@ -940,7 +940,14 @@ proc do_security { boardid } {
         timeout { error_critical "Login failed" }
         
     expect timeout { error_critical "Login failed" } "#"
-    set timeout 20
+    set timeout 60
+
+    send "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done\r"
+    expect timeout { error_critical "hostapd doesn't exist in /etc/inittab" } "#"
+    send "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab\r"
+    expect timeout { error_critical "Command promt not found" } "#"
+    send "init -q; sleep 15\r"
+    expect timeout { error_critical "Command promt not found" } "#"
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
     sleep 5
