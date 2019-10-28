@@ -724,14 +724,15 @@ proc turn_on_burnin_mode { boardid } {
         sleep 1
         expect timeout { error_critical "Command promt not found" } "#"
 
+        # save config
+        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
+        expect timeout { error_critical "Command promt not found" } "setup_lte done"
+
+        sleep 10
         send "grep \"burnin\" system.cfg\r"
         expect timeout {
             error_critical "Burnin config is not set correctly"
         } -re $burnin_flag
-
-        # save config
-        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
-        expect timeout { error_critical "Command promt not found" } "#"
 
     } else {
         log_debug "Skip burnin mode enabling"
@@ -939,7 +940,14 @@ proc do_security { boardid } {
         timeout { error_critical "Login failed" }
         
     expect timeout { error_critical "Login failed" } "#"
-    set timeout 20
+    set timeout 60
+
+    send "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done\r"
+    expect timeout { error_critical "hostapd doesn't exist in /etc/inittab" } "#"
+    send "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab\r"
+    expect timeout { error_critical "Command promt not found" } "#"
+    send "init -q; sleep 15\r"
+    expect timeout { error_critical "Command promt not found" } "#"
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
     sleep 5
@@ -1565,7 +1573,6 @@ proc handle_uboot { {wait_prompt 0} } {
     send "boot \r"
     check_security $boardid
     turn_on_burnin_mode $boardid
-    check_LTE_ver $boardid
 
     log_progress 100 "Completed with MAC0: $mac " 
 
