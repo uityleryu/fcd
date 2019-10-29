@@ -113,10 +113,15 @@ class UAPIPQ40XXMFG(ScriptBase):
 
         self.pexp.expect_action(600, self.ubpmt[self.board_id], "printenv\r")
 
+        msg(70, "Cleanup CountryCode")
+        cmd = "sf read 0x84000000 0x170000 0x10000 && mw 0x8400100c 00200000 && mw 0x8400500c 00200000 && sf write 0x84000000 0x170000 0x10000"
+        self.pexp.expect_action(180, self.ubpmt[self.board_id], cmd)
+        time.sleep(5)
+
         self.pexp.expect_action(10, self.ubpmt[self.board_id], "re\r")
         time.sleep(60)
 
-        msg(90, "Reboot")
+        msg(90, "Reboot...")
 
         self.pexp.expect_only(120, "Linux version 4.4.60")
 
