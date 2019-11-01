@@ -26,6 +26,7 @@ cmd_prefix = "go $ubntaddr"
 # U-boot erase start address
 uberstaddr = {
     'eb23': "0x1e0000",
+    'eb25': "0x1e0000",
     'eb36': "0x1e0000",
     'eb37': "0x1e0000",
     'eb67': "0x1e0000",
@@ -35,6 +36,7 @@ uberstaddr = {
 # U-boot erase size
 ubersz = {
     'eb23': "0x10000",
+    'eb25': "0x10000",
     'eb36': "0x10000",
     'eb37': "0x10000",
     'eb67': "0x10000",
@@ -44,6 +46,7 @@ ubersz = {
 #
 bootargs = {
     'eb23': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb25': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb36': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb37': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb67': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
@@ -52,6 +55,7 @@ bootargs = {
 
 helperexes = {
     'eb20': "helper_BCM5341x",
+    'eb25': "helper_BCM5617x",
     'eb23': "helper_BCM5616x",
     'eb36': "helper_BCM5616x",
     'eb37': "helper_BCM5616x",
@@ -70,20 +74,45 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.bootloader_prompt = "u-boot>"
         self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
+        self.USGH2_SERIES = None
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
-        self.pexp.expect_only(timeout, "Hit any key to stop autoboot")
+
+        expect_cal_case1 = "Switching to RD_DATA_DELAY Step"
+        expect_cal_case2 = "Validate Shmoo parameters stored in flash ..... failed"
+        expect_normal = "Hit any key to stop autoboot"
+
+        expect_list = [expect_cal_case1, expect_cal_case2, expect_normal]
+        index = self.pexp.expect_get_index(timeout=60, exptxt=expect_list)
+        if expect_list[index] != expect_normal:
+            log_debug("Waiting for self calibration in u-boot")
+            timeout = 120
+            self.pexp.expect_only(timeout, "Hit any key to stop autoboot")
+
+        log_debug("Stop u-boot")
         self.pexp.expect_action(timeout, "", "")
-        self.pexp.expect_action(timeout, self.bootloader_prompt, ' '.join([cmd_prefix, "uappinit"]))
-        self.pexp.expect_only(timeout, "UBNT application initialized")
+
+        # bootubnt is only For USGH2 series. ex:usw-xg
+        output = self.pexp.expect_get_output("bootubnt init", self.bootloader_prompt ,10)
+        if "Unknown command" in output:
+            self.USGH2_SERIES = False
+            self.pexp.expect_action(timeout, self.bootloader_prompt, ' '.join([cmd_prefix, "uappinit"]))
+            self.pexp.expect_only(timeout, "UBNT application initialized")
+        elif "UBNT application initialized" in output:
+            self.USGH2_SERIES = True
+            pass
 
     def update_firmware_in_uboot(self):
         """
         use urescue to update firmwre,
         after flash firmware, DU will be resetting
         """
-        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv do_urescue TRUE; urescue -u")
+        if self.USGH2_SERIES is True:
+            self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="bootubnt ubntrescue;bootubnt")
+        else:
+            self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv do_urescue TRUE; urescue -u")
+
         extext_list = ["TFTPServer started. Wating for tftp connection...",
                        "Listening for TFTP transfer"]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
@@ -96,24 +125,33 @@ class USBCM5616FactoryGeneral(ScriptBase):
         atftp_cmd = "atftp --option \"mode octet\" -p -l {} {}".format(fw_path, self.dutip)
         log_debug(msg="Run cmd on host:" + atftp_cmd)
         self.fcd.common.xcmd(cmd=atftp_cmd)
-        self.pexp.expect_only(timeout=60, exptxt=self.bootloader_prompt)
-        self.pexp.expect_action(10, "", "\003")
-        self.pexp.expect_action(10, self.bootloader_prompt,  ' '.join([cmd_prefix, "uwrite -f"]))
+        if self.USGH2_SERIES is False:
+            self.pexp.expect_only(timeout=60, exptxt=self.bootloader_prompt)
+            self.pexp.expect_action(10, "", "\003")
+            self.pexp.expect_action(10, self.bootloader_prompt,  ' '.join([cmd_prefix, "uwrite -f"]))
+
         self.pexp.expect_only(timeout=60, exptxt="Firmware Version:")
         log_debug("Firmware loaded")
 
         self.pexp.expect_only(timeout=60, exptxt="Image Signature Verfied, Success.")
         log_debug("Download image verified.")
 
-        index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done")
-        if index == self.pexp.TIMEOUT:
-            error_critical(msg="Failed to flash firmware.")
-        msg(no=75, out="Firmware flashed on kernel0")
+        if self.USGH2_SERIES is False:
+            index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done")
+            if index == self.pexp.TIMEOUT:
+                error_critical(msg="Failed to flash firmware.")
+            msg(no=75, out="Firmware flashed on kernel0")
 
-        index = self.pexp.expect_get_index(timeout=300, exptxt="Firmware update complete.")
-        if index == self.pexp.TIMEOUT:
-            error_critical(msg="Failed to flash firmware.")
-        msg(no=90, out="Firmware update complete.")
+            index = self.pexp.expect_get_index(timeout=300, exptxt="Firmware update complete.")
+            if index == self.pexp.TIMEOUT:
+                error_critical(msg="Failed to flash firmware.")
+        else:
+            self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
+            self.pexp.expect_only(180, "done")
+            self.pexp.expect_only(120, "Updating kernel1 partition \(and skip identical blocks\)")
+            self.pexp.expect_only(180, "done")
+
+        msg(no=70, out="Firmware update complete.")
         self.pexp.expect_only(timeout=150, exptxt="Starting kernel")
 
     def is_network_alive_in_uboot(self, retry=3):
@@ -224,6 +262,11 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "done")
         self.pexp.expect_action(10, "", "\003")
         log_debug("MAC setting succeded")
+
+        if self.USGH2_SERIES is True:
+            log_debug("USGH2_SERIES is TRUE")
+            self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt write")
+            self.pexp.expect_only(10, "done")
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -336,8 +379,16 @@ class USBCM5616FactoryGeneral(ScriptBase):
         msg(15, "Board ID/Revision set")
         self.set_data_in_uboot()
 
-        # reset the U-boot
-        self.pexp.expect_action(10, self.bootloader_prompt, "re")
+        if self.USGH2_SERIES is True:
+            # for mdk_drv init correctly
+            self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel unknown")
+            self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")
+            self.pexp.expect_only(60, "Resetting to default environment")
+            self.pexp.expect_only(60, "done")
+        else:
+            # reset the U-boot
+            self.pexp.expect_action(10, self.bootloader_prompt, "re")
+
         self.stop_uboot()
         self.pexp.expect_action(10, self.bootloader_prompt, "printenv")
         self.pexp.expect_action(10, self.bootloader_prompt, "saveenv")
@@ -413,15 +464,12 @@ class USBCM5616FactoryGeneral(ScriptBase):
             log_debug("Decompressing " + self.eetgz + " files successfully")
 
     def check_board_signed(self):
-        cmd = r"grep -c flashSize /proc/ubnthal/system.info"
+        cmd = r"grep flashSize /proc/ubnthal/system.info"
         self.pexp.expect_action(10, "", "")
         output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
-        match = re.search(r'(\d+)', output)
-        if match:
-            if match.group(1).strip() != "1":
-                error_critical(msg="Device Registration check failed!")
-        else:
-            error_critical(msg="Unable to get flashSize!, please checkout output by grep")
+        match = re.search(r'flashSize=', output)
+        if not match:
+            error_critical(msg="Device Registration check failed!")
 
         cmd = r"grep qrid /proc/ubnthal/system.info"
         output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
@@ -473,7 +521,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(ZModem=True)
+            self.check_devreg_data(zmodem=True)
             msg(50, "Finish doing signed file and EEPROM checking ...")
             self.pexp.expect_action(timeout=10, exptxt=self.linux_prompt, action="reboot")
 

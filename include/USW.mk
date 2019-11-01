@@ -60,6 +60,11 @@ IMAGE-USW-FLEX-MINI= \
     usw-fw/unifiswitch-mini-* \
     usw-fw/US.m487.*
 
+IMAGE-USW-XG= \
+    images/eb25* \
+    usw-fw/unifiswitch-xg24poe* \
+    usw-fw/US.bcm5617x*
+
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
@@ -68,6 +73,7 @@ IMAGE-USW+=$(IMAGE-USW-16-24-48)
 IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
+IMAGE-USW+=$(IMAGE-USW-XG)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -88,6 +94,7 @@ USW-16-24-48_FCDIMG_HASH=
 USW-LITE_FCDIMG_HASH=
 USW-LEAF_FCDIMG_HASH=
 USW-FLEX-MINI_FCDIMG_HASH=
+USW-XG_FCDIMG_HASH=
 
 FCDIMG_VER=
 
@@ -102,6 +109,7 @@ USW-16-24-48_UBNTLIB_HASH=
 USW-LITE_UBNTLIB_HASH=
 USW-LEAF_UBNTLIB_HASH=
 USW-FLEX-MINI_UBNTLIB_HASH=
+USW-XG_UBNTLIB_HASH=
 
 UBNTLIB_VER=
 
@@ -116,6 +124,7 @@ USW-16-24-48_TOOL_HASH=
 USW-LITE_TOOL_HASH=
 USW-LEAF_TOOL_HASH=
 USW-FLEX-MINI_TOOL_HASH=
+USW-XG_TOOL_HASH=
 
 TOOL_VER=
 
@@ -161,6 +170,8 @@ TOOLS-USW-FLEX-MINI=$(TOOLS-USW)
 TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
+TOOLS-USW-XG=$(TOOLS-USW)
+
 # Project target
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
@@ -172,3 +183,4 @@ $(eval $(call ProductImage,USW-16-24-48,FCD-USW-16-24-48-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD-USW-FLEX-MINI-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-XG,FCD-USW-XG-$(VER)-$(FWVER)))
