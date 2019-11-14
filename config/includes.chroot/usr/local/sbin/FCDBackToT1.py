@@ -278,6 +278,15 @@ class fraMonitorPanel(Gtk.Frame):
 
         return True
 
+    def is_capslock_off(self):
+        output, ret = self.xcmd("xset -q | grep \"Caps Lock\"")
+        match = re.search(r"Caps Lock: *off", output)
+        if match:
+            return True
+        else:
+            self.log.info("Caps Lock key is on")
+            return False
+
     def aquirebarcode(self):
         rt = False
         tty = self.get_tty()
@@ -306,11 +315,15 @@ class fraMonitorPanel(Gtk.Frame):
                         msgerrror(self.win, "Barcode invalid. Exiting...")
                         rt = False
                     else:
-                        pattern = re.compile(r'[^0-9a-fA-F]')
-                        pres = pattern.match(btmp[0])
-                        if pres is not None:
+                        mac_speci_char = re.search(r'[^0-9a-fA-F]', btmp[0])
+                        qr_speci_char = re.search(r'[^0-9a-zA-Z]', btmp[1])
+                        if mac_speci_char is not None:
                             self.log.info("In aquirebarcode(), the macaddr format is incorrect")
-                            msgerrror(self.win, "MAC adress invalid. Exiting...")
+                            msgerrror(self.win, "MAC address invalid. Exiting...")
+                            rt = False
+                        elif qr_speci_char is not None:
+                            self.log.info("In aquirebarcode(), the QR code format is incorrect")
+                            msgerrror(self.win, "QR code invalid. Exiting...")
                             rt = False
                         else:
                             self.log.info("In aquirebarcode(), the barcode is valid")
@@ -324,11 +337,10 @@ class fraMonitorPanel(Gtk.Frame):
                     rt = False
             else:
                 if (barcodelen == (macaddrlen)):
-                    pattern = re.compile(r'[^0-9a-fA-F]')
-                    pres = pattern.match(barcode)
-                    if pres is not None:
+                    mac_speci_char = re.search(r'[^0-9a-fA-F]', barcode)
+                    if mac_speci_char is not None:
                         self.log.info("In aquirebarcode(), the macaddr format is incorrect")
-                        msgerrror(self.win, "MAC adress invalid. Exiting...")
+                        msgerrror(self.win, "MAC address invalid. Exiting...")
                         rt = False
                     else:
                         self.log.info("In aquirebarcode(), the barcode is valid")
@@ -341,6 +353,10 @@ class fraMonitorPanel(Gtk.Frame):
                     rt = False
         else:
             self.log.info("In aquirebarcode(), this is barcode response cancel")
+            rt = False
+
+        if self.is_capslock_off() is False:
+            msgerrror(self.win, "Caps Lock key is on, please disable it")
             rt = False
 
         dialog.destroy()
@@ -367,7 +383,7 @@ class fraMonitorPanel(Gtk.Frame):
 
         # Create the temporary report file
         nowtime = time.strftime("%Y-%m-%d-%H%M", time.gmtime())
-        GPath.templogfile[int(self.id)] = "BackToT1_{0}_{1}.log".format(GCommon.macaddr, nowtime)
+        GPath.templogfile[int(self.id)] = "BackToT1_{0}_{1}.log".format(GCommon.macaddr.upper(), nowtime)
         self.log.info("In setdirfl(), templogfile: " + GPath.templogfile[int(self.id)])
 
     def on_start_button_click(self, button):
