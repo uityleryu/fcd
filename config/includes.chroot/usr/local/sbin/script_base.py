@@ -22,7 +22,7 @@ from threading import Thread
 
 
 class ScriptBase(object):
-    __version__ = "1.0.6"
+    __version__ = "1.0.7"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -82,6 +82,9 @@ class ScriptBase(object):
         Tee(log_file_path, 'w')
 
     def _init_share_var(self):
+        # feature flags
+        self.FCD_TLV_data = True
+
         # prompt related
         self.bootloader_prompt = "u-boot>"
         self.linux_prompt = "#"
@@ -136,9 +139,6 @@ class ScriptBase(object):
         # retrieve the content from EEPROM partition of DUT
         self.eechk = "e.c.{}".format(self.row_id)
 
-        # extract the FCD information from the EEPROM partition offset 0xd000
-        self.eeorg = "e.org.{}".format(self.row_id)
-
         # RSA key file
         self.rsakey = "dropbear_key.rsa.{}".format(self.row_id)
 
@@ -166,9 +166,6 @@ class ScriptBase(object):
 
         # EX: /tftpboot/e.c.0
         self.eechk_path = os.path.join(self.tftpdir, self.eechk)
-
-        # EX: /tftpboot/e.org.0
-        self.eeorg_path = os.path.join(self.tftpdir, self.eeorg)
 
         # EX: /tftpboot/dropbear_key.rsa.0
         self.rsakey_path = os.path.join(self.tftpdir, self.rsakey)
@@ -273,7 +270,7 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eeorg, self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -353,7 +350,7 @@ class ScriptBase(object):
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
-                "-i field=flash_eeprom,format=binary,pathname=" + self.eegenbin_path,
+                "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
                 "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
                 "-o field=registration_id",
                 "-o field=result",
@@ -373,7 +370,7 @@ class ScriptBase(object):
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
-                "-i field=flash_eeprom,format=binary,pathname=" + self.eegenbin_path,
+                "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
                 "-i field=fcd_id,format=hex,value=" + self.fcd_id,
                 "-i field=fcd_version,format=hex,value=" + self.sem_ver,
                 "-i field=sw_id,format=hex,value=" + self.sw_id,
@@ -400,44 +397,14 @@ class ScriptBase(object):
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         log_debug("Excuting client_x86 registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
 
-    def add_fcd_info(self):
+    def add_FCD_TLV_info(self):
+        log_debug("Gen FCD TLV data into " + self.eesign_path)
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign)
-
-        cmd = "dd if={0} of=/tmp/{1} bs=1 skip=53248 count=4096".format(self.devregpart, self.eeorg)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-        time.sleep(1)
-        self.chk_lnxcmd_valid()
-
-        dstp = "/tmp/{0}".format(self.eeorg)
-        self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
-
-        '''
-            Trying to put the FCD information stored in the e.org.0
-            to the area of 0xD000 ~ 0xDFFF of the e.s.0
-        '''
-        f1 = open(self.eeorg_path, "rb")
-        content1 = list(f1.read())
-        content1_len = len(content1)
-        f1.close()
-
-        f2 = open(self.eesign_path, "rb")
-        content2 = list(f2.read())
-        f2.close()
-
-        f3 = open(self.eesign_path, "wb")
-        for idx in range(0, content1_len - 20):
-            '''
-                FCD information area: 0xD000 ~ 0xDFFF
-                The decimal of 0xD000 is 53248
-            '''
-            content2[idx + 53248] = content1[idx]
-
-        arr = bytearray(content2)
-        f3.write(arr)
-        f3.close()
 
         nowtime = time.strftime("%Y%m%d", time.gmtime())
         # /tftpboot/tools/common/x86-64k-ee
@@ -468,31 +435,35 @@ class ScriptBase(object):
         """
         log_debug("Send signed eeprom file adding date code from host to DUT ...")
         post_txt = None
+        
+        # Determine what eeprom should be written into DUT finally
+        if self.FCD_TLV_data is True:
+            eewrite = self.eesigndate
+        else:
+            eewrite = self.eesign
+        eewrite_path = os.path.join(self.tftpdir, eewrite)
+        eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
+
         if post_en is True:
             post_txt = self.linux_prompt
 
         if dut_tmp_subdir is not None:
-            eechk_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eechk)
+            eewrite_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, eewrite)
         else:
-            eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
-
-        if dut_tmp_subdir is not None:
-            eesigndate_dut_path = os.path.join(self.dut_tmpdir, dut_tmp_subdir, self.eesigndate)
-        else:
-            eesigndate_dut_path = os.path.join(self.dut_tmpdir, self.eesigndate)
+            eewrite_dut_path = os.path.join(self.dut_tmpdir, eewrite)
 
         if zmodem is False:
-            self.tftp_get(remote=self.eesigndate, local=eesigndate_dut_path, timeout=timeout, post_en=post_en)
+            self.tftp_get(remote=eewrite, local=eewrite_dut_path, timeout=timeout, post_en=post_en)
         else:
-            self.zmodem_send_to_dut(file=self.eesigndate_path, dest_path=self.dut_tmpdir)
+            self.zmodem_send_to_dut(file=eewrite_path, dest_path=self.dut_tmpdir)
 
-        log_debug("Change file permission - {0} ...".format(self.eesigndate))
-        cmd = "chmod 777 {0}".format(eesigndate_dut_path)
+        log_debug("Change file permission - {0} ...".format(eewrite))
+        cmd = "chmod 777 {0}".format(eewrite_dut_path)
         self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
         log_debug("Starting to write signed info to SPI flash ...")
-        cmd = "dd if={0} of={1} bs=1k count=64".format(eesigndate_dut_path, self.devregpart)
+        cmd = "dd if={0} of={1} bs=1k count=64".format(eewrite_dut_path, self.devregpart)
         self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
         self.chk_lnxcmd_valid()
 
@@ -508,9 +479,9 @@ class ScriptBase(object):
         else:
             self.zmodem_recv_from_dut(file=eechk_dut_path, dest_path=self.tftpdir)
 
-        otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, self.eesigndate)
+        otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, eewrite)
         log_debug(otmsg)
-        rtc = filecmp.cmp(self.eechk_path, self.eesigndate_path)
+        rtc = filecmp.cmp(self.eechk_path, eewrite_path)
         if rtc is True:
             log_debug("Comparing files successfully")
         else:
@@ -617,6 +588,17 @@ class ScriptBase(object):
             otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
+        # Overwrite devregpart data except (0xa000-0xbfff) and (0xd000-0xdfff)
+        eegenbin_dut_path = os.path.join(self.dut_tmpdir, self.eegenbin)
+        self.tftp_get(remote=self.eegenbin, local=eegenbin_dut_path, timeout=15)
+        cmd = "dd if=/tmp/{0} of={1} bs=1k count=40".format(self.eegenbin, self.devregpart)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        cmd = "dd if=/tmp/{0} of={1} bs=1k skip=48 seek=48 count=4".format(self.eegenbin, self.devregpart)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        cmd = "dd if=/tmp/{0} of={1} bs=1k skip=56 seek=56 count=8".format(self.eegenbin, self.devregpart)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        self.chk_lnxcmd_valid()
+
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
@@ -642,7 +624,7 @@ class ScriptBase(object):
         self.chk_lnxcmd_valid()
         time.sleep(1)
 
-        files = [self.eetxt]
+        files = [self.eetxt, self.eebin]
         for fh in files:
             srcp = os.path.join(self.tftpdir, fh)
             dstp = "/tmp/{0}".format(fh)

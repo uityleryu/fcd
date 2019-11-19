@@ -288,8 +288,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.add_fcd_info()
-            msg(45, "Finish adding FCD information in EEPROM ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
         '''
