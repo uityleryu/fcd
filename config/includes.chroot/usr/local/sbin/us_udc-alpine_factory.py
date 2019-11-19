@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
-
 import sys
 import time
 import os
@@ -11,11 +7,23 @@ import re
 import stat
 import filecmp
 
+sys.path.append("/tftpboot/tools")
+
+from usw_leaf.decrypt import Decrypt
+from script_base import ScriptBase
+from ubntlib.fcd.expect_tty import ExpttyProcess
+from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+
+SIM_PCYL_LNX_EN = False
+SIM_PCYL_UB_EN = False
 PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
+SETBOARDNAME_EN = True
 FWUPDATE_EN = True
 DATAVERIFY_EN = True
+VTSYCHECK_EN = True
+AUTODIAG_EN = False
 
 
 class USUDCALPINEFactoryGeneral(ScriptBase):
@@ -29,22 +37,37 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.diagsh2 = "DIAG# "
         self.eepmexe = "x86-64k-ee"
         self.helperexe = "helper_f060_AL324_release"
-        self.lcmfwver = "v3.0.4-0-gf89bc2b"
         self.helper_path = "usw_leaf"
+        self.dcrp = None
+
+        # LCM FW
+        lcmfwver = {
+            'f060': "v4.0.3-0-ge62a40b",
+            'f062': ""
+        }
+
+        # FW image
+        fwimage = {
+            'f060': "UDC.alpinev2.v4.1.27.9a00d88.191025.1440",
+            'f062': ""
+        }
 
         # number of Ethernet
         ethnum = {
-            'f060': "73"
+            'f060': "73",
+            'f062': "129"
         }
 
         # number of WiFi
         wifinum = {
-            'f060': "0"
+            'f060': "0",
+            'f062': "0"
         }
 
         # number of Bluetooth
         btnum = {
-            'f060': "1"
+            'f060': "1",
+            'f062': "1"
         }
 
         self.devnetmeta = {
@@ -54,12 +77,15 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         }
 
         self.netif = {
-            'f060': "ifconfig eth0 "
+            'f060': "ifconfig eth0 ",
+            'f062': "ifconfig eth0 "
         }
 
-    def stop_at_uboot(self):
-        self.pexp.expect_action(60, "to stop", "\033\033")
-        time.sleep(1)
+        # DIAG board name
+        brdname = {
+            'f060': "usw-100g-mfg",
+            'f062': "usw-spine-rev1-mfg"
+        }
 
     def boot_recovery_spi(self):
         cmdset = [
@@ -72,7 +98,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
 
     def ubupdate(self):
-        self.stop_at_uboot()
+        self.dcrp.stop_at_uboot()
         self.set_boot_net()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(30, "bootupd done")
@@ -171,7 +197,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
         self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
-        self.login(username="root", password="ubnt", timeout=100)
+        self.rtc = self.dcrp.lnx_login(timeout=100)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info")
@@ -188,8 +214,13 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             Adding sleep to wait for the LCM FW being upgraded completed
         '''
         time.sleep(90)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver, retry=15)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", lcmfwver[self.board_id], retry=20)
         self.chk_lnxcmd_valid()
+
+        rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+        match = re.findall(fwimage[self.board_id], rtmsg)
+        if not match:
+            error_critical("The version of FW image is not correct")
 
     def run(self):
         """
@@ -200,21 +231,29 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{0} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+        self.dcrp = Decrypt(self.pexp)
 
-        self.stop_at_uboot()
+        if SIM_PCYL_LNX_EN is True:
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_action(10, "", "reboot")
+
+        if SIM_PCYL_UB_EN is True:
+            self.pexp.expect_action(10, "", "reset")
+
+        self.dcrp.stop_at_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run delenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
-        self.stop_at_uboot()
+        self.dcrp.stop_at_uboot()
         self.boot_recovery_spi()
         msg(5, "Boot from SPI recovery image ...")
 
-        rtc = self.login(username="root", password="ubnt", timeout=80)
+        rtc = self.dcrp.lnx_login(timeout=100)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
@@ -238,26 +277,33 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
               So, it doesn't have to change too much. All APIs are came from script_base.py
         '''
         if PROVISION_EN is True:
+            self.erase_eefiles()
             msg(20, "Send tools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
 
         if DOHELPER_EN is True:
-            self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
+            self.add_fcd_info()
+            msg(45, "Finish adding FCD information in EEPROM ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
         '''
             ============ Registration End ============
         '''
 
+        if SETBOARDNAME_EN is True:
+            cmd = "echo {0} > /logs/boardname".format(brdname[self.board_id])
+            self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
+            self.chk_lnxcmd_valid()
+
         if FWUPDATE_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
-            rtc = self.login(username="root", password="ubnt", timeout=100)
+            rtc = self.dcrp.lnx_login(timeout=100)
             if rtc == 1:
                 error_critical("The DUT has been registered!!!")
 
@@ -268,6 +314,23 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         if DATAVERIFY_EN is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
+
+        if VTSYCHECK_EN is True:
+            self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
+            self.login(username="ubnt", password="ubnt", timeout=100)
+
+            postexp = [
+                fwimage[self.board_id],
+                lcmfwver[self.board_id]
+            ]
+            self.pexp.expect_lnxcmd(10, "UBNT", "show version", postexp)
+
+        if AUTODIAG_EN is True:
+            self.pexp.expect_lnxcmd(10, "UBNT", "reboot", "UBNT")
+            self.dcrp.stop_at_uboot()
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootcmd run hddualfitrecovery")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra diag")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "saveenv")
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

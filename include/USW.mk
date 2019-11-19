@@ -53,6 +53,12 @@ IMAGE-USW-LITE= \
 
 IMAGE-USW-LEAF= \
     images/f060* \
+    usw-fw/fw.LEAF* \
+    usw-fw/fw.UDC*
+
+IMAGE-USW-SPINE= \
+    images/f062* \
+    usw-fw/fw.SPINE* \
     usw-fw/fw.UDC*
 
 IMAGE-USW-FLEX-MINI= \
@@ -72,6 +78,7 @@ IMAGE-USW+=$(IMAGE-ULS-RPS)
 IMAGE-USW+=$(IMAGE-USW-16-24-48)
 IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
+IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
 
@@ -93,6 +100,7 @@ ULS-RPS_FCDIMG_HASH=
 USW-16-24-48_FCDIMG_HASH=
 USW-LITE_FCDIMG_HASH=
 USW-LEAF_FCDIMG_HASH=
+USW-SPINE_FCDIMG_HASH=
 USW-FLEX-MINI_FCDIMG_HASH=
 USW-XG_FCDIMG_HASH=
 
@@ -108,6 +116,7 @@ ULS-RPS_UBNTLIB_HASH=
 USW-16-24-48_UBNTLIB_HASH=
 USW-LITE_UBNTLIB_HASH=
 USW-LEAF_UBNTLIB_HASH=
+USW-SPINE_UBNTLIB_HASH=
 USW-FLEX-MINI_UBNTLIB_HASH=
 USW-XG_UBNTLIB_HASH=
 
@@ -123,6 +132,7 @@ ULS-RPS_TOOL_HASH=
 USW-16-24-48_TOOL_HASH=
 USW-LITE_TOOL_HASH=
 USW-LEAF_TOOL_HASH=
+USW-SPINE_TOOL_HASH=
 USW-FLEX-MINI_TOOL_HASH=
 USW-XG_TOOL_HASH=
 
@@ -152,7 +162,18 @@ TOOLS-USW-LITE+= \
 
 TOOLS-USW-LEAF=$(TOOLS-USW)
 TOOLS-USW-LEAF+= \
-    usw_leaf/*
+    usw_leaf/create_preload.sh \
+    usw_leaf/decrypt.pyc \
+    usw_leaf/fake-leaf.bin \
+    usw_leaf/fake-spine.bin \
+    usw_leaf/fwdiag-ssd.sh \
+    usw_leaf/helper_AL324_release_udc \
+    usw_leaf/__init__.py \
+    usw_leaf/uswleaf-decrypt \
+
+TOOLS-USW-SPINE=$(TOOLS-USW)
+# the tools for the USW-SPINE are almost identical to the USW-LEAF
+TOOLS-USW-SPINE+=$(TOOLS-USW-LEAF)
 
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-PRO=$(TOOLS-USW)
@@ -182,5 +203,6 @@ $(eval $(call ProductImage,ULS-RPS,FCD-ULS-RPS-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-16-24-48,FCD-USW-16-24-48-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LITE,FCD-USW-LITE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-SPINE,FCD-USW-SPINE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD-USW-FLEX-MINI-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD-USW-XG-$(VER)-$(FWVER)))

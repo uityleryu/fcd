@@ -293,6 +293,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW-SPINE":{
+      "INDEX"       : 15,
+      "NAME"        : "USW-SPINE",
+      "BOARDID"     : "f062",
+      "BOMREV"      : "113-02932",
+      "DESC"        : "UniFi Super Switch Spine",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
   },
 

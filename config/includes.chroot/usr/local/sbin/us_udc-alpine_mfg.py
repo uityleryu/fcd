@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 import sys
 import time
 import os
@@ -6,6 +7,9 @@ import stat
 import filecmp
 import re
 
+sys.path.append("/tftpboot/tools")
+
+from usw_leaf.decrypt import Decrypt
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -19,7 +23,10 @@ VERCHECK_EN = True
 SETDIAGDF_EN = True
 LOADLCMFW_EN = True
 
-IMAG_VER = "UDC.alpinev2.v4.1.16-preload-rc10.683acca.190827.0849"
+'''
+    The image version has a special character so it need an escaped character to +
+'''
+IMAG_VER = "UDC.alpinev2.v4.1.23.61d1326.191016.1405"
 BOARDNAME = "usw-100g-mfg"
 
 
@@ -32,10 +39,7 @@ class USALPINEDiagloader(ScriptBase):
         self.diagsh2 = "DIAG# "
         self.lcmfw = "/tmp/lcmfw.bin"
         self.lcmfwver = "v3.0.4-0-gf89bc2b"
-
-    def stop_at_uboot(self):
-        self.pexp.expect_action(60, "to stop", "\033\033")
-        time.sleep(1)
+        self.dcrp = None
 
     def boot_diag_from_spi(self):
         cmdset = [
@@ -95,22 +99,23 @@ class USALPINEDiagloader(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{0} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+        self.dcrp = Decrypt(self.pexp)
 
-        self.stop_at_uboot()
+        self.dcrp.stop_at_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run delenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
         msg(5, "Clearing the U-Boot environmental variables ...")
 
-        self.stop_at_uboot()
+        self.dcrp.stop_at_uboot()
         self.boot_diag_from_spi()
         msg(10, "Recovery booting ...")
 
-        rtc = self.login(username="root", password="ubnt", timeout=100)
+        rtc = self.dcrp.lnx_login(timeout=100)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
@@ -129,7 +134,7 @@ class USALPINEDiagloader(ScriptBase):
         self.lnx_netcheck()
         msg(20, "Linux networking is good ...")
 
-        rtmsg = self.pexp.expect_get_outp`ut("cat /usr/lib/version", self.linux_prompt)
+        rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
         match = re.findall(IMAG_VER, rtmsg)
         if match:
             UPDATEUB_EN = False
@@ -239,9 +244,9 @@ class USALPINEDiagloader(ScriptBase):
 
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot", self.linux_prompt)
 
-            self.stop_at_uboot()
+            self.dcrp.stop_at_uboot()
             self.boot_diag_from_spi()
-            rtc = self.login(username="root", password="ubnt", timeout=100)
+            rtc = self.dcrp.lnx_login(timeout=100)
             '''
                 If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
             '''
@@ -305,13 +310,13 @@ class USALPINEDiagloader(ScriptBase):
                 cmd = "lcm LCM1P3 state init"
                 self.pexp.expect_lnxcmd(120, self.diagsh2, cmd, self.diagsh2)
                 cmd = "lcm LCM1P3 sys version"
-                self.pexp.expect_lnxcmd_retry(15, self.diagsh2, cmd, self.lcmfwver)
+                self.pexp.expect_lnxcmd(15, self.diagsh2, cmd, self.lcmfwver, retry=5)
                 msg(80, "LCM FW upgrade completing ...")
 
         if SETDIAGDF_EN is True:
             self.pexp.expect_lnxcmd(20, self.diagsh2, "shell", self.linux_prompt)
             self.pexp.expect_lnxcmd(20, self.linux_prompt, "reboot", self.linux_prompt)
-            self.stop_at_uboot()
+            self.dcrp.stop_at_uboot()
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra diag; saveenv")
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv bootargsextra")
             msg(90, "Set DIAG boot as default completing ...")
