@@ -124,7 +124,7 @@ TOOLS-UDMLOCO+= udm/*
 $(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
 $(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
-$(eval $(call ProductImage,UMGPRO,FCD-UMGPRO-$(VER)))
+$(eval $(call ProductImage,UMGPRO,FCD-UMGPRO-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
 $(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UDMLOCO,FCD-UDMLOCO-$(VER)-$(FWVER)))
