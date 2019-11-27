@@ -36,19 +36,19 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.diagsh1 = "UBNT> "
         self.diagsh2 = "DIAG# "
         self.eepmexe = "x86-64k-ee"
-        self.helperexe = "helper_f060_AL324_release"
+        self.helperexe = "helper_AL324_release_udc"
         self.helper_path = "usw_leaf"
         self.dcrp = None
 
         # LCM FW
-        lcmfwver = {
-            'f060': "v4.0.3-0-ge62a40b",
+        self.lcmfwver = {
+            'f060': "v4.0.6-0-ge30d447",
             'f062': ""
         }
 
         # FW image
-        fwimage = {
-            'f060': "UDC.alpinev2.v4.1.27.9a00d88.191025.1440",
+        self.fwimage = {
+            'f060': "UDC.alpinev2.v4.1.33.9ae27d5.191126.1016",
             'f062': ""
         }
 
@@ -82,7 +82,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         }
 
         # DIAG board name
-        brdname = {
+        self.brdname = {
             'f060': "usw-100g-mfg",
             'f062': "usw-spine-rev1-mfg"
         }
@@ -214,11 +214,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             Adding sleep to wait for the LCM FW being upgraded completed
         '''
         time.sleep(90)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", lcmfwver[self.board_id], retry=20)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", self.lcmfwver[self.board_id], retry=20)
         self.chk_lnxcmd_valid()
 
         rtmsg = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
-        match = re.findall(fwimage[self.board_id], rtmsg)
+        match = re.findall(self.fwimage[self.board_id], rtmsg)
         if not match:
             error_critical("The version of FW image is not correct")
 
@@ -295,7 +295,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         '''
 
         if SETBOARDNAME_EN is True:
-            cmd = "echo {0} > /logs/boardname".format(brdname[self.board_id])
+            cmd = "echo {0} > /logs/boardname".format(self.brdname[self.board_id])
             self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
 
@@ -318,8 +318,8 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.login(username="ubnt", password="ubnt", timeout=100)
 
             postexp = [
-                fwimage[self.board_id],
-                lcmfwver[self.board_id]
+                self.fwimage[self.board_id],
+                self.lcmfwver[self.board_id]
             ]
             self.pexp.expect_lnxcmd(10, "UBNT", "show version", postexp)
 
