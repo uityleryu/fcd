@@ -14,6 +14,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = True
+WAIT_LCMUPGRADE_ENABLE = True
 
 flash_mtdparts_64M = r"mtdparts=spi1.0:1920k(u-boot),64k(u-boot-env),64k(shmoo),31168k(kernel0),31232k(kernel1),1024k(cfg),64k(EEPROM)"
 flash_mtdparts_32M = r"mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"
@@ -27,6 +28,7 @@ cmd_prefix = "go $ubntaddr"
 uberstaddr = {
     'eb23': "0x1e0000",
     'eb25': "0x1e0000",
+    'eb26': "0x1e0000",
     'eb36': "0x1e0000",
     'eb37': "0x1e0000",
     'eb67': "0x1e0000",
@@ -37,6 +39,7 @@ uberstaddr = {
 ubersz = {
     'eb23': "0x10000",
     'eb25': "0x10000",
+    'eb26': "0x10000",
     'eb36': "0x10000",
     'eb37': "0x10000",
     'eb67': "0x10000",
@@ -47,6 +50,7 @@ ubersz = {
 bootargs = {
     'eb23': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb25': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb26': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb36': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb37': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb67': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
@@ -56,6 +60,7 @@ bootargs = {
 helperexes = {
     'eb20': "helper_BCM5341x",
     'eb25': "helper_BCM5617x",
+    'eb26': "helper_BCM5617x",
     'eb23': "helper_BCM5616x",
     'eb36': "helper_BCM5616x",
     'eb37': "helper_BCM5616x",
@@ -75,6 +80,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
         self.USGH2_SERIES = None
+        self.LCM_upgrade_NOT_SUPPORT = {}
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
@@ -101,6 +107,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
             self.pexp.expect_only(timeout, "UBNT application initialized")
         elif "UBNT application initialized" in output:
             self.USGH2_SERIES = True
+            log_debug("DUT is USGH2 series")
             pass
 
     def update_firmware_in_uboot(self):
@@ -139,30 +146,38 @@ class USBCM5616FactoryGeneral(ScriptBase):
         if self.USGH2_SERIES is False:
             index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel0' partition. Please wait... :  done")
             if index == self.pexp.TIMEOUT:
-                error_critical(msg="Failed to flash firmware.")
-            msg(no=75, out="Firmware flashed on kernel0")
+                error_critical(msg="Failed to flash kernel0.")
+            index = self.pexp.expect_get_index(timeout=300, exptxt="Copying to 'kernel1' partition. Please wait... :  done")
+            if index == self.pexp.TIMEOUT:
+                error_critical(msg="Failed to flash kernel1.")
+
+            msg(no=70, out="Firmware flashed on kernel0")
 
             index = self.pexp.expect_get_index(timeout=300, exptxt="Firmware update complete.")
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Failed to flash firmware.")
         else:
             self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
-            self.pexp.expect_only(180, "done")
+            self.pexp.expect_only(180, "Done")
             self.pexp.expect_only(120, "Updating kernel1 partition \(and skip identical blocks\)")
-            self.pexp.expect_only(180, "done")
+            self.pexp.expect_only(180, "Done")
+            msg(no=70, out="Firmware update complete.")
 
-        msg(no=70, out="Firmware update complete.")
         self.pexp.expect_only(timeout=150, exptxt="Starting kernel")
 
     def is_network_alive_in_uboot(self, retry=3):
+        is_alive = False
         for _ in range(retry):
             time.sleep(3)
-            self.pexp.expect_action(10, self.bootloader_prompt, "ping " + self.tftp_server)
-            try:
-                self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
+            extext_list = ["host " + self.tftp_server + " is alive"]
+            index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
+            if index == 0:
+                is_alive = True
                 break
-            except Exception as e:
-                log_debug(str(e))
+            elif index == self.pexp.TIMEOUT:
+                is_alive = False
+        return is_alive
 
     def turn_on_console(self):
         cmd = [
@@ -183,7 +198,8 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
 
-        self.is_network_alive_in_uboot()
+        if self.is_network_alive_in_uboot() is False:
+            error_critical("Network in uboot is not working")
 
     def spi_clean_in_uboot(self):
         """
@@ -262,11 +278,6 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "done")
         self.pexp.expect_action(10, "", "\003")
         log_debug("MAC setting succeded")
-
-        if self.USGH2_SERIES is True:
-            log_debug("USGH2_SERIES is TRUE")
-            self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt write")
-            self.pexp.expect_only(10, "done")
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -425,31 +436,11 @@ class USBCM5616FactoryGeneral(ScriptBase):
         ]
         sstr = ' '.join(sstr)
         self.pexp.expect_action(10, self.linux_prompt, sstr)
+        self.pexp.expect_action(10, self.linux_prompt, "")
 
         log_debug("Sending EEPROM file to host")
-        os.chdir(self.tftpdir)
 
-        sstr = [
-            "lsz",
-            "-e -v -b",
-            self.eetgz
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_action(10, self.linux_prompt, sstr)
-
-        sstr = [
-            "rz",
-            "-y -v -b",
-            "< /dev/" + self.dev,
-            "> /dev/" + self.dev
-        ]
-        sstr = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstr)
-        if int(rtc) != 0:
-            error_critical("Failed to transfer {}".format(self.eetgz_path))
-
-        if os.path.getsize(self.eetgz_path) == 0:
-            error_critical("Failed to transfer {}".format(self.eetgz_path))
+        self.zmodem_recv_from_dut(file=self.eetgz, dest_path=self.tftpdir, retry=10)
 
         sstr = [
             "tar",
@@ -479,7 +470,10 @@ class USBCM5616FactoryGeneral(ScriptBase):
                 error_critical(msg="QR code doesn't match!")
         else:
             error_critical(msg="Unable to get qrid!, please checkout output by grep")
-        msg(no=95, out="Device Registration check OK...")
+
+    def wait_lcm_upgrade(self):
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login(self, username="ubnt", password="ubnt", timeout=10):
         """
@@ -532,9 +526,15 @@ class USBCM5616FactoryGeneral(ScriptBase):
             self.update_firmware_in_uboot()
 
         if DATAVERIFY_ENABLE is True:
-            msg(80, "Checking registration ...")
+            msg(70, "Checking registration ...")
             self.login()
             self.check_board_signed()
+            msg(no=80, out="Device Registration check OK...")
+
+        if WAIT_LCMUPGRADE_ENABLE is True:
+            if self.board_id not in self.LCM_upgrade_NOT_SUPPORT:
+                msg(90, "Waiting LCM upgrading ...")
+                self.wait_lcm_upgrade()
 
         msg(no=100, out="Formal firmware completed with MAC0: " + self.mac)
         self.close_fcd()

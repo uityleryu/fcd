@@ -68,7 +68,9 @@ IMAGE-USW-FLEX-MINI= \
 
 IMAGE-USW-XG= \
     images/eb25* \
+    images/eb26* \
     usw-fw/unifiswitch-xg24poe* \
+    usw-fw/unifiswitch-xg48poe* \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW+=$(IMAGE-USW-PRO)

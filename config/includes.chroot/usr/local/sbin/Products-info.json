@@ -107,7 +107,7 @@
       "BOMREV"      : "113-02779",
       "DESC"        : "UBNT UniFiSwitch 24-Port Pro PoE",
       "FILE"        : "us_bcm5616_factory.py",
-      "T1FILE"      : "us_mfg.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -120,7 +120,7 @@
       "BOMREV"      : "113-02953",
       "DESC"        : "UBNT UniFiSwitch 24-Port Pro",
       "FILE"        : "us_bcm5616_factory.py",
-      "T1FILE"      : "us_mfg.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -133,7 +133,7 @@
       "BOMREV"      : "113-02757",
       "DESC"        : "UBNT UniFiSwitch 48-Port Pro PoE",
       "FILE"        : "us_bcm5616_factory.py",
-      "T1FILE"      : "us_mfg.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -146,7 +146,7 @@
       "BOMREV"      : "113-02952",
       "DESC"        : "UBNT UniFiSwitch 48-Port Pro",
       "FILE"        : "us_bcm5616_factory.py",
-      "T1FILE"      : "us_mfg.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -302,7 +302,20 @@
       "BOMREV"      : "113-02793",
       "DESC"        : "UBNT UniFiSwitch XG 24-Port PoE",
       "FILE"        : "us_bcm5616_factory.py",
-      "T1FILE"      : "us_mfg.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-XG-48-POE":{
+      "INDEX"       : 15,
+      "NAME"        : "USW-XG-48-POE",
+      "BOARDID"     : "eb26",
+      "BOMREV"      : "113-02792",
+      "DESC"        : "UBNT UniFiSwitch XG 48-Port PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"

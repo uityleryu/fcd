@@ -708,43 +708,59 @@ class ScriptBase(object):
         else:
             raise Exception(__func_name + "can't find the file")
 
-    def zmodem_send_to_dut(self, file, dest_path, timeout=60):
-        # chdir to dest path
-        self.pexp.expect_action(timeout, "", "")
-        self.pexp.expect_action(timeout, self.linux_prompt, "cd {}".format(dest_path))
+    def zmodem_send_to_dut(self, file, dest_path, timeout=60, retry=3):
+        while retry != 0:
+            # chdir to dest path
+            self.pexp.expect_action(timeout, "", "")
+            self.pexp.expect_action(timeout, self.linux_prompt, "cd {}".format(dest_path))
 
-        # exe receive cmd on dut
-        cmd = "lrz -v -b"
-        self.pexp.expect_action(timeout, "", "")
-        self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+            # exe receive cmd on dut
+            cmd = "lrz -v -b"
+            self.pexp.expect_action(timeout, "", "")
+            self.pexp.expect_action(timeout, self.linux_prompt, cmd)
 
-        # exe send cmd on host
-        cmd = ["sz", "-e -v -b",
-               file,
-               "< /dev/" + self.dev,
-               "> /dev/" + self.dev]
-        cmd = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
-        if int(rtc) != 0:
+            # exe send cmd on host
+            cmd = ["sz", "-e -v -b",
+                   file,
+                   "< /dev/" + self.dev,
+                   "> /dev/" + self.dev]
+            cmd = ' '.join(cmd)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if int(rtc) != 0:
+                retry -= 1
+                log_debug("Send {} to DUT incomplete, remaining retry {}".format(file, retry))
+                time.sleep(3)
+            else:
+                break
+
+        if retry == 0:
             error_critical("Failed to send {} to DUT".format(file))
 
-    def zmodem_recv_from_dut(self, file, dest_path, timeout=60):
-        # exe send cmd on dut
-        cmd = ["lsz", "-e -v -b", file]
-        cmd = ' '.join(cmd)
-        self.pexp.expect_action(timeout, "", "")
-        self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+    def zmodem_recv_from_dut(self, file, dest_path, timeout=60, retry=3):
+        while retry != 0:
+            # exe send cmd on dut
+            cmd = ["lsz", "-e -v -b", file]
+            cmd = ' '.join(cmd)
+            self.pexp.expect_action(timeout, "", "")
+            self.pexp.expect_action(timeout, self.linux_prompt, cmd)
 
-        # chdif to dest path on host
-        os.chdir(dest_path)
+            # chdif to dest path on host
+            os.chdir(dest_path)
 
-        # exe receive cmd on host
-        cmd = ["rz", "-y -v -b",
-               "< /dev/" + self.dev,
-               "> /dev/" + self.dev]
-        cmd = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
-        if int(rtc) != 0:
+            # exe receive cmd on host
+            cmd = ["rz", "-y -v -b",
+                "< /dev/" + self.dev,
+                "> /dev/" + self.dev]
+            cmd = ' '.join(cmd)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if int(rtc) != 0:
+                retry -= 1
+                log_debug("Receive {} from DUT incomplete, remaining retry {}".format(file, retry))
+                time.sleep(3)
+            else:
+                break
+
+        if retry == 0:
             error_critical("Failed to receive {} from DUT".format(file))
 
     def stop_http_server(self):
