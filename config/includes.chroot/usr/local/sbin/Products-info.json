@@ -327,8 +327,8 @@
       "BOARDID"     : "f062",
       "BOMREV"      : "113-02932",
       "DESC"        : "UniFi Super Switch Spine",
-      "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "FILE"        : "us_spine-alpine_factory.py",
+      "T1FILE"      : "us_spine-alpine_diagloader.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
