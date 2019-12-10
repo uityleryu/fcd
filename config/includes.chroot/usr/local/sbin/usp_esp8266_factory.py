@@ -23,6 +23,7 @@ class USPESP8266Factory(ScriptBase):
     def init_vars(self):
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_esp8266"
+        self.FCD_TLV_data = False
 
         self.fcd_uhtools = os.path.join(self.tftpdir, "usp", "plug")
         self.helper_path = os.path.join(self.fcd_toolsdir, "usp", self.helperexe)
@@ -208,7 +209,7 @@ class USPESP8266Factory(ScriptBase):
             self.erase_eefiles()
             self.copy_eefiles_from_tmp()
             msg(40, "Registering device")
-            self.registration(registration_only=True)
+            self.registration()
 
         if FLASH_FW is True:
             self.flash_eeprom_and_fw()
