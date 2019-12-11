@@ -148,10 +148,8 @@ class AFIPQ40XXFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "tftpboot 0x84000000 tools/af_af60/cfg_part.bin")
         self.pexp.expect_action(30, "Bytes transferred", "usetprotect spm off")
 
-        cmd = "sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.cfg_address, self.cfg_size)
+        cmd = "sf erase {0} {1}; sf write 0x84000000 {0} {1}\r\r".format(self.cfg_address, self.cfg_size)
         self.pexp.expect_action(30, self.ubpmt[self.board_id], cmd)
-        time.sleep(10)
-        self.pexp.expect_action(30, self.ubpmt[self.board_id], "printenv")
         self.pexp.expect_action(30, self.ubpmt[self.board_id], "urescue -e -f")
 
         msg(30, "Doing urescue")
