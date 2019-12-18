@@ -276,15 +276,24 @@ class USM487FactoryGeneral(ScriptBase):
         res = re.search(r"IP      : (.*)", netinfo, re.S)
         self.dut_dhcp_ip = res.group(1)
 
+    def set_ipaddr(self):
+        self.pexp.expect_action(10, self.linux_prompt, "ip down")
+        self.pexp.expect_only(20, "Service Stopped")
+        self.pexp.expect_action(10, self.linux_prompt, "setenv ipaddr {}".format(self.dutip), send_action_delay=True)
+        self.pexp.expect_action(10, self.linux_prompt, "setenv dhcp_enable 0", send_action_delay=True)
+        self.pexp.expect_action(10, self.linux_prompt, "ip up")
+        self.pexp.expect_only(20, "started")
+        time.sleep(5)
+
     def create_socket(self):
         self.pexp.expect_action(10, "", "")
         self.pexp.expect_action(10, self.linux_prompt, "fcd enable")
 
-        self.get_dhcp_ip()
+        self.set_ipaddr()
 
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_addrport = (self.dut_dhcp_ip, 23)
+        server_addrport = (self.dutip, 23)
         self.sock.connect(server_addrport)
         time.sleep(1)
 
