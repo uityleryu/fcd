@@ -422,7 +422,7 @@ class USM487FactoryGeneral(ScriptBase):
             self.pexp.expect_action(10, self.linux_prompt, "reset")
             self.pexp.expect_only(60, "Service Started")
             self.pexp.expect_action(10, "", "")
-            self.get_dhcp_ip()
+            self.set_ipaddr()
             self.pexp.expect_action(10, self.linux_prompt, "fwupdate "+fw_url, send_action_delay=True)
 
         try:
