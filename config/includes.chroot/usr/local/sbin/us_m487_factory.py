@@ -282,7 +282,7 @@ class USM487FactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, self.linux_prompt, "setenv ipaddr {}".format(self.dutip), send_action_delay=True)
         self.pexp.expect_action(10, self.linux_prompt, "setenv dhcp_enable 0", send_action_delay=True)
         self.pexp.expect_action(10, self.linux_prompt, "ip up")
-        self.pexp.expect_only(20, "started")
+        self.pexp.expect_only(20, "Service Started")
         time.sleep(5)
 
     def create_socket(self):
