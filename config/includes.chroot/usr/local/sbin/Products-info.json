@@ -332,6 +332,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW-XG-Aggregation":{
+      "INDEX"       : 16,
+      "NAME"        : "USW-XG-Aggregation",
+      "BOARDID"     : "eb27",
+      "BOMREV"      : "113-03046",
+      "DESC"        : "UBNT UniFiSwitch XG Aggregation",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
   },
 

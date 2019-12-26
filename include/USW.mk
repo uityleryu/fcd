@@ -74,6 +74,11 @@ IMAGE-USW-XG= \
     usw-fw/unifiswitch-xg48poe* \
     usw-fw/US.bcm5617x*
 
+IMAGE-USW-XG-Aggregation= \
+    images/eb27 \
+    usw-fw/unifiswitch-xgagg* \
+    usw-fw/US.bcm5617x*
+
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
@@ -84,6 +89,7 @@ IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
+IMAGE-USW+=$(IMAGE-USW-Aggregation)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -195,7 +201,7 @@ TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
 TOOLS-USW-XG=$(TOOLS-USW)
-
+TOOLS-USW-XG-Aggregation=$(TOOLS-USW)
 # Project target
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
@@ -209,3 +215,4 @@ $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD-USW-SPINE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD-USW-FLEX-MINI-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD-USW-XG-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USW-XG,FCD-USW-XG-Aggregation-$(VER)-$(FWVER)))
