@@ -48,7 +48,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         # FW image
         self.fwimage = {
-            'f060': "UDC.alpinev2.v4.1.33.9ae27d5.191126.1016",
+            'f060': "UDC.alpinev2.v4.1.38.a87d032.191203.0631",
             'f062': ""
         }
 
@@ -298,6 +298,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             cmd = "echo {0} > /logs/boardname".format(self.brdname[self.board_id])
             self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
+            self.is_dutfile_exist("/logs/boardname")
 
         if FWUPDATE_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
