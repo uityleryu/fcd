@@ -210,9 +210,11 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             log_debug("Find the correct U-boot version")
 
         self.pexp.expect_only(150, "Welcome to UBNT PyShell")
-        #self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
-        #self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk speed 0 10", self.diagsh2)
-        self.pexp.expect_lnxcmd(150, self.diagsh1, "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk fanout 0 10", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
+        cmd = "ifconfig eth0 {}".format(self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
         #self.lnx_netcheck(True)
         postexp = [

@@ -14,10 +14,11 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-FWUPDATE_ENABLE = True
+LOADLCMFW_EN = True
+FWUPDATE_ENABLE = False
 DATAVERIFY_ENABLE = False
 
-DIAG_VER = "upydiag-v2.0.1"
+DIAG_VER = "upydiag-v2.0.2"
 
 
 class USALPINEDiagloader(ScriptBase):
@@ -27,6 +28,8 @@ class USALPINEDiagloader(ScriptBase):
         self.bootloader_prompt = "UDC"
         self.diagsh1 = "UBNT"
         self.diagsh2 = "DIAG"
+        self.lcmfw = "/tmp/lcmfw.bin"
+        self.lcmfwver = "v3.0.4-0-gf89bc2b"
 
     def stop_at_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -123,7 +126,11 @@ class USALPINEDiagloader(ScriptBase):
         self.stop_at_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootspi")
         self.pexp.expect_only(150, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(10, self.diagsh1, "shell", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk fanout 0 10", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
+        cmd = "ifconfig eth0 {}".format(self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         self.lnx_netcheck()
         msg(50, "network configuration done in U-Boot ...")
 
@@ -140,8 +147,29 @@ class USALPINEDiagloader(ScriptBase):
         self.pexp.expect_lnxcmd(20, self.linux_prompt, "reboot", self.linux_prompt)
         self.pexp.expect_only(40, "Starting kernel")
         self.pexp.expect_only(150, "Welcome to UBNT PyShell")
-        self.pexp.expect_lnxcmd(20, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh1, "diag", self.diagsh2)
+        self.pexp.expect_lnxcmd(10, self.diagsh2, "npsdk fanout 0 10", self.diagsh2)
         self.pexp.expect_lnxcmd(20, self.diagsh2, "show version", DIAG_VER)
+
+        if LOADLCMFW_EN is True:
+            log_debug("loading LCM FW to DUT")
+            self.pexp.expect_lnxcmd(10, self.diagsh2, "shell", self.linux_prompt)
+            cmd = "ifconfig eth0 {}".format(self.dutip)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.lnx_netcheck()
+            srcp = "images/f062-fw-lcm"
+            self.tftp_get(remote=srcp, local=self.lcmfw, timeout=30)
+            self.pexp.expect_lnxcmd(20, self.linux_prompt, "exit", self.diagsh2)
+
+            log_debug("downloading LCM FW")
+            self.pexp.expect_lnxcmd(10, self.diagsh2, "lcm LCM1P3 state dfu", self.diagsh2)
+            cmd = "lcm LCM1P3 dfu {}".format(self.lcmfw)
+            self.pexp.expect_lnxcmd(300, self.diagsh2, cmd, self.diagsh2)
+            cmd = "lcm LCM1P3 state init"
+            self.pexp.expect_lnxcmd(120, self.diagsh2, cmd, self.diagsh2)
+            cmd = "lcm LCM1P3 sys version"
+            self.pexp.expect_lnxcmd(15, self.diagsh2, cmd, self.lcmfwver)
+            msg(80, "LCM FW upgrade completing ...")
 
         msg(100, "Completing firmware upgrading ...")
 
