@@ -36,8 +36,10 @@ IMAGE-USW-16-24-48= \
     images/ed22* \
     images/ed23* \
     images/ed24* \
+    images/ed25* \
     usw-fw/unifiswitch-16-* \
     usw-fw/unifiswitch-24-* \
+    usw-fw/unifiswitch-48-* \
     usw-fw/unifiswitch-16poe-* \
     usw-fw/unifiswitch-24poe-* \
     usw-fw/unifiswitch-48poe-* \

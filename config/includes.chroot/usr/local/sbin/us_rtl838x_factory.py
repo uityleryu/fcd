@@ -28,7 +28,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24'}
+        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25'}
 
         # number of Ethernet
         self.macnum = {

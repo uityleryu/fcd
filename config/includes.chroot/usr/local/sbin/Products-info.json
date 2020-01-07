@@ -351,7 +351,7 @@
       "INDEX"       : 17,
       "NAME"        : "USW-48",
       "BOARDID"     : "ed25",
-      "BOMREV"      : "113-12345",
+      "BOMREV"      : "113-02972",
       "DESC"        : "UBNT UniFiSwitch 48",
       "FILE"        : "us_rtl838x_factory.py",
       "T1FILE"      : "us_rtl838x_mfg.py",
