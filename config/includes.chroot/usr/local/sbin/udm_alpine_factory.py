@@ -20,6 +20,7 @@ DOHELPER_ENABLE     = True
 REGISTER_ENABLE     = True
 FWUPDATE_ENABLE     = True
 DATAVERIFY_ENABLE   = True
+REBOOT_CHECK_ENABLE = True
 
 class UDMALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
@@ -36,6 +37,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.password = "ubnt"
         self.bootloader_prompt = "UBNT"
         self.linux_prompt = "#"
+        self.unifios_prompt = "root@ubnt:/#"
        
         # Base path 
         self.tftpdir = self.tftpdir + "/"
@@ -437,6 +439,19 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
+    # The request came from FW developer(Taka)
+    # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
+    def reboot_check(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=20)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "reboot", "Restarting system")
+        self.login(self.username, self.password, 200)
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=20)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
+
     def run(self):
         """
         Main procedure of factory
@@ -492,6 +507,11 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         if DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
+    
+        if REBOOT_CHECK_ENABLE is True:
+            msg(85, "Wait sytem running up and reboot...")
+            self.reboot_check()
+            msg(90, "Boot successfully ...")
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
