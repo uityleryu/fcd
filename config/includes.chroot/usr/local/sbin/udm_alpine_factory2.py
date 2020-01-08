@@ -18,8 +18,8 @@ NEED_DROPBEAR       = True
 PROVISION_ENABLE    = True  
 DOHELPER_ENABLE     = True  
 REGISTER_ENABLE     = True  
-FWUPDATE_ENABLE     = False
-DATAVERIFY_ENABLE   = False
+FWUPDATE_ENABLE     = True
+DATAVERIFY_ENABLE   = True
 
 class UDMALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
@@ -185,16 +185,6 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         sstr = ' '.join(sstr)
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, self.linux_prompt)
 
-        sstr = [
-            "tftp",
-            "-g",
-            "-r images/" + self.board_id + "-recovery",
-            "-l " + self.dut_tmpdir + "uImage.r",
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(90, self.linux_prompt, sstr, self.linux_prompt)
-
         log_debug("Starting to do fwupdate ... ")
         sstr = [
             "sh",
@@ -259,9 +249,6 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            #self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
-            #self.login(self.username, self.password, 200)
-            #self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
