@@ -22,6 +22,8 @@ set use_64mb_flash 0
 # model ID
 set USW_XG                "eb20"
 set USW_6XG_150           "eb23"
+set US_24_250W            "eb31"
+set US_24_500W            "eb32"
 set USW_24_PRO            "eb36"
 set USW_24_PRO_NONPOE     "eb37"
 set USW_48_PRO            "eb67"
@@ -901,6 +903,11 @@ proc handle_uboot { } {
     global use_64mb_flash
     global flash_mtdparts_64M
     global flash_mtdparts_32M
+    global USW_6XG_150
+    global USW_24_PRO
+    global USW_24_PRO_NONPOE
+    global USW_48_PRO
+    global USW_48_PRO_NONPOE
 
     set timeout 10
 
@@ -1069,7 +1076,13 @@ proc handle_uboot { } {
 
     expect timeout { error_critical "E02502 Linux prompt not found" } "#"
 
-    cmd_exp_retry "lcm-ctrl -t dump" "version" 10
+    if { [string equal -nocase $boardid $USW_6XG_150] == 1 ||
+         [string equal -nocase $boardid $USW_24_PRO] == 1 ||
+         [string equal -nocase $boardid $USW_24_PRO_NONPOE] == 1 ||
+         [string equal -nocase $boardid $USW_48_PRO] == 1 ||
+         [string equal -nocase $boardid $USW_48_PRO_NONPOE] == 1 } {
+        cmd_exp_retry "lcm-ctrl -t dump" "version" 10
+    }
 
     sleep 5
 
@@ -1140,4 +1153,3 @@ stty raw -echo < /dev/$dev
 
 log_progress 1 "Waiting - PLUG in the device..."
 main_detector
-

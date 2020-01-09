@@ -15,6 +15,8 @@ set fakemac "00:90:4c:06:a5:7$idx"
 # model ID
 set USW_XG                "eb20"
 set USW_6XG_150           "eb23"
+set US_24_250W            "eb31"
+set US_24_500W            "eb32"
 set USW_24_PRO            "eb36"
 set USW_24_PRO_NONPOE     "eb37"
 set USW_48_PRO            "eb67"
@@ -154,6 +156,8 @@ proc handle_urescue {} {
     global USW_24_PRO_NONPOE
     global USW_48_PRO
     global USW_48_PRO_NONPOE
+    global US_24_250W
+    global US_24_500W
     global fakemac
 
     set max_loop 4
@@ -208,6 +212,9 @@ proc handle_urescue {} {
                     error_critical "U-boot prompt not found !"
                 }
             }
+        } elseif { [string equal -nocase $boardid $US_24_250W] == 1 ||
+                   [string equal -nocase $boardid $US_24_500W] == 1 } {
+            break
         }
     }
 
