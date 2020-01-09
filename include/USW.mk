@@ -72,12 +72,9 @@ IMAGE-USW-FLEX-MINI= \
 IMAGE-USW-XG= \
     images/eb25* \
     images/eb26* \
+    images/eb27* \
     usw-fw/unifiswitch-xg24poe* \
     usw-fw/unifiswitch-xg48poe* \
-    usw-fw/US.bcm5617x*
-
-IMAGE-USW-XG-Aggregation= \
-    images/eb27* \
     usw-fw/unifiswitch-xgagg* \
     usw-fw/US.bcm5617x*
 
@@ -91,7 +88,6 @@ IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
-IMAGE-USW+=$(IMAGE-USW-XG-Aggregation)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -114,7 +110,6 @@ USW-LEAF_FCDIMG_HASH=84778307319c8093f456fb1f1d427d273bba4809
 USW-SPINE_FCDIMG_HASH=
 USW-FLEX-MINI_FCDIMG_HASH=
 USW-XG_FCDIMG_HASH=
-USW-XG-Aggregation_FCDIMG_HASH=
 
 FCDIMG_VER=
 
@@ -131,7 +126,6 @@ USW-LEAF_UBNTLIB_HASH=11b2602e7d213ec31bd0eeda477d60547f7f16a7
 USW-SPINE_UBNTLIB_HASH=
 USW-FLEX-MINI_UBNTLIB_HASH=
 USW-XG_UBNTLIB_HASH=
-USW-XG-Aggregation_UBNTLIB_HASH=
 
 UBNTLIB_VER=
 
@@ -148,7 +142,6 @@ USW-LEAF_TOOL_HASH=8750be65f9e051345fc81b402605a8d41e318fda
 USW-SPINE_TOOL_HASH=
 USW-FLEX-MINI_TOOL_HASH=
 USW-XG_TOOL_HASH=
-USW-XG-Aggregation_TOOL_HASH=
 
 TOOL_VER=
 
@@ -206,7 +199,6 @@ TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
 TOOLS-USW-XG=$(TOOLS-USW)
-TOOLS-USW-XG-Aggregation=$(TOOLS-USW)
 # Project target
 
 $(eval $(call ProductImage,USW,FCD-USW-$(VER)))
@@ -220,4 +212,3 @@ $(eval $(call ProductImage,USW-LEAF,FCD-USW-LEAF-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD-USW-SPINE-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD-USW-FLEX-MINI-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD-USW-XG-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USW-XG-Aggregation,FCD-USW-XG-Aggregation-$(VER)-$(FWVER)))
