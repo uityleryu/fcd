@@ -36,6 +36,10 @@ set UAPGEN2MESHPRO_ID   "e567"
 set UAPGEN2IW_ID    "e587"
 set UAPGEN2IWPRO_ID "e597"
 set INSTANTLTE_ID   "e611"
+set ULTEP_EU_ID     "e612"
+set ULTEP_US_ID     "e613"
+set ULTEF_EU_ID     "e614"
+set ULTEF_US_ID     "e615"
 
 set uappaddr "0x80200020"
 set uappext_printenv "go $uappaddr uprintenv"
@@ -327,6 +331,10 @@ proc has_dragonfly_cpu { boardid } {
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
 
     if {
             [string equal -nocase $boardid $UAPGEN2LITE_ID] == 1
@@ -338,6 +346,10 @@ proc has_dragonfly_cpu { boardid } {
             || [string equal -nocase $boardid $UAPGEN2IW_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1
             || [string equal -nocase $boardid $INSTANTLTE_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+            || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
+            || [string equal -nocase $boardid $ULTEF_US_ID] == 1
                                                                     } {
          return 1
     } else {
@@ -453,6 +465,10 @@ proc update_firmware { boardid } {
     global uappext
     global prompt
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
 
     log_debug "Firmware $fwimg\r"
 
@@ -489,7 +505,12 @@ proc update_firmware { boardid } {
     
     log_progress 10 "Firmware loaded"
     
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 0} {
+    if {
+        [string equal -nocase $boardid $INSTANTLTE_ID] == 0 ||
+        [string equal -nocase $boardid $ULTEP_EU_ID] == 0 ||
+        [string equal -nocase $boardid $ULTEP_US_ID] == 0 ||
+        [string equal -nocase $boardid $ULTEF_EU_ID] == 0 ||
+        [string equal -nocase $boardid $ULTEF_US_ID] == 0 } {
         set timeout 15
         expect timeout {
             error_critical "Failed to flash firmware (u-boot) !"
@@ -647,13 +668,22 @@ proc run_client { idx eeprom_txt eeprom_bin eeprom_signed passphrase keydir} {
 proc check_unifiOS_network_ready { boardid } {
     global tftpserver
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
     global UAPGEN2PRO_ID
     global ip
 
     set max_loop 5
     set pingable 0
 
-    if { [string equal -nocase $boardid $INSTANTLTE_ID] == 1 } {
+    if {
+        [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         set x 0
         set looplimit 35
         while { $x < $looplimit } {
@@ -711,12 +741,21 @@ proc check_unifiOS_network_ready { boardid } {
 
 proc turn_on_burnin_mode { boardid } {
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
     global tftpserver
     set timeout 10
     set burnin_cfg "e611-burnin.cfg"
     set burnin_flag "lte.burnin.enabled=enabled"
 
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+    if {
+        [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         send "cd /tmp\r"
         expect timeout { error_critical "Command promt not found" } "#"
 
@@ -830,7 +869,6 @@ proc latestfwupdate { boardid } {
     global ip
     global uappext
     global prompt
-    global INSTANTLTE_ID
 
     if {[string equal -nocase $boardid $UAPGEN2PRO_ID] == 1} {
         stop_uboot
@@ -908,6 +946,10 @@ proc do_security { boardid } {
     global user
     global passwd
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
     global UAPGEN2PRO_ID
     global UAPGEN2LR_ID
     global UAPGEN2LITE_ID
@@ -917,6 +959,10 @@ proc do_security { boardid } {
 
     # The version of FW after 4.0.11 include 4.0.11 should use the helper_ARxxxx_musl
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+        || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
+        || [string equal -nocase $boardid $ULTEF_US_ID] == 1
         || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1
         || [string equal -nocase $boardid $UAPGEN2LR_ID] == 1
         || [string equal -nocase $boardid $UAPGEN2LITE_ID] == 1
@@ -983,7 +1029,11 @@ proc do_security { boardid } {
 
     check_unifiOS_network_ready $boardid
 
-    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+        || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
+        || [string equal -nocase $boardid $ULTEF_US_ID] == 1} {
         set timeout 20
         send "cd /tmp\r"
         expect timeout { error_critical "Command promt not found" } "#"
@@ -1114,7 +1164,6 @@ proc check_security { boardid } {
     global user
     global passwd
     global qrcode
-    global INSTANTLTE_ID
 
     set timeout 120
     # login    
@@ -1340,6 +1389,10 @@ proc handle_uboot { {wait_prompt 0} } {
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
 
     if { $wait_prompt == 1 } {
         stop_uboot
@@ -1362,7 +1415,11 @@ proc handle_uboot { {wait_prompt 0} } {
 
     if  { [string equal -nocase $boardid $UAPGEN2IW_ID] == 1 ||
           [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1 ||
-          [string equal -nocase $boardid $INSTANTLTE_ID] == 1} {
+          [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
+          [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
+          [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+          [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
+          [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         set_network_env
         update_uboot $boardid
         stop_uboot
