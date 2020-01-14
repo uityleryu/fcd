@@ -270,8 +270,7 @@ class UNASALPINEFactory(ScriptBase):
             self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        self.pexp.expect_action(300, "login:", self.user)
-        self.pexp.expect_action(10, "Password:", self.password)
+        self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
@@ -304,8 +303,7 @@ class UNASALPINEFactory(ScriptBase):
         else:
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
-            self.pexp.expect_action(600, "login:", self.user)
-            self.pexp.expect_action(15, "Password:", self.password)
+            self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
