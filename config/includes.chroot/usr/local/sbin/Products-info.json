@@ -376,8 +376,21 @@
       "SW_ID"       : "0601"
     },
 
+    "UAP-NANO-HD":{
+      "INDEX"       : 3,
+      "NAME"        : "UAP-NANO-HD",
+      "BOARDID"     : "ec20",
+      "BOMREV"      : "113-00573",
+      "DESC"        : "UniFi AP NANO HD",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
     "UAP-IW-HD":{
-      "INDEX"       : 0,
+      "INDEX"       : 4,
       "NAME"        : "UAP-IWHD",
       "BOARDID"     : "ec22",
       "BOMREV"      : "113-00600",

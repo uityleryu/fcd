@@ -1,10 +1,9 @@
-
 # Images
 
 IMAGE-UAP-FLEXHD= \
     images/ec26* \
     uap-fw/unifiap-mt7621* \
-    uap-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
@@ -12,7 +11,20 @@ IMAGE-UAP-FLEXHD= \
 IMAGE-UAP-IWHD= \
     images/ec22* \
     uap-fw/unifiap-mt7621* \
-    uap-fw/V8-unifi-v1.0.1.43-g12f846ff_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
+    uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+    uap-fw/BZ.mt7621.*
+
+IMAGE-UAP-NANO-IW-FLEXHD= \
+    images/ec20* \
+    images/ec22* \
+    images/ec26* \
+    uap-fw/uap-nanohd-fw.bin \
+    uap-fw/uap-iwhd-fw.bin \
+    uap-fw/uap-flexhd-fw.bin \
+    uap-fw/unifiap-mt7621* \
+    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
@@ -30,6 +42,7 @@ IMAGE-UAP-INDUSTRIAL= \
 
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UAP-IWHD)
+IMAGE-UAP+=$(IMAGE-UAP-NANO-IW-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 
@@ -46,6 +59,7 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 
 UAP-FLEXHD_FCDIMG_HASH=
 UAP-IWHD_FCDIMG_HASH=
+UAP-NANO-IW-FLEXHD_FCDIMG_HASH=
 UBB_FCDIMG_HASH=
 UAP-INDUSTRIAL_FCDIMG_HASH=
 
@@ -56,6 +70,7 @@ FCDIMG_VER=
 
 UAP-FLEXHD_UBNTLIB_HASH=
 UAP-IWHD_UBNTLIB_HASH=
+UAP-NANO-IW-FLEXHD_UBNTLIB_HASH=
 UBB_UBNTLIB_HASH=
 UAP-INDUSTRIAL_UBNTLIB_HASH=
 
@@ -66,6 +81,7 @@ UBNTLIB_VER=
 
 UAP-FLEXHD_TOOL_HASH=
 UAP-IWHD_TOOL_HASH=
+UAP-NANO-IW-FLEXHD_TOOL_HASH=
 UBB_TOOL_HASH=
 UAP-INDUSTRIAL_TOOL_HASH=
 
@@ -92,6 +108,7 @@ TOOLS-UAP-INDUSTRIAL+= \
 
 TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-IWHD+=$(TOOLS-CONFIG)
+TOOLS-UAP-NANO-IW-FLEXHD+=$(TOOLS-CONFIG)
 
 # Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
@@ -106,5 +123,6 @@ TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
 $(eval $(call ProductImage,UAP,FCD-UAP-ALL-$(VER)))
 $(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-IWHD,FCD-UAP-IWHD-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD-UAP-NANO-IW-FLEXHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UBB,FCD-UAP-UBB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD-UAP-INDUSTRIAL-$(VER)))

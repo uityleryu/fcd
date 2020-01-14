@@ -21,6 +21,12 @@ addr_map_uap: partitially erase partition, the order is bs2kernel0 -> factory ->
 format : board_id: {partition: (start_addr, len)}
 '''
 addr_map_uap = {
+                  'ec20': {
+                    'uboot': ('0', '0x60000'),
+                    'factory': ('0x70000', '0x10000'),
+                    'bs': ('0x90000', '0x10000'),
+                    'kernel0': ('0x1a0000', '0xf30000')
+                  },
                   'ec22': {
                     'uboot': ('0', '0x60000'),
                     'factory': ('0x70000', '0x10000'),
@@ -121,6 +127,14 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 84000000 " +img)
         self.pexp.expect_only(60, "Bytes transferred = "+img_size)
 
+    def is_mfg_uboot(self):
+        uboot_mfg_ver = "U-Boot 1.1.3"
+        ret = self.pexp.expect_get_output("version", self.bootloader_prompt)
+        log_debug("verison ret: "+str(ret))
+        if uboot_mfg_ver not in ret:
+            return False
+        return True
+
     def run(self):
         """
         Main procedure of back to ART
@@ -136,54 +150,55 @@ class MT7621MFGGeneral(ScriptBase):
         msg(no=1, out="Waiting - PULG in the device...")
         self.stop_uboot()
 
-        msg(no=20, out='Setting up IP address in u-boot ...')
-        self.set_boot_netenv()
+        if self.is_mfg_uboot() is False:
+            msg(no=20, out='Setting up IP address in u-boot ...')
+            self.set_boot_netenv()
 
-        msg(no=30, out='Checking network connection to tftp server in u-boot ...')
-        if self.is_network_alive_in_uboot(retry=3) is not True:
-            error_critical("FAILED to ping tftp server in u-boot")
+            msg(no=30, out='Checking network connection to tftp server in u-boot ...')
+            if self.is_network_alive_in_uboot(retry=5) is not True:
+                error_critical("FAILED to ping tftp server in u-boot")
 
-        if self.board_id in addr_map_uap:
-            log_debug("Back to T1 with UAP rule")
-            msg(no=40, out='flash back to calibration kernel ...')
-            self.transfer_img(self.board_id+"-mfg.kernel")
+            if self.board_id in addr_map_uap:
+                log_debug("Back to T1 with UAP rule")
+                msg(no=40, out='flash back to calibration kernel ...')
+                self.transfer_img(self.board_id+"-mfg.kernel")
 
-            flash_addr = addr_map_uap[self.board_id]['kernel0'][0]
-            flash_size = addr_map_uap[self.board_id]['kernel0'][1]
-            log_debug("kernel from {} ,len {}".format(flash_addr, flash_size))
-            self.erase_partition(flash_addr=flash_addr, size=flash_size)
-            self.write_img(flash_addr=flash_addr)
+                flash_addr = addr_map_uap[self.board_id]['kernel0'][0]
+                flash_size = addr_map_uap[self.board_id]['kernel0'][1]
+                log_debug("kernel from {} ,len {}".format(flash_addr, flash_size))
+                self.erase_partition(flash_addr=flash_addr, size=flash_size)
+                self.write_img(flash_addr=flash_addr)
 
-            msg(no=50, out='Erase bootselect partition ...')
-            flash_addr = addr_map_uap[self.board_id]['bs'][0]
-            flash_size = addr_map_uap[self.board_id]['bs'][1]
-            log_debug("bs from {} to {}".format(flash_addr, flash_size))
-            self.erase_partition(flash_addr=flash_addr, size=flash_size)
-
-            if self.erasecal == "True":
-                msg(no=60, out='Erase calibration data ...')
-                flash_addr = addr_map_uap[self.board_id]['factory'][0]
-                flash_size = addr_map_uap[self.board_id]['factory'][1]
-                log_debug("cal from {} ,len {}".format(flash_addr, flash_size))
+                msg(no=50, out='Erase bootselect partition ...')
+                flash_addr = addr_map_uap[self.board_id]['bs'][0]
+                flash_size = addr_map_uap[self.board_id]['bs'][1]
+                log_debug("bs from {} to {}".format(flash_addr, flash_size))
                 self.erase_partition(flash_addr=flash_addr, size=flash_size)
 
-            msg(no=70, out='flash back to calibration u-boot ...')
-            self.transfer_img(self.board_id+"-mfg.uboot")
-            flash_addr = addr_map_uap[self.board_id]['uboot'][0]
-            flash_size = addr_map_uap[self.board_id]['uboot'][1]
-            log_debug("uboot from {} ,len {}".format(flash_addr, flash_size))
-            self.erase_partition(flash_addr=flash_addr, size=flash_size)
-            self.write_img(flash_addr=flash_addr)
+                if self.erasecal == "True":
+                    msg(no=60, out='Erase calibration data ...')
+                    flash_addr = addr_map_uap[self.board_id]['factory'][0]
+                    flash_size = addr_map_uap[self.board_id]['factory'][1]
+                    log_debug("cal from {} ,len {}".format(flash_addr, flash_size))
+                    self.erase_partition(flash_addr=flash_addr, size=flash_size)
 
-        else:
-            log_debug("Back to T1 with USW rule")
-            msg(no=40, out='flash back to T1 image...')
-            self.transfer_img(self.board_id+"-mfg.bin")
+                msg(no=70, out='flash back to calibration u-boot ...')
+                self.transfer_img(self.board_id+"-mfg.uboot")
+                flash_addr = addr_map_uap[self.board_id]['uboot'][0]
+                flash_size = addr_map_uap[self.board_id]['uboot'][1]
+                log_debug("uboot from {} ,len {}".format(flash_addr, flash_size))
+                self.erase_partition(flash_addr=flash_addr, size=flash_size)
+                self.write_img(flash_addr=flash_addr)
 
-            flash_addr = addr_map_usw[self.board_id][0]
-            flash_size = addr_map_usw[self.board_id][1]
-            self.erase_partition(flash_addr, flash_size)
-            self.write_img(flash_addr)
+            else:
+                log_debug("Back to T1 with USW rule")
+                msg(no=40, out='flash back to T1 image...')
+                self.transfer_img(self.board_id+"-mfg.bin")
+
+                flash_addr = addr_map_usw[self.board_id][0]
+                flash_size = addr_map_usw[self.board_id][1]
+                self.erase_partition(flash_addr, flash_size)
+                self.write_img(flash_addr)
 
         msg(no=80, out='Waiting for Calibration Linux ...')
 

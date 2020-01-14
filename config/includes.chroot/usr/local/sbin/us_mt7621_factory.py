@@ -30,10 +30,11 @@ class USFLEXFactory(ScriptBase):
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
-        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec25', 'ec22', 'ec26'}
+        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
 
         # number of mac
         self.macnum = {'ed10': "3",
+                       'ec20': "1",
                        'ec22': "1",
                        'ec25': "1",
                        'ec26': "1",
@@ -41,6 +42,7 @@ class USFLEXFactory(ScriptBase):
                        'ed11': "2"}
         # number of WiFi
         self.wifinum = {'ed10': "0",
+                        'ec20': "2",
                         'ec22': "2",
                         'ec25': "2",
                         'ec26': "2",
@@ -48,6 +50,7 @@ class USFLEXFactory(ScriptBase):
                         'ed11': "0"}
         # number of Bluetooth
         self.btnum = {'ed10': "0",
+                      'ec20': "1",
                       'ec22': "1",
                       'ec25': "1",
                       'ec26': "1",
@@ -55,25 +58,28 @@ class USFLEXFactory(ScriptBase):
                       'ed11': "0"}
         # vlan port mapping
         self.vlanport_idx = {'ed10': "'6 4'",
+                             'ec20': "'6 0'",
                              'ec22': "'6 0'",
                              'ec25': "'6 0'",
                              'ec26': "'6 0'",
                              'ec2a': "'6 0'",
                              'ed11': "'6 0'"}
         # flash size map
-        self.flash_size = {'ed10' : "33554432",
-                           'ec22' : "33554432",
-                           'ec25' : "33554432",
-                           'ec26' : "33554432",
-                           'ec2a' : "33554432",
-                           'ed11' : "16777216"}
+        self.flash_size = {'ed10': "33554432",
+                           'ec20': "33554432",
+                           'ec22': "33554432",
+                           'ec25': "33554432",
+                           'ec26': "33554432",
+                           'ec2a': "33554432",
+                           'ed11': "16777216"}
         # firmware image
-        self.fwimg = {'ed10' : self.board_id + "-diag.bin",
-                      'ec22' : self.board_id + ".bin",
-                      'ec25' : self.board_id + ".bin",
-                      'ec26' : self.board_id + ".bin",
-                      'ec2a' : self.board_id + ".bin",
-                      'ed11' : self.board_id + "-diag.bin"}
+        self.fwimg = {'ed10': self.board_id + "-diag.bin",
+                      'ec20': self.board_id + ".bin",
+                      'ec22': self.board_id + ".bin",
+                      'ec25': self.board_id + ".bin",
+                      'ec26': self.board_id + ".bin",
+                      'ec2a': self.board_id + ".bin",
+                      'ed11': self.board_id + "-diag.bin"}
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
