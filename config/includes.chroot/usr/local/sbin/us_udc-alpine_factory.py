@@ -22,7 +22,7 @@ REGISTER_EN = True
 SETBOARDNAME_EN = True
 FWUPDATE_EN = True
 DATAVERIFY_EN = True
-VTSYCHECK_EN = True
+VTSYCHECK_EN = False
 AUTODIAG_EN = False
 
 
@@ -48,7 +48,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         # FW image
         self.fwimage = {
-            'f060': "UDC.alpinev2.v4.1.38.a87d032.191203.0631",
+            'f060': "UDC.alpinev2.v4.1.40.9b809f5.191220.2011",
             'f062': ""
         }
 
@@ -186,7 +186,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.create_http_server()
         fw_url = "http://{0}:{1}/{2}-fw.bin".format(self.tftp_server, self.http_port, self.board_id)
         cmd = "cd /tmp; wget {0}".format(fw_url)
-        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+        self.pexp.expect_lnxcmd(100, self.linux_prompt, cmd, self.linux_prompt)
         self.chk_lnxcmd_valid()
 
         cmd = "mv /tmp/{0}-fw.bin /tmp/upgrade.bin".format(self.board_id)
