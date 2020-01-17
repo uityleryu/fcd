@@ -31,6 +31,7 @@ IMAGE-UAP-NANO-IW-FLEXHD= \
 
 IMAGE-UBB= \
     images/dc98* \
+    images/dc9c* \
     uap-fw/UBB* \
     uap-fw/ubntubb-u-boot.rom \
     uap-fw/Unifi_bridge-spf6.1.1_nor-v4.bin

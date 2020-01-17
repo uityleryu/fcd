@@ -22,16 +22,19 @@ class UAPIPQ40XXFactory(ScriptBase):
 
         # U-boot prompt
         self.ubpmt = {
-            'dc98': "\(IPQ40xx\) # "
+            'dc98': "\(IPQ40xx\) # ",
+            'dc9c': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'dc98': "UBB#"
+            'dc98': "UBB#",
+            'dc9c': "UBB#"
         }
 
         self.bootloader = {
-            'dc98': "dc98-bootloader.bin"
+            'dc98': "dc98-bootloader.bin",
+            'dc9c': "dc98-bootloader.bin"
         }
 
         baseip = 20
