@@ -177,6 +177,8 @@ class AMIPQ40XXFactory(ScriptBase):
 
         msg(40, "Doing registration")
 
+        self.erase_eefiles()
+
         self.pexp.expect_action(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_action(10, "login:", "fcd")
         self.pexp.expect_action(10, "Password:", "fcduser")
@@ -188,14 +190,43 @@ class AMIPQ40XXFactory(ScriptBase):
 
         scp_cmd = "scp -i {0} -4 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ".format(self.id_rsa) \
                     + "{0} fcd@{1}:/tmp/helper".format(self.dut_helper_path, self.prod_dev_ip)
-        self.fcd.common.xcmd(cmd=scp_cmd)
+
+        retry_cnt = 3
+        while retry_cnt > 0:
+            if retry_cnt == 1:
+                error_critical("scp helper to device fail")
+
+            [sto, rtc] = self.fcd.common.xcmd(cmd=scp_cmd)
+
+            if (int(rtc) > 0):
+                retry_cnt -= 1
+                log_debug("scp helper to device fail...retry " + str(retry_cnt))
+                time.sleep(5)
+            else:
+                log_debug(sto + " scp helper to device success")
+                break
 
         helper_cmd = "cd /tmp/; ./helper -q -c product_class=radio -o field=flash_eeprom,format=binary,pathname={0} > {1}".format(self.eeprom_bin, self.eeprom_txt)
         self.pexp.expect_action(180, self.lnxpmt[self.board_id], helper_cmd )
 
         scp_cmd = "scp -i {0} -4 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ".format(self.id_rsa) \
-                    + "fcd@{0}:/tmp/e.* {1}".format(self.prod_dev_ip, self.tftpdir)
-        self.fcd.common.xcmd(cmd=scp_cmd)
+                    + "fcd@{0}:/tmp/e.* {1}; hexdump -C -n 32 {2}; head -c 93 {3}" \
+                    .format(self.prod_dev_ip, self.tftpdir, self.tftpdir + self.eeprom_bin, self.tftpdir + self.eeprom_txt)
+
+        retry_cnt = 3
+        while retry_cnt > 0:
+            if retry_cnt == 1:
+                error_critical("scp " + self.eeprom_bin + " to FCD host fail")
+
+            [sto, rtc] = self.fcd.common.xcmd(cmd=scp_cmd)
+
+            if (int(rtc) > 0):
+                retry_cnt -= 1
+                log_debug("scp " + self.eeprom_bin + " to FCD host fail..." + str(retry_cnt))
+                time.sleep(5)
+            else:
+                log_debug(sto + " scp " + self.eeprom_bin + " to FCD host success")
+                break
 
         cmd = [
             "cat",
