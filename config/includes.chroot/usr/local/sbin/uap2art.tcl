@@ -28,6 +28,11 @@ set UAPGEN2OUT_ID   "e567"
 set UAPGEN2IW_ID    "e587"
 set UAPGEN2IWPRO_ID "e597"
 set INSTANTLTE_ID   "e611"
+set ULTEP_EU_ID     "e612"
+set ULTEP_US_ID     "e613"
+set ULTEP_AU_ID     "e616"
+set ULTEF_EU_ID     "e614"
+set ULTEF_US_ID     "e615"
 
 #
 # procedures
@@ -223,6 +228,11 @@ proc has_dragonfly_cpu { boardid } {
     global UAPGEN2IW_ID
     global UAPGEN2IWPRO_ID
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEP_AU_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
 
     if {
             [string equal -nocase $boardid $UAPGEN2LITE_ID] == 1
@@ -234,6 +244,11 @@ proc has_dragonfly_cpu { boardid } {
             || [string equal -nocase $boardid $UAPGEN2IW_ID] == 1
             || [string equal -nocase $boardid $UAPGEN2IWPRO_ID] == 1
             || [string equal -nocase $boardid $INSTANTLTE_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_AU_ID] == 1
+            || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
+            || [string equal -nocase $boardid $ULTEF_US_ID] == 1
                                                                     } {
          return 1
     } else {
@@ -484,19 +499,29 @@ proc main_detector { } {
     global prompt
     global boardid
     global INSTANTLTE_ID
+    global ULTEP_EU_ID
+    global ULTEP_US_ID
+    global ULTEP_AU_ID
+    global ULTEF_EU_ID
+    global ULTEF_US_ID
     global tftpserver
     global fwimg
 
     set sadd 0x81000000
     set fadd 0x9f000000
-    set sz +0x1000000
+    set sz +0xff1000
     set cbsz 0x1000000
     set timeout 30
     sleep 1
     send \003
     send "\r"
 
-    if { [string equal -nocase $boardid $INSTANTLTE_ID] == 1 } {
+    if { [string equal -nocase $boardid $INSTANTLTE_ID] == 1
+         || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
+         || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+         || [string equal -nocase $boardid $ULTEP_AU_ID] == 1
+         || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
+         || [string equal -nocase $boardid $ULTEF_US_ID] == 1} {
         stop_uboot
 
         log_progress 5 "Stop at U-boot"

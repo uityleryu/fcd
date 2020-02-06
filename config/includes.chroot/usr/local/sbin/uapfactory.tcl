@@ -38,6 +38,7 @@ set UAPGEN2IWPRO_ID "e597"
 set INSTANTLTE_ID   "e611"
 set ULTEP_EU_ID     "e612"
 set ULTEP_US_ID     "e613"
+set ULTEP_AU_ID     "e616"
 set ULTEF_EU_ID     "e614"
 set ULTEF_US_ID     "e615"
 
@@ -333,6 +334,7 @@ proc has_dragonfly_cpu { boardid } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
 
@@ -348,6 +350,7 @@ proc has_dragonfly_cpu { boardid } {
             || [string equal -nocase $boardid $INSTANTLTE_ID] == 1
             || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
             || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+            || [string equal -nocase $boardid $ULTEP_AU_ID] == 1
             || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
             || [string equal -nocase $boardid $ULTEF_US_ID] == 1
                                                                     } {
@@ -467,6 +470,7 @@ proc update_firmware { boardid } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
 
@@ -509,6 +513,7 @@ proc update_firmware { boardid } {
         [string equal -nocase $boardid $INSTANTLTE_ID] == 0 ||
         [string equal -nocase $boardid $ULTEP_EU_ID] == 0 ||
         [string equal -nocase $boardid $ULTEP_US_ID] == 0 ||
+        [string equal -nocase $boardid $ULTEP_AU_ID] == 0 ||
         [string equal -nocase $boardid $ULTEF_EU_ID] == 0 ||
         [string equal -nocase $boardid $ULTEF_US_ID] == 0 } {
         set timeout 15
@@ -670,6 +675,7 @@ proc check_unifiOS_network_ready { boardid } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
     global UAPGEN2PRO_ID
@@ -682,6 +688,7 @@ proc check_unifiOS_network_ready { boardid } {
         [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_AU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         set x 0
@@ -743,6 +750,7 @@ proc turn_on_burnin_mode { boardid } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
     global tftpserver
@@ -754,6 +762,7 @@ proc turn_on_burnin_mode { boardid } {
         [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+        [string equal -nocase $boardid $ULTEP_AU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         send "cd /tmp\r"
@@ -764,10 +773,11 @@ proc turn_on_burnin_mode { boardid } {
         expect timeout { error_critical "Command promt not found" } "#"
 
         # save config
-        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
+        send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart &\r"
         expect timeout { error_critical "Command promt not found" } "setup_lte done"
 
-        sleep 10
+        sleep 1
+        #send \003
         send "grep \"burnin\" system.cfg\r"
         expect timeout {
             error_critical "Burnin config is not set correctly"
@@ -948,6 +958,7 @@ proc do_security { boardid } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
     global UAPGEN2PRO_ID
@@ -961,6 +972,7 @@ proc do_security { boardid } {
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
         || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
         || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_AU_ID] == 1
         || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
         || [string equal -nocase $boardid $ULTEF_US_ID] == 1
         || [string equal -nocase $boardid $UAPGEN2PRO_ID] == 1
@@ -996,12 +1008,20 @@ proc do_security { boardid } {
     expect timeout { error_critical "Login failed" } "#"
     set timeout 60
 
-    send "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done\r"
-    expect timeout { error_critical "hostapd doesn't exist in /etc/inittab" } "#"
-    send "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab\r"
-    expect timeout { error_critical "Command promt not found" } "#"
-    send "init -q; sleep 15\r"
-    expect timeout { error_critical "Command promt not found" } "#"
+    if {[string equal -nocase $boardid $INSTANTLTE_ID] == 0
+        && [string equal -nocase $boardid $ULTEP_EU_ID] == 0
+        && [string equal -nocase $boardid $ULTEP_US_ID] == 0
+        && [string equal -nocase $boardid $ULTEP_AU_ID] == 0
+        && [string equal -nocase $boardid $ULTEF_EU_ID] == 0
+        && [string equal -nocase $boardid $ULTEF_US_ID] == 0} {
+
+        send "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done\r"
+        expect timeout { error_critical "hostapd doesn't exist in /etc/inittab" } "#"
+        send "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+        send "init -q; sleep 15\r"
+        expect timeout { error_critical "Command promt not found" } "#"
+    }
     send "dmesg -n 1\r"
     expect timeout { error_critical "Command promt not found" } "#"
     sleep 5
@@ -1032,6 +1052,7 @@ proc do_security { boardid } {
     if {[string equal -nocase $boardid $INSTANTLTE_ID] == 1
         || [string equal -nocase $boardid $ULTEP_EU_ID] == 1
         || [string equal -nocase $boardid $ULTEP_US_ID] == 1
+        || [string equal -nocase $boardid $ULTEP_AU_ID] == 1
         || [string equal -nocase $boardid $ULTEF_EU_ID] == 1
         || [string equal -nocase $boardid $ULTEF_US_ID] == 1} {
         set timeout 20
@@ -1138,7 +1159,7 @@ proc do_security { boardid } {
     expect timeout { error_critical "Command promt not found" } "#"
     
     send "\r"
-    send "reboot\r"
+    send "reboot -f\r"
     expect timeout { error_critical "Command promt not found" } "#" 
 
     send "exit\r"
@@ -1391,6 +1412,7 @@ proc handle_uboot { {wait_prompt 0} } {
     global INSTANTLTE_ID
     global ULTEP_EU_ID
     global ULTEP_US_ID
+    global ULTEP_AU_ID
     global ULTEF_EU_ID
     global ULTEF_US_ID
 
@@ -1418,6 +1440,7 @@ proc handle_uboot { {wait_prompt 0} } {
           [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
           [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
           [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
+          [string equal -nocase $boardid $ULTEP_AU_ID] == 1 ||
           [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
           [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
         set_network_env
