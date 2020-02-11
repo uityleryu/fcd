@@ -413,6 +413,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
+    },
+
+    "UAP6-LITE":{
+      "INDEX"       : 4,
+      "NAME"        : "UAP6-LITE",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-00773",
+      "DESC"        : "UniFi AP6 LITE",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     }
   },
 

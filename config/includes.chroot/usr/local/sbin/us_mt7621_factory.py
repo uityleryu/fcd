@@ -31,7 +31,8 @@ class USFLEXFactory(ScriptBase):
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
         self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
-
+        self.uap6_series = {'a612'}
+        self.helperexe = "helper_UAP6_MT7621_release" if self.board_id in self.uap6_series else self.helperexe
         # number of mac
         self.macnum = {'ed10': "3",
                        'ec20': "1",
@@ -39,7 +40,8 @@ class USFLEXFactory(ScriptBase):
                        'ec25': "1",
                        'ec26': "1",
                        'ec2a': "1",
-                       'ed11': "2"}
+                       'ed11': "2",
+                       'a612': "1"}
         # number of WiFi
         self.wifinum = {'ed10': "0",
                         'ec20': "2",
@@ -47,7 +49,8 @@ class USFLEXFactory(ScriptBase):
                         'ec25': "2",
                         'ec26': "2",
                         'ec2a': "2",
-                        'ed11': "0"}
+                        'ed11': "0",
+                        'a612': "2"}
         # number of Bluetooth
         self.btnum = {'ed10': "0",
                       'ec20': "1",
@@ -55,7 +58,8 @@ class USFLEXFactory(ScriptBase):
                       'ec25': "1",
                       'ec26': "1",
                       'ec2a': "0",
-                      'ed11': "0"}
+                      'ed11': "0",
+                      'a612': "1"}
         # vlan port mapping
         self.vlanport_idx = {'ed10': "'6 4'",
                              'ec20': "'6 0'",
@@ -63,7 +67,8 @@ class USFLEXFactory(ScriptBase):
                              'ec25': "'6 0'",
                              'ec26': "'6 0'",
                              'ec2a': "'6 0'",
-                             'ed11': "'6 0'"}
+                             'ed11': "'6 0'",
+                             'a612': "'6 0'"}
         # flash size map
         self.flash_size = {'ed10': "33554432",
                            'ec20': "33554432",
@@ -71,7 +76,8 @@ class USFLEXFactory(ScriptBase):
                            'ec25': "33554432",
                            'ec26': "33554432",
                            'ec2a': "33554432",
-                           'ed11': "16777216"}
+                           'ed11': "16777216",
+                           'a612': "33554432"}
         # firmware image
         self.fwimg = {'ed10': self.board_id + "-diag.bin",
                       'ec20': self.board_id + ".bin",
@@ -79,7 +85,8 @@ class USFLEXFactory(ScriptBase):
                       'ec25': self.board_id + ".bin",
                       'ec26': self.board_id + ".bin",
                       'ec2a': self.board_id + ".bin",
-                      'ed11': self.board_id + "-diag.bin"}
+                      'ed11': self.board_id + "-diag.bin",
+                      'a612': self.board_id + ".bin"}
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -101,8 +108,8 @@ class USFLEXFactory(ScriptBase):
 
     def boot_recovery_image(self, Img):
         self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot 84000000 "+"images/"+Img)
-        self.pexp.expect_action(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size), "")
-        self.pexp.expect_action(30, self.bootloader_prompt, "bootm")                                                                                                        
+        self.pexp.expect_only(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size))
+        self.pexp.expect_action(10, self.bootloader_prompt, "bootm")
         self.login_kernel()
 
     def init_recovery_image(self):
@@ -295,10 +302,24 @@ class USFLEXFactory(ScriptBase):
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
 
-        if self.DOHELPER_ENABLE == True:
-            self.erase_eefiles()
-            msg(30, "Do helper to get the output file to devreg server ...")
-            self.prepare_server_need_files()
+        retry = 3
+        while retry >= 0:
+            if self.DOHELPER_ENABLE == True:
+                self.erase_eefiles()
+                msg(30, "Do helper to get the output file to devreg server ...")
+                self.prepare_server_need_files()
+
+                eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+                uid_long = self.pexp.expect_get_output("cat {}|grep uid".format(eetxt_dut_path), self.linux_prompt)
+                uid = re.search(r'value=(.*)', uid_long, re.S).group(1)
+                if uid is not '':
+                    break
+                else:
+                    if retry == 0:
+                        error_critical("Failed to gen files by helper")
+                    log_debug("Retrying to run helper, remaining {}.".format(retry))
+                    retry -= 1
+                    time.sleep(2)
 
         if self.REGISTER_ENABLE == True:
             self.registration()
@@ -323,7 +344,7 @@ class USFLEXFactory(ScriptBase):
         if self.WAIT_LCMUPGRADE_ENABLE == True:
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Wait LCM upgrading ...")
-                self.wait_lcm_upgrade()            
+                self.wait_lcm_upgrade()
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
