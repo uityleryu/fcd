@@ -3,7 +3,7 @@ Version=1.0
 Encoding=UTF-8
 Name=BackT1-test
 Type=Application
-Exec=sudo python3 /usr/local/sbin/FCDBackToT1.py -p=PRODUCTSRL
+Exec=sudo python3 /usr/local/sbin/uifactorygui.py -p=PRODUCTSRL -ft=backtot1
 TryExec=
 X-GNOME-DocPath=
 Terminal=false
@@ -12,5 +12,5 @@ GenericName[en_US]=
 Comment[en_US]=Utility for production of Ubiquiti units
 GenericName=
 Comment=Utility for production
-Icon=/usr/local/sbin/icons/BackToT1.png
+Icon=/usr/local/sbin/icons/rocket.png
 StartupNotify=false

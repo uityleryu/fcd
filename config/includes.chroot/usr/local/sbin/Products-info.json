@@ -446,13 +446,35 @@
       "QRCHECK"     : "False"
     },
 
-    "AFi-AX-P":{
+    "AFi-AX-R-SKU-CHANGE":{
       "INDEX"       : 1,
+      "NAME"        : "AFi-AX-R",
+      "BOARDID"     : "da11",
+      "BOMREV"      : "113-00605",
+      "DESC"        : "Amplifi AX Router SKU change",
+      "FILE"        : "afi_ipq807x_sku_change.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+    "AFi-AX-P":{
+      "INDEX"       : 2,
       "NAME"        : "AFi-AX-P",
       "BOARDID"     : "da12",
       "BOMREV"      : "113-00657",
       "DESC"        : "Amplifi AX Mesh Point",
       "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+    "AFi-AX-P-SKU-CHANGE":{
+      "INDEX"       : 3,
+      "NAME"        : "AFi-AX-P",
+      "BOARDID"     : "da12",
+      "BOMREV"      : "113-00657",
+      "DESC"        : "Amplifi AX Mesh Point SKU change",
+      "FILE"        : "afi_ipq807x_sku_change.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False"
     }
