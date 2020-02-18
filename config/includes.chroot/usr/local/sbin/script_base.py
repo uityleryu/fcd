@@ -205,6 +205,8 @@ class ScriptBase(object):
         parse.add_argument('--bom_rev', '-bom', dest='bom_rev', help='BOM revision', default=None)
         parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
+        parse.add_argument('--op_id', '-i1', dest='opid', help='Operator ID', default="9527")
+        parse.add_argument('--station_id', '-i2', dest='stationid', help='Station ID', default="301")
 
         args, _ = parse.parse_known_args()
         self.product_line = args.product_line
@@ -223,6 +225,8 @@ class ScriptBase(object):
         self.region = args.region
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
+        self.opid = args.opid
+        self.stationid = args.stationid
         return args
 
     def _encrpyt_passphrase_for_log(self):

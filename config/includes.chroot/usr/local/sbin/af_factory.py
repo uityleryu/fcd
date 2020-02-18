@@ -1,12 +1,11 @@
 #!/usr/bin/python
-
 import re
 import sys
 import time
 import os
 import stat
 import shutil
-
+import datetime
 from pexpect import *
 
 from script_base import ScriptBase
@@ -43,6 +42,7 @@ class AFAMEFactroy(ScriptBase):
                 log_debug("Wait Device network up")
                 time.sleep(5)
                 if _ == 10:
+                    self.write_qst("FAIL")
                     error_critical("Cannot ping to Device")
             else:
                 time.sleep(5)
@@ -55,6 +55,7 @@ class AFAMEFactroy(ScriptBase):
         (status, stdout) = ssh.login(verbose=False)
 
         if status == False:
+            self.write_qst("FAIL")
             error_critical("Device not found or Login fail: %s" % stdout)
 
         if self.product == 'AF':
@@ -124,6 +125,7 @@ class AFAMEFactroy(ScriptBase):
                 print("Wrong key used? key=%s" % self.key)
             print("Device Not Signed")
             ssh.logout()
+            self.write_qst("FAIL")
             error_critical("Signature Failed Error: %d" % status)
 
         msg(60, 'Copying signed image to unit')
@@ -150,14 +152,61 @@ class AFAMEFactroy(ScriptBase):
         if sum1[-1] == sum2[-1]:
             msg(90, "Device Signed!")
         else:
+            self.write_qst("FAIL")
             error_critical("Check EEPROM data error")
 
         ssh.write_wait("reboot")
         msg(100, "Process Completed")
+
+        self.write_qst("PASS")
+
         sys.stdout.flush()
         time.sleep(10)
         #ssh.logout()
-        
+
+    def write_qst(self, result):
+
+        log_debug("====Print CM Log Start====")
+
+        datetime_str =  datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+        version_txt = "/home/user/Desktop/version.txt"
+        try:
+            f = open(version_txt, "r")
+            version = f.readline().strip()
+            log_debug("FCD version: " + version)
+            f.close()
+        except Exception as e:
+            log_debug(str(e))
+
+        qst_str = "%s|%s|%s|%s|%s|%s|%s|%s|%s\n" % ( \
+            self.mac.upper(), \
+            "113-"+self.bom_rev+"-"+self.region, \
+            self.board_id.upper(), \
+            result, \
+            self.opid, \
+            self.stationid, \
+            version, \
+            self.region, \
+            datetime_str
+        )
+
+        log_debug(qst_str)
+
+        log_file_path = os.path.join("/tftpboot/")
+        qst_name = log_file_path + "/" + self.stationid + "_" + datetime_str + ".qst"
+
+        try:
+            qstfile = open(qst_name, "w")
+            qstfile.write(qst_str)
+            qstfile.flush()
+            qstfile.close()
+            log_debug("QST record wrote")
+        except:
+            log_debug("QST record write error")
+
+        log_debug("====Print CM Log End====")
+
 #===========================================================================
 #           main entry
 #===========================================================================
