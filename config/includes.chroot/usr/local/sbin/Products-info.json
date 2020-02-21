@@ -413,19 +413,6 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
-    },
-
-    "UAP6-LITE":{
-      "INDEX"       : 4,
-      "NAME"        : "UAP6-LITE",
-      "BOARDID"     : "a612",
-      "BOMREV"      : "113-00773",
-      "DESC"        : "UniFi AP6 LITE",
-      "FILE"        : "us_mt7621_factory.py",
-      "T1FILE"      : "unifi_mt7621_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
     }
   },
 
@@ -529,6 +516,19 @@
       "DESC"        : "AirFiber LTU-LR",
       "FILE"        : "af_factory.py",
       "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60-LR":{
+      "INDEX"       : 4,
+      "NAME"        : "AF60-LR",
+      "BOARDID"     : "dc9e",
+      "BOMREV"      : "113-00738",
+      "DESC"        : "AirFiber 60 LR",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "af_ipq40xx_mfg.py",
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
       "SW_ID"       : "1001"

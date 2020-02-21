@@ -630,7 +630,7 @@ class ScriptBase(object):
             dstp = "/tmp/{0}".format(fh)
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
 
-        log_debug("Send helper output tgz file from DUT to host ...")
+        log_debug("Send helper output files from DUT to host ...")
 
     '''
         DUT view point
