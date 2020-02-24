@@ -777,6 +777,18 @@ class ScriptBase(object):
         cmd = "echo \"RV\"=$?"
         self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0")
 
+    def mac_format_str2comma(self, strmac):
+        mac_comma = ':'.join([self.mac[i : i + 2] for i in range(0, len(self.mac), 2)])
+        return mac_comma
+
+    def mac_format_str2dash(self, strmac):
+        mac_dash = ':'.join([self.mac[i : i + 2] for i in range(0, len(self.mac), 2)])
+        return mac_dash
+
+    def mac_format_str2list(self, strmac):
+        mac_list = self.mac_format_str2comma(strmac)
+        return mac_list
+
     def close_fcd(self):
         time.sleep(3)
         exit(0)

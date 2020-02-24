@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from binascii import unhexlify
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -11,7 +12,7 @@ import os
 import stat
 import shutil
 
-WIFIMACCHECK_EN = False
+WR_DUMMY_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
 ADDKEYS_EN = True
@@ -27,25 +28,111 @@ class AFIPQ40XXFactory(ScriptBase):
         self.init_vars()
 
     def init_vars(self):
+        '''
+        AirMax:
+            dc99: GBE
+            dc9a: GBE-LR
+        UAP:
+            dc98: UAP-UBB
+            dc9c: UAP-UBB 831
+        AirFiber:
+            dc9b: AF60
+            dc9e: AF60-LR
+        '''
         # U-boot prompt
         self.ubpmt = {
+            'dc99': ".*IPQ40xx.* # ",
+            'dc9a': ".*IPQ40xx.* # ",
+            'dc98': "\(IPQ40xx\) # ",
+            'dc9c': "\(IPQ40xx\) # ",
             'dc9b': "\(IPQ40xx\) # ",
             'dc9e': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
         self.lnxpmt = {
+            'dc99': "GBE#",
+            'dc9a': "GBE#",
+            'dc98': "UBB#",
+            'dc9c': "UBB#",
             'dc9b': "GP#",
             'dc9e': "GP#"
         }
 
         self.bootloader = {
+            'dc99': "dc99-bootloader.bin",
+            'dc9a': "dc99-bootloader.bin",
+            'dc98': "dc98-bootloader.bin",
+            'dc9c': "dc98-bootloader.bin",
             'dc9b': "dc9b-bootloader.bin",
             'dc9e': "dc9e-bootloader.bin"
         }
 
+        self.ubaddr = {
+            'dc99': "0xf0000",
+            'dc9a': "0xf0000",
+            'dc98': "0xf0000",
+            'dc9c': "0xf0000",
+            'dc9b': "0xf0000",
+            'dc9e': "0xf0000"
+        }
+
+        self.ubsz = {
+            'dc99': "0x80000",
+            'dc9a': "0x80000",
+            'dc98': "0x80000",
+            'dc9c': "0x80000",
+            'dc9b': "0x80000",
+            'dc9e': "0x80000"
+        }
+
+        self.cfgaddr = {
+            'dc99': "0x1fc0000",
+            'dc9a': "0x1fc0000",
+            'dc98': "0x1fc0000",
+            'dc9c': "0x1fc0000",
+            'dc9b': "0x1fc0000",
+            'dc9e': "0x1fc0000"
+        }
+
+        self.cfgsz = {
+            'dc99': "0x40000",
+            'dc9a': "0x40000",
+            'dc98': "0x40000",
+            'dc9c': "0x40000",
+            'dc9b': "0x40000",
+            'dc9e': "0x40000"
+        }
+
+        self.epromaddr = {
+            'dc99': "0x170000",
+            'dc9a': "0x170000",
+            'dc98': "0x170000",
+            'dc9c': "0x170000",
+            'dc9b': "0x170000",
+            'dc9e': "0x170000"
+        }
+
+        self.epromsz = {
+            'dc99': "0x10000",
+            'dc9a': "0x10000",
+            'dc98': "0x10000",
+            'dc9c': "0x10000",
+            'dc9b': "0x10000",
+            'dc9e': "0x10000"
+        }
+
         self.linux_prompt = self.lnxpmt[self.board_id]
         self.bootloader_prompt = self.ubpmt[self.board_id]
+
+        self.uboot_address = self.ubaddr[self.board_id]
+        self.uboot_size = self.ubsz[self.board_id]
+
+        self.cfg_address = self.cfgaddr[self.board_id]
+        self.cfg_size = self.cfgsz[self.board_id]
+
+        self.eeprom_address = self.epromaddr[self.board_id]
+        self.eeprom_size = self.epromsz[self.board_id]
 
         self.tftpdir = self.tftpdir + "/"
 
@@ -63,14 +150,7 @@ class AFIPQ40XXFactory(ScriptBase):
         # EX: /tftpboot/tools/commmon/x86-64k-ee
         self.eetool = os.path.join(self.fcd_commondir, self.eepmexe)
 
-        self.uboot_address = "0xf0000"
-        self.uboot_size = "0x80000"
-        self.cfg_address = "0x1fc0000"
-        self.cfg_size = "0x40000"
-        self.eeprom_address = "0x170000"
-        self.eeprom_size = "0x10000"
         self.dropbear_key = "/tmp/dropbear_key.rsa.{0}".format(self.row_id)
-        self.fcd.common.config_stty(self.dev)
 
     def stop_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
@@ -132,35 +212,28 @@ class AFIPQ40XXFactory(ScriptBase):
         self.uboot_update()
         msg(10, "Finishing update U-Boot")
 
-        if WIFIMACCHECK_EN is True:
-            msg(15, "Check EEPROM Data")
+        if (WR_DUMMY_EN is True) and (self.board_id == "dc9e"):
+            self.set_uboot_network()
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftpboot 0x84000000 tools/af_af60/af60_dummy_cal.bin")
+            self.pexp.expect_ubcmd(10, "Bytes transferred", "usetprotect spm off")
+            cmd = "sf probe; sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.eeprom_address, self.eeprom_size)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+            time.sleep(2)
+
             cmd = "sf probe; sf read 0x84000000 {0} {1}".format(self.eeprom_address, self.eeprom_size)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
             output = self.pexp.expect_get_output("md.b 0x84005000 2", self.ubpmt[self.board_id])
             if ("84005000: 20 2f" in output):
                 log_debug("Board is callibrated")
             else:
                 error_critical("Board is not callibrated")
 
-            if (False) :
-                output = self.pexp.expect_get_output("md.b 0x84005006 6", self.bootloader_prompt)
-                out_list = output.split('\r')
-                outmac = ""
-                for line in out_list:
-                    if("84005006:" in line):
-                        out = line.split(' ')
-                        outmac = out[1] + out[2] + out[3] + out[4] + out[5] + out[6]
-
-                if (self.mac in outmac):
-                    log_debug("Board calibration MAC correct")
-                else:
-                    error_critical("Board calibration MAC incorrect %s %s" %(self.mac, outmac))
-                self.pexp.expect_only(30, self.bootloader_prompt)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
+            self.stop_uboot()
 
         msg(20, "Do ubntw - data provision")
         int_reg_code = 0
         int_reg_code = int(self.region, 16)
-
         cmd = "ubntw all {0} {1} {2} {3}".format(self.mac, self.board_id, self.bomrev, int_reg_code)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         time.sleep(1)
@@ -171,17 +244,14 @@ class AFIPQ40XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftpboot 0x84000000 tools/af_af60/cfg_part.bin")
         self.pexp.expect_ubcmd(10, "Bytes transferred", "usetprotect spm off")
-
         cmd = "sf probe; sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.cfg_address, self.cfg_size)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         msg(30, "Doing urescue")
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue -e -f")
         cmd = "atftp --option \"mode octet\" -p -l {0}/{1} {2}".format(self.fwdir, self.fwimg, self.dutip)
         log_debug("Run cmd on host:" + cmd)
         self.fcd.common.xcmd(cmd=cmd)
-
         self.pexp.expect_only(30, "Firmware Version:")
         log_debug("urescue: FW loaded")
         self.pexp.expect_only(30, "Image Signature Verfied, Success.")
@@ -196,7 +266,6 @@ class AFIPQ40XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "fcd")
         self.pexp.expect_ubcmd(10, "Password:", "fcduser")
-
         cmd = "ifconfig eth0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
