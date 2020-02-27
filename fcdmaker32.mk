@@ -60,8 +60,10 @@ check_root:
 		exit 1; \
 	fi
 
-# Create a whole new ISO from a downloaded ISO
+# Create a whole new ISO from a downloaded ISO with cloning dependency libs
 new-rootfs: help clean clean-repo prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
+# Create a whole new ISO from a downloaded ISO with existing dependency libs
+rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
 prep: check_root
 	@echo " *** Creating all prerequisite directories *** "
@@ -136,14 +138,6 @@ new_livedcd_pkg: check_root
 
 gitrepo: fcd-image fcd-script-tools fcd-ubntlib
 
-dev-tools-check:
-	@if [ -d $(FWIMG_DIR) ]; then \
-		echo "fcd-image is exited"; \
-	else \
-		echo "fcd-image is not exited"; \
-		exit 1; \
-	fi
-
 fcd-image:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
@@ -170,7 +164,6 @@ fcd-script-tools:
 			cd $(BUILD_DIR)/$@; git reset --hard $(TOOL_VER); \
 		fi \
 	fi
-	cp -rf $(TOOLS_DIR)/tools $(FWIMG_DIR)/tools
 	touch $(OUTDIR)/.clone-fcd-script-tools-done
 
 fcd-ubntlib:
@@ -215,17 +208,12 @@ clean: check_root
 	@rm -rf $(FCD_ISO)
 
 clean-repo:
-	@if [ -d $(BUILD_DIR)/UPyFCD ]; then \
-		rm -rf $(BUILD_DIR)/UPyFCD; \
-	fi
+	@echo "Cleaning all dependency libs"
 	@if [ -d $(BUILD_DIR)/fcd-image ]; then \
 		rm -rf $(BUILD_DIR)/fcd-image; \
 	fi
 	@if [ -f $(OUTDIR)/.clone-fcd-image-done ]; then \
 		rm -rf $(OUTDIR)/.clone-fcd-image-done; \
-	fi
-	@if [ -f $(OUTDIR)/.clone-diag-done ]; then \
-		rm -rf $(OUTDIR)/.clone-diag-done; \
 	fi
 	@if [ -d $(BUILD_DIR)/fcd-ubntlib ]; then \
 		rm -rf $(BUILD_DIR)/fcd-ubntlib; \

@@ -1,7 +1,7 @@
 define ProductImage
 
 $1: new-rootfs gitrepo image-install-$1 packiso-$1
-$1-update: dev-tools-check image-install-$1 packiso-$1
+$1-local: rootfs gitrepo image-install-$1 packiso-$1
 
 image-install-$1:
 	@echo " ****************************************************************** "
@@ -23,9 +23,8 @@ image-install-$1:
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Logsync.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
-	if [ ! -d $(NEWSQUASHFS)/usr/local/sbin/ubntlib ]; then \
-		mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib; \
-	fi
+	rm -rf $(NEWSQUASHFS)/usr/local/sbin/ubntlib
+	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib
 	cp -rf $(UBNTLIB_DIR)/ubntlib/* $(NEWSQUASHFS)/usr/local/sbin/ubntlib/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	sh include/cp2tftp.sh $(IMAGE-$1)

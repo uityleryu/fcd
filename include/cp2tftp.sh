@@ -1,17 +1,14 @@
 #!/bin/sh
-
+################################################################################
+#Description    : To copy the product specific images from fcd-image repo 
+# 
+#Revision       : 1.0.0
+################################################################################
 # For build environmental variables
-OUTDIR=$(pwd)/output
-APP_DIR="usr/local/sbin"
-EXLIVECD="${OUTDIR}/ExtractLivedCD"
-EXSQUASHFS="${OUTDIR}/ExtractLivedSquashfs"
-STAGEDIR="${OUTDIR}/stage"
-NEWLIVEDCD="${STAGEDIR}/NewLiveCD"
-NEWSQUASHFS="${STAGEDIR}/NewSquashfs"
-FWIMG_DIR="${BUILD_DIR}/fcd-image"
-
 BUILD_DIR=$(pwd)
-FCDAPP_DIR="${BUILD_DIR}/config/includes.chroot"
+OUTDIR="${BUILD_DIR}/output"
+STAGEDIR="${OUTDIR}/stage"
+NEWSQUASHFS="${STAGEDIR}/NewSquashfs"
 
 if [ ! -d ${BUILD_DIR}/fcd-image ]; then \
 	echo "${BUILD_DIR}/fcd-image doesn't exist, "; \
