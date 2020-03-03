@@ -18,7 +18,7 @@ UBNTLIB_DIR=$(BUILD_DIR)/fcd-ubntlib
 
 BASE_OS=FCD-base.iso
 NEW_LABEL=UBNT_FCD
-FCD_ISO=$(OUTDIR)/FCD-*-$(VER).iso
+FCD_ISO=$(OUTDIR)/FCD-$(VER)-*.iso
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")

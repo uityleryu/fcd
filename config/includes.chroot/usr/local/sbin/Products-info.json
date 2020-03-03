@@ -34,9 +34,9 @@
       "QRCHECK"     : "True"
     },
 
-    "UMG-PRO":{
+    "UXG-PRO":{
       "INDEX"       : 3,
-      "NAME"        : "UMG-PRO",
+      "NAME"        : "UXG-PRO",
       "BOARDID"     : "ea19",
       "BOMREV"      : "113-00740",
       "DESC"        : "UniFi Dream Machine Pro Router",
