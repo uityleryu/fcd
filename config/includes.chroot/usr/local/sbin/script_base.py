@@ -22,7 +22,7 @@ from threading import Thread
 
 
 class ScriptBase(object):
-    __version__ = "1.0.7"
+    __version__ = "1.0.8"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -199,6 +199,7 @@ class ScriptBase(object):
         parse.add_argument('--tftp_server', '-ts', dest='tftp_server', help='FCD host IP', default=None)
         parse.add_argument('--board_id', '-b', dest='board_id', help='System ID, ex:eb23, eb21', default=None)
         parse.add_argument('--erasecal', '-e', dest='erasecal', help='Erase calibration data selection', default=None)
+        parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection', default=None)
         parse.add_argument('--mac', '-m', dest='mac', help='MAC address', default=None)
         parse.add_argument('--pass_phrase', '-p', dest='pass_phrase', help='Passphrase', default=None)
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
@@ -214,6 +215,7 @@ class ScriptBase(object):
         self.tftp_server = args.tftp_server
         self.board_id = args.board_id if args.board_id is not None else "na"
         self.erasecal = args.erasecal
+        self.erase_devreg = args.erase_devreg
         self.mac = args.mac.lower() if args.mac is not None else args.mac
         self.premac = "fc:ec:da:00:00:1" + self.row_id
         self.pass_phrase = args.pass_phrase

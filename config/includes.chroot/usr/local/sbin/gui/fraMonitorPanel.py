@@ -146,9 +146,19 @@ class fraMonitorPanel(Gtk.Frame):
             else:
                 self.cbtnerasecal.set_active(False)
             self.cbtnerasecal.connect("toggled", self.on_cbtnerasecal_toggled)
+
+            # Erase devreg-data checkbutton
+            self.cbtnerase_devreg = Gtk.CheckButton("Erase-devreg")
+            if CONST.erasewifidata[int(self.slotid)] is True:
+                self.cbtnerase_devreg.set_active(True)
+            else:
+                self.cbtnerase_devreg.set_active(False)
+            self.cbtnerase_devreg.connect("toggled", self.on_cbtnerase_devreg_toggled)
+
             self.hbox.pack_start(self.etyproductname, False, False, 0)
             self.hbox.pack_start(self.cmbbcomport, False, False, 0)
             self.hbox.pack_start(self.cbtnerasecal, False, False, 0)
+            self.hbox.pack_start(self.cbtnerase_devreg, False, False, 0)
             self.hbox.pack_start(self.lblmacqr, False, False, 0)
             self.hbox.pack_start(self.hboxpgrs, True, True, 0)
             self.hbox.pack_end(self.btnstart, False, False, 0)
@@ -187,6 +197,9 @@ class fraMonitorPanel(Gtk.Frame):
 
     def on_cbtnerasecal_toggled(self, button):
         CONST.erasewifidata[int(self.slotid)] = not CONST.erasewifidata[int(self.slotid)]
+
+    def on_cbtnerase_devreg_toggled(self, button):
+        CONST.erase_devreg_data[int(self.slotid)] = not CONST.erase_devreg_data[int(self.slotid)]
 
     '''
         Check if produc, BOM revision and region are empty
@@ -429,6 +442,7 @@ class fraMonitorPanel(Gtk.Frame):
             "-ts=" + CONST.fcdhostip,
             "-b=" + CONST.active_product_obj['BOARDID'],
             "-e=" + str(CONST.erasewifidata[int(self.slotid)]),
+            "-ed=" + str(CONST.erase_devreg_data[int(self.slotid)]),
             "-m=" + CONST.macaddr
         ]
         cmd = " ".join(cmd)

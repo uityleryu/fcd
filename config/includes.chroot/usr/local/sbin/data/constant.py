@@ -127,6 +127,14 @@ erasewifidata = [
     False
 ]
 
+erase_devreg_data = [
+    False,
+    False,
+    False,
+    False
+]
+
+
 fcdhostip = "192.168.1.19"
 hostipsetenable = False
 active_bomrev = ""

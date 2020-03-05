@@ -467,7 +467,7 @@
       "BOMREV"      : "113-00605",
       "DESC"        : "Amplifi AX Router",
       "FILE"        : "afi_ipq807x_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     },
 
@@ -489,7 +489,7 @@
       "BOMREV"      : "113-00657",
       "DESC"        : "Amplifi AX Mesh Point",
       "FILE"        : "afi_ipq807x_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     },
 
