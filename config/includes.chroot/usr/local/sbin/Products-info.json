@@ -438,6 +438,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
+    },
+
+    "UAP6-LR":{
+      "INDEX"       : 8,
+      "NAME"        : "UAP6-LR",
+      "BOARDID"     : "a614",
+      "BOMREV"      : "113-00742",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     }
   },
 

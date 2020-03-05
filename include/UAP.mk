@@ -41,11 +41,23 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
 
+IMAGE-UAP6= \
+    images/a612* \
+    images/a614* \
+    uap-fw/uap6* \
+    uap-fw/lede-mtk-mt7621-UAP6-initramfs-kernel.bin \
+    uap-fw/u-boot-mt7621-mfg-v2.bin \
+    uap-fw/kernel-uap6-afi6-7603_7915a-v3.bin \
+    uap-fw/unifi-PR-82.56-g3967dfe8_uap6-mt7621-31MB_u-boot.bin \
+    uap-fw/BZ.mt7621.uap6*
+
+
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UAP-NANO-IW-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
+IMAGE-UAP+=$(IMAGE-UAP6)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -63,6 +75,7 @@ UAP-IWHD_FCDIMG_HASH=
 UAP-NANO-IW-FLEXHD_FCDIMG_HASH=
 UBB_FCDIMG_HASH=
 UAP-INDUSTRIAL_FCDIMG_HASH=
+UAP6_FCDIMG_HASH=
 
 FCDIMG_VER=
 
@@ -74,6 +87,7 @@ UAP-IWHD_UBNTLIB_HASH=
 UAP-NANO-IW-FLEXHD_UBNTLIB_HASH=
 UBB_UBNTLIB_HASH=
 UAP-INDUSTRIAL_UBNTLIB_HASH=
+UAP6_UBNTLIB_HASH=
 
 UBNTLIB_VER=
 
@@ -85,6 +99,7 @@ UAP-IWHD_TOOL_HASH=
 UAP-NANO-IW-FLEXHD_TOOL_HASH=
 UBB_TOOL_HASH=
 UAP-INDUSTRIAL_TOOL_HASH=
+UAP6_TOOL_HASH=
 
 TOOL_VER=
 
@@ -94,7 +109,8 @@ TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
-    common/helper_UNIFI_MT7621_release
+    common/helper_UNIFI_MT7621_release \
+    common/helper_UAP6_MT7621_release
 
 # Project specific tools
 
@@ -110,6 +126,7 @@ TOOLS-UAP-INDUSTRIAL+= \
 TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-IWHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-NANO-IW-FLEXHD+=$(TOOLS-CONFIG)
+TOOLS-UAP6+=$(TOOLS-CONFIG)
 
 # Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
@@ -127,3 +144,4 @@ $(eval $(call ProductImage,UAP-IWHD,FCD-UAP-IWHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD-UAP-NANO-IW-FLEXHD-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UBB,FCD-UAP-UBB-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD-UAP-INDUSTRIAL-$(VER)))
+$(eval $(call ProductImage,UAP6,FCD-UAP6-$(VER)-$(FWVER)))

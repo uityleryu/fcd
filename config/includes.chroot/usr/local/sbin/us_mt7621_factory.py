@@ -30,9 +30,11 @@ class USFLEXFactory(ScriptBase):
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
-        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
-        self.uap6_series = {'a612'}
+        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26',
+                                 'a612', 'a614'}
+        self.uap6_series = {'a612', 'a614'}
         self.helperexe = "helper_UAP6_MT7621_release" if self.board_id in self.uap6_series else self.helperexe
+
         # number of mac
         self.macnum = {'ed10': "3",
                        'ec20': "1",
@@ -41,7 +43,8 @@ class USFLEXFactory(ScriptBase):
                        'ec26': "1",
                        'ec2a': "1",
                        'ed11': "2",
-                       'a612': "1"}
+                       'a612': "1",
+                       'a614': "1"}
         # number of WiFi
         self.wifinum = {'ed10': "0",
                         'ec20': "2",
@@ -50,7 +53,8 @@ class USFLEXFactory(ScriptBase):
                         'ec26': "2",
                         'ec2a': "2",
                         'ed11': "0",
-                        'a612': "2"}
+                        'a612': "2",
+                        'a614': "2"}
         # number of Bluetooth
         self.btnum = {'ed10': "0",
                       'ec20': "1",
@@ -59,7 +63,8 @@ class USFLEXFactory(ScriptBase):
                       'ec26': "1",
                       'ec2a': "0",
                       'ed11': "0",
-                      'a612': "1"}
+                      'a612': "1",
+                      'a614': "1"}
         # vlan port mapping
         self.vlanport_idx = {'ed10': "'6 4'",
                              'ec20': "'6 0'",
@@ -68,7 +73,8 @@ class USFLEXFactory(ScriptBase):
                              'ec26': "'6 0'",
                              'ec2a': "'6 0'",
                              'ed11': "'6 0'",
-                             'a612': "'6 0'"}
+                             'a612': "'6 0'",
+                             'a614': "'6 0'"}
         # flash size map
         self.flash_size = {'ed10': "33554432",
                            'ec20': "33554432",
@@ -77,7 +83,8 @@ class USFLEXFactory(ScriptBase):
                            'ec26': "33554432",
                            'ec2a': "33554432",
                            'ed11': "16777216",
-                           'a612': "33554432"}
+                           'a612': "33554432",
+                           'a614': "33554432"}
         # firmware image
         self.fwimg = {'ed10': self.board_id + "-diag.bin",
                       'ec20': self.board_id + ".bin",
@@ -86,7 +93,8 @@ class USFLEXFactory(ScriptBase):
                       'ec26': self.board_id + ".bin",
                       'ec2a': self.board_id + ".bin",
                       'ed11': self.board_id + "-diag.bin",
-                      'a612': self.board_id + ".bin"}
+                      'a612': self.board_id + ".bin",
+                      'a614': self.board_id + ".bin"}
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -202,15 +210,25 @@ class USFLEXFactory(ScriptBase):
             error_critical("Failed to transfer boot img")
 
         self.pexp.expect_action(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; \
-                                                            sf write ${loadaddr} 0x0 ${filesize}")
+                                sf write ${loadaddr} 0x0 ${filesize}")
 
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def enter_uboot(self):
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-        if rt != 0:
-            error_critical("Failed to detect device")
-        self.pexp.expect_action(30, self.bootloader_prompt, "")
+
+        self.bootloader_prompt = "MT7621 #"
+        retry = 2
+        while retry > 0:
+            if rt != 0:
+                error_critical("Failed to detect device")
+            try:
+                self.pexp.expect_action(10, self.bootloader_prompt, "")
+                break
+            except Exception as e:
+                self.bootloader_prompt = "=>"
+                log_debug("Change prompt to {}".format(self.bootloader_prompt))
+                retry -= 1
 
         self.SetBootNet()
 
@@ -286,32 +304,34 @@ class USFLEXFactory(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT_ENABLE == True:
+        if self.UPDATE_UBOOT_ENABLE is True:
             if self.board_id in self.uboot_upgrade_en:
                 self.enter_uboot()
                 self.update_uboot()
                 msg(10, "Update uboot successfully ...")
 
-        if self.BOOT_RECOVERY_IMAGE == True:
+        if self.BOOT_RECOVERY_IMAGE is True:
             self.enter_uboot()
             self.boot_recovery_image(self.fcdimg)
             msg(15, "Boot into recovery image for registration ...")
             self.init_recovery_image()
 
-        if self.PROVISION_ENABLE == True:
+        if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
 
+        # retry for unstable helper_UAP6
         retry = 3
         while retry >= 0:
-            if self.DOHELPER_ENABLE == True:
+            if self.DOHELPER_ENABLE is True:
                 self.erase_eefiles()
                 msg(30, "Do helper to get the output file to devreg server ...")
                 self.prepare_server_need_files()
 
-                eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
-                uid_long = self.pexp.expect_get_output("cat {}|grep uid".format(eetxt_dut_path), self.linux_prompt)
-                uid = re.search(r'value=(.*)', uid_long, re.S).group(1)
+                eetxt_dut_path = os.path.join(self.tftpdir, self.eetxt)
+                [uid_long, rtc] = self.fcd.common.xcmd("cat {}|grep uid".format(eetxt_dut_path))
+                uid = re.search(r'value=(.*)', uid_long, re.S).group(1).strip()
+                log_debug("Flash UID="+str(uid))
                 if uid is not '':
                     break
                 else:
@@ -321,27 +341,27 @@ class USFLEXFactory(ScriptBase):
                     retry -= 1
                     time.sleep(2)
 
-        if self.REGISTER_ENABLE == True:
+        if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if self.FWUPDATE_ENABLE == True:
+        if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
             self.fwupdate()
             msg(70, "Updating released firmware done...")
 
-        if self.DATAVERIFY_ENABLE == True:
+        if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.CONF_ZEROIP_ENABLE == True:
+        if self.CONF_ZEROIP_ENABLE is True:
             if self.board_id in self.zeroip_en:
                 self.configure_zeroip()
                 msg(80, "Configure zeroip done ...")
 
-        if self.WAIT_LCMUPGRADE_ENABLE == True:
+        if self.WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Wait LCM upgrading ...")
                 self.wait_lcm_upgrade()

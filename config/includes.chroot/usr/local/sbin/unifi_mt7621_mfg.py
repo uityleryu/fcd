@@ -44,9 +44,24 @@ addr_map_uap = {
                     'factory': ('0x70000', '0x10000'),
                     'bs': ('0x90000', '0x10000'),
                     'kernel0': ('0x1a0000', '0xf30000')
+                  },
+                  'a612': {
+                    'uboot': ('0', '0x60000'),
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
+                  },
+                  'a614': {
+                    'uboot': ('0', '0x60000'),
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
                   }
                 }
 
+uap6_series = ['a612', 'a614']
+uap6_uboot_ver = "U-Boot 2018.09UAP6-AFI6-UBOOT-V2-g2fc6246"
+uap_uboot_ver = "U-Boot 1.1.3"
 
 class MT7621MFGGeneral(ScriptBase):
     """
@@ -76,7 +91,7 @@ class MT7621MFGGeneral(ScriptBase):
         earse_cmd = "sf erase " + flash_addr + " " + size
         log_debug(msg="run cmd " + earse_cmd)
         self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=earse_cmd)
-        self.pexp.expect_only(timeout=90, exptxt="Erased: OK")
+        self.pexp.expect_only(timeout=180, exptxt="Erased: OK")
         self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=" ")
 
     def write_img(self, flash_addr):
@@ -95,12 +110,18 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_action(timeout=10, exptxt="", action=" ")
 
     def stop_uboot(self, timeout=30):
+        self.set_bootloader_prompt("MT7621 #")
         if self.pexp is None:
             error_critical(msg="No pexpect obj exists!")
         else:
             log_debug(msg="Stopping U-boot")
             self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
-            self.pexp.expect_action(timeout=timeout, exptxt=self.bootloader_prompt, action="")
+            try:
+                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
+            except Exception as e:
+                self.set_bootloader_prompt("=>")
+                log_debug(msg="Changed uboot prompt to =>")
+                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
 
     def is_network_alive_in_uboot(self, retry=1):
         is_alive = False
@@ -128,7 +149,10 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_only(60, "Bytes transferred = "+img_size)
 
     def is_mfg_uboot(self):
-        uboot_mfg_ver = "U-Boot 1.1.3"
+        if self.board_id in uap6_series:
+            uboot_mfg_ver = uap6_uboot_ver
+        else:
+            uboot_mfg_ver = uap_uboot_ver
         ret = self.pexp.expect_get_output("version", self.bootloader_prompt)
         log_debug("verison ret: "+str(ret))
         if uboot_mfg_ver not in ret:
@@ -145,7 +169,6 @@ class MT7621MFGGeneral(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        self.set_bootloader_prompt("MT7621 #")
 
         msg(no=1, out="Waiting - PULG in the device...")
         self.stop_uboot()
@@ -205,9 +228,11 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
 
         if self.board_id in addr_map_uap:
+            if self.board_id in uap6_series:
+                self.pexp.expect_action(90, "Please press Enter to activate this console", "")
             self.pexp.expect_only(120, "BusyBox")
         else:
-            self.pexp.expect_action(120, "Please press Enter to activate this console","")
+            self.pexp.expect_action(120, "Please press Enter to activate this console", "")
             self.pexp.expect_action(30, "", "")
             self.pexp.expect_action(30, "UBNT login: ", "ubnt")
             self.pexp.expect_action(30, "Password: ", "ubnt")
