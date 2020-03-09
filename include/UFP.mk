@@ -16,30 +16,6 @@ PRD_MODEL=UniFiProtect
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-UFP-SENSE_FCDIMG_HASH=
-UFP-LOCK-R_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-UFP-SENSE_UBNTLIB_HASH=
-UFP-LOCK-R_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-UFP-SENSE_TOOL_HASH=
-UFP-LOCK-R_TOOL_HASH=
-
-TOOL_VER=
-
 # Common tools
 
 TOOLS-CONFIG= \

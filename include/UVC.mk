@@ -20,30 +20,6 @@ PRD_MODEL=UniFiVideo
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-UVC-G4PRO_FCDIMG_HASH=
-UVC-G3BATTERY_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-UVC-G4PRO_UBNTLIB_HASH=
-UVC-G3BATTERY_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-UVC-G4PRO_TOOL_HASH=
-UVC-G3BATTERY_TOOL_HASH=
-
-TOOL_VER=
-
 # Common tools
 
 TOOLS-CONFIG= \

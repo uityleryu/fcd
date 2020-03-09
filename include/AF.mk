@@ -20,30 +20,6 @@ PRD_MODEL=AirFiber
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-AF60_FCDIMG_HASH=
-AF60-LR_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-AF60_UBNTLIB_HASH=
-AF60-LR_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-AF60_TOOL_HASH=
-AF60-LR_TOOL_HASH=
-
-TOOL_VER=
-
 # Common tools
 
 TOOLS-CONFIG= \

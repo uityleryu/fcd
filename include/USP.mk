@@ -18,30 +18,6 @@ PRD_MODEL=USP
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-USP-PLUG_FCDIMG_HASH=
-USP-3-8_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-USP-PLUG_UBNTLIB_HASH=
-USP-3-8_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-USP-PLUG_TOOL_HASH=
-USP-3-8_TOOL_HASH=
-
-TOOL_VER=
-
 # Common tools
 
 TOOLS-CONFIG= \

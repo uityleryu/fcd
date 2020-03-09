@@ -23,30 +23,6 @@ PRD_MODEL=airMAX
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-GBE_FCDIMG_HASH=
-PRISMAP_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-GBE_UBNTLIB_HASH=
-PRISMAP_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-GBE_TOOL_HASH=
-PRISMAP_TOOL_HASH=
-
-TOOL_VER=
-
 # Common tools
 
 TOOLS-CONFIG= \

@@ -1,24 +1,21 @@
 include include/image-install.mk
 
 # For build environmental variables
-OUTDIR=$(shell pwd)/output
-APP_DIR=usr/local/sbin
-EXLIVECD=$(OUTDIR)/ExtractLivedCD
-EXSQUASHFS=$(OUTDIR)/ExtractLivedSquashfs
-STAGEDIR=$(OUTDIR)/stage
-NEWLIVEDCD=$(STAGEDIR)/NewLiveCD
-NEWSQUASHFS=$(STAGEDIR)/NewSquashfs
-
-BUILD_DIR=$(shell pwd)
-FCDAPP_DIR=$(BUILD_DIR)/config/includes.chroot
-FWIMG_DIR=$(BUILD_DIR)/fcd-image
-FTU_DIR=$(BUILD_DIR)/UPyFCD/DIAG
-TOOLS_DIR=$(BUILD_DIR)/fcd-script-tools
-UBNTLIB_DIR=$(BUILD_DIR)/fcd-ubntlib
-
-BASE_OS=FCD-base.iso
-NEW_LABEL=UBNT_FCD
-FCD_ISO=$(OUTDIR)/FCD-$(VER)-*.iso
+OUTDIR      = $(shell pwd)/output
+APP_DIR     = usr/local/sbin
+EXLIVECD    = $(OUTDIR)/ExtractLivedCD
+EXSQUASHFS  = $(OUTDIR)/ExtractLivedSquashfs
+STAGEDIR    = $(OUTDIR)/stage
+NEWLIVEDCD  = $(STAGEDIR)/NewLiveCD
+NEWSQUASHFS = $(STAGEDIR)/NewSquashfs
+BUILD_DIR   = $(shell pwd)
+FCDAPP_DIR  = $(BUILD_DIR)/config/includes.chroot
+FWIMG_DIR   = $(BUILD_DIR)/fcd-image
+TOOLS_DIR   = $(BUILD_DIR)/fcd-script-tools
+UBNTLIB_DIR = $(BUILD_DIR)/fcd-ubntlib
+BASE_OS     = FCD-base.iso
+NEW_LABEL   = UBNT_FCD
+FCD_ISO     = $(OUTDIR)/FCD*$(VER)*.iso
 
 # Mount Checking LiveCD
 MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
@@ -26,8 +23,15 @@ MCLiveCD=$(shell mount | grep -o "$(EXLIVECD) type iso9660")
 # Mount Checking Squaschfs
 MCSQUASHFS=$(shell mount | grep -o "$(EXSQUASHFS) type squashfs")
 
-# Import and Initialize Product specific Targets
-include include/$(PRD).mk
+check_params: help
+ifeq ($(origin PRD),undefined)
+	@echo "PRD is empty, please refer help"
+	@exit 1
+endif
+ifeq ($(origin VER),undefined)
+	@echo "VER is empty, please refer help"
+	@exit 1
+endif
 
 help:
 	@echo " ****************************************************************** "
@@ -41,12 +45,15 @@ help:
 	@echo "   NEWSQUASHFS    = $(NEWSQUASHFS)                                  "
 	@echo "   BUILD_DIR      = $(BUILD_DIR)                                    "
 	@echo "   FCDAPP_DIR     = $(FCDAPP_DIR)                                   "
-	@echo "   FWIMG_DIR      = $(FWIMG_DIR)                                    "
-	@echo "   TOOLS_DIR      = $(TOOLS_DIR)                                    "
-	@echo "   UBNTLIB_DIR    = $(UBNTLIB_DIR)                                  "
-	@echo "   FTU_DIR        = $(FTU_DIR)                                      "
+	@echo "   FWIMG_DIR      = $(FWIMG_DIR)$(FWIMG_HASH)                      "
+	@echo "   TOOLS_DIR      = $(TOOLS_DIR)$(TOOLS_HASH)                      "
+	@echo "   UBNTLIB_DIR    = $(UBNTLIB_DIR)$(UBNTLIB_HASH)                  "
 	@echo "   BASE_OS        = $(BASE_OS)                                      "
+	@echo "   PRD            = $(PRD)                                          "
+	@echo "   VER            = $(VER)                                          "
 	@echo " ****************************************************************** "
+	@echo "fcdmaker32 usage:"
+	@echo "sudo make -f fcdmaker32.mk PRD=UDM VER=1.6.1 UDMPRO"
 
 check_root:
 	@if ! [ "$$(whoami)" = "root" ]; then \
@@ -60,18 +67,18 @@ check_root:
 		exit 1; \
 	fi
 
+# Import and Initialize Product specific Targets
+ifdef PRD
+    include include/$(PRD).mk
+endif   
+
 # Create a whole new ISO from a downloaded ISO with cloning dependency libs
-new-rootfs: help clean clean-repo prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
+new-rootfs: check_params clean clean-repo prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 # Create a whole new ISO from a downloaded ISO with existing dependency libs
-rootfs: help clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
+rootfs: check_params clean prep mount_livedcd mount_livedcd_squashfs prep_new_livedcd prep_new_squashfs
 
 prep: check_root
 	@echo " *** Creating all prerequisite directories *** "
-ifndef VER
-	@echo "fcdmaker usage:"
-	@echo "example1: sudo make VER=0.9.1-d9e5388-3 -f fcdmaker32.mk fcd-UDM-new"
-	@exit 1
-endif
 	@if [ ! -d $(EXLIVECD) ]; then \
 		mkdir -p $(EXLIVECD); \
 	fi
@@ -141,46 +148,28 @@ gitrepo: fcd-image fcd-script-tools fcd-ubntlib
 fcd-image:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
-		if [ $(FCDIMG_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
-		fi \
 	else \
 		git clone git@10.2.0.33:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
-		if [ $(FCDIMG_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(FCDIMG_VER); \
-		fi \
 	fi
-	touch $(OUTDIR)/.clone-fcd-image-done
+	@echo "$(BUILD_DIR)/$@ HASH: `git --git-dir $(BUILD_DIR)/$@/.git rev-parse HEAD`"
 
 fcd-script-tools:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
-		if [ $(TOOL_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(TOOL_VER); \
-		fi \
 	else \
 		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
-		if [ $(TOOL_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(TOOL_VER); \
-		fi \
 	fi
-	touch $(OUTDIR)/.clone-fcd-script-tools-done
+	@echo "$(BUILD_DIR)/$@ HASH: `git --git-dir $(BUILD_DIR)/$@/.git rev-parse HEAD`"
 
 fcd-ubntlib:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
 		cd $(BUILD_DIR)/$@; git pull; \
-		if [ $(UBNTLIB_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(UBNTLIB_VER); \
-		fi \
 	else \
 		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
-		if [ $(UBNTLIB_VER) != "" ]; then \
-			cd $(BUILD_DIR)/$@; git reset --hard $(UBNTLIB_VER); \
-		fi \
 	fi
-	touch $(OUTDIR)/.clone-fcd-ubntlib-done
+	@echo "$(BUILD_DIR)/$@ HASH: `git --git-dir $(BUILD_DIR)/$@/.git rev-parse HEAD`"
 
-clean: check_root
+clean: check_root check_params
 	@echo " *** Cleaning all files under $(OUTDIR) *** "
 	@echo " >> Checking if $(EXLIVECD) is mounted ... "
 	@if [ -d "$(EXLIVECD)" ]; then \
@@ -212,18 +201,9 @@ clean-repo:
 	@if [ -d $(BUILD_DIR)/fcd-image ]; then \
 		rm -rf $(BUILD_DIR)/fcd-image; \
 	fi
-	@if [ -f $(OUTDIR)/.clone-fcd-image-done ]; then \
-		rm -rf $(OUTDIR)/.clone-fcd-image-done; \
-	fi
 	@if [ -d $(BUILD_DIR)/fcd-ubntlib ]; then \
 		rm -rf $(BUILD_DIR)/fcd-ubntlib; \
 	fi
-	@if [ -f $(OUTDIR)/.clone-fcd-ubntlib-done ]; then \
-		rm -rf $(OUTDIR)/.clone-fcd-ubntlib-done; \
-	fi
 	@if [ -d $(BUILD_DIR)/fcd-script-tools ]; then \
 		rm -rf $(BUILD_DIR)/fcd-script-tools; \
-	fi
-	@if [ -f $(OUTDIR)/.clone-fcd-script-tools-done ]; then \
-		rm -rf $(OUTDIR)/.clone-fcd-script-tools-done; \
 	fi

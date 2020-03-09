@@ -5,8 +5,8 @@ $1-local: rootfs gitrepo image-install-$1 packiso-$1
 
 image-install-$1:
 	@echo " ****************************************************************** "
-	@echo "   FCD ISO NAME   = $2                                              "
-	@echo "   PRD_MODEL      = $(PRD_MODEL)                                    "
+	@echo "   FCD ISO NAME          = $2                                              "
+	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "
 	@echo " ****************************************************************** "
 	@echo " >> copy prep scripts to new squashfs "
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
