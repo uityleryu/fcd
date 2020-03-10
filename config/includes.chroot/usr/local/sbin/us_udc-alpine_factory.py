@@ -16,6 +16,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 SIM_PCYL_LNX_EN = False
 SIM_PCYL_UB_EN = False
+UB_WR_DUMMY_EN = True
 PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
@@ -40,15 +41,21 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.helper_path = "usw_leaf"
         self.dcrp = None
 
+        # Dummy data for SPI flash
+        self.dummydata = {
+            'f060': "fcecda77861cfcecda77861df0600777",
+            'f062': ""
+        }
+
         # LCM FW
         self.lcmfwver = {
-            'f060': "v4.0.6-0-ge30d447",
+            'f060': "v4.0.8-0-ga1015ad",
             'f062': ""
         }
 
         # FW image
         self.fwimage = {
-            'f060': "UDC.alpinev2.v4.1.40.9b809f5.191220.2011",
+            'f060': "UDC.alpinev2.v4.1.42.0913e56.200226.1630",
             'f062': ""
         }
 
@@ -86,6 +93,43 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             'f060': "usw-100g-mfg",
             'f062': "usw-spine-rev1-mfg"
         }
+
+    def ub_write_dummy_data(self):
+        cmd = "mw.q $loadaddr 0xecfc1c8677daecfc"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "setexpr next_loadaddr $loadaddr + 8"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "mw.q $next_loadaddr 0x770760f01d8677da"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "sf probe; sf erase 0x1f0000 +0x10"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "sf write $loadaddr 0x1f0000 0x10"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "sf read $loadaddr 0x1f0000 0x10"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "md.b $loadaddr 0x10"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+    def lnx_write_dummy_data(self):
+        dummyfile = "/tmp/uswleaf-dummy.bin"
+        tmp = ""
+        dutdata = self.dummydata[self.board_id]
+        for i in range(0, len(dutdata), 2):
+            tmp = "{0}\\x{1}".format(tmp, dutdata[i : i + 2])
+
+        cmd = "echo -n -e \'{0}\' > {1}".format(tmp, dummyfile)
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
+        self.chk_lnxcmd_valid()
+
+        cmd = "dd if={0} of=/dev/mtdblock4 bs=1 count=16".format(dummyfile)
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
+        self.chk_lnxcmd_valid()
 
     def boot_recovery_spi(self):
         cmdset = [
@@ -197,7 +241,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
         self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
-        self.rtc = self.dcrp.lnx_login(timeout=100)
+        self.rtc = self.login(timeout=150)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info")
@@ -247,17 +291,37 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         self.dcrp.stop_at_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run delenv")
+
+        if UB_WR_DUMMY_EN is True:
+            self.ub_write_dummy_data()
+
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
         self.dcrp.stop_at_uboot()
         self.boot_recovery_spi()
         msg(5, "Boot from SPI recovery image ...")
 
-        rtc = self.dcrp.lnx_login(timeout=100)
+        rtc = self.login(timeout=100)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
         if rtc == 1:
+            if UB_WR_DUMMY_EN is False:
+                self.lnx_write_dummy_data()
+                cmd = "sleep 2; reboot -f"
+                '''
+                    It must expect nothing in the next expect_lnxcmd() because it won't
+                    delete the log messages in the buffer. If we expect something, then
+                    it won't find the "Autobooting 2 seconds" after reboot
+                '''
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, "")
+                self.dcrp.stop_at_uboot()
+                self.boot_recovery_spi()
+                self.login(timeout=150)
+                cmd = "cat /usr/lib/version"
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
+                self.chk_lnxcmd_valid()
+
             self.set_lnx_net()
         else:
             cmd = "ifconfig br1 {0}".format(self.dutip)
@@ -302,7 +366,9 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         if FWUPDATE_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
-            rtc = self.dcrp.lnx_login(timeout=100)
+            self.dcrp.stop_at_uboot()
+            self.boot_recovery_spi()
+            rtc = self.login(timeout=150)
             if rtc == 1:
                 error_critical("The DUT has been registered!!!")
 
