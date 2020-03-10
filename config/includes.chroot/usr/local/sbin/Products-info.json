@@ -217,8 +217,21 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-16":{
+    "USW-48":{
       "INDEX"       : 8,
+      "NAME"        : "USW-48",
+      "BOARDID"     : "ed25",
+      "BOMREV"      : "113-02972",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16":{
+      "INDEX"       : 9,
       "NAME"        : "USW-16",
       "BOARDID"     : "ed23",
       "BOMREV"      : "113-02943",
@@ -231,7 +244,7 @@
     },
 
     "USW-24":{
-      "INDEX"       : 9,
+      "INDEX"       : 10,
       "NAME"        : "USW-24",
       "BOARDID"     : "ed24",
       "BOMREV"      : "113-02944",
@@ -244,7 +257,7 @@
     },
 
     "USW-LITE-16-POE":{
-      "INDEX"       : 10,
+      "INDEX"       : 11,
       "NAME"        : "USW-LITE-16-POE",
       "BOARDID"     : "ed26",
       "BOMREV"      : "113-02945",
@@ -257,7 +270,7 @@
     },
 
     "USW-LEAF":{
-      "INDEX"       : 11,
+      "INDEX"       : 12,
       "NAME"        : "USW-LEAF",
       "BOARDID"     : "f060",
       "BOMREV"      : "113-02997",
@@ -270,7 +283,7 @@
     },
 
     "USW-FLEX-MINI":{
-      "INDEX"       : 12,
+      "INDEX"       : 13,
       "NAME"        : "USW-FLEX-MINI",
       "BOARDID"     : "ed30",
       "BOMREV"      : "113-02851",
@@ -283,7 +296,7 @@
     },
 
     "USW-LITE-8-POE":{
-      "INDEX"       : 13,
+      "INDEX"       : 14,
       "NAME"        : "USW-LITE-8-POE",
       "BOARDID"     : "ed2a",
       "BOMREV"      : "113-02992",
@@ -296,7 +309,7 @@
     },
 
     "USW-XG-24-POE":{
-      "INDEX"       : 14,
+      "INDEX"       : 15,
       "NAME"        : "USW-XG-24-POE",
       "BOARDID"     : "eb25",
       "BOMREV"      : "113-02793",
@@ -309,7 +322,7 @@
     },
 
     "USW-XG-48-POE":{
-      "INDEX"       : 15,
+      "INDEX"       : 16,
       "NAME"        : "USW-XG-48-POE",
       "BOARDID"     : "eb26",
       "BOMREV"      : "113-02792",
@@ -322,7 +335,7 @@
     },
 
     "USW-SPINE":{
-      "INDEX"       : 15,
+      "INDEX"       : 17,
       "NAME"        : "USW-SPINE",
       "BOARDID"     : "f062",
       "BOMREV"      : "113-02932",

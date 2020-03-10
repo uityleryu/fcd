@@ -28,7 +28,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24'}
+        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25'}
 
         # number of Ethernet
         self.macnum = {
@@ -37,6 +37,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "3",  # usw-48-poe
             'ed23': "3",  # usw-16
             'ed24': "3",  # usw-24
+            'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3"   # usw-lite-8-poe
         }
@@ -48,6 +49,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "0",
             'ed23': "0",
             'ed24': "0",
+            'ed25': "0",
             'ed26': "0",
             'ed2a': "0"
         }
@@ -59,6 +61,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "0",
             'ed23': "0",
             'ed24': "0",
+            'ed25': "0",
             'ed26': "0",
             'ed2a': "0"
         }
@@ -69,6 +72,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed22': "ifconfig eth0 ",
             'ed23': "ifconfig eth0 ",
             'ed24': "ifconfig eth0 ",
+            'ed25': "ifconfig eth0 ",
             'ed26': "ifconfig eth0 ",
             'ed2a': "ifconfig eth0 "
         }
