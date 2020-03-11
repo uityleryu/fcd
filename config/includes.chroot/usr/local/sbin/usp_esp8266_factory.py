@@ -8,12 +8,9 @@ from script_base import ScriptBase
 from ubntlib.fcd.esptool_helper import ESPTool
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
-
 FLASH_HELPER = True
 DO_SECURITY = True
 FLASH_FW = True
-DATAVERIFY_ENABLE = False
-
 
 class USPESP8266Factory(ScriptBase):
     def __init__(self):
@@ -25,12 +22,18 @@ class USPESP8266Factory(ScriptBase):
         self.helperexe = "helper_esp8266"
         self.FCD_TLV_data = False
 
-        self.fcd_uhtools = os.path.join(self.tftpdir, "usp", "plug")
+        # image folder path
+        self.image_path = {
+            'ee73': "plug",
+            'ee74': "strip"
+        }
+ 
+        self.fcd_uhtools = os.path.join(self.tftpdir, "usp", self.image_path[self.board_id])
         self.helper_path = os.path.join(self.fcd_toolsdir, "usp", self.helperexe)
 
-        self.fwbin_1 = os.path.join(self.fwdir, "ee73_user1.bin")
-        self.fwbin_2 = os.path.join(self.fwdir, "ee73_user2.bin")
-        self.recovery_bin = os.path.join(self.fwdir, "ee73_recovery.bin")
+        self.fwbin_1 = os.path.join(self.fwdir, self.board_id + "_user1.bin")
+        self.fwbin_2 = os.path.join(self.fwdir, self.board_id+ "_user2.bin")
+        self.recovery_bin = os.path.join(self.fwdir, self.board_id + "_recovery.bin")
 
         self.boot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
         self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper.bin")
@@ -60,7 +63,7 @@ class USPESP8266Factory(ScriptBase):
 
     def flash_helper(self):
         self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._16M)
+        self.ser.set_flash_size(self.ser._2MB)
         self.ser.set_flash_mode(self.ser.DOUT)
 
         msg(10, "Initializing flash")
@@ -83,25 +86,31 @@ class USPESP8266Factory(ScriptBase):
             error_critical("Init flash failed")
         self.ser.clear_cur_args()
 
+    def boot_normal_mode(self, sleep_sec):
+        self.ser.run_normal_mode()
+        time.sleep(sleep_sec)
+
     def do_helper(self):
-        # bom => 00645-01
-        base_revision = 0x28500  # 00645
-        board_revision = int(self.bom_rev[-2:], 16)  # 01
-        hw_revision = base_revision + board_revision  # hex value
+        # bom       : 00645-01
+        # bom_number: 0x28500 (00645 => 0x285 + '00' = 0x28500)
+        # bom_rev   : 0x1 (01 => 0x1)
         # [1 byte unused ] [ 2 bytes BOM ID ] [ 1 byte BOM rev ]
         # 00645-01 is: 0x285 + 01 = 0x28501 = 165121
+        bom_number = hex(int(self.bom_rev[:-3], 10)) + '00'
+        bom_rev = hex(int(self.bom_rev[-2:], 10))
+        bom = str(int(bom_number, 16) + int(bom_rev, 16))
         msg(10, "Running helper")
-        log_debug("hw revision:" + str(hw_revision))
+        log_debug("BOM:" + bom)
         cmd = [
             self.helper_path,
             "/dev/" + self.dev,
             self.row_id,
             self.board_id,
-            str(hw_revision),
+            bom,
             self.mac_with_colon
         ]
         cmdj = ' '.join(cmd)
-        log_debug(cmdj)
+        log_debug("cmdj = " + cmdj)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
         log_debug(sto)
         if int(rtc) > 0:
@@ -151,7 +160,7 @@ class USPESP8266Factory(ScriptBase):
             "of=" + ee_f7,
             "bs=1k",
             "skip=32",
-            "count=16"
+            "count=32"
         ]
         sstrj = ' '.join(sstr)
         [sto, _] = self.fcd.common.xcmd(sstrj)
@@ -160,27 +169,25 @@ class USPESP8266Factory(ScriptBase):
 
         msg(70, "Flashing firmware and eeprom files")
         self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._16M)
+        self.ser.set_flash_size(self.ser._2MB)
         self.ser.set_flash_mode(self.ser.DOUT)
 
         self.ser.add_arg(option="0x00000", value=self.boot_bin)
         self.ser.add_arg(option="0x01000", value=self.fwbin_1)
-        self.ser.add_arg(option="0x81000", value=self.fwbin_2)
         self.ser.add_arg(option="0x76000", value=self.blank_bin)
         self.ser.add_arg(option="0x77000", value=self.blank_bin)
         self.ser.add_arg(option="0x78000", value=self.blank_bin)
         self.ser.add_arg(option="0x79000", value=ee_79)
-        self.ser.add_arg(option="0xF7000", value=ee_f7)
+        self.ser.add_arg(option="0x81000", value=self.fwbin_2)
         self.ser.add_arg(option="0xF6000", value=self.blank_bin)
-        self.ser.add_arg(option="0xFB000", value=self.blank_bin)
-        self.ser.add_arg(option="0xFD000", value=self.blank_bin)
-        self.ser.add_arg(option="0xFE000", value=self.blank_bin)
+        self.ser.add_arg(option="0xF7000", value=ee_f7)
         self.ser.add_arg(option="0xFF000", value=self.blank_bin)
         self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
         self.ser.add_arg(option="0x1FD000", value=self.blank_bin)
         self.ser.add_arg(option="0x1FE000", value=self.blank_bin)
         self.ser.add_arg(option="0x101000", value=self.recovery_bin)
 
+        self.ser.set_stub(True)
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
         if rtc != 0:
@@ -202,7 +209,7 @@ class USPESP8266Factory(ScriptBase):
 
         if FLASH_HELPER is True:
             self.flash_helper()
-            time.sleep(5)
+            self.boot_normal_mode(sleep_sec = 8)
 
         if DO_SECURITY is True:
             self.do_helper()
@@ -214,12 +221,7 @@ class USPESP8266Factory(ScriptBase):
         if FLASH_FW is True:
             self.flash_eeprom_and_fw()
 
-        if DATAVERIFY_ENABLE is True:
-            self.check_info()
-            msg(95, "Succeeding in checking thregistrationmation ...")
-
         msg(100, "Completing FCD process ...")
-
 
 def main():
     usp_8266_factory = USPESP8266Factory()

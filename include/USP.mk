@@ -5,6 +5,10 @@ IMAGE-USP-PLUG= \
     images/ee73* \
     usp/plug/*
 
+IMAGE-USP-STRIP= \
+    images/ee74* \
+    usp/strip/*
+
 IMAGE-USP-3-8= \
     images/e643* \
     images/e648* \
@@ -27,6 +31,7 @@ TOOLS-CONFIG= \
 
 TOOLS-USP-PLUG +=$(TOOLS-CONFIG)
 TOOLS-USP-3-8 +=$(TOOLS-CONFIG)
+TOOLS-USP-STRIP +=$(TOOLS-CONFIG)
 
 TOOLS-USP-PLUG+= \
     usp/*
@@ -34,7 +39,11 @@ TOOLS-USP-PLUG+= \
 TOOLS-USP-3-8+= \
     usp/helper_mips32
 
+TOOLS-USP-STRIP+= \
+    usp/helper_esp8266
+
 # Project target
 
 $(eval $(call ProductImage,USP-PLUG,FCD-USP-PLUG-$(VER)-$(FWVER)))
 $(eval $(call ProductImage,USP-3-8,FCD-USP-3-8-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USP-STRIP,FCD-USP-STRIP-$(VER)-$(FWVER)))
