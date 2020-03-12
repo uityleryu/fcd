@@ -71,14 +71,21 @@ class winFcdFactory(Gtk.Window):
 
         self.cbtnsethostip.connect("toggled", self.on_cbtnsethostip_toggled)
 
+        # Enable to uploadlog
+        self.cbtnuploadlog = Gtk.CheckButton("UploadLog")
+        self.cbtnuploadlog.set_active(False)
+        self.cbtnuploadlog.set_sensitive(True)
+        self.cbtnuploadlog.connect("toggled", self.on_cbtnu_uploadlog_toggled)
+
         self.hboxdashboard.pack_start(self.lblhostip, False, False, 0)
         self.hboxdashboard.pack_start(self.etyhostip, False, False, 0)
         self.hboxdashboard.pack_start(self.cbtnsethostip, False, False, 0)
+        self.hboxdashboard.pack_start(self.cbtnuploadlog, False, False, 0)
 
-        self.slot1 = fraMonitorPanel("0", "Slot 1")
-        self.slot2 = fraMonitorPanel("1", "Slot 2")
-        self.slot3 = fraMonitorPanel("2", "Slot 3")
-        self.slot4 = fraMonitorPanel("3", "Slot 4")
+        self.slot1 = fraMonitorPanel("0", "Slot 1", self)
+        self.slot2 = fraMonitorPanel("1", "Slot 2", self)
+        self.slot3 = fraMonitorPanel("2", "Slot 3", self)
+        self.slot4 = fraMonitorPanel("3", "Slot 4", self)
 
         self.vboxdashboard.pack_start(self.lblflavor, False, False, 0)
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
@@ -129,6 +136,11 @@ class winFcdFactory(Gtk.Window):
             self.etyhostip.set_sensitive(False)
 
         rtmsg = "{0}: CONST.hostipsetenable: {1}".format(__FUNC, CONST.hostipsetenable)
+        log.info(rtmsg)
+
+    def on_cbtnu_uploadlog_toggled(self, button):
+        __FUNC = sys._getframe().f_code.co_name
+        rtmsg = "{0}: self.cbtnuploadlog: {1}".format(__FUNC, self.cbtnuploadlog.get_active())
         log.info(rtmsg)
 
     def envinitial(self):
