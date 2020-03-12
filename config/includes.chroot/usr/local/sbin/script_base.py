@@ -19,10 +19,10 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
-
+from uuid import getnode as get_mac
 
 class ScriptBase(object):
-    __version__ = "1.0.8"
+    __version__ = "1.0.9"
     __authors__ = "FCD team"
     __contact__ = "fcd@ubnt.com"
 
@@ -36,6 +36,12 @@ class ScriptBase(object):
         self.__pexpect_obj = None
         self.__serial_obj = None
         self.__ssh_client_obj = None
+
+        self.version_scriptbase = self.__version__
+        self.version_ubntlib = ubntlib.__version__
+        with open(self.fcd_version_info_file_path, 'r') as f:
+            self.version_iso = f.read().rstrip('\n')
+
         self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
         print("framework version: " + self.__version__)
         print("ubntlib version: " + ubntlib.__version__)
@@ -190,6 +196,13 @@ class ScriptBase(object):
         self.http_port = int(self.row_id) + baseport
         self.http_srv = ""
 
+        # Future Field
+        self.error_code = ''
+        try:
+            self.teststation_mac = ':'.join(("%012X" % get_mac())[i:i + 2] for i in range(0, 12, 2))
+        except Exception as e:
+            self.teststation_mac = str(e)
+
     def _init_parse_inputs(self):
         parse = argparse.ArgumentParser(description="FCD tool args Parser")
         parse.add_argument('--prdline', '-pline', dest='product_line', help='Active Product Line', default=None)
@@ -200,6 +213,7 @@ class ScriptBase(object):
         parse.add_argument('--board_id', '-b', dest='board_id', help='System ID, ex:eb23, eb21', default=None)
         parse.add_argument('--erasecal', '-e', dest='erasecal', help='Erase calibration data selection', default=None)
         parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection', default=None)
+                                        
         parse.add_argument('--mac', '-m', dest='mac', help='MAC address', default=None)
         parse.add_argument('--pass_phrase', '-p', dest='pass_phrase', help='Passphrase', default=None)
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
@@ -273,6 +287,7 @@ class ScriptBase(object):
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
         files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
+                                 
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -437,7 +452,7 @@ class ScriptBase(object):
         """
         log_debug("Send signed eeprom file adding date code from host to DUT ...")
         post_txt = None
-        
+
         # Determine what eeprom should be written into DUT finally
         if self.FCD_TLV_data is True:
             eewrite = self.eesigndate
@@ -642,6 +657,7 @@ class ScriptBase(object):
             local: absolute path of the destination file
             timeout: timeout for expect_lnxcmd API
     '''
+
     def tftp_get(self, remote, local, timeout=300, retry=3, post_en=True):
         post_exp = None
         if post_en is True:
@@ -673,6 +689,7 @@ class ScriptBase(object):
             local: absolute path of the destination file
             timeout: timeout for expect_lnxcmd API
     '''
+
     def tftp_put(self, remote, local, timeout=300, retry=3, post_en=True):
         __func_name = "tftp_put: "
         post_exp = None
@@ -751,8 +768,8 @@ class ScriptBase(object):
 
             # exe receive cmd on host
             cmd = ["rz", "-y -v -b",
-                "< /dev/" + self.dev,
-                "> /dev/" + self.dev]
+                   "< /dev/" + self.dev,
+                   "> /dev/" + self.dev]
             cmd = ' '.join(cmd)
             [sto, rtc] = self.fcd.common.xcmd(cmd)
             if int(rtc) != 0:
@@ -794,3 +811,12 @@ class ScriptBase(object):
     def close_fcd(self):
         time.sleep(3)
         exit(0)
+
+    def __del__(self):
+        self._dumpJSON()
+
+    def _dumpJSON(self):
+        dumpfile = os.path.join("/tftpboot/", "log_slot" + self.row_id + ".json")
+        with open(dumpfile, 'w') as f:
+            self.__dict__.pop('fsiw', None)
+            f.write(str(json.dumps(self.__dict__, default=lambda o: '<not serializable>', sort_keys=True, indent=4)))
