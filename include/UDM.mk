@@ -29,9 +29,9 @@ IMAGE-UDMPRO+= \
 IMAGE-UXGPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UXGPRO+= \
     images/ea19* \
-    udm-fw/boot.img \
-    udm-fw/uImage-umg.r \
-    udm-fw/UMG.alpinev2.v0.0.5.d88551b.200227.2318.bin
+    udm-fw/boot-uxg.img \
+    udm-fw/uImage-uxg.r \
+    udm-fw/UXG.alpinev2.v0.0.8.c6eb875.200312.1122.bin
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
@@ -56,43 +56,6 @@ IMAGE-UDMLOCO= \
 PRD_MODEL=UniFiDream
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
-
-# FCD images repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-image.git
-
-UDM_FCDIMG_HASH    =990fc9a86e12d19f1de0b0e92b66cda9eb5af732
-UDMSE_FCDIMG_HASH  =995cc72c28a126be68aeddc3510a16d64cd25096
-UDMPRO_FCDIMG_HASH =afa0cb11e915715b892c54264cb9ed1466b8d95b
-UXGPRO_FCDIMG_HASH =87d659a3b0aaa6b32fd0cb1d5d1569ff13095749
-UDMXG_FCDIMG_HASH  =
-UDMB_FCDIMG_HASH   =
-UDMLOCO_FCDIMG_HASH=
-
-FCDIMG_VER=
-
-# UBNTLIB repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-ubntlib.git
-
-UDM_UBNTLIB_HASH    =2ccf568f16fa5075f2f04c3ba424948cbef206b9
-UDMSE_UBNTLIB_HASH  =751b6c6a3e79c914f4b32edeb5c4b2193cd262ca
-UDMPRO_UBNTLIB_HASH =11b2602e7d213ec31bd0eeda477d60547f7f16a7
-UXGPRO_UBNTLIB_HASH =82d2a8768c4e69817531ab15729a1bb3ff61419f
-UDMXG_UBNTLIB_HASH  =
-UDMB_UBNTLIB_HASH   =
-UDMLOCO_UBNTLIB_HASH=
-
-UBNTLIB_VER=
-
-# TOOL repo hash
-# git@wingchun.corp.ubnt.com:Ubiquiti-BSP/fcd-tools.git
-
-UDM_TOOL_HASH    =843d6fe619ab2ae4a3ae20cbcd75aa8d803a5eb8
-UDMSE_TOOL_HASH  =1a1436298c288312e2152d1baf0f6af02c9424b3
-UDMPRO_TOOL_HASH =b58f31374842e3900617cdf72690d6f3c2c2db3c
-UXGPRO_TOOL_HASH =1e9ab6982a3cb360e293633f8fc2d473c3bf13b7
-UDMXG_TOOL_HASH  =
-UDMB_TOOL_HASH   =
-UDMLOCO_TOOL_HASH=
 
 # Common tools
 
