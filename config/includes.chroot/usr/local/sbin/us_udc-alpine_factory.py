@@ -43,20 +43,20 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         # Dummy data for SPI flash
         self.dummydata = {
-            'f060': "fcecda77861cfcecda77861df0600777",
-            'f062': ""
+            'f060': "fcecda77861cfcecda77861d{0}0777".format("f060"),
+            'f062': "fcecda77861cfcecda77861d{0}0777".format("f062")
         }
 
         # LCM FW
         self.lcmfwver = {
             'f060': "v4.0.8-0-ga1015ad",
-            'f062': ""
+            'f062': "v4.0.8-0-ga1015ad"
         }
 
         # FW image
         self.fwimage = {
-            'f060': "UDC.alpinev2.v4.1.42.0913e56.200226.1630",
-            'f062': ""
+            'f060': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925",
+            'f062': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925"
         }
 
         # number of Ethernet
@@ -95,41 +95,56 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         }
 
     def ub_write_dummy_data(self):
-        cmd = "mw.q $loadaddr 0xecfc1c8677daecfc"
+        dutdata = self.dummydata[self.board_id]
+
+        i = 0
+        for i in range(0, len(dutdata), 2):
+            wbdata = dutdata[i : i + 2]
+            iint = int(i / 2)
+            ihex = hex(iint)
+            cmd = "setexpr pointer $loadaddr + {0}".format(ihex)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+            cmd = "mw.b $pointer 0x{0}".format(wbdata)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        time.sleep(1)
+        log_debug(" reading the dummpy data from the temp memory ... ")
+        cmd = "md.b $loadaddr 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
-        cmd = "setexpr next_loadaddr $loadaddr + 8"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-        cmd = "mw.q $next_loadaddr 0x770760f01d8677da"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
+        time.sleep(1)
         cmd = "sf probe; sf erase 0x1f0000 +0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
+        log_debug(" writing the dummpy data in the EEPROM ... ")
         cmd = "sf write $loadaddr 0x1f0000 0x10"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        # cmd = "mw.q $loadaddr 0xecfc1c8677daecfc"
+        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        # cmd = "setexpr next_loadaddr $loadaddr + 8"
+        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        # cmd = "mw.q $next_loadaddr 0x770760f01d8677da"
+        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        time.sleep(1)
+        log_debug(" cleaning the temp memory ... ")
+        cmd = "mw.q $loadaddr 0xffffffffffffffff"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "setexpr next_loadaddr $loadaddr + 8"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "mw.q $next_loadaddr 0xffffffffffffffff"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "md.b $loadaddr 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
         cmd = "sf read $loadaddr 0x1f0000 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
+        time.sleep(1)
+        log_debug(" reading the dummpy data from the EEPROM ... ")
         cmd = "md.b $loadaddr 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-    def lnx_write_dummy_data(self):
-        dummyfile = "/tmp/uswleaf-dummy.bin"
-        tmp = ""
-        dutdata = self.dummydata[self.board_id]
-        for i in range(0, len(dutdata), 2):
-            tmp = "{0}\\x{1}".format(tmp, dutdata[i : i + 2])
-
-        cmd = "echo -n -e \'{0}\' > {1}".format(tmp, dummyfile)
-        self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
-        self.chk_lnxcmd_valid()
-
-        cmd = "dd if={0} of=/dev/mtdblock4 bs=1 count=16".format(dummyfile)
-        self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
-        self.chk_lnxcmd_valid()
 
     def boot_recovery_spi(self):
         cmdset = [
@@ -168,50 +183,41 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         log_debug("Starting to configure the networking ... ")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
 
-        cmdset = [
-            "/etc/init.d/gfl start",
-            "/etc/init.d/npos start",
-            "vtysh",
-            "configure terminal",
-            "interface swp1",
-            "no shutdown",
-            "switchport access vlan 1",
-            "exit",
-            "bridge-domain 1",
-            "vlan 1 swp1",
-            "exit",
-            "interface bridge 1",
-            "no shutdown",
-            "exit",
-            "exit",
-            "exit",
-            "ifconfig br1 {0}".format(self.dutip),
-            "ifconfig | grep -C 5 br1"
-        ]
-
-        for idx in range(len(cmdset)):
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
-
-    def set_lnx_net_devreg(self):
-        log_debug("Starting to configure the networking ... ")
-        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
-
-        cmdset = [
-            "vtysh",
-            "configure terminal",
-            "in swp1",
-            "no switchport",
-            "switchport mode access",
-            "switchport access vlan 1",
-            "exit",
-            "bridge-domain 1",
-            "vlan 1 swp1",
-            "exit",
-            "exit",
-            "exit",
-            "ifconfig br1 {0}".format(self.dutip),
-            "ifconfig | grep -C 5 br1"
-        ]
+        if self.board_id == "f060":
+            cmdset = [
+                "/etc/init.d/gfl start",
+                "/etc/init.d/npos start",
+                "vtysh",
+                "configure terminal",
+                "interface swp1",
+                "no shutdown",
+                "switchport access vlan 1",
+                "exit",
+                "bridge-domain 1",
+                "vlan 1 swp1",
+                "exit",
+                "interface bridge 1",
+                "no shutdown",
+                "exit",
+                "exit",
+                "exit",
+                "ifconfig br1 {0}".format(self.dutip),
+                "ifconfig | grep -C 5 br1"
+            ]
+        elif self.board_id == "f062":
+            cmdset = [
+                "/etc/init.d/gfl start",
+                "/etc/init.d/zebra start",
+                "vtysh",
+                "sh daemons",
+                "configure terminal",
+                "interface swp32",
+                "no shutdown",
+                "no switchport",
+                "ip addr {0}/24".format(self.dutip),
+                "no shutdown",
+                "end"
+            ]
 
         for idx in range(len(cmdset)):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
@@ -241,7 +247,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         cmd = "sh /usr/bin/ubnt-upgrade -d /tmp/upgrade.bin"
         self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "Firmware version")
-        self.rtc = self.login(timeout=150)
+        self.rtc = self.login(username="root", timeout=150)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info")
@@ -301,33 +307,16 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         self.boot_recovery_spi()
         msg(5, "Boot from SPI recovery image ...")
 
-        rtc = self.login(timeout=100)
+        rtc = self.login(username="root", timeout=100)
         '''
             If the DUT hasn't been signed, it has to do the switch network configuration by using vtysh CLI
         '''
         if rtc == 1:
-            if UB_WR_DUMMY_EN is False:
-                self.lnx_write_dummy_data()
-                cmd = "sleep 2; reboot -f"
-                '''
-                    It must expect nothing in the next expect_lnxcmd() because it won't
-                    delete the log messages in the buffer. If we expect something, then
-                    it won't find the "Autobooting 2 seconds" after reboot
-                '''
-                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, "")
-                self.dcrp.stop_at_uboot()
-                self.boot_recovery_spi()
-                self.login(timeout=150)
-                cmd = "cat /usr/lib/version"
-                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd, self.linux_prompt)
-                self.chk_lnxcmd_valid()
-
             self.set_lnx_net()
         else:
             cmd = "ifconfig br1 {0}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
-
             cmd = "ifconfig | grep -C 5 br1"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
             self.chk_lnxcmd_valid()
@@ -368,7 +357,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
             self.dcrp.stop_at_uboot()
             self.boot_recovery_spi()
-            rtc = self.login(timeout=150)
+            rtc = self.login(username="root", timeout=150)
             if rtc == 1:
                 error_critical("The DUT has been registered!!!")
 
@@ -382,7 +371,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         if VTSYCHECK_EN is True:
             self.pexp.expect_lnxcmd(600, self.linux_prompt, "reboot", self.linux_prompt)
-            self.login(username="ubnt", password="ubnt", timeout=100)
+            self.login(username="root", timeout=100)
 
             postexp = [
                 self.fwimage[self.board_id],

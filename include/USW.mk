@@ -55,14 +55,13 @@ IMAGE-USW-LITE= \
 
 IMAGE-USW-LEAF= \
     images/f060* \
-    usw-fw/fw.LEAF* \
-    usw-fw/fw.UDC*
+    usw-fw/usw-leaf* \
+    usw-fw/UDC*
 
 IMAGE-USW-SPINE= \
     images/f062* \
-    usw-fw/fw.SPINE* \
-    usw-fw/fw.UDC* \
-    usw-fw/bsp.*
+    usw-fw/usw-spine* \
+    usw-fw/UDC*
 
 IMAGE-USW-FLEX-MINI= \
     images/ed30* \
