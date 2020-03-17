@@ -42,7 +42,9 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP6= \
+    images/a611* \
     images/a612* \
+    images/a613* \
     images/a614* \
     uap-fw/uap6* \
     uap-fw/lede-mtk-mt7621-UAP6-initramfs-kernel.bin \

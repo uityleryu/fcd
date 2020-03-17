@@ -440,8 +440,21 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-LITE":{
+    "UAP6-FLEX":{
       "INDEX"       : 7,
+      "NAME"        : "UAP6-LR",
+      "BOARDID"     : "a611",
+      "BOMREV"      : "113-00743",
+      "DESC"        : "UniFi AP6 FLEX",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP6-LITE":{
+      "INDEX"       : 8,
       "NAME"        : "UAP6-LITE",
       "BOARDID"     : "a612",
       "BOMREV"      : "113-00773",
@@ -453,8 +466,21 @@
       "SW_ID"       : "0601"
     },
 
+    "UAP6-B":{
+      "INDEX"       : 9,
+      "NAME"        : "UAP6-B",
+      "BOARDID"     : "a613",
+      "BOMREV"      : "113-00746",
+      "DESC"        : "UniFi AP6 FLEX",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
     "UAP6-LR":{
-      "INDEX"       : 8,
+      "INDEX"       : 10,
       "NAME"        : "UAP6-LR",
       "BOARDID"     : "a614",
       "BOMREV"      : "113-00742",
