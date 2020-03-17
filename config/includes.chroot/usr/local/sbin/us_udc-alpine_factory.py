@@ -97,7 +97,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
     def ub_write_dummy_data(self):
         dutdata = self.dummydata[self.board_id]
 
-        i = 0
         for i in range(0, len(dutdata), 2):
             wbdata = dutdata[i : i + 2]
             iint = int(i / 2)
@@ -118,15 +117,6 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         log_debug(" writing the dummpy data in the EEPROM ... ")
         cmd = "sf write $loadaddr 0x1f0000 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-        # cmd = "mw.q $loadaddr 0xecfc1c8677daecfc"
-        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-        # cmd = "setexpr next_loadaddr $loadaddr + 8"
-        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-        # cmd = "mw.q $next_loadaddr 0x770760f01d8677da"
-        # self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
         time.sleep(1)
         log_debug(" cleaning the temp memory ... ")
@@ -220,7 +210,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
             ]
 
         for idx in range(len(cmdset)):
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmdset[idx], self.linux_prompt)
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmdset[idx], self.linux_prompt)
 
     def lnx_netcheck(self, netifen=False):
         postexp = [
