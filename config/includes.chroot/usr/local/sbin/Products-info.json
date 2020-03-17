@@ -340,8 +340,21 @@
       "BOARDID"     : "f062",
       "BOMREV"      : "113-02932",
       "DESC"        : "UniFi Super Switch Spine",
-      "FILE"        : "us_spine-alpine_factory.py",
-      "T1FILE"      : "us_spine-alpine_diagloader.py",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LEAF-PRO":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-LEAF-PRO",
+      "BOARDID"     : "f063",
+      "BOMREV"      : "113-03162",
+      "DESC"        : "UniFi Super Switch 48-port",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "us_udc-alpine_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"

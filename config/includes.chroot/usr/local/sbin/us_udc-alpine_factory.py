@@ -44,37 +44,43 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         # Dummy data for SPI flash
         self.dummydata = {
             'f060': "fcecda77861cfcecda77861d{0}0777".format("f060"),
-            'f062': "fcecda77861cfcecda77861d{0}0777".format("f062")
+            'f062': "fcecda77861cfcecda77861d{0}0777".format("f062"),
+            'f063': "fcecda77861cfcecda77861d{0}0777".format("f063")
         }
 
         # LCM FW
         self.lcmfwver = {
             'f060': "v4.0.8-0-ga1015ad",
-            'f062': "v4.0.8-0-ga1015ad"
+            'f062': "v4.0.8-0-ga1015ad",
+            'f063': "v4.0.8-0-ga1015ad"
         }
 
         # FW image
         self.fwimage = {
             'f060': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925",
-            'f062': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925"
+            'f062': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925",
+            'f063': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925"
         }
 
         # number of Ethernet
         ethnum = {
             'f060': "73",
-            'f062': "129"
+            'f062': "129",
+            'f063': "73"
         }
 
         # number of WiFi
         wifinum = {
             'f060': "0",
-            'f062': "0"
+            'f062': "0",
+            'f063': "0"
         }
 
         # number of Bluetooth
         btnum = {
             'f060': "1",
-            'f062': "1"
+            'f062': "1",
+            'f063': "1"
         }
 
         self.devnetmeta = {
@@ -85,13 +91,15 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
 
         self.netif = {
             'f060': "ifconfig eth0 ",
-            'f062': "ifconfig eth0 "
+            'f062': "ifconfig eth0 ",
+            'f063': "ifconfig eth0 "
         }
 
         # DIAG board name
         self.brdname = {
             'f060': "usw-100g-mfg",
-            'f062': "usw-spine-rev1-mfg"
+            'f062': "usw-spine-rev1-mfg",
+            'f063': "usw-100g-mfg"
         }
 
     def ub_write_dummy_data(self):
