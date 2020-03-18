@@ -123,7 +123,7 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         cmd = "sf probe; sf erase 0x1f0000 +0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         log_debug(" writing the dummpy data in the EEPROM ... ")
-        cmd = "sf write $loadaddr 0x1f0000 0x10"
+        cmd = "sf update $loadaddr 0x1f0000 0x10"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
         time.sleep(1)
@@ -203,18 +203,22 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
                 "ifconfig | grep -C 5 br1"
             ]
         elif self.board_id == "f062":
+            qsfp_port = "swp32"
+
             cmdset = [
                 "/etc/init.d/gfl start",
                 "/etc/init.d/zebra start",
                 "vtysh",
                 "sh daemons",
                 "configure terminal",
-                "interface swp32",
+                "interface {0}".format(qsfp_port),
                 "no shutdown",
                 "no switchport",
                 "ip addr {0}/24".format(self.dutip),
                 "no shutdown",
-                "end"
+                "end",
+                "exit",
+                "ifconfig | grep -C 5 {0}".format(qsfp_port)
             ]
 
         for idx in range(len(cmdset)):
