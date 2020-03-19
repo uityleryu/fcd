@@ -3,6 +3,7 @@
 
 IMAGE-GBE= \
     images/dc9* \
+    images/dca* \
     am-fw/GBE.* \
     am-fw/GP.* \
     am-fw/ubnthd-u-boot.rom \
@@ -35,6 +36,7 @@ TOOLS-CONFIG= \
 TOOLS-GBE= \
     am/cfg_part.bin \
     am/helper_IPQ40xx \
+    am/am_dummy_cal.bin \
     am/id_rsa \
     am/id_rsa.pub 
 

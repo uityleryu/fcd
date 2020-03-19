@@ -24,6 +24,7 @@ class IPQ40XXFactory(ScriptBase):
         AirMax:
             dc99: GBE
             dc9a: GBE-LR
+            dca0: GBE-AP
         UAP:
             dc98: UAP-UBB
             dc9c: UAP-UBB 831
@@ -38,7 +39,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "\(IPQ40xx\) # ",
             'dc9c': "\(IPQ40xx\) # ",
             'dc9b': "\(IPQ40xx\) # ",
-            'dc9e': "\(IPQ40xx\) # "
+            'dc9e': "\(IPQ40xx\) # ",
+            'dca0': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
@@ -48,7 +50,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "UBB#",
             'dc9c': "UBB#",
             'dc9b': "GP#",
-            'dc9e': "GP#"
+            'dc9e': "GP#",
+            'dca0': "GBE#"
         }
 
         self.bootloader = {
@@ -57,7 +60,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "dc98-bootloader.bin",
             'dc9c': "dc98-bootloader.bin",
             'dc9b': "dc9b-bootloader.bin",
-            'dc9e': "dc9e-bootloader.bin"
+            'dc9e': "dc9e-bootloader.bin",
+            'dca0': "dca0-bootloader.bin"
         }
 
         self.ubaddr = {
@@ -66,7 +70,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0xf0000",
             'dc9c': "0xf0000",
             'dc9b': "0xf0000",
-            'dc9e': "0xf0000"
+            'dc9e': "0xf0000",
+            'dca0': "0xf0000"
         }
 
         self.ubsz = {
@@ -75,7 +80,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0x80000",
             'dc9c': "0x80000",
             'dc9b': "0x80000",
-            'dc9e': "0x80000"
+            'dc9e': "0x80000",
+            'dca0': "0x80000"
         }
 
         self.cfgaddr = {
@@ -84,7 +90,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0x1fc0000",
             'dc9c': "0x1fc0000",
             'dc9b': "0x1fc0000",
-            'dc9e': "0x1fc0000"
+            'dc9e': "0x1fc0000",
+            'dca0': "0x1fc0000"
         }
 
         self.cfgsz = {
@@ -93,7 +100,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0x40000",
             'dc9c': "0x40000",
             'dc9b': "0x40000",
-            'dc9e': "0x40000"
+            'dc9e': "0x40000",
+            'dca0': "0x40000"
         }
 
         self.epromaddr = {
@@ -102,7 +110,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0x170000",
             'dc9c': "0x170000",
             'dc9b': "0x170000",
-            'dc9e': "0x170000"
+            'dc9e': "0x170000",
+            'dca0': "0x170000"
         }
 
         self.epromsz = {
@@ -111,7 +120,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "0x10000",
             'dc9c': "0x10000",
             'dc9b': "0x10000",
-            'dc9e': "0x10000"
+            'dc9e': "0x10000",
+            'dca0': "0x10000"
         }
 
         self.product_class_table = {
@@ -120,7 +130,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "radio",
             'dc9c': "radio",
             'dc9b': "radio",
-            'dc9e': "basic"
+            'dc9e': "basic",
+            'dca0': "basic"
         }
 
         self.pd_dir_table = {
@@ -129,7 +140,8 @@ class IPQ40XXFactory(ScriptBase):
             'dc98': "uap",
             'dc9c': "uap",
             'dc9b': "af_af60",
-            'dc9e': "af_af60"
+            'dc9e': "af_af60",
+            'dca0': "am"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -233,9 +245,10 @@ class IPQ40XXFactory(ScriptBase):
         self.uboot_update()
         msg(10, "Finishing update U-Boot")
 
-        if (WR_DUMMY_EN is True) and (self.board_id == "dc9e"):
+        if (WR_DUMMY_EN is True) and (self.board_id == "dc9e" or self.board_id == "dca0" ):
             self.set_uboot_network()
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftpboot 0x84000000 tools/af_af60/af60_dummy_cal.bin")
+            cmd = "tftpboot 0x84000000 tools/{0}/{0}_dummy_cal.bin".format(self.pd_dir)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
             self.pexp.expect_ubcmd(10, "Bytes transferred", "usetprotect spm off")
             cmd = "sf probe; sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.eeprom_address, self.eeprom_size)
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
@@ -263,7 +276,8 @@ class IPQ40XXFactory(ScriptBase):
         msg(25, "Flash a temporary config")
         self.set_uboot_network()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftpboot 0x84000000 tools/af_af60/cfg_part.bin")
+        cmd = "tftpboot 0x84000000 tools/{0}/cfg_part.bin".format(self.pd_dir)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(10, "Bytes transferred", "usetprotect spm off")
         cmd = "sf probe; sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.cfg_address, self.cfg_size)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -369,6 +383,7 @@ class IPQ40XXMFG(ScriptBase):
         AirMax: AME
             dc99: GBE
             dc9a: GBE-LR
+            dca0: GBE-AP
         UAP:
             dc98: UAP-UBB
             dc9c: UAP-UBB 831
@@ -383,7 +398,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "\(IPQ40xx\) # ",
             'dc9c': "\(IPQ40xx\) # ",
             'dc9b': "\(IPQ40xx\) # ",
-            'dc9e': "\(IPQ40xx\) # "
+            'dc9e': "\(IPQ40xx\) # ",
+            'dca0': "\(IPQ40xx\) # "
         }
 
         # linux console prompt
@@ -393,7 +409,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "root@OpenWrt",
             'dc9c': "root@OpenWrt",
             'dc9b': "root@OpenWrt",
-            'dc9e': "root@OpenWrt"
+            'dc9e': "root@OpenWrt",
+            'dca0': "root@OpenWrt"
         }
 
         self.artimg = {
@@ -402,7 +419,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "dc98-mfg.bin",
             'dc9c': "dc9c-mfg.bin",
             'dc9b': "dc9b-mfg.bin",
-            'dc9e': "dc9b-mfg.bin"
+            'dc9e': "dc9b-mfg.bin",
+            'dca0': "dc9b-mfg.bin"
         }
 
         self.knladdr = {
@@ -411,7 +429,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "0x0",
             'dc9c': "0x0",
             'dc9b': "0x0",
-            'dc9e': "0x0"
+            'dc9e': "0x0",
+            'dca0': "0x0"
         }
 
         self.knlsz = {
@@ -420,7 +439,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "0x170000",
             'dc9c': "0x170000",
             'dc9b': "0x170000",
-            'dc9e': "0x170000"
+            'dc9e': "0x170000",
+            'dca0': "0x170000"
         }
 
         self.rfaddr = {
@@ -429,7 +449,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "0x180000",
             'dc9c': "0x180000",
             'dc9b': "0x180000",
-            'dc9e': "0x180000"
+            'dc9e': "0x180000",
+            'dca0': "0x180000"
         }
 
         self.rfsz = {
@@ -438,7 +459,8 @@ class IPQ40XXMFG(ScriptBase):
             'dc98': "0x1d00000",
             'dc9c': "0x1d00000",
             'dc9b': "0x1d00000",
-            'dc9e': "0x1d00000"
+            'dc9e': "0x1d00000",
+            'dca0': "0x1a00000"
         }
 
         self.linux_prompt = self.lnxpmt[self.board_id]
