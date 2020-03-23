@@ -8,61 +8,67 @@ import stat
 import shutil
 
 from pexpect import *
-
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.common import Common
 from ubntlib.fcd.pyssh import pyssh
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
+
 class AFAMEFactroy(ScriptBase):
     def __init__(self):
-        self.target_ip = '192.168.1.20'
-        self.username = 'ubnt'
-        self.password = 'ubnt'
-        self.key = 'ENGINEERING'
-        self.product = 'AME'
         super(AFAMEFactroy, self).__init__()
+        self.target_ip = '192.168.1.20'
+        soctype = {
+            'ae06': 'AME',
+            'ae08': 'AME',
+            'ae0b': 'AME'
+        }
+
+        self.product = soctype[self.board_id]
+        self.client_utility = "/root/fcd/client_aarch64_release"
+        self.tooldir = "/tftpboot/tools"
 
     def run(self):
-        if self.key == 'ENGINEERING':
-            keypath = self.key_dir
-            passphrase = self.pass_phrase
-        elif self.key == 'FACTORY':
-            keypath = '/media/usbdisk/PlexusKeys'
-            passphrase = ''
-        else:
-            print("Invalid Key: %s" % self.key)
-            return
-        
         for _ in range (1, 10):
-            cmd = 'ping ' + self.target_ip + ' -c 3 -q'
-            (output, status ) = run(cmd, withexitstatus=1)
-            #log_debug(output.decode("utf-8"))
+            cmd = "ping {} -c 3 -q".format(self.target_ip)
+            '''
+                The following run command is from pexpect package
+            '''
+            (output, status) = run(cmd, withexitstatus=1)
+
+            if os.path.isdir(self.fcd_toolsdir) is False:
+                error_critical("Can't find {}".format(self.fcd_toolsdir))
+
+            if os.path.isdir("/root/usbdisk/keys") is False:
+                error_critical("Can't find keys")
+
             if status:
                 log_debug("Wait Device network up")
                 time.sleep(5)
                 if _ == 10:
                     error_critical("Cannot ping to Device")
             else:
+                log_debug("DUT is up")
                 time.sleep(5)
                 break
 
         log_debug("Signing Radio ip=%s, username=%s, password=%s, product=%s" 
-            %( self.target_ip, self.username, self.password, self.product ))
-        ssh = pyssh(self.target_ip, self.username, self.password)
-        scp = pyssh(self.target_ip, self.username, self.password)
-        (status, stdout) = ssh.login(verbose=False)
+            %( self.target_ip, self.user, self.password, self.product ))
+
+        ssh = pyssh(self.target_ip, self.user, self.password)
+        scp = pyssh(self.target_ip, self.user, self.password)
+        (status, stdout) = ssh.login(verbose=True)
 
         if status == False:
             error_critical("Device not found or Login fail: %s" % stdout)
 
         if self.product == 'AF':
-            helper = "/tftpboot/tools/helper_AM18xx"
+            helper = os.path.join(self.fcd_toolsdir, "helper_AM18xx")
             mtd = "/dev/mtdblock7"
-            dump_cmd = "dd if=" + mtd + " of=/var/tmp/EEPROM"
+            dump_cmd = "dd if={} of=/var/tmp/EEPROM".format(mtd)
         elif self.product == 'AME':
-            helper = "/tftpboot/tools/af_ltu5/helper_UBNTAME"
+            helper = os.path.join(self.fcd_toolsdir, "af_ltu5", "helper_UBNTAME")
             mtd = "/dev/mtdblock4"
             dump_cmd = "/var/tmp/helper -q -o field=flash_eeprom,format=binary,pathname=/var/tmp/EEPROM"
 
@@ -85,43 +91,50 @@ class AFAMEFactroy(ScriptBase):
         msg(50, 'Signing image')
         with open("/tmp/helperfile", 'r') as content_file:
             content = content_file.read()
-        content = content.splitlines()
 
+        content = content.splitlines()
         log_debug( content[9] + "\n" + content[11] + "\n" + content[12] + "\n" + content[13])
 
         if self.product == 'AF':
-            cmd = './client_x86_release -h devreg-prod.ubnt.com' \
-                ' -i field=flash_eeprom,format=binary,pathname=/tmp/EEPROM' \
-                ' -o field=flash_eeprom,format=binary,pathname=/tmp/EEPROM_SIGNED' \
-                ' -k '+ passphrase + \
-                ' -i '+content[9] + \
-                ' -i '+content[10] + \
-                ' -i '+content[11] + \
-                ' -i '+content[7] + \
-                '-x '+keypath+'/ca.pem ' + \
-                '-y '+keypath+'/key.pem ' + \
-                '-z '+keypath+'/crt.pem '
+            regparam = [
+                "-i field=flash_eeprom,format=binary,pathname=/tmp/EEPROM",
+                "-o field=flash_eeprom,format=binary,pathname=/tmp/EEPROM_SIGNED",
+                "-k {}".format(self.pass_phrase),
+                "-i {}".format(content[9]),
+                "-i {}".format(content[10]),
+                "-i {}".format(content[11]),
+                "-i {}".format(content[7]),
+                "-x {}/ca.pem".format(self.key_dir),
+                "-y {}/key.pem".format(self.key_dir),
+                "-z {}/crt.pem".format(self.key_dir)
+            ]
         elif self.product == 'AME':
-            cmd = './client_x86_release -h devreg-prod.ubnt.com' \
-                ' -i field=flash_eeprom,format=binary,pathname=/tmp/EEPROM' \
-                ' -o field=flash_eeprom,format=binary,pathname=/tmp/EEPROM_SIGNED' \
-                ' -o field=result' \
-                ' -k '+passphrase + \
-                ' -i '+content[9] + \
-                ' -i '+content[11 ] + \
-                ' -i '+content[12 ] + \
-                ' -i '+content[13 ] + \
-                ' -x '+keypath+'/ca.pem' + \
-                ' -y '+keypath+'/key.pem' + \
-                ' -z '+keypath+'/crt.pem'
+            regparam = [
+                "-i field=flash_eeprom,format=binary,pathname=/tmp/EEPROM",
+                "-o field=flash_eeprom,format=binary,pathname=/tmp/EEPROM_SIGNED",
+                "-k {}".format(self.pass_phrase),
+                "-i {}".format(content[9]),
+                "-i {}".format(content[11]),
+                "-i {}".format(content[12]),
+                "-i {}".format(content[13]),
+                "-x {}/ca.pem".format(self.key_dir),
+                "-y {}/key.pem".format(self.key_dir),
+                "-z {}/crt.pem".format(self.key_dir)
+            ]
 
+        regparam = ' '.join(regparam)
+        cmd = "sudo {0} {1}".format(self.client_utility, regparam)
         log_debug(cmd)
+        '''
+            The following run command is from pexpect package
+        '''
         (output, status ) = run(cmd, withexitstatus=1)
         log_debug(output.decode("utf-8"))
 
         if status:
             if int(status) == 231:
                 print("Wrong key used? key=%s" % self.key)
+
             print("Device Not Signed")
             ssh.logout()
             error_critical("Signature Failed Error: %d" % status)
@@ -156,7 +169,6 @@ class AFAMEFactroy(ScriptBase):
         msg(100, "Process Completed")
         sys.stdout.flush()
         time.sleep(10)
-        #ssh.logout()
         
 #===========================================================================
 #           main entry
