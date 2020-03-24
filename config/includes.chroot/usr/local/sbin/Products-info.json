@@ -831,5 +831,21 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      }
+  },
+
+  "UbiquitiNMS":
+  {
+    "UNMS-R-PRO":{
+      "INDEX"       : 0,
+      "NAME"        : "UNMS-R-PRO",
+      "BOARDID"     : "ee6a",
+      "BOMREV"      : "113-00815",
+      "DESC"        : "Ubiquiti Network Management System Router Pro",
+      "FILE"        : "udm_alpine_factory2.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+     }
   }
 }

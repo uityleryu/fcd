@@ -24,41 +24,35 @@ DATAVERIFY_ENABLE   = True
 class UDMALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
         super(UDMALPINEFactoryGeneral, self).__init__()
-        self.ver_extract()                                                                                                  
+        self.ver_extract()
         self.init_vars()
 
     def init_vars(self):
         # script specific vars
-        self.fwimg = self.board_id + "-fw.bin"                                                                              
+        self.fwimg = self.board_id + "-fw.bin"
+        self.UNMS_series = ['ee6a']
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
+        self.helper_path = "unms" if self.board_id in self.UNMS_series else self.helper_path
         self.bomrev = "113-" + self.bom_rev
         self.username = "root"
+        self.username = "ubnt" if self.board_id in self.UNMS_series else self.username
         self.password = "ubnt"
         self.linux_prompt = "#"
        
         # Base path 
         self.tftpdir = self.tftpdir + "/"
         self.toolsdir = "tools/"
-        self.dut_udmdir = os.path.join(self.dut_tmpdir, "udm")
-        # Helper and ee-tool path on DUT
-        self.helper_dut_path = os.path.join(self.dut_udmdir, self.helperexe)
-        self.eepmexe_dut_path = os.path.join(self.dut_udmdir, self.eepmexe)
-        # EEPROM related files path on DUT
-        self.eesign_dut_path = os.path.join(self.dut_udmdir, self.eesign)
-        self.eetgz_dut_path = os.path.join(self.dut_udmdir, self.eetgz)                                                             
-        self.eechk_dut_path = os.path.join(self.dut_udmdir, self.eechk)
-        self.eebin_dut_path = os.path.join(self.dut_udmdir, self.eebin)
-        self.eetxt_dut_path = os.path.join(self.dut_udmdir, self.eetxt)
  
         # switch chip
         self.swchip = {
             'ea11': "qca8k",
             'ea13': "rtl83xx",
             'ea15': "rtl83xx",
-            'ea19': "rtl83xx"
+            'ea19': "rtl83xx",
+            'ee6a': "rtl83xx"
         }
         
         # sub-system ID
@@ -66,7 +60,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "770711ea",
             'ea13': "770713ea",
             'ea15': "770715ea",
-            'ea19': "770719ea"
+            'ea19': "770719ea",
+            'ee6a': "77076aee"
         }
         
         # number of Ethernet
@@ -74,7 +69,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "5",
             'ea13': "8",
             'ea15': "11",
-            'ea19': "4"
+            'ea19': "4",
+            'ee6a': "11"
         }
         
         # number of WiFi
@@ -82,7 +78,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "2",
             'ea13': "2",
             'ea15': "0",
-            'ea19': "0"
+            'ea19': "0",
+            'ee6a': "0"
         }
         
         # number of Bluetooth
@@ -90,7 +87,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "1",
             'ea13': "1",
             'ea15': "1",
-            'ea19': "1"
+            'ea19': "1",
+            'ee6a': "1"
         }
        
         # ethernet interface 
@@ -98,14 +96,16 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "ifconfig eth0 ",
             'ea13': "ifconfig eth1 ",
             'ea15': "ifconfig eth0 ",
-            'ea19': "ifconfig eth1 "
+            'ea19': "ifconfig eth1 ",
+            'ee6a': "ifconfig eth0 "
         }
         
         self.infover = {
             'ea11': "Version:",
             'ea13': "Version",
             'ea15': "Version:",
-            'ea19': "Version:"
+            'ea19': "Version:",
+            'ee6a': "Version:"
         }
 
         self.devnetmeta = {
@@ -121,13 +121,29 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def set_fake_EEPROM(self):
         self.pexp.expect_action(20, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
-        if self.board_id == 'ea15':
+
+        UDM_PRO_ID = 'ea15'
+        tmp_list = [UDM_PRO_ID] + self.UNMS_series
+
+        if self.board_id in tmp_list:
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
+
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+
+        if self.board_id in self.UNMS_series:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x410000 0x1000")
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
-        if self.board_id == 'ea15':
+
+        if self.board_id in self.UNMS_series:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x41000c 0x4")
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
+
+        if self.board_id in tmp_list:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x410010 0x4")
+        elif self.board_id == UDM_PRO_ID:
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
@@ -194,17 +210,26 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         ]
         sstr = ' '.join(sstr)
 
-        postexp = [
-            "Firmware version",
-            "Writing recovery"
-        ]
+        if self.board_id not in self.UNMS_series:
+            postexp = [
+                "Firmware version",
+                "Writing recovery"
+            ]
+        else:
+            postexp = [
+                "Starting kernel"
+            ]
+
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
+        if self.board_id not in self.UNMS_series:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
         """
