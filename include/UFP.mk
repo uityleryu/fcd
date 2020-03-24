@@ -34,5 +34,5 @@ TOOLS-UFP-LOCK-R=$(TOOLS-UFP)
 
 # Project target
 
-$(eval $(call ProductImage,UFP-SENSE,FCD-UFP-SENSE-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UFP-LOCK-R,FCD-UFP-LOCK-R-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))

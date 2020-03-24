@@ -104,10 +104,10 @@ TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
 
 # Project target
 
-$(eval $(call ProductImage,UAP,FCD-UAP-ALL-$(VER)))
-$(eval $(call ProductImage,UAP-FLEXHD,FCD-UAP-FLEXHD-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UAP-IWHD,FCD-UAP-IWHD-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD-UAP-NANO-IW-FLEXHD-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UBB,FCD-UAP-UBB-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UAP-INDUSTRIAL,FCD-UAP-INDUSTRIAL-$(VER)))
-$(eval $(call ProductImage,UAP6,FCD-UAP6-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UAP,FCD_$(PRD)_UAP-ALL_$(VER)))
+$(eval $(call ProductImage,UAP-FLEXHD,FCD_$(PRD)_UAP-FLEXHD_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UAP-IWHD,FCD_$(PRD)_UAP-IWHD_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
+$(eval $(call ProductImage,UAP6,FCD_$(PRD)_UAP6_$(VER)_$(FWVER)))

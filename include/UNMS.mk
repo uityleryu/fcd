@@ -31,5 +31,5 @@ TOOLS-UNMS-R-PRO=$(TOOLS-UNMS)
 
 # Project target
 
-$(eval $(call ProductImage,UNMS,FCD-UNMS-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UNMS-R-PRO,FCD-UNMS-R-PRO-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))

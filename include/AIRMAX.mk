@@ -57,6 +57,6 @@ TOOLS-AIRMAX+=$(TOOLS-PRISMAP)
 
 # Project target
 
-$(eval $(call ProductImage,AIRMAX,FCD-AIRMAX-ALL-$(VER)))
-$(eval $(call ProductImage,GBE,FCD-AIRMAX-GBE-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,PRISMAP,FCD-AIRMAX-PRISMAP-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
+$(eval $(call ProductImage,GBE,FCD_$(PRD)_AIRMAX-GBE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_AIRMAX-PRISMAP_$(VER)_$(FWVER)))

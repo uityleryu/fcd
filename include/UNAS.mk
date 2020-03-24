@@ -42,6 +42,6 @@ TOOLS-UNVR8+=$(TOOLS-UNVR)
 
 # Project target
 
-$(eval $(call ProductImage,UNVR,FCD-UNVR-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UNVR4,FCD-UNVR4-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UNVR8,FCD-UNVR8-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNVR8,FCD_$(PRD)_UNVR8_$(VER)_$(FWVER)))

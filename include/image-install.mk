@@ -4,7 +4,10 @@ $1: new-rootfs gitrepo image-install-$1 packiso-$1
 $1-local: rootfs gitrepo image-install-$1 packiso-$1
 $1-update: image-install-$1 packiso-$1
 
-image-install-$1:
+$1-namechk:
+	python3 include/namechk.py $2
+
+image-install-$1: $1-namechk
 	@echo " ****************************************************************** "
 	@echo "   FCD ISO NAME          = $2                                              "
 	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "

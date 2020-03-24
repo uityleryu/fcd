@@ -45,7 +45,7 @@ IMAGE-UDMB= \
     udm-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
     udm-fw/BZ.mt7621.*
 
-IMAGE-UDMLOCO= \
+IMAGE-UDMLITE= \
     images/ec28* \
     udm-fw/uImage-LoCo
 
@@ -80,15 +80,15 @@ TOOLS-UDMXG+= udm_xg/*
 TOOLS-UDMB+=$(TOOLS-CONFIG)
 TOOLS-UDMB+= udm_b/*
 
-TOOLS-UDMLOCO+=$(TOOLS-CONFIG)
-TOOLS-UDMLOCO+= udm/*
+TOOLS-UDMLITE+=$(TOOLS-CONFIG)
+TOOLS-UDMLITE+= udm/*
 
 # Project target
 
-$(eval $(call ProductImage,UDM,FCD-UDM-$(VER)))
-$(eval $(call ProductImage,UDMSE,FCD-UDMSE-$(VER)))
-$(eval $(call ProductImage,UDMPRO,FCD-UDMPRO-$(VER)))
-$(eval $(call ProductImage,UXGPRO,FCD-UXGPRO-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UDMXG,FCD-UDMXG-$(VER)))
-$(eval $(call ProductImage,UDMB,FCD-UDMB-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UDMLOCO,FCD-UDMLOCO-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)))
+$(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
+$(eval $(call ProductImage,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)))
+$(eval $(call ProductImage,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
+$(eval $(call ProductImage,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))

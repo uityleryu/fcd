@@ -36,6 +36,6 @@ TOOLS-AFI-ALN-P=$(TOOLS-AFI-ALN)
 
 # Project target
 
-$(eval $(call ProductImage,AFI-ALN,FCD-AFI-ALN-$(VER)))
-$(eval $(call ProductImage,AFI-ALN-R,FCD-AFI-ALN-R-$(VER)))
-$(eval $(call ProductImage,AFI-ALN-P,FCD-AFI-ALN-P-$(VER)))
+$(eval $(call ProductImage,AFI-ALN,FCD_$(PRD)_AFI-ALN_$(VER)))
+$(eval $(call ProductImage,AFI-ALN-R,FCD_$(PRD)_AFI-ALN-R_$(VER)))
+$(eval $(call ProductImage,AFI-ALN-P,FCD_$(PRD)_AFI-ALN-P_$(VER)))

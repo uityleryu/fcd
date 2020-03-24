@@ -27,4 +27,4 @@ TOOLS-UVP-FLEX+= uvp/*
 
 # Project target
 
-$(eval $(call ProductImage,UVP-FLEX,FCD-UVP-FLEX-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))

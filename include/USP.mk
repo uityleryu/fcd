@@ -44,6 +44,6 @@ TOOLS-USP-STRIP+= \
 
 # Project target
 
-$(eval $(call ProductImage,USP-PLUG,FCD-USP-PLUG-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USP-3-8,FCD-USP-3-8-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,USP-STRIP,FCD-USP-STRIP-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8-$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))

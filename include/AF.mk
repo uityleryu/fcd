@@ -42,6 +42,6 @@ TOOLS-AF60-LR+=$(TOOLS-AF60)
 
 # Project target
 
-$(eval $(call ProductImage,AF,FCD-AF-ALL-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,AF60,FCD-AF60-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,AF60-LR,FCD-AF60-LR-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,AF,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))

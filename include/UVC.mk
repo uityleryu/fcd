@@ -44,8 +44,8 @@ TOOLS-UVC-G3BATTERY+= \
 
 # Project target
 
-$(eval $(call ProductImage,UVC-G4PRO,FCD-UVC-G4PRO-$(VER)-$(FWVER)))
-$(eval $(call ProductImage,UVC-G3BATTERY,FCD-UVC-G3BATTERY-$(VER)-$(FWVER)))
+$(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_UVC-G4PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_UVC-G3BATTERY_$(VER)_$(FWVER)))
 
 
 
