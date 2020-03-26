@@ -384,6 +384,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW-MISSION-CONTROL":{
+      "INDEX"       : 21,
+      "NAME"        : "USW-MISSION-CONTROL",
+      "BOARDID"     : "ed2c",
+      "BOMREV"      : "113-02730",
+      "DESC"        : "UBNT UniFiSwitch Mission Control",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

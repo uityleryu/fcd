@@ -39,7 +39,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed24': "3",  # usw-24
             'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
-            'ed2a': "3"   # usw-lite-8-poe
+            'ed2a': "3",  # usw-lite-8-poe
+            'ed2c': "3"   # usw-missioon-control
         }
 
         # number of WiFi
@@ -51,7 +52,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed24': "0",
             'ed25': "0",
             'ed26': "0",
-            'ed2a': "0"
+            'ed2a': "0",
+            'ed2c': "0"
         }
 
         # number of Bluetooth
@@ -63,7 +65,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed24': "0",
             'ed25': "0",
             'ed26': "0",
-            'ed2a': "0"
+            'ed2a': "0",
+            'ed2c': "0"
         }
 
         self.netif = {
@@ -74,7 +77,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed24': "ifconfig eth0 ",
             'ed25': "ifconfig eth0 ",
             'ed26': "ifconfig eth0 ",
-            'ed2a': "ifconfig eth0 "
+            'ed2a': "ifconfig eth0 ",
+            'ed2c': "ifconfig eth0 "
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
