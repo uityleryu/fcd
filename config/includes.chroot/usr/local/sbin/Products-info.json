@@ -386,12 +386,12 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-MISSION-CONTROL":{
+    "USW-MISSION-CRITICAL":{
       "INDEX"       : 21,
-      "NAME"        : "USW-MISSION-CONTROL",
+      "NAME"        : "USW-MISSION-CRITICAL",
       "BOARDID"     : "ed2c",
       "BOMREV"      : "113-02730",
-      "DESC"        : "UBNT UniFiSwitch Mission Control",
+      "DESC"        : "UBNT UniFiSwitch Mission Critical",
       "FILE"        : "us_rtl838x_factory.py",
       "T1FILE"      : "us_rtl838x_mfg.py",
       "QRCHECK"     : "True",

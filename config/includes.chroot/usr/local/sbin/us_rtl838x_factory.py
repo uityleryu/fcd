@@ -40,7 +40,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3",  # usw-lite-8-poe
-            'ed2c': "3"   # usw-missioon-control
+            'ed2c': "3"   # usw-missioon-critical
         }
 
         # number of WiFi
