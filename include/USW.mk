@@ -71,9 +71,16 @@ IMAGE-USW-FLEX-MINI= \
 IMAGE-USW-XG= \
     images/eb25* \
     images/eb26* \
+    images/eb27* \
     usw-fw/unifiswitch-xg24poe* \
     usw-fw/unifiswitch-xg48poe* \
+    usw-fw/unifiswitch-xgagg* \
     usw-fw/US.bcm5617x*
+
+IMAGE-USW6-24-POE= \
+    images/eb38* \
+    usw-fw/unifiswitch6-24poe* \
+    usw-fw/US.bcm5616x*
 
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
@@ -85,6 +92,7 @@ IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
+IMAGE-USW+=$(IMAGE-USW6-24-POE)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -148,6 +156,7 @@ TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
 TOOLS-USW-XG=$(TOOLS-USW)
+TOOLS-USW6-24-POE=$(TOOLS-USW)
 
 # Project target
 
@@ -162,3 +171,4 @@ $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW6-24-POE,FCD_$(PRD)_USW6-24-POE_$(VER)_$(FWVER)))

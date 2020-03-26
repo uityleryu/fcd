@@ -334,8 +334,21 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-SPINE":{
+    "USW-XG-Aggregation":{
       "INDEX"       : 17,
+      "NAME"        : "USW-XG-Aggregation",
+      "BOARDID"     : "eb27",
+      "BOMREV"      : "113-03046",
+      "DESC"        : "UBNT UniFiSwitch XG Aggregation",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-SPINE":{
+      "INDEX"       : 18,
       "NAME"        : "USW-SPINE",
       "BOARDID"     : "f062",
       "BOMREV"      : "113-02932",
@@ -348,7 +361,7 @@
     },
 
     "USW-LEAF-PRO":{
-      "INDEX"       : 18,
+      "INDEX"       : 19,
       "NAME"        : "USW-LEAF-PRO",
       "BOARDID"     : "f063",
       "BOMREV"      : "113-03162",
@@ -358,7 +371,21 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW6-24-POE":{
+      "INDEX"       : 20,
+      "NAME"        : "USW6-24-POE",
+      "BOARDID"     : "eb38",
+      "BOMREV"      : "113-03154",
+      "DESC"        : "UniFi Switch 6 24 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
+
   },
 
   "UniFiAP":
