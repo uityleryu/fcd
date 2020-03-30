@@ -552,49 +552,72 @@
 
   "Amplifi":
   {
-    "AFi-AX-R":{
+    "AFi-ALN-R":{
       "INDEX"       : 0,
-      "NAME"        : "AFi-AX-R",
+      "NAME"        : "AFi-ALN-R",
       "BOARDID"     : "da11",
       "BOMREV"      : "113-00605",
-      "DESC"        : "Amplifi AX Router",
+      "DESC"        : "Amplifi Alien Router",
       "FILE"        : "afi_ipq807x_factory.py",
       "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     },
 
-    "AFi-AX-R-SKU-CHANGE":{
+    "AFi-ALN-R-SKU-CHANGE":{
       "INDEX"       : 1,
-      "NAME"        : "AFi-AX-R",
+      "NAME"        : "AFi-ALN-R",
       "BOARDID"     : "da11",
       "BOMREV"      : "113-00605",
-      "DESC"        : "Amplifi AX Router SKU change",
+      "DESC"        : "Amplifi Alien Router SKU change",
       "FILE"        : "afi_ipq807x_sku_change.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False"
     },
 
-    "AFi-AX-P":{
+    "AFi-ALN-P":{
       "INDEX"       : 2,
-      "NAME"        : "AFi-AX-P",
+      "NAME"        : "AFi-ALN-P",
       "BOARDID"     : "da12",
       "BOMREV"      : "113-00657",
-      "DESC"        : "Amplifi AX Mesh Point",
+      "DESC"        : "Amplifi Alien Mesh Point",
       "FILE"        : "afi_ipq807x_factory.py",
       "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     },
 
-    "AFi-AX-P-SKU-CHANGE":{
+    "AFi-ALN-P-SKU-CHANGE":{
       "INDEX"       : 3,
-      "NAME"        : "AFi-AX-P",
+      "NAME"        : "AFi-ALN-P",
       "BOARDID"     : "da12",
       "BOMREV"      : "113-00657",
-      "DESC"        : "Amplifi AX Mesh Point SKU change",
+      "DESC"        : "Amplifi Alien Mesh Point SKU change",
       "FILE"        : "afi_ipq807x_sku_change.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+      "AFi-ALN-R-EU":{
+      "INDEX"       : 4,
+      "NAME"        : "AFi-ALN-R",
+      "BOARDID"     : "da13",
+      "BOMREV"      : "113-00905",
+      "DESC"        : "Amplifi ALien Router EU",
+      "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+      "AFi-ALN-P-EU":{
+      "INDEX"       : 5,
+      "NAME"        : "AFi-ALN-P",
+      "BOARDID"     : "da14",
+      "BOMREV"      : "113-00957",
+      "DESC"        : "Amplifi ALien Mesh Point EU",
+      "FILE"        : "afi_ipq807x_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False"
     }
+
   },
 
   "AirFiber":
@@ -838,6 +861,18 @@
       "BOMREV"      : "113-00768",
       "DESC"        : "Unifi Smart Plug STRIP",
       "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+    "USP-PDU-PRO":{
+      "INDEX"       : 4,
+      "NAME"        : "USP-PDU-PRO",
+      "BOARDID"     : "ed12",
+      "BOMREV"      : "113-03098",
+      "DESC"        : "UniFi Smart Power PDU PRO",
+      "FILE"        : "usp_mt7628_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000e",

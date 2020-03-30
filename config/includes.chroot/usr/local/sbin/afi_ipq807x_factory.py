@@ -30,54 +30,68 @@ class AFIIPQ807XFactory(ScriptBase):
         # U-boot prompt
         ubpmt = {
             'da11': "IPQ807x",
-            'da12': "IPQ807x"
+            'da12': "IPQ807x",
+            'da13': "IPQ807x",
+            'da14': "IPQ807x"
         }
 
         # linux console prompt
         lnxpmt = {
             'da11': "ubnt@",
-            'da12': "ubnt@"
+            'da12': "ubnt@",
+            'da13': "ubnt@",
+            'da14': "ubnt@"
         }
 
         # number of Ethernet
         ethnum = {
             'da11': "5",
-            'da12': "7"
+            'da12': "1",
+            'da13': "5",
+            'da14': "1"
         }
 
         # number of WiFi
         wifinum = {
-            'da11': "2",
-            'da12': "2"
+            'da11': "3",
+            'da12': "3",
+            'da13': "2",
+            'da14': "2"
         }
 
         # number of Bluetooth
         btnum = {
             'da11': "1",
-            'da12': "1"
+            'da12': "1",
+            'da13': "1",
+            'da14': "1"
         }
 
         # communicating Ethernet interface
         comuteth = {
             'da11': "br-lan",
-            'da12': "br-lan"
+            'da12': "br-lan",
+            'da13': "br-lan",
+            'da14': "br-lan"
         }
 
         # temporary eeprom binary file
         tempeeprom = {
             'da11': "da11-eeprom.bin",
-            'da12': "da12-eeprom.bin"
+            'da12': "da12-eeprom.bin",
+            'da13': "da13-eeprom.bin",
+            'da14': "da14-eeprom.bin"
         }
 
         # booting up the last message
-        bootmsg = {
-            'da11': "(eth\d: link becomes ready)|(eth\d: PHY Link up speed)",
-            'da12': "eth\d: PHY Link up speed"
-        }
+        bootmsg_eth = "(eth\d: PHY Link up speed)"
+        bootmsg_noeth = "Please press Enter to activate this console"
 
         bootloader = {
             'da11': "da11-bootloader.bin",
-            'da12': "da12-bootloader.bin"
+            'da12': "da12-bootloader.bin",
+            'da13': "da13-bootloader.bin",
+            'da14': "da14-bootloader.bin"
         }
 
         baseip = 31
@@ -90,7 +104,8 @@ class AFIIPQ807XFactory(ScriptBase):
         eeprom_signed = "e.s." + self.row_id
         eeprom_check = "e.c." + self.row_id
         helperexe = "helper_IPQ807x_release"
-        fcdssh = "user@" + self.tftp_server + ":"
+        fcd_host_name = "user@" + self.tftp_server + ":"
+        fcd_host_passw = "live"
         bomrev = "113-" + self.bom_rev
         mtdpart = "/dev/mtdblock18"
         self.dut_helper_path = os.path.join(self.dut_afi_dir, helperexe)
@@ -105,7 +120,6 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
 
         msg(10, "Update the U-boot")
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "\033")
@@ -115,7 +129,6 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(30, ubpmt[self.board_id], "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(30, ubpmt[self.board_id], "ping " + self.tftp_server)
         self.pexp.expect_action(30, "host " + self.tftp_server + " is alive", "")
-        time.sleep(1)
         sstr = [
             "tftpboot",
             "0x44000000",
@@ -123,16 +136,12 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
-        time.sleep(3)
 
         msg(15, "Flash a temporary value to the EEPROM partition")
         self.pexp.expect_action(30, "Bytes transferred", "sf probe")
         self.pexp.expect_action(30, ubpmt[self.board_id], "sf erase 0x490000 0xa0000")
-        time.sleep(3)
         self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x490000 0xa0000")
-        time.sleep(3)
         self.pexp.expect_action(30, "Written: OK", "sf erase 0x480000 0x10000")
-        time.sleep(3)
         self.pexp.expect_action(30, "Erased: OK", "")
         sstr = [
             "tftpboot",
@@ -141,11 +150,8 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
-        time.sleep(3)
         self.pexp.expect_action(30, "Bytes transferred", "sf erase 0x610000 0x10000")
-        time.sleep(3)
         self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x610000 0x10000")
-        time.sleep(3)
         self.pexp.expect_action(30, "Written: OK", "")
 
         msg(20, "Loading firmware")
@@ -156,16 +162,14 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
-        time.sleep(4)
 
         self.pexp.expect_action(120, "Bytes transferred", "nand erase 0 0x10000000")
-        time.sleep(8)
         self.pexp.expect_action(30, "Erasing at 0xffe0000", "nand write 0x44000000 0 $filesize")
-        time.sleep(8)
         self.pexp.expect_action(30, "written: OK", "reset")
 
         msg(25, "Configuring the EEPROM partition ...")
-        self.pexp.expect_action(120, bootmsg[self.board_id], "")
+        self.pexp.expect_action(120, bootmsg_eth, "")
+        self.pexp.expect_action(60, bootmsg_eth, "")
         sstr = [
             "ifconfig",
             comuteth[self.board_id],
@@ -184,14 +188,14 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug("Send tools.tar from host to DUT ...")
         sstr = [
             "scp",
-            fcdssh + self.fcd_toolsdir + "/tools.tar",
+            fcd_host_name + self.fcd_toolsdir + "/tools.tar",
             tmpdir
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
-        self.pexp.expect_action(30, "password:", "live")
-        time.sleep(2)
+        self.pexp.expect_action(30, "password:", fcd_host_passw)
+        self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         log_debug("Unzipping the tools.tar in the DUT ...")
         sstr = [
@@ -231,7 +235,6 @@ class AFIIPQ807XFactory(ScriptBase):
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
-        time.sleep(3)
 
         msg(30, "Do helper to get the output file to devreg server ...")
         log_debug("Erase existed eeprom information files ...")
@@ -286,7 +289,6 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
-        time.sleep(2)
 
         sstr = [
             "tar",
@@ -300,19 +302,17 @@ class AFIIPQ807XFactory(ScriptBase):
 
         os.mknod(tftpdir + eeprom_tgz)
         os.chmod(tftpdir + eeprom_tgz, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-        time.sleep(2)
 
         log_debug("Send helper output tgz file from DUT to host ...")
         sstr = [
             "scp",
             os.path.join(self.dut_afi_dir, eeprom_tgz),
-            fcdssh + tftpdir
+            fcd_host_name + tftpdir
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
-        self.pexp.expect_action(30, "password:", "live")
-        time.sleep(1)
+        self.pexp.expect_action(30, "password:", fcd_host_passw)
         self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         cmd = [
@@ -372,7 +372,6 @@ class AFIIPQ807XFactory(ScriptBase):
         cmd = "sudo /usr/local/sbin/client_x86_release " + regparamj
         print("cmd: " + cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
-        time.sleep(6)
         if (int(rtc) > 0):
             error_critical("client_x86 registration failed!!")
         else:
@@ -386,14 +385,14 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug("Send signed eeprom file from host to DUT ...")
         sstr = [
             "scp",
-            fcdssh + tftpdir + eeprom_signed,
+            fcd_host_name + tftpdir + eeprom_signed,
             tmpdir
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
-        self.pexp.expect_action(30, "password:", "live")
-        time.sleep(2)
+        self.pexp.expect_action(30, "password:", fcd_host_passw)
+        self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         log_debug("Change file permission - " + eeprom_signed + " ...")
         sstr = ["chmod 777", tmpdir + eeprom_signed]
@@ -410,7 +409,6 @@ class AFIIPQ807XFactory(ScriptBase):
         sstrj = ' '.join(sstr)
         print("cmd: " + sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
-        time.sleep(2)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         sstr = [
@@ -421,7 +419,6 @@ class AFIIPQ807XFactory(ScriptBase):
         sstrj = ' '.join(sstr)
         print("cmd: " + sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
-        time.sleep(2)
 
         os.mknod(tftpdir + eeprom_check)
         os.chmod(tftpdir + eeprom_check, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
@@ -430,14 +427,14 @@ class AFIIPQ807XFactory(ScriptBase):
         sstr = [
             "scp",
             tmpdir + eeprom_check,
-            fcdssh + tftpdir
+            fcd_host_name + tftpdir
         ]
         sstrj = ' '.join(sstr)
         print("cmd: " + sstrj)
         self.pexp.expect_action(30, lnxpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, "Do you want to continue connecting?", "y")
-        self.pexp.expect_action(30, "password:", "live")
-        time.sleep(2)
+        self.pexp.expect_action(30, "password:", fcd_host_passw)
+        self.pexp.expect_action(30, lnxpmt[self.board_id], "")
 
         if os.path.isfile(tftpdir + eeprom_check):
             log_debug("Starting to compare the" + eeprom_check + " and " + eeprom_signed + " files ...")
@@ -460,7 +457,7 @@ class AFIIPQ807XFactory(ScriptBase):
         log_debug("Booting up to linux console ...")
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, lnxpmt[self.board_id], "reboot")
-        self.pexp.expect_action(60, bootmsg[self.board_id], "")
+        self.pexp.expect_action(60, bootmsg_noeth, "")
         msg(70, "Firmware booting up successfully ...")
         self.pexp.expect_action(60, lnxpmt[self.board_id], "grep flashSize /proc/ubnthal/system.info")
         self.pexp.expect_action(60, "flashSize", "")
@@ -472,16 +469,15 @@ class AFIIPQ807XFactory(ScriptBase):
             error_critical(msg="Wifi calibration data empty!")
         else:
             log_debug(msg="Wifi calibration data is not empty, pass!")
-        time.sleep(5)
         ssh_unlock_cmd = "echo ssh | prst_tool -w misc && prst_tool -e pairing && cfg.sh erase && echo cfg_done > /proc/afi_leds/mode && reboot -fd1"
         self.pexp.expect_action(10, lnxpmt[self.board_id], ssh_unlock_cmd)
         self.pexp.expect_only(10, "pairing erased")
-        self.pexp.expect_action(120, bootmsg[self.board_id], "")
+        self.pexp.expect_action(120, bootmsg_noeth, "")
         self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "ubus call firmware info", retry=12)
         self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "cat /proc/ubnthal/system.info")
         self.pexp.expect_lnxcmd(10, lnxpmt[self.board_id], "cat /proc/ubnthal/board")
         msg(100, "Formal firmware completed...")
-
+        self.close_fcd()
 
 def main():
     afi_ipq807x_factory = AFIIPQ807XFactory()

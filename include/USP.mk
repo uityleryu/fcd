@@ -9,6 +9,10 @@ IMAGE-USP-STRIP= \
     images/ee74* \
     usp/strip/*
 
+IMAGE-USP-PDU-PRO= \
+    images/ed12* \
+    usp/pdu-pro/*
+
 IMAGE-USP-3-8= \
     images/e643* \
     images/e648* \
@@ -42,8 +46,12 @@ TOOLS-USP-3-8+= \
 TOOLS-USP-STRIP+= \
     usp/helper_esp8266
 
+TOOLS-USP-STRIP+= \
+    usp/helper_MT7628_release
+
 # Project target
 
 $(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8-$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
