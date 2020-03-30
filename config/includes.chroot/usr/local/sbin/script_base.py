@@ -22,9 +22,9 @@ from threading import Thread
 from uuid import getnode as get_mac
 
 class ScriptBase(object):
-    __version__ = "1.0.9"
+    __version__ = "1.0.10"
     __authors__ = "FCD team"
-    __contact__ = "fcd@ubnt.com"
+    __contact__ = "fcd@ui.com"
 
     def __init__(self):
         self.input_args = self._init_parse_inputs()
@@ -250,10 +250,13 @@ class ScriptBase(object):
         else:
             log_debug("No passphrase input!")
 
-    def login(self, username="ubnt", password="ubnt", timeout=10):
+    def login(self, username="ubnt", password="ubnt", press_enter=False, log_level_emerg=False, timeout=10):
         """
         should be called at login console
         """
+        if press_enter is True:
+            self.pexp.expect_action(60, "Please press Enter to activate this console", "")
+            
         post = [
             "login:",
             "Error-A12 login"
@@ -264,10 +267,10 @@ class ScriptBase(object):
                 To give twice in order to make sure of that the username has been keyed in
             '''
             self.pexp.expect_action(10, "", username)
-            self.pexp.expect_only(10, username)
-            time.sleep(1)
             self.pexp.expect_action(10, "Password:", password)
-            time.sleep(2)
+
+        if log_level_emerg is True:
+            self.pexp.expect_action(10, self.linux_prompt, "dmesg -n1")
 
         return ridx
 
@@ -637,6 +640,7 @@ class ScriptBase(object):
             eetxt_dut_path
         ]
         sstr = ' '.join(sstr)
+        log_debug(sstr)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt)
         self.chk_lnxcmd_valid()
         time.sleep(1)
