@@ -31,8 +31,8 @@ class USFLEXFactory(ScriptBase):
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
         self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26',
-                                 'a611', 'a612', 'a613', 'a614'}
-        self.uap6_series = {'a611', 'a612', 'a613', 'a614'}
+                                 'a610', 'a611', 'a612', 'a613', 'a614'}
+        self.uap6_series = {'a610', 'a611', 'a612', 'a613', 'a614'}
         self.helperexe = "helper_UAP6_MT7621_release" if self.board_id in self.uap6_series else self.helperexe
 
         # number of mac
@@ -43,6 +43,7 @@ class USFLEXFactory(ScriptBase):
                        'ec26': "1",
                        'ec2a': "1",
                        'ed11': "2",
+                       'a610': "1",
                        'a611': "1",
                        'a612': "1",
                        'a613': "1",
@@ -55,6 +56,8 @@ class USFLEXFactory(ScriptBase):
                         'ec26': "2",
                         'ec2a': "2",
                         'ed11': "0",
+                        'a610': "2",
+                        'a611': "2",
                         'a611': "2",
                         'a612': "2",
                         'a613': "2",
@@ -67,6 +70,7 @@ class USFLEXFactory(ScriptBase):
                       'ec26': "1",
                       'ec2a': "0",
                       'ed11': "0",
+                      'a610': "1",
                       'a611': "1",
                       'a612': "1",
                       'a613': "1",
@@ -79,6 +83,7 @@ class USFLEXFactory(ScriptBase):
                              'ec26': "'6 0'",
                              'ec2a': "'6 0'",
                              'ed11': "'6 0'",
+                             'a610': "'6 0'",
                              'a611': "'6 0'",
                              'a612': "'6 0'",
                              'a613': "'6 0'",
@@ -91,6 +96,7 @@ class USFLEXFactory(ScriptBase):
                            'ec26': "33554432",
                            'ec2a': "33554432",
                            'ed11': "16777216",
+                           'a610': "33554432",
                            'a611': "33554432",
                            'a612': "33554432",
                            'a613': "33554432",
@@ -103,6 +109,7 @@ class USFLEXFactory(ScriptBase):
                       'ec26': self.board_id + ".bin",
                       'ec2a': self.board_id + ".bin",
                       'ed11': self.board_id + "-diag.bin",
+                      'a610': self.board_id + ".bin",
                       'a611': self.board_id + ".bin",
                       'a612': self.board_id + ".bin",
                       'a613': self.board_id + ".bin",

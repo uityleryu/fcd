@@ -42,6 +42,7 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP6= \
+    images/a610* \
     images/a611* \
     images/a612* \
     images/a613* \
