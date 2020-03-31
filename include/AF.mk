@@ -35,7 +35,7 @@ TOOLS-AF60+= \
     af_af60/helper_IPQ40xx \
     af_af60/id_rsa \
     af_af60/id_rsa.pub \
-    af_af60/af60_dummy_cal.bin \
+    af_af60/af_af60_dummy_cal.bin \
     af_ltu5/helper_UBNTAME
 
 TOOLS-AF60-LR+=$(TOOLS-AF60)
