@@ -44,9 +44,10 @@ TOOLS-USP-3-8+= \
     usp/helper_mips32
 
 TOOLS-USP-STRIP+= \
-    usp/helper_esp8266
+    usp/helper_esp8266 \
+    usp/gen-cert.sh
 
-TOOLS-USP-STRIP+= \
+TOOLS-USP-PDU-PRO+= \
     usp/helper_MT7628_release
 
 # Project target
