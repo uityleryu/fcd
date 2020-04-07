@@ -278,7 +278,7 @@
       "BOMREV"      : "113-02997",
       "DESC"        : "UniFi Super Switch 48-port",
       "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -356,7 +356,7 @@
       "BOMREV"      : "113-02932",
       "DESC"        : "UniFi Super Switch Spine",
       "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -369,7 +369,7 @@
       "BOMREV"      : "113-03162",
       "DESC"        : "UniFi Super Switch 48-port",
       "FILE"        : "us_udc-alpine_factory.py",
-      "T1FILE"      : "us_udc-alpine_mfg.py",
+      "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
@@ -741,6 +741,45 @@
       "BOMREV"      : "113-02808",
       "DESC"        : "UniFi VOIP FLEX",
       "FILE"        : "uvp_dvf9918_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UVP-ATA":{
+      "INDEX"       : 1,
+      "NAME"        : "UVP-ATA",
+      "BOARDID"     : "ef0f",
+      "BOMREV"      : "113-03808",
+      "DESC"        : "UniFi VOIP Analog Telephone Adapter",
+      "FILE"        : "uvp_dvf9918_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UVP-CONF-BOX":{
+      "INDEX"       : 2,
+      "NAME"        : "UVP-CONF-BOX",
+      "BOARDID"     : "ef10",
+      "BOMREV"      : "113-03028",
+      "DESC"        : "UniFi VOIP conference box",
+      "FILE"        : "uvp_qcs603_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UVP-CONF-SPK":{
+      "INDEX"       : 3,
+      "NAME"        : "UVP-CONF-SPK",
+      "BOARDID"     : "ef11",
+      "BOMREV"      : "113-03038",
+      "DESC"        : "UniFi VOIP conference speaker",
+      "FILE"        : "uvp_qcs403_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0007",

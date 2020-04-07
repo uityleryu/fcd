@@ -5,6 +5,10 @@ IMAGE-UVP-FLEX= \
     images/ef0d* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
+IMAGE-UVP-ATA=
+
+IMAGE-UVP-CONF-SPK=
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -25,6 +29,14 @@ TOOLS-CONFIG= \
 TOOLS-UVP-FLEX+=$(TOOLS-CONFIG)
 TOOLS-UVP-FLEX+= uvp/*
 
+TOOLS-UVP-ATA+=$(TOOLS-CONFIG)
+# TOOLS-UVP-ATA+=
+
+TOOLS-UVP-CONF-SPK+=$(TOOLS-CONFIG)
+TOOLS-UVP-CONF-SPK+= uvp/*
+
 # Project target
 
 $(eval $(call ProductImage,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVP-ATA,FCD_$(PRD)_UVP-ATA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVP-CONF-SPK,FCD_$(PRD)_UVP-CONF-SPK_$(VER)_$(FWVER)))

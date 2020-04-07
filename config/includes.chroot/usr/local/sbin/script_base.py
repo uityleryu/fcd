@@ -145,6 +145,9 @@ class ScriptBase(object):
         # retrieve the content from EEPROM partition of DUT
         self.eechk = "e.c.{}".format(self.row_id)
 
+        # extract the FCD information from the EEPROM partition offset 0xd000
+        self.eeorg = "e.org.{}".format(self.row_id)
+
         # RSA key file
         self.rsakey = "dropbear_key.rsa.{}".format(self.row_id)
 
@@ -172,6 +175,9 @@ class ScriptBase(object):
 
         # EX: /tftpboot/e.c.0
         self.eechk_path = os.path.join(self.tftpdir, self.eechk)
+
+        # EX: /tftpboot/e.org.0
+        self.eeorg_path = os.path.join(self.tftpdir, self.eeorg)
 
         # EX: /tftpboot/dropbear_key.rsa.0
         self.rsakey_path = os.path.join(self.tftpdir, self.rsakey)
@@ -461,6 +467,7 @@ class ScriptBase(object):
             eewrite = self.eesigndate
         else:
             eewrite = self.eesign
+
         eewrite_path = os.path.join(self.tftpdir, eewrite)
         eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
 
@@ -533,6 +540,13 @@ class ScriptBase(object):
         src = os.path.join(self.dut_tmpdir, "*")
         cmd = "chmod -R 777 {0}".format(src)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
+        self.chk_lnxcmd_valid()
+
+    def set_lnx_net(self, intf):
+        log_debug("Starting to configure the networking ... ")
+        cmd = "ifconfig {0} {1}".format(intf, self.dutip)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        time.sleep(2)
         self.chk_lnxcmd_valid()
 
     def is_network_alive_in_linux(self):
@@ -608,15 +622,59 @@ class ScriptBase(object):
             otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
-        # Overwrite devregpart data except (0xa000-0xbfff) and (0xd000-0xdfff)
-        eegenbin_dut_path = os.path.join(self.dut_tmpdir, self.eegenbin)
-        self.tftp_get(remote=self.eegenbin, local=eegenbin_dut_path, timeout=15)
-        cmd = "dd if=/tmp/{0} of={1} bs=1k count=40".format(self.eegenbin, self.devregpart)
+        cmd = "dd if={0} of=/tmp/{1} bs=1k count=64".format(self.devregpart, self.eeorg)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        time.sleep(1)
+        self.chk_lnxcmd_valid()
+
+        dstp = "/tmp/{0}".format(self.eeorg)
+        self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
+
+        '''
+            Trying to store the initial information from the e.gen.0 to e.org.0
+        '''
+        f1 = open(self.eeorg_path, "rb")
+        org_tres = list(f1.read())
+        f1.close()
+
+        f2 = open(self.eegenbin_path, "rb")
+        gen_tres = list(f2.read())
+        f2.close()
+
+        f3 = open(self.eeorg_path, "wb")
+
+        # Write 40K content to the first 40K section
+        # 40 * 1024 = 40960 = 40K
+        # the for loop will automatically count it from 0 ~ (content_sz - 1)
+        # example:  0 ~ 40K = 0 ~ 40959
+        content_sz = 40 * 1024
+        for idx in range(0, content_sz):
+            gen_tres[idx] = org_tres[idx]
+
+        # Write 4K content start from 0xC000
+        # 49152 = 0xC000 = 48K
+        content_sz = 4 * 1024
+        offset = 48 * 1024
+        for idx in range(0, content_sz):
+            gen_tres[idx + offset] = org_tres[idx + offset]
+
+        # Write 8K content start from 0xE000
+        # 57344 = 0xE000 = 56K
+        content_sz = 8 * 1024
+        offset = 56 * 1024
+        for idx in range(0, content_sz):
+            gen_tres[idx + offset] = org_tres[idx + offset]
+
+        arr = bytearray(content2)
+        f3.write(arr)
+        f3.close()
+
+        eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eegenbin)
+        self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
+
+        cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eeorg, self.devregpart)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
-        cmd = "dd if=/tmp/{0} of={1} bs=1k skip=48 seek=48 count=4".format(self.eegenbin, self.devregpart)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
-        cmd = "dd if=/tmp/{0} of={1} bs=1k skip=56 seek=56 count=8".format(self.eegenbin, self.devregpart)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
+        time.sleep(1)
         self.chk_lnxcmd_valid()
 
     def prepare_server_need_files(self):

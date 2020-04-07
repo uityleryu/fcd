@@ -33,17 +33,20 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         ethnum = {
-            'ef0d': "1"
+            'ef0d': "1",
+            'ef0f': "1"
         }
 
         # number of WiFi
         wifinum = {
-            'ef0d': "0"
+            'ef0d': "0",
+            'ef0f': "0"
         }
 
         # number of Bluetooth
         btnum = {
-            'ef0d': "0"
+            'ef0d': "0",
+            'ef0f': "0"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -55,6 +58,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         }
 
         self.netif = {
+            'ef0d': "ifconfig eth0 ",
             'ef0d': "ifconfig eth0 "
         }
 
