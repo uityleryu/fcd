@@ -48,10 +48,10 @@ IMAGE-UAP6= \
     images/a613* \
     images/a614* \
     uap-fw/uap6* \
-    uap-fw/lede-mtk-mt7621-UAP6-initramfs-kernel.bin \
-    uap-fw/u-boot-mt7621-mfg-v2.bin \
-    uap-fw/kernel-uap6-afi6-7603_7915a-v3.bin \
-    uap-fw/unifi-PR-82.56-g3967dfe8_uap6-mt7621-31MB_u-boot.bin \
+    uap-fw/lede-mtk-mt7621-UAP6-initramfs*.bin \
+    uap-fw/u-boot-mt7621-mfg*.bin \
+    uap-fw/kernel-uap6-afi6-7603_7915a*.bin \
+    uap-fw/unifi-v1.1.21.53-gcb13e97f_uap6-mt7621-31MB_u-boot.bin \
     uap-fw/BZ.mt7621.uap6*
 
 
