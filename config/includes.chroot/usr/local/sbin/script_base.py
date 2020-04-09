@@ -250,12 +250,12 @@ class ScriptBase(object):
         else:
             log_debug("No passphrase input!")
 
-    def login(self, username="ubnt", password="ubnt", press_enter=False, log_level_emerg=False, timeout=10):
+    def login(self, username="ubnt", password="ubnt", timeout=10, press_enter=False, log_level_emerg=False):
         """
         should be called at login console
         """
         if press_enter is True:
-            self.pexp.expect_action(60, "Please press Enter to activate this console", "")
+            self.pexp.expect_action(timeout, "Please press Enter to activate this console", "")
             
         post = [
             "login:",
