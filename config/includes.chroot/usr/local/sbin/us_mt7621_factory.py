@@ -393,4 +393,5 @@ def main():
     us_flex_factory = USFLEXFactory()
     us_flex_factory.run()
 
-main()
+if __name__ == "__main__":
+    main()
