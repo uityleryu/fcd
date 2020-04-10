@@ -87,7 +87,7 @@ TOOLS-UDMLITE+= udm/*
 
 $(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
-$(eval $(call ProductImage,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)))
+$(eval $(call ProductImage,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductImage,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
