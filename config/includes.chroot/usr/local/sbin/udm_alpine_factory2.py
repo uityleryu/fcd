@@ -212,7 +212,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         sstr = ' '.join(sstr)
 
         if self.board_id not in self.UNMS_series:
-            postexp = [ "Upgrade completed!" ]
+            postexp = [ "Restarting system" ]
         else:
             postexp = [ "Starting kernel" ]
         msg(70, "Firmware upgrade done ...")
