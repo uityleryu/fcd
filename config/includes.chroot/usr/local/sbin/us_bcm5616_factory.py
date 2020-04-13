@@ -552,4 +552,5 @@ def main():
     us_factory_general = USBCM5616FactoryGeneral()
     us_factory_general.run()
 
-main()
+if __name__ == "__main__":
+    main()

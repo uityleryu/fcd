@@ -353,4 +353,5 @@ def main():
     us_bcm5616_mfg = USBCM5616_MFG()
     us_bcm5616_mfg.run()
 
-main()
+if __name__ == "__main__":
+    main()

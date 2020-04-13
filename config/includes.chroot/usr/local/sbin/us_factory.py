@@ -542,4 +542,5 @@ def main():
     us_factory_general = USFactoryGeneral()
     us_factory_general.run()
 
-main()
+if __name__ == "__main__":
+    main()

@@ -161,4 +161,5 @@ def main():
     usp_mt7628_factory = USPMT7628Factory()
     usp_mt7628_factory.run()
 
-main()
+if __name__ == "__main__":
+    main()

@@ -264,4 +264,5 @@ def main():
     mt7621_mfg_general.run()
 
 
-main()
+if __name__ == "__main__":
+    main()

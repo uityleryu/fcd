@@ -287,4 +287,5 @@ def main():
     us_mfg_general.run()
 
 
-main()
+if __name__ == "__main__":
+    main()
