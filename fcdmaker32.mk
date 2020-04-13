@@ -147,17 +147,17 @@ gitrepo: fcd-image fcd-script-tools fcd-ubntlib
 
 fcd-image:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
-		cd $(BUILD_DIR)/$@; git pull; \
+		cd $(BUILD_DIR)/$@; git pull --depth=1; \
 	else \
-		git clone git@10.2.0.33:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
+		git clone --depth=1 git@10.2.0.33:Ubiquiti-BSP/fcd-image.git -b master $(BUILD_DIR)/$@; \
 	fi
 	@echo "$(BUILD_DIR)/$@ HASH: `git --git-dir $(BUILD_DIR)/$@/.git rev-parse HEAD`"
 
 fcd-script-tools:
 	@if [ -d "$(BUILD_DIR)/$@" ]; then \
-		cd $(BUILD_DIR)/$@; git pull; \
+		cd $(BUILD_DIR)/$@; git pull --depth=1; \
 	else \
-		git clone git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
+		git clone --depth=1 git@10.2.0.33:Ubiquiti-BSP/$@.git -b master $(BUILD_DIR)/$@; \
 	fi
 	@echo "$(BUILD_DIR)/$@ HASH: `git --git-dir $(BUILD_DIR)/$@/.git rev-parse HEAD`"
 
