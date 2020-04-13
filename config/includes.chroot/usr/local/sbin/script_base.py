@@ -631,45 +631,51 @@ class ScriptBase(object):
         self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
 
         '''
-            Trying to store the initial information from the e.gen.0 to e.org.0
+            Trying to access the initial information from the EEPROM of DUT and save to e.org.0
         '''
         f1 = open(self.eeorg_path, "rb")
         org_tres = list(f1.read())
         f1.close()
 
+        '''
+            Creating by the FCD host with the utiltiy eetool
+        '''
         f2 = open(self.eegenbin_path, "rb")
         gen_tres = list(f2.read())
         f2.close()
 
+        '''
+            Writing the information from e.gen.0 to e.org.0
+        '''
         f3 = open(self.eeorg_path, "wb")
 
         # Write 40K content to the first 40K section
-        # 40 * 1024 = 40960 = 40K
+        # 40 * 1024 = 40960 = 0xA000, 40K
         # the for loop will automatically count it from 0 ~ (content_sz - 1)
         # example:  0 ~ 40K = 0 ~ 40959
         content_sz = 40 * 1024
         for idx in range(0, content_sz):
-            gen_tres[idx] = org_tres[idx]
+             org_tres[idx] = gen_tres[idx]
 
         # Write 4K content start from 0xC000
         # 49152 = 0xC000 = 48K
         content_sz = 4 * 1024
         offset = 48 * 1024
         for idx in range(0, content_sz):
-            gen_tres[idx + offset] = org_tres[idx + offset]
+            org_tres[idx + offset] = gen_tres[idx + offset]
 
         # Write 8K content start from 0xE000
         # 57344 = 0xE000 = 56K
         content_sz = 8 * 1024
         offset = 56 * 1024
         for idx in range(0, content_sz):
-            gen_tres[idx + offset] = org_tres[idx + offset]
+            org_tres[idx + offset] = gen_tres[idx + offset]
 
-        arr = bytearray(gen_tres)
+        arr = bytearray(org_tres)
         f3.write(arr)
         f3.close()
 
-        eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eegenbin)
+        eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eeorg)
         self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
 
         cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eeorg, self.devregpart)
