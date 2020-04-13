@@ -665,7 +665,7 @@ class ScriptBase(object):
         for idx in range(0, content_sz):
             gen_tres[idx + offset] = org_tres[idx + offset]
 
-        arr = bytearray(content2)
+        arr = bytearray(gen_tres)
         f3.write(arr)
         f3.close()
 
