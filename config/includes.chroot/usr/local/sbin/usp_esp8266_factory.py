@@ -25,6 +25,7 @@ class USPESP8266Factory(ScriptBase):
 
         # image folder path
         self.image_path = {
+            '0000': "plug",
             'ee73': "plug",
             'ee74': "strip"
         }

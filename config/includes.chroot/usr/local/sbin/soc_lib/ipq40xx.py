@@ -34,6 +34,7 @@ class IPQ40XXFactory(ScriptBase):
         '''
         # U-boot prompt
         self.ubpmt = {
+            '0000': ".*IPQ40xx.* # ",
             'dc99': ".*IPQ40xx.* # ",
             'dc9a': ".*IPQ40xx.* # ",
             'dc98': "\(IPQ40xx\) # ",
@@ -45,6 +46,7 @@ class IPQ40XXFactory(ScriptBase):
 
         # linux console prompt
         self.lnxpmt = {
+            '0000': "GBE#",
             'dc99': "GBE#",
             'dc9a': "GBE#",
             'dc98': "UBB#",
@@ -55,6 +57,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.bootloader = {
+            '0000': "dc99-bootloader.bin",
             'dc99': "dc99-bootloader.bin",
             'dc9a': "dc99-bootloader.bin",
             'dc98': "dc98-bootloader.bin",
@@ -65,6 +68,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.ubaddr = {
+            '0000': "0xf0000",
             'dc99': "0xf0000",
             'dc9a': "0xf0000",
             'dc98': "0xf0000",
@@ -75,6 +79,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.ubsz = {
+            '0000': "0x80000",
             'dc99': "0x80000",
             'dc9a': "0x80000",
             'dc98': "0x80000",
@@ -85,6 +90,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.cfgaddr = {
+            '0000': "0x1fc0000",
             'dc99': "0x1fc0000",
             'dc9a': "0x1fc0000",
             'dc98': "0x1fc0000",
@@ -95,6 +101,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.cfgsz = {
+            '0000': "0x40000",
             'dc99': "0x40000",
             'dc9a': "0x40000",
             'dc98': "0x40000",
@@ -105,6 +112,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.epromaddr = {
+            '0000': "0x170000",
             'dc99': "0x170000",
             'dc9a': "0x170000",
             'dc98': "0x170000",
@@ -115,6 +123,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.epromsz = {
+            '0000': "0x10000",
             'dc99': "0x10000",
             'dc9a': "0x10000",
             'dc98': "0x10000",
@@ -125,6 +134,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.product_class_table = {
+            '0000': "radio",
             'dc99': "radio",
             'dc9a': "radio",
             'dc98': "radio",
@@ -135,6 +145,7 @@ class IPQ40XXFactory(ScriptBase):
         }
 
         self.pd_dir_table = {
+            '0000': "am",
             'dc99': "am",
             'dc9a': "am",
             'dc98': "uap",
@@ -393,6 +404,7 @@ class IPQ40XXMFG(ScriptBase):
         '''
         # U-boot prompt
         self.ubpmt = {
+            '0000': "\(IPQ40xx\) # ",
             'dc99': "\(IPQ40xx\) # ",
             'dc9a': "\(IPQ40xx\) # ",
             'dc98': "\(IPQ40xx\) # ",
@@ -404,6 +416,7 @@ class IPQ40XXMFG(ScriptBase):
 
         # linux console prompt
         self.lnxpmt = {
+            '0000': "root@OpenWrt",
             'dc99': "root@OpenWrt",
             'dc9a': "root@OpenWrt",
             'dc98': "root@OpenWrt",
@@ -414,6 +427,7 @@ class IPQ40XXMFG(ScriptBase):
         }
 
         self.artimg = {
+            '0000': "dc99-mfg.bin",
             'dc99': "dc99-mfg.bin",
             'dc9a': "dc9a-mfg.bin",
             'dc98': "dc98-mfg.bin",
@@ -424,6 +438,7 @@ class IPQ40XXMFG(ScriptBase):
         }
 
         self.knladdr = {
+            '0000': "0x0",
             'dc99': "0x0",
             'dc9a': "0x0",
             'dc98': "0x0",
@@ -434,6 +449,7 @@ class IPQ40XXMFG(ScriptBase):
         }
 
         self.knlsz = {
+            '0000': "0x170000",
             'dc99': "0x170000",
             'dc9a': "0x170000",
             'dc98': "0x170000",
@@ -444,6 +460,7 @@ class IPQ40XXMFG(ScriptBase):
         }
 
         self.rfaddr = {
+            '0000': "0x180000",
             'dc99': "0x180000",
             'dc9a': "0x180000",
             'dc98': "0x180000",
@@ -454,6 +471,7 @@ class IPQ40XXMFG(ScriptBase):
         }
 
         self.rfsz = {
+            '0000': "0x1a00000",
             'dc99': "0x1a00000",
             'dc9a': "0x1a00000",
             'dc98': "0x1d00000",

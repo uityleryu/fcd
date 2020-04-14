@@ -26,6 +26,7 @@ cmd_prefix = "go $ubntaddr"
 
 # U-boot erase start address
 uberstaddr = {
+    '0000': "0x1e0000",
     'eb23': "0x1e0000",
     'eb25': "0x1e0000",
     'eb26': "0x1e0000",
@@ -39,6 +40,7 @@ uberstaddr = {
 
 # U-boot erase size
 ubersz = {
+    '0000': "0x10000",
     'eb23': "0x10000",
     'eb25': "0x10000",
     'eb26': "0x10000",
@@ -52,6 +54,7 @@ ubersz = {
 
 #
 bootargs = {
+    '0000': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb23': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb25': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb26': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
@@ -64,6 +67,7 @@ bootargs = {
 }
 
 helperexes = {
+    '0000': "helper_BCM5341x",
     'eb20': "helper_BCM5341x",
     'eb25': "helper_BCM5617x",
     'eb26': "helper_BCM5617x",
