@@ -22,13 +22,13 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.ubpmt = "UBNT"
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
-        self.helperexe = "helper_rtl838x"
+        self.helperexe = "helper_RTL838x_20200410"
         self.helper_path = "usw_rtl838x"
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25'}
+        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2d'}
 
         # number of Ethernet
         self.macnum = {
@@ -40,7 +40,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3",  # usw-lite-8-poe
-            'ed2c': "3"   # usw-missioon-critical
+            'ed2c': "3",  # usw-missioon-critical
+            'ed2d': "3"   # usw-aggregation
         }
 
         # number of WiFi
@@ -53,7 +54,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "0",
             'ed26': "0",
             'ed2a': "0",
-            'ed2c': "0"
+            'ed2c': "0",
+            'ed2d': "0"
         }
 
         # number of Bluetooth
@@ -66,7 +68,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "0",
             'ed26': "0",
             'ed2a': "0",
-            'ed2c': "0"
+            'ed2c': "0",
+            'ed2d': "0"
         }
 
         self.netif = {
@@ -78,7 +81,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "ifconfig eth0 ",
             'ed26': "ifconfig eth0 ",
             'ed2a': "ifconfig eth0 ",
-            'ed2c': "ifconfig eth0 "
+            'ed2c': "ifconfig eth0 ",
+            'ed2d': "ifconfig eth0 "
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")

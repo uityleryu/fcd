@@ -399,6 +399,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW-Aggregation":{
+      "INDEX"       : 22,
+      "NAME"        : "USW-Aggregation",
+      "BOARDID"     : "ed2d",
+      "BOMREV"      : "113-03138",
+      "DESC"        : "UBNT UniFiSwitch Aggregation",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

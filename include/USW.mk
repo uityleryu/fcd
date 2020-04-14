@@ -87,6 +87,10 @@ IMAGE-USW6-24-POE= \
     usw-fw/unifiswitch6-24poe* \
     usw-fw/US.bcm5616x*
 
+IMAGE-USW-Aggregation= \
+    images/ed2d* \
+    usw-fw/usw-aggregation-* \
+    usw-fw/US.rtl930x*
 
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
@@ -100,6 +104,7 @@ IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
 IMAGE-USW+=$(IMAGE-USW6-24-POE)
+IMAGE-USW+=$(IMAGE-USW-Aggregation)
 
 
 # Model
@@ -124,13 +129,11 @@ TOOLS-USW+=$(TOOLS-CONFIG)
 
 TOOLS-USW-16-24-48+=$(TOOLS-USW)
 TOOLS-USW-16-24-48+= \
-    usw_rtl838x/helper_rtl838x \
-    usw_rtl838x/rtl838x-ee
+    usw_rtl838x/helper_RTL838x*
 
 TOOLS-USW-LITE+=$(TOOLS-USW)
 TOOLS-USW-LITE+= \
-    usw_rtl838x/helper_rtl838x \
-    usw_rtl838x/rtl838x-ee
+    usw_rtl838x/helper_RTL838x*
 
 TOOLS-USW-LEAF=$(TOOLS-USW)
 TOOLS-USW-LEAF+= \
@@ -166,9 +169,12 @@ TOOLS-USW-FLEX-MINI+= \
 TOOLS-USW-XG=$(TOOLS-USW)
 
 TOOLS-USW-MISSION-CRITICAL+= \
-    usw_rtl838x/helper_rtl838x
+    usw_rtl838x/helper_RTL838x*
 
 TOOLS-USW6-24-POE=$(TOOLS-USW)
+
+TOOLS-USW-MISSION-CRITICAL+= \
+    usw_rtl838x/helper_RTL838x*
 
 # Project target
 
