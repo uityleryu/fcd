@@ -14,7 +14,7 @@ UPLOADLOG_ENABLE = False  # When uploadlog test stable, will merge this feature 
 
 class UAPQCA9563Factory(ScriptBase):
     def __init__(self):
-        super(UALiteACFactory, self).__init__()
+        super(UAPQCA9563Factory, self).__init__()
         self.init_vars()
 
     def init_vars(self):
