@@ -102,6 +102,45 @@
       "SW_ID"       : "0201"
     },
 
+    "US-16-150W":{
+      "INDEX"       : 1,
+      "NAME"        : "US-16-150W",
+      "BOARDID"     : "eb21",
+      "BOMREV"      : "113-02290",
+      "DESC"        : "UBNT UniFiSwitch 16-Port 150W",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24-250W":{
+      "INDEX"       : 1,
+      "NAME"        : "US-24-250W",
+      "BOARDID"     : "eb31",
+      "BOMREV"      : "113-02147",
+      "DESC"        : "UBNT UniFiSwitch 24-Port 250W",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48-500W":{
+      "INDEX"       : 1,
+      "NAME"        : "US-48-500W",
+      "BOARDID"     : "eb31",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UBNT UniFiSwitch 48-Port 500W",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
     "USW-24-PRO-POE":{
       "INDEX"       : 1,
       "NAME"        : "USW-24-PRO-POE",

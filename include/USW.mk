@@ -92,6 +92,12 @@ IMAGE-USW-Aggregation= \
     usw-fw/usw-aggregation-* \
     usw-fw/US.rtl930x*
 
+IMAGE-US-GEN1= \
+    images/eb21* \
+    images/eb31* \
+    images/eb62* \
+    usw-fw/US.bcm5334x*
+
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
@@ -125,8 +131,6 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
-TOOLS-USW+=$(TOOLS-CONFIG)
-
 TOOLS-USW-16-24-48+=$(TOOLS-USW)
 TOOLS-USW-16-24-48+= \
     usw_rtl838x/helper_RTL838x*
@@ -153,6 +157,7 @@ TOOLS-USW-SPINE+=$(TOOLS-USW-LEAF)
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-PRO=$(TOOLS-USW)
 TOOLS-USW-FLEX=$(TOOLS-USW)
+
 TOOLS-ULS-RPS=$(TOOLS-USW)
 TOOLS-ULS-RPS+= \
     uls_rps/burnin.sh \
@@ -176,11 +181,17 @@ TOOLS-USW6-24-POE=$(TOOLS-USW)
 TOOLS-USW-MISSION-CRITICAL+= \
     usw_rtl838x/helper_RTL838x*
 
+# ALL
+TOOLS-USW+=$(TOOLS-CONFIG)
+
+TOOLS-US-GEN1+=$(TOOLS-USW)
+
 # Project target
 
-$(eval $(call ProductImage,USW,FCD_$(PRD)_USW-ALL_$(VER)))
-$(eval $(call ProductImage,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
-$(eval $(call ProductImage,USW-PRO,FCD_$(PRD)_USW-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW,FCD_$(PRD)_USW-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,US-GEN1,FCD_$(PRD)_US-GEN1-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))

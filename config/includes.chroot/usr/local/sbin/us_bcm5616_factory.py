@@ -24,16 +24,37 @@ dss_key = "dropbear_dss_host_key"
 
 cmd_prefix = "go $ubntaddr"
 
+
+'''
+    eb20: US-XG
+    eb21: US-16-150W
+    eb23: US-6-XG-150
+    eb25: US-XG-24-550W (hold)
+    eb26: US-XG-48-550W (hold)
+    eb27: USW-XG-Aggregation (hold)
+    eb31: US-24-250W
+    eb36: USW-PRO-24-PoE
+    eb37: USW-PRO-24
+    eb38: USW6-24-PoE
+    eb62: US-48-500W
+    eb67: USW-PRO-48-PoE
+    eb68: USW-PRO-48
+'''
+
 # U-boot erase start address
 uberstaddr = {
     '0000': "0x1e0000",
+    'eb20': "0x1e0000",
+    'eb21': "0xc0000",
     'eb23': "0x1e0000",
     'eb25': "0x1e0000",
     'eb26': "0x1e0000",
     'eb27': "0x1e0000",
+    'eb31': "0xc0000",
     'eb36': "0x1e0000",
     'eb37': "0x1e0000",
     'eb38': "0x1e0000",
+    'eb62': "0xc0000",
     'eb67': "0x1e0000",
     'eb68': "0x1e0000"
 }
@@ -41,27 +62,35 @@ uberstaddr = {
 # U-boot erase size
 ubersz = {
     '0000': "0x10000",
+    'eb20': "0x10000",
+    'eb21': "0x10000",
     'eb23': "0x10000",
     'eb25': "0x10000",
     'eb26': "0x10000",
     'eb27': "0x10000",
+    'eb31': "0x10000",
     'eb36': "0x10000",
     'eb37': "0x10000",
     'eb38': "0x10000",
+    'eb62': "0x10000",
     'eb67': "0x10000",
     'eb68': "0x10000"
 }
 
-#
+# Boot argument
 bootargs = {
     '0000': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb20': "quiet console=ttyS0,115200 mem=496M " + flash_mtdparts_64M,
+    'eb21': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
     'eb23': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb25': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb26': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb27': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb31': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
     'eb36': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb37': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb38': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb62': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
     'eb67': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb68': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M
 }
@@ -69,13 +98,16 @@ bootargs = {
 helperexes = {
     '0000': "helper_BCM5341x",
     'eb20': "helper_BCM5341x",
+    'eb21': "helper_BCM5334x",
     'eb25': "helper_BCM5617x",
     'eb26': "helper_BCM5617x",
     'eb27': "helper_BCM5617x",
     'eb23': "helper_BCM5616x",
+    'eb31': "helper_BCM5334x",
     'eb36': "helper_BCM5616x",
     'eb37': "helper_BCM5616x",
     'eb38': "helper_BCM5616x",
+    'eb62': "helper_BCM5334x",
     'eb67': "helper_BCM5616x",
     'eb68': "helper_BCM5616x"
 }
@@ -92,7 +124,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
         self.USGH2_SERIES = None
-        self.LCM_upgrade_NOT_SUPPORT = {}
+        self.LCM_upgrade_NOT_SUPPORT = ["eb21", "eb31", "eb62"]
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
@@ -125,15 +157,17 @@ class USBCM5616FactoryGeneral(ScriptBase):
     def update_firmware_in_uboot(self):
         """
         use urescue to update firmwre,
-        after flash firmware, DU will be resetting
+        after flash firmware, DUT will be resetting
         """
         if self.USGH2_SERIES is True:
             self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="bootubnt ubntrescue;bootubnt")
         else:
             self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="setenv do_urescue TRUE; urescue -u")
 
-        extext_list = ["TFTPServer started. Wating for tftp connection...",
-                       "Listening for TFTP transfer"]
+        extext_list = [
+            "TFTPServer started. Wating for tftp connection...",
+            "Listening for TFTP transfer"
+        ]
         index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
         if index == self.pexp.TIMEOUT:
             error_critical(msg="Failed to start urescue")
@@ -204,8 +238,20 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_only(150, "Starting kernel")
 
     def set_boot_net(self):
-        self.pexp.expect_action(10, self.bootloader_prompt, "mdk_drv")
-        self.pexp.expect_only(150, "Found MDK device")
+        '''
+            The U-Boot will enable the networking configuration when booting up in
+            the BCM5334x series so that it needn't give an extra mdk_drv command to
+            enable it.
+                eb21: US-16-150W
+                eb31: US-24-250W
+                eb62: US-48-500W
+            On the contrary, the U-Boot has to do mdk_drv for the BCM5616x series for
+            the reason that it doesn't enable the networking configuration as default.
+        '''
+        model = ["eb21", "eb31", "eb62"]
+        if self.board_id not in model:
+            self.pexp.expect_action(10, self.bootloader_prompt, "mdk_drv")
+            self.pexp.expect_only(150, "Found MDK device")
 
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
