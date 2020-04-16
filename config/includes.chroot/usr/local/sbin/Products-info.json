@@ -549,7 +549,7 @@
 
     "UAP6-IW":{
       "INDEX"       : 7,
-      "NAME"        : "UAP6-IW",
+      "NAME"        : "U6-IW",
       "BOARDID"     : "a610",
       "BOMREV"      : "113-00745",
       "DESC"        : "UniFi AP6 InWall",
@@ -562,7 +562,7 @@
 
     "UAP6-FLEX":{
       "INDEX"       : 8,
-      "NAME"        : "UAP6-LR",
+      "NAME"        : "U6-LR",
       "BOARDID"     : "a611",
       "BOMREV"      : "113-00743",
       "DESC"        : "UniFi AP6 FLEX",
@@ -575,7 +575,7 @@
 
     "UAP6-LITE":{
       "INDEX"       : 9,
-      "NAME"        : "UAP6-LITE",
+      "NAME"        : "U6-LITE",
       "BOARDID"     : "a612",
       "BOMREV"      : "113-00773",
       "DESC"        : "UniFi AP6 LITE",
@@ -588,7 +588,7 @@
 
     "UAP6-B":{
       "INDEX"       : 10,
-      "NAME"        : "UAP6-B",
+      "NAME"        : "U6-B",
       "BOARDID"     : "a613",
       "BOMREV"      : "113-00746",
       "DESC"        : "UniFi AP6 FLEX",
@@ -601,7 +601,7 @@
 
     "UAP6-LR":{
       "INDEX"       : 11,
-      "NAME"        : "UAP6-LR",
+      "NAME"        : "U6-LR",
       "BOARDID"     : "a614",
       "BOMREV"      : "113-00742",
       "DESC"        : "UniFi AP6 LR",

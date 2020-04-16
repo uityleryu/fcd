@@ -41,7 +41,7 @@ IMAGE-UAP-INDUSTRIAL= \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     uap-fw/BZ.mt7621.*
 
-IMAGE-UAP6= \
+IMAGE-U6= \
     images/a610* \
     images/a611* \
     images/a612* \
@@ -60,7 +60,7 @@ IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UAP-NANO-IW-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
-IMAGE-UAP+=$(IMAGE-UAP6)
+IMAGE-UAP+=$(IMAGE-U6)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -93,7 +93,7 @@ TOOLS-UAP-INDUSTRIAL+= \
 TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-IWHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-NANO-IW-FLEXHD+=$(TOOLS-CONFIG)
-TOOLS-UAP6+=$(TOOLS-CONFIG)
+TOOLS-U6+=$(TOOLS-CONFIG)
 
 # Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
@@ -111,4 +111,4 @@ $(eval $(call ProductImage,UAP-IWHD,FCD_$(PRD)_UAP-IWHD_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
-$(eval $(call ProductImage,UAP6,FCD_$(PRD)_UAP6_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
