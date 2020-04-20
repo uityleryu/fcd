@@ -93,8 +93,12 @@ IMAGE-USW-Aggregation= \
     usw-fw/US.rtl930x*
 
 IMAGE-US-GEN1= \
+    images/eb10* \
+    images/eb18* \
     images/eb21* \
+    images/eb30* \
     images/eb31* \
+    images/eb60* \
     images/eb62* \
     usw-fw/US.bcm5334x*
 
@@ -111,6 +115,7 @@ IMAGE-USW+=$(IMAGE-USW-XG)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
 IMAGE-USW+=$(IMAGE-USW6-24-POE)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
+IMAGE-USW+=$(IMAGE-US-GEN1)
 
 
 # Model

@@ -23,17 +23,22 @@ dss_key = "dropbear_dss_host_key"
 
 cmd_prefix = "go $ubntaddr"
 
+
 '''
+    eb10: US-8-150W
+    eb18: US-8-60W
     eb20: US-XG
     eb21: US-16-150W
     eb23: US-6-XG-150
     eb25: US-XG-24-550W (hold)
     eb26: US-XG-48-550W (hold)
     eb27: USW-XG-Aggregation (hold)
+    eb30: US-24
     eb31: US-24-250W
     eb36: USW-PRO-24-PoE
     eb37: USW-PRO-24
     eb38: USW6-24-PoE
+    eb60: US-48
     eb62: US-48-500W
     eb67: USW-PRO-48-PoE
     eb68: USW-PRO-48
@@ -42,6 +47,8 @@ cmd_prefix = "go $ubntaddr"
 # U-boot erase start address
 uberstaddr = {
     '0000': "0x1e0000",
+    'eb10': "0xc0000",
+    'eb18': "0xc0000",
     'eb20': "0x1e0000",
     'eb21': "0xc0000",
     'eb23': "0x1e0000",
@@ -60,6 +67,8 @@ uberstaddr = {
 # U-boot erase size
 ubersz = {
     '0000': "0x10000",
+    'eb10': "0x10000",
+    'eb18': "0x10000",
     'eb20': "0x10000",
     'eb21': "0x10000",
     'eb23': "0x10000",
@@ -78,6 +87,8 @@ ubersz = {
 # Boot argument
 bootargs = {
     '0000': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb10': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
+    'eb18': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
     'eb20': "quiet console=ttyS0,115200 mem=496M " + flash_mtdparts_64M,
     'eb21': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + flash_mtdparts_32M,
     'eb23': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
@@ -95,6 +106,8 @@ bootargs = {
 
 helperexes = {
     '0000': "helper_BCM5341x",
+    'eb10': "helper_BCM5334x",
+    'eb18': "helper_BCM5334x",
     'eb20': "helper_BCM5341x",
     'eb21': "helper_BCM5334x",
     'eb23': "helper_BCM5616x",
