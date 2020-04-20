@@ -612,7 +612,7 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-IW":{
+    "U6-IW":{
       "INDEX"       : 7,
       "NAME"        : "U6-IW",
       "BOARDID"     : "a610",
@@ -625,9 +625,9 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-FLEX":{
+    "U6-FLEX":{
       "INDEX"       : 8,
-      "NAME"        : "U6-LR",
+      "NAME"        : "U6-FLEX",
       "BOARDID"     : "a611",
       "BOMREV"      : "113-00743",
       "DESC"        : "UniFi AP6 FLEX",
@@ -638,7 +638,7 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-LITE":{
+    "U6-LITE":{
       "INDEX"       : 9,
       "NAME"        : "U6-LITE",
       "BOARDID"     : "a612",
@@ -651,9 +651,9 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-B":{
+    "U6-Mesh":{
       "INDEX"       : 10,
-      "NAME"        : "U6-B",
+      "NAME"        : "U6-Mesh",
       "BOARDID"     : "a613",
       "BOMREV"      : "113-00746",
       "DESC"        : "UniFi AP6 FLEX",
@@ -664,7 +664,7 @@
       "SW_ID"       : "0601"
     },
 
-    "UAP6-LR":{
+    "U6-LR":{
       "INDEX"       : 11,
       "NAME"        : "U6-LR",
       "BOARDID"     : "a614",
