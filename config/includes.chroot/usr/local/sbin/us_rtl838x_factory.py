@@ -163,6 +163,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
+        if self.board_id == "ed2d":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
         self.CheckNet()
 
     def CheckNet(self):
