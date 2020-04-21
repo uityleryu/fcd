@@ -245,9 +245,9 @@
       "SW_ID"       : "0201"
     },
 
-    "USW6-24-POE":{
+    "U6-S24":{
       "INDEX"       : 11,
-      "NAME"        : "USW6-24-POE",
+      "NAME"        : "U6-S24",
       "BOARDID"     : "eb38",
       "BOMREV"      : "113-03154",
       "DESC"        : "UniFi Switch 6 24 PoE",

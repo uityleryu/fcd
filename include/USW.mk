@@ -82,7 +82,7 @@ IMAGE-USW-MISSION-CRITICAL= \
     usw-fw/unifiswitch-mc-* \
     usw-fw/US.rtl838x.*
 
-IMAGE-USW6-24-POE= \
+IMAGE-U6-S24= \
     images/eb38* \
     usw-fw/unifiswitch6-24poe* \
     usw-fw/US.bcm5616x*
@@ -113,7 +113,7 @@ IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
-IMAGE-USW+=$(IMAGE-USW6-24-POE)
+IMAGE-USW+=$(IMAGE-U6-S24)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-US-GEN1)
 
@@ -181,7 +181,7 @@ TOOLS-USW-XG=$(TOOLS-USW)
 TOOLS-USW-MISSION-CRITICAL+= \
     usw_rtl838x/helper_RTL838x*
 
-TOOLS-USW6-24-POE=$(TOOLS-USW)
+TOOLS-U6-S24=$(TOOLS-USW)
 
 TOOLS-USW-MISSION-CRITICAL+= \
     usw_rtl838x/helper_RTL838x*
@@ -206,4 +206,4 @@ $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USW6-24-POE,FCD_$(PRD)_USW6-24-POE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
