@@ -47,8 +47,10 @@ IMAGE-UDMB= \
 
 IMAGE-UDMLITE= \
     images/ec28* \
-    udm-fw/uImage-LoCo
-
+    udm-fw/uImage-LoCo \
+	udm-fw/UDM.lite.uImage.recovery \
+    udm-fw/UDM.lite.mt7622.v1.7.0-pre+ubnt.2561.49c674c.200330.1520.bin 
+	
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop

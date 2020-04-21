@@ -73,12 +73,12 @@
       "QRCHECK"     : "True"
     },
 
-    "UDM-LOCO":{
+	"UDM-LITE":{
       "INDEX"       : 6,
-      "NAME"        : "UDM-LOCO",
+      "NAME"        : "UDM-LITE",
       "BOARDID"     : "ec28",
       "BOMREV"      : "113-00633",
-      "DESC"        : "UniFi One Dream Machine LOCO",
+      "DESC"        : "UniFi One Dream Machine LITE",
       "FILE"        : "udm_mt7622_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
