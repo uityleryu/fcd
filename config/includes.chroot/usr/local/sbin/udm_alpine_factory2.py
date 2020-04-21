@@ -103,17 +103,17 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'btnum'           : self.btnum
         }
 
-        self.SET_FAKE_EEPROM     = True 
-        self.UPDATE_UBOOT        = True 
-        self.BOOT_RECOVERY_IMAGE = True 
-        self.INIT_RECOVERY_IMAGE = True 
-        self.NEED_DROPBEAR       = True 
-        self.PROVISION_ENABLE    = True 
-        self.DOHELPER_ENABLE     = True 
-        self.REGISTER_ENABLE     = True 
-        self.FWUPDATE_ENABLE     = True 
-        self.DATAVERIFY_ENABLE   = True 
-        self.REBOOT_CHECK_ENABLE = True if self.board_id == "ea15" else False
+        self.SET_FAKE_EEPROM       = True 
+        self.UPDATE_UBOOT          = True 
+        self.BOOT_RECOVERY_IMAGE   = True 
+        self.INIT_RECOVERY_IMAGE   = True 
+        self.NEED_DROPBEAR         = True 
+        self.PROVISION_ENABLE      = True 
+        self.DOHELPER_ENABLE       = True 
+        self.REGISTER_ENABLE       = True 
+        self.FWUPDATE_ENABLE       = True 
+        self.DATAVERIFY_ENABLE     = True 
+        self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea15" else False
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -230,17 +230,12 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
     # The request came from FW developer(Taka/Eric)
     # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
-    def reboot_check(self):
+    def poweroff_check(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=20)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(1, self.linux_prompt, "info", "Connected", retry=30)
-        self.pexp.expect_lnxcmd(180, self.linux_prompt, "reboot", "Restarting system")
-        self.login(self.username, self.password, timeout=180, log_level_emerg=True)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
-        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=20)
-        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
-        self.pexp.expect_lnxcmd(1, self.linux_prompt, "info", "Connected", retry=30)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
     def run(self):
         """
@@ -294,9 +289,9 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.REBOOT_CHECK_ENABLE is True:
+        if self.POWEROFF_CHECK_ENABLE is True:
             msg(85, "Wait sytem running up and reboot...")
-            self.reboot_check()
+            self.poweroff_check()
             msg(90, "Boot successfully ...")
 
         msg(100, "Completing FCD process ...")
