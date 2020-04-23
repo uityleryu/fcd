@@ -144,7 +144,17 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
         self.USGH2_SERIES = None
-        self.LCM_upgrade_NOT_SUPPORT = ["eb21", "eb31", "eb62"]
+        self.LCM_upgrade_NOT_SUPPORT = [
+            "0000",
+            "eb10",
+            "eb18",
+            "eb20",
+            "eb21",
+            "eb30",
+            "eb31",
+            "eb60",
+            "eb62"
+        ]
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
@@ -261,14 +271,24 @@ class USBCM5616FactoryGeneral(ScriptBase):
         '''
             The U-Boot will enable the networking configuration when booting up in
             the BCM5334x series so that it needn't give an extra mdk_drv command to
-            enable it.
+            enable it. Example:
                 eb21: US-16-150W
                 eb31: US-24-250W
                 eb62: US-48-500W
             On the contrary, the U-Boot has to do mdk_drv for the BCM5616x series for
             the reason that it doesn't enable the networking configuration as default.
         '''
-        model = ["eb21", "eb31", "eb62"]
+        model = [
+            "0000",
+            "eb10",
+            "eb18",
+            "eb20",
+            "eb21",
+            "eb30",
+            "eb31",
+            "eb60",
+            "eb62"
+        ]
         if self.board_id not in model:
             self.pexp.expect_action(10, self.bootloader_prompt, "mdk_drv")
             self.pexp.expect_only(150, "Found MDK device")
