@@ -737,9 +737,9 @@ class ScriptBase(object):
             return False
 
         cmd = "tftp -g -r {0} -l {1} {2}".format(remote, local, self.tftp_server)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp, retry=retry)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd,
+                                post_exp=post_exp, valid_chk=True, retry=retry)
 
-        self.chk_lnxcmd_valid()
         time.sleep(2)
         self.is_dutfile_exist(local)
         '''
@@ -777,9 +777,9 @@ class ScriptBase(object):
         time.sleep(2)
 
         cmd = "tftp -p -r {0} -l {1} {2}".format(os.path.basename(remote), local, self.tftp_server)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp, retry=retry)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd,
+                                post_exp=post_exp, valid_chk=True, retry=retry)
 
-        self.chk_lnxcmd_valid()
         '''
             To give a few delays to let the file transfer to the FCD host.
         '''
@@ -862,7 +862,7 @@ class ScriptBase(object):
 
     def chk_lnxcmd_valid(self):
         cmd = "echo \"RV\"=$?"
-        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0")
+        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0", retry=0)
 
     def mac_format_str2comma(self, strmac):
         mac_comma = ':'.join([self.mac[i : i + 2] for i in range(0, len(self.mac), 2)])

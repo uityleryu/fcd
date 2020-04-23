@@ -148,6 +148,8 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set ports " + self.vlanport_idx[self.board_id])
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set apply")
         self.pexp.expect_action(30, self.linux_prompt, "[ $(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up")
+        if self.board_id in self.uap6_series:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0", post_exp="192.168.1.20", retry=6)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.dutip)
         for _ in range(3):
             is_network_alive = self.is_network_alive_in_linux()                                                                                                              
