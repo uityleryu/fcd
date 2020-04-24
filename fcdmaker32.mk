@@ -2,6 +2,7 @@ include include/image-install.mk
 
 # For build environmental variables
 OUTDIR      = $(shell pwd)/output
+OSTRICH_DIR = $(OUTDIR)/ostrich
 APP_DIR     = usr/local/sbin
 EXLIVECD    = $(OUTDIR)/ExtractLivedCD
 EXSQUASHFS  = $(OUTDIR)/ExtractLivedSquashfs

@@ -26,7 +26,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -43,3 +44,9 @@ TOOLS-UNMS-S-LITE+= unms-slite/*
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))

@@ -25,7 +25,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -47,9 +48,7 @@ TOOLS-UVC-G3BATTERY+= \
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_UVC-G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_UVC-G3BATTERY_$(VER)_$(FWVER)))
 
+# Project compressed file for RPi FCD host
 
-
-
-
-
-
+$(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_UVC-G4PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_UVC-G3BATTERY_$(VER)_$(FWVER)))

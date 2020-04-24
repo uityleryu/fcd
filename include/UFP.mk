@@ -22,7 +22,8 @@ TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
-    common/helper_UNIFI_MT7621_release
+    common/helper_UNIFI_MT7621_release \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -36,3 +37,8 @@ TOOLS-UFP-LOCK-R=$(TOOLS-UFP)
 
 $(eval $(call ProductImage,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))

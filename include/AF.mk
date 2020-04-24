@@ -25,7 +25,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/x86-64k-ee \
     common/sshd_config \
-    common/tmux.conf
+    common/tmux.conf \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -45,3 +46,9 @@ TOOLS-AF60-LR+=$(TOOLS-AF60)
 $(eval $(call ProductImage,AF,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,AF,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))

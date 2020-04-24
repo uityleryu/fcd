@@ -29,7 +29,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -58,5 +59,11 @@ TOOLS-AIRMAX+=$(TOOLS-PRISMAP)
 # Project target
 
 $(eval $(call ProductImage,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
-$(eval $(call ProductImage,GBE,FCD_$(PRD)_AIRMAX-GBE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_AIRMAX-PRISMAP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
+$(eval $(call ProductCompress,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))

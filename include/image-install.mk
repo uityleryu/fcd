@@ -31,8 +31,8 @@ image-install-$1: $1-namechk
 	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib
 	cp -rf $(UBNTLIB_DIR)/ubntlib/* $(NEWSQUASHFS)/usr/local/sbin/ubntlib/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
-	sh include/cp2tftp.sh $(IMAGE-$1)
-	sh include/tar2tftp.sh $(TOOLS-$1)
+	bash include/cp2tftp.sh iso $(IMAGE-$1)
+	bash include/tar2tftp.sh iso $(TOOLS-$1)
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
@@ -55,5 +55,41 @@ packiso-$1:
 	cd $(NEWLIVEDCD); \
 	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$2.iso .
 	chmod 777 $(OUTDIR)/$2.iso
+
+endef
+
+
+define ProductCompress
+
+$1-ostrich-local: gitrepo image-ostrich-install-$1
+$1-ostrich-update: image-ostrich-install-$1
+
+image-ostrich-install-$1: $1-namechk
+	@echo " ****************************************************************** "
+	@echo "   FCD ISO NAME          = $2                                              "
+	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "
+	@echo " ****************************************************************** "
+	@echo " >> copy prep scripts to new squashfs "
+	rm -rf $(OSTRICH_DIR)
+	mkdir -p $(OSTRICH_DIR)
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(OSTRICH_DIR)/version.txt
+	sed -i s/FCDVERSION/$2/g $(OSTRICH_DIR)/version.txt
+	# copy all registering scripts
+	#if [ -d $(OSTRICH_DIR)/temp_sbin ]; then
+	    #mkdir -p $(OSTRICH_DIR)/temp_sbin
+		#cp -rf $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/temp_sbin
+		#cp -rf $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/temp_sbin
+		# The following options, just choose one
+		# Option_1
+		#python3 compileall $(OSTRICH_DIR)/temp_sbin
+        # Option_2
+		#python3 compileall $(OSTRICH_DIR)/temp_sbin/script_base.py
+		#python3 compileall $(OSTRICH_DIR)/temp_sbin/ubntlib
+
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/
+	cp -rf $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
+	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
+	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
+	cd $(OUTDIR); tar -cvzf $2.tgz ostrich
 
 endef

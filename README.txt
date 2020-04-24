@@ -150,3 +150,43 @@ Step_1:
     example:
 
         sudo make VER=0.9.1-d9e5388-3 PRD=UDM -f fcdmaker32.mk UDM-update
+
+
+========================================================================================================
+
+* How to pack product files to a tar file
+The purpose of creating this tar file is that we are going to use Raspberry Pi as a FCD host.
+And we will plan to use the FTU to scp command the tar file to the DUT.
+
+This tar file is supposed to be included the following files
+
+- sbin folder: all registration scripts
+    Example:
+        us_bcm5334x_factory.py
+        us_bcm5334x_mfg.py
+        script_base.py
+        ubntlib
+        ... etc
+- tftp folder: all tools, images
+    Example:
+        images folder
+        usw-fw folder
+- version.txt
+
+Those files will be packed and compressed with the file name which will be the same that of the FCD host.
+Example:
+    FCD_USW_USW-LITE_1.2.7_5.11.0.tgz
+
+The command to create the tar file:
+
+Step_1: go to ~/FCD root folder
+Step_2: type command
+
+Example:
+    sudo make VER=1.2.7 FWVER=5.11.0 PRD=USW -f fcdmaker32.mk USW-LITE-ostrich-update
+
+Step_3: in the FTU do the following command
+-scp the FCD_USW_USW-LITE_1.2.7_5.11.0.tgz to raspberry Pi
+scp FCD_USW_USW-LITE_1.2.7_5.11.0.tgz <Raspberry Pi>:~/
+cd ~/
+./guiwei.sh

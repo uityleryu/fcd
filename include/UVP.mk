@@ -22,7 +22,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -40,3 +41,9 @@ TOOLS-UVP-CONF-SPK+= uvp/*
 $(eval $(call ProductImage,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVP-ATA,FCD_$(PRD)_UVP-ATA_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVP-CONF-SPK,FCD_$(PRD)_UVP-CONF-SPK_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVP-ATA,FCD_$(PRD)_UVP-ATA_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVP-CONF-SPK,FCD_$(PRD)_UVP-CONF-SPK_$(VER)_$(FWVER)))

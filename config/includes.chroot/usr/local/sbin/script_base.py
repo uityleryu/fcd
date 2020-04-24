@@ -12,7 +12,7 @@ import argparse
 import json
 import ubntlib
 
-from ubntlib.fcd.common import Tee
+from ubntlib.fcd.common import Tee, Common
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 from ubntlib.fcd.expect_tty import ExpttyProcess
@@ -27,6 +27,7 @@ class ScriptBase(object):
     __contact__ = "fcd@ui.com"
 
     def __init__(self):
+        self.cnapi = Common()
         self.input_args = self._init_parse_inputs()
         self._init_share_var()
         self.fcd = FCDHelper()
@@ -104,7 +105,20 @@ class ScriptBase(object):
         self.fcd_user = "user"
         self.fcd_passw = "live"
         self.fcd_version_info_file = "version.txt"
-        self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
+
+        cmd = "uname -a"
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("Get linux information failed!!")
+        else:
+            log_debug("Get linux information successfully")
+            match = re.findall("armv7l", sto)
+            if match:
+                self.fcd_user = "pi"
+                self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, self.fcd_version_info_file)
+            else:
+                self.fcd_user = "user"
+                self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
         self.tftpdir = "/tftpboot"
@@ -115,7 +129,18 @@ class ScriptBase(object):
         self.fwdir = os.path.join(self.tftpdir, self.image)
         self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
         self.fcd_commondir = os.path.join(self.tftpdir, self.tools, "common")
-        self.eepmexe = "x86-64k-ee"
+
+        cmd = "uname -a"
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("Get linux information failed!!")
+        else:
+            log_debug("Get linux information successfully")
+            match = re.findall("armv7l", sto)
+            if match:
+                self.eepmexe = "aarch64-rpi4-64k-ee"
+            else:
+                self.eepmexe = "x86-64k-ee"
 
         '''
            Will be defined by the specifi model script
@@ -392,7 +417,18 @@ class ScriptBase(object):
             ]
             print("WARNING: should plan to add FCD_ID, SW_ID ... won't block this time")
         else:
-            clientbin = "/usr/local/sbin/client_x86_release_20190507"
+            cmd = "uname -a"
+            [sto, rtc] = self.cnapi.xcmd(cmd)
+            if int(rtc) > 0:
+                error_critical("Get linux information failed!!")
+            else:
+                log_debug("Get linux information successfully")
+                match = re.findall("armv7l", sto)
+                if match:
+                    clientbin = "/usr/local/sbin/client_rpi4_release"
+                else:
+                    clientbin = "/usr/local/sbin/client_x86_release_20190507"
+
             regparam = [
                 "-h devreg-prod.ubnt.com",
                 "-k " + self.pass_phrase,

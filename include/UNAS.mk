@@ -25,7 +25,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
-    common/x86-64k-ee
+    common/x86-64k-ee \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -45,3 +46,9 @@ TOOLS-UNVR-BT+=$(TOOLS-UNVR)
 $(eval $(call ProductImage,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))

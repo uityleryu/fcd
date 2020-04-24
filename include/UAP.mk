@@ -84,7 +84,8 @@ TOOLS-CONFIG= \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release \
-    common/helper_UAP6_MT7621_release
+    common/helper_UAP6_MT7621_release \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -119,3 +120,13 @@ $(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$(VE
 $(eval $(call ProductImage,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductImage,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,UAP,FCD_$(PRD)_UAP-ALL_$(VER)))
+$(eval $(call ProductCompress,UAP-FLEXHD,FCD_$(PRD)_UAP-FLEXHD_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UAP-IWHD,FCD_$(PRD)_UAP-IWHD_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
+$(eval $(call ProductCompress,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))

@@ -33,7 +33,8 @@ DRVREG_PRDSRL=$(PRD_MODEL)
 
 TOOLS-CONFIG= \
     common/sshd_config \
-    common/tmux.conf
+    common/tmux.conf \
+    common/aarch64-rpi4-64k-ee
 
 # Project specific tools
 
@@ -47,8 +48,17 @@ TOOLS-AFI-ALN-P-EU=$(TOOLS-AFI-ALN)
 
 
 # Project target
+
 $(eval $(call ProductImage,AFI-ALN,FCD_$(PRD)_ALN_$(VER)))
 $(eval $(call ProductImage,AFI-ALN-R,FCD_$(PRD)_ALN-R_$(VER)))
 $(eval $(call ProductImage,AFI-ALN-P,FCD_$(PRD)_ALN-P_$(VER)))
 $(eval $(call ProductImage,AFI-ALN-R,FCD_$(PRD)_ALN-R-EU_$(VER)))
 $(eval $(call ProductImage,AFI-ALN-P,FCD_$(PRD)_ALN-P-EU_$(VER)))
+
+# Project compressed file for RPi FCD host
+
+$(eval $(call ProductCompress,AFI-ALN,FCD_$(PRD)_ALN_$(VER)))
+$(eval $(call ProductCompress,AFI-ALN-R,FCD_$(PRD)_ALN-R_$(VER)))
+$(eval $(call ProductCompress,AFI-ALN-P,FCD_$(PRD)_ALN-P_$(VER)))
+$(eval $(call ProductCompress,AFI-ALN-R,FCD_$(PRD)_ALN-R-EU_$(VER)))
+$(eval $(call ProductCompress,AFI-ALN-P,FCD_$(PRD)_ALN-P-EU_$(VER)))
