@@ -84,7 +84,7 @@ IMAGE-USW-MISSION-CRITICAL= \
 
 IMAGE-U6-S24= \
     images/eb38* \
-    usw-fw/unifiswitch6-24poe* \
+    usw-fw/unifiswitch-usw6-24-poe* \
     usw-fw/US.bcm5616x*
 
 IMAGE-USW-Aggregation= \
