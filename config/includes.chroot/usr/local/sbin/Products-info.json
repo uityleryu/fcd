@@ -118,7 +118,7 @@
     "US-8-60W":{
       "INDEX"       : 2,
       "NAME"        : "US-8-60W",
-      "BOARDID"     : "eb10",
+      "BOARDID"     : "eb18",
       "BOMREV"      : "113-02341",
       "DESC"        : "UniFi Switch 8-port 60W",
       "FILE"        : "us_bcm5616_factory.py",

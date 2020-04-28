@@ -100,7 +100,10 @@ IMAGE-US-GEN1= \
     images/eb31* \
     images/eb60* \
     images/eb62* \
-    usw-fw/US.bcm5334x*
+    usw-fw/us-gen1-fw.bin \
+    usw-fw/us-gen1-mfg.bin \
+    usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot.bin \
+    usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot-mfg.bin
 
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
