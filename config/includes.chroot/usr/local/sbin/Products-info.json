@@ -835,12 +835,12 @@
       "SW_ID"       : "0801"
     },
 
-    "UNVR-8":{
+    "UNVR-BT":{
       "INDEX"       : 1,
-      "NAME"        : "UNVR-8",
-      "BOARDID"     : "ea18",
-      "BOMREV"      : "113-02904",
-      "DESC"        : "UniFi NVR 8-Bay",
+      "NAME"        : "UNVR-BT",
+      "BOARDID"     : "ea1a",
+      "BOMREV"      : "113-03192",
+      "DESC"        : "UniFi NVR with BT",
       "FILE"        : "unas_alpine_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

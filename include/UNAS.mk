@@ -5,12 +5,12 @@ IMAGE-UNVR4= \
     images/ea16* \
     unas/*
 
-IMAGE-UNVR8= \
-    images/ea18* \
+IMAGE-UNVR-BT= \
+    images/ea1a* \
     unas/*
 
 IMAGE-UNVR+=$(IMAGE-UNVR4)
-IMAGE-UNVR+=$(IMAGE-UNVR8)
+IMAGE-UNVR+=$(IMAGE-UNVR-BT)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -38,10 +38,10 @@ TOOLS-UNVR+= \
     unas/enp0s2.network
 
 TOOLS-UNVR4+=$(TOOLS-UNVR)
-TOOLS-UNVR8+=$(TOOLS-UNVR)
+TOOLS-UNVR-BT+=$(TOOLS-UNVR)
 
 # Project target
 
 $(eval $(call ProductImage,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNVR8,FCD_$(PRD)_UNVR8_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))

@@ -49,24 +49,24 @@ class UNASALPINEFactory(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ea16': "2",
-            'ea18': "2"
+            'ea1a': "2"
         }
 
         # number of WiFi
         self.wifinum = {
             'ea16': "0",
-            'ea18': "0"
+            'ea1a': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea16': "0",
-            'ea18': "0"
+            'ea1a': "1"
         }
 
         self.netif = {
             'ea16': "ifconfig enp0s1 ",
-            'ea18': "ifconfig enp0s1 "
+            'ea1a': "ifconfig enp0s1 "
         }
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -280,8 +280,8 @@ class UNASALPINEFactory(ScriptBase):
 
         if PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
-            self.copy_and_unzipping_tools_to_dut(timeout=30, post_exp=False)
-            self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
+            self.copy_and_unzipping_tools_to_dut(timeout=30)
+            self.data_provision_64k(netmeta=self.devnetmeta)
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
@@ -291,7 +291,7 @@ class UNASALPINEFactory(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(60, "Finish doing registration ...")
-            self.check_devreg_data(dut_tmp_subdir="unas", post_en=False)
+            self.check_devreg_data(dut_tmp_subdir="unas")
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
         if FWUPDATE_ENABLE is True:
