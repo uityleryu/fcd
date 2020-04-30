@@ -8,8 +8,8 @@ IMAGE-UNMS-R-PRO= \
 
 IMAGE-UNMS-S-LITE= \
     images/eed0* \
-    unms-fw/u-boot_unms_s_lite.bin \
-    unms-fw/vmlinux_diag.bix \
+    unms-fw/diag_unms_s_lite_0.0.1.bix \
+    unms-fw/u-boot_unms_s_lite_0.0.1.bin \
 
 IMAGE-UNMS+=$(IMAGE-UNMS-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)

@@ -14,6 +14,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
+SECCHK_EN = True
 
 
 class UNMSRTL838XFactoryGeneral(ScriptBase):
@@ -164,7 +165,11 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             ============ Registration End ============
         '''
 
-        msg(100, "Completing firmware upgrading ...")
+        if SECCHK_EN is True:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot")
+            self.pexp.expect_lnxcmd(30, "UBNT_Diag", "sectest\r", "security test pass")
+
+        msg(100, "Completing ...")
         self.close_fcd()
 
 def main():
