@@ -232,7 +232,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
     def poweroff_check(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
-        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=20)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=60)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(1, self.linux_prompt, "info", "Connected", retry=30)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
