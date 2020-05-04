@@ -1,32 +1,39 @@
 # Images
+#
 
 IMAGE-UAP-FLEXHD= \
     images/ec26* \
+    uap-fw/uap-nanohd-fcd.bin \
     uap-fw/unifiap-mt7621* \
-    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP-IWHD= \
     images/ec22* \
+    uap-fw/uap-nanohd-fcd.bin \
     uap-fw/unifiap-mt7621* \
-    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP-NANO-IW-FLEXHD= \
     images/ec20* \
     images/ec22* \
     images/ec26* \
-    uap-fw/uap-nanohd-fw.bin \
+    uap-fw/uap-nanohd-fcd.bin \
+	uap-fw/uap-nanohd-fw.bin \
     uap-fw/uap-iwhd-fw.bin \
     uap-fw/uap-flexhd-fw.bin \
     uap-fw/unifiap-mt7621* \
-    uap-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
+    uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UBB= \
