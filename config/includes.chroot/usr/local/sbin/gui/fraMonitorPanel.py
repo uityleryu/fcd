@@ -17,6 +17,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject
 from ubntlib.fcd.common import Common
 from gui.dlgBarcodeinput import dlgBarcodeinput
 from threading import Thread
+import datetime,tarfile
 
 '''
     Prefix expression
@@ -41,12 +42,11 @@ log = logging.getLogger('uigui')
 
 
 class fraMonitorPanel(Gtk.Frame):
-    def __init__(self, slotid, frametitle, winFcdFactory_obj):
+    def __init__(self, slotid, frametitle):
         self.slotid = slotid
         Gtk.Frame.__init__(self, label=frametitle)
 
         self.frawin = Gtk.Window()
-        self.winFcdFactory_obj = winFcdFactory_obj
 
         self.xcmd = Common().xcmd
         self.pcmd = Common().pcmd
@@ -484,14 +484,11 @@ class fraMonitorPanel(Gtk.Frame):
         if os.path.isfile(sfile):
             shutil.copy2(sfile, tfile)
             time.sleep(1)
-            #os.remove(sfile)
         else:
             rtmsg = "{0}: can't find the source file".format(__FUNC)
             log.info(rtmsg)
 
-        if self.winFcdFactory_obj :
-            if self.winFcdFactory_obj.cbtnuploadlog.get_active() is True:
-                self.upload_prepare( self.starttime, self.slotid, CONST.macaddr, CONST.active_bomrev, testresult)
+        self.upload_prepare(self.starttime, self.slotid, CONST.macaddr, CONST.active_bomrev, testresult)
 
         return False
 
@@ -535,15 +532,11 @@ class fraMonitorPanel(Gtk.Frame):
                 shutil.copy2(ori_file, copy_file)
                 log.info("\n[Collect UploadLog]\n From {}\n copy to {}\n".format(ori_file, copy_file))
                 time.sleep(1)
-                self._appendlog("\n[Collect UploadLog]\n From {}\n copy to {}\n".format(ori_file, copy_file))
-            else:
-                self._appendlog("\n[Collect UploadLog]\n {0}: can't find the source file".format(ori_file))
 
         self.uploadlog(uploadfolder=upload_dut_folder, mac=mac, bom=bom)
+        self.uploadlog_to_mike(uploadfolder=upload_dut_folder, mac=mac, bom=bom , upload_dut_logpath=upload_dut_logpath)
 
     def uploadlog(self,uploadfolder,mac,bom):
-
-        # Start Upload
         """
             command parameter description for trigger /api/v1/uploadlog WebAPI in Cloud
             command: python3
@@ -562,14 +555,62 @@ class fraMonitorPanel(Gtk.Frame):
         ]
         execcmd = ' '.join(cmd)
         log.info(execcmd)
-        self._appendlog('\n[Start UploadLog Command]\n{}\n'.format(execcmd))
 
         try :
             uploadproc = subprocess.check_output(execcmd, shell=True)
-            self._appendlog('\n{}\n[Upload Success]'.format(uploadproc.decode('utf-8')))
+            self._appendlog('\n[Uploadlog Success-logupload_client]\n')
 
         except subprocess.CalledProcessError as e:
-            self._appendlog('\n{}\n{}\n[Upload Fail]'.format(e.output.decode('utf-8') , e.returncode) )
+            self._appendlog('\n{}\n{}\n[Uploadlog Fail-logupload_client]\n'.format(e.output.decode('utf-8') , e.returncode) )
+
+    def uploadlog_to_mike(self,uploadfolder,mac,bom,upload_dut_logpath):
+        """
+            Mike Taylor's uploadlog client. If any error , give up uploading
+        """
+        try:
+            stage = 'FCD'
+            timestampstr = '%Y-%m-%d_%H_%M_%S_%f'
+            tpe_tz = datetime.timezone(datetime.timedelta(hours=8))
+            start_time = datetime.datetime.now(tpe_tz)
+            start_timestr = start_time.strftime(timestampstr)
+            uploadpath = os.path.join(uploadfolder, '{}_{}{}'.format(start_timestr, mac, ".tar.gz"))
+            with tarfile.open(uploadpath, mode="w:gz") as tf:
+                if os.path.isdir(upload_dut_logpath):
+                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac)
+                    tf.add(upload_dut_logpath, tar_dir)
+                elif os.path.isfile(upload_dut_logpath):
+                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac, os.path.basename(upload_dut_logpath))
+                    tf.add(upload_dut_logpath, tar_dir)
+
+            clientbin = "/usr/local/sbin/upload_x86_release"
+            regparam = [
+                "-h stage.udrs.io",
+                "--input field=name,format=binary,value={}".format(os.path.basename(uploadpath)),
+                "--input field=content,format=binary,pathname={}".format(uploadpath),
+                "--input field=type_id,format=hex,value=00000001",
+                "--output field=result",
+                "--output field=upload_id",
+                "--output field=registration_status_id",
+                "--output field=registration_status_msg",
+                "--output field=error_message",
+                "-k " + CONST.active_passphrase,
+                "-x " + os.path.join(CONST.keydir, "ca.pem"),
+                "-y " + os.path.join(CONST.keydir, "key.pem"),
+                "-z " + os.path.join(CONST.keydir, "crt.pem")
+            ]
+            regparam = ' '.join(regparam)
+            execcmd = "sudo {0} {1}".format(clientbin, regparam)
+            log.info(execcmd)
+            self._appendlog('\n[Start upload_x86_client Command]\n{}\n'.format(execcmd))
+
+            uploadproc = subprocess.check_output(execcmd, shell=True)
+            self._appendlog('\n{}\n[Uploadlog Success-upload_x86_release]'.format(uploadproc.decode('utf-8')))
+
+        except subprocess.CalledProcessError as e:
+            self._appendlog('\n{}\n{}\n[Uploadlog Fail-upload_x86_release]'.format(e.output.decode('utf-8') , e.returncode) )
+
+        except Exception as e:
+            self._appendlog('\n{}\n{}\n[Uploadlog Fail-upload_x86_release]'.format(e.output.decode('utf-8') , e.returncode) )
 
 
     def _update_progress(self):
