@@ -191,15 +191,9 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt) 
 
     def fwupdate(self):
-        sstr = [
-            "tftp",
-            "-g",
-            "-r images/" + self.board_id + "-fw.bin",
-            "-l " + self.dut_tmpdir + "/upgrade.bin",
-            self.tftp_server
-        ]
-        sstr = ' '.join(sstr)
-        self.pexp.expect_lnxcmd(180, self.linux_prompt, sstr, self.linux_prompt)
+        self.scp_get(dut_user="root", dut_pass=self.password, dut_ip=self.dutip, 
+                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
+                     dst_file=self.dut_tmpdir + "/upgrade.bin")
         msg(60, "Succeeding in downloading the upgrade tar file ...")
 
         log_debug("Starting to do fwupdate ... ")
@@ -232,9 +226,9 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
     def poweroff_check(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
-        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt, retry=60)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt,retry=20)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
-        self.pexp.expect_lnxcmd(1, self.linux_prompt, "info", "Connected", retry=30)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Connected", retry=40)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
     def run(self):
@@ -290,7 +284,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             msg(80, "Succeeding in checking the devreg information ...")
 
         if self.POWEROFF_CHECK_ENABLE is True:
-            msg(85, "Wait sytem running up and reboot...")
+            msg(85, "Wait system running up and reboot...")
             self.poweroff_check()
             msg(90, "Boot successfully ...")
 

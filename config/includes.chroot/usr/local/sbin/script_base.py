@@ -22,7 +22,7 @@ from threading import Thread
 from uuid import getnode as get_mac
 
 class ScriptBase(object):
-    __version__ = "1.0.10"
+    __version__ = "1.0.11"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -96,12 +96,13 @@ class ScriptBase(object):
         self.linux_prompt = "#"
         self.cmd_prefix = r"go $ubntaddr "
 
-        # DU log-in info
+        # DUT log-in info
         self.user = "ubnt"
         self.password = "ubnt"
 
         # fcd related
         self.fcd_user = "user"
+        self.fcd_passw = "live"
         self.fcd_version_info_file = "version.txt"
         self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
@@ -849,6 +850,32 @@ class ScriptBase(object):
 
         if retry == 0:
             error_critical("Failed to receive {} from DUT".format(file))
+
+    '''
+        DUT view point
+        To get the file from the host by scp command
+            dut_user: DUT username
+            dut_pass: DUT password
+            dut_ip  : DUT IP address
+            src_file: Source filename. It has to be absolutely path
+            dst_file: Destination filename. It has to be absolutely path
+    '''
+    def scp_get(self, dut_user, dut_pass, dut_ip, src_file, dst_file):
+        cmd = [
+            'sshpass -p ' + dut_pass,
+            'scp',     
+            '-o StrictHostKeyChecking=no',
+            '-o UserKnownHostsFile=/dev/null',
+            src_file,
+            dut_user + "@" + dut_ip + ":" + dst_file
+        ] 
+        cmdj = ' '.join(cmd)
+        log_debug('Exec "{}"'.format(cmdj))
+        [stout, rv] = self.fcd.common.xcmd(cmdj)
+        if int(rv) != 0:
+            error_critical('Exec "{}" failed'.format(cmdj))
+        else:
+            log_debug('scp successfully')
 
     def stop_http_server(self):
         self.http_srv.shutdown()
