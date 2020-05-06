@@ -584,7 +584,7 @@ class fraMonitorPanel(Gtk.Frame):
 
             clientbin = "/usr/local/sbin/upload_x86_release"
             regparam = [
-                "-h stage.udrs.io",
+                "-h prod.udrs.io",
                 "--input field=name,format=binary,value={}".format(os.path.basename(uploadpath)),
                 "--input field=content,format=binary,pathname={}".format(uploadpath),
                 "--input field=type_id,format=hex,value=00000001",
