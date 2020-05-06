@@ -51,14 +51,14 @@ class USUDCALPINEFactoryGeneral(ScriptBase):
         # LCM FW
         self.lcmfwver = {
             'f060': "v4.1.0-0-ge3e3c7d",
-            'f062': "v4.0.8-0-ga1015ad",
+            'f062': "v4.1.0-0-ge3e3c7d",
             'f063': "v4.0.8-0-ga1015ad"
         }
 
         # FW image
         self.fwimage = {
             'f060': "UDC.alpinev2.v4.1.44.f3fcf1b.200414.1926",
-            'f062': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925",
+            'f062': "UDC.alpinev2.v4.1.44.f3fcf1b.200414.1926",
             'f063': "UDC.alpinev2.v4.1.43.cf99e68.200313.0925"
         }
 

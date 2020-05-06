@@ -60,7 +60,12 @@ IMAGE-USW-LEAF= \
 
 IMAGE-USW-SPINE= \
     images/f062* \
-    usw-fw/usw-spine* \
+    usw-fw/usw-leaf* \
+    usw-fw/UDC*
+
+IMAGE-USW-LEAF-PRO= \
+    images/f063* \
+    usw-fw/usw-leaf* \
     usw-fw/UDC*
 
 IMAGE-USW-FLEX-MINI= \
@@ -120,7 +125,6 @@ IMAGE-USW+=$(IMAGE-U6-S24)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-US-GEN1)
 
-
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -161,6 +165,10 @@ TOOLS-USW-LEAF+= \
 TOOLS-USW-SPINE=$(TOOLS-USW)
 # the tools for the USW-SPINE are almost identical to the USW-LEAF
 TOOLS-USW-SPINE+=$(TOOLS-USW-LEAF)
+
+TOOLS-USW-LEAF-PRO=$(TOOLS-USW)
+# the tools for the USW-SPINE are almost identical to the USW-LEAF
+TOOLS-USW-LEAF-PRO+=$(TOOLS-USW-LEAF)
 
 TOOLS-USW-6XG=$(TOOLS-USW)
 TOOLS-USW-PRO=$(TOOLS-USW)
@@ -205,6 +213,7 @@ $(eval $(call ProductImage,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-LEAF-PRO,FCD_$(PRD)_USW-LEAF-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
