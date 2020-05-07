@@ -51,6 +51,18 @@ ubersz = {
     'eb68': "0x10000"
 }
 
+# Shmoo data address
+shmooaddr = {
+    '0000': "0x1f0000",
+    'eb10': "0x1f0000",
+    'eb18': "0x1f0000",
+    'eb20': "0x1f0000",
+    'eb21': "0x1f0000",
+    'eb31': "0x1f0000",
+    'eb60': "0x1f0000",
+    'eb62': "0x1f0000"
+}
+
 #
 bootargs = {
     '0000': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
@@ -109,28 +121,12 @@ class USBCM5616_MFG(ScriptBase):
         self.pexp.expect_action(timeout, "", "")
         log_debug("Stopped u-boot")
 
-    def is_network_alive_in_uboot(self, retry=3):
-        is_alive = False
-        for _ in range(retry):
-            time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
-            extext_list = ["host " + self.tftp_server + " is alive"]
-            index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
-            if index == 0:
-                is_alive = True
-                break
-            elif index == self.pexp.TIMEOUT:
-                is_alive = False
-        return is_alive
-
-    def check_net(self, retry=10):
-        for _ in range(retry):
-            is_network_alive = self.is_network_alive_in_linux()
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
+    def ub_clean_shmoo(self):
+        log_debug("Cleaning the shmoo calibration data ... ")
+        cmd = "sf probe; sf erase {0} 0x10000".format(shmooaddr)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        time.sleep(0.5)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "")
 
     def check_USGH2(self):
         # bootubnt is only For USGH2 series. ex:usw-xg
@@ -317,7 +313,7 @@ class USBCM5616_MFG(ScriptBase):
             self.login()
             self.pexp.expect_action(10, "", "")
 
-            self.check_net()
+            self.is_network_alive_in_linux()
             msg(30, "Network is good. Starting update firmware")
 
             self.update_firmware_in_kernel()
@@ -340,15 +336,16 @@ class USBCM5616_MFG(ScriptBase):
         msg(50, "Cleaned Env in uboot ...")
 
         self.set_data_in_uboot()
-
-        if self.is_network_alive_in_uboot() is False:
-            error_critical("Network in uboot is not working")
+        self.is_network_alive_in_uboot()
 
         log_debug("Starting upgrade firmware by urescue")
         self.update_firmware_in_uboot()
         msg(no=80, out="Firmware update complete.")
 
         self.login()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+        self.stop_uboot()
+        self.ub_clean_shmoo()
         msg(no=100, out="Back to T1 completed.")
         self.close_fcd()
 

@@ -177,20 +177,6 @@ class USBCM5616FactoryGeneral(ScriptBase):
 
         self.pexp.expect_only(timeout=150, exptxt="Starting kernel")
 
-    def is_network_alive_in_uboot(self, retry=3):
-        is_alive = False
-        for _ in range(retry):
-            time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
-            extext_list = ["host " + self.tftp_server + " is alive"]
-            index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
-            if index == 0:
-                is_alive = True
-                break
-            elif index == self.pexp.TIMEOUT:
-                is_alive = False
-        return is_alive
-
     def turn_on_console(self):
         cmd = [
             "setenv",
@@ -209,9 +195,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
 
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-
-        if self.is_network_alive_in_uboot() is False:
-            error_critical("Network in uboot is not working")
+        self.is_network_alive_in_uboot()
 
     def spi_clean_in_uboot(self):
         """

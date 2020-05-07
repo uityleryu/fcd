@@ -30,90 +30,68 @@ class USFLEXFactory(ScriptBase):
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
         self.wait_LCM_upgrade_en = {'ed11'}
-        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26',
-                                 'a610', 'a611', 'a612', 'a613', 'a614'}
-        self.uap6_series = {'a610', 'a611', 'a612', 'a613', 'a614'}
-        self.helperexe = "helper_UAP6_MT7621_release" if self.board_id in self.uap6_series else self.helperexe
+        self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
 
         # number of mac
-        self.macnum = {'ed10': "3",
-                       'ec20': "1",
-                       'ec22': "1",
-                       'ec25': "1",
-                       'ec26': "1",
-                       'ec2a': "1",
-                       'ed11': "2",
-                       'a610': "1",
-                       'a611': "1",
-                       'a612': "1",
-                       'a613': "1",
-                       'a614': "1"}
+        self.macnum = {
+            'ed10': "3",
+            'ec20': "1",
+            'ec22': "1",
+            'ec25': "1",
+            'ec26': "1",
+            'ec2a': "1",
+            'ed11': "2"
+        }
         # number of WiFi
-        self.wifinum = {'ed10': "0",
-                        'ec20': "2",
-                        'ec22': "2",
-                        'ec25': "2",
-                        'ec26': "2",
-                        'ec2a': "2",
-                        'ed11': "0",
-                        'a610': "2",
-                        'a611': "2",
-                        'a611': "2",
-                        'a612': "2",
-                        'a613': "2",
-                        'a614': "2"}
+        self.wifinum = {
+            'ed10': "0",
+            'ec20': "2",
+            'ec22': "2",
+            'ec25': "2",
+            'ec26': "2",
+            'ec2a': "2",
+            'ed11': "0"
+        }
         # number of Bluetooth
-        self.btnum = {'ed10': "0",
-                      'ec20': "1",
-                      'ec22': "1",
-                      'ec25': "1",
-                      'ec26': "1",
-                      'ec2a': "0",
-                      'ed11': "0",
-                      'a610': "1",
-                      'a611': "1",
-                      'a612': "1",
-                      'a613': "1",
-                      'a614': "1"}
+        self.btnum = {
+            'ed10': "0",
+            'ec20': "1",
+            'ec22': "1",
+            'ec25': "1",
+            'ec26': "1",
+            'ec2a': "0",
+            'ed11': "0"
+        }
         # vlan port mapping
-        self.vlanport_idx = {'ed10': "'6 4'",
-                             'ec20': "'6 0'",
-                             'ec22': "'6 0'",
-                             'ec25': "'6 0'",
-                             'ec26': "'6 0'",
-                             'ec2a': "'6 0'",
-                             'ed11': "'6 0'",
-                             'a610': "'6 0'",
-                             'a611': "'6 0'",
-                             'a612': "'6 0'",
-                             'a613': "'6 0'",
-                             'a614': "'6 0'"}
+        self.vlanport_idx = {
+            'ed10': "'6 4'",
+            'ec20': "'6 0'",
+            'ec22': "'6 0'",
+            'ec25': "'6 0'",
+            'ec26': "'6 0'",
+            'ec2a': "'6 0'",
+            'ed11': "'6 0'"
+        }
         # flash size map
-        self.flash_size = {'ed10': "33554432",
-                           'ec20': "33554432",
-                           'ec22': "33554432",
-                           'ec25': "33554432",
-                           'ec26': "33554432",
-                           'ec2a': "33554432",
-                           'ed11': "16777216",
-                           'a610': "33554432",
-                           'a611': "33554432",
-                           'a612': "33554432",
-                           'a613': "33554432",
-                           'a614': "33554432"}
+        self.flash_size = {
+            'ed10': "33554432",
+            'ec20': "33554432",
+            'ec22': "33554432",
+            'ec25': "33554432",
+            'ec26': "33554432",
+            'ec2a': "33554432",
+            'ed11': "16777216"
+        }
         # firmware image
-        self.fwimg = {'ed10': self.board_id + "-diag.bin",
-                      'ec20': self.board_id + ".bin",
-                      'ec22': self.board_id + ".bin",
-                      'ec25': self.board_id + ".bin",
-                      'ec26': self.board_id + ".bin",
-                      'ec2a': self.board_id + ".bin",
-                      'ed11': self.board_id + "-diag.bin",
-                      'a610': self.board_id + ".bin",
-                      'a611': self.board_id + ".bin",
-                      'a612': self.board_id + ".bin",
-                      'a613': self.board_id + ".bin",
-                      'a614': self.board_id + ".bin"}
+        self.fwimg = {
+            'ed10': self.board_id + "-diag.bin",
+            'ec20': self.board_id + ".bin",
+            'ec22': self.board_id + ".bin",
+            'ec25': self.board_id + ".bin",
+            'ec26': self.board_id + ".bin",
+            'ec2a': self.board_id + ".bin",
+            'ed11': self.board_id + "-diag.bin"
+        }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -137,7 +115,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "tftpboot 84000000 "+"images/"+Img)
         self.pexp.expect_only(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size))
         self.pexp.expect_action(10, self.bootloader_prompt, "bootm")
-        self.login_kernel()
+        self.login(timeout=120, press_enter=True)
 
     def init_recovery_image(self):
         self.pexp.expect_action(30, self.linux_prompt, "dmesg -n 1")
@@ -148,25 +126,8 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set ports " + self.vlanport_idx[self.board_id])
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set apply")
         self.pexp.expect_action(30, self.linux_prompt, "[ $(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up")
-        if self.board_id in self.uap6_series:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0", post_exp="192.168.1.20", retry=6)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.dutip)
-        for _ in range(3):
-            is_network_alive = self.is_network_alive_in_linux()                                                                                                              
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
-
-    def login_kernel(self):
-        rt = self.pexp.expect_action(120, "Please press Enter to activate this console","")
-        if rt != 0:
-            error_critical("Failed to boot manufacturing kernel")
-        os.system("sleep 5")
-        self.pexp.expect_action(30, "", "")
-        self.pexp.expect_action(30, "UBNT login: ", "ubnt")
-        self.pexp.expect_action(30, "Password: ", "ubnt")
+        self.is_network_alive_in_linux()
 
     def SetBootNet(self):
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ethaddr " + self.premac)
@@ -182,20 +143,6 @@ class USFLEXFactory(ScriptBase):
             cnt = cnt + 1
         return 0 if cnt < MaxCnt else -1
 
-    def is_network_alive_in_uboot(self, retry=1):
-        is_alive = False
-        for _ in range(retry):
-            time.sleep(3)
-            self.pexp.expect_action(timeout=10, exptxt="", action="ping " + self.tftp_server)
-            extext_list = ["host " + self.tftp_server + " is alive"]
-            index = self.pexp.expect_get_index(timeout=30, exptxt=extext_list)
-            if index == 0:
-                is_alive = True
-                break
-            elif index == self.pexp.TIMEOUT:
-                is_alive = False
-        return is_alive
-
     def CheckRadioStat(self):
         if self.board_id in self.radio_check:
             log_debug('Checking radio calibration status...')
@@ -207,7 +154,6 @@ class USFLEXFactory(ScriptBase):
             cmd = ' '.join(cmd)
 
             ret = self.pexp.expect_get_output(cmd, self.bootloader_prompt)
-
             if checkrst in ret:
                 log_debug('Radio was calibrated')
             else:
@@ -252,9 +198,7 @@ class USFLEXFactory(ScriptBase):
                 retry -= 1
 
         self.SetBootNet()
-
-        if self.is_network_alive_in_uboot(retry=3) is False:
-            error_critical("Failed to ping tftp server in u-boot")
+        self.is_network_alive_in_uboot()
 
     def fwupdate(self):
         log_debug("Change to product firware...")
@@ -301,7 +245,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_only(30, r'Storing Active.+\[%100\]')
 
     def check_info(self):
-        self.login_kernel()
+        self.login(timeout=120, press_enter=True)
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
         self.pexp.expect_only(30, "systemid="+self.board_id)

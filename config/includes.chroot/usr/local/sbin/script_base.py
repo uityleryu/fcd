@@ -22,7 +22,7 @@ from threading import Thread
 from uuid import getnode as get_mac
 
 class ScriptBase(object):
-    __version__ = "1.0.11"
+    __version__ = "1.0.12"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -290,8 +290,9 @@ class ScriptBase(object):
     def is_dutfile_exist(self, filename):
         """check if file exist on dut by shell script"""
         # ls "<filename>"; echo "RV="$?
-        cmd = "ls {0}; echo \"RV\"=$?".format(filename)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp="RV=0")
+        cmd = "ls {0}".format(filename)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
         return True
 
     def erase_eefiles(self):
@@ -487,18 +488,15 @@ class ScriptBase(object):
 
         log_debug("Change file permission - {0} ...".format(eewrite))
         cmd = "chmod 777 {0}".format(eewrite_dut_path)
-        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt, valid_chk=True)
 
         log_debug("Starting to write signed info to SPI flash ...")
         cmd = "dd if={0} of={1} bs=1k count=64".format(eewrite_dut_path, self.devregpart)
-        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt, valid_chk=True)
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
-        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd, post_exp=post_txt, valid_chk=True)
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
 
@@ -535,38 +533,57 @@ class ScriptBase(object):
         self.tftp_get(remote=source, local=target, timeout=timeout, post_en=post_exp)
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt, valid_chk=True)
 
         src = os.path.join(self.dut_tmpdir, "*")
         cmd = "chmod -R 777 {0}".format(src)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt, valid_chk=True)
+
+    def set_ub_net(self, premac=None, dutaddr=None, srvaddr=None):
+        if premac is not None:
+            cmd = "setenv ethaddr {0}".format(premac)
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        if dutaddr is None:
+            dutaddr = self.dutip
+        cmd = "setenv ipaddr {0}".format(dutaddr)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        if srvaddr is None:
+            srvaddr = self.tftp_server
+        cmd = "setenv serverip {0}".format(srvaddr)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
     def set_lnx_net(self, intf):
         log_debug("Starting to configure the networking ... ")
         cmd = "ifconfig {0} {1}".format(intf, self.dutip)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-        time.sleep(2)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
 
-    def is_network_alive_in_linux(self):
-        time.sleep(3)
-        self.pexp.expect_action(timeout=10, exptxt="", action="\nifconfig;ping " + self.tftp_server)
-        extext_list = ["ping: sendto: Network is unreachable",
-                       r"64 bytes from " + self.tftp_server]
-        index = self.pexp.expect_get_index(timeout=60, exptxt=extext_list)
-        if index == 0 or index == self.pexp.TIMEOUT:
-            self.pexp.expect_action(timeout=10, exptxt="", action="\003")
-            return False
-        elif index == 1:
-            self.pexp.expect_action(timeout=10, exptxt="", action="\003")
-            return True
+    def is_network_alive_in_uboot(self, ipaddr=None, retry=3):
+        is_alive = False
+        if ipaddr is None:
+            ipaddr = self.tftp_server
+
+        cmd = "ping {0}".format(ipaddr)
+        exp = "host {0} is alive".format(ipaddr)
+        self.pexp.expect_ubcmd(timeout=10, exptxt="", action=cmd, post_exp=exp, retry=retry)
+
+    def is_network_alive_in_linux(self, ipaddr=None, retry=3):
+        if ipaddr is None:
+            ipaddr = self.tftp_server
+
+        cmd = "ifconfig; ping -c 3 {0}".format(ipaddr)
+        exp = r"64 bytes from {0}".format(ipaddr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
 
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         self.fcd.common.pcmd(cmd)
-        time.sleep(4)
+        '''
+            The dropbearkey command will be executed in the FCD host.
+            So, it won't cost too much time
+        '''
+        time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.rsakey_path)
         self.fcd.common.pcmd(cmd)
@@ -579,7 +596,11 @@ class ScriptBase(object):
     def gen_dss_key(self):
         cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
         self.fcd.common.pcmd(cmd)
-        time.sleep(4)
+        '''
+            The dropbearkey command will be executed in the FCD host.
+            So, it won't cost too much time
+        '''
+        time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.dsskey_path)
         self.fcd.common.pcmd(cmd)
@@ -615,7 +636,7 @@ class ScriptBase(object):
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
-        time.sleep(1)
+        time.sleep(0.5)
         if int(rtc) > 0:
             otmsg = "Flash editor filling out {0} file failed!!".format(self.eegenbin_path)
             error_critical(otmsg)
@@ -625,7 +646,7 @@ class ScriptBase(object):
 
         cmd = "dd if={0} of=/tmp/{1} bs=1k count=64".format(self.devregpart, self.eeorg)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-        time.sleep(1)
+        time.sleep(0.1)
         self.chk_lnxcmd_valid()
 
         dstp = "/tmp/{0}".format(self.eeorg)
@@ -681,7 +702,7 @@ class ScriptBase(object):
 
         cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eeorg, self.devregpart)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
-        time.sleep(1)
+        time.sleep(0.1)
         self.chk_lnxcmd_valid()
 
     def prepare_server_need_files(self):
@@ -690,8 +711,8 @@ class ScriptBase(object):
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
         self.tftp_get(remote=srcp, local=helperexe_path, timeout=20)
 
-        cmd = "chmod 777 {}".format(helperexe_path)
-        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        cmd = "chmod 777 {0}".format(helperexe_path)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
         self.chk_lnxcmd_valid()
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
@@ -706,8 +727,7 @@ class ScriptBase(object):
         ]
         sstr = ' '.join(sstr)
         log_debug(sstr)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt)
-        self.chk_lnxcmd_valid()
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt, valid_chk=True)
         time.sleep(1)
 
         files = [self.eetxt, self.eebin]
@@ -798,26 +818,18 @@ class ScriptBase(object):
 
     def zmodem_send_to_dut(self, file, dest_path, timeout=60, retry=3):
         while retry != 0:
-            # chdir to dest path
-            self.pexp.expect_action(timeout, "", "")
-            self.pexp.expect_action(timeout, self.linux_prompt, "cd {}".format(dest_path))
-
             # exe receive cmd on dut
-            cmd = "lrz -v -b"
-            self.pexp.expect_action(timeout, "", "")
-            self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+            cmd = "cd {0}; lrz -v -b".format(dest_path)
+            self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd)
 
             # exe send cmd on host
-            cmd = ["sz", "-e -v -b",
-                   file,
-                   "< /dev/" + self.dev,
-                   "> /dev/" + self.dev]
-            cmd = ' '.join(cmd)
+            cmd = "sz -e -v -b {0} < /dev/{1} > /dev/{1}".format(file, self.dev)
+            log_debug("host cmd: " + cmd)
             [sto, rtc] = self.fcd.common.xcmd(cmd)
             if int(rtc) != 0:
                 retry -= 1
                 log_debug("Send {} to DUT incomplete, remaining retry {}".format(file, retry))
-                time.sleep(3)
+                time.sleep(2)
             else:
                 break
 
@@ -827,24 +839,19 @@ class ScriptBase(object):
     def zmodem_recv_from_dut(self, file, dest_path, timeout=60, retry=3):
         while retry != 0:
             # exe send cmd on dut
-            cmd = ["lsz", "-e -v -b", file]
-            cmd = ' '.join(cmd)
-            self.pexp.expect_action(timeout, "", "")
-            self.pexp.expect_action(timeout, self.linux_prompt, cmd)
+            cmd = "lsz -e -v -b {0}".format(file)
+            self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd)
 
             # chdif to dest path on host
             os.chdir(dest_path)
 
             # exe receive cmd on host
-            cmd = ["rz", "-y -v -b",
-                   "< /dev/" + self.dev,
-                   "> /dev/" + self.dev]
-            cmd = ' '.join(cmd)
+            cmd = "rz -y -v -b < /dev/{0} > /dev/{0}".format(self.dev)
             [sto, rtc] = self.fcd.common.xcmd(cmd)
             if int(rtc) != 0:
                 retry -= 1
                 log_debug("Receive {} from DUT incomplete, remaining retry {}".format(file, retry))
-                time.sleep(3)
+                time.sleep(2)
             else:
                 break
 
@@ -904,7 +911,7 @@ class ScriptBase(object):
         return mac_list
 
     def close_fcd(self):
-        time.sleep(3)
+        time.sleep(2)
         exit(0)
 
     def __del__(self):

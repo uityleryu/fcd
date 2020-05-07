@@ -165,16 +165,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
         if self.board_id == "ed2d":
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
-        self.CheckNet()
-
-    def CheckNet(self):
-        for _ in range(3):
-            is_network_alive = self.is_network_alive_in_linux()
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
+        self.is_network_alive_in_linux()
 
     def run(self):
         """

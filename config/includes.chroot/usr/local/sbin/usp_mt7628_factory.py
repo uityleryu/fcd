@@ -65,13 +65,7 @@ class USPMT7628Factory(ScriptBase):
         self.login(press_enter=True, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
-        for _ in range(3):
-            is_network_alive = self.is_network_alive_in_linux()                                                                                                              
-            if is_network_alive is True:
-                break
-            time.sleep(5)
-        if is_network_alive is not True:
-            error_critical("Network is not good")
+        self.is_network_alive_in_linux()
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:

@@ -74,10 +74,7 @@ class UVPQCS403FactoryGeneral(ScriptBase):
         time.sleep(2)
 
         self.set_lnx_net("eth0")
-        rt = self.is_network_alive_in_linux()
-        time.sleep(1)
-        if rt is False:
-            error_critical("Can't PING FCD host")
+        self.is_network_alive_in_linux()
 
         '''
             ============ Registration start ============

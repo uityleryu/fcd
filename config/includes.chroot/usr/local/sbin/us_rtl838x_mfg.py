@@ -8,6 +8,7 @@ from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
+
 class USW_RTL838X_MFG(ScriptBase):
     def __init__(self):
         super(USW_RTL838X_MFG, self).__init__()

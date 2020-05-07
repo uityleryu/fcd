@@ -9,45 +9,43 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 '''
-addr_map_usw: erased partition is uboot+uboot-evn+factory+ee+bs+cfg+kernel0
-it means erase flash from 0x0 to kenel0 where depend on the model.
-format : board_id: (start_addr, len)
-'''
-addr_map_usw = {'ed10': ('0x0', '0x8d0000'),
-                'ed11': ('0x0', '0x8d0000')}
-
-'''
 addr_map_uap: partitially erase partition, the order is bs2kernel0 -> factory -> uboot
 format : board_id: {partition: (start_addr, len)}
 '''
 addr_map_uap = {
-                  'ec20': {
+                 'a610': {
                     'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x10000'),
-                    'bs': ('0x90000', '0x10000'),
-                    'kernel0': ('0x1a0000', '0xf30000')
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
                   },
-                  'ec22': {
+                  'a611': {
                     'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x10000'),
-                    'bs': ('0x90000', '0x10000'),
-                    'kernel0': ('0x1a0000', '0xf30000')
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
                   },
-                  'ec25': {
+                  'a612': {
                     'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x10000'),
-                    'bs': ('0x90000', '0x10000'),
-                    'kernel0': ('0x1a0000', '0xf30000')
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
                   },
-                  'ec26': {
+                  'a613': {
                     'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x10000'),
-                    'bs': ('0x90000', '0x10000'),
-                    'kernel0': ('0x1a0000', '0xf30000')
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
+                  },
+                  'a614': {
+                    'uboot': ('0', '0x60000'),
+                    'factory': ('0x70000', '0x40000'),
+                    'bs': ('0xc0000', '0x10000'),
+                    'kernel0': ('0x1d0000', '0x1e30000')
                   }
                 }
 
-uap_uboot_ver = "U-Boot 1.1.3"
+uap6_uboot_ver = "U-Boot 2018.09UAP6-AFI6-UBOOT-V2-g2fc6246"
 
 class MT7621MFGGeneral(ScriptBase):
     """
@@ -121,10 +119,9 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_only(60, "Bytes transferred = "+img_size)
 
     def is_mfg_uboot(self):
-        uboot_mfg_ver = uap_uboot_ver
         ret = self.pexp.expect_get_output("version", self.bootloader_prompt)
         log_debug("verison ret: "+str(ret))
-        if uboot_mfg_ver not in ret:
+        if uap6_uboot_ver not in ret:
             return False
         return True
 
@@ -181,23 +178,13 @@ class MT7621MFGGeneral(ScriptBase):
                 self.erase_partition(flash_addr=flash_addr, size=flash_size)
                 self.write_img(flash_addr=flash_addr)
 
-            else:
-                log_debug("Back to T1 with USW rule")
-                msg(no=40, out='flash back to T1 image...')
-                self.transfer_img(self.board_id+"-mfg.bin")
-
-                flash_addr = addr_map_usw[self.board_id][0]
-                flash_size = addr_map_usw[self.board_id][1]
-                self.erase_partition(flash_addr, flash_size)
-                self.write_img(flash_addr)
-
         msg(no=80, out='Waiting for Calibration Linux ...')
 
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
 
         if self.board_id in addr_map_uap:
             self.login(timeout=120, press_enter=True)
-            self.pexp.expect_only(30, "BusyBox v1.25.1")
+            self.pexp.expect_only(120, "BusyBox")
 
         msg(no=100, out="Back to ART has completed")
 
