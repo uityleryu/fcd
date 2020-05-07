@@ -11,6 +11,10 @@ import filecmp
 import argparse
 import json
 import ubntlib
+import datetime
+import tarfile
+import shutil
+import subprocess
 
 from ubntlib.fcd.common import Tee, Common
 from ubntlib.fcd.helper import FCDHelper
@@ -21,8 +25,9 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
 
+
 class ScriptBase(object):
-    __version__ = "1.0.12"
+    __version__ = "1.0.13"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -228,7 +233,11 @@ class ScriptBase(object):
         self.http_port = int(self.row_id) + baseport
         self.http_srv = ""
 
-        # Future Field
+        # Test result Field
+        self.test_result = 'Fail'
+        self.test_starttime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+        self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+        self.test_duration = ''
         self.error_code = ''
         try:
             self.teststation_mac = ':'.join(("%012X" % get_mac())[i:i + 2] for i in range(0, 12, 2))
@@ -244,14 +253,17 @@ class ScriptBase(object):
         parse.add_argument('--tftp_server', '-ts', dest='tftp_server', help='FCD host IP', default=None)
         parse.add_argument('--board_id', '-b', dest='board_id', help='System ID, ex:eb23, eb21', default=None)
         parse.add_argument('--erasecal', '-e', dest='erasecal', help='Erase calibration data selection', default=None)
-        parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection', default=None)
-                                        
+        parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection',
+                           default=None)
+
         parse.add_argument('--mac', '-m', dest='mac', help='MAC address', default=None)
         parse.add_argument('--pass_phrase', '-p', dest='pass_phrase', help='Passphrase', default=None)
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
         parse.add_argument('--bom_rev', '-bom', dest='bom_rev', help='BOM revision', default=None)
         parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
+        parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
+        parse.set_defaults(upload=True)
 
         args, _ = parse.parse_known_args()
         self.product_line = args.product_line
@@ -271,6 +283,7 @@ class ScriptBase(object):
         self.region = args.region
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
+        self.upload = args.upload
         return args
 
     def _encrpyt_passphrase_for_log(self):
@@ -288,7 +301,7 @@ class ScriptBase(object):
         """
         if press_enter is True:
             self.pexp.expect_action(timeout, "Please press Enter to activate this console", "")
-            
+
         post = [
             "login:",
             "Error-A12 login"
@@ -322,8 +335,9 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
-                                 
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign,
+                 self.eesigndate]
+
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -569,11 +583,13 @@ class ScriptBase(object):
         self.tftp_get(remote=source, local=target, timeout=timeout, post_en=post_exp)
 
         cmd = "tar -xzvf {0} -C {1}".format(target, self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt, valid_chk=True)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt,
+                                valid_chk=True)
 
         src = os.path.join(self.dut_tmpdir, "*")
         cmd = "chmod -R 777 {0}".format(src)
-        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt, valid_chk=True)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt,
+                                valid_chk=True)
 
     def set_ub_net(self, premac=None, dutaddr=None, srvaddr=None):
         if premac is not None:
@@ -593,7 +609,8 @@ class ScriptBase(object):
     def set_lnx_net(self, intf):
         log_debug("Starting to configure the networking ... ")
         cmd = "ifconfig {0} {1}".format(intf, self.dutip)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
 
     def is_network_alive_in_uboot(self, ipaddr=None, retry=3):
         is_alive = False
@@ -713,7 +730,7 @@ class ScriptBase(object):
         # example:  0 ~ 40K = 0 ~ 40959
         content_sz = 40 * 1024
         for idx in range(0, content_sz):
-             org_tres[idx] = gen_tres[idx]
+            org_tres[idx] = gen_tres[idx]
 
         # Write 4K content start from 0xC000
         # 49152 = 0xC000 = 48K
@@ -748,7 +765,8 @@ class ScriptBase(object):
         self.tftp_get(remote=srcp, local=helperexe_path, timeout=20)
 
         cmd = "chmod 777 {0}".format(helperexe_path)
-        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
         self.chk_lnxcmd_valid()
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
@@ -763,7 +781,8 @@ class ScriptBase(object):
         ]
         sstr = ' '.join(sstr)
         log_debug(sstr)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt, valid_chk=True)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
         time.sleep(1)
 
         files = [self.eetxt, self.eebin]
@@ -903,15 +922,16 @@ class ScriptBase(object):
             src_file: Source filename. It has to be absolutely path
             dst_file: Destination filename. It has to be absolutely path
     '''
+
     def scp_get(self, dut_user, dut_pass, dut_ip, src_file, dst_file):
         cmd = [
             'sshpass -p ' + dut_pass,
-            'scp',     
+            'scp',
             '-o StrictHostKeyChecking=no',
             '-o UserKnownHostsFile=/dev/null',
             src_file,
             dut_user + "@" + dut_ip + ":" + dst_file
-        ] 
+        ]
         cmdj = ' '.join(cmd)
         log_debug('Exec "{}"'.format(cmdj))
         [stout, rv] = self.fcd.common.xcmd(cmdj)
@@ -935,11 +955,11 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0", retry=0)
 
     def mac_format_str2comma(self, strmac):
-        mac_comma = ':'.join([self.mac[i : i + 2] for i in range(0, len(self.mac), 2)])
+        mac_comma = ':'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
         return mac_comma
 
     def mac_format_str2dash(self, strmac):
-        mac_dash = ':'.join([self.mac[i : i + 2] for i in range(0, len(self.mac), 2)])
+        mac_dash = ':'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
         return mac_dash
 
     def mac_format_str2list(self, strmac):
@@ -947,14 +967,138 @@ class ScriptBase(object):
         return mac_list
 
     def close_fcd(self):
+        self.test_result = 'Pass'
         time.sleep(2)
         exit(0)
 
     def __del__(self):
-        self._dumpJSON()
+        try:
+            if self.upload:
+                # Compute test_time/duration
+                self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+                self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
+                self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+                self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+
+                # Dump all var
+                self._dumpJSON()
+
+                self._upload_prepare()
+        except AttributeError:
+            pass
 
     def _dumpJSON(self):
         dumpfile = os.path.join("/tftpboot/", "log_slot" + self.row_id + ".json")
         with open(dumpfile, 'w') as f:
             self.__dict__.pop('fsiw', None)
             f.write(str(json.dumps(self.__dict__, default=lambda o: '<not serializable>', sort_keys=True, indent=4)))
+
+    def _upload_prepare(self):
+        sfile = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
+        jfile = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".json")
+
+        timestamp = self.test_starttime_datetime.strftime('%Y-%m-%d_%H_%M_%S_%f')
+        upload_root_folder = "/media/usbdisk/upload"
+        upload_dut_folder = os.path.join(upload_root_folder, timestamp + '_' + str(self.mac))
+        upload_dut_filename = '_'.join([timestamp, str(self.mac), str(self.test_result)])
+        upload_dut_logpath = os.path.join(upload_dut_folder, upload_dut_filename + ".log")
+        upload_dut_jsonpath = os.path.join(upload_dut_folder, upload_dut_filename + ".json")
+
+        if not os.path.isdir(upload_dut_folder):
+            os.makedirs(upload_dut_folder)
+
+        # We can extend more file into the upload_dict for uploading
+        upload_file_dict = {
+            sfile: upload_dut_logpath,
+            jfile: upload_dut_jsonpath
+        }
+
+        for ori_file, copy_file in upload_file_dict.items():
+            if os.path.isfile(ori_file):
+                shutil.copy2(ori_file, copy_file)
+                time.sleep(1)
+
+        self._upload_ui_taipei(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
+        self._upload_ui_usa(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev,
+                            upload_dut_logpath=upload_dut_logpath)
+
+    def _upload_ui_taipei(self, uploadfolder, mac, bom):
+        """
+            command parameter description for trigger /api/v1/uploadlog WebAPI in Cloud
+            command: python3
+            --path:   uploadfolder or uploadpath
+            --mac:   mac address with lowercase
+            --bom:   BOM Rev version
+            --stage:   FCD or FTU
+        """
+        cmd = [
+            "sudo", "/usr/bin/python3",
+            "/usr/local/sbin/logupload_client.py",
+            '--path', uploadfolder,
+            '--mac', mac,
+            '--bom', bom,
+            '--stage', 'FCD'
+        ]
+        execcmd = ' '.join(cmd)
+
+        try:
+            uploadproc = subprocess.check_output(execcmd, shell=True)
+            if "success" in str(uploadproc.decode('utf-8')):
+                log_debug('[Upload_ui_taipei Success]')
+            else:
+                raise subprocess.CalledProcessError
+
+        except subprocess.CalledProcessError as e:
+            log_debug('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
+        except:
+            log_debug("Unexpected error: {}".format(sys.exc_info()[0]))
+
+    def _upload_ui_usa(self, uploadfolder, mac, bom, upload_dut_logpath):
+        """
+            Mike Taylor's uploadlog client. If any error , give up uploading
+        """
+        try:
+            stage = 'FCD'
+            timestampstr = '%Y-%m-%d_%H_%M_%S_%f'
+            tpe_tz = datetime.timezone(datetime.timedelta(hours=8))
+            start_time = datetime.datetime.now(tpe_tz)
+            start_timestr = start_time.strftime(timestampstr)
+            uploadpath = os.path.join(uploadfolder, '{}_{}{}'.format(start_timestr, mac, ".tar.gz"))
+            with tarfile.open(uploadpath, mode="w|gz") as tf:
+                if os.path.isdir(upload_dut_logpath):
+                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac)
+                    tf.add(upload_dut_logpath, tar_dir)
+                elif os.path.isfile(upload_dut_logpath):
+                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac, os.path.basename(upload_dut_logpath))
+                    tf.add(upload_dut_logpath, tar_dir)
+
+            clientbin = "/usr/local/sbin/upload_x86_release"
+            regparam = [
+                "-h prod.udrs.io",
+                "--input field=name,format=binary,value={}".format(os.path.basename(uploadpath)),
+                "--input field=content,format=binary,pathname={}".format(uploadpath),
+                "--input field=type_id,format=hex,value=00000001",
+                "--output field=result",
+                "--output field=upload_id",
+                "--output field=registration_status_id",
+                "--output field=registration_status_msg",
+                "--output field=error_message",
+                "-k " + self.pass_phrase,
+                "-x " + os.path.join(self.key_dir, "ca.pem"),
+                "-y " + os.path.join(self.key_dir, "key.pem"),
+                "-z " + os.path.join(self.key_dir, "crt.pem")
+            ]
+            regparam = ' '.join(regparam)
+            execcmd = "sudo {0} {1}".format(clientbin, regparam)
+
+            uploadproc = subprocess.check_output(execcmd, shell=True)
+            log_debug('\n[Start upload_x86_client Command]\n{}\n{}\n'.format(execcmd, uploadproc.decode('utf-8')))
+            if "field=result,format=u_int,value=1" in str(uploadproc.decode('utf-8')):
+                log_debug('[Upload_ui_usa Success]')
+            else:
+                raise subprocess.CalledProcessError
+
+        except subprocess.CalledProcessError as e:
+            log_debug('\n{}\n{}\n[Upload_ui_usa Fail]'.format(e.output.decode('utf-8'), e.returncode))
+        except:
+            log_debug("Unexpected error: {}".format(sys.exc_info()[0]))
