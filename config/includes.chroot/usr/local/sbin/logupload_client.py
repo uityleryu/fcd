@@ -63,7 +63,7 @@ def TradArg():
     ap.add_argument('-p', '--path',  metavar='\b', help="[Folder/Path] eg, /media/usbdisk/2020-02-25_15", required=True)
     ap.add_argument('-b', '--bom',  metavar='\b', help="[bom] eg, 113-00391 ", required=True)
     ap.add_argument('-m', '--mac',  metavar='\b', help="[mac] eg, 788a20f039e8" , required=True)
-    ap.add_argument('-s', '--stage',  metavar='\b', choices=['FCD', 'FTU'], help="[Stage] FCD or FTU" , required=True)
+    ap.add_argument('-s', '--stage',  metavar='\b', choices=['FCD','BackToArt', 'FTU'], help="[Stage] FCD or BackToArt or FTU" , required=True)
 
     return ap
 
