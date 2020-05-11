@@ -193,10 +193,11 @@ TOOLS-USW-XG=$(TOOLS-USW)
 TOOLS-USW-MISSION-CRITICAL+= \
     usw_rtl838x/helper_RTL838x*
 
-TOOLS-U6-S24=$(TOOLS-USW)
-
-TOOLS-USW-MISSION-CRITICAL+= \
+TOOLS-USW-Aggregation=$(TOOLS-USW)
+TOOLS-USW-Aggregation+= \
     usw_rtl838x/helper_RTL838x*
+
+TOOLS-U6-S24=$(TOOLS-USW)
 
 # ALL
 TOOLS-USW+=$(TOOLS-CONFIG)
@@ -220,6 +221,8 @@ $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER
 $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
+
 
 # Project compressed file for RPi FCD host
 
@@ -236,3 +239,4 @@ $(eval $(call ProductCompress,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FW
 $(eval $(call ProductCompress,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
