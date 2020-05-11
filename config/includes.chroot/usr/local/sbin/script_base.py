@@ -1031,17 +1031,23 @@ class ScriptBase(object):
             --bom:   BOM Rev version
             --stage:   FCD or FTU
         """
-        cmd = [
-            "sudo", "/usr/bin/python3",
-            "/usr/local/sbin/logupload_client.py",
-            '--path', uploadfolder,
-            '--mac', mac,
-            '--bom', bom,
-            '--stage', 'FCD'
-        ]
-        execcmd = ' '.join(cmd)
-
         try:
+            if bom is None :
+                bom = '99999-99' # Workaround For BackToArt , GUI won't assign BOM version.
+                FCDtype = 'BackToArt'
+            else:
+                FCDtype = 'FCD'
+
+            cmd = [
+                "sudo", "/usr/bin/python3",
+                "/usr/local/sbin/logupload_client.py",
+                '--path', uploadfolder,
+                '--mac', mac,
+                '--bom', bom,
+                '--stage', FCDtype
+            ]
+            execcmd = ' '.join(cmd)
+
             uploadproc = subprocess.check_output(execcmd, shell=True)
             if "success" in str(uploadproc.decode('utf-8')):
                 log_debug('[Upload_ui_taipei Success]')
