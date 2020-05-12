@@ -100,6 +100,7 @@ class AFIIPQ807XMFG(ScriptBase):
             self.check_t1_fw()
 
         msg(100, "BackToT1 done")
+        self.close_fcd()
 
 def main():
     afi_ipq807x_mfg = AFIIPQ807XMFG()

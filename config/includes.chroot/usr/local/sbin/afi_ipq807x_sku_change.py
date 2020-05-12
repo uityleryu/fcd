@@ -247,6 +247,7 @@ class AFIIPQ807XSKUCHANGE(ScriptBase):
             error_critical("The region is not correct")
 
         msg(100, "Complete ...")
+        self.close_fcd()
 
 
 def main():

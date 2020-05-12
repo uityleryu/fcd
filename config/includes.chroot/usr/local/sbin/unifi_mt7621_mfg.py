@@ -200,6 +200,7 @@ class MT7621MFGGeneral(ScriptBase):
             self.pexp.expect_only(30, "BusyBox v1.25.1")
 
         msg(no=100, out="Back to ART has completed")
+        self.close_fcd()
 
 
 def main():
