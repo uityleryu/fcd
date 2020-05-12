@@ -75,7 +75,7 @@ class FCDhostConfig():
             sto = sto.split("\n")
             log_debug("Current number of existed intf: " + str(len(sto)))
             if len(sto) < 2:
-                error_critical("Should be at least three networking interface")
+                error_critical("Should be at least two networking interface")
             else:
                 self.cur_intf = ''.join(sto)
                 log_debug("Current targeted intf: " + self.cur_intf)

@@ -1082,7 +1082,18 @@ class ScriptBase(object):
                     tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac, os.path.basename(upload_dut_logpath))
                     tf.add(upload_dut_logpath, tar_dir)
 
-            clientbin = "/usr/local/sbin/upload_x86_release"
+            cmd = "uname -a"
+            [sto, rtc] = self.cnapi.xcmd(cmd)
+            if int(rtc) > 0:
+                error_critical("Get linux information failed!!")
+            else:
+                log_debug("Get linux information successfully")
+                match = re.findall("armv7l", sto)
+                if match:
+                    clientbin = "/usr/local/sbin/upload_rpi4_release"
+                else:
+                    clientbin = "/usr/local/sbin/upload_x86_release"
+
             regparam = [
                 "-h prod.udrs.io",
                 "--input field=name,format=binary,value={}".format(os.path.basename(uploadpath)),
