@@ -1087,7 +1087,7 @@
       "BOARDID"     : "ee6a",
       "BOMREV"      : "113-00815",
       "DESC"        : "Ubiquiti Network Management System Router Pro",
-      "FILE"        : "udm_alpine_factory2.py",
+      "FILE"        : "unms_alpine_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
