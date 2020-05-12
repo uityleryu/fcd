@@ -196,8 +196,8 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
 
         if self.board_id in addr_map_uap:
-            self.login(timeout=120, press_enter=True)
-            self.pexp.expect_only(30, "BusyBox v1.25.1")
+            # legnacy no need self.login , remove it
+            self.pexp.expect_only(180, "BusyBox")
 
         msg(no=100, out="Back to ART has completed")
         self.close_fcd()
