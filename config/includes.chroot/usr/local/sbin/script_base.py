@@ -1057,12 +1057,16 @@ class ScriptBase(object):
         except subprocess.CalledProcessError as e:
             log_debug('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
         except:
-            log_debug("Unexpected error: {}".format(sys.exc_info()[0]))
+            log_debug("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
 
     def _upload_ui_usa(self, uploadfolder, mac, bom, upload_dut_logpath):
         """
             Mike Taylor's uploadlog client. If any error , give up uploading
         """
+        if not self.pass_phrase:
+            log_debug("[Upload_ui_usa Skip - pass_phrase is None]")
+            return
+
         try:
             stage = 'FCD'
             timestampstr = '%Y-%m-%d_%H_%M_%S_%f'
@@ -1107,4 +1111,4 @@ class ScriptBase(object):
         except subprocess.CalledProcessError as e:
             log_debug('\n{}\n{}\n[Upload_ui_usa Fail]'.format(e.output.decode('utf-8'), e.returncode))
         except:
-            log_debug("Unexpected error: {}".format(sys.exc_info()[0]))
+            log_debug("[Upload_ui_usa Unexpected error: {}]".format(sys.exc_info()[0]))
