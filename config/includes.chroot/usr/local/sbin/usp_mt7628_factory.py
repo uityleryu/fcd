@@ -62,7 +62,7 @@ class USPMT7628Factory(ScriptBase):
 
     def init_recovery_image(self):
         self.pexp.expect_only(30, "reading kernel")
-        self.login(press_enter=True, log_level_emerg=True)
+        self.login(press_enter=True, log_level_emerg=True, timeout=60)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         self.is_network_alive_in_linux()
@@ -143,7 +143,7 @@ class USPMT7628Factory(ScriptBase):
             msg(70, "Updating released firmware done...")
 
         if self.DATAVERIFY_ENABLE is True:
-            self.login(press_enter=True, log_level_emerg=True)
+            self.login(press_enter=True, log_level_emerg=True, timeout=60)
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
