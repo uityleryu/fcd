@@ -42,6 +42,7 @@ IMAGE-UDMB= \
     udm-fw/udm-b-* \
     udm-fw/Unifi-ONE-* \
     udm-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+    udm-fw/unifi-v1.0.9.57-gd7bab423_uap-mt7621-32MB_u-boot.bin \
     udm-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
 	udm-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     udm-fw/BZ.mt7621.*
@@ -50,7 +51,7 @@ IMAGE-UDMLITE= \
     images/ec28* \
     udm-fw/uImage-LoCo \
 	udm-fw/UDM.lite.uImage.recovery \
-    udm-fw/UDM.lite.mt7622.v1.7.0-pre+ubnt.2561.49c674c.200330.1520.bin 
+	udm-fw/UDM.lite.mt7622.v1.7.0-pre+ubnt.2561.49c674c.200330.1520.bin
 	
 # Model
 # This is used for adding an option in the file of BackT1.desktop
