@@ -11,8 +11,8 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 
 REGISTER_ENABLE = True
-FWUPDATE_ENABLE = False
-DATAVERIFY_ENABLE = False  # to do, wait where to check info
+FWUPDATE_ENABLE = True
+DATAVERIFY_ENABLE = True  # to do, wait where to check info
 
 
 class UDMALPINEMT7622Factory(ScriptBase):
@@ -71,6 +71,8 @@ class UDMALPINEMT7622Factory(ScriptBase):
     def boot_recovery_image(self):
         self.pexp.expect_action(300, "Hit any key to", "")
         time.sleep(2)
+        self.pexp.expect_action(30, self.bootloader_prompt, 'set bootargs "console=ttyS0,115200n1 earlyprintk ubnt-flash-factory"' )
+        time.sleep(2)
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         time.sleep(2)
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
@@ -79,7 +81,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
         time.sleep(2)
         self.pexp.expect_only(15, "host " + self.tftp_server + " is alive")
         time.sleep(2)
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot images/" + self.board_id + "-recovery")
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x4007ff28 images/" + self.board_id + "-recovery")
         time.sleep(2)
         self.pexp.expect_only(120, "Bytes transferred")
         time.sleep(2)
@@ -207,7 +209,7 @@ class UDMALPINEMT7622Factory(ScriptBase):
             "tftp",
             "-g",
             "-r images/" + self.board_id + "-recovery",
-            "-l " + self.dut_tmpdir + "uImage.r",
+            "-l " + self.dut_tmpdir + "/uImage.r",
             self.tftp_server
         ]
         sstr = ' '.join(sstr)
@@ -229,9 +231,15 @@ class UDMALPINEMT7622Factory(ScriptBase):
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
+        """ Use preliminary FW , no gating so far"""
+        self.login( timeout=160 )
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
-        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        # self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        # self.pexp.expect_only(30, "qrid="+self.qrcode)
+        # self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
+        # self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
+
 
     def run(self):
         """Main procedure of factory
