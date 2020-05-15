@@ -21,6 +21,7 @@ DATAVERIFY_ENABLE = True
 class UNASALPINEFactory(ScriptBase):
     def __init__(self):
         super(UNASALPINEFactory, self).__init__()
+        self.ver_extract()
         self.init_vars()
 
     def init_vars(self):
@@ -30,7 +31,7 @@ class UNASALPINEFactory(ScriptBase):
         self.linux_prompt = ["#"]
 
         # script specific vars
-        self.devregpart = "/dev/mtdblock9"
+        self.devregpart = "/dev/mtdblock4"
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_UNAS-AL324_release"
         self.dut_nasdir = os.path.join(self.dut_tmpdir, "unas")
@@ -49,24 +50,28 @@ class UNASALPINEFactory(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ea16': "2",
-            'ea1a': "2"
+            'ea1a': "2",
+            'ea20': "2",
         }
 
         # number of WiFi
         self.wifinum = {
             'ea16': "0",
-            'ea1a': "0"
+            'ea1a': "0",
+            'ea20': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea16': "0",
-            'ea1a': "1"
+            'ea1a': "1",
+            'ea20': "1",
         }
 
         self.netif = {
             'ea16': "ifconfig enp0s1 ",
-            'ea1a': "ifconfig enp0s1 "
+            'ea1a': "ifconfig enp0s1 ",
+            'ea20': "ifconfig enp0s1 "
         }
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -111,34 +116,29 @@ class UNASALPINEFactory(ScriptBase):
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         nand_path_for_dut = os.path.join(self.tftpdir, "fw-image.bin")
-        if not os.path.isfile(nand_path_for_dut):
-            sstr = [
-                "cp",
-                "-p",
-                fcd_fwpath,
-                nand_path_for_dut
-            ]
-            sstrj = ' '.join(sstr)
-            [sto, rtc] = self.fcd.common.xcmd(sstrj)
-            time.sleep(1)
-            if int(rtc) > 0:
-                error_critical("Copying nand flash to tftp server failed")
-            else:
-                time.sleep(20)
-                log_debug("Copying nand flash to tftp server successfully")
-        else:
-            log_debug("firmware.bin is already existed under /tftpboot")
+        sstr = [
+            "cp",
+            "-p",
+            fcd_fwpath,
+            nand_path_for_dut
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
+        if int(rtc) > 0:
+            error_critical("Copying nand flash to tftp server failed")
+
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
         self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
-        # clean up config block and nand flash
-        self.pexp.expect_action(30, self.ubpmt, "nand erase.chip")
-        self.pexp.expect_only(60, "Erasing at 0x3ffc0000", err_msg="Erase nand flash failed")
+
+        # clean up config block
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
         self.pexp.expect_only(60, "Erased: OK", err_msg="Erase config failed")
+
         self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra server=" + self.tftp_server)
-        self.pexp.expect_action(10, self.ubpmt, "boot")
+        self.pexp.expect_action(10, self.ubpmt, "run bootcmdspi")
         msg(15, "Installing fw on nand")
         self.pexp.expect_only(10, "bootargs=", err_msg="Cannot see reboot msg after enter boot cmd in uboot")
         self.pexp.expect_only(10, "Starting kernel", err_msg="No msg of process of installation")
@@ -251,7 +251,6 @@ class UNASALPINEFactory(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
-        self.ver_extract()
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
