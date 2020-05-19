@@ -37,6 +37,7 @@ class BCM5334xLIB(ScriptBase):
             'eb18': "0xc0000",
             'eb20': "0x1e0000",
             'eb21': "0xc0000",
+            'eb30': "0xc0000",
             'eb31': "0xc0000",
             'eb60': "0xc0000",
             'eb62': "0xc0000"
@@ -49,6 +50,7 @@ class BCM5334xLIB(ScriptBase):
             'eb18': "0x10000",
             'eb20': "0x10000",
             'eb21': "0x10000",
+            'eb30': "0x10000",
             'eb31': "0x10000",
             'eb60': "0x10000",
             'eb62': "0x10000"
@@ -61,6 +63,7 @@ class BCM5334xLIB(ScriptBase):
             'eb18': "0xd0000",
             'eb20': "0x1f0000",
             'eb21': "0xd0000",
+            'eb30': "0xd0000",
             'eb31': "0xd0000",
             'eb60': "0xd0000",
             'eb62': "0xd0000"
@@ -73,6 +76,7 @@ class BCM5334xLIB(ScriptBase):
             'eb18': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb20': "quiet console=ttyS0,115200 mem=496M " + self.flash_mtdparts_64M,
             'eb21': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
+            'eb30': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb31': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb60': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb62': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
@@ -84,6 +88,7 @@ class BCM5334xLIB(ScriptBase):
             'eb18': "helper_BCM5334x",
             'eb20': "helper_BCM5341x",
             'eb21': "helper_BCM5334x",
+            'eb30': "helper_BCM5334x",
             'eb31': "helper_BCM5334x",
             'eb60': "helper_BCM5334x",
             'eb62': "helper_BCM5334x"

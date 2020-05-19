@@ -140,6 +140,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             And it only could accept the "\r" as an Enter key in this shell.
         '''
         self.pexp.expect_lnxcmd(30, "UBNT_Diag", "exit\r", self.linux_prompt)
+        self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
 
         '''
