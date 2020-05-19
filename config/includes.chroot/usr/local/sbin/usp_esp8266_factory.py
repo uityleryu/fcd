@@ -207,6 +207,7 @@ class USPESP8266Factory(ScriptBase):
             self.flash_eeprom_and_fw()
 
         msg(100, "Completing FCD process ...")
+        self,close_fcd()
 
 def main():
     usp_8266_factory = USPESP8266Factory()
