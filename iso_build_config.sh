@@ -28,6 +28,15 @@ docker run --privileged -it --rm \
 run_docker bash -c "
   cd /build; \
   lb clean --purge; \
+  lb config noauto \
+    --mode debian \
+    --architectures i386 \
+    --distribution buster \
+    --debian-installer false \
+    --archive-areas 'main contrib non-free' \
+    --apt-indices false \
+    --memtest none \
+    '${@}'; \
   lb build
 "
 
