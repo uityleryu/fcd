@@ -390,9 +390,9 @@ class ScriptBase(object):
             ]
             print("WARNING: should plan to add FCD_ID, SW_ID ... won't block this time")
         else:
-            clientbin = "/usr/local/sbin/client_x86_release_20190507"
+            clientbin = "/usr/local/sbin/client_x86_release_20200519"
             regparam = [
-                "-h devreg-prod.ubnt.com",
+                "-h stage.udrs.io",
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,

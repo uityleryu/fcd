@@ -956,6 +956,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1201"
+    },
+
+    "GBE-Lite":{
+      "INDEX"       : 1,
+      "NAME"        : "GBE-Lite",
+      "BOARDID"     : "dca1",
+      "BOMREV"      : "113-00781",
+      "DESC"        : "GBE Lite",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
     }
   },
 
