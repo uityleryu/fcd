@@ -45,6 +45,10 @@ class USW_RTL838X_MFG(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ubntrescue")
+
+        # FIXME: workaround for usw-agg
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr 00:00:00:00:00:0" + self.row_id)
+
         self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
         self.pexp.expect_only(60, "Listening for TFTP transfer on")
 
