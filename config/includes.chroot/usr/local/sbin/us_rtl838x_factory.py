@@ -22,7 +22,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.boot_prompt = "uboot> #"
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
-        self.helperexe = "helper_RTL838x_20200410"
+        self.helperexe = "helper_RTL838x"
         self.helper_path = "usw_rtl838x"
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-fw.bin"
