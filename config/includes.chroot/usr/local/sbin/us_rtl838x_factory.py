@@ -19,7 +19,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.ver_extract()
-        self.ubpmt = "UBNT"
+        self.boot_prompt = "uboot> #"
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_RTL838x_20200410"
@@ -168,6 +168,13 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
         self.is_network_alive_in_linux()
 
+    def clear_eeprom_in_uboot(self, timeout=30):
+        # Ensure sysid is empty when FW is T1 img.
+        # Some T1 image will boot so slow if get non-empty sysid
+        self.pexp.expect_action(timeout, "Hit Esc key to stop autoboot", "\x1b")
+        self.pexp.expect_action(10, self.boot_prompt, "bootubnt ucleareeprom")
+        self.pexp.expect_action(10, self.boot_prompt, "reset")
+
     def run(self):
         """
         Main procedure of factory
@@ -188,9 +195,12 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         if self.BOOT_RECOVERY_IMAGE == True:
             pass
 
+        self.clear_eeprom_in_uboot()
+        msg(10, "Clear EEPROM in uboot")
+
         self.login_kernel()
         self.SetNetEnv()
-        msg(10, "Boot up to linux console and network is good ...")
+        msg(15, "Boot up to linux console and network is good ...")
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Send tools to DUT and data provision ...")
