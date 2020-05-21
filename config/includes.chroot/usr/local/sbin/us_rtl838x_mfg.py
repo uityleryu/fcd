@@ -47,6 +47,7 @@ class USW_RTL838X_MFG(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ubntrescue")
 
         # FIXME: workaround for usw-agg
+        time.sleep(5)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr 00:00:00:00:00:1" + self.row_id)
 
         self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
