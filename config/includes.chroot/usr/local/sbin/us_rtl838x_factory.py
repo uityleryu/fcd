@@ -195,8 +195,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         if self.BOOT_RECOVERY_IMAGE == True:
             pass
 
-        self.clear_eeprom_in_uboot()
-        msg(10, "Clear EEPROM in uboot")
+        # FIXME: SKIP this action for usw-agg temporarily
+        if self.board_id != 'ed2d':
+            self.clear_eeprom_in_uboot()
+            msg(10, "Clear EEPROM in uboot")
 
         self.login_kernel()
         self.SetNetEnv()
