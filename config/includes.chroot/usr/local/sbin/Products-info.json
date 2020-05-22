@@ -41,7 +41,7 @@
       "NAME"        : "UXG-PRO",
       "BOARDID"     : "ea19",
       "BOMREV"      : "113-00740",
-      "DESC"        : "UniFi Dream Machine Pro Router",
+      "DESC"        : "UniFi Next-Generation Gateway",
       "FILE"        : "udm_alpine_factory2.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

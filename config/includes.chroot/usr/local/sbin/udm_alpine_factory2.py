@@ -19,14 +19,12 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.fwimg = self.board_id + "-fw.bin"
-        self.UNMS_series = ['ee6a']
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
-        self.helper_path = "unms" if self.board_id in self.UNMS_series else self.helper_path
         self.bomrev = "113-" + self.bom_rev
-        self.username = "ubnt" if self.board_id in self.UNMS_series else "root"
+        self.username = "root"
         self.password = "ubnt"
         self.linux_prompt = "#"
         self.unifios_prompt = "root@ubnt:/#"                                                                       
@@ -40,8 +38,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "qca8k",
             'ea13': "rtl83xx",
             'ea15': "rtl83xx",
-            'ea19': "rtl83xx",
-            'ee6a': "rtl83xx"
+            'ea19': "rtl83xx"
         }
         
         # sub-system ID
@@ -49,8 +46,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "770711ea",
             'ea13': "770713ea",
             'ea15': "770715ea",
-            'ea19': "770719ea",
-            'ee6a': "77076aee"
+            'ea19': "770719ea"
         }
         
         # number of Ethernet
@@ -58,8 +54,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "5",
             'ea13': "8",
             'ea15': "11",
-            'ea19': "4",
-            'ee6a': "11"
+            'ea19': "4"
         }
         
         # number of WiFi
@@ -67,8 +62,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "2",
             'ea13': "2",
             'ea15': "0",
-            'ea19': "0",
-            'ee6a': "0"
+            'ea19': "0"
         }
         
         # number of Bluetooth
@@ -76,8 +70,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "1",
             'ea13': "1",
             'ea15': "1",
-            'ea19': "1",
-            'ee6a': "1"
+            'ea19': "1"
         }
        
         # ethernet interface 
@@ -85,16 +78,14 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             'ea11': "ifconfig eth0 ",
             'ea13': "ifconfig eth1 ",
             'ea15': "ifconfig eth0 ",
-            'ea19': "ifconfig eth1 ",
-            'ee6a': "ifconfig eth0 "
+            'ea19': "ifconfig eth1 "
         }
         
         self.infover = {
             'ea11': "Version:",
             'ea13': "Version",
             'ea15': "Version:",
-            'ea19': "Version:",
-            'ee6a': "Version:"
+            'ea19': "Version:"
         }
 
         self.devnetmeta = {
@@ -114,6 +105,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.FWUPDATE_ENABLE       = True 
         self.DATAVERIFY_ENABLE     = True 
         self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea15" else False
+        self.LCM_CHECK_ENABLE      = True if self.board_id == "ea19" else False
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -122,29 +114,13 @@ class UDMALPINEFactoryGeneral(ScriptBase):
     def set_fake_EEPROM(self):
         self.pexp.expect_action(20, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
-
-        UDM_PRO_ID = 'ea15'
-        tmp_list = [UDM_PRO_ID] + self.UNMS_series
-
-        if self.board_id in tmp_list:
+        if self.board_id == 'ea15':
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
-
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-
-        if self.board_id in self.UNMS_series:
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x410000 0x1000")
-        else:
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
-
-        if self.board_id in self.UNMS_series:
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x41000c 0x4")
-        else:
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
-
-        if self.board_id in self.UNMS_series:
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x410010 0x4")
-        elif self.board_id == UDM_PRO_ID:
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
+        if self.board_id == 'ea15':
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
@@ -205,17 +181,13 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         ]
         sstr = ' '.join(sstr)
 
-        if self.board_id not in self.UNMS_series:
-            postexp = [ "Restarting system" ]
-        else:
-            postexp = [ "Starting kernel" ]
+        postexp = [ "Starting kernel" ]
         msg(70, "Firmware upgrade done ...")
 
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
-        if self.board_id not in self.UNMS_series:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
+        self.pexp.expect_lnxcmd(3, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
@@ -230,6 +202,32 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Connected", retry=40)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
+
+    # A dirty workaround before FW developers provide a stable way to check if LCM FW is loaded and version is correct
+    def lcm_fw_ver_check(self):
+        retry_cnt = 60
+        for i in range(retry_cnt):
+            try:
+                self.pexp.expect_lnxcmd(3, self.linux_prompt, 'ps w | grep dfu -i | grep -v "dfu -i"', "uxg-pro-lcm-fw.dfu", retry=0)
+                time.sleep(1)
+                continue
+            except Exception as e:
+                self.pexp.expect_lnxcmd(3, self.linux_prompt, '/etc/init.d/S05ulcmd stop', self.linux_prompt)
+                break
+        if i == retry_cnt - 1:
+            raise Exception("Check DFU failed")
+
+        for i in range(retry_cnt):
+            try:
+                self.pexp.expect_lnxcmd(5, self.linux_prompt, "stty -F /dev/ttyACM0 115200 -echo", self.linux_prompt)
+                self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo '{\"system\":{\"get\":\"version\"}}' > /dev/ttyACM0", 
+                                        self.linux_prompt)
+                self.pexp.expect_lnxcmd(3, self.linux_prompt, "cat /dev/ttyACM0", "v0.0.4-0-gcedc7ef", retry=0)
+                break
+            except Exception as e:
+                continue
+        if i == retry_cnt - 1:
+            raise Exception("Check LCM FW version failed")
 
     def run(self):
         """
@@ -287,6 +285,11 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             msg(85, "Wait system running up and reboot...")
             self.poweroff_check()
             msg(90, "Boot successfully ...")
+
+        if self.LCM_CHECK_ENABLE is True:
+            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            msg(95, "Check LCM FW version ...")
+            self.lcm_fw_ver_check()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
