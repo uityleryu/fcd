@@ -31,7 +31,7 @@ IMAGE-UXGPRO+= \
     images/ea19* \
     udm-fw/boot-uxg.img \
     udm-fw/uImage-uxg.r \
-    udm-fw/UXG.alpinev2.v0.0.8.c6eb875.200312.1122.bin
+    udm-fw/UXG*
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \

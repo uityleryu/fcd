@@ -287,7 +287,6 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             msg(90, "Boot successfully ...")
 
         if self.LCM_CHECK_ENABLE is True:
-            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
             msg(95, "Check LCM FW version ...")
             self.lcm_fw_ver_check()
 
