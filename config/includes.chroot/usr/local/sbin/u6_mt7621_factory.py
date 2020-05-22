@@ -109,7 +109,7 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_only(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size))
         self.pexp.expect_action(10, self.bootloader_prompt, "bootm")
-        self.login(timeout=240)
+        self.login(timeout=240,press_enter=True)
 
     def init_recovery_image(self):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
@@ -186,7 +186,7 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_only(120, "done")
 
     def check_info(self):
-        self.login(timeout=240)
+        self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         cmd = "cat /proc/ubnthal/system.info"
