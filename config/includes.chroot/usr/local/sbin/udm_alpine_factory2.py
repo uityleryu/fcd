@@ -201,6 +201,10 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt,retry=20)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Connected", retry=40)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "curl -s http://localhost:8081/status | jq .meta.udm_connected", 
+                                                      "true", retry=12)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "podman exec -it unifi-os mongo --quiet localhost:27117/ace "\
+                                                      "--eval=\"db.device.count()\"", "1", retry=12)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
     # A dirty workaround before FW developers provide a stable way to check if LCM FW is loaded and version is correct
