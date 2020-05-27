@@ -31,7 +31,13 @@ class UNASALPINEFactory(ScriptBase):
         self.linux_prompt = ["#"]
 
         # script specific vars
-        self.devregpart = "/dev/mtdblock4"
+        self.devregparts = {
+            'ea16': "/dev/mtdblock9",
+            'ea1a': "/dev/mtdblock9",
+            'ea20': "/dev/mtdblock4"
+        }
+        self.devregpart = self.devregparts[self.board_id]
+
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_UNAS-AL324_release"
         self.dut_nasdir = os.path.join(self.dut_tmpdir, "unas")
