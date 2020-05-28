@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Mount USB
+Type=Application
+Exec=sudo /usr/local/sbin/mntusb.sh
+TryExec=
+X-GNOME-DocPath=
+Terminal=false
+Name[en_US]=Mount USB
+GenericName[en_US]=
+Comment[en_US]=Utility for mount usb disk
+GenericName=
+Comment=Utility for production
+Icon=/usr/share/icons/Adwaita/96x96/devices/drive-harddisk-usb-symbolic.symbolic.png
+StartupNotify=false

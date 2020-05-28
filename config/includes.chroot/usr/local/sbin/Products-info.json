@@ -1068,29 +1068,97 @@
   {
     "UVC-G4PRO":{
       "INDEX"       : 0,
-      "NAME"        : "UVC-G4",
+      "NAME"        : "UVC-G4PRO",
       "BOARDID"     : "a563",
       "BOMREV"      : "113-02574",
-      "DESC"        : "GBE",
+      "DESC"        : "UVC G4 Pro",
       "FILE"        : "uvc_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
-      "SW_ID"       : "0e04"
+      "SW_ID"       : "0e03"
      },
+
      "UVC-G3BATTERY":{
       "INDEX"       : 1,
-      "NAME"        : "UVC-G3",
+      "NAME"        : "UVC-G3BATTERY",
       "BOARDID"     : "a580",
       "BOMREV"      : "113-02692",
-      "DESC"        : "GBE",
+      "DESC"        : "UVC G3 Battery",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     },
+  
+     "UVC-G4PTZ":{
+      "INDEX"       : 2,
+      "NAME"        : "UVC-G4PTZ",
+      "BOARDID"     : "a564",
+      "BOMREV"      : "113-02967",
+      "DESC"        : "UVC G4 PTZ",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     },
+    
+     "UVC-G4DOORBELL":{
+      "INDEX"       : 3,
+      "NAME"        : "UVC-G4DOORBELL",
+      "BOARDID"     : "a571",
+      "BOMREV"      : "113-02712",
+      "DESC"        : "UVC G4 Doorbell",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     },
+    
+     "UVC-G4BULLET":{
+      "INDEX"       : 4,
+      "NAME"        : "UVC-G4BULLET",
+      "BOARDID"     : "a572",
+      "BOMREV"      : "113-02987",
+      "DESC"        : "UVC G4 Bullet",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     },
+    
+     "UVC-G4DOME":{
+      "INDEX"       : 5,
+      "NAME"        : "UVC-G4DOME",
+      "BOARDID"     : "a573",
+      "BOMREV"      : "113-02998",
+      "DESC"        : "UVC G4 Dome",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+     },
+    
+     "UVC-G3MINI":{
+      "INDEX"       : 6,
+      "NAME"        : "UVC-G3MINI",
+      "BOARDID"     : "a590",
+      "BOMREV"      : "113-03132",
+      "DESC"        : "UVC G3 Mini",
       "FILE"        : "uvc_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      }
+          
   },
+
 
   "UbiquitiNMS":
   {

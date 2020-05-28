@@ -9,8 +9,37 @@ IMAGE-UVC-G3BATTERY= \
     images/a580* \
     uvc-fw/*
 
+IMAGE-UVC-G4PTZ= \
+    images/a564* \
+    uvc-fw/*
+
+
+IMAGE-UVC-G4DOORBELL= \
+    images/a571* \
+    uvc-fw/*
+
+IMAGE-UVC-G4BULLET= \
+    images/a572* \
+    uvc-fw/*
+
+IMAGE-UVC-G4DOME= \
+    images/a573* \
+    uvc-fw/*
+
+IMAGE-UVC-G3MINI= \
+    images/a590* \
+    uvc-fw/*
+
+
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
+IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
+IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELL)
+IMAGE-UVC+=$(IMAGE-UVC-G4BULLET)
+IMAGE-UVC+=$(IMAGE-UVC-G4DOME)
+IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
+
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -43,12 +72,62 @@ TOOLS-UVC-G3BATTERY+= \
     uvc/m25p80_g3battery.ko \
     uvc/eegen-ascii_g3battery.bin
 
+TOOLS-UVC-G4PTZ+=$(TOOLS-UVC)
+TOOLS-UVC-G4PTZ+= \
+    uvc/helper_uvcg4ptz \
+    uvc/m25p80_uvcg4ptz.ko \
+    uvc/128k_ff.bin
+
+TOOLS-UVC-G4DOORBELL+=$(TOOLS-UVC)
+TOOLS-UVC-G4DOORBELL+= \
+    uvc/helper_uvcg4doorbell \
+    uvc/m25p80_uvcg4doorbell.ko \
+    uvc/128k_ff.bin
+
+
+TOOLS-UVC-G4BULLET+=$(TOOLS-UVC)
+TOOLS-UVC-G4BULLET+= \
+    uvc/helper_uvcg4bullet \
+    uvc/m25p80_uvcg4bullet.ko \
+    uvc/128k_ff.bin
+
+
+TOOLS-UVC-G4DOME+=$(TOOLS-UVC)
+TOOLS-UVC-G4DOME+= \
+    uvc/helper_uvcg4dome \
+    uvc/m25p80_uvcg4dome.ko \
+    uvc/128k_ff.bin
+
+
+
+TOOLS-UVC-G3MINI+=$(TOOLS-UVC)
+TOOLS-UVC-G3MINI+= \
+    uvc/helper_uvcg3flexmini \
+    uvc/m25p80_uvcg3flexmini.ko \
+    uvc/128k_ff.bin
+
+
+
 # Project target
 
-$(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_UVC-G4PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_UVC-G3BATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4PTZ,FCD_$(PRD)_G4PTZ_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4DOORBELL,FCD_$(PRD)_G4DOORBELL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4BULLET,FCD_$(PRD)_G4BULLET_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
+
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_UVC-G4PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_UVC-G3BATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4PTZ,FCD_$(PRD)_G4PTZ_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4DOORBELL,FCD_$(PRD)_G4DOORBELL_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4BULLET,FCD_$(PRD)_G4BULLET_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
+
+
+

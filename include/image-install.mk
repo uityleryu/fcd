@@ -27,6 +27,7 @@ image-install-$1: $1-namechk
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Logsync.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/MountUSB.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	rm -rf $(NEWSQUASHFS)/usr/local/sbin/ubntlib
 	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib
 	cp -rf $(UBNTLIB_DIR)/ubntlib/* $(NEWSQUASHFS)/usr/local/sbin/ubntlib/

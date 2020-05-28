@@ -254,31 +254,34 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def check_comport(self):
-        __FUNC = sys._getframe().f_code.co_name
-        cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
-        log.info("search tty cmd: " + cmd)
-        [stdout, rtc] = self.xcmd(cmd)
-
-        """
-        Linux shell script return code:
-            pass: 0
-            failed: 1
-        """
-        if (rtc == 1):
-            rtmsg = "{0}: serial port devices are not existed".format(__FUNC)
-            log.info(rtmsg)
-            return False
-
-        exist_tty = stdout.splitlines()
-        for itty in exist_tty:
-            cmd = "stty -F /dev/{0} speed 115200 > /dev/null 2>/dev/null".format(itty)
+        if (CONST.active_product_series != "UniFiVideo"):
+            __FUNC = sys._getframe().f_code.co_name
+            cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
+            log.info("search tty cmd: " + cmd)
             [stdout, rtc] = self.xcmd(cmd)
+
+            """
+            Linux shell script return code:
+                pass: 0
+                failed: 1
+            """
             if (rtc == 1):
-                rtmsg = "{0}: stty setting failed".format(__FUNC)
+                rtmsg = "{0}: serial port devices are not existed".format(__FUNC)
                 log.info(rtmsg)
                 return False
 
-            CONST.active_tty.append(itty)
+            exist_tty = stdout.splitlines()
+            for itty in exist_tty:
+                cmd = "stty -F /dev/{0} speed 115200 > /dev/null 2>/dev/null".format(itty)
+                [stdout, rtc] = self.xcmd(cmd)
+                if (rtc == 1):
+                    rtmsg = "{0}: stty setting failed".format(__FUNC)
+                    log.info(rtmsg)
+                    return False
+
+                CONST.active_tty.append(itty)
+        else:
+            CONST.active_tty.append("ttyUSB0")        
 
         num = len(CONST.active_tty)
         self.slot1.apply_comport_item(CONST.active_tty)
