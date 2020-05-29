@@ -22,7 +22,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
-        self.helper_path = "unms"
+        self.helper_path = "unms-rpro"
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
