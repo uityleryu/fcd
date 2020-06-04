@@ -105,7 +105,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.FWUPDATE_ENABLE       = True 
         self.DATAVERIFY_ENABLE     = True 
         self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea15" else False
-        self.LCM_CHECK_ENABLE      = True if self.board_id == "ea19" else False
+        self.LCM_CHECK_ENABLE      = True if self.board_id == "ea15" or self.board_id == "ea19" else False
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -209,29 +209,32 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
     # A dirty workaround before FW developers provide a stable way to check if LCM FW is loaded and version is correct
     def lcm_fw_ver_check(self):
-        retry_cnt = 60
-        for i in range(retry_cnt):
-            try:
-                self.pexp.expect_lnxcmd(3, self.linux_prompt, 'ps w | grep dfu -i | grep -v "dfu -i"', "uxg-pro-lcm-fw.dfu", retry=0)
-                time.sleep(1)
-                continue
-            except Exception as e:
-                self.pexp.expect_lnxcmd(3, self.linux_prompt, '/etc/init.d/S05ulcmd stop', self.linux_prompt)
-                break
-        if i == retry_cnt - 1:
-            raise Exception("Check DFU failed")
-
-        for i in range(retry_cnt):
-            try:
-                self.pexp.expect_lnxcmd(5, self.linux_prompt, "stty -F /dev/ttyACM0 115200 -echo", self.linux_prompt)
-                self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo '{\"system\":{\"get\":\"version\"}}' > /dev/ttyACM0", 
-                                        self.linux_prompt)
-                self.pexp.expect_lnxcmd(3, self.linux_prompt, "cat /dev/ttyACM0", "v0.0.4-0-gcedc7ef", retry=0)
-                break
-            except Exception as e:
-                continue
-        if i == retry_cnt - 1:
-            raise Exception("Check LCM FW version failed")
+        if self.board_id == "ea15":
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
+        elif self.board_id == "ea19":
+            retry_cnt = 60
+            for i in range(retry_cnt):
+                try:
+                    self.pexp.expect_lnxcmd(3, self.linux_prompt, 'ps w | grep dfu -i | grep -v "dfu -i"', "uxg-pro-lcm-fw.dfu", retry=0)
+                    time.sleep(1)
+                    continue
+                except Exception as e:
+                    self.pexp.expect_lnxcmd(3, self.linux_prompt, '/etc/init.d/S05ulcmd stop', self.linux_prompt)
+                    break
+            if i == retry_cnt - 1:
+                raise Exception("Check DFU failed")
+    
+            for i in range(retry_cnt):
+                try:
+                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "stty -F /dev/ttyACM0 115200 -echo", self.linux_prompt)
+                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo '{\"system\":{\"get\":\"version\"}}' > /dev/ttyACM0", 
+                                            self.linux_prompt)
+                    self.pexp.expect_lnxcmd(3, self.linux_prompt, "cat /dev/ttyACM0", "v0.0.4-0-gcedc7ef", retry=0)
+                    break
+                except Exception as e:
+                    continue
+            if i == retry_cnt - 1:
+                raise Exception("Check LCM FW version failed")
 
     def run(self):
         """
@@ -285,14 +288,14 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.POWEROFF_CHECK_ENABLE is True:
-            msg(85, "Wait system running up and reboot...")
-            self.poweroff_check()
-            msg(90, "Boot successfully ...")
-
         if self.LCM_CHECK_ENABLE is True:
-            msg(95, "Check LCM FW version ...")
+            msg(85, "Check LCM FW version ...")
             self.lcm_fw_ver_check()
+
+        if self.POWEROFF_CHECK_ENABLE is True:
+            msg(90, "Wait system running up and reboot...")
+            self.poweroff_check()
+            msg(95, "Boot successfully ...")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
