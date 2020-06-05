@@ -730,23 +730,23 @@
 
       "AFi-ALN-R-EU":{
       "INDEX"       : 4,
-      "NAME"        : "AFi-ALN-R",
+      "NAME"        : "AFi-ALN-R-EU",
       "BOARDID"     : "da13",
       "BOMREV"      : "113-00905",
       "DESC"        : "Amplifi ALien Router EU",
       "FILE"        : "afi_ipq807x_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     },
 
       "AFi-ALN-P-EU":{
       "INDEX"       : 5,
-      "NAME"        : "AFi-ALN-P",
+      "NAME"        : "AFi-ALN-P-EU",
       "BOARDID"     : "da14",
       "BOMREV"      : "113-00957",
       "DESC"        : "Amplifi ALien Mesh Point EU",
       "FILE"        : "afi_ipq807x_factory.py",
-      "T1FILE"      : "",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
     }
 
