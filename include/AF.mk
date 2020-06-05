@@ -43,12 +43,12 @@ TOOLS-AF60-LR+=$(TOOLS-AF60)
 
 # Project target
 
-$(eval $(call ProductImage,AF,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,AF,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))

@@ -27,7 +27,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.13"
+    __version__ = "1.0.14"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -700,7 +700,6 @@ class ScriptBase(object):
         cmd = "dd if={0} of=/tmp/{1} bs=1k count=64".format(self.devregpart, self.eeorg)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         time.sleep(0.1)
-        self.chk_lnxcmd_valid()
 
         dstp = "/tmp/{0}".format(self.eeorg)
         self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
@@ -756,18 +755,16 @@ class ScriptBase(object):
         cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eeorg, self.devregpart)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
         time.sleep(0.1)
-        self.chk_lnxcmd_valid()
 
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
-        self.tftp_get(remote=srcp, local=helperexe_path, timeout=20)
+        self.tftp_get(remote=srcp, local=helperexe_path, timeout=30)
 
         cmd = "chmod 777 {0}".format(helperexe_path)
         self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
                                 valid_chk=True)
-        self.chk_lnxcmd_valid()
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
         eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
