@@ -108,6 +108,13 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "bootupd done")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
+    def reset_uboot_env(self):
+        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "env default -a")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_only(20, "done")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
     def boot_recovery_image(self):
         self.pexp.expect_action(20, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
@@ -171,7 +178,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         need to enable it manually before FTU test
         '''
         cmd = "ubios-udapi-client put /services \'{\"sshServer\": {\"enabled\": true,\"sshPort\":22}}\'"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True, retry=5)
 
     def run(self):
         """
@@ -194,6 +201,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
         if self.UPDATE_UBOOT is True:
             self.update_uboot()
+            self.reset_uboot_env()
 
         if self.BOOT_RECOVERY_IMAGE is True:
             self.boot_recovery_image()
