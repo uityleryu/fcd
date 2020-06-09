@@ -92,22 +92,26 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         else:
             log_debug("Generating " + self.eebin_path + " files successfully")
 
+    def _sense_cmd_before_registration(self):
+
+        log_debug("check dut connection".center(60, "="))
+        rtv = self.ser.execmd_getmsg(cmd="app 20", waitperiod=0, sleep_time=0.5)
+        log_debug('command "app 20" rtv = {}'.format([rtv]))
+        if rtv == "" or rtv == "app 20\n":
+            error_critical("DUT is not connected, please check the connection")
+        log_debug("DUT is connected")
+
+        log_debug("disable all sensors".center(60, "="))
+        cmd_clr_all_disable = "app 43 02 05 00 00 32 00 00 96 00 00 05 20 03 23 05 0F 15 04 05 07 00 00 0F 0A 3C"
+        log_debug(cmd_clr_all_disable+"\n")
+        self.ser.execmd(cmd=cmd_clr_all_disable)
+        time.sleep(2)
+
     def registration(self):
         log_debug("Starting to do registration ...")
 
         if self.board_id == "a912":
-            log_debug("check dut connection".center(60, "="))
-            rtv = self.ser.execmd_getmsg(cmd="app 20", waitperiod=0, sleep_time=0.5)
-            log_debug('command "app 20" rtv = {}'.format([rtv]))
-            if rtv == "" or rtv == "app 20\n":
-                error_critical("DUT is not connected, please check the connection")
-            log_debug("DUT is connected")
-    
-            log_debug("disable all sensors".center(60, "="))
-            cmd_clr_all_disable = "app 43 02 05 00 00 32 00 00 96 00 00 05 20 03 23 05 0F 15 04 05 07 00 00 0F 0A 3C"
-            log_debug(cmd_clr_all_disable+"\n")
-            self.ser.execmd(cmd=cmd_clr_all_disable)
-            time.sleep(2)
+            self._sense_cmd_before_registration()
 
         try:
             uid = self.ser.execmd_getmsg("GETUID")
@@ -174,7 +178,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         log_debug("Add the date code in the devreg binary file")
 
-    def check_devreg_data(self):
+    def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
         if self.board_id == "a912":
@@ -189,7 +193,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
-    def check_info(self):
+    def check_mac(self):
+        log_debug("skip check the MAC in DUT ...")
         pass
 
     def run(self):
@@ -217,8 +222,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.put_devreg_data_in_dut()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+            self.check_mac()
+            msg(60, "Finish checking MAC in DUT ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
@@ -231,6 +238,7 @@ def main():
     else:
         udm_factory_general = UFPEFR32FactoryGeneral()
         udm_factory_general.run()
+
 
 if __name__ == "__main__":
     main()
