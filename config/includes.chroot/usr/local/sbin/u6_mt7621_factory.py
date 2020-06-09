@@ -13,9 +13,9 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a610: U6-IW
-    a611: U6-Flex
+    a611: U6-Mesh
     a612: U6-LITE
-    a613: U6-Mesh
+    a613: U6-Extender
     a614: U6-LR
 '''
 

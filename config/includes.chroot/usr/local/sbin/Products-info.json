@@ -625,12 +625,12 @@
       "SW_ID"       : "0601"
     },
 
-    "U6-FLEX":{
+    "U6-Mesh":{
       "INDEX"       : 8,
-      "NAME"        : "U6-FLEX",
+      "NAME"        : "U6-Mesh",
       "BOARDID"     : "a611",
       "BOMREV"      : "113-00743",
-      "DESC"        : "UniFi AP6 FLEX",
+      "DESC"        : "UniFi AP6 Mesh",
       "FILE"        : "u6_mt7621_factory.py",
       "T1FILE"      : "u6_mt7621_mfg.py",
       "QRCHECK"     : "True",
@@ -651,12 +651,12 @@
       "SW_ID"       : "0601"
     },
 
-    "U6-Mesh":{
+    "U6-Extender":{
       "INDEX"       : 10,
-      "NAME"        : "U6-Mesh",
+      "NAME"        : "U6-Extender",
       "BOARDID"     : "a613",
       "BOMREV"      : "113-00746",
-      "DESC"        : "UniFi AP6 FLEX",
+      "DESC"        : "UniFi AP6 Extender",
       "FILE"        : "u6_mt7621_factory.py",
       "T1FILE"      : "u6_mt7621_mfg.py",
       "QRCHECK"     : "True",
