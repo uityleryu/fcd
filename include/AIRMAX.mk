@@ -39,31 +39,38 @@ TOOLS-GBE= \
     am/helper_IPQ40xx \
     am/am_dummy_cal.bin \
     am/id_rsa \
-    am/id_rsa.pub 
+    am/id_rsa.pub
 
 TOOLS-PRISMAP= \
     am/cfg_part_qca9557.bin \
     am/fl_lock \
     am/helper_ARxxxx_11ac \
     am/id_rsa \
-    am/id_rsa.pub 
+    am/id_rsa.pub
+
+TOOLS-60G-LAS= \
+    common/helper_UNIFI_MT7621_release \
 
 # Assign common tool for every model
 TOOLS-GBE+=$(TOOLS-CONFIG)
 TOOLS-PRISMAP+=$(TOOLS-CONFIG)
+TOOLS-60G-LAS+=$(TOOLS-CONFIG)
 
 # Assign UAP series tools
 TOOLS-AIRMAX+=$(TOOLS-GBE)
 TOOLS-AIRMAX+=$(TOOLS-PRISMAP)
+TOOLS-AIRMAX+=$(TOOLS-60G-LAS)
 
 # Project target
 
 $(eval $(call ProductImage,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
 $(eval $(call ProductImage,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
 $(eval $(call ProductCompress,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER)))
