@@ -186,6 +186,10 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_only(120, "done")
 
     def check_info(self):
+        #Check BT FW is included or not
+        self.pexp.expect_only(30, "\[BT Power On Result\] Success")
+        self.pexp.expect_only(30, "\[HIC LE  SET ADVERTISING DATA Result\] Success")
+
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
