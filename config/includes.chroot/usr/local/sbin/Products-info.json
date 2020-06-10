@@ -975,7 +975,7 @@
       "INDEX"       : 4,
       "NAME"        : "60G-LAS",
       "BOARDID"     : "a918",
-      "BOMREV"      : "113-02765",
+      "BOMREV"      : "113-00717",
       "DESC"        : "Link Assist Sensor",
       "FILE"        : "ufp_efr32_factory.py",
       "T1FILE"      : "",
