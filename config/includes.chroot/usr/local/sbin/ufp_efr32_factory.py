@@ -15,7 +15,7 @@ import traceback
 NEED_DROPBEAR = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
+REGISTER_ENABLE = False
 QRCODE_ENABLE = False
 
 
@@ -52,19 +52,22 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'a911': "0",
-            'a912': "0"
+            'a912': "0",
+            'a918': "0"
         }
 
         # number of WiFi
         self.wifinum = {
             'a911': "0",
             'a912': "0",
+            'a918': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'a911': "1",
             'a912': "1",
+            'a918': "1",
         }
 
     def prepare_server_need_files(self):
@@ -216,6 +219,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
+            msg(20, "Finish erasing ee files ...")
             self.prepare_server_need_files()
             msg(30, "Finish preparing the devreg file ...")
 
