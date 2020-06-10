@@ -3,7 +3,7 @@
 from script_base import ScriptBase
 from ubntlib.fcd.pserial import SerialExpect
 from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, msg, error_critical
+from ubntlib.fcd.logger import log_debug, msg, error_critical, log_info
 from xmodem import XMODEM
 
 import sys
@@ -17,6 +17,7 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = False
 QRCODE_ENABLE = False
+CHECK_MAC_ENABLE = True
 
 
 class UFPEFR32FactoryGeneral(ScriptBase):
@@ -48,6 +49,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.keycert_path = os.path.join(self.tftpdir, self.nkeycert)
         self.keycertchk_path = os.path.join(self.tftpdir, self.nkeycertchk)
         self.flasheditor = os.path.join(self.common_dir, self.eepmexe)
+
+        # check MAC
+        self.cmd_version = "VERSION"
 
         # number of Ethernet
         self.ethnum = {
@@ -196,9 +200,35 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
+    def _read_version(self, msg):
+        # only for LOCK-R(a911) and 60G-LAS(a918)
+        msg_versw = msg.split("VER-SW:")[-1].split("\r")[0].split(";")
+        msg_verhw = msg.split("VER-HW:")[-1].split("\r")[0].split(";")
+        msg_verswhw = msg_versw + msg_verhw
+        version = {}
+        for ii in msg_verswhw:
+            version[ii.split("-", 1)[0]] = ii.split("-", 1)[1]
+        return version
+
     def check_mac(self):
-        log_debug("skip check the MAC in DUT ...")
-        pass
+        if self.board_id not in ['a918']:
+            log_debug("skip check the MAC in DUT ...")
+            return
+
+        rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
+        version = self._read_version(rtv_verison)
+        for key, value in version.items():
+            log_info("{} = {}".format(key, value))
+
+        dut_mac = version["MAC"].replace(".", "").upper()
+        log_info("MAC_DUT    = {}".format(dut_mac))
+        log_info("MAC_expect = {}".format(self.mac))
+        log_info("FW version in DUT = {}".format(version["SWv"]))
+
+        if dut_mac == self.mac:
+            log_debug('MAC_DUT and MAC_expect are match')
+        else:
+            error_critical("MAC_DUT and MAC_expect are NOT match")
 
     def run(self):
         """
@@ -228,6 +258,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.put_devreg_data_in_dut()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+
+        if CHECK_MAC_ENABLE is True:
             self.check_mac()
             msg(60, "Finish checking MAC in DUT ...")
 
