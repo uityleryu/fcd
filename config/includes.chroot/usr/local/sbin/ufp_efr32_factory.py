@@ -3,7 +3,7 @@
 from script_base import ScriptBase
 from ubntlib.fcd.pserial import SerialExpect
 from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, msg, error_critical
+from ubntlib.fcd.logger import log_debug, msg, error_critical, log_info
 from xmodem import XMODEM
 
 import sys
@@ -17,6 +17,7 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 QRCODE_ENABLE = False
+CHECK_MAC_ENABLE = False
 
 
 class UFPEFR32FactoryGeneral(ScriptBase):
@@ -49,22 +50,33 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.keycertchk_path = os.path.join(self.tftpdir, self.nkeycertchk)
         self.flasheditor = os.path.join(self.common_dir, self.eepmexe)
 
+        # check MAC
+        self.cmd_version = "VERSION"
+        self.mac_check_dict = {
+            'a911': False,
+            'a912': False,
+            'a918': True,
+        }
+
         # number of Ethernet
         self.ethnum = {
             'a911': "0",
-            'a912': "0"
+            'a912': "0",
+            'a918': "0"
         }
 
         # number of WiFi
         self.wifinum = {
             'a911': "0",
             'a912': "0",
+            'a918': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'a911': "1",
             'a912': "1",
+            'a918': "1",
         }
 
     def prepare_server_need_files(self):
@@ -92,36 +104,45 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         else:
             log_debug("Generating " + self.eebin_path + " files successfully")
 
+    def _sense_cmd_before_registration(self):
+
+        log_debug("check dut connection".center(60, "="))
+        rtv = self.ser.execmd_getmsg(cmd="app 20", waitperiod=0, sleep_time=0.5)
+        log_debug('command "app 20" rtv = {}'.format([rtv]))
+        if rtv == "" or rtv == "app 20\n":
+            error_critical("DUT is not connected, please check the connection")
+        log_debug("DUT is connected")
+
+        log_debug("disable all sensors".center(60, "="))
+        cmd_clr_all_disable = "app 43 02 05 00 00 32 00 00 96 00 00 05 20 03 23 05 0F 15 04 05 07 00 00 0F 0A 3C"
+        log_debug(cmd_clr_all_disable+"\n")
+        self.ser.execmd(cmd=cmd_clr_all_disable)
+        time.sleep(2)
+
     def registration(self):
         log_debug("Starting to do registration ...")
 
         if self.board_id == "a912":
-            log_debug("check dut connection".center(60, "="))
-            rtv = self.ser.execmd_getmsg(cmd="app 20", waitperiod=0, sleep_time=0.5)
-            log_debug('command "app 20" rtv = {}'.format([rtv]))
-            if rtv == "" or rtv == "app 20\n":
-                error_critical("DUT is not connected, please check the connection")
-            log_debug("DUT is connected")
-    
-            log_debug("disable all sensors".center(60, "="))
-            cmd_clr_all_disable = "app 43 02 05 00 00 32 00 00 96 00 00 05 20 03 23 05 0F 15 04 05 07 00 00 0F 0A 3C"
-            log_debug(cmd_clr_all_disable+"\n")
-            self.ser.execmd(cmd=cmd_clr_all_disable)
-            time.sleep(2)
+            self._sense_cmd_before_registration()
 
         try:
-            uid = self.ser.execmd_getmsg("GETUID")
-            res = re.search(r"UNIQUEID:27-(.*)\n", uid, re.S)
-            uids = res.group(1)
+            uid_rtv = self.ser.execmd_getmsg("GETUID")
+            res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
+            uid = res.group(1)
+            log_info('uid = {}'.format(uid))
 
-            cpuid = self.ser.execmd_getmsg("GETCPUID")
-            res = re.search(r"CPUID:(.*)\n", cpuid, re.S)
-            cpuids = res.group(1)
+            cpuid_rtv = self.ser.execmd_getmsg("GETCPUID")
+            res = re.search(r"CPUID:(.*)\n", cpuid_rtv, re.S)
+            cpuid = res.group(1)
+            log_info('cpuid = {}'.format(cpuid))
 
-            jedecid = self.ser.execmd_getmsg("GETJEDEC")
-            res = re.search(r"JEDECID:(.*)\n", jedecid, re.S)
-            jedecids = res.group(1)
+            jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC")
+            res = re.search(r"JEDECID:(.*)\n", jedecid_rtv, re.S)
+            jedecid = res.group(1)
+            log_info('jedecid = {}'.format(jedecid))
+
         except Exception as e:
+            log_debug("Extract UID, CPUID and JEDEC failed")
             log_debug("{}".format(traceback.format_exc()))
             error_critical("{}\n{}".format(sys.exc_info()[0], e))
 
@@ -132,9 +153,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
             "-i field=product_class_id,format=hex,value=" + self.prodclass,
-            "-i field=flash_jedec_id,format=hex,value=" + jedecids,
-            "-i field=flash_uid,format=hex,value=" + uids,
-            "-i field=cpu_rev_id,format=hex,value=" + cpuids,
+            "-i field=flash_jedec_id,format=hex,value=" + jedecid,
+            "-i field=flash_uid,format=hex,value=" + uid,
+            "-i field=cpu_rev_id,format=hex,value=" + cpuid,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
             "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
@@ -174,12 +195,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         log_debug("Add the date code in the devreg binary file")
 
-    def check_devreg_data(self):
+    def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id == "a912":
+        if self.board_id in ["a912", "a918"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id == "a911":
+        elif self.board_id in ["a911"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
@@ -189,8 +210,38 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
-    def check_info(self):
-        pass
+    def _read_version(self, msg):
+        # only for LOCK-R(a911) and 60G-LAS(a918)
+        msg_versw = msg.split("VER-SW:")[-1].split("\r")[0].split(";")
+        msg_verhw = msg.split("VER-HW:")[-1].split("\r")[0].split(";")
+        msg_verswhw = msg_versw + msg_verhw
+        version = {}
+        for ii in msg_verswhw:
+            version[ii.split("-", 1)[0]] = ii.split("-", 1)[1]
+        return version
+
+    def check_mac(self):
+        log_debug("self.mac_check_dict = {}".format(self.mac_check_dict))
+
+        if self.mac_check_dict[self.board_id] is False:
+            log_debug("skip check the MAC in DUT ...")
+            return
+
+        rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
+        version = self._read_version(rtv_verison)
+        for key, value in version.items():
+            log_info("{} = {}".format(key, value))
+
+        dut_mac = version["MAC"].replace(".", "").upper()
+        expect_mac = self.mac.upper()
+        log_info("MAC_DUT    = {}".format(dut_mac))
+        log_info("MAC_expect = {}".format(expect_mac))
+        log_info("FW version in DUT = {}".format(version["SWv"]))
+
+        if dut_mac == expect_mac:
+            log_debug('MAC_DUT and MAC_expect are match')
+        else:
+            error_critical("MAC_DUT and MAC_expect are NOT match")
 
     def run(self):
         """
@@ -211,14 +262,19 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
+            msg(20, "Finish erasing ee files ...")
             self.prepare_server_need_files()
             msg(30, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.put_devreg_data_in_dut()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+
+        if CHECK_MAC_ENABLE is True:
+            self.check_mac()
+            msg(60, "Finish checking MAC in DUT ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
@@ -231,6 +287,7 @@ def main():
     else:
         udm_factory_general = UFPEFR32FactoryGeneral()
         udm_factory_general.run()
+
 
 if __name__ == "__main__":
     main()

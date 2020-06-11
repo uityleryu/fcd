@@ -959,7 +959,7 @@
     },
 
     "GBE-AP":{
-      "INDEX"       : 1,
+      "INDEX"       : 3,
       "NAME"        : "GBE-AP",
       "BOARDID"     : "dca0",
       "BOMREV"      : "113-00825",
@@ -969,6 +969,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1201"
+    },
+
+    "60G-LAS":{
+      "INDEX"       : 4,
+      "NAME"        : "60G-LAS",
+      "BOARDID"     : "a918",
+      "BOMREV"      : "113-00717",
+      "DESC"        : "Link Assist Sensor",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1203"
     }
   },
 
@@ -1091,7 +1104,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      },
-  
+
      "UVC-G4PTZ":{
       "INDEX"       : 2,
       "NAME"        : "UVC-G4PTZ",
@@ -1104,7 +1117,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      },
-    
+
      "UVC-G4DOORBELL":{
       "INDEX"       : 3,
       "NAME"        : "UVC-G4DOORBELL",
@@ -1117,7 +1130,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      },
-    
+
      "UVC-G4BULLET":{
       "INDEX"       : 4,
       "NAME"        : "UVC-G4BULLET",
@@ -1130,7 +1143,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      },
-    
+
      "UVC-G4DOME":{
       "INDEX"       : 5,
       "NAME"        : "UVC-G4DOME",
@@ -1143,7 +1156,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      },
-    
+
      "UVC-G3MINI":{
       "INDEX"       : 6,
       "NAME"        : "UVC-G3MINI",
@@ -1156,7 +1169,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
      }
-          
+
   },
 
 
