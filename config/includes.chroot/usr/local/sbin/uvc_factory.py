@@ -522,8 +522,16 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug(otmsg)
 
     def fwupdate(self):
-        log_debug("Updating firmware...")
+        log_debug("Clear /tmp before upload fw")
+        cmd = "rm /tmp/e.*; rm /tmp/helper*; rm /tmp/m25p80*; rm /tmp/eerom_backup*"
+        log_debug(cmd)
+        self.session.execmd(cmd)
 
+        cmd = 'cat /etc/inittab | grep -v "ubnt_analytics" > /tmp/inittab; mv /tmp/inittab /etc/inittab; init -q ; pkill -9 ubnt_analytics'
+        log_debug(cmd)
+        self.session.execmd(cmd)        
+
+        log_debug("Updating firmware...")
         host_path = self.fw_path
         dut_path = os.path.join(self.dut_tmpdir, "fwupdate.bin")
         self.session.put_file(host_path, dut_path)
@@ -544,20 +552,31 @@ class UVCFactoryGeneral(ScriptBase):
 
 
         # reset2defaults
-        log_debug("reset2defaults")  
-        cmd = "sed -i \"s@null::respawn:/bin/ubnt_ctlserver@#null::respawn:/bin/ubnt_ctlserver@\"   /etc/inittab && init -q && killall -9 ubnt_ctlserver"
+        log_debug("=== reset2defaults ===")  
+
+        cmd = 'md5sum /etc/persistent/server.pem'
+        rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
+        rmsg = 'md5_server.pem_prev: ' + rmsg
+        print(rmsg)
+        log_debug(rmsg)
+
+        cmd = 'touch /etc/persistent/reset.flag; cfgmtd -w -p /etc'
+        log_debug(cmd)
         self.session.execmd(cmd)
 
         cmd = "cfgmtd -c"
+        log_debug(cmd)
         self.session.execmd(cmd)
 
         cmd = "echo \"test.factory=1\" >> /tmp/system.cfg"
+        log_debug(cmd)
         self.session.execmd(cmd)
 
 
 
         log_debug("installing firmware")
         cmd = "fwupdate -m"
+        log_debug(cmd)
         if self.session.execmd(cmd) == 0:
             log_debug("firmware {} updated successfully".format(self.firmware))
         else:
@@ -574,6 +593,14 @@ class UVCFactoryGeneral(ScriptBase):
                                   polling_mins=3)
         self.set_sshclient_helper(ssh_client=sshclient_obj)
         log_debug("reconnected with DUT successfully")
+
+
+        cmd = 'md5sum /etc/persistent/server.pem'
+        rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
+        rmsg = 'md5_server.pem_new: ' + rmsg
+        print(rmsg)
+        log_debug(rmsg)
+
 
         # show fw version
         cmd = 'cat /usr/lib/version'
