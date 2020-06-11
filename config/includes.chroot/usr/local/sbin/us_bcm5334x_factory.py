@@ -181,8 +181,8 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
         mac_0 = None
         mac_1 = None
         mac_base = self.mac.replace(":", "")
-        mac_tmp = hex(int(mac_base[0:2], 16) | 0x2)
-        mac_admin = mac_tmp[2:] + mac_base[2:]
+        mac_tmp = (int(mac_base,16)|0x020000000000)
+        mac_admin = format(mac_tmp, 'x').zfill(12)
 
         if match:
             mac_0 = match.group(1).replace(":", "")
