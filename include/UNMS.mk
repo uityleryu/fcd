@@ -8,8 +8,8 @@ IMAGE-UNMS-R-PRO= \
 
 IMAGE-UNMS-S-LITE= \
     images/eed0* \
-    unms-fw/diag_unms_s_lite_0.0.1.bix \
-    unms-fw/u-boot_unms_s_lite_0.0.1.bin \
+    unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.1.bix \
+    unms-fw/UNMS-S-Lite.uboot_1.1.0.bin \
 
 IMAGE-UNMS-R-LITE= \
     images/ee6b* \

@@ -58,7 +58,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         }
 
     def stop_at_uboot(self):
-        self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033")
+        self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
 
     def uboot_config(self):
         cmdset = [
