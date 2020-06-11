@@ -23,7 +23,7 @@ class USPMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = "uboot>"
-        self.helper_path = "usp"
+        self.helper_path = "pdu_pro"
 
         # number of mac
         self.macnum =  {'ed12': "2"}
@@ -49,8 +49,10 @@ class USPMT7628Factory(ScriptBase):
         self.PROVISION_ENABLE       = True 
         self.DOHELPER_ENABLE        = True 
         self.REGISTER_ENABLE        = True 
-        self.FWUPDATE_ENABLE        = True 
+        self.FWUPDATE_ENABLE        = False
         self.DATAVERIFY_ENABLE      = True 
+        self.LCM_FW_CHECK_ENABLE    = True
+        self.MCU_FW_CHECK_ENABLE    = True
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -105,6 +107,12 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
 
+    def lcm_fw_check(self):                                                                                                                         
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
+
+    def mcu_fw_check(self):
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu info', 'version', retry=48)
+
     def run(self):
         self.fcd.common.config_stty(self.dev)
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
@@ -141,11 +149,21 @@ class USPMT7628Factory(ScriptBase):
             msg(60, "Updating released firmware ...")
             self.fwupdate(self.fwimg, reboot_en=True)
             msg(70, "Updating released firmware done...")
+        else:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot", self.linux_prompt)
 
         if self.DATAVERIFY_ENABLE is True:
             self.login(press_enter=True, log_level_emerg=True, timeout=60)
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
+
+        if self.LCM_FW_CHECK_ENABLE is True:
+            self.lcm_fw_check()
+            msg(85, "Succeeding in checking the devreg information ...")
+
+        if self.MCU_FW_CHECK_ENABLE is True:
+            self.mcu_fw_check()
+            msg(90, "Succeeding in checking the devreg information ...")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
