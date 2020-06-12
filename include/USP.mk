@@ -49,7 +49,7 @@ TOOLS-USP-STRIP+= \
     usp/gen-cert.sh
 
 TOOLS-USP-PDU-PRO+= \
-    usp/helper_MT7628_release
+    pdu_pro/helper_MT7628_release
 
 # Project target
 
