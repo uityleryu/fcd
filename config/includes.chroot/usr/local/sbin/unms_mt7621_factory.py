@@ -142,7 +142,7 @@ class UNMSMT7621Factory(ScriptBase):
         need to enable it manually before FTU test
         '''
         cmd = "ubios-udapi-client put /services \'{\"sshServer\": {\"enabled\": true,\"sshPort\":22}}\'"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True, retry=5)
 
     def run(self):
         """
