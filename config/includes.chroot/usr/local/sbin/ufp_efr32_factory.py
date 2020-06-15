@@ -17,7 +17,7 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 QRCODE_ENABLE = False
-CHECK_MAC_ENABLE = False
+CHECK_MAC_ENABLE = True
 
 
 class UFPEFR32FactoryGeneral(ScriptBase):
@@ -52,6 +52,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         # check MAC
         self.cmd_version = "VERSION"
+        self.cmd_reset = "RESET"
+        self.cmd_erase_devreg = "ERASEDEVREG"
+
         self.mac_check_dict = {
             'a911': False,
             'a912': False,
@@ -220,12 +223,22 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             version[ii.split("-", 1)[0]] = ii.split("-", 1)[1]
         return version
 
+    def _reset(self):
+        # it needs to reset for updating the MAC, otherwise the MAC would be like "VER-HW:MAC-ff.ff.ff.ff.ff.ff"
+        log_info('Sending the reset command')
+        rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
+        log_info('rtv_reset = {}'.format(rtv_reset))
+        time.sleep(1)
+
     def check_mac(self):
-        log_debug("self.mac_check_dict = {}".format(self.mac_check_dict))
+        log_debug("Starting to check MAC")
+        log_info("self.mac_check_dict = {}".format(self.mac_check_dict))
 
         if self.mac_check_dict[self.board_id] is False:
             log_debug("skip check the MAC in DUT ...")
             return
+
+        self._reset()
 
         rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
         version = self._read_version(rtv_verison)
