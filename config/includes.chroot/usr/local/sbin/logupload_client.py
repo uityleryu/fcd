@@ -6,11 +6,8 @@ from argparse import RawTextHelpFormatter
 import shutil
 
 def uploadlog ( inputpath, stage, bom, mac  ):
-    urldict = {
-        'AWS-1': 'http://ec2-18-162-120-142.ap-east-1.compute.amazonaws.com:9999/api/v1/uploadlog',
-        'G-1': 'http://35.220.228.220:9999/api/v1/uploadlog'
-    }
-    url = urldict['AWS-1']
+
+    url = 'http://factory.dev.svc.ui.com:9999/api/v1/uploadlog'
 
     timestampstr = '%Y-%m-%d_%H_%M_%S_%f'
     tpe_tz = datetime.timezone(datetime.timedelta(hours=8))
