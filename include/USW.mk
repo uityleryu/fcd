@@ -13,6 +13,7 @@ IMAGE-USW-PRO= \
 IMAGE-USW-6XG= \
     images/eb23* \
     usw-fw/unifiswitch-6xg150-* \
+    usw-fw/unifiswitch-us24pro* \
     usw-fw/US.bcm5616x.*
 
 IMAGE-USW-FLEX= \
@@ -90,6 +91,7 @@ IMAGE-USW-MISSION-CRITICAL= \
 IMAGE-U6-S24= \
     images/eb38* \
     usw-fw/unifiswitch-usw6-24-poe* \
+    usw-fw/unifiswitch-us24pro* \
     usw-fw/US.bcm5616x*
 
 IMAGE-USW-Aggregation= \
