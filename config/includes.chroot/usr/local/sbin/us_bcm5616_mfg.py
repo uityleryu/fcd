@@ -343,9 +343,6 @@ class USBCM5616_MFG(ScriptBase):
         msg(no=80, out="Firmware update complete.")
 
         self.login()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
-        self.stop_uboot()
-        self.ub_clean_shmoo()
         msg(no=100, out="Back to T1 completed.")
         self.close_fcd()
 
