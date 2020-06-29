@@ -92,7 +92,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
         self.USGH2_SERIES = None
-        self.LCM_upgrade_NOT_SUPPORT = {}
+        self.LCM_upgrade_NOT_SUPPORT = {'eb23'}
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
