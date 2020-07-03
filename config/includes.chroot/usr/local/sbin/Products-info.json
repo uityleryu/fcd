@@ -1199,7 +1199,6 @@
 
   },
 
-
   "UbiquitiNMS":
   {
     "UNMS-R-PRO":{
@@ -1216,7 +1215,7 @@
      },
 
     "UNMS-S-LITE":{
-      "INDEX"       : 0,
+      "INDEX"       : 1,
       "NAME"        : "UNMS-S-LITE",
       "BOARDID"     : "eed0",
       "BOMREV"      : "113-00817",
@@ -1229,7 +1228,7 @@
      },
 
      "UNMS-R-LITE":{
-      "INDEX"       : 0,
+      "INDEX"       : 2,
       "NAME"        : "UNMS-R-LITE",
       "BOARDID"     : "ee6b",
       "BOMREV"      : "113-00814",
@@ -1242,7 +1241,7 @@
      },
 
      "UNMS-LTE-US":{
-      "INDEX"       : 0,
+      "INDEX"       : 3,
       "NAME"        : "UNMS-LTE-US",
       "BOARDID"     : "dca2",
       "BOMREV"      : "113-00782",
@@ -1255,7 +1254,7 @@
      },
 
      "UNMS-LTE-EU":{
-      "INDEX"       : 0,
+      "INDEX"       : 4,
       "NAME"        : "UNMS-LTE-EU",
       "BOARDID"     : "dca3",
       "BOMREV"      : "113-00832",
@@ -1263,6 +1262,19 @@
       "FILE"        : "unms_qca9563_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "False",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+     },
+
+     "UNMS-S-PRO":{
+      "INDEX"       : 5,
+      "NAME"        : "UNMS-S-PRO",
+      "BOARDID"     : "eed1",
+      "BOMREV"      : "113-00818",
+      "DESC"        : "Ubiquiti Network Management System Switch PRO",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
      }

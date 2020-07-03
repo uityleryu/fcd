@@ -22,39 +22,68 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         super(UNMSRTL838XFactoryGeneral, self).__init__()
 
         self.ver_extract()
-        self.bootloader_prompt = "RTL838x#"
-        self.devregpart = "/dev/mtdblock6"
-        self.helperexe = "helper_RTL838x_release"
-        self.helper_path = "unms-slite"
 
         # board model
         self.bdmd = {
-            'eed0': "UNMS_S_LITE"
+            'eed0': "UNMS_S_LITE",
+            'eed1': "UNMS_S_PRO"
         }
 
         # number of Ethernet
         ethnum = {
-            'eed0': "3"
+            'eed0': "3",
+            'eed1': "3"
         }
 
         # number of WiFi
         wifinum = {
-            'eed0': "0"
+            'eed0': "0",
+            'eed1': "0"
         }
 
         # number of Bluetooth
         btnum = {
-            'eed0': "0"
+            'eed0': "0",
+            'eed1': "0"
         }
+
+        btprmt = {
+            'eed0': "RTL838x#",
+            'eed1': "RTL9300#"
+        }
+
+        # helper path
+        hpth = {
+            'eed0': "unms-slite",
+            'eed1': "unms-spro"
+        }
+
+        # helper executable file
+        hpeb = {
+            'eed0': "helper_RTL838x_release",
+            'eed1': "helper_RTL930x_release"
+        }
+
+        # EEPROM device
+        eedev = {
+            'eed0': "/dev/mtdblock6",
+            'eed1': "/dev/mtdchar12"
+        }
+
+        self.netif = {
+            'eed0': "ifconfig eth0 ",
+            'eed1': "ifconfig eth0 "
+        }
+
+        self.bootloader_prompt = btprmt[self.board_id]
+        self.helper_path = hpth[self.board_id]
+        self.helperexe = hpeb[self.board_id]
+        self.devregpart = eedev[self.board_id]
 
         self.devnetmeta = {
             'ethnum'          : ethnum,
             'wifinum'         : wifinum,
             'btnum'           : btnum,
-        }
-
-        self.netif = {
-            'eed0': "ifconfig eth0 "
         }
 
     def stop_at_uboot(self):
@@ -116,7 +145,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         cmd = "upgrade runtime {0}/{1}-fw.bin".format(self.image, self.board_id)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         wmsg = "Upgrade runtime image \[{0}/{1}-fw.bin\] success".format(self.image, self.board_id)
-        self.pexp.expect_only(210, wmsg)
+        self.pexp.expect_only(520, wmsg)
 
         msg(15, "Loading cfg and log parts ...")
         cmd = "tftpboot 0x81000000 {0}/{1}/esx_cfg.part".format(self.tools, self.helper_path)
@@ -131,6 +160,10 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         cmd = "flwrite name JFFS2_LOG 0x81000000"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
+        cmd = "setenv ethaddr 00:E0:4C:00:00:0{}; saveenv".format(self.row_id)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        time.sleep(1)
+
         cmd = "boota"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
@@ -143,6 +176,13 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
 
+        if self.board_id == "eed1":
+            flerase_host_path = os.path.join(self.tools, self.helper_path, "flash_eraseall")
+            flerase_dut_path = os.path.join(self.dut_tmpdir, "flash_eraseall")
+            self.tftp_get(remote=flerase_host_path, local=flerase_dut_path, timeout=15)
+            cmd = "chmod 777 {}".format(flerase_dut_path)
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+
         '''
             ============ Registration start ============
               The following flow almost become a regular procedure for the registration.
@@ -151,6 +191,10 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         if PROVISION_EN is True:
             self.erase_eefiles()
             msg(20, "Send tools to DUT and data provision ...")
+            if self.board_id == "eed1":
+                cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
+                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+
             self.data_provision_64k(self.devnetmeta)
 
         if DOHELPER_EN is True:
@@ -160,6 +204,10 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
+            if self.board_id == "eed1":
+                cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
+                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
         '''
