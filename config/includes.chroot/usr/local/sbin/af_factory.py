@@ -6,6 +6,7 @@ import time
 import os
 import stat
 import shutil
+import datetime
 
 from pexpect import *
 from script_base import ScriptBase
@@ -26,7 +27,7 @@ class AFAMEFactroy(ScriptBase):
         }
 
         self.product = soctype[self.board_id]
-        self.client_utility = "/root/fcd/client_aarch64_release"
+        self.client_utility = "/usr/local/sbin/client_rpi4_release"
         self.tooldir = "/tftpboot/tools"
 
     def run(self):
@@ -40,7 +41,7 @@ class AFAMEFactroy(ScriptBase):
             if os.path.isdir(self.fcd_toolsdir) is False:
                 error_critical("Can't find {}".format(self.fcd_toolsdir))
 
-            if os.path.isdir("/root/usbdisk/keys") is False:
+            if os.path.isdir("/home/pi/usbdisk/keys") is False:
                 error_critical("Can't find keys")
 
             if status:
@@ -94,7 +95,6 @@ class AFAMEFactroy(ScriptBase):
 
         content = content.splitlines()
         log_debug( content[9] + "\n" + content[11] + "\n" + content[12] + "\n" + content[13])
-
         if self.product == 'AF':
             regparam = [
                 "-i field=flash_eeprom,format=binary,pathname=/tmp/EEPROM",
@@ -104,9 +104,15 @@ class AFAMEFactroy(ScriptBase):
                 "-i {}".format(content[10]),
                 "-i {}".format(content[11]),
                 "-i {}".format(content[7]),
-                "-x {}/ca.pem".format(self.key_dir),
-                "-y {}/key.pem".format(self.key_dir),
-                "-z {}/crt.pem".format(self.key_dir)
+                "-o field=registration_id",
+                "-o field=result",
+                "-o field=device_id",
+                "-o field=registration_status_id",
+                "-o field=registration_status_msg",
+                "-o field=error_message",
+                "-x {}ca.pem".format(self.key_dir),
+                "-y {}key.pem".format(self.key_dir),
+                "-z {}crt.pem".format(self.key_dir)
             ]
         elif self.product == 'AME':
             regparam = [
@@ -117,9 +123,15 @@ class AFAMEFactroy(ScriptBase):
                 "-i {}".format(content[11]),
                 "-i {}".format(content[12]),
                 "-i {}".format(content[13]),
-                "-x {}/ca.pem".format(self.key_dir),
-                "-y {}/key.pem".format(self.key_dir),
-                "-z {}/crt.pem".format(self.key_dir)
+                "-o field=registration_id",
+                "-o field=result",
+                "-o field=device_id",
+                "-o field=registration_status_id",
+                "-o field=registration_status_msg",
+                "-o field=error_message",
+                "-x {}ca.pem".format(self.key_dir),
+                "-y {}key.pem".format(self.key_dir),
+                "-z {}crt.pem".format(self.key_dir)
             ]
 
         regparam = ' '.join(regparam)
@@ -166,10 +178,26 @@ class AFAMEFactroy(ScriptBase):
             error_critical("Check EEPROM data error")
 
         ssh.write_wait("reboot")
-        msg(100, "Process Completed")
         sys.stdout.flush()
         time.sleep(10)
-        
+        msg(100, "Process Completed")
+        try:
+            if self.upload:
+                # Compute test_time/duration
+                self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+                self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
+                self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+                self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+
+                # Dump all var
+                self._dumpJSON()
+
+                self._upload_prepare()
+        except AttributeError:
+            pass
+
+        self.close_fcd()
+
 #===========================================================================
 #           main entry
 #===========================================================================
