@@ -19,15 +19,15 @@ import subprocess
 from ubntlib.fcd.common import Tee, Common
 from ubntlib.fcd.helper import FCDHelper
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from ubntlib.fcd.singleton import singleton,errorcollecter
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
 
-
 class ScriptBase(object):
-    __version__ = "1.0.14"
+    __version__ = "1.0.15"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -53,6 +53,8 @@ class ScriptBase(object):
         print("ubntlib version: " + ubntlib.__version__)
         self._encrpyt_passphrase_for_log()
         log_debug(str(self.input_args))
+
+
 
     @property
     def pexp(self):
@@ -239,6 +241,9 @@ class ScriptBase(object):
         self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
         self.test_duration = ''
         self.error_code = ''
+        self.error_function = ''
+        self.progress = 0
+        self.pass_devreg_client = False
         try:
             self.teststation_mac = ':'.join(("%012X" % get_mac())[i:i + 2] for i in range(0, 12, 2))
         except Exception as e:
@@ -473,6 +478,8 @@ class ScriptBase(object):
         clit.expect_only(30, "Ubiquiti Device Security Client")
         clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
 
         log_debug("Excuting client_x86 registration successfully")
         if self.FCD_TLV_data is True:
@@ -977,14 +984,27 @@ class ScriptBase(object):
                 self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
                 self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
 
+                # Store error function
+                self.__store_error_function()
+
                 # Dump all var
-                self._dumpJSON()
-
+                self.__dump_JSON()
                 self._upload_prepare()
-        except AttributeError:
-            pass
 
-    def _dumpJSON(self):
+        except Exception as e:
+            print (e)
+
+    def __store_error_function(self):
+        ubntlib_errorcollecter = errorcollecter()
+
+        self.progress = ubntlib_errorcollecter.msgno
+
+        if self.test_result != 'Pass':
+            self.error_function = ubntlib_errorcollecter.error_function
+            # Can implement original error_code
+            self.error_code = self.error_function
+
+    def __dump_JSON(self):
         dumpfile = os.path.join("/tftpboot/", "log_slot" + self.row_id + ".json")
         with open(dumpfile, 'w') as f:
             self.__dict__.pop('fsiw', None)
@@ -1110,7 +1130,7 @@ class ScriptBase(object):
             execcmd = "sudo {0} {1}".format(clientbin, regparam)
 
             uploadproc = subprocess.check_output(execcmd, shell=True)
-            log_debug('\n[Start upload_x86_client Command]\n{}\n{}\n'.format(execcmd, uploadproc.decode('utf-8')))
+            log_debug('\n[Start upload_x86_client Command]\n{}\n'.format(execcmd))
             if "field=result,format=u_int,value=1" in str(uploadproc.decode('utf-8')):
                 log_debug('[Upload_ui_usa Success]')
             else:
