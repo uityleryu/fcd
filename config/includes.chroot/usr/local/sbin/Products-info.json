@@ -180,12 +180,12 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-XG-Aggregation":{
+    "USW-Aggregation-Pro":{
       "INDEX"       : 7,
-      "NAME"        : "USW-XG-Aggregation",
+      "NAME"        : "USW-Aggregation-Pro",
       "BOARDID"     : "eb27",
       "BOMREV"      : "113-03046",
-      "DESC"        : "UBNT UniFiSwitch XG Aggregation",
+      "DESC"        : "UBNT UniFiSwitch Aggregation Pro",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
