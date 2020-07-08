@@ -958,12 +958,12 @@
       "SW_ID"       : "1201"
     },
 
-    "GBE-Lite":{
+    "GBE-Plus":{
       "INDEX"       : 1,
-      "NAME"        : "GBE-Lite",
+      "NAME"        : "GBE-Plus",
       "BOARDID"     : "dca1",
       "BOMREV"      : "113-00781",
-      "DESC"        : "GBE Lite",
+      "DESC"        : "GBE Plus",
       "FILE"        : "am_ipq40xx_factory.py",
       "T1FILE"      : "am_ipq40xx_mfg.py",
       "QRCHECK"     : "False",
