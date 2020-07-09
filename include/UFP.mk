@@ -5,8 +5,11 @@ IMAGE-UFP-SENSE=
 
 IMAGE-UFP-LOCK-R=
 
+TOOLS-UFP-TAG-COMBO=
+
 IMAGE-UFP+=$(IMAGE-UFP-SENSE)
 IMAGE-UFP+=$(IMAGE-UFP-LOCK-R)
+IMAGE-UFP+=$(IMAGE-UFP-TAG-COMBO)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -33,12 +36,23 @@ TOOLS-UFP-SENSE=$(TOOLS-UFP)
 
 TOOLS-UFP-LOCK-R=$(TOOLS-UFP)
 
+TOOLS-UFP-TAG-COMBO=$(TOOLS-UFP)
+TOOLS-UFP-TAG-COMBO+= \
+    ufp/nxp-nfc-nci
+
+
+
+
+
 # Project target
 
 $(eval $(call ProductImage,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UFP-TAG-COMBO,FCD_$(PRD)_UFP-TAG-COMBO_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UFP-TAG-COMBO,FCD_$(PRD)_UFP-TAG-COMBO_$(VER)_$(FWVER)))
+

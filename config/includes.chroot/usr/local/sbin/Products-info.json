@@ -1011,6 +1011,7 @@
       "FCD_ID"      : "000d",
       "SW_ID"       : "1601"
     },
+
     "UFP-LOCK-R":{
       "INDEX"       : 1,
       "NAME"        : "UFP-LOCK-R",
@@ -1022,7 +1023,21 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1602"
-    }
+    },
+  
+    "UFP-TAG-COMBO":{
+      "INDEX"       : 2,
+      "NAME"        : "UFP-TAG-COMBO",
+      "BOARDID"     : "a913",
+      "BOMREV"      : "113-02973",
+      "DESC"        : "UniFi Protect Bluetooth Tag",
+      "FILE"        : "ufp_tag_combo_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    }    
+
   },
 
   "USP":
