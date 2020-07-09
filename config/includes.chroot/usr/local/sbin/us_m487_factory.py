@@ -497,8 +497,8 @@ def main():
         msg(no="", out=str(sys.argv))
         error_critical(msg="Arguments are not enough")
     else:
-        udm_factory_general = USM487FactoryGeneral()
-        udm_factory_general.run()
+        us_m487_general = USM487FactoryGeneral()
+        us_m487_general.run()
 
 if __name__ == "__main__":
     main()
