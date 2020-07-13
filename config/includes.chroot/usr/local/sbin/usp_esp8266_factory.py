@@ -8,11 +8,6 @@ from script_base import ScriptBase
 from ubntlib.fcd.esptool_helper import ESPTool
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
-FLASH_HELPER = True 
-DO_SECURITY  = True 
-GEN_CA_KEY   = True 
-FLASH_FW     = True
-
 class USPESP8266Factory(ScriptBase):
     def __init__(self):
         super(USPESP8266Factory, self).__init__()
@@ -25,7 +20,6 @@ class USPESP8266Factory(ScriptBase):
 
         # image folder path
         self.image_path = {
-            '0000': "plug",
             'ee73': "plug",
             'ee74': "strip"
         }
@@ -40,12 +34,17 @@ class USPESP8266Factory(ScriptBase):
         self.fwbin_2 = os.path.join(self.fwdir, self.board_id+ "_user2.bin")
         self.recovery_bin = os.path.join(self.fwdir, self.board_id + "_recovery.bin")
 
-        self.boot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
+        self.rboot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
         self.boot_cfg_bin = os.path.join(self.fcd_uhtools, "rboot_cfg.bin")
         self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper.bin")
         self.blank_bin = os.path.join(self.fcd_uhtools, "blank.bin")
         self.esp_init_data_default_bin = os.path.join(self.fcd_uhtools, "esp_init_data_default.bin")
         self.mac_with_colon = ":".join(self.mac[i:i+2] for i in range(0, len(self.mac), 2))
+
+        self.FLASH_HELPER = True 
+        self.DO_SECURITY  = True 
+        self.GEN_CA_KEY   = True if self.board_id == 'ea74' else False
+        self.FLASH_FW     = True
 
     def check_info(self):
         """under developing
@@ -68,17 +67,30 @@ class USPESP8266Factory(ScriptBase):
         return False
 
     def flash_helper(self):
-        self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._4MB_C1)
+        self.ser.set_baudrate("921600")
+        self.ser.set_flash_size(self.ser._DETECT)
         self.ser.set_flash_mode(self.ser.DOUT)
 
         msg(10, "Initializing flash")
 
-        self.ser.add_arg(option="0x000000", value=self.boot_bin)
-        self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
-        self.ser.add_arg(option="0x3f7000", value=self.boot_cfg_bin)
-        self.ser.add_arg(option="0x3fc000", value=self.esp_init_data_default_bin)
-
+        if self.board_id == 'ee73':
+            self.ser.add_arg(option="0x000000", value=self.rboot_bin)
+            self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
+            self.ser.add_arg(option="0x076000", value=self.blank_bin)
+            self.ser.add_arg(option="0x077000", value=self.blank_bin)
+            self.ser.add_arg(option="0x078000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0F6000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0FB000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0FD000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0FE000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0FF000", value=self.blank_bin)
+            self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
+        elif self.board_id == 'ee74':
+            self.ser.add_arg(option="0x000000", value=self.rboot_bin)
+            self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
+            self.ser.add_arg(option="0x3F7000", value=self.boot_cfg_bin)
+            self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
+    
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
         if rtc != 0:
@@ -126,7 +138,6 @@ class USPESP8266Factory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         [sto, _] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
         print(sto)
         sstr = [
             "mv",
@@ -136,22 +147,60 @@ class USPESP8266Factory(ScriptBase):
         sstrj = ' '.join(sstr)
         [sto, _] = self.fcd.common.xcmd(sstrj)
         print(sto)
-        time.sleep(1)
 
     def flash_eeprom_and_fw(self):
         msg(60, "Flashing firmware and eeprom files")
-        self.ser.set_baudrate("460800")
-        self.ser.set_flash_size(self.ser._4MB_C1)
+        self.ser.set_baudrate("921600")
+        self.ser.set_flash_size(self.ser._DETECT)
         self.ser.set_flash_mode(self.ser.DOUT)
 
-        self.ser.add_arg(option="0x000000", value=self.boot_bin)
-        self.ser.add_arg(option="0x001000", value=self.fwbin_1)
-        self.ser.add_arg(option="0x101000", value=self.fwbin_2)
-        self.ser.add_arg(option="0x201000", value=self.recovery_bin)
-        self.ser.add_arg(option="0x38a000", value=self.eesign_path)
-        self.ser.add_arg(option="0x3f5000", value=self.public_key_path)
-        self.ser.add_arg(option="0x3f6000", value=self.private_key_path)
-        self.ser.add_arg(option="0x3fc000", value=self.esp_init_data_default_bin)
+        if self.board_id == 'ee73':
+            devreg_part1 = os.path.join(self.eesign_path + "_79")
+            devreg_part2 = os.path.join(self.eesign_path + "_F7")
+            sstr = [
+                "dd",
+                "if=" + self.eesign_path,
+                "of=" + devreg_part1,
+                "bs=1k",
+                "count=32"
+            ]
+            sstrj = ' '.join(sstr)
+            [sto, _] = self.fcd.common.xcmd(sstrj)
+            print(sto)
+            sstr = [
+                "dd",
+                "if=" + self.eesign_path,
+                "of=" + devreg_part2,
+                "bs=1k",
+                "skip=32",
+                "count=32"
+            ]
+            sstrj = ' '.join(sstr)
+            [sto, _] = self.fcd.common.xcmd(sstrj)
+            print(sto)
+
+            self.ser.add_arg(option="0x000000", value=self.rboot_bin)
+            self.ser.add_arg(option="0x001000", value=self.fwbin_1)
+            self.ser.add_arg(option="0x076000", value=self.blank_bin)
+            self.ser.add_arg(option="0x077000", value=self.blank_bin)
+            self.ser.add_arg(option="0x078000", value=self.blank_bin)
+            self.ser.add_arg(option="0x079000", value=devreg_part1)
+            self.ser.add_arg(option="0x081000", value=self.fwbin_2)
+            self.ser.add_arg(option="0x0F6000", value=self.blank_bin)
+            self.ser.add_arg(option="0x0F7000", value=devreg_part2)
+            self.ser.add_arg(option="0x101000", value=self.recovery_bin)
+            self.ser.add_arg(option="0x1FC000", value=self.esp_init_data_default_bin)
+            self.ser.add_arg(option="0x1FD000", value=self.blank_bin)
+            self.ser.add_arg(option="0x1FE000", value=self.blank_bin)
+        elif self.board_id == 'ee74':
+            self.ser.add_arg(option="0x000000", value=self.rboot_bin)
+            self.ser.add_arg(option="0x001000", value=self.fwbin_1)
+            self.ser.add_arg(option="0x101000", value=self.fwbin_2)
+            self.ser.add_arg(option="0x201000", value=self.recovery_bin)
+            self.ser.add_arg(option="0x38A000", value=self.eesign_path)
+            self.ser.add_arg(option="0x3F5000", value=self.public_key_path)
+            self.ser.add_arg(option="0x3F6000", value=self.private_key_path)
+            self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
 
         self.ser.set_stub(True)
         stdout, rtc = self.ser.write_flash()
@@ -188,22 +237,22 @@ class USPESP8266Factory(ScriptBase):
             error_critical("Device not found!")
         log_debug("Device is connected")
 
-        if FLASH_HELPER is True:
+        if self.FLASH_HELPER is True:
             self.flash_helper()
             self.boot_normal_mode(sleep_sec = 3)
 
-        if DO_SECURITY is True:
+        if self.DO_SECURITY is True:
             self.do_helper()
             self.erase_eefiles()
             self.copy_eefiles_from_tmp()
             msg(40, "Registering device")
             self.registration()
 
-        if GEN_CA_KEY is True:
+        if self.GEN_CA_KEY is True:
             msg(50, "Generate certification key")
             self.gen_CA_key()
 
-        if FLASH_FW is True:
+        if self.FLASH_FW is True:
             self.flash_eeprom_and_fw()
 
         msg(100, "Completing FCD process ...")
