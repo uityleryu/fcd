@@ -35,14 +35,13 @@ class USPESP8266Factory(ScriptBase):
         self.recovery_bin = os.path.join(self.fwdir, self.board_id + "_recovery.bin")
 
         self.rboot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
-        self.boot_cfg_bin = os.path.join(self.fcd_uhtools, "rboot_cfg.bin")
         self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper.bin")
         self.blank_bin = os.path.join(self.fcd_uhtools, "blank.bin")
         self.esp_init_data_default_bin = os.path.join(self.fcd_uhtools, "esp_init_data_default.bin")
         self.mac_with_colon = ":".join(self.mac[i:i+2] for i in range(0, len(self.mac), 2))
 
         self.FLASH_HELPER = True 
-        self.DO_SECURITY  = True 
+        self.DO_SECURITY  = True
         self.GEN_CA_KEY   = True if self.board_id == 'ea74' else False
         self.FLASH_FW     = True
 
@@ -68,6 +67,7 @@ class USPESP8266Factory(ScriptBase):
 
     def flash_helper(self):
         self.ser.set_baudrate("921600")
+        self.ser.set_after_action("soft_reset")
         self.ser.set_flash_size(self.ser._DETECT)
         self.ser.set_flash_mode(self.ser.DOUT)
 
@@ -88,18 +88,14 @@ class USPESP8266Factory(ScriptBase):
         elif self.board_id == 'ee74':
             self.ser.add_arg(option="0x000000", value=self.rboot_bin)
             self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
-            self.ser.add_arg(option="0x3F7000", value=self.boot_cfg_bin)
             self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
-    
+
+        self.ser.set_stub(True)
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
         if rtc != 0:
             error_critical("Init flash failed")
         self.ser.clear_cur_args()
-
-    def boot_normal_mode(self, sleep_sec):
-        self.ser.run_normal_mode()
-        time.sleep(sleep_sec)
 
     def do_helper(self):
         # bom       : 00645-01
@@ -151,6 +147,7 @@ class USPESP8266Factory(ScriptBase):
     def flash_eeprom_and_fw(self):
         msg(60, "Flashing firmware and eeprom files")
         self.ser.set_baudrate("921600")
+        self.ser.set_after_action("soft_reset")
         self.ser.set_flash_size(self.ser._DETECT)
         self.ser.set_flash_mode(self.ser.DOUT)
 
@@ -202,7 +199,6 @@ class USPESP8266Factory(ScriptBase):
             self.ser.add_arg(option="0x3F6000", value=self.private_key_path)
             self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
 
-        self.ser.set_stub(True)
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
         if rtc != 0:
@@ -239,7 +235,7 @@ class USPESP8266Factory(ScriptBase):
 
         if self.FLASH_HELPER is True:
             self.flash_helper()
-            self.boot_normal_mode(sleep_sec = 3)
+            time.sleep(3)
 
         if self.DO_SECURITY is True:
             self.do_helper()
