@@ -328,6 +328,42 @@ class UVCFactoryGeneral(ScriptBase):
             otmsg = "Generating {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
+        #---------> edit e.gen.0
+        print('region: ')
+        print(self.region)
+        print('eegenbin:')
+        print(self.eegenbin)
+        print('eegenbin_path:')
+        print(self.eegenbin_path)
+        print('devregpart:')
+        print(self.devregpart)
+        
+        region_value = 255
+        if self.region == '002a':
+            print("SKU: US")
+            region_value = 0
+        else:
+            print("SKU: WorldWide")
+
+        sstr = [
+            "sudo echo -e '\\x{:02x}'".format(region_value),
+            "| dd of=" + self.eegenbin_path,
+            "bs=1",
+            "count=1",
+            "seek=20",
+            "conv=notrunc"
+        ]
+        sstr = ' '.join(sstr)
+        log_debug("add region to flash cmd: " + sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        time.sleep(1)
+
+        #<--------
+
+
+
+
+
         host_path = "/tftpboot/{}".format(self.eegenbin)
         dut_path = "/tmp/{}".format(self.eegenbin)
         self.session.put_file(host_path, dut_path)
@@ -635,6 +671,10 @@ class UVCFactoryGeneral(ScriptBase):
                 otmsg = logmsg + "{} in host and DUT are the same".format(keys)
                 log_debug(otmsg)
 
+        msg_info= self.session.execmd_getmsg('cat /etc/board.info')
+        print(msg_info)
+
+
     def eesign_datecode(self):
 
         log_debug("Adding the datecode into eesign(e.s.0)")
@@ -735,11 +775,6 @@ class UVCFactoryGeneral(ScriptBase):
 
 
 
-        #log_debug('testtest')
-        #cmdstr = 'wc /tmp/123 &> /dev/null; echo $?'
-        #rmsg = self.session.execmd_getmsg(cmdstr)
-        #if  int(rmsg) != 0:
-        #    self.critical_error('/tmp/123 does not exist')
 
         '''
             ============ Registration start ============
