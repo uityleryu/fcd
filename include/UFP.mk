@@ -1,15 +1,15 @@
 
 # Images
 
-IMAGE-UFP-SENSE=
+IMAGE-SENSE=
 
-IMAGE-UFP-LOCK-R=
+IMAGE-LOCK-R=
 
-TOOLS-UFP-TAG-COMBO=
+TOOLS-TAG-COMBO=
 
-IMAGE-UFP+=$(IMAGE-UFP-SENSE)
-IMAGE-UFP+=$(IMAGE-UFP-LOCK-R)
-IMAGE-UFP+=$(IMAGE-UFP-TAG-COMBO)
+IMAGE-UFP+=$(IMAGE-SENSE)
+IMAGE-UFP+=$(IMAGE-LOCK-R)
+IMAGE-UFP+=$(IMAGE-TAG-COMBO)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -32,12 +32,12 @@ TOOLS-CONFIG= \
 
 TOOLS-UFP+=$(TOOLS-CONFIG)
 
-TOOLS-UFP-SENSE=$(TOOLS-UFP)
+TOOLS-SENSE=$(TOOLS-UFP)
 
-TOOLS-UFP-LOCK-R=$(TOOLS-UFP)
+TOOLS-LOCK-R=$(TOOLS-UFP)
 
-TOOLS-UFP-TAG-COMBO=$(TOOLS-UFP)
-TOOLS-UFP-TAG-COMBO+= \
+TOOLS-TAG-COMBO=$(TOOLS-UFP)
+TOOLS-TAG-COMBO+= \
     ufp/nxp-nfc-nci
 
 
@@ -46,13 +46,13 @@ TOOLS-UFP-TAG-COMBO+= \
 
 # Project target
 
-$(eval $(call ProductImage,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UFP-TAG-COMBO,FCD_$(PRD)_UFP-TAG-COMBO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,UFP-SENSE,FCD_$(PRD)_UFP-SENSE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UFP-LOCK-R,FCD_$(PRD)_UFP-LOCK-R_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UFP-TAG-COMBO,FCD_$(PRD)_UFP-TAG-COMBO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 

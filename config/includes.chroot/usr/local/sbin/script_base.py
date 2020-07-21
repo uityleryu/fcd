@@ -15,6 +15,7 @@ import datetime
 import tarfile
 import shutil
 import subprocess
+import data.constant as CONST
 
 from ubntlib.fcd.common import Tee, Common
 from ubntlib.fcd.helper import FCDHelper
@@ -286,6 +287,7 @@ class ScriptBase(object):
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
         self.region = args.region
+        self.region_name = CONST.region_names[CONST.region_codes.index(self.region)]
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         self.upload = args.upload

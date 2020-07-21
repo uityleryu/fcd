@@ -17,6 +17,7 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 QRCODE_ENABLE = False
+SET_SKU_ENABLE = False
 CHECK_MAC_ENABLE = True
 
 
@@ -35,6 +36,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.dut_dhcp_ip = ""
         self.dut_port = ""
         self.baudrate = 921600
+        self._reseted_flag = False
 
         # Base path
         self.toolsdir = "tools/"
@@ -56,9 +58,15 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.cmd_erase_devreg = "ERASEDEVREG"
 
         self.mac_check_dict = {
-            'a911': False,
+            'a911': True,
             'a912': False,
             'a918': True,
+        }
+
+        self.sku_dict = {
+            'a911': True,
+            'a912': False,
+            'a918': False,
         }
 
         # number of Ethernet
@@ -100,6 +108,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-k " + self.rsakey_path
         ]
         sstr = ' '.join(sstr)
+        log_debug('sstr = {}'.format(sstr))
+
         [sto, rtc] = self.fcd.common.xcmd(sstr)
         time.sleep(1)
         if int(rtc) > 0:
@@ -226,9 +236,61 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def _reset(self):
         # it needs to reset for updating the MAC, otherwise the MAC would be like "VER-HW:MAC-ff.ff.ff.ff.ff.ff"
         log_info('Sending the reset command')
-        rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
-        log_info('rtv_reset = {}'.format(rtv_reset))
-        time.sleep(1)
+        try:
+            rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
+            log_info('rtv_reset = {}'.format(rtv_reset))
+        except Exception as e:
+            log_info('')
+            log_info("{}".format(traceback.format_exc()))
+            log_info("{}".format(sys.exc_info()[0]))
+            log_info("{}".format(e))
+            log_info('')
+            log_info('This might be the garbled code of the return value in LOCK_R (a911)')
+
+        self._reseted_flag = True
+        time.sleep(3)
+
+    def set_sku(self):
+        # parameters
+        cmd_set_sku = 'FCDSKUSET:{sku}'
+        cmd_get_sku = 'FCDSKUGET'
+        expected_rsp = 'SKU: {sku}'
+        region_name_dict = {"World": ' US',
+                            "USA/Canada": 'US',
+                            'EU': 'EU',
+                            "Scandi": 'SCANDI'}
+
+        # set_sku
+        log_debug("Starting to set SKU")
+        log_info("self.sku_dict = {}".format(self.sku_dict))
+        log_info('self.region_name = {}'.format(self.region_name))
+
+        if self.sku_dict[self.board_id] is False:
+            log_debug("Skip setting SKU ...")
+            return
+
+        if self.region_name not in list(region_name_dict.keys()):
+            msg = 'self.region_name ({}) is not in region_name_dict {}, Skip setting SKU ...'
+            error_critical(msg.format(self.region_name, region_name_dict))
+            return
+
+        sku_code = region_name_dict[self.region_name]
+        cmd_set_sku = cmd_set_sku.format(sku=sku_code)
+        log_info("cmd_set_sku = {}".format(cmd_set_sku))
+        self.ser.execmd_getmsg(cmd_set_sku)
+        time.sleep(0.5)
+
+        self._reset()
+
+        # check SKU
+        log_info("cmd_get_sku = {}".format(cmd_get_sku))
+        rtv_get_sku = self.ser.execmd_getmsg(cmd_get_sku)
+
+        expected_rsp = expected_rsp.format(sku=sku_code)
+        if expected_rsp not in rtv_get_sku:
+            error_critical('expected_rsp ({}) not in rtv_get_sku, set SKU fail..'.format(expected_rsp))
+        else:
+            log_debug('expected_rsp ({}) in rtv_get_sku, set SKU success..'.format(expected_rsp))
 
     def check_mac(self):
         log_debug("Starting to check MAC")
@@ -238,7 +300,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             log_debug("skip check the MAC in DUT ...")
             return
 
-        self._reset()
+        if self._reseted_flag is not True:
+            self._reset()
+        else:
+            log_info('Have reseted before, skip this time')
 
         rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
         version = self._read_version(rtv_verison)
@@ -270,7 +335,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Open serial port successfully ...")
-        time.sleep(10)
+        time.sleep(1)
         self.ser.execmd("")
 
         if DOHELPER_ENABLE is True:
@@ -285,9 +350,13 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.put_devreg_data_in_dut()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
+        if SET_SKU_ENABLE is True:
+            self.set_sku()
+            msg(60, "Finish settingSKU ...")
+
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
-            msg(60, "Finish checking MAC in DUT ...")
+            msg(70, "Finish checking MAC in DUT ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
