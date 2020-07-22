@@ -19,13 +19,13 @@ import data.constant as CONST
 
 from ubntlib.fcd.common import Tee, Common
 from ubntlib.fcd.helper import FCDHelper
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
-from ubntlib.fcd.singleton import singleton,errorcollecter
+from ubntlib.fcd.logger import log_debug, log_info, log_error, msg, error_critical
+from ubntlib.fcd.singleton import errorcollecter
 from ubntlib.fcd.expect_tty import ExpttyProcess
-from pathlib import Path
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
+
 
 class ScriptBase(object):
     __version__ = "1.0.15"
@@ -137,6 +137,8 @@ class ScriptBase(object):
         self.fwdir = os.path.join(self.tftpdir, self.image)
         self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
         self.fcd_commondir = os.path.join(self.tftpdir, self.tools, "common")
+        self.fcd_scripts_dir = os.path.join('/usr', 'local', 'sbin')
+        self.ubntlib_dir = os.path.join(self.fcd_scripts_dir, 'ubntlib')
 
         cmd = "uname -a"
         [sto, rtc] = self.cnapi.xcmd(cmd)
@@ -1050,23 +1052,24 @@ class ScriptBase(object):
             --bom:   BOM Rev version
             --stage:   FCD or FTU
         """
+        logupload_client_path = os.path.join(self.ubntlib_dir, 'fcd', 'logupload_client.py')
+
+        if bom is None:
+            bom = '99999-99'  # Workaround For BackToArt , GUI won't assign BOM version.
+            FCDtype = 'BackToArt'
+        else:
+            FCDtype = 'FCD'
+
+        cmd = [
+            "sudo", "/usr/bin/python3",
+            logupload_client_path,
+            '--path', uploadfolder,
+            '--mac', mac,
+            '--bom', bom,
+            '--stage', FCDtype]
+        execcmd = ' '.join(cmd)
+
         try:
-            if bom is None :
-                bom = '99999-99' # Workaround For BackToArt , GUI won't assign BOM version.
-                FCDtype = 'BackToArt'
-            else:
-                FCDtype = 'FCD'
-
-            cmd = [
-                "sudo", "/usr/bin/python3",
-                "/usr/local/sbin/logupload_client.py",
-                '--path', uploadfolder,
-                '--mac', mac,
-                '--bom', bom,
-                '--stage', FCDtype
-            ]
-            execcmd = ' '.join(cmd)
-
             uploadproc = subprocess.check_output(execcmd, shell=True)
             if "success" in str(uploadproc.decode('utf-8')):
                 log_debug('[Upload_ui_taipei Success]')

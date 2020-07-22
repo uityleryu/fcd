@@ -17,7 +17,7 @@ PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 QRCODE_ENABLE = False
-SET_SKU_ENABLE = False
+SET_SKU_ENABLE = True
 CHECK_MAC_ENABLE = True
 
 
@@ -255,7 +255,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         cmd_set_sku = 'FCDSKUSET:{sku}'
         cmd_get_sku = 'FCDSKUGET'
         expected_rsp = 'SKU: {sku}'
-        region_name_dict = {"World": ' US',
+        region_name_dict = {"World": 'US',
                             "USA/Canada": 'US',
                             'EU': 'EU',
                             "Scandi": 'SCANDI'}
