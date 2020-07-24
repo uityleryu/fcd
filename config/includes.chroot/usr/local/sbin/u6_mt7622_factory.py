@@ -153,18 +153,18 @@ class U6MT7622Factory(ScriptBase):
 
     def check_info(self):
         #Check BT FW is included or not
-        #self.pexp.expect_only(30, "\[BT Power On Result\] Success")
-        #self.pexp.expect_only(30, "\[HIC LE  SET ADVERTISING DATA Result\] Success")
+        self.pexp.expect_only(30, "\[BT Power On Result\] Success")
+        self.pexp.expect_only(30, "\[HIC LE  SET ADVERTISING DATA Result\] Success")
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         cmd = "cat /proc/ubnthal/system.info"
         exp = [
-            #"flashSize={0}".format(self.flash_size[self.board_id]),
+            "flashSize={0}".format(self.flash_size[self.board_id]),
             "systemid={0}".format(self.board_id),
             "serialno={0}".format(self.mac.lower()),
-            #"qrid={0}".format(self.qrcode),
+            "qrid={0}".format(self.qrcode),
         ]
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=exp)
         cmd = "cat /usr/lib/build.properties"
