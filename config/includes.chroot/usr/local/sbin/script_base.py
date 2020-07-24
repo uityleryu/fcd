@@ -289,7 +289,7 @@ class ScriptBase(object):
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
         self.region = args.region
-        self.region_name = CONST.region_names[CONST.region_codes.index(self.region)]
+        self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
         self.fwimg = self.board_id + ".bin"
         self.fwimg_mfg = self.board_id + "-mfg.bin"
         self.upload = args.upload
