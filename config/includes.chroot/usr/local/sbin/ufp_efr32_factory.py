@@ -16,10 +16,8 @@ NEED_DROPBEAR = True
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-QRCODE_ENABLE = False
 SET_SKU_ENABLE = True
 CHECK_MAC_ENABLE = True
-
 
 class UFPEFR32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -61,26 +59,37 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a911': True,
             'a912': False,
             'a918': True,
+            'a919': True,
+        }
+
+        self.qrcode_dict = {
+            'a911': False,
+            'a912': False,
+            'a918': False,
+            'a919': True,
         }
 
         self.sku_dict = {
             'a911': True,
             'a912': False,
             'a918': False,
+            'a919': False,
         }
 
         # number of Ethernet
         self.ethnum = {
             'a911': "0",
             'a912': "0",
-            'a918': "0"
+            'a918': "0",
+            'a919': "0",
         }
 
         # number of WiFi
         self.wifinum = {
             'a911': "0",
             'a912': "0",
-            'a918': "0"
+            'a918': "0",
+            'a919': "0",
         }
 
         # number of Bluetooth
@@ -88,6 +97,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a911': "1",
             'a912': "1",
             'a918': "1",
+            'a919': "1",
         }
 
     def prepare_server_need_files(self):
@@ -138,6 +148,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if self.board_id == "a912":
             self._sense_cmd_before_registration()
 
+
         try:
             uid_rtv = self.ser.execmd_getmsg("GETUID")
             res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
@@ -153,6 +164,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             res = re.search(r"JEDECID:(.*)\n", jedecid_rtv, re.S)
             jedecid = res.group(1)
             log_info('jedecid = {}'.format(jedecid))
+
 
         except Exception as e:
             log_debug("Extract UID, CPUID and JEDEC failed")
@@ -185,7 +197,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-y " + self.key_dir + "key.pem",
             "-z " + self.key_dir + "crt.pem"
         ]
-        if QRCODE_ENABLE:
+        if self.qrcode_dict[self.board_id]:
             cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
 
         cmdj = ' '.join(cmd)
@@ -213,13 +225,18 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         if self.board_id in ["a912", "a918"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
+        elif self.board_id in ["a919"]:
+            self.ser.execmd_expect("XSTARTDEVREG", "begin upload")
         elif self.board_id in ["a911"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
-        log_debug("Starting xmodem file transfer ...")
 
-        modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
+        log_debug("Starting xmodem file transfer ...")
+        if self.board_id in ["a919"]:
+            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc)
+        else :
+            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
@@ -237,7 +254,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         # it needs to reset for updating the MAC, otherwise the MAC would be like "VER-HW:MAC-ff.ff.ff.ff.ff.ff"
         log_info('Sending the reset command')
         try:
-            rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
+            rtv_reset = self.ser.execmd_getmsg(self.cmd_reset,ignore=True)
             log_info('rtv_reset = {}'.format(rtv_reset))
         except Exception as e:
             log_info('')
@@ -306,6 +323,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             log_info('Have reseted before, skip this time')
 
         rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
+
+        # Workaround :  ULT[a919] is not ready on VER-SW, will remove once it's ready
+        if self.board_id in ["a919"] : rtv_verison += "VER-SW:SWv-x.x.x"
+
         version = self._read_version(rtv_verison)
         for key, value in version.items():
             log_info("{} = {}".format(key, value))
@@ -330,7 +351,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         # Connect into DU and set pexpect helper for class using picocom
         serialcomport = "/dev/{0}".format(self.dev)
-        serial_obj = SerialExpect(port=serialcomport, baudrate=self.baudrate)
+        serial_obj = serialExpect(port=serialcomport, baudrate=self.baudrate)
         self.set_serial_helper(serial_obj=serial_obj)
         time.sleep(1)
 
@@ -361,6 +382,40 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         msg(100, "Completing registration ...")
         self.close_fcd()
 
+
+class serialExpect(SerialExpect):
+    def execmd_getmsg(self, cmd="", waitperiod=2, sleep_time=0.5, pre_n=True, print_en=True, ignore=False):
+        if pre_n is True:
+            self._enter()
+
+        if cmd != "":
+            cmd = "{0}\n".format(cmd)
+            self.ser.write(cmd.encode())
+            self.ser.flush()
+            time.sleep(sleep_time)
+
+        outstream = []
+        stoptm = time.time() + waitperiod
+        while True:
+            if self.ser.inWaiting() > 0:
+                out = self.ser.read(self.ser.in_waiting)
+                if ignore:
+                    dout = out.decode("utf-8", "ignore")
+                else:
+                    dout = out.decode()
+                outstream.append(dout)
+            if time.time() > stoptm:
+                break
+
+            time.sleep(0.1)
+
+        jotsm = "".join(outstream)
+
+        if print_en is True:
+            print(jotsm)
+        self.ser.reset_input_buffer()
+        self.ser.reset_output_buffer()
+        return jotsm
 
 def main():
     if len(sys.argv) < 10:  # TODO - hardcode
