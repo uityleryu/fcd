@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.15"
+    __version__ = "1.0.16"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -122,10 +122,24 @@ class ScriptBase(object):
             log_debug("Get linux information successfully")
             match = re.findall("armv7l", sto)
             if match:
-                self.fcd_user = "pi"
+                cmd = "who | awk '{ print $1}'"
+                [sto, rtc] = self.cnapi.xcmd(cmd)
+                if int(rtc) > 0:
+                    error_critical("Executing linux command failed!!")
+                else:
+                    sto = sto.strip()
+                    self.fcd_user = sto
+
                 self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, self.fcd_version_info_file)
             else:
-                self.fcd_user = "user"
+                cmd = "who | awk 'NR==1 { print $1}'"
+                [sto, rtc] = self.cnapi.xcmd(cmd)
+                if int(rtc) > 0:
+                    error_critical("Executing linux command failed!!")
+                else:
+                    sto = sto.strip()
+                    self.fcd_user = sto
+
                 self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
