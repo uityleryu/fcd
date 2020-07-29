@@ -108,8 +108,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         cmd = "ping {0}".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+        postexp = "host {0} is alive".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
 
     def run(self):
         """

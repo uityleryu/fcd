@@ -23,8 +23,8 @@ IMAGE-UNMS-LTE= \
 
 IMAGE-UNMS-S-PRO= \
     images/eed1* \
-    unms-fw/UNMS-S-Pro.realtek930x.diag_0.0.1_pre.bix \
-    unms-fw/UNMS-S-Pro.realtek930x.uboot_0.0.1_pre.bin \
+    unms-fw/UNMS-S-Pro.realtek930x.diag_1.3.1.bix \
+    unms-fw/UNMS-S-Pro.realtek930x.uboot_1.1.0-6fb76.bin \
 
 IMAGE-UNMS+=$(IMAGE-UNMS-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
