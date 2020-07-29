@@ -150,17 +150,17 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
 
         try:
-            uid_rtv = self.ser.execmd_getmsg("GETUID")
+            uid_rtv = self.ser.execmd_getmsg("GETUID",ignore=True)
             res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
             uid = res.group(1)
             log_info('uid = {}'.format(uid))
 
-            cpuid_rtv = self.ser.execmd_getmsg("GETCPUID")
+            cpuid_rtv = self.ser.execmd_getmsg("GETCPUID",ignore=True)
             res = re.search(r"CPUID:(.*)\n", cpuid_rtv, re.S)
             cpuid = res.group(1)
             log_info('cpuid = {}'.format(cpuid))
 
-            jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC")
+            jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC",ignore=True)
             res = re.search(r"JEDECID:(.*)\n", jedecid_rtv, re.S)
             jedecid = res.group(1)
             log_info('jedecid = {}'.format(jedecid))
@@ -223,20 +223,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918"]:
+        if self.board_id in ["a912", "a918", "a919"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a919"]:
-            self.ser.execmd_expect("XSTARTDEVREG", "begin upload")
         elif self.board_id in ["a911"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
-
         log_debug("Starting xmodem file transfer ...")
-        if self.board_id in ["a919"]:
-            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc)
-        else :
-            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
+        modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
@@ -322,10 +316,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         else:
             log_info('Have reseted before, skip this time')
 
-        rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
-
-        # Workaround :  ULT[a919] is not ready on VER-SW, will remove once it's ready
-        if self.board_id in ["a919"] : rtv_verison += "VER-SW:SWv-x.x.x"
+        rtv_verison = self.ser.execmd_getmsg(self.cmd_version,ignore=True)
 
         version = self._read_version(rtv_verison)
         for key, value in version.items():
@@ -381,7 +372,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         msg(100, "Completing registration ...")
         self.close_fcd()
-
 
 class serialExpect(SerialExpect):
     def execmd_getmsg(self, cmd="", waitperiod=2, sleep_time=0.5, pre_n=True, print_en=True, ignore=False):
