@@ -77,10 +77,8 @@ IMAGE-USW-FLEX-MINI= \
 IMAGE-USW-XG= \
     images/eb25* \
     images/eb26* \
-    images/eb27* \
     usw-fw/unifiswitch-xg24poe* \
     usw-fw/unifiswitch-xg48poe* \
-    usw-fw/unifiswitch-xgagg* \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW-MISSION-CRITICAL= \
@@ -98,6 +96,11 @@ IMAGE-USW-Aggregation= \
     images/ed2d* \
     usw-fw/usw-aggregation-* \
     usw-fw/US.rtl930x*
+
+IMAGE-USW-Aggregation-Pro= \
+    images/eb27* \
+    usw-fw/unifiswitch-xgagg* \
+    usw-fw/US.bcm5617x*
 
 IMAGE-US-GEN1= \
     images/eb10* \
@@ -125,6 +128,7 @@ IMAGE-USW+=$(IMAGE-USW-XG)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
 IMAGE-USW+=$(IMAGE-U6-S24)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
+IMAGE-USW+=$(IMAGE-USW-Aggregation-Pro)
 IMAGE-USW+=$(IMAGE-US-GEN1)
 
 # Model
@@ -200,6 +204,8 @@ TOOLS-USW-Aggregation=$(TOOLS-USW)
 TOOLS-USW-Aggregation+= \
     usw_rtl838x/helper_RTL838x
 
+TOOLS-USW-Aggregation-Pro=$(TOOLS-USW)
+
 TOOLS-U6-S24=$(TOOLS-USW)
 
 # ALL
@@ -225,6 +231,7 @@ $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 
 
 # Project compressed file for RPi FCD host
@@ -243,3 +250,4 @@ $(eval $(call ProductCompress,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
