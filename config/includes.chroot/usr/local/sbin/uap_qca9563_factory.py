@@ -10,7 +10,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = True
-UPLOADLOG_ENABLE = False  # When uploadlog test stable, will merge this feature into script_base
+
 
 class UAPQCA9563Factory(ScriptBase):
     def __init__(self):
@@ -193,7 +193,7 @@ class UAPQCA9563Factory(ScriptBase):
             self.check_info()
             msg(50, "Succeeding in checking the devrenformation ...")
 
-        msg(60, "Completing firmware upgrading ...")
+        msg(100, "Completing firmware upgrading ...")
 
         if UPLOADLOG_ENABLE is True:
             self.uploadlog()
