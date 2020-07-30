@@ -9,6 +9,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 UBOOTUPDATE_ENABLE = True
 UBOOTWRITEINFO_ENABLE = True
 WRITESSHKEY_ENABLE = False
+PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FWUPDATE_ENABLE = True
@@ -52,8 +53,33 @@ class UNMSQCA9563Factory(ScriptBase):
             'dca3': "+10000"
         }
 
+        # number of mac
+        self.macnum = {
+            'dca2': "2",
+            'dca3': "2"
+        }
+
+        # number of WiFi
+        self.wifinum = {
+            'dca2': "0",
+            'dca3': "0"
+        }
+
+        # number of Bluetooth
+        self.btnum = {
+            'dca2': "1",
+            'dca3': "1"
+        }
+
+        self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
+        self.devnetmeta = {
+            'ethnum'          : self.macnum,
+            'wifinum'         : self.wifinum,
+            'btnum'           : self.btnum,
+            'flashed_dir'     : self.flashed_dir
+        }
+
         # script specific vars
-        self.devregpart = "/dev/"
         self.bomrev = "113-" + self.bom_rev
 
         self.cmd_prefix = "go 0x80200020 "
@@ -247,16 +273,20 @@ class UNMSQCA9563Factory(ScriptBase):
             msg(40, "Succeeding in update bin file ...")
             self.boot_image()
 
-        if DOHELPER_ENABLE is True:
+        if PROVISION_ENABLE is True:
             self.erase_eefiles()
-            msg(50, "Do helper to get the output file to devreg server ...")
+            msg(50, "Sendtools to DUT and data provision ...")
+            self.data_provision_64k(self.devnetmeta)
+
+        if DOHELPER_ENABLE is True:
+            msg(60, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
         if REGISTER_ENABLE is True:
             self.registration()
-            msg(65, "Finish doing registration ...")
+            msg(70, "Finish doing registration ...")
             self.check_devreg_data()
-            msg(70, "Finish doing signed file and EEPROM checking ...")
+            msg(75, "Finish doing signed file and EEPROM checking ...")
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()

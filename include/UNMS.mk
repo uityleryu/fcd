@@ -19,7 +19,7 @@ IMAGE-UNMS-LTE= \
     images/dca2* \
     images/dca3* \
     unms-fw/LL.qca956x.* \
-    unms-fw/u-boot-with-app.bin \
+    unms-fw/unms-lte-initramfs-64MB.img \
 
 IMAGE-UNMS-S-PRO= \
     images/eed1* \
