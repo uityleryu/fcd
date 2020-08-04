@@ -47,6 +47,7 @@ class winFcdFactory(Gtk.Window):
 
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+        self.vboxdashboard2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
         self.hboxdashboard = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5)
 
         self.lblflavor = Gtk.Label("Flavor: ")
@@ -79,6 +80,10 @@ class winFcdFactory(Gtk.Window):
         self.slot2 = fraMonitorPanel("1", "Slot 2")
         self.slot3 = fraMonitorPanel("2", "Slot 3")
         self.slot4 = fraMonitorPanel("3", "Slot 4")
+        self.slot5 = fraMonitorPanel("4", "Slot 5")
+        self.slot6 = fraMonitorPanel("5", "Slot 6")
+        self.slot7 = fraMonitorPanel("6", "Slot 7")
+        self.slot8 = fraMonitorPanel("7", "Slot 8")
 
         self.vboxdashboard.pack_start(self.lblflavor, False, False, 0)
         self.vboxdashboard.pack_start(self.lblprod, False, False, 0)
@@ -87,12 +92,25 @@ class winFcdFactory(Gtk.Window):
         self.vboxdashboard.pack_start(self.slot2, False, False, 0)
         self.vboxdashboard.pack_start(self.slot3, False, False, 0)
         self.vboxdashboard.pack_start(self.slot4, False, False, 0)
+        self.vboxdashboard2.pack_start(self.slot5, False, False, 0)
+        self.vboxdashboard2.pack_start(self.slot6, False, False, 0)
+        self.vboxdashboard2.pack_start(self.slot7, False, False, 0)
+        self.vboxdashboard2.pack_start(self.slot8, False, False, 0)
+
+        self.epdslot = Gtk.Expander()
+        self.epdslot.set_label('More Slots')
+        self.epdslot.set_expanded(False)
+        self.epdslot.add(self.vboxdashboard2)
 
         self.ntbmsg = Gtk.Notebook()
         self.ntbmsg.append_page(self.slot1.scllog, Gtk.Label("Slot 1"))
         self.ntbmsg.append_page(self.slot2.scllog, Gtk.Label("Slot 2"))
         self.ntbmsg.append_page(self.slot3.scllog, Gtk.Label("Slot 3"))
         self.ntbmsg.append_page(self.slot4.scllog, Gtk.Label("Slot 4"))
+        self.ntbmsg.append_page(self.slot5.scllog, Gtk.Label("Slot 5"))
+        self.ntbmsg.append_page(self.slot6.scllog, Gtk.Label("Slot 6"))
+        self.ntbmsg.append_page(self.slot7.scllog, Gtk.Label("Slot 7"))
+        self.ntbmsg.append_page(self.slot8.scllog, Gtk.Label("Slot 8"))
 
         # operation log
         self.epdoplog = Gtk.Expander()
@@ -103,6 +121,7 @@ class winFcdFactory(Gtk.Window):
         # Main window
         self.vboxMainWindow = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.vboxMainWindow.pack_start(self.vboxdashboard, False, False, 0)
+        self.vboxMainWindow.pack_start(self.epdslot, False, False, 0)
         self.vboxMainWindow.pack_start(self.epdoplog, True, True, 0)
         self.set_title("UBNT FCD factory program")
         self.set_border_width(2)
@@ -288,6 +307,10 @@ class winFcdFactory(Gtk.Window):
         self.slot2.apply_comport_item(CONST.active_tty)
         self.slot3.apply_comport_item(CONST.active_tty)
         self.slot4.apply_comport_item(CONST.active_tty)
+        self.slot5.apply_comport_item(CONST.active_tty)
+        self.slot6.apply_comport_item(CONST.active_tty)
+        self.slot7.apply_comport_item(CONST.active_tty)
+        self.slot8.apply_comport_item(CONST.active_tty)
 
         id = 0
         if id < num:
@@ -304,6 +327,20 @@ class winFcdFactory(Gtk.Window):
 
         if id < num:
             self.slot4.cmbbcomport.set_active(id)
+            id += +1
+
+        if id < num:
+            self.slot5.cmbbcomport.set_active(id)
+            id += +1
+
+        if id < num:
+            self.slot6.cmbbcomport.set_active(id)
+            id += +1
+        if id < num:
+            self.slot7.cmbbcomport.set_active(id)
+            id += +1
+        if id < num:
+            self.slot8.cmbbcomport.set_active(id)
             id += +1
 
         return True
@@ -343,6 +380,18 @@ class winFcdFactory(Gtk.Window):
                     self.slot4.set_bomrev(CONST.active_bomrev)
                     self.slot4.set_region(CONST.active_region)
                     self.slot4.set_product(CONST.active_product)
+                    self.slot5.set_bomrev(CONST.active_bomrev)
+                    self.slot5.set_region(CONST.active_region)
+                    self.slot5.set_product(CONST.active_product)
+                    self.slot6.set_bomrev(CONST.active_bomrev)
+                    self.slot6.set_region(CONST.active_region)
+                    self.slot6.set_product(CONST.active_product)
+                    self.slot7.set_bomrev(CONST.active_bomrev)
+                    self.slot7.set_region(CONST.active_region)
+                    self.slot7.set_product(CONST.active_product)
+                    self.slot8.set_bomrev(CONST.active_bomrev)
+                    self.slot8.set_region(CONST.active_region)
+                    self.slot8.set_product(CONST.active_product)
                     rt = True
             else:
                 rtmsg = "{0}: the Cancel button was clicked".format(__FUNC)

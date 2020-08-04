@@ -58,6 +58,10 @@ templogfile = [
     "",
     "",
     "",
+    "",
+    "",
+    "",
+    "",
     ""
 ]
 
@@ -72,12 +76,20 @@ dftty = (
     "ttyUSB1",
     "ttyUSB2",
     "ttyUSB3",
+    "ttyUSB4",
+    "ttyUSB5",
+    "ttyUSB6",
+    "ttyUSB7",
     "ttyACM0"
 )
 
 active_tty = []
 
 finaltty = [
+    "na",
+    "na",
+    "na",
+    "na",
     "na",
     "na",
     "na",
@@ -124,10 +136,18 @@ erasewifidata = [
     False,
     False,
     False,
+    False,
+    False,
+    False,
+    False,
     False
 ]
 
 erase_devreg_data = [
+    False,
+    False,
+    False,
+    False,
     False,
     False,
     False,
