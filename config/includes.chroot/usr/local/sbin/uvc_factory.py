@@ -762,6 +762,9 @@ class UVCFactoryGeneral(ScriptBase):
 
         self.set_sshclient_helper(ssh_client=sshclient_obj)
         log_debug(self.session.execmd_getmsg("pwd"))
+        log_debug(self.session.execmd_getmsg("uptime"))
+        log_debug(self.session.execmd_getmsg("cat /usr/lib/version"))
+        log_debug(self.session.execmd_getmsg("cat /etc/board.info"))
         time.sleep(1)
 
         log_debug("Uploading flash module...")
