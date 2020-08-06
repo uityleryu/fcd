@@ -11,6 +11,16 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.common import Common
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
+'''
+    ed10: USW-Flex
+    ec20: UAP-nanoHD
+    ec22: UAP-IW-HD
+    ec25: UAP-BeaconHD (UDM-Beacon)
+    ec26: UAP-FLEXHD
+    ec2a: UAP nanoHD industrial
+    ed11: USP-RPS
+'''
+
 
 class USFLEXFactory(ScriptBase):
     def __init__(self):
