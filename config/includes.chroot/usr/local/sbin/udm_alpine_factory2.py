@@ -112,7 +112,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def set_fake_EEPROM(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
         if self.board_id == 'ea15':
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
@@ -126,7 +126,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def update_uboot(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
@@ -139,7 +139,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def boot_recovery_image(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         time.sleep(2)
