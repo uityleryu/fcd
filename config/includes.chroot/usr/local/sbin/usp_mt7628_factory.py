@@ -45,12 +45,12 @@ class USPMT7628Factory(ScriptBase):
         }
 
         self.UPDATE_RECOVERY_ENABLE = True
-        self.BOOT_RECOVERY_IMAGE    = True 
-        self.PROVISION_ENABLE       = True 
-        self.DOHELPER_ENABLE        = True 
-        self.REGISTER_ENABLE        = True 
+        self.BOOT_RECOVERY_IMAGE    = True
+        self.PROVISION_ENABLE       = True
+        self.DOHELPER_ENABLE        = True
+        self.REGISTER_ENABLE        = True
         self.FWUPDATE_ENABLE        = False
-        self.DATAVERIFY_ENABLE      = True 
+        self.DATAVERIFY_ENABLE      = True
         self.LCM_FW_CHECK_ENABLE    = True
         self.MCU_FW_CHECK_ENABLE    = True
 
@@ -65,6 +65,9 @@ class USPMT7628Factory(ScriptBase):
     def init_recovery_image(self):
         self.pexp.expect_only(30, "reading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; do echo 'Wait udhcpc...'; sleep 1; done",self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i 's/null::respawn:\\/sbin\\/udhcpc/#null::respawn:\\/sbin\\/udhcpc/g' /etc/inittab",self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         self.is_network_alive_in_linux()
@@ -107,7 +110,7 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
 
-    def lcm_fw_check(self):                                                                                                                         
+    def lcm_fw_check(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
 
     def mcu_fw_check(self):
