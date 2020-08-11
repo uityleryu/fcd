@@ -145,6 +145,9 @@ proc stop_uboot {} {
             "uboot env fix. Clearing u-boot env and resetting the board.. " {
                 log_debug "uboot env fixed, rebooting..."
                 stop_uboot
+            } "Resetting" {
+                log_debug "DUT is resetting automatically"
+                stop_uboot
             } "UBNT application initialized" {
                 set timeout 5
                 expect timeout {
@@ -762,9 +765,7 @@ proc turn_on_burnin_mode { boardid } {
         [string equal -nocase $boardid $INSTANTLTE_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_EU_ID] == 1 ||
         [string equal -nocase $boardid $ULTEP_US_ID] == 1 ||
-        [string equal -nocase $boardid $ULTEP_AU_ID] == 1 ||
-        [string equal -nocase $boardid $ULTEF_EU_ID] == 1 ||
-        [string equal -nocase $boardid $ULTEF_US_ID] == 1 } {
+        [string equal -nocase $boardid $ULTEP_AU_ID] == 1 } {
         send "cd /tmp\r"
         expect timeout { error_critical "Command promt not found" } "#"
 
