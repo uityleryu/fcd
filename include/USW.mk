@@ -237,6 +237,7 @@ $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,USW,FCD_$(PRD)_USW-ALL_$(VER)))
+$(eval $(call ProductCompress,US-GEN1,FCD_$(PRD)_US-GEN1-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
 $(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
