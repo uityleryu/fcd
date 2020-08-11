@@ -35,11 +35,11 @@ cmds_buzzer = {
 
 
 msg_idx_connectwithualite = 70
-msg_idx_preparefiles      = 72
-msg_idx_getcardinfo       = 74
-msg_idx_geneeprom         = 78
-msg_idx_devreg            = 80
-msg_idx_writerom          = 85
+msg_idx_preparefiles      = 75
+msg_idx_getcardinfo       = 80
+msg_idx_geneeprom         = 82
+msg_idx_devreg            = 85
+msg_idx_writerom          = 90
 
 
 
@@ -626,12 +626,20 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         
         
         #get card info
-        msg(msg_idx_getcardinfo, "get card info.")
+        
+        ret = False
         self.set_led('blue')
-        if self.get_uacard_info() is False:
+        msg(msg_idx_getcardinfo, "get card info.")
+        timeout = time.time() + 60
+        while time.time() < timeout:
+            if self.get_uacard_info() is True:
+                self.set_led('blink')
+                ret = True
+                break
+            time.sleep(1)
+
+        if ret is False:
             self.critical_error('card not exist')
-        else:
-            self.set_led('blink')
 
         msg(msg_idx_devreg, "connect with devreg server.")
         self.NFC_registration()
