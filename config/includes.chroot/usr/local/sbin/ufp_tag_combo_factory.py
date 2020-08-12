@@ -35,11 +35,11 @@ cmds_buzzer = {
 
 
 msg_idx_connectwithualite = 70
-msg_idx_preparefiles      = 72
-msg_idx_getcardinfo       = 74
-msg_idx_geneeprom         = 78
-msg_idx_devreg            = 80
-msg_idx_writerom          = 85
+msg_idx_preparefiles      = 75
+msg_idx_getcardinfo       = 80
+msg_idx_geneeprom         = 82
+msg_idx_devreg            = 85
+msg_idx_writerom          = 90
 
 
 
@@ -85,6 +85,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a912': False,
             'a918': True,
             'a913': True,
+            'a914': True,
         }
 
         # number of Ethernet
@@ -92,7 +93,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a911': "0",
             'a912': "0",
             'a918': "0",
-            'a913': "0"
+            'a913': "0",
+            'a914': "0"
         }
 
         # number of WiFi
@@ -100,7 +102,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a911': "0",
             'a912': "0",
             'a918': "0",
-            'a913': "0"
+            'a913': "0",
+            'a914': "0"
         }
 
         # number of Bluetooth
@@ -109,6 +112,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a912': "1",
             'a918': "1",
             'a913': "1",
+            'a914': "1",
         }
 
     def prepare_server_need_files(self):
@@ -207,7 +211,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if QRCODE_ENABLE:
             cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
         else:
-            if self.board_id == "a913":
+            if self.board_id in ['a913', 'a914']:
                 cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
 
 
@@ -233,7 +237,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
     def put_devreg_data_in_dut(self):
         
-        if self.board_id in ["a913"]:
+        if self.board_id in ['a913', 'a914']:
             log_debug("cmd_erase_devreg")
             self.ser.execmd(self.cmd_erase_devreg)
             time.sleep(0.5)
@@ -245,7 +249,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         elif self.board_id in ["a911"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
-        elif self.board_id in ["a913"]:
+        elif self.board_id in ['a913', 'a914']:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
@@ -348,7 +352,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.errmsg = ""
 
         print('----REPLACE INFO-----------------------')
-        self.board_id = 'a916'
+        if self.board_id == 'a913':
+            self.board_id = 'a916'
+        elif self.board_id == 'a914':
+            self.board_id = 'a917'
+
         self.mac = self.mac_addr_increase(self.mac, 1)
 
         #for debug if have no non-devreg board on hand
@@ -618,12 +626,20 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         
         
         #get card info
-        msg(msg_idx_getcardinfo, "get card info.")
+        
+        ret = False
         self.set_led('blue')
-        if self.get_uacard_info() is False:
+        msg(msg_idx_getcardinfo, "get card info.")
+        timeout = time.time() + 60
+        while time.time() < timeout:
+            if self.get_uacard_info() is True:
+                self.set_led('blink')
+                ret = True
+                break
+            time.sleep(1)
+
+        if ret is False:
             self.critical_error('card not exist')
-        else:
-            self.set_led('blink')
 
         msg(msg_idx_devreg, "connect with devreg server.")
         self.NFC_registration()

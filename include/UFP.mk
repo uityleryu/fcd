@@ -9,10 +9,13 @@ IMAGE-ULT=
 
 TOOLS-TAG-COMBO=
 
+TOOLS-CARD-COMBO=
+
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
 IMAGE-UFP+=$(IMAGE-ULT)
+IMAGE-UFP+=$(IMAGE-CARD-COMBO)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -45,7 +48,9 @@ TOOLS-TAG-COMBO=$(TOOLS-UFP)
 TOOLS-TAG-COMBO+= \
     ufp/nxp-nfc-nci
 
-
+TOOLS-CARD-COMBO=$(TOOLS-UFP)
+TOOLS-CARD-COMBO+= \
+    ufp/nxp-nfc-nci
 
 
 
@@ -55,7 +60,7 @@ $(eval $(call ProductImage,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
-
+$(eval $(call ProductImage,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -63,3 +68,4 @@ $(eval $(call ProductCompress,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
