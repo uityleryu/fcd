@@ -207,34 +207,12 @@ class UDMALPINEFactoryGeneral(ScriptBase):
                                                       "--eval=\"db.device.count()\"", "1", retry=12)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
-    # A dirty workaround before FW developers provide a stable way to check if LCM FW is loaded and version is correct
     def lcm_fw_ver_check(self):
         if self.board_id == "ea15":
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
         elif self.board_id == "ea19":
-            retry_cnt = 60
-            for i in range(retry_cnt):
-                try:
-                    self.pexp.expect_lnxcmd(3, self.linux_prompt, 'ps w | grep dfu -i | grep -v "dfu -i"', "uxg-pro-lcm-fw.dfu", retry=0)
-                    time.sleep(1)
-                    continue
-                except Exception as e:
-                    self.pexp.expect_lnxcmd(3, self.linux_prompt, '/etc/init.d/S05ulcmd stop', self.linux_prompt)
-                    break
-            if i == retry_cnt - 1:
-                raise Exception("Check DFU failed")
-    
-            for i in range(retry_cnt):
-                try:
-                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "stty -F /dev/ttyACM0 115200 -echo", self.linux_prompt)
-                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo '{\"system\":{\"get\":\"version\"}}' > /dev/ttyACM0", 
-                                            self.linux_prompt)
-                    self.pexp.expect_lnxcmd(3, self.linux_prompt, "cat /dev/ttyACM0", "v0.0.4-0-gcedc7ef", retry=0)
-                    break
-                except Exception as e:
-                    continue
-            if i == retry_cnt - 1:
-                raise Exception("Check LCM FW version failed")
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'grep "LCM FW version" /tmp/ulcmd.log', 'v1.0.6-0-gaea2a43', retry=48)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'cat /tmp/ulcmd.log', self.linux_prompt)
 
     def run(self):
         """
