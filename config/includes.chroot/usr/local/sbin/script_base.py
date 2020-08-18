@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.17"
+    __version__ = "1.0.18"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -400,8 +400,7 @@ class ScriptBase(object):
         self.fw_ver = '{:04x}{:02x}{:02x}'.format(int(spt[0]), int(spt[1]), int(spt[2]))
         print("fw_ver: " + self.fw_ver)
 
-    def registration(self):
-        log_debug("Starting to do registration ...")
+    def access_chips_id(self):
         cmd = [
             "cat " + self.eetxt_path,
             "|",
@@ -413,11 +412,15 @@ class ScriptBase(object):
         ]
         cmdj = ' '.join(cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
-        regsubparams = sto
         if int(rtc) > 0:
             error_critical("Extract parameters failed!!")
         else:
             log_debug("Extract parameters successfully")
+            return sto
+
+    def registration(self):
+        log_debug("Starting to do registration ...")
+        regsubparams = self.access_chips_id()
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
@@ -973,11 +976,11 @@ class ScriptBase(object):
         return mac_comma
 
     def mac_format_str2dash(self, strmac):
-        mac_dash = ':'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
+        mac_dash = '-'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
         return mac_dash
 
     def mac_format_str2list(self, strmac):
-        mac_list = self.mac_format_str2comma(strmac)
+        mac_list = self.mac_format_str2comma(strmac).split(':')
         return mac_list
 
     def close_fcd(self):

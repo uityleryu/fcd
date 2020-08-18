@@ -929,6 +929,35 @@
     }
   },
 
+  "Connect":
+  {
+    "UTD-7":{
+      "INDEX"       : 0,
+      "NAME"        : "UTD-7",
+      "BOARDID"     : "ef80",
+      "BOMREV"      : "113-03168",
+      "DESC"        : "UniFi Connect Panel 7",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+
+    "UTD-13":{
+      "INDEX"       : 1,
+      "NAME"        : "UTD-13",
+      "BOARDID"     : "ef81",
+      "BOMREV"      : "113-03182",
+      "DESC"        : "UniFi Connect Panel 13",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    }
+  },
+
   "airMAX":
   {
     "GBE":{
@@ -1024,8 +1053,9 @@
       "FCD_ID"      : "000d",
       "SW_ID"       : "1602"
     },
-      "ULT":{
-      "INDEX"       : 0,
+
+    "ULT":{
+      "INDEX"       : 2,
       "NAME"        : "ULT",
       "BOARDID"     : "a919",
       "BOMREV"      : "113-03025",
@@ -1036,8 +1066,9 @@
       "FCD_ID"      : "000d",
       "SW_ID"       : "1601"
     },
+
     "UFP-TAG-COMBO":{
-      "INDEX"       : 2,
+      "INDEX"       : 3,
       "NAME"        : "UFP-TAG-COMBO",
       "BOARDID"     : "a913",
       "BOMREV"      : "113-02973",
@@ -1048,6 +1079,7 @@
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
     },
+
     "UFP-CARD-COMBO":{
       "INDEX"       : 3,
       "NAME"        : "UFP-CARD-COMBO",
@@ -1059,8 +1091,7 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
-    }            
-
+    }
   },
 
   "USP":
@@ -1077,6 +1108,7 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
+
     "USP3":{
       "INDEX"       : 1,
       "NAME"        : "USP3",
@@ -1089,6 +1121,7 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
+
     "USP8":{
       "INDEX"       : 2,
       "NAME"        : "USP8",
@@ -1101,6 +1134,7 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
+
     "USP-STRIP":{
       "INDEX"       : 3,
       "NAME"        : "USP-STRIP",
@@ -1113,6 +1147,7 @@
       "FCD_ID"      : "000e",
       "SW_ID"       : "1801"
     },
+
     "USP-PDU-PRO":{
       "INDEX"       : 4,
       "NAME"        : "USP-PDU-PRO",
@@ -1140,9 +1175,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G3BATTERY":{
+    "UVC-G3BATTERY":{
       "INDEX"       : 1,
       "NAME"        : "UVC-G3BATTERY",
       "BOARDID"     : "a580",
@@ -1153,9 +1188,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G4PTZ":{
+    "UVC-G4PTZ":{
       "INDEX"       : 2,
       "NAME"        : "UVC-G4PTZ",
       "BOARDID"     : "a564",
@@ -1166,9 +1201,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G4DOORBELL":{
+    "UVC-G4DOORBELL":{
       "INDEX"       : 3,
       "NAME"        : "UVC-G4DOORBELL",
       "BOARDID"     : "a571",
@@ -1179,9 +1214,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G4BULLET":{
+    "UVC-G4BULLET":{
       "INDEX"       : 4,
       "NAME"        : "UVC-G4BULLET",
       "BOARDID"     : "a572",
@@ -1192,9 +1227,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G4DOME":{
+    "UVC-G4DOME":{
       "INDEX"       : 5,
       "NAME"        : "UVC-G4DOME",
       "BOARDID"     : "a573",
@@ -1205,9 +1240,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     },
+    },
 
-     "UVC-G3MINI":{
+    "UVC-G3MINI":{
       "INDEX"       : 6,
       "NAME"        : "UVC-G3MINI",
       "BOARDID"     : "a590",
@@ -1218,8 +1253,7 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-     }
-
+    }
   },
 
   "UbiquitiNMS":
@@ -1235,9 +1269,9 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     },
+    },
 
-    "UNMS-S-LITE":{
+    "UNMS-S-LITE-817":{
       "INDEX"       : 1,
       "NAME"        : "UNMS-S-LITE",
       "BOARDID"     : "eed0",
@@ -1248,9 +1282,9 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     },
+    },
 
-     "UNMS-R-LITE":{
+    "UNMS-R-LITE":{
       "INDEX"       : 2,
       "NAME"        : "UNMS-R-LITE",
       "BOARDID"     : "ee6b",
@@ -1261,9 +1295,9 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     },
+    },
 
-     "UNMS-LTE-US":{
+    "UNMS-LTE-US":{
       "INDEX"       : 3,
       "NAME"        : "UNMS-LTE-US",
       "BOARDID"     : "dca2",
@@ -1274,9 +1308,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     },
+    },
 
-     "UNMS-LTE-EU":{
+    "UNMS-LTE-EU":{
       "INDEX"       : 4,
       "NAME"        : "UNMS-LTE-EU",
       "BOARDID"     : "dca3",
@@ -1287,9 +1321,9 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     },
+    },
 
-     "UNMS-S-PRO":{
+    "UNMS-S-PRO":{
       "INDEX"       : 5,
       "NAME"        : "UNMS-S-PRO",
       "BOARDID"     : "eed1",
@@ -1300,7 +1334,20 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     }
+    },
+
+    "UNMS-S-LITE-900":{
+      "INDEX"       : 1,
+      "NAME"        : "UNMS-S-LITE",
+      "BOARDID"     : "eed0",
+      "BOMREV"      : "113-00900",
+      "DESC"        : "Ubiquiti Network Management System Switch Lite",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    }
   },
 
   "UniFiServer":
@@ -1316,6 +1363,22 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0010",
       "SW_ID"       : "1b01"
+     }
+  },
+
+  "UniFiAccess":
+  {
+    "UA-PRO-BL":{
+      "INDEX"       : 0,
+      "NAME"        : "UA-PRO-BL",
+      "BOARDID"     : "ec60",
+      "BOMREV"      : "113-02966",
+      "DESC"        : "UniFi PRO Backlight",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
      }
   }
 }
