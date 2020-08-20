@@ -92,6 +92,11 @@ IMAGE-U6-S24= \
     usw-fw/unifiswitch-us24pro* \
     usw-fw/US.bcm5616x*
 
+IMAGE-U6-S48= \
+    images/eb28* \
+    usw-fw/unifiswitch-usw6-48-poe* \
+    usw-fw/US.bcm5616x*
+
 IMAGE-USW-Aggregation= \
     images/ed2d* \
     usw-fw/usw-aggregation-* \
@@ -127,6 +132,7 @@ IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
 IMAGE-USW+=$(IMAGE-USW-XG)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
 IMAGE-USW+=$(IMAGE-U6-S24)
+IMAGE-USW+=$(IMAGE-U6-S48)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-USW-Aggregation-Pro)
 IMAGE-USW+=$(IMAGE-US-GEN1)
@@ -207,6 +213,7 @@ TOOLS-USW-Aggregation+= \
 TOOLS-USW-Aggregation-Pro=$(TOOLS-USW)
 
 TOOLS-U6-S24=$(TOOLS-USW)
+TOOLS-U6-S48=$(TOOLS-USW)
 
 # ALL
 TOOLS-USW+=$(TOOLS-CONFIG)
@@ -230,6 +237,7 @@ $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER
 $(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 
@@ -250,5 +258,6 @@ $(eval $(call ProductCompress,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FW
 $(eval $(call ProductCompress,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))

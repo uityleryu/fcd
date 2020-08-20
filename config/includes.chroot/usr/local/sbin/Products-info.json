@@ -516,6 +516,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "U6-S48":{
+      "INDEX"       : 32,
+      "NAME"        : "U6-S48",
+      "BOARDID"     : "eb28",
+      "BOMREV"      : "113-03213",
+      "DESC"        : "UniFi Switch 6 48 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

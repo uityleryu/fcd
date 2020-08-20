@@ -30,6 +30,7 @@ uberstaddr = {
     'eb25': "0x1e0000",
     'eb26': "0x1e0000",
     'eb27': "0x1e0000",
+    'eb28': "0x1e0000",
     'eb36': "0x1e0000",
     'eb37': "0x1e0000",
     'eb38': "0x1e0000",
@@ -44,6 +45,7 @@ ubersz = {
     'eb25': "0x10000",
     'eb26': "0x10000",
     'eb27': "0x10000",
+    'eb28': "0x10000",
     'eb36': "0x10000",
     'eb37': "0x10000",
     'eb38': "0x10000",
@@ -70,25 +72,12 @@ bootargs = {
     'eb25': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb26': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb27': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
+    'eb28': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb36': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb37': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb38': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb67': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M,
     'eb68': "quiet console=ttyS0,115200 mem=1008M " + flash_mtdparts_64M
-}
-
-helperexes = {
-    '0000': "helper_BCM5341x",
-    'eb20': "helper_BCM5341x",
-    'eb23': "helper_BCM5616x",
-    'eb25': "helper_BCM5617x",
-    'eb26': "helper_BCM5617x",
-    'eb27': "helper_BCM5617x",
-    'eb36': "helper_BCM5616x",
-    'eb37': "helper_BCM5616x",
-    'eb38': "helper_BCM5616x",
-    'eb67': "helper_BCM5616x",
-    'eb68': "helper_BCM5616x"
 }
 
 
@@ -99,7 +88,6 @@ class USBCM5616_MFG(ScriptBase):
 
     def init_vars(self):
         self.bootloader_prompt = "u-boot>"
-        self.helperexe = helperexes[self.board_id]
         self.devregpart = "/dev/`awk -F: '/EEPROM/{print \$1}' /proc/mtd|sed 's~mtd~mtdblock~g'`"
         self.USGH2_SERIES = None
         self.fakemac = "00:90:4c:06:a5:7"+self.row_id
