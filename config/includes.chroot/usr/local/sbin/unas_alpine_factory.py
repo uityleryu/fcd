@@ -16,6 +16,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FWUPDATE_ENABLE = False
 DATAVERIFY_ENABLE = True
+WAIT_LCMUPGRADE_ENABLE = True
 
 
 class UNASALPINEFactory(ScriptBase):
@@ -29,6 +30,7 @@ class UNASALPINEFactory(ScriptBase):
         self.user = "root"
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
+        self.wait_LCM_upgrade_en = {'ea20'}
 
         # script specific vars
         self.devregparts = {
@@ -252,6 +254,10 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
 
+    def wait_lcm_upgrade(self):
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "")
+
     def run(self):
         """main procedure of factory
         """
@@ -313,6 +319,11 @@ class UNASALPINEFactory(ScriptBase):
         if DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(90, "Succeeding in checking the devreg information ...")
+
+        if WAIT_LCMUPGRADE_ENABLE is True:
+            if self.board_id in self.wait_LCM_upgrade_en:
+                msg(95, "Waiting LCM upgrading ...")
+                self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
