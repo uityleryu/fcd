@@ -52,7 +52,7 @@ TOOLS-UNVR-PRO+=$(TOOLS-UNVR)
 $(eval $(call ProductImage,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNVR-PRO,FCD_$(PRD)_UNVR-PRO$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
