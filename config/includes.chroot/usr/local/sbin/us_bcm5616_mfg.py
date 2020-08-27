@@ -268,7 +268,7 @@ class USBCM5616_MFG(ScriptBase):
         """
         should be called at login console
         """
-        self.pexp.expect_action(120, "Please press Enter to activate this console", "")
+        self.pexp.expect_action(180, "Please press Enter to activate this console", "")
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(timeout, "login:", username)
         self.pexp.expect_action(10, "Password:", password)
