@@ -95,7 +95,7 @@ IMAGE-U6-S24= \
 IMAGE-U6-S48= \
     images/eb28* \
     usw-fw/unifiswitch-usw6-48-poe* \
-    usw-fw/US.bcm5616x*
+    usw-fw/US.bcm5617x*
 
 IMAGE-USW-Aggregation= \
     images/ed2d* \
