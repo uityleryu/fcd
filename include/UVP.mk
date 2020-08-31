@@ -5,7 +5,9 @@ IMAGE-UVP-FLEX= \
     images/ef0d* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
-IMAGE-UVP-ATA=
+IMAGE-UVP-ATA= \
+    images/ef0f* \
+    uvp-fw/uvp-flex_1.0.13.bin.unsign
 
 IMAGE-UVP-CONF-SPK=
 
@@ -31,7 +33,7 @@ TOOLS-UVP-FLEX+=$(TOOLS-CONFIG)
 TOOLS-UVP-FLEX+= uvp/*
 
 TOOLS-UVP-ATA+=$(TOOLS-CONFIG)
-# TOOLS-UVP-ATA+=
+TOOLS-UVP-ATA+= uvp/*
 
 TOOLS-UVP-CONF-SPK+=$(TOOLS-CONFIG)
 TOOLS-UVP-CONF-SPK+= uvp/*

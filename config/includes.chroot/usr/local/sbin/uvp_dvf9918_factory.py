@@ -27,7 +27,6 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.user = "root"
         self.bootloader_prompt = "DVF99 #"
         self.linux_prompt = "root@dvf9918:~#"
-        self.helperexe = "helper_DVF99_release"
         self.helper_path = "uvp"
         self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.13"
 
@@ -49,6 +48,12 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0f': "0"
         }
 
+        # helper
+        hlp = {
+            'ef0d': "helper_DVF99_release",
+            'ef0f': "helper_DVF99_release_ata"
+        }
+
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
             'ethnum'          : ethnum,
@@ -59,8 +64,10 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         self.netif = {
             'ef0d': "ifconfig eth0 ",
-            'ef0d': "ifconfig eth0 "
+            'ef0f': "ifconfig eth0 "
         }
+
+        self.helperexe = hlp[self.board_id]
 
     def mac_colon_format(self, mac):
         mcf = [
@@ -101,7 +108,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.pexp.expect_action(60, "login:", self.user)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
+        cmd = "{0} {1}".format(self.netif[self.board_id], self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         time.sleep(3)
         postexp = [
             "64 bytes from",
