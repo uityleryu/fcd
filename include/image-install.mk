@@ -87,8 +87,9 @@ image-ostrich-install-$1: $1-namechk
 		#python3 compileall $(OSTRICH_DIR)/temp_sbin/script_base.py
 		#python3 compileall $(OSTRICH_DIR)/temp_sbin/ubntlib
 
-	cp -rf $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/
-	cp -rf $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
+	cp -rfL $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/
+	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
+	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
 	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
 	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
 	cd $(OUTDIR); tar -cvzf $2.tgz ostrich
