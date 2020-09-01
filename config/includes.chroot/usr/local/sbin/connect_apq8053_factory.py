@@ -24,13 +24,18 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
     def init_vars(self):
         self.ver_extract()
-        self.linux_prompt = "msm8953_uct"
 
         # defalut JEDEC ID for EMMC
         self.df_jedecid = "0007f100"
 
         # default product class: basic
         self.df_prod_class = "0014"
+
+        self.lnxpmt = {
+            'ef80': "msm8953_uct",
+            'ef81': "unifi_p13",
+            'ec60': "msm8953_uapro"
+        }
 
         # number of mac
         self.macnum = {
@@ -54,10 +59,33 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         }
 
         self.devnetmeta = {
-            'ethnum'          : self.macnum,
-            'wifinum'         : self.wifinum,
-            'btnum'           : self.btnum
+            'ethnum'    : self.macnum,
+            'wifinum'   : self.wifinum,
+            'btnum'     : self.btnum
         }
+
+        self.linux_prompt = self.lnxpmt[self.board_id]
+
+        portn = int(self.row_id) + 1
+        rtmsg = "EdgeSwitch port: {0}".format(portn)
+        log_debug(rtmsg)
+        for ct in range(0, 4):
+            try:
+                self.egsw = EdgeSwitch(ip='192.168.1.30', id='ubnt', pw='ubnt1234')
+            except Exception as e:
+                if ct < 3:
+                    print("Retry {0}".format(ct + 1))
+                    time.sleep(1)
+                    continue
+                else:
+                    print("Exceeded maximum retry times {0}".format(i))
+                    raise e
+            else:
+                break
+
+        self.dutip = self.egsw.get_ip(port=portn, retry=4)
+        if self.dutip is False:
+            error_critical("Get DUT IP address failed!!")
 
     def access_chips_id(self):
         cmd = "cat /sys/devices/soc0/soc_id"
@@ -178,19 +206,17 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
     def check_mac(self):
         comac = self.mac_format_str2comma(self.mac)
-        egsw = EdgeSwitch()
         for ct in range(0, 60):
             portn = int(self.row_id) + 1
             rtmsg = "EdgeSwitch port: {0}".format(portn)
             log_debug(rtmsg)
-            egmac = egsw.get_mac(port=portn)
+            egmac = self.egsw.get_mac(port=portn)
             time.sleep(1)
             if egmac is not False:
                 rtmsg = "Get DUT MAC address: {0}".format(egmac.upper())
                 log_debug(rtmsg)
                 rtmsg = "Input MAC address: {0}".format(comac.upper())
                 log_debug(rtmsg)
-                egsw.close()
                 if comac.upper() == egmac.upper():
                     log_debug("MAC comparison successfully")
                     return True
@@ -209,34 +235,17 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.cnapi.print_current_fcd_version()
 
-        for ct in range(0, 60):
-            portn = int(self.row_id) + 1
-            rtmsg = "EdgeSwitch port: {0}".format(portn)
-            log_debug(rtmsg)
-            egsw = EdgeSwitch()
-            dutip = egsw.get_ip(port=portn)
-            time.sleep(1)
-            egsw.close()
-            if dutip is not False:
-                rtmsg = "DUT Ethernet IP address: {0}".format(dutip)
-                log_debug(rtmsg)
-                break
-            else:
-                rtmsg = "Retry {} .. to get IP address".format(ct + 1)
-                log_debug(rtmsg)
-        else:
-            error_critical(msg="Can't get the IP address from EGS!")
-
+        cladb = None
         # ADB connection to Android platform
         for i in range(0, 60):
             try:
-                cmd = "adb connect {0}:5555".format(dutip)
+                cmd = "adb connect {0}:5555".format(self.dutip)
                 self.cnapi.xcmd(cmd)
 
                 cladb = ExpttyProcess(self.row_id, "adb root", "\n")
                 cladb.expect_only(2, "adbd is already running as root")
 
-                pexpect_cmd = "adb -e -s {0}:5555 shell".format(dutip)
+                pexpect_cmd = "adb -e -s {0}:5555 shell".format(self.dutip)
                 log_debug(msg=pexpect_cmd)
                 pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
             except Exception as e:
@@ -278,6 +287,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.check_mac()
 
         msg(100, "Complete FCD process ...")
+        self.egsw.close()
         self.close_fcd()
 
 

@@ -3,6 +3,8 @@
 
 IMAGE-UTD-7=
 
+IMAGE-UTD-13=
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -22,11 +24,14 @@ TOOLS-CONFIG= \
 # Project specific tools
 
 TOOLS-UTD-7+=$(TOOLS-CONFIG)
+TOOLS-UTD-13+=$(TOOLS-CONFIG)
 
 # Project target
 
 $(eval $(call ProductImage,UTD-7,FCD_$(PRD)_CONNECT-UTD-7_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UTD-13,FCD_$(PRD)_CONNECT-UTD-13_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UTD-7,FCD_$(PRD)_CONNECT-UTD-7_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UTD-13,FCD_$(PRD)_CONNECT-UTD-13_$(VER)_$(FWVER)))
