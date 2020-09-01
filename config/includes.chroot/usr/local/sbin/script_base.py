@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.18"
+    __version__ = "1.0.19"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -1049,6 +1049,7 @@ class ScriptBase(object):
                 time.sleep(1)
 
         self._upload_ui_taipei(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
+        self._upload_ui_taipei_farget(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
         self._upload_ui_usa(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev,
                             upload_dut_logpath=upload_dut_logpath)
 
@@ -1075,6 +1076,7 @@ class ScriptBase(object):
             '--path', uploadfolder,
             '--mac', mac,
             '--bom', bom,
+            '--srv ecs',
             '--stage', FCDtype]
         execcmd = ' '.join(cmd)
 
@@ -1089,6 +1091,47 @@ class ScriptBase(object):
             log_debug('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
         except:
             log_debug("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
+
+    def _upload_ui_taipei_farget(self, uploadfolder, mac, bom):
+        """
+            command parameter description for trigger /api/v1/uploadlog WebAPI in Cloud
+            command: python3
+            --path:  uploadfolder or uploadpath
+            --mac:   mac address with lowercase
+            --bom:   BOM Rev version
+            --srv:   UI-cloud
+            --stage: FCD or FTU
+        """
+        logupload_client_path = os.path.join(self.ubntlib_dir, 'fcd', 'logupload_client.py')
+
+        if bom is None:
+            bom = '99999-99'  # Workaround For BackToArt , GUI won't assign BOM version.
+            FCDtype = 'BackToArt'
+        else:
+            FCDtype = 'FCD'
+
+        cmd = [
+            "sudo", "/usr/bin/python3",
+            logupload_client_path,
+            '--path', uploadfolder,
+            '--mac', mac,
+            '--bom', bom,
+            '--srv farget',
+            '--stage', FCDtype]
+        execcmd = ' '.join(cmd)
+        log_debug("cmd: " + execcmd)
+
+        try:
+            uploadproc = subprocess.check_output(execcmd, shell=True)
+            if "success" in str(uploadproc.decode('utf-8')):
+                log_debug('[Upload_ui_taipei farget Success]')
+            else:
+                raise subprocess.CalledProcessError
+
+        except subprocess.CalledProcessError as e:
+            log_debug('\n{}\n{}\n[Upload_ui_taipei farget Fail]'.format(e.output.decode('utf-8'), e.returncode))
+        except:
+            log_debug("[Upload_ui_taipei farget Unexpected error: {}]".format(sys.exc_info()[0]))
 
     def _upload_ui_usa(self, uploadfolder, mac, bom, upload_dut_logpath):
         """
