@@ -138,8 +138,7 @@ class UNASALPINEFactory(ScriptBase):
 
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
-        self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
-        self.pexp.expect_only(30, self.tftp_server + " is alive", err_msg="Tftp server is not alive!")
+        self.is_network_alive_in_uboot(retry=9)
 
         # clean up config block
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
