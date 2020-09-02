@@ -9,8 +9,16 @@ IMAGE-AF60-LR= \
     images/dc9e* \
     af-fw/*.bin
 
+IMAGE-AF60-XG= \
+    images/dd11* \
+    af-fw/AF60*.bin \
+    af-fw/af60-xg*.bin \
+    af-fw/NAND_factory_ubi.img \
+    af-fw/LS1046_boot.bin
+
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)
+IMAGE-AF+=$(IMAGE-AF60-XG)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -40,15 +48,18 @@ TOOLS-AF60+= \
     af_ltu5/helper_UBNTAME
 
 TOOLS-AF60-LR+=$(TOOLS-AF60)
+TOOLS-AF60-XG+=$(TOOLS-AF60)
 
 # Project target
 
 $(eval $(call ProductImage,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))

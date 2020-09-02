@@ -829,6 +829,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
       "SW_ID"       : "1001"
+    },
+
+    "AF60-XG":{
+      "INDEX"       : 4,
+      "NAME"        : "AF60-XG",
+      "BOARDID"     : "dd11",
+      "BOMREV"      : "113-00809",
+      "DESC"        : "AirFiber 60 XG",
+      "FILE"        : "af_ls104x_factory.py",
+      "T1FILE"      : "af_ls104x_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     }
   },
 
