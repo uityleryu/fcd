@@ -439,6 +439,8 @@ class fraMonitorPanel(Gtk.Frame):
         cmd = [
             "sudo /usr/bin/python3",
             "/usr/local/sbin/" + CONST.active_product_obj['T1FILE'],
+            "-pline=" + CONST.active_product_series,
+            "-pname=" + CONST.active_product,
             "-s=" + self.slotid,
             "-d=" + CONST.finaltty[int(self.slotid)],
             "-ts=" + CONST.fcdhostip,
