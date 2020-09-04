@@ -11,7 +11,7 @@ import time
 import os
 import stat
 import shutil
-
+import filecmp
 
 class LS104XFactory(ScriptBase):
     def __init__(self):
@@ -112,7 +112,7 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC3 && setenv ethprime FM1@DTSEC3")
-        time.sleep(1)
+        time.sleep(2)
         self.is_network_alive_in_uboot()
 
     def uboot_update(self):
@@ -210,11 +210,9 @@ class LS104XFactory(ScriptBase):
 
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt1")
-        cmd = "ifconfig veth0 {0} up".format(self.dutip)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-        self.chk_lnxcmd_valid()
-        self.lnx_netcheck()
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+
+        self.lnx_netconfig()
 
     ''' 
         This will over-write scrip_base function and implement by ls104x methods
@@ -257,11 +255,15 @@ class LS104XFactory(ScriptBase):
         cmd = "dd if=/dev/mtdblock7 of=/tmp/" +self.eebin + " count=1 bs=65536"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
-        self.scp_put(dut_user="ubnt", dut_pass="ubnt1", dut_ip=self.dutip, 
-                     dut_file=self.dut_tmpdir + "/" + self.eebin ,
+        self.scp_put(dut_user="ubnt", dut_pass="ubnt", dut_ip=self.dutip, 
+                     dut_file=self.dut_tmpdir + "/" + self.eebin,
                      host_file=self.tftpdir + self.eebin)
 
-    def lnx_netcheck(self, netifen=False):
+    def lnx_netconfig(self, netifen=False):
+        cmd = "ifconfig veth0 {0} up".format(self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.chk_lnxcmd_valid()
+        
         postexp = [
             "64 bytes from",
             self.linux_prompt
@@ -270,32 +272,41 @@ class LS104XFactory(ScriptBase):
         self.chk_lnxcmd_valid()
 
     def check_info(self):
+        
+        if self.FCD_TLV_data is True:
+            eewrite = self.eesigndate
+        else:
+            eewrite = self.eesign
 
+        eewrite_path = os.path.join(self.tftpdir, eewrite)
         eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
 
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt1")
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+
+        self.lnx_netconfig()
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=post_txt, valid_chk=True)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=self.linux_prompt, valid_chk=True)
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
 
-        self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, post_en=post_en)
+        self.scp_put(dut_user="ubnt", dut_pass="ubnt", dut_ip=self.dutip, 
+                     dut_file=eechk_dut_path,
+                     host_file=self.tftpdir + self.eechk)
 
         otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, eewrite)
         log_debug(otmsg)
         rtc = filecmp.cmp(self.eechk_path, eewrite_path)
         if rtc is True:
-            log_debug("Comparing files successfully")
+            log_debug("EEPROM Comparing files successfully")
         else:
-            error_critical("Comparing files failed!!")
+            error_critical("EEPROM Comparing files failed!!")
 
-
-        cmd = "cat /proc/ubnthal/board.info"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        cmd = "cat /proc/ubnthal/board.info | grep board."
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt)
 
     def airos_run(self):
         UPDATE_BOOTIMG_EN = True
@@ -333,12 +344,12 @@ class LS104XFactory(ScriptBase):
             self.runubntw()
 
         if GETDEVICEINFO_EN is True:
-            msg(30, "Get device info for devreg")
+            msg(30, "Get device info for registration")
             self.getdeviceinfo()
 
         ''' TBD
         if FLASH_TEMP_CFG:
-            msg(25, "Flash a temporary config")
+            msg(40, "Flash a temporary config")
             self.set_uboot_network()
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv")
             cmd = "tftpboot 0x84000000 tools/{0}/cfg_part.bin".format(self.pd_dir)
@@ -349,18 +360,18 @@ class LS104XFactory(ScriptBase):
         '''
 
         if URESCUE_EN:
-            msg(30, "Do urescue")
+            msg(50, "Do urescue")
             self.runurescue()
 
         if REGISTER_EN is True:
+            msg(60, "Do registration")
             self.erase_eefiles()
             self.prepare_eefile()
             self.registration()
-            msg(50, "Finish do registration ...")
 
         ''' TBD
         if ADDKEYS_EN is True:
-            msg(60, "Add RSA Key")
+            msg(70, "Add RSA Key")
 
             cmd = "rm {0}; dropbearkey -t rsa -f {0}".format(self.dropbear_key)
             [sto, rtc] = self.fcd.common.xcmd(cmd)
@@ -384,7 +395,7 @@ class LS104XFactory(ScriptBase):
             self.stop_uboot()
             self.set_uboot_network()
 
-            msg(70, "Write signed EEPROM")
+            msg(80, "Write signed EEPROM")
             cmd = "tftpboot a0000000 {0}".format(self.eesigndate)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
@@ -394,12 +405,12 @@ class LS104XFactory(ScriptBase):
             time.sleep(1)
 
         if DEFAULTCONFIG_EN is True:
+            msg(90, "Write default setting")
             log_debug("Erase tempoarary config")
             cmd = "sf probe; sf erase {0} {1}".format(self.cfg_address, self.cfg_size)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             time.sleep(5)
 
-            msg(80, "Write default setting")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv NORESET")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip 192.168.1.254")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr 192.168.1.20")
@@ -410,9 +421,9 @@ class LS104XFactory(ScriptBase):
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
         if DATAVERIFY_EN is True:
+            msg(95, "Checking the devreg information ...")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
             self.check_info()
-            msg(90, "Succeeding in checking the devreg information ...")
 
         msg(100, "Formal firmware completed...")
         self.close_fcd()
@@ -429,10 +440,9 @@ class LS104XMFG(ScriptBase):
         '''
         # U-boot prompt
         self.ubpmt = {
-            '0000': "af60> ",
-            'dd11': "af60> "
+            '0000': "LS104x> ",
+            'dd11': "LS104x> "
         }
-
         self.nor_img = {
             '0000': "dd11-mfg-nor.bin",
             'dd11': "dd11-mfg-nor.bin"
@@ -473,9 +483,8 @@ class LS104XMFG(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC3 && setenv ethprime FM1@DTSEC3")
-        time.sleep(1)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(30, "is alive")
+        time.sleep(2)
+        self.is_network_alive_in_uboot
 
     def run(self):
 
@@ -499,7 +508,6 @@ class LS104XMFG(ScriptBase):
 
         msg(5, "Stop U-boot")
         self.stop_uboot()
-        time.sleep(1)
         self.set_uboot_network()
 
         if WRITE_NOR_EN:
@@ -533,6 +541,7 @@ class LS104XMFG(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         if ERASE_CAL_EN:
+            msg(60, "Erase Calibration data")
             if self.erasecal == "True":
                 self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf erase 0x170000 0x10000")
                 time.sleep(5)
@@ -544,10 +553,16 @@ class LS104XMFG(ScriptBase):
             time.sleep(5)
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-        time.sleep(60)
+        time.sleep(30)
 
-        msg(90, "Reboot")
+        msg(90, "Reboot and Check")
         self.pexp.expect_only(120, "Linux version 4.14.67")
+
+        self.pexp.expect_ubcmd(120, "login:", "root")
+
+        self.pexp.expect_ubcmd(120, ":~#", "uptime")
+        cmd = "cat /proc/device-tree/model"
+        output = self.pexp.expect_get_output(cmd, ":~#")
 
         msg(100, "Back to ART has completed")
         self.close_fcd()
