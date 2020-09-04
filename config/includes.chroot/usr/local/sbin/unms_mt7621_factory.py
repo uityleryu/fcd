@@ -22,7 +22,7 @@ class UNMSMT7621Factory(ScriptBase):
         self.bootloader_prompt = "=>"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_MT7621_release"
-        self.helper_path = "unms_rlite"
+        self.helper_path = "unms-rlite"
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
