@@ -73,7 +73,7 @@
       "QRCHECK"     : "True"
     },
 
-	"UDM-LITE":{
+	  "UDM-LITE":{
       "INDEX"       : 6,
       "NAME"        : "UDM-LITE",
       "BOARDID"     : "ec28",
@@ -636,11 +636,8 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
-      }
-  },
+    },
 
-  "UniFiAP6":
-  {
     "U6-IW":{
       "INDEX"       : 7,
       "NAME"        : "U6-IW",
@@ -1409,5 +1406,21 @@
       "FCD_ID"      : "0012",
       "SW_ID"       : "1d01"
      }
+  },
+
+  "UniFiXG":
+  {
+    "UXG-LITE":{
+      "INDEX"       : 0,
+      "NAME"        : "UXG-LITE",
+      "BOARDID"     : "b080",
+      "BOMREV"      : "113-00778",
+      "DESC"        : "UniFi Next-Generation Gateway Lite",
+      "FILE"        : "uxg_mt7622_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0013",
+      "SW_ID"       : "1e01"
+    }
   }
 }
