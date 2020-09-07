@@ -144,6 +144,11 @@ class UNMSMT7621Factory(ScriptBase):
         cmd = "ubios-udapi-client put /services \'{\"sshServer\": {\"enabled\": true,\"sshPort\":22}}\'"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True, retry=5)
 
+    def set_boot_select(self):
+        # set 0x0 to offset 160(0xa0) for booting kernel selecting
+        cmd = "echo -e \"\\x00\" |dd of={} bs=1 count=1 seek=160 2>/dev/null".format(self.devregpart)
+        self.pexp.expect_lnxcmd(10,  self.linux_prompt, cmd, self.linux_prompt)
+
     def run(self):
         """
         Main procedure of factory
@@ -186,6 +191,7 @@ class UNMSMT7621Factory(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
+            self.set_boot_select()
             self.fwupdate()
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
 
