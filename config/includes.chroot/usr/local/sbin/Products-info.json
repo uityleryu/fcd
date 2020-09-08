@@ -529,6 +529,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USW-XG-24":{
+      "INDEX"       : 7,
+      "NAME"        : "USW-XG-24",
+      "BOARDID"     : "eb29",
+      "BOMREV"      : "113-03112",
+      "DESC"        : "UBNT UniFiSwitch XG 24",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

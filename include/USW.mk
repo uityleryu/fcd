@@ -74,11 +74,9 @@ IMAGE-USW-FLEX-MINI= \
     usw-fw/unifiswitch-mini-* \
     usw-fw/US.m487.*
 
-IMAGE-USW-XG= \
-    images/eb25* \
-    images/eb26* \
-    usw-fw/unifiswitch-xg24poe* \
-    usw-fw/unifiswitch-xg48poe* \
+IMAGE-USW-XG-24= \
+    images/eb29* \
+    usw-fw/unifiswitch-xg24* \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW-MISSION-CRITICAL= \
@@ -129,7 +127,7 @@ IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
-IMAGE-USW+=$(IMAGE-USW-XG)
+IMAGE-USW+=$(IMAGE-USW-XG-24)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
 IMAGE-USW+=$(IMAGE-U6-S24)
 IMAGE-USW+=$(IMAGE-U6-S48)
@@ -200,7 +198,7 @@ TOOLS-USW-FLEX-MINI=$(TOOLS-USW)
 TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
-TOOLS-USW-XG=$(TOOLS-USW)
+TOOLS-USW-XG-24=$(TOOLS-USW)
 
 TOOLS-USW-MISSION-CRITICAL=$(TOOLS-USW)
 TOOLS-USW-MISSION-CRITICAL+= \
@@ -234,7 +232,7 @@ $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF-PRO,FCD_$(PRD)_USW-LEAF-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-XG-24,FCD_$(PRD)_USW-XG-24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
@@ -255,7 +253,7 @@ $(eval $(call ProductCompress,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,USW-XG,FCD_$(PRD)_USW-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-XG-24,FCD_$(PRD)_USW-XG-24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
