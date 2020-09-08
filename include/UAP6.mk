@@ -34,7 +34,8 @@ TOOLS-CONFIG= \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release \
     common/aarch64-rpi4-64k-ee \
-	common/helper_UAP6_MT7622_release
+	common/helper_UAP6_MT7622_release \
+	common/helper_UAP6_MT7621_release 
 
 # Project specific tools
 TOOLS-U6+=$(TOOLS-CONFIG)
