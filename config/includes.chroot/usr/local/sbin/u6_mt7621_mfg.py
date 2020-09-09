@@ -185,10 +185,13 @@ class MT7621MFGGeneral(ScriptBase):
         if self.board_id in addr_map_uap:
             self.login(timeout=120, press_enter=True)
             self.pexp.expect_action(120, "BusyBox", "")
-            self.pexp.expect_action(10, self.linux_prompt, "iwpriv rai0 e2p 62")
-            self.pexp.expect_action(10, self.linux_prompt, "ated -i rai0 -c \"sync eeprom all\"")
-            self.pexp.expect_action(10, self.linux_prompt, "iwpriv rai0 e2p 62=0000")
-            self.pexp.expect_action(10, self.linux_prompt, "iwpriv rai0 e2p 62")
+            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62")
+            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62=0000")
+            self.pexp.expect_action(20, self.linux_prompt, "ated -i rai0 -c \"sync eeprom all\"")
+            time.sleep(2)
+            self.pexp.expect_action(20, self.linux_prompt, "rm /lib/firmware/e2p")
+            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62")
+            time.sleep(2)
 
         msg(no=100, out="Back to ART has completed")
         self.close_fcd()
