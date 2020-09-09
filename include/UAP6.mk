@@ -7,9 +7,9 @@ IMAGE-U6= \
     images/a612* \
     images/a613* \
     images/a614* \
-	images/a620* \
+    images/a620* \
     uap-fw/uap6* \
-	uap-fw/u6* \
+    uap-fw/u6* \
     uap-fw/lede-mtk-mt7621-UAP6-initramfs*.bin \
     uap-fw/u-boot-mt7621-mfg*.bin \
     uap-fw/kernel-uap6-afi6-7603_7915a*.bin \
@@ -34,7 +34,8 @@ TOOLS-CONFIG= \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release \
     common/aarch64-rpi4-64k-ee \
-	common/helper_UAP6_MT7622_release
+    common/helper_UAP6_MT7621_release \
+    common/helper_UAP6_MT7622_release
 
 # Project specific tools
 TOOLS-U6+=$(TOOLS-CONFIG)
