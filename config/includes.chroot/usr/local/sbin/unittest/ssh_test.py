@@ -16,7 +16,7 @@ class TestSSHClient():
     def setup_class(cls):
         print("TestSSHClient:setup_class()")
         
-        cls.host = "192.168.1.20"
+        cls.host = os.getenv('DUT_IP', '')
 
     @classmethod
     def teardown_class(cls):

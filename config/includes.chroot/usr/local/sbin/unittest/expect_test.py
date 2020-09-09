@@ -10,7 +10,8 @@ class TestExpttyProcess():
     @classmethod
     def setup_class(cls):
         print("TestExpttyProcess:setup_class()")
-        pexpect_cmd = "sudo picocom /dev/ttyUSB0 -b 115200"
+        tty = os.getenv('DUT_TTY', '')
+        pexpect_cmd = "sudo picocom " + tty + " -b 115200"
         cls.pexpect_obj = ExpttyProcess(0, pexpect_cmd, "\n")
 
     @classmethod
