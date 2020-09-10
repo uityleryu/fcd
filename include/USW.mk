@@ -8,13 +8,13 @@ IMAGE-USW-PRO= \
     images/eb68* \
     usw-fw/unifiswitch-us24pro* \
     usw-fw/unifiswitch-us48pro* \
-    usw-fw/US.bcm5616x.*
+    usw-fw/US.bcm5616x*
 
 IMAGE-USW-6XG= \
     images/eb23* \
     usw-fw/unifiswitch-6xg150-* \
     usw-fw/unifiswitch-us24pro* \
-    usw-fw/US.bcm5616x.*
+    usw-fw/US.bcm5616x*
 
 IMAGE-USW-FLEX= \
     images/ed10* \
@@ -44,7 +44,7 @@ IMAGE-USW-16-24-48= \
     usw-fw/unifiswitch-16poe-* \
     usw-fw/unifiswitch-24poe-* \
     usw-fw/unifiswitch-48poe-* \
-    usw-fw/US.rtl838x.*
+    usw-fw/US.rtl838x*
 
 IMAGE-USW-LITE= \
     images/ed26* \
@@ -52,7 +52,7 @@ IMAGE-USW-LITE= \
     usw-fw/unifiswitch-lite-16poe-* \
     usw-fw/unifiswitch-lite-8poe-* \
     usw-fw/unifiswitch-16poe-* \
-    usw-fw/US.rtl838x.*
+    usw-fw/US.rtl838x*
 
 IMAGE-USW-LEAF= \
     images/f060* \
@@ -82,7 +82,7 @@ IMAGE-USW-XG-24= \
 IMAGE-USW-MISSION-CRITICAL= \
     images/ed2c* \
     usw-fw/unifiswitch-mc-* \
-    usw-fw/US.rtl838x.*
+    usw-fw/US.rtl838x*
 
 IMAGE-U6-S24= \
     images/eb38* \
@@ -245,7 +245,7 @@ $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(
 $(eval $(call ProductCompress,USW,FCD_$(PRD)_USW-ALL_$(VER)))
 $(eval $(call ProductCompress,US-GEN1,FCD_$(PRD)_US-GEN1-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
-$(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
