@@ -183,6 +183,30 @@ class UVCFactoryGeneral(ScriptBase):
         self.errmsg = msg
         log_error(msg)
 
+    def get_urescue_fw_version(self):
+        try:
+            mtd = self.session.execmd_getmsg('cat /proc/mtd | grep urc')
+            mtd = '/dev/{}'.format(mtd.split(':')[0])
+            cmd = "hexdump {} -s 4 -n 64 -e '16/1 \"%c\"'".format(mtd)
+            print(cmd)
+            version = self.session.execmd_getmsg(cmd)
+            version = version.strip('\n\t\r\0')
+        except Exception as e:
+            print(str(e))
+            version = ''
+        return version
+
+    def get_fw_version(self):
+        try:
+            cmd = 'cat /usr/lib/version'
+            print(cmd)
+            version = self.session.execmd_getmsg(cmd)
+            version = version.strip('\n\t\r\0')
+        except Exception as e:
+            print(str(e))
+            version = ''
+        return version
+
     def upload_flash_module(self):
         flash_fillff_path = os.path.join(self.host_toolsdir_dedicated, self.fillff)
         host_path = flash_fillff_path
@@ -765,6 +789,8 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(self.session.execmd_getmsg("uptime"))
         log_debug(self.session.execmd_getmsg("cat /usr/lib/version"))
         log_debug(self.session.execmd_getmsg("cat /etc/board.info"))
+        log_debug('urescue_fw: {}'.format(self.get_urescue_fw_version()))
+        
         time.sleep(1)
 
         log_debug("Uploading flash module...")
