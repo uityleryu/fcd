@@ -903,11 +903,24 @@
     },
 
     "UNVR-PRO":{
-      "INDEX"       : 1,
+      "INDEX"       : 2,
       "NAME"        : "UNVR-PRO",
       "BOARDID"     : "ea20",
       "BOMREV"      : "113-03137",
       "DESC"        : "UniFi Protect NVR Pro",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
+    },
+
+    "UNVR-AI":{
+      "INDEX"       : 3,
+      "NAME"        : "UNVR-PRO",
+      "BOARDID"     : "ea21",
+      "BOMREV"      : "113-03026",
+      "DESC"        : "UniFi Protect NVR AI",
       "FILE"        : "unas_alpine_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

@@ -36,7 +36,8 @@ class UNASALPINEFactory(ScriptBase):
         self.devregparts = {
             'ea16': "/dev/mtdblock9",
             'ea1a': "/dev/mtdblock9",
-            'ea20': "/dev/mtdblock4"
+            'ea20': "/dev/mtdblock4",
+            'ea21': "/dev/mtdblock4"
         }
         self.devregpart = self.devregparts[self.board_id]
 
@@ -60,6 +61,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "2",
             'ea1a': "2",
             'ea20': "2",
+            'ea21': "3",
         }
 
         # number of WiFi
@@ -67,6 +69,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "0",
             'ea1a': "0",
             'ea20': "0",
+            'ea21': "0",
         }
 
         # number of Bluetooth
@@ -74,12 +77,14 @@ class UNASALPINEFactory(ScriptBase):
             'ea16': "0",
             'ea1a': "1",
             'ea20': "1",
+            'ea21': "1",
         }
 
         self.netif = {
             'ea16': "ifconfig enp0s1 ",
             'ea1a': "ifconfig enp0s1 ",
-            'ea20': "ifconfig enp0s1 "
+            'ea20': "ifconfig enp0s1 ",
+            'ea21': "ifconfig enp0s1 ",
         }
         self.devnetmeta = {
             'ethnum': self.ethnum,
