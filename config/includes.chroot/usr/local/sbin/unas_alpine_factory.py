@@ -34,6 +34,7 @@ class UNASALPINEFactory(ScriptBase):
 
         # script specific vars
         self.devregparts = {
+            '0000': "/dev/mtdblock9",
             'ea16': "/dev/mtdblock9",
             'ea1a': "/dev/mtdblock9",
             'ea20': "/dev/mtdblock4",

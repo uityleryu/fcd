@@ -50,6 +50,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         # helper
         hlp = {
+            '0000': "helper_DVF99_release",
             'ef0d': "helper_DVF99_release",
             'ef0f': "helper_DVF99_release_ata"
         }

@@ -48,24 +48,28 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         }
 
         btprmt = {
+            '0000': "RTL838x#",
             'eed0': "RTL838x#",
             'eed1': "RTL9300#"
         }
 
         # helper path
         hpth = {
+            '0000': "unms-slite",
             'eed0': "unms-slite",
             'eed1': "unms-spro"
         }
 
         # helper executable file
         hpeb = {
+            '0000': "helper_RTL838x_release",
             'eed0': "helper_RTL838x_release",
             'eed1': "helper_RTL930x_release"
         }
 
         # EEPROM device
         eedev = {
+            '0000': "/dev/mtdblock6",
             'eed0': "/dev/mtdblock6",
             'eed1': "/dev/mtdchar12"
         }
