@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.20"
+    __version__ = "1.0.21"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -110,8 +110,6 @@ class ScriptBase(object):
         self.password = "ubnt"
 
         # fcd related
-        self.fcd_user = "user"
-        self.fcd_passw = "live"
         self.fcd_version_info_file = "version.txt"
 
         cmd = "who | awk 'NR==1 { print $1 }'"
@@ -131,8 +129,12 @@ class ScriptBase(object):
             match = re.findall("armv7l", sto)
             if match:
                 self.fcd_version_info_file_path = os.path.join("/home/pi", self.fcd_version_info_file)
+                self.fcd_user = "pi"
+                self.fcd_passw = "ubnt12345"
             else:
                 self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
+                self.fcd_user = "user"
+                self.fcd_passw = "live"
 
         # images is saved at /tftpboot/images, tftp server searches files start from /tftpboot
         self.tftpdir = "/tftpboot"

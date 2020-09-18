@@ -104,8 +104,8 @@ class AFIIPQ807XFactory(ScriptBase):
         eeprom_signed = "e.s." + self.row_id
         eeprom_check = "e.c." + self.row_id
         helperexe = "helper_IPQ807x_release"
-        fcd_host_name = "user@" + self.tftp_server + ":"
-        fcd_host_passw = "live"
+        fcd_host_name = "{}@{}:".format(self.fcd_user, self.tftp_server)
+        fcd_host_passw = self.fcd_passw
         bomrev = "113-" + self.bom_rev
         mtdpart = "/dev/mtdblock18"
         self.dut_helper_path = os.path.join(self.dut_afi_dir, helperexe)
