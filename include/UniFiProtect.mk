@@ -11,6 +11,8 @@ TOOLS-TAG-COMBO=
 
 TOOLS-CARD-COMBO=
 
+IMAGE-GARAGE=
+
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
@@ -44,6 +46,8 @@ TOOLS-LOCK-R=$(TOOLS-UFP)
 
 TOOLS-ULT=$(TOOLS-UFP)
 
+TOOLS-GARAGE=$(TOOLS-UFP)
+
 TOOLS-TAG-COMBO=$(TOOLS-UFP)
 TOOLS-TAG-COMBO+= \
     ufp/nxp-nfc-nci
@@ -61,6 +65,7 @@ $(eval $(call ProductImage,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -69,3 +74,4 @@ $(eval $(call ProductCompress,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
