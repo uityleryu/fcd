@@ -58,6 +58,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.mac_check_dict = {
             'a911': True,
             'a912': False,
+            'a915': True,
             'a918': True,
             'a919': True,
         }
@@ -65,6 +66,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.qrcode_dict = {
             'a911': False,
             'a912': False,
+            'a915': False,
             'a918': False,
             'a919': True,
         }
@@ -72,6 +74,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.sku_dict = {
             'a911': True,
             'a912': False,
+            'a915': False,
             'a918': False,
             'a919': False,
         }
@@ -80,6 +83,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.ethnum = {
             'a911': "0",
             'a912': "0",
+            'a915': "0",
             'a918': "0",
             'a919': "0",
         }
@@ -88,6 +92,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.wifinum = {
             'a911': "0",
             'a912': "0",
+            'a915': "0",
             'a918': "0",
             'a919': "0",
         }
@@ -96,6 +101,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.btnum = {
             'a911': "1",
             'a912': "1",
+            'a915': "1",
             'a918': "1",
             'a919': "1",
         }
@@ -225,7 +231,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         if self.board_id in ["a912", "a918", "a919"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a911"]:
+        elif self.board_id in ["a911", "a915"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
