@@ -1010,6 +1010,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
+    },
+
+    "UTD-21":{
+      "INDEX"       : 2,
+      "NAME"        : "UTD-21",
+      "BOARDID"     : "ef81",
+      "BOMREV"      : "113-03287",
+      "DESC"        : "UniFi Connect Panel 21",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+
+    "UTD-27":{
+      "INDEX"       : 3,
+      "NAME"        : "UTD-27",
+      "BOARDID"     : "ef81",
+      "BOMREV"      : "113-03256",
+      "DESC"        : "UniFi Connect Panel 27",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
     }
   },
 

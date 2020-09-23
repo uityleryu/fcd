@@ -13,6 +13,17 @@ from ubntlib.equipment.edgeswitch import EdgeSwitch
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
+'''
+    ef80: UTD-7
+    ef81: UTD-13
+    ef83: UTD-21
+    ef84: UTD-27
+    ef85: UniFi Pay 7
+    ef86: UniFi Pay 13
+    ec60: UA-BL-PRO
+'''
+
+
 
 class CONNECTAPQ8053actoryGeneral(ScriptBase):
     def __init__(self):
@@ -20,6 +31,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.PROVISION_ENABLE = True
         self.REGISTER_ENABLE = True
         self.INFOCHECK_ENABLE = True
+
         self.init_vars()
 
     def init_vars(self):
@@ -34,6 +46,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.lnxpmt = {
             'ef80': "msm8953_uct",
             'ef81': "unifi_p13",
+            'ef83': "unifi_p21",
+            'ef84': "unifi_p27",
+            'ef85': "",
+            'ef86': "",
             'ec60': "msm8953_uapro"
         }
 
@@ -41,6 +57,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.macnum = {
             'ef80': "1",
             'ef81': "1",
+            'ef83': "1",
+            'ef84': "1",
+            'ef85': "0",
+            'ef86': "0",
             'ec60': "1"
         }
 
@@ -48,6 +68,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.wifinum = {
             'ef80': "0",
             'ef81': "0",
+            'ef83': "0",
+            'ef84': "0",
+            'ef85': "1",
+            'ef86': "1",
             'ec60': "1"
         }
 
@@ -55,6 +79,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.btnum = {
             'ef80': "1",
             'ef81': "1",
+            'ef83': "1",
+            'ef84': "1",
+            'ef85': "1",
+            'ef86': "1",
             'ec60': "1"
         }
 
@@ -64,8 +92,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'btnum'     : self.btnum
         }
 
+        self.cladb = None
         self.linux_prompt = self.lnxpmt[self.board_id]
 
+    def get_dut_ip(self):
         portn = int(self.row_id) + 1
         rtmsg = "EdgeSwitch port: {0}".format(portn)
         log_debug(rtmsg)
@@ -83,9 +113,38 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             else:
                 break
 
-        self.dutip = self.egsw.get_ip(port=portn, retry=4)
+        self.dutip = self.egsw.get_ip(port=portn, retry=60)
         if self.dutip is False:
             error_critical("Get DUT IP address failed!!")
+
+    def connect_adb(self):
+        # ADB connection to Android platform
+        for i in range(0, 60):
+            try:
+                cmd = "adb connect {0}:5555".format(self.dutip)
+                self.cnapi.xcmd(cmd)
+
+                self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
+                self.cladb.expect_only(2, "adbd is already running as root")
+
+                pexpect_cmd = "adb -e -s {0}:5555 shell".format(self.dutip)
+                log_debug(msg=pexpect_cmd)
+                pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+            except Exception as e:
+                # Ctrl+C anyway to avoid hangup cmd
+                self.cladb.expect_action(3, "", "\003")
+                if i < 3:
+                    print("Retry {0}".format(i + 1))
+                    time.sleep(1)
+                    continue
+                else:
+                    print("Exceeded maximum retry times {0}".format(i))
+                    raise e
+            else:
+                break
+
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(1)
 
     def access_chips_id(self):
         cmd = "cat /sys/devices/soc0/soc_id"
@@ -235,34 +294,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.cnapi.print_current_fcd_version()
 
-        cladb = None
-        # ADB connection to Android platform
-        for i in range(0, 60):
-            try:
-                cmd = "adb connect {0}:5555".format(self.dutip)
-                self.cnapi.xcmd(cmd)
-
-                cladb = ExpttyProcess(self.row_id, "adb root", "\n")
-                cladb.expect_only(2, "adbd is already running as root")
-
-                pexpect_cmd = "adb -e -s {0}:5555 shell".format(self.dutip)
-                log_debug(msg=pexpect_cmd)
-                pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-            except Exception as e:
-                # Ctrl+C anyway to avoid hangup cmd
-                cladb.expect_action(3, "", "\003")
-                if i < 3:
-                    print("Retry {0}".format(i + 1))
-                    time.sleep(1)
-                    continue
-                else:
-                    print("Exceeded maximum retry times {0}".format(i))
-                    raise e
-            else:
-                break
-
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        self.get_dut_ip()
+        self.connect_adb()
         msg(5, "Open serial port successfully ...")
 
         if self.PROVISION_ENABLE is True:
@@ -273,6 +306,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             lmac = self.mac_format_str2list(self.mac)
             bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
             cmd = "echo -n -e \'{0}\' > /mnt/vendor/persist/eth_mac".format(bmac)
+
             log_debug("cmd: " + cmd)
             time.sleep(1)
             self.pexp.expect_action(10, self.linux_prompt, cmd)
