@@ -31,6 +31,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24',
                                     'ed25', 'ed2c', 'ed2d'}
 
+        self.disable_battery = {'ed2c'}
+
+
         # number of Ethernet
         self.macnum = {
             'ed20': "3",  # usw-16-poe
@@ -175,6 +178,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, self.boot_prompt, "bootubnt ucleareeprom")
         self.pexp.expect_action(10, self.boot_prompt, "reset")
 
+    def disable_li_battery(self):
+        self.pexp.expect_action(10, self.linux_prompt, "syswrapper.sh shutdown")
+
     def run(self):
         """
         Main procedure of factory
@@ -236,6 +242,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Waiting LCM upgrading ...")
                 self.wait_lcm_upgrade()
+
+        if self.board_id in self.disable_battery:
+            msg(95, "Disable battery")
+            self.disable_li_battery()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
