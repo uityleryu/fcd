@@ -30,7 +30,7 @@ class UNASALPINEFactory(ScriptBase):
         self.user = "root"
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
-        self.wait_LCM_upgrade_en = {'ea20'}
+        self.wait_LCM_upgrade_en = {'ea20', 'ea21'}
 
         # script specific vars
         self.devregparts = {
@@ -41,7 +41,6 @@ class UNASALPINEFactory(ScriptBase):
             'ea21': "/dev/mtdblock4"
         }
         self.devregpart = self.devregparts[self.board_id]
-
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_UNAS-AL324_release"
         self.dut_nasdir = os.path.join(self.dut_tmpdir, "unas")
