@@ -26,57 +26,66 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         # board model
         self.bdmd = {
             'eed0': "UNMS_S_LITE",
-            'eed1': "UNMS_S_PRO"
+            'eed1': "UNMS_S_PRO",
+            'ee50': "UISP_S_LITE"
         }
 
         # number of Ethernet
         ethnum = {
             'eed0': "3",
-            'eed1': "3"
+            'eed1': "3",
+            'ee50': "3"
         }
 
         # number of WiFi
         wifinum = {
             'eed0': "0",
-            'eed1': "0"
+            'eed1': "0",
+            'ee50': "0"
         }
 
         # number of Bluetooth
         btnum = {
             'eed0': "0",
-            'eed1': "0"
+            'eed1': "0",
+            'ee50': "0"
         }
 
         btprmt = {
             '0000': "RTL838x#",
             'eed0': "RTL838x#",
-            'eed1': "RTL9300#"
+            'eed1': "RTL9300#",
+            'ee50': "RTL838x#"
         }
 
         # helper path
         hpth = {
             '0000': "unms-slite",
             'eed0': "unms-slite",
-            'eed1': "unms-spro"
+            'eed1': "unms-spro",
+            'ee50': "unms-slite"
         }
 
         # helper executable file
         hpeb = {
             '0000': "helper_RTL838x_release",
             'eed0': "helper_RTL838x_release",
-            'eed1': "helper_RTL930x_release"
+            'eed1': "helper_RTL930x_release",
+            'ee50': "helper_RTL838x_release"
         }
 
         # EEPROM device
         eedev = {
             '0000': "/dev/mtdblock6",
             'eed0': "/dev/mtdblock6",
-            'eed1': "/dev/mtdchar12"
+            'eed1': "/dev/mtdchar12",
+            'ee50': "/dev/mtdblock6"
         }
 
         self.netif = {
             'eed0': "ifconfig eth0 ",
-            'eed1': "ifconfig eth0 "
+            'eed1': "ifconfig eth0 ",
+            'ee50': "ifconfig eth0 "
         }
 
         self.bootloader_prompt = btprmt[self.board_id]

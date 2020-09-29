@@ -1365,7 +1365,7 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-S-LITE-817":{
+    "UNMS-S-LITE":{
       "INDEX"       : 1,
       "NAME"        : "UNMS-S-LITE",
       "BOARDID"     : "eed0",
@@ -1430,10 +1430,10 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-S-LITE-900":{
+    "UISP-S-LITE":{
       "INDEX"       : 1,
-      "NAME"        : "UNMS-S-LITE",
-      "BOARDID"     : "eed0",
+      "NAME"        : "UISP-S-LITE",
+      "BOARDID"     : "ee50",
       "BOMREV"      : "113-00900",
       "DESC"        : "Ubiquiti Network Management System Switch Lite",
       "FILE"        : "unms_rtl838x_factory.py",

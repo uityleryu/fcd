@@ -6,10 +6,16 @@ IMAGE-UNMS-R-PRO= \
     unms-fw/ubnt_unmsr_rev1_boot.img \
     unms-fw/UNMSR.* \
 
+# UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 IMAGE-UNMS-S-LITE= \
     images/eed0* \
     unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.2.bix \
     unms-fw/UNMS-S-Lite.uboot_1.1.0.bin \
+
+IMAGE-UISP-S-LITE= \
+    images/ee50* \
+    unms-fw/DIAG_UISP_S_Lite_1.3.4.5.vmlinux.bix \
+    unms-fw/UISP-S-Lite.uboot_1.2.1.bin \
 
 IMAGE-UNMS-R-LITE= \
     images/ee6b* \
@@ -28,6 +34,7 @@ IMAGE-UNMS-S-PRO= \
 
 IMAGE-UNMS+=$(IMAGE-UNMS-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
+IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-R-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-LTE)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-PRO)
@@ -58,6 +65,9 @@ TOOLS-UNMS-R-PRO+= unms-rpro/*
 TOOLS-UNMS-S-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-S-LITE+= unms-slite/*
 
+TOOLS-UISP-S-LITE=$(TOOLS-UNMS)
+TOOLS-UISP-S-LITE+= unms-slite/*
+
 TOOLS-UNMS-R-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-R-LITE+= unms-rlite/*
 
@@ -71,7 +81,9 @@ TOOLS-UNMS-S-PRO+= unms-spro/*
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)))
+# UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-S-PRO,FCD_$(PRD)_UNMS-S-PRO_$(VER)_$(FWVER)))
 
@@ -79,7 +91,9 @@ $(eval $(call ProductImage,UNMS-S-PRO,FCD_$(PRD)_UNMS-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)))
+# UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS-S-PRO,FCD_$(PRD)_UNMS-S-PRO_$(VER)_$(FWVER)))
 
