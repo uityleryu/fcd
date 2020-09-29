@@ -164,11 +164,16 @@ class MT7621MFGGeneral(ScriptBase):
                 self.erase_partition(flash_addr=flash_addr, size=flash_size)
 
                 if self.erasecal == "True":
+                    log_debug("Start erase factory partition ...")
+                    msg(no=40, out='flash back to default kernel ...')
+                    self.transfer_img(self.board_id + "-mfg.factory")
+
                     msg(no=60, out='Erase calibration data ...')
                     flash_addr = addr_map_uap[self.board_id]['factory'][0]
                     flash_size = addr_map_uap[self.board_id]['factory'][1]
                     log_debug("cal from {} ,len {}".format(flash_addr, flash_size))
                     self.erase_partition(flash_addr=flash_addr, size=flash_size)
+                    self.write_img(flash_addr=flash_addr)
 
                 msg(no=70, out='flash back to calibration u-boot ...')
                 self.transfer_img(self.board_id+"-mfg.uboot")
@@ -185,13 +190,6 @@ class MT7621MFGGeneral(ScriptBase):
         if self.board_id in addr_map_uap:
             self.login(timeout=120, press_enter=True)
             self.pexp.expect_action(120, "BusyBox", "")
-            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62")
-            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62=0000")
-            self.pexp.expect_action(20, self.linux_prompt, "ated -i rai0 -c \"sync eeprom all\"")
-            time.sleep(2)
-            self.pexp.expect_action(20, self.linux_prompt, "rm /lib/firmware/e2p")
-            self.pexp.expect_action(20, self.linux_prompt, "iwpriv rai0 e2p 62")
-            time.sleep(2)
 
         msg(no=100, out="Back to ART has completed")
         self.close_fcd()
