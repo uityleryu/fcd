@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.21"
+    __version__ = "1.0.22"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -128,9 +128,9 @@ class ScriptBase(object):
             log_debug("Get linux information successfully")
             match = re.findall("armv7l", sto)
             if match:
-                self.fcd_version_info_file_path = os.path.join("/home/pi", self.fcd_version_info_file)
-                self.fcd_user = "pi"
-                self.fcd_passw = "ubnt12345"
+                self.fcd_version_info_file_path = os.path.join("/home/ubnt", self.fcd_version_info_file)
+                self.fcd_user = "ubnt"
+                self.fcd_passw = "ubnt"
             else:
                 self.fcd_version_info_file_path = os.path.join("/home", self.fcd_user, "Desktop", self.fcd_version_info_file)
                 self.fcd_user = "user"
