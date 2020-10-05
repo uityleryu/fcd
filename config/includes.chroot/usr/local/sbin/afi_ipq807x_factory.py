@@ -136,13 +136,13 @@ class AFIIPQ807XFactory(ScriptBase):
         ]
         sstrj = ' '.join(sstr)
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
-
-        msg(15, "Flash a temporary value to the EEPROM partition")
         self.pexp.expect_action(30, "Bytes transferred", "sf probe")
         self.pexp.expect_action(30, ubpmt[self.board_id], "sf erase 0x490000 0xa0000")
         self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x490000 0xa0000")
         self.pexp.expect_action(30, "Written: OK", "sf erase 0x480000 0x10000")
         self.pexp.expect_action(30, "Erased: OK", "")
+
+        msg(15, "Flash EEPROM/TZ/DEVCFG partitions")
         sstr = [
             "tftpboot",
             "0x44000000",
@@ -152,6 +152,30 @@ class AFIIPQ807XFactory(ScriptBase):
         self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
         self.pexp.expect_action(30, "Bytes transferred", "sf erase 0x610000 0x10000")
         self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x610000 0x10000")
+        self.pexp.expect_action(30, "Written: OK", "")
+
+        sstr = [
+            "tftpboot",
+            "0x44000000",
+            "images/" + self.board_id + "-tz.mbn"
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Bytes transferred", "sf erase 0xa0000 0x00300000")
+        self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0xa0000  0x00180000")
+        self.pexp.expect_action(30, "Written: OK", "sf write 0x44000000 0x220000 0x00180000")
+        self.pexp.expect_action(30, "Written: OK", "")
+
+        sstr = [
+            "tftpboot",
+            "0x44000000",
+            "images/" + self.board_id + "-devcfg.mbn"
+        ]
+        sstrj = ' '.join(sstr)
+        self.pexp.expect_action(30, ubpmt[self.board_id], sstrj)
+        self.pexp.expect_action(30, "Bytes transferred", "sf erase 0x3A0000 0x00020000")
+        self.pexp.expect_action(30, "Erased: OK", "sf write 0x44000000 0x3A0000 0x00010000")
+        self.pexp.expect_action(30, "Written: OK", "sf write 0x44000000 0x3B0000 0x00010000")
         self.pexp.expect_action(30, "Written: OK", "")
 
         msg(20, "Loading firmware")
