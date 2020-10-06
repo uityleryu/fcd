@@ -739,6 +739,7 @@
       "BOMREV"      : "113-00744",
       "DESC"        : "UniFi AP6 PRO",
       "FILE"        : "u6_mt7622_factory.py",
+      "T1FILE"      : "u6_mt7622_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
