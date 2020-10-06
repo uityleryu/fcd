@@ -118,6 +118,17 @@ IMAGE-US-GEN1= \
     usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot.bin \
     usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot-mfg.bin
 
+IMAGE-USW-FLEX-XG= \
+    images/ed40* \
+    usw-fw/unifiswitch-flex-xg.bin \
+    usw-fw/US.mvpj4b*
+
+IMAGE-U6-S8= \
+    images/ed41* \
+    usw-fw/unifiswitch-flex-xg.bin \
+    usw-fw/unifiswitch-u6-s8.bin \
+    usw-fw/US.mvpj4b*
+
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
@@ -134,6 +145,9 @@ IMAGE-USW+=$(IMAGE-U6-S48)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-USW-Aggregation-Pro)
 IMAGE-USW+=$(IMAGE-US-GEN1)
+IMAGE-USW+=$(IMAGE-USW-FLEX-XG)
+IMAGE-USW+=$(IMAGE-U6-S8)
+
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -213,6 +227,14 @@ TOOLS-USW-Aggregation-Pro=$(TOOLS-USW)
 TOOLS-U6-S24=$(TOOLS-USW)
 TOOLS-U6-S48=$(TOOLS-USW)
 
+TOOLS-USW-FLEX-XG=$(TOOLS-USW)
+TOOLS-USW-FLEX-XG+= \
+    usw_flex_xg/helper*
+
+TOOLS-U6-S8=$(TOOLS-USW)
+TOOLS-U6-S8+= \
+    u6_s8/helper*
+
 # ALL
 TOOLS-USW+=$(TOOLS-CONFIG)
 
@@ -238,7 +260,8 @@ $(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
-
+$(eval $(call ProductImage,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-S8,FCD_$(PRD)_U6-S8_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -259,3 +282,5 @@ $(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-S8,FCD_$(PRD)_U6-S8_$(VER)_$(FWVER)))

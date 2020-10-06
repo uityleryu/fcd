@@ -542,6 +542,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "U6-S8":{
+      "INDEX"       : 33,
+      "NAME"        : "U6-S8",
+      "BOARDID"     : "ed41",
+      "BOMREV"      : "113-03188",
+      "DESC"        : "UniFi Switch 6 8-port PoE",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-FLEX-XG":{
+      "INDEX"       : 34,
+      "NAME"        : "USW-FLEX-XG",
+      "BOARDID"     : "ed40",
+      "BOMREV"      : "113-03166",
+      "DESC"        : "UniFi Switch Flex XG",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
