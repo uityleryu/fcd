@@ -89,6 +89,7 @@ class USPESP8266Factory(ScriptBase):
         elif self.board_id == 'ee74':
             self.ser.add_arg(option="0x000000", value=self.rboot_bin)
             self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
+            self.ser.add_arg(option="0x101000", value=self.helper_bin_1)
             self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
 
         self.ser.set_stub(True)
@@ -242,6 +243,7 @@ class USPESP8266Factory(ScriptBase):
             self.do_helper()
             self.erase_eefiles()
             self.copy_eefiles_from_tmp()
+            self.update_eebin_regdmn()
             msg(40, "Registering device")
             self.registration()
 

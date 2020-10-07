@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.22"
+    __version__ = "1.0.23"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -984,6 +984,36 @@ class ScriptBase(object):
     def mac_format_str2list(self, strmac):
         mac_list = self.mac_format_str2comma(strmac).split(':')
         return mac_list
+
+    def update_eebin_regdmn(self, eebin = None, regdmn = None):
+        if eebin is None:
+            eebin = self.eebin_path
+        if regdmn is None:
+            regdmn = self.region
+
+        regdmn_ofst = 0x8020
+        regdmn_len  = 0x10
+        regdmn_bin  = os.path.join(self.tftpdir, "regdmn.bin")
+        file = open(regdmn_bin, "wb")
+
+        # Gen a 16 bytes updated regdmn.bin
+        for i in range(0, regdmn_len * 2, 2):
+            if i < len(regdmn):
+                file.write(bytes((int(regdmn[i:i+2], 16),)))
+            else:
+                file.write(bytes((0,)))
+        file.close()
+
+        # Gen a 64K bianry file {eebin}.regdmn with new region domain
+        cmds = [ "dd if={} of={}.part1 bs=1 count=$(({}))".format(eebin, eebin, regdmn_ofst),
+                 "dd if={} of={}.part2 bs=1 skip=$(({}))".format(eebin, eebin, regdmn_ofst+regdmn_len),
+                 "cat {}.part1 {} {}.part2 > {}.regdmn".format(eebin, regdmn_bin, eebin, eebin)]
+        for cmd in cmds:
+            [sto, rtc] = self.cnapi.xcmd(cmd)
+            if int(rtc) > 0:
+                error_critical('Executing linux command "{}" failed!!'.format(cmd))
+
+        self.eebin_path = "{}.regdmn".format(eebin)
 
     def close_fcd(self):
         self.test_result = 'Pass'
