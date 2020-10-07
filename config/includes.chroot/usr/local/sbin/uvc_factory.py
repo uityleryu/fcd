@@ -624,15 +624,9 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(cmd)
         self.session.execmd(cmd)
 
-        cmd = "cfgmtd -c"
-        log_debug(cmd)
-        self.session.execmd(cmd)
-
         cmd = "echo \"test.factory=1\" >> /tmp/system.cfg"
         log_debug(cmd)
         self.session.execmd(cmd)
-
-
 
         log_debug("installing firmware")
         cmd = "fwupdate -m"
@@ -641,19 +635,23 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug("firmware {} updated successfully".format(self.firmware))
         else:
             log_debug("firmware {} updated failed".format(self.firmware))
-
         self.session.close()
 
-    def check_info_ssh(self):
-        time.sleep(20)    
-        sshclient_obj = SSHClient(host=self.ip,
-                                  username=self.username,
-                                  password=self.password,
-                                  polling_connect=True,
-                                  polling_mins=3)
-        self.set_sshclient_helper(ssh_client=sshclient_obj)
-        log_debug("reconnected with DUT successfully")
 
+    def check_info_ssh(self):
+        time.sleep(40)    
+        
+        try: 
+            sshclient_obj = SSHClient(host=self.ip,
+                                    username=self.username,
+                                    password=self.password,
+                                    polling_connect=True,
+                                    polling_mins=5)
+            self.set_sshclient_helper(ssh_client=sshclient_obj)
+            log_debug("reconnected with DUT successfully")
+        except Exception as e:
+            print(str(e))
+            self.critical_error("reconnected with DUT timeout fail")
 
         cmd = 'md5sum /etc/persistent/server.pem'
         rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
