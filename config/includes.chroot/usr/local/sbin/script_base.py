@@ -653,6 +653,7 @@ class ScriptBase(object):
 
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
+        log_debug(cmd)
         self.fcd.common.pcmd(cmd)
         '''
             The dropbearkey command will be executed in the FCD host.

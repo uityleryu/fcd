@@ -24,6 +24,30 @@ class USPESP8266Factory(ScriptBase):
             'ee73': "plug",
             'ee74': "strip"
         }
+
+        # number of Ethernet
+        self.ethnum = {
+            'ee73': "0",
+            'ee74': "0"
+        }
+        
+        # number of WiFi
+        self.wifinum = {
+            'ee73': "1",
+            'ee74': "1"
+        }
+        
+        # number of Bluetooth
+        self.btnum = {
+            'ee73': "0",
+            'ee74': "0"
+        }
+
+        self.devnetmeta = {
+            'ethnum'  : self.ethnum,
+            'wifinum' : self.wifinum,
+            'btnum'   : self.btnum
+        }
  
         self.fcd_uhtools = os.path.join(self.tftpdir, "usp", self.image_path[self.board_id])
         self.helper_path = os.path.join(self.fcd_toolsdir, "usp", self.helperexe)
@@ -128,19 +152,10 @@ class USPESP8266Factory(ScriptBase):
     def copy_eefiles_from_tmp(self):
         msg(30, "Copying ee files generated from helper from /tmp")
         eetxt = os.path.join("/tmp", "e.t" + self.row_id)
-        eebin = os.path.join("/tmp", "e.b" + self.row_id)
         sstr = [
             "mv",
             eetxt,
             self.eetxt_path
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, _] = self.fcd.common.xcmd(sstrj)
-        print(sto)
-        sstr = [
-            "mv",
-            eebin,
-            self.eebin_path
         ]
         sstrj = ' '.join(sstr)
         [sto, _] = self.fcd.common.xcmd(sstrj)
@@ -223,6 +238,37 @@ class USPESP8266Factory(ScriptBase):
         if int(rtc) > 0:
             error_critical("Gen key failed")
 
+    def data_provision_64k(self):
+        self.gen_rsa_key()
+        otmsg = "Starting to do {0} ...".format(self.eepmexe)
+        log_debug(otmsg)
+        flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
+        sstr = [
+            flasheditor,
+            "-F",
+            "-f " + self.eegenbin_path,
+            "-r 113-{0}".format(self.bom_rev),
+            "-s 0x" + self.board_id,
+            "-m " + self.mac,
+            "-c 0x" + self.region,
+            "-e " + self.devnetmeta['ethnum'][self.board_id],
+            "-w " + self.devnetmeta['wifinum'][self.board_id],
+            "-b " + self.devnetmeta['btnum'][self.board_id],
+            "-k " + self.rsakey_path
+        ]
+        sstr = ' '.join(sstr)
+        log_debug("flash editor cmd: " + sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        time.sleep(0.5)
+        if int(rtc) > 0:
+            otmsg = "Flash editor filling out {0} file failed!!".format(self.eegenbin_path)
+            error_critical(otmsg)
+        else:
+            otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
+            log_debug(otmsg)
+
+        self.eebin_path = self.eegenbin_path
+
     def run(self):
         """main procedure of factory
         """
@@ -240,10 +286,10 @@ class USPESP8266Factory(ScriptBase):
             time.sleep(3)
 
         if self.DO_SECURITY is True:
-            self.do_helper()
             self.erase_eefiles()
+            self.data_provision_64k()
+            self.do_helper()
             self.copy_eefiles_from_tmp()
-            self.update_eebin_regdmn()
             msg(40, "Registering device")
             self.registration()
 
