@@ -102,7 +102,7 @@ IMAGE-USW-Aggregation= \
 
 IMAGE-USW-Aggregation-Pro= \
     images/eb27* \
-    usw-fw/unifiswitch-xgagg* \
+    usw-fw/unifiswitch-aggpro* \
     usw-fw/US.bcm5617x*
 
 IMAGE-US-GEN1= \
