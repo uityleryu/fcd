@@ -115,11 +115,14 @@ class UNMSQCA9563Factory(ScriptBase):
 
     def ubootupdate(self):
         self.pexp.expect_action(50, self.bootloader_prompt, "tftp 0x80800000 images/{}".format(self.bootloader))
+        self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
         self.pexp.expect_action(50, self.bootloader_prompt, "erase {} +$filesize".format(self.uboot_address))
         self.pexp.expect_action(50, self.bootloader_prompt, "cp.b $fileaddr {} $filesize".format(self.uboot_address))
+        self.pexp.expect_action(50, self.bootloader_prompt, "erase 0x9f080000 +10000")
         self.pexp.expect_action(50, self.bootloader_prompt, "reset")
 
     def ubootwriteinfo(self):
+        self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
         self.pexp.expect_action(50, self.bootloader_prompt, "erase {} {}".format(self.eeprom_address, self.eeprom_size))
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbid -f " + self.board_id)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbrev " + self.bom_rev)
@@ -146,6 +149,7 @@ class UNMSQCA9563Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def fwupdate(self):
+        self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
         self.pexp.expect_action(50, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
         time.sleep(2)
 
