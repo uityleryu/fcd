@@ -10,6 +10,12 @@ import os
 import stat
 import filecmp
 
+'''
+    ee6b: UISP-R-LITE
+    ee6c: UISP-O-LITE
+'''
+
+
 class UNMSMT7621Factory(ScriptBase):
     def __init__(self):
         super(UNMSMT7621Factory, self).__init__()
@@ -21,35 +27,41 @@ class UNMSMT7621Factory(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
         self.bootloader_prompt = "=>"
         self.devregpart = "/dev/mtdblock4"
-        self.helperexe = "helper_MT7621_release"
-        self.helper_path = "unms-rlite"
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
         self.linux_prompt = "#"
-
         # Base path
         self.tftpdir = self.tftpdir + "/"
         self.toolsdir = "tools/"
+        self.ssh_eable_list = ['ee6b']
 
+        helper_path = {
+            'ee6b': "unms-rlite",
+            'ee6c': "uisp-olite"
+        }
         # number of Ethernet
         self.ethnum = {
-            'ee6b': "13"
+            'ee6b': "13",
+            'ee6c': "7"
         }
 
         # number of WiFi
         self.wifinum = {
-            'ee6b': "0"
+            'ee6b': "0",
+            'ee6c': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ee6b': "1"
+            'ee6b': "1",
+            'ee6c': "1"
         }
 
         # ethernet interface
         self.netif = {
-            'ee6b': "ifconfig eth0 "
+            'ee6b': "ifconfig eth0 ",
+            'ee6c': "ifconfig eth0 "
         }
 
         self.devnetmeta = {
@@ -57,6 +69,9 @@ class UNMSMT7621Factory(ScriptBase):
             'wifinum'         : self.wifinum,
             'btnum'           : self.btnum
         }
+
+        self.helperexe = "helper_MT7621_release"
+        self.helper_path = helper_path[self.board_id]
 
         self.SET_FAKE_EEPROM       = True
         self.UPDATE_UBOOT          = False
@@ -201,7 +216,8 @@ class UNMSMT7621Factory(ScriptBase):
 
         if self.SSH_ENABLE is True:
             msg(85, "Enable SSH connection...")
-            self.ssh_enable()
+            if self.board_id in self.ssh_eable_list:
+                self.ssh_enable()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()

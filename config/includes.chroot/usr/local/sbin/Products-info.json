@@ -1468,7 +1468,20 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-    }
+    },
+
+    "UISP-O-LITE":{
+      "INDEX"       : 6,
+      "NAME"        : "UISP-O-LITE",
+      "BOARDID"     : "ee6c",
+      "BOMREV"      : "113-00819",
+      "DESC"        : "Ubiquiti Network Management System Outdoor Lite",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+     }
   },
 
   "UniFiServer":
