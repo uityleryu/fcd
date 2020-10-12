@@ -140,7 +140,7 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def enter_uboot(self):
-        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+        rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press", "\x1b\x1b")
 
         self.bootloader_prompt = "MT7621 #"
         retry = 2
@@ -148,7 +148,7 @@ class U6MT7621Factory(ScriptBase):
             if rt != 0:
                 error_critical("Failed to detect device")
             try:
-                self.pexp.expect_action(10, self.bootloader_prompt, "")
+                self.pexp.expect_action(10, self.bootloader_prompt, "\x1b\x1b")
                 break
             except Exception as e:
                 self.bootloader_prompt = "=>"

@@ -99,13 +99,13 @@ class MT7621MFGGeneral(ScriptBase):
             error_critical(msg="No pexpect obj exists!")
         else:
             log_debug(msg="Stopping U-boot")
-            self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
+            self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in 2 seconds, press", action="\x1b\x1b")
             try:
-                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
+                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="\x1b\x1b")
             except Exception as e:
                 self.set_bootloader_prompt("=>")
                 log_debug(msg="Changed uboot prompt to =>")
-                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
+                self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="\x1b\x1b")
 
     def set_boot_netenv(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "mtk network on")
