@@ -1008,6 +1008,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
+    },
+
+    "UVP-TOUCH":{
+      "INDEX"       : 4,
+      "NAME"        : "UVP-TOUCH",
+      "BOARDID"     : "ef82",
+      "BOMREV"      : "113-02150",
+      "DESC"        : "UVP VOIP IP PHOME",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
     }
   },
 

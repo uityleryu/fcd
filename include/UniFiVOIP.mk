@@ -9,6 +9,8 @@ IMAGE-UVP-ATA= \
     images/ef0f* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
+IMAGE-UVP-TOUCH=
+
 IMAGE-UVP-CONF-SPK=
 
 # Model
@@ -38,14 +40,18 @@ TOOLS-UVP-ATA+= uvp/*
 TOOLS-UVP-CONF-SPK+=$(TOOLS-CONFIG)
 TOOLS-UVP-CONF-SPK+= uvp/*
 
+TOOLS-UVP-TOUCH=$(TOOLS-CONFIG)
+
 # Project target
 
 $(eval $(call ProductImage,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVP-ATA,FCD_$(PRD)_UVP-ATA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVP-TOUCH,FCD_$(PRD)_UVP-TOUCH_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVP-CONF-SPK,FCD_$(PRD)_UVP-CONF-SPK_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UVP-FLEX,FCD_$(PRD)_UVP-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVP-ATA,FCD_$(PRD)_UVP-ATA_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVP-TOUCH,FCD_$(PRD)_UVP-TOUCH_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVP-CONF-SPK,FCD_$(PRD)_UVP-CONF-SPK_$(VER)_$(FWVER)))

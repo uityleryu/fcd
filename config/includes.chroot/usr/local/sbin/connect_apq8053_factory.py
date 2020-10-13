@@ -16,6 +16,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 '''
     ef80: UTD-7
     ef81: UTD-13
+    ef82: UVP_Touch
     ef83: UTD-21
     ef84: UTD-27
     ef85: UniFi Pay 7
@@ -46,6 +47,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.lnxpmt = {
             'ef80': "msm8953_uct",
             'ef81': "unifi_p13",
+            'ef82': "msm8953_uvp",
             'ef83': "unifi_p21",
             'ef84': "unifi_p27",
             'ef85': "",
@@ -53,10 +55,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "msm8953_uapro"
         }
 
-        # number of mac
+        # number of Ethernet
         self.macnum = {
             'ef80': "1",
             'ef81': "1",
+            'ef82': "1",
             'ef83': "1",
             'ef84': "1",
             'ef85': "0",
@@ -68,6 +71,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.wifinum = {
             'ef80': "0",
             'ef81': "0",
+            'ef82': "1",
             'ef83': "0",
             'ef84': "0",
             'ef85': "1",
@@ -79,11 +83,24 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.btnum = {
             'ef80': "1",
             'ef81': "1",
+            'ef82': "1",
             'ef83': "1",
             'ef84': "1",
             'ef85': "1",
             'ef86': "1",
             'ec60': "1"
+        }
+
+        # MAC file path
+        self.macp = {
+            'ef80': "/mnt/vendor/persist/eth_mac",
+            'ef81': "/mnt/vendor/persist/eth_mac",
+            'ef82': "/persist/eth_mac",
+            'ef83': "/mnt/vendor/persist/eth_mac",
+            'ef84': "/mnt/vendor/persist/eth_mac",
+            'ef85': "/mnt/vendor/persist/eth_mac",
+            'ef86': "/mnt/vendor/persist/eth_mac",
+            'ec60': "/mnt/vendor/persist/eth_mac"
         }
 
         self.devnetmeta = {
@@ -305,7 +322,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
             lmac = self.mac_format_str2list(self.mac)
             bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
-            cmd = "echo -n -e \'{0}\' > /mnt/vendor/persist/eth_mac".format(bmac)
+            cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.macp[self.board_id])
 
             log_debug("cmd: " + cmd)
             time.sleep(1)
