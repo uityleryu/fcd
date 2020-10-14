@@ -114,6 +114,9 @@ class UNIFIBMCFactory(ScriptBase):
             error_critical("Comparing files failed!!")
         msg(70, "Finish comparing EEPROM ...")
 
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "rm -rf /run/initramfs/rw/cow/etc/systemd/network",
+                                self.linux_prompt)
+
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 
