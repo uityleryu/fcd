@@ -1018,7 +1018,7 @@
       "DESC"        : "UVP VOIP IP PHOME",
       "FILE"        : "connect_apq8053_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True",
+      "QRCHECK"     : "False",
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
     }
