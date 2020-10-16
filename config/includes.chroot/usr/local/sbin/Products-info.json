@@ -1175,9 +1175,9 @@
       "SW_ID"       : "1602"
     },
 
-    "ULT":{
+    "ULM":{
       "INDEX"       : 2,
-      "NAME"        : "ULT",
+      "NAME"        : "ULM",
       "BOARDID"     : "a919",
       "BOMREV"      : "113-03025",
       "DESC"        : "UniFi BLE Location",

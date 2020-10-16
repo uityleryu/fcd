@@ -5,7 +5,7 @@ IMAGE-SENSE=
 
 IMAGE-LOCK-R=
 
-IMAGE-ULT=
+IMAGE-ULM=
 
 TOOLS-TAG-COMBO=
 
@@ -16,7 +16,7 @@ IMAGE-GARAGE=
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
-IMAGE-UFP+=$(IMAGE-ULT)
+IMAGE-UFP+=$(IMAGE-ULM)
 IMAGE-UFP+=$(IMAGE-CARD-COMBO)
 
 # Model
@@ -44,7 +44,7 @@ TOOLS-SENSE=$(TOOLS-UFP)
 
 TOOLS-LOCK-R=$(TOOLS-UFP)
 
-TOOLS-ULT=$(TOOLS-UFP)
+TOOLS-ULM=$(TOOLS-UFP)
 
 TOOLS-GARAGE=$(TOOLS-UFP)
 
@@ -63,7 +63,7 @@ TOOLS-CARD-COMBO+= \
 $(eval $(call ProductImage,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ULM,FCD_$(PRD)_ULM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
 
@@ -72,6 +72,6 @@ $(eval $(call ProductImage,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LOCK-R,FCD_$(PRD)_LOCK-R_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,ULT,FCD_$(PRD)_ULT_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ULM,FCD_$(PRD)_ULM_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))

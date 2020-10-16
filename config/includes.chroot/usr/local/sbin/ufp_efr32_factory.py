@@ -12,12 +12,11 @@ import os
 import re
 import traceback
 
-NEED_DROPBEAR = True
-PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 SET_SKU_ENABLE = True
 CHECK_MAC_ENABLE = True
+
 
 class UFPEFR32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -27,28 +26,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.bomrev = "113-" + self.bom_rev
-        self.eepmexe = "x86-64k-ee"
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
-        self.dut_dhcp_ip = ""
-        self.dut_port = ""
         self.baudrate = 921600
         self._reseted_flag = False
-
-        # Base path
-        self.toolsdir = "tools/"
-        self.common_dir = os.path.join(self.tftpdir, "tools", "common")
-
-        self.ncert = "cert_{0}.pem".format(self.row_id)
-        self.nkey = "key_{0}.pem".format(self.row_id)
-        self.nkeycert = "key_cert_{0}.bin".format(self.row_id)
-        self.nkeycertchk = "key_cert_chk_{0}.bin".format(self.row_id)
-        self.cert_path = os.path.join(self.tftpdir, self.ncert)
-        self.key_path = os.path.join(self.tftpdir, self.nkey)
-        self.keycert_path = os.path.join(self.tftpdir, self.nkeycert)
-        self.keycertchk_path = os.path.join(self.tftpdir, self.nkeycertchk)
-        self.flasheditor = os.path.join(self.common_dir, self.eepmexe)
 
         # check MAC
         self.cmd_version = "VERSION"
@@ -110,11 +91,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         log_debug("Starting to create a 64KB binary file ...")
         self.gen_rsa_key()
 
+        flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
         sstr = [
-            self.flasheditor,
+            flasheditor,
             "-F",
             "-f " + self.eebin_path,
-            "-r " + self.bomrev,
+            "-r 113-{0}".format(self.bom_rev),
             "-s 0x" + self.board_id,
             "-m " + self.mac,
             "-c 0x" + self.region,
@@ -154,19 +136,18 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if self.board_id == "a912":
             self._sense_cmd_before_registration()
 
-
         try:
-            uid_rtv = self.ser.execmd_getmsg("GETUID",ignore=True)
+            uid_rtv = self.ser.execmd_getmsg("GETUID", ignore=True)
             res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
             uid = res.group(1)
             log_info('uid = {}'.format(uid))
 
-            cpuid_rtv = self.ser.execmd_getmsg("GETCPUID",ignore=True)
+            cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
             res = re.search(r"CPUID:(.*)\n", cpuid_rtv, re.S)
             cpuid = res.group(1)
             log_info('cpuid = {}'.format(cpuid))
 
-            jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC",ignore=True)
+            jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
             res = re.search(r"JEDECID:(.*)\n", jedecid_rtv, re.S)
             jedecid = res.group(1)
             log_info('jedecid = {}'.format(jedecid))
@@ -179,8 +160,20 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         log_debug("Extract UID, CPUID and JEDEC successfully")
 
+        cmd = "uname -a"
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("Get linux information failed!!")
+        else:
+            log_debug("Get linux information successfully")
+            match = re.findall("armv7l", sto)
+            if match:
+                clientbin = "/usr/local/sbin/client_rpi4_release"
+            else:
+                clientbin = "/usr/local/sbin/client_x86_release_20190507"
+
         cmd = [
-            "sudo /usr/local/sbin/client_x86_release_20190507",
+            "sudo {0}".format(clientbin),
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
             "-i field=product_class_id,format=hex,value=" + self.prodclass,
@@ -229,9 +222,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918", "a919"]:
+        if self.board_id in ["a912", "a918"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a911", "a915"]:
+        elif self.board_id in ["a911", "a915", "a919"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
