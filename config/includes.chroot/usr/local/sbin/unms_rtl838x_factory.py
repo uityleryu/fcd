@@ -26,7 +26,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         # board model
         self.bdmd = {
             'eed0': "UNMS_S_LITE",
-            'eed1': "UNMS_S_PRO",
+            'eed1': "UISP_S_PRO",
             'ee50': "UISP_S_LITE"
         }
 
@@ -102,6 +102,28 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
     def stop_at_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
 
+    def uboot_upgrade(self):
+        cmd = "setenv ipaddr {0}".format(self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        cmd = "setenv serverip {0}".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        cmd = "rtk network on".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        cmd = "ping {0}".format(self.tftp_server)
+        postexp = "host {0} is alive".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
+
+        cmd = "upgrade loader {0}/{1}-uboot.img".format(self.image, self.board_id)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        wmsg = "Upgrade loader image \[{0}/{1}-uboot.img\] success".format(self.image, self.board_id)
+        self.pexp.expect_only(30, wmsg)
+
+        cmd = "reset"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
     def uboot_config(self):
         cmdset = [
             "setenv ipaddr {0}".format(self.dutip),
@@ -141,18 +163,12 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
         msg(1, "Stop at U-Boot ...")
         self.stop_at_uboot()
-        self.uboot_config()
 
         msg(5, "Upgrading U-Boot ...")
-        cmd = "upgrade loader {0}/{1}-uboot.img".format(self.image, self.board_id)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        wmsg = "Upgrade loader image \[{0}/{1}-uboot.img\] success".format(self.image, self.board_id)
-        self.pexp.expect_only(30, wmsg)
-
-        cmd = "reset"
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.uboot_upgrade()
 
         self.stop_at_uboot()
+        self.uboot_config()
 
         msg(10, "Upgrading DIAG image ...")
         cmd = "upgrade runtime {0}/{1}-fw.bin".format(self.image, self.board_id)

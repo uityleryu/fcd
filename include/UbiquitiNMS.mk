@@ -27,10 +27,10 @@ IMAGE-UNMS-LTE= \
     unms-fw/LL.qca956x.* \
     unms-fw/unms-lte-initramfs-64MB.img \
 
-IMAGE-UNMS-S-PRO= \
+IMAGE-UISP-S-PRO= \
     images/eed1* \
-    unms-fw/UNMS-S-Pro.realtek930x.diag_1.3.1.bix \
-    unms-fw/UNMS-S-Pro.realtek930x.uboot_1.1.0-6fb76.bin \
+    unms-fw/UISP-S-Pro.realtek930x.diag_1.3.4.5.bix \
+    unms-fw/UISP-S-Pro_Pre_u-boot-b71ea.bin \
 
 IMAGE-UISP-O-LITE= \
     images/ee6c* \
@@ -41,7 +41,7 @@ IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-R-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-LTE)
-IMAGE-UNMS+=$(IMAGE-UNMS-S-PRO)
+IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
 
 
@@ -80,8 +80,8 @@ TOOLS-UNMS-R-LITE+= unms-rlite/*
 TOOLS-UNMS-LTE=$(TOOLS-UNMS)
 TOOLS-UNMS-LTE+= unms-lte/*
 
-TOOLS-UNMS-S-PRO=$(TOOLS-UNMS)
-TOOLS-UNMS-S-PRO+= unms-spro/*
+TOOLS-UISP-S-PRO=$(TOOLS-UNMS)
+TOOLS-UISP-S-PRO+= unms-spro/*
 
 TOOLS-UISP-O-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-O-LITE+= uisp-olite/*
@@ -94,7 +94,7 @@ $(eval $(call ProductImage,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNMS-S-PRO,FCD_$(PRD)_UNMS-S-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -105,6 +105,6 @@ $(eval $(call ProductCompress,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNMS-S-PRO,FCD_$(PRD)_UNMS-S-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 

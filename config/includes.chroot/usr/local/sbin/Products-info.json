@@ -1457,9 +1457,9 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-S-PRO":{
+    "UISP-S-PRO":{
       "INDEX"       : 5,
-      "NAME"        : "UNMS-S-PRO",
+      "NAME"        : "UISP-S-PRO",
       "BOARDID"     : "eed1",
       "BOMREV"      : "113-00818",
       "DESC"        : "Ubiquiti Network Management System Switch PRO",
