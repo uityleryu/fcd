@@ -70,7 +70,10 @@ class UNIFIBMCFactory(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        self.login(timeout=240, username="root", password="0penBmc")
+        self.login(timeout=300, username="root", password="0penBmc")
+        # Workaround: To sleep until network stable, the network intialization is divided into several parts
+        #             It's hard to check if network initialization completes or not via ping.
+        time.sleep(60)
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         cmd = "dd if=/dev/zero bs=1k count=64 | tr '\\000' '\\377' > {0}".format(self.devregpart)
