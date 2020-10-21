@@ -103,19 +103,6 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
 
     def uboot_upgrade(self):
-        cmd = "setenv ipaddr {0}".format(self.dutip)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
-        cmd = "setenv serverip {0}".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
-        cmd = "rtk network on".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
-        cmd = "ping {0}".format(self.tftp_server)
-        postexp = "host {0} is alive".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
-
         cmd = "upgrade loader {0}/{1}-uboot.img".format(self.image, self.board_id)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         wmsg = "Upgrade loader image \[{0}/{1}-uboot.img\] success".format(self.image, self.board_id)
@@ -123,6 +110,9 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
         cmd = "reset"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        self.stop_at_uboot()
+
 
     def uboot_config(self):
         cmdset = [
@@ -138,6 +128,21 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
 
         self.stop_at_uboot()
+
+        cmd = "rtk network on".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        cmd = "ping {0}".format(self.tftp_server)
+        postexp = "host {0} is alive".format(self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
+
+    def set_ub_net(self):
+        cmdset = [
+            "setenv ipaddr {0}".format(self.dutip),
+            "setenv serverip {0}".format(self.tftp_server)
+        ]
+        for idx in range(len(cmdset)):
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
 
         cmd = "rtk network on".format(self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -165,10 +170,9 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.stop_at_uboot()
 
         msg(5, "Upgrading U-Boot ...")
-        self.uboot_upgrade()
-
-        self.stop_at_uboot()
         self.uboot_config()
+        self.uboot_upgrade()
+        self.set_ub_net()
 
         msg(10, "Upgrading DIAG image ...")
         cmd = "upgrade runtime {0}/{1}-fw.bin".format(self.image, self.board_id)
