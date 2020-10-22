@@ -108,13 +108,22 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
 
+    '''
+        Config Uboot network
+        Set activate interface as 1G ethernet(FM1@DTSEC6)
+    '''
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC3 && setenv ethprime FM1@DTSEC3")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC6 && setenv ethprime FM1@DTSEC6")
         time.sleep(2)
         self.is_network_alive_in_uboot()
 
+    '''
+        Update NOR image
+        Note the binar not only Uboot itself. but also with RCW + BL2, FIP and fman-ucode
+        And it would write an "NAND empty layout" due to NAND will cause issue if not initialized before urescue
+    '''
     def uboot_update(self):
         self.stop_uboot()
         self.set_uboot_network()
@@ -134,7 +143,7 @@ class LS104XFactory(ScriptBase):
         self.stop_uboot()
         self.set_uboot_network()
 
-        log_debug("Write NAND empyu layout")
+        log_debug("Write NAND empty layout")
 
         cmd = "tftpboot a0000000 images/{0}".format(self.nand[self.board_id])
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -148,6 +157,9 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "reset")
         self.stop_uboot()
 
+    '''
+        Write device info to EEPROM via ubntw
+    '''
     def runubntw(self):
         int_reg_code = 0
         int_reg_code = int(self.region, 16)
@@ -161,8 +173,8 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ubntw dump")
 
     '''
-        Load T1 NAND image and bootloader
-        Get device information
+        Load T1 NAND image into memory and boot
+        Get device information via T1's kernel module
     '''
     def getdeviceinfo(self):
 
@@ -192,7 +204,7 @@ class LS104XFactory(ScriptBase):
         self.set_uboot_network()
 
     def runurescue(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue -e -f")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue -e")
         cmd = "atftp --option \"mode octet\" -p -l {0}/{1} {2}".format(self.fwdir, self.fwimg, self.dutip)
         log_debug("Run cmd on host:" + cmd)
         self.fcd.common.xcmd(cmd=cmd)
@@ -200,13 +212,11 @@ class LS104XFactory(ScriptBase):
         log_debug("urescue: FW loaded")
         self.pexp.expect_only(30, "Image Signature Verfied, Success.")
         log_debug("urescue: FW verified")
-        self.pexp.expect_only(300, "Bootloader successfully upgraded")
-        log_debug("urescue: uboot updated")
+        #self.pexp.expect_only(300, "Bootloader successfully upgraded")
+        #log_debug("urescue: uboot updated")
         self.pexp.expect_only(300, "NAND partition system1")
         log_debug("urescue: system0 updated")
         self.pexp.expect_only(180, "Firmware update complete.")
-        
-        msg(35, "urescue: complete")
 
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
@@ -233,31 +243,20 @@ class LS104XFactory(ScriptBase):
 
         return output
 
-    def scp_put(self, dut_user, dut_pass, dut_ip, dut_file, host_file):
-        cmd = [
-            'sshpass -p ' + dut_pass,
-            'scp',
-            '-o StrictHostKeyChecking=no',
-            '-o UserKnownHostsFile=/dev/null',
-            dut_user + "@" + dut_ip + ":" + dut_file,
-            host_file,
-        ]
-        cmdj = ' '.join(cmd)
-        log_debug('Exec "{}"'.format(cmdj))
-        [stout, rv] = self.fcd.common.xcmd(cmdj)
-        if int(rv) != 0:
-            error_critical('Exec "{}" failed'.format(cmdj))
-        else:
-            log_debug('scp successfully')
-
+    '''
+        Read EEPROM in Uboot, then tftpput to fcd host
+        Need to create empty file and set to 777, otherwise tftpput would failed
+    '''
     def prepare_eefile(self):
+        cmd = "sf probe && sf read 0xa0000000 " + self.eeprom_address + " 0x10000"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-        cmd = "dd if=/dev/mtdblock7 of=/tmp/" +self.eebin + " count=1 bs=65536"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        fo = open(self.tftpdir+"/" + self.eebin, "wb")
+        fo.close()
+        os.chmod(self.tftpdir+"/" + self.eebin, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
 
-        self.scp_put(dut_user="ubnt", dut_pass="ubnt", dut_ip=self.dutip, 
-                     dut_file=self.dut_tmpdir + "/" + self.eebin,
-                     host_file=self.tftpdir + self.eebin)
+        cmd = "tftpput 0xa0000000 0x10000 " + self.eebin
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
     def lnx_netconfig(self, netifen=False):
         cmd = "ifconfig veth0 {0} up".format(self.dutip)
@@ -271,6 +270,20 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
         self.chk_lnxcmd_valid()
 
+    def writesigned(self):
+            self.pexp.expect_ubcmd(120, self.bootloader_prompt, "reset")
+            self.stop_uboot()
+            time.sleep(1)
+            self.set_uboot_network()
+
+            cmd = "tftpboot a0000000 {0}".format(self.eesigndate)
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
+            log_debug("File sent. Writing eeprom")
+            cmd = "protect off all; sf erase {0} +$filesize; sf write a0000000 {0} $filesize".format(self.eeprom_address)
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            time.sleep(10)
+
     def check_info(self):
         
         if self.FCD_TLV_data is True:
@@ -280,12 +293,6 @@ class LS104XFactory(ScriptBase):
 
         eewrite_path = os.path.join(self.tftpdir, eewrite)
         eechk_dut_path = os.path.join(self.dut_tmpdir, self.eechk)
-
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-
-        self.lnx_netconfig()
 
         log_debug("Starting to extract the EEPROM content from SPI flash ...")
         cmd = "dd if={} of={} bs=1k count=64".format(self.devregpart, eechk_dut_path)
@@ -303,10 +310,29 @@ class LS104XFactory(ScriptBase):
         if rtc is True:
             log_debug("EEPROM Comparing files successfully")
         else:
-            error_critical("EEPROM Comparing files failed!!")
-
+            log_debug("EEPROM Comparing files failed!!")
+            return -1
+        
         cmd = "cat /proc/ubnthal/board.info | grep board."
         output = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        return 0
+
+    def scp_put(self, dut_user, dut_pass, dut_ip, dut_file, host_file):
+        cmd = [
+            'sshpass -p ' + dut_pass,
+            'scp',
+            '-o StrictHostKeyChecking=no',
+            '-o UserKnownHostsFile=/dev/null',
+            dut_user + "@" + dut_ip + ":" + dut_file,
+            host_file,
+        ]
+        cmdj = ' '.join(cmd)
+        log_debug('Exec "{}"'.format(cmdj))
+        [stout, rv] = self.fcd.common.xcmd(cmdj)
+        if int(rv) != 0:
+            error_critical('Exec "{}" failed'.format(cmdj))
+        else:
+            log_debug('scp successfully')
 
     def airos_run(self):
         UPDATE_BOOTIMG_EN = True
@@ -359,10 +385,6 @@ class LS104XFactory(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         '''
 
-        if URESCUE_EN:
-            msg(50, "Do urescue")
-            self.runurescue()
-
         if REGISTER_EN is True:
             msg(60, "Do registration")
             self.erase_eefiles()
@@ -390,22 +412,11 @@ class LS104XFactory(ScriptBase):
         '''
 
         if WRSIGN_EN is True:
-            cmd = "reboot -f"
-            self.pexp.expect_lnxcmd(180, self.linux_prompt, cmd)
-            self.stop_uboot()
-            self.set_uboot_network()
-
-            msg(80, "Write signed EEPROM")
-            cmd = "tftpboot a0000000 {0}".format(self.eesigndate)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-            self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
-            log_debug("File sent. Writing eeprom")
-            cmd = "sf erase {0} +$filesize; sf write a0000000 {0} $filesize".format(self.eeprom_address)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-            time.sleep(1)
+            msg(70, "Write signed EEPROM")
+            self.writesigned()
 
         if DEFAULTCONFIG_EN is True:
-            msg(90, "Write default setting")
+            msg(80, "Write default setting")
             log_debug("Erase tempoarary config")
             cmd = "sf probe; sf erase {0} {1}".format(self.cfg_address, self.cfg_size)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -420,10 +431,15 @@ class LS104XFactory(ScriptBase):
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ubntw dump")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
+        if URESCUE_EN:
+            msg(90, "Do urescue")
+            self.runurescue()
+
         if DATAVERIFY_EN is True:
             msg(95, "Checking the devreg information ...")
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-            self.check_info()
+            ret = self.check_info()
+            if ret == -1:
+                error_critical("EEPROM Comparing files failed!!")
 
         msg(100, "Formal firmware completed...")
         self.close_fcd()
@@ -482,7 +498,7 @@ class LS104XMFG(ScriptBase):
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC3 && setenv ethprime FM1@DTSEC3")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC6 && setenv ethprime FM1@DTSEC6")
         time.sleep(2)
         self.is_network_alive_in_uboot
 
@@ -521,6 +537,7 @@ class LS104XMFG(ScriptBase):
             cmd = "sf erase {0} {1} && sf write a0000000 {0} $filesize".format(self.nor_addr[self.board_id], self.nor_sz[self.board_id])
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(120, "Written: OK")
+            time.sleep(10)
 
         if WRITE_NAND_EN:
             msg(30, "Get NAND Image")
@@ -534,7 +551,7 @@ class LS104XMFG(ScriptBase):
             self.pexp.expect_only(180, "bytes written: OK")
 
             msg(50, "Write Boot Command")
-            cmd = "setenv bootcmd \"nand read a0000000 0 0x7b06a98 && bootm a0000000\""
+            cmd = "setenv bootcmd \"nand read a0000000 0 0x7ed85e8 && bootm a0000000\""
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
             cmd = "saveenv"
