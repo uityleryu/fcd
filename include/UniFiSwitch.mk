@@ -74,9 +74,9 @@ IMAGE-USW-FLEX-MINI= \
     usw-fw/unifiswitch-mini-* \
     usw-fw/US.m487.*
 
-IMAGE-USW-XG-24= \
+IMAGE-USW-EnterpriseXG-24= \
     images/eb29* \
-    usw-fw/unifiswitch-xg24* \
+    usw-fw/unifiswitch-enterprise-xg24* \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW-MISSION-CRITICAL= \
@@ -84,15 +84,15 @@ IMAGE-USW-MISSION-CRITICAL= \
     usw-fw/unifiswitch-mc-* \
     usw-fw/US.rtl838x*
 
-IMAGE-U6-S24= \
+IMAGE-USW-Enterprise-24-PoE= \
     images/eb38* \
-    usw-fw/unifiswitch-usw6-24-poe* \
+    usw-fw/unifiswitch-enterprise-24-poe* \
     usw-fw/unifiswitch-us24pro* \
     usw-fw/US.bcm5616x*
 
-IMAGE-U6-S48= \
+IMAGE-USW-Enterprise-48-PoE= \
     images/eb28* \
-    usw-fw/unifiswitch-usw6-48-poe* \
+    usw-fw/unifiswitch-enterprise-48-poe* \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW-Aggregation= \
@@ -123,10 +123,10 @@ IMAGE-USW-FLEX-XG= \
     usw-fw/unifiswitch-flex-xg.bin \
     usw-fw/US.mvpj4b*
 
-IMAGE-U6-S8= \
+IMAGE-USW-Enterprise-8-PoE= \
     images/ed41* \
     usw-fw/unifiswitch-flex-xg.bin \
-    usw-fw/unifiswitch-u6-s8.bin \
+    usw-fw/unifiswitch-enterprise-8-poe.bin \
     usw-fw/US.mvpj4b*
 
 IMAGE-USW+=$(IMAGE-USW-PRO)
@@ -138,15 +138,15 @@ IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
 IMAGE-USW+=$(IMAGE-USW-FLEX-MINI)
-IMAGE-USW+=$(IMAGE-USW-XG-24)
+IMAGE-USW+=$(IMAGE-USW-EnterpriseXG-24)
 IMAGE-USW+=$(IMAGE-USW-MISSION-CRITICAL)
-IMAGE-USW+=$(IMAGE-U6-S24)
-IMAGE-USW+=$(IMAGE-U6-S48)
+IMAGE-USW+=$(IMAGE-USW-Enterprise-24-PoE)
+IMAGE-USW+=$(IMAGE-USW-Enterprise-48-PoE)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-USW-Aggregation-Pro)
 IMAGE-USW+=$(IMAGE-US-GEN1)
 IMAGE-USW+=$(IMAGE-USW-FLEX-XG)
-IMAGE-USW+=$(IMAGE-U6-S8)
+IMAGE-USW+=$(IMAGE-USW-Enterprise-8-PoE)
 
 
 # Model
@@ -212,7 +212,7 @@ TOOLS-USW-FLEX-MINI=$(TOOLS-USW)
 TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
 
-TOOLS-USW-XG-24=$(TOOLS-USW)
+TOOLS-USW-EnterpriseXG-24=$(TOOLS-USW)
 
 TOOLS-USW-MISSION-CRITICAL=$(TOOLS-USW)
 TOOLS-USW-MISSION-CRITICAL+= \
@@ -224,16 +224,16 @@ TOOLS-USW-Aggregation+= \
 
 TOOLS-USW-Aggregation-Pro=$(TOOLS-USW)
 
-TOOLS-U6-S24=$(TOOLS-USW)
-TOOLS-U6-S48=$(TOOLS-USW)
+TOOLS-USW-Enterprise-24-PoE=$(TOOLS-USW)
+TOOLS-USW-Enterprise-48-PoE=$(TOOLS-USW)
 
 TOOLS-USW-FLEX-XG=$(TOOLS-USW)
 TOOLS-USW-FLEX-XG+= \
     usw_flex_xg/helper*
 
-TOOLS-U6-S8=$(TOOLS-USW)
-TOOLS-U6-S8+= \
-    u6_s8/helper*
+TOOLS-USW-Enterprise-8-PoE=$(TOOLS-USW)
+TOOLS-USW-Enterprise-8-PoE+= \
+    usw_enterprise_8_poe/helper*
 
 # ALL
 TOOLS-USW+=$(TOOLS-CONFIG)
@@ -254,14 +254,14 @@ $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF-PRO,FCD_$(PRD)_USW-LEAF-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USW-XG-24,FCD_$(PRD)_USW-XG-24_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-EnterpriseXG-24,FCD_$(PRD)_USW-EnterpriseXG-24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-Enterprise-24-PoE,FCD_$(PRD)_USW-Enterprise-24-PoE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-Enterprise-48-PoE,FCD_$(PRD)_USW-Enterprise-48-PoE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,U6-S8,FCD_$(PRD)_U6-S8_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -276,11 +276,11 @@ $(eval $(call ProductCompress,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,USW-XG-24,FCD_$(PRD)_USW-XG-24_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-EnterpriseXG-24,FCD_$(PRD)_USW-EnterpriseXG-24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-MISSION-CRITICAL,FCD_$(PRD)_USW-MISSION-CRITICAL_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,U6-S24,FCD_$(PRD)_U6-S24_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,U6-S48,FCD_$(PRD)_U6-S48_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-Enterprise-24-PoE,FCD_$(PRD)_USW-Enterprise-24-PoE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-Enterprise-48-PoE,FCD_$(PRD)_USW-Enterprise-48-PoE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,U6-S8,FCD_$(PRD)_U6-S8_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_$(VER)_$(FWVER)))

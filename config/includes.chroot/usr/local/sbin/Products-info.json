@@ -245,12 +245,12 @@
       "SW_ID"       : "0201"
     },
 
-    "U6-S24":{
+    "USW-Enterprise-24-PoE":{
       "INDEX"       : 11,
-      "NAME"        : "U6-S24",
+      "NAME"        : "USW-Enterprise-24-PoE",
       "BOARDID"     : "eb38",
       "BOMREV"      : "113-03154",
-      "DESC"        : "UniFi Switch 6 24 PoE",
+      "DESC"        : "UniFi Switch Enterprise 24 PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
@@ -518,12 +518,12 @@
       "SW_ID"       : "0201"
     },
 
-    "U6-S48":{
+    "USW-Enterprise-48-PoE":{
       "INDEX"       : 32,
-      "NAME"        : "U6-S48",
+      "NAME"        : "USW-Enterprise-48-PoE",
       "BOARDID"     : "eb28",
       "BOMREV"      : "113-03213",
-      "DESC"        : "UniFi Switch 6 48 PoE",
+      "DESC"        : "UniFi Switch Enterprise 48 PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
@@ -531,12 +531,12 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-XG-24":{
+    "USW-EnterpriseXG-24":{
       "INDEX"       : 7,
-      "NAME"        : "USW-XG-24",
+      "NAME"        : "USW-EnterpriseXG-24",
       "BOARDID"     : "eb29",
       "BOMREV"      : "113-03112",
-      "DESC"        : "UBNT UniFiSwitch XG 24",
+      "DESC"        : "UniFiSwitch EnterpriseXG 24",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
       "QRCHECK"     : "True",
@@ -544,12 +544,12 @@
       "SW_ID"       : "0201"
     },
 
-    "U6-S8":{
+    "USW-Enterprise-8-PoE":{
       "INDEX"       : 33,
-      "NAME"        : "U6-S8",
+      "NAME"        : "USW-Enterprise-8-PoE",
       "BOARDID"     : "ed41",
       "BOMREV"      : "113-03188",
-      "DESC"        : "UniFi Switch 6 8-port PoE",
+      "DESC"        : "UniFi Switch Enterprise 8-port PoE",
       "FILE"        : "us_mrvl_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

@@ -59,7 +59,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         helper_path = {
             'ed40': "usw_flex_xg",
-            'ed41': "u6_s8",
+            'ed41': "usw_enterprise_8_poe",
 
         }
 
@@ -111,6 +111,10 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         cmd = ' '.join(cmd)
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x70 0x00 0x20")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x21 0x06 0xfc")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
+        
 
 
     def fwupdate(self):
@@ -208,11 +212,20 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(5, "Set data in uboot")
         self.set_data_in_uboot()
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+        #self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         msg(15, "Login kernel")
         self.login_kernel()
+        
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "telnet 127.0.0.1 12345")
+        self.pexp.expect_lnxcmd(10, "Console#", "configure")
+        self.pexp.expect_lnxcmd(10, "", "interface ethernet 0/0")
+        self.pexp.expect_lnxcmd(10, "", "speed 1000 mode SGMII")
+        self.pexp.expect_lnxcmd(10, "", "end")
+        self.pexp.expect_lnxcmd(10, "", "CLIexit")
+        
         #self.SetNetEnv()
+        
         self.is_network_alive_in_linux()
 
         msg(15, "Boot up to linux console and network is good ...")
