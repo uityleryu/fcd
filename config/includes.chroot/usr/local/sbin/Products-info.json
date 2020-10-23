@@ -1323,8 +1323,21 @@
       "SW_ID"       : "0e03"
     },
 
-    "UVC-G3MINI":{
+    "UVC-G4DOORBELLPRO":{
       "INDEX"       : 6,
+      "NAME"        : "UVC-G4DOORBELLPRO",
+      "BOARDID"     : "a574",
+      "BOMREV"      : "113-03194",
+      "DESC"        : "UVC G4 Doorbell Pro",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3MINI":{
+      "INDEX"       : 7,
       "NAME"        : "UVC-G3MINI",
       "BOARDID"     : "a590",
       "BOMREV"      : "113-03132",

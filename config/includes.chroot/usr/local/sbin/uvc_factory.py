@@ -65,6 +65,13 @@ class UVCFactoryGeneral(ScriptBase):
             self.flash_module = "m25p80_uvcg4dome.ko"
             self.helperexe = "helper_uvcg4dome"
 
+        elif self.product_name == "UVC-G4DOORBELLPRO":
+            self.board_name = "UVC G4 Doorbell Pro"
+            self.devregpart = "/dev/mtd8"
+            self.ip = "192.168.2.20"
+            self.flash_module = "m25p80_uvcg4doorbellpro.ko"
+            self.helperexe = "helper_uvcg4doorbellpro"
+
         elif self.product_name == "UVC-G3MINI":
             self.board_name = "UVC G3 Mini"
             self.devregpart = "/dev/mtd11"
@@ -94,6 +101,7 @@ class UVCFactoryGeneral(ScriptBase):
         # a571 = G4DOORBELL
         # a572 = G4BULLET
         # a573 = G4DOME
+        # a574 = G4DOORBELLPRO
         # a590 = G3MINI
 
         # number of Ethernet
@@ -104,6 +112,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a571': "0",
             'a572': "1",
             'a573': "1",
+            'a574': "0",
             'a590': "0"
         }
 
@@ -115,6 +124,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a571': "1",
             'a572': "0",
             'a573': "0",
+            'a574': "1",
             'a590': "1"            
         }
 
@@ -126,6 +136,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a571': "1",
             'a572': "0",
             'a573': "0",
+            'a574': "1",
             'a590': "1" 
         }
 
@@ -144,6 +155,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a571': "ifconfig eth0 ",
             'a572': "ifconfig eth0 ",
             'a573': "ifconfig eth0 ",
+            'a574': "ifconfig eth0 ",
             'a590': "ifconfig eth0 "           
         }
 
