@@ -1,10 +1,11 @@
 
 # Images
 
-IMAGE-UNMS-R-PRO= \
+IMAGE-UISP-R-PRO= \
     images/ee6a* \
     unms-fw/ubnt_unmsr_rev1_boot.img \
-    unms-fw/UNMSR.* \
+    unms-fw/UISPR.alpine* \
+    unms-fw/UNMSR.alpine* \
 
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 IMAGE-UNMS-S-LITE= \
@@ -19,7 +20,7 @@ IMAGE-UISP-S-LITE= \
 
 IMAGE-UNMS-R-LITE= \
     images/ee6b* \
-    unms-fw/UNMSR.mt7621.* \
+    unms-fw/UISPR.mt7621.* \
 
 IMAGE-UNMS-LTE= \
     images/dca2* \
@@ -36,10 +37,10 @@ IMAGE-UISP-O-LITE= \
     images/ee6c* \
     unms-fw/UISPO.mt7621.* \
 
-IMAGE-UNMS+=$(IMAGE-UNMS-R-PRO)
+IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
-IMAGE-UNMS+=$(IMAGE-UNMS-R-LITE)
+IMAGE-UNMS+=$(IMAGE-UISP-R-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
@@ -65,8 +66,8 @@ TOOLS-CONFIG= \
 
 TOOLS-UNMS+=$(TOOLS-CONFIG)
 
-TOOLS-UNMS-R-PRO=$(TOOLS-UNMS)
-TOOLS-UNMS-R-PRO+= unms-rpro/*
+TOOLS-UISP-R-PRO=$(TOOLS-UNMS)
+TOOLS-UISP-R-PRO+= unms-rpro/*
 
 TOOLS-UNMS-S-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-S-LITE+= unms-slite/*
@@ -74,8 +75,8 @@ TOOLS-UNMS-S-LITE+= unms-slite/*
 TOOLS-UISP-S-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-S-LITE+= unms-slite/*
 
-TOOLS-UNMS-R-LITE=$(TOOLS-UNMS)
-TOOLS-UNMS-R-LITE+= unms-rlite/*
+TOOLS-UISP-R-LITE=$(TOOLS-UNMS)
+TOOLS-UISP-R-LITE+= unms-rlite/*
 
 TOOLS-UNMS-LTE=$(TOOLS-UNMS)
 TOOLS-UNMS-LTE+= unms-lte/*
@@ -88,8 +89,8 @@ TOOLS-UISP-O-LITE+= uisp-olite/*
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-LITE,FCD_$(PRD)_UISP-R-LITE_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
@@ -99,8 +100,8 @@ $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNMS-R-PRO,FCD_$(PRD)_UNMS-R-PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNMS-R-LITE,FCD_$(PRD)_UNMS-R-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-LITE,FCD_$(PRD)_UISP-R-LITE_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))

@@ -1392,9 +1392,9 @@
 
   "UbiquitiNMS":
   {
-    "UNMS-R-PRO":{
+    "UISP-R-PRO":{
       "INDEX"       : 0,
-      "NAME"        : "UNMS-R-PRO",
+      "NAME"        : "UISP-R-PRO",
       "BOARDID"     : "ee6a",
       "BOMREV"      : "113-00815",
       "DESC"        : "Ubiquiti Network Management System Router Pro",
@@ -1418,9 +1418,9 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-R-LITE":{
+    "UISP-R-LITE":{
       "INDEX"       : 2,
-      "NAME"        : "UNMS-R-LITE",
+      "NAME"        : "UISP-R-LITE",
       "BOARDID"     : "ee6b",
       "BOMREV"      : "113-00814",
       "DESC"        : "Ubiquiti Network Management System Router Lite",
