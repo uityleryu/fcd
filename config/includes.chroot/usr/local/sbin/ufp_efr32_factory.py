@@ -265,7 +265,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         cmd_set_sku = 'FCDSKUSET:{sku}'
         cmd_get_sku = 'FCDSKUGET'
         expected_rsp = 'SKU: {sku}'
-        region_name_dict = {"World": 'US',
+        region_name_dict = {"World": 'EU',
                             "USA/Canada": 'US',
                             'EU': 'EU',
                             "Scandi": 'SCANDI'}
