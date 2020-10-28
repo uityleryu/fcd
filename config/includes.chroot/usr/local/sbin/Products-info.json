@@ -956,40 +956,40 @@
     }
   },
 
-  "UniFiVOIP":
+  "UniFiTalk":
   {
-    "UVP-FLEX":{
+    "UT-PHONE-FLEX":{
       "INDEX"       : 0,
-      "NAME"        : "UVP-FLEX",
+      "NAME"        : "UT-PHONE-FLEX",
       "BOARDID"     : "ef0d",
       "BOMREV"      : "113-02808",
-      "DESC"        : "UniFi VOIP FLEX",
-      "FILE"        : "uvp_dvf9918_factory.py",
+      "DESC"        : "UniFi Talk Phone FLEX",
+      "FILE"        : "ut_dvf9918_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
     },
 
-    "UVP-ATA":{
+    "UT-ATA":{
       "INDEX"       : 1,
-      "NAME"        : "UVP-ATA",
+      "NAME"        : "UT-ATA",
       "BOARDID"     : "ef0f",
       "BOMREV"      : "113-03808",
-      "DESC"        : "UniFi VOIP Analog Telephone Adapter",
-      "FILE"        : "uvp_dvf9918_factory.py",
+      "DESC"        : "UniFi Talk Analog Telephone Adapter",
+      "FILE"        : "ut_dvf9918_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
     },
 
-    "UVP-CONF-BOX":{
+    "UT-CONF-BOX":{
       "INDEX"       : 2,
-      "NAME"        : "UVP-CONF-BOX",
+      "NAME"        : "UT-CONF-BOX",
       "BOARDID"     : "ef10",
       "BOMREV"      : "113-03028",
-      "DESC"        : "UniFi VOIP conference box",
+      "DESC"        : "UniFi Talk conference box",
       "FILE"        : "uvp_qcs603_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
@@ -997,12 +997,12 @@
       "SW_ID"       : "0a01"
     },
 
-    "UVP-CONF-SPK":{
+    "UT-CONFERENCE":{
       "INDEX"       : 3,
-      "NAME"        : "UVP-CONF-SPK",
+      "NAME"        : "UT-CONFERENCE",
       "BOARDID"     : "ef11",
       "BOMREV"      : "113-03038",
-      "DESC"        : "UniFi VOIP conference speaker",
+      "DESC"        : "UniFi Talk conference",
       "FILE"        : "uvp_qcs403_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
@@ -1010,9 +1010,9 @@
       "SW_ID"       : "0a01"
     },
 
-    "UVP-TOUCH":{
+    "UT-PHONE-TOUCH":{
       "INDEX"       : 4,
-      "NAME"        : "UVP-TOUCH",
+      "NAME"        : "UT-PHONE-TOUCH",
       "BOARDID"     : "ef82",
       "BOMREV"      : "113-02150",
       "DESC"        : "UVP VOIP IP PHOME",

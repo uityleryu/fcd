@@ -18,6 +18,11 @@ SETUBMACID_EN = True
 CHECK_UBOOT_EN = True
 FWUPDATE_EN = False
 
+'''
+    ef0d: UT-PHONE-FLEX
+    ef0f: UT-ATA
+'''
+
 
 class UVPDVF99FactoryGeneral(ScriptBase):
     def __init__(self):
