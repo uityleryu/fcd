@@ -14,7 +14,8 @@ IMAGE-U6= \
     uap-fw/u-boot-mt7621-mfg*.bin \
     uap-fw/kernel-uap6-afi6-7603_7915a*.bin \
     uap-fw/unifi-v1.1.21.53-gcb13e97f_uap6-mt7621-31MB_u-boot.bin \
-    uap-fw/BZ.mt7621.*
+    uap-fw/BZ.mt7621.* \
+    uap-fw/BZ.mt7622.*
 
 IMAGE-UAP+=$(IMAGE-U6)
 

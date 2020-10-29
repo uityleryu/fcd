@@ -87,7 +87,7 @@ class U6MT7622Factory(ScriptBase):
 
     def init_recovery_image(self):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
-        self.is_network_alive_in_linux()
+        self.is_network_alive_in_linux(retry=10)
 
     def update_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "nor init")

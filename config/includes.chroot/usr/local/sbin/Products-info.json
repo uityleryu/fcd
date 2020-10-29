@@ -667,32 +667,6 @@
 
   "UniFiAP6":
   {
-    "U6-IW":{
-      "INDEX"       : 7,
-      "NAME"        : "U6-IW",
-      "BOARDID"     : "a610",
-      "BOMREV"      : "113-00745",
-      "DESC"        : "UniFi AP6 InWall",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-
-    "U6-Mesh":{
-      "INDEX"       : 8,
-      "NAME"        : "U6-Mesh",
-      "BOARDID"     : "a611",
-      "BOMREV"      : "113-00743",
-      "DESC"        : "UniFi AP6 Mesh",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-
     "U6-LITE":{
       "INDEX"       : 9,
       "NAME"        : "U6-LITE",
@@ -705,39 +679,12 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-
-    "U6-Extender":{
-      "INDEX"       : 10,
-      "NAME"        : "U6-Extender",
-      "BOARDID"     : "a613",
-      "BOMREV"      : "113-00746",
-      "DESC"        : "UniFi AP6 Extender",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-
     "U6-LR":{
-      "INDEX"       : 11,
-      "NAME"        : "U6-LR",
-      "BOARDID"     : "a614",
-      "BOMREV"      : "113-00742",
-      "DESC"        : "UniFi AP6 LR",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	
-    "U6-PRO":{
       "INDEX"       : 12,
-      "NAME"        : "U6-PRO",
+      "NAME"        : "U6-LR",
       "BOARDID"     : "a620",
       "BOMREV"      : "113-00744",
-      "DESC"        : "UniFi AP6 PRO",
+      "DESC"        : "UniFi AP6 LR",
       "FILE"        : "u6_mt7622_factory.py",
       "T1FILE"      : "u6_mt7622_mfg.py",
       "QRCHECK"     : "True",
