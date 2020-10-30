@@ -1336,8 +1336,21 @@
       "SW_ID"       : "0e03"
     },
 
-    "UVC-G3MINI":{
+    "UVC-AI360":{
       "INDEX"       : 7,
+      "NAME"        : "UVC-AI360",
+      "BOARDID"     : "a5a0",
+      "BOMREV"      : "113-03206",
+      "DESC"        : "UVC AI 360",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3MINI":{
+      "INDEX"       : 8,
       "NAME"        : "UVC-G3MINI",
       "BOARDID"     : "a590",
       "BOMREV"      : "113-03132",
@@ -1348,6 +1361,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
     }
+
   },
 
   "UbiquitiNMS":
