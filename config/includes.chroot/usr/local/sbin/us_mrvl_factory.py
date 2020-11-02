@@ -129,8 +129,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         
         #self.SetNetEnv_in_uboot()
         if self.board_id == 'ed40':
-            self.clear_eeprom_in_uboot()
-            log_debug("Clearing EEPROM in U-Boot succeed")
+            # self.clear_eeprom_in_uboot()
+            # log_debug("Clearing EEPROM in U-Boot succeed")
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
         elif self.board_id == 'ed41':
             self.SetNetEnv_in_uboot()
@@ -187,7 +187,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login_kernel(self):
-        self.login(timeout=240, press_enter=True)
+        #self.login(timeout=240, press_enter=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
     def SetNetEnv(self):
