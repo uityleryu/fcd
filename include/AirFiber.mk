@@ -14,8 +14,7 @@ IMAGE-AF60-XG= \
     af-fw/AF60*.bin \
     af-fw/AIROS*.bin \
     af-fw/af60-xg*.bin \
-    af-fw/NAND_factory_ubi.img \
-    af-fw/LS1046*.bin
+    af-fw/NAND_factory_ubi.img
 
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)

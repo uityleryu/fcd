@@ -27,49 +27,67 @@ class LS104XFactory(ScriptBase):
         # U-boot prompt
         self.ubpmt = {
             '0000': "LS104x> ",
-            'dd11': "LS104x> "
+            'dd11': "LS104x> ",
+            'dd12': "LS104x> ",
+            'dd13': "LS104x> "
         }
 
         # linux console prompt
         self.lnxpmt = {
             '0000': "AF60#",
-            'dd11': "AF60#"
+            'dd11': "AF60#",
+            'dd12': "AF60#",
+            'dd13': "AF60#"
         }
 
         self.helper_img = {
             '0000': "dd11-mfg-nand.bin",
-            'dd11': "dd11-mfg-nand.bin"
+            'dd11': "dd11-mfg-nand.bin",
+            'dd12': "dd12-mfg-nand.bin",
+            'dd13': "dd13-mfg-nand.bin"
         }
 
         self.bootloader = {
             '0000': "dd11-boot.bin",
-            'dd11': "dd11-boot.bin"
+            'dd11': "dd11-boot.bin",
+            'dd12': "dd12-boot.bin",
+            'dd13': "dd13-boot.bin"
         }
 
         self.ubaddr = {
             '0000': "0x0",
-            'dd11': "0x0"
+            'dd11': "0x0",
+            'dd12': "0x0",
+            'dd13': "0x0"
         }
 
         'Nand empty layout, must write before urescue'
         self.nand = {
             '0000': "dd11-nand.bin",
-            'dd11': "dd11-nand.bin"
+            'dd11': "dd11-nand.bin",
+            'dd12': "dd12-nand.bin",
+            'dd13': "dd13-nand.bin"
         }
 
         self.epromaddr = {
             '0000': "0x300000",
-            'dd11': "0x300000"
+            'dd11': "0x300000",
+            'dd12': "0x300000",
+            'dd13': "0x300000"
         }
 
         self.product_class_table = {
             '0000': "0014",
-            'dd11': "0014"
+            'dd11': "0014",
+            'dd12': "0014",
+            'dd13': "0014"
         }
 
         self.pd_dir_table = {
             '0000': "am",
-            'dd11': "af_af60"
+            'dd11': "af_af60",
+            'dd12': "af_af60",
+            'dd13': "af_af60"
         }
 
         self.devregpart = "/dev/mtdblock7"
@@ -457,39 +475,54 @@ class LS104XMFG(ScriptBase):
         # U-boot prompt
         self.ubpmt = {
             '0000': "LS104x> ",
-            'dd11': "LS104x> "
+            'dd11': "LS104x> ",
+            'dd12': "LS104x> ",
+            'dd13': "LS104x> "
         }
         self.nor_img = {
             '0000': "dd11-mfg-nor.bin",
-            'dd11': "dd11-mfg-nor.bin"
+            'dd11': "dd11-mfg-nor.bin",
+            'dd12': "dd12-mfg-nor.bin",
+            'dd13': "dd13-mfg-nor.bin"
         }
 
         self.nand_img = {
             '0000': "dd11-mfg-nand.bin",
-            'dd11': "dd11-mfg-nand.bin"
+            'dd11': "dd11-mfg-nand.bin",
+            'dd12': "dd12-mfg-nand.bin",
+            'dd13': "dd13-mfg-nand.bin"
         }
 
         self.nor_addr = {
             '0000': "0x0",
-            'dd11': "0x0"
+            'dd11': "0x0",
+            'dd12': "0x0",
+            'dd13': "0x0"
         }
 
         self.nor_sz = {
             '0000': "0x510000",
-            'dd11': "0x510000"
+            'dd11': "0x510000",
+            'dd12': "0x510000",
+            'dd13': "0x510000"
         }
 
         self.nand_addr = {
             '0000': "0",
-            'dca0': "0"
+            'dd11': "0",
+            'dd12': "0",
+            'dd13': "0"
         }
 
-        self.nand_boot_addr = {
-            '0000': "0x7b06a98",
-            'dca0': "0x7b06a98"
+        self.nand_b_addr = {
+            '0000': "0x7ed85e8",
+            'dd11': "0x7ed85e8",
+            'dd12': "0x7ed85e8",
+            'dd13': "0x7ed85e8"
         }
 
         self.bootloader_prompt = self.ubpmt[self.board_id]
+        self.nand_boot_addr = self.nand_b_addr[self.board_id]
 
     def stop_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
@@ -551,7 +584,7 @@ class LS104XMFG(ScriptBase):
             self.pexp.expect_only(180, "bytes written: OK")
 
             msg(50, "Write Boot Command")
-            cmd = "setenv bootcmd \"nand read a0000000 0 0x7ed85e8 && bootm a0000000\""
+            cmd = "setenv bootcmd \"nand read a0000000 0 {0} && bootm a0000000\"".format(self.nand_boot_addr)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
             cmd = "saveenv"

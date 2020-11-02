@@ -662,7 +662,20 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
-      }
+    },
+
+    "UBB-XG":{
+      "INDEX"       : 9,
+      "NAME"        : "UBB-XG",
+      "BOARDID"     : "dd12",
+      "BOMREV"      : "113-00958",
+      "DESC"        : "UniFi AP Building Bridge XG",
+      "FILE"        : "uap_ls104x_factory.py",
+      "T1FILE"      : "uap_ls104x_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    }
   },
 
   "UniFiAP6":
@@ -835,11 +848,24 @@
     },
 
     "AF60-XG":{
-      "INDEX"       : 4,
+      "INDEX"       : 5,
       "NAME"        : "AF60-XG",
       "BOARDID"     : "dd11",
       "BOMREV"      : "113-00809",
       "DESC"        : "AirFiber 60 XG",
+      "FILE"        : "af_ls104x_factory.py",
+      "T1FILE"      : "af_ls104x_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60-HD":{
+      "INDEX"       : 6,
+      "NAME"        : "AF60-HD",
+      "BOARDID"     : "dd13",
+      "BOMREV"      : "113-00871",
+      "DESC"        : "AirFiber 60 HD",
       "FILE"        : "af_ls104x_factory.py",
       "T1FILE"      : "af_ls104x_mfg.py",
       "QRCHECK"     : "False",
