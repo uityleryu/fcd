@@ -163,7 +163,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         self.pexp.expect_only(30, "Bytes transferred = ")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uappinit")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite -f")
 
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Signature Verfied, Success.")
