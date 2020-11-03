@@ -186,9 +186,15 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
-    def login_kernel(self):
-        #self.login(timeout=240, press_enter=True)
+    def login_kernel(self, mode):
+        log_debug("{}_login starts".format(mode))
+        self.pexp.expect_only(240, "Starting kernel")
+        time.sleep(10) if mode == "pre" else time.sleep(50)
+        self.pexp.expect_lnxcmd(10, "", "")
+        self.pexp.expect_lnxcmd(10, "", "")
+        self.login(timeout=10, press_enter=False)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+        log_debug("{}_login ends".format(mode))
 
     def SetNetEnv(self):
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "killall ros && sleep 3")
@@ -233,15 +239,15 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         # self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         msg(15, "Login kernel")
-        self.login_kernel()
-        
+        #self.pre_login_kernel()
+        self.login_kernel("pre")
         
         if self.board_id == 'ed41':
             self.force_speed_to_1g() 
         # for u6-s8 in kernel
 
-        if self.board_id == 'ed40':
-            self.SetNetEnv()
+        #if self.board_id == 'ed40':
+        #    self.SetNetEnv()
         
         self.is_network_alive_in_linux()
 
@@ -272,7 +278,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             msg(75, "Completing firmware upgrading ...")
 
         self.clear_uboot_env()
-        self.login_kernel()
+        self.login_kernel("post")
 
         if self.DATAVERIFY_ENABLE is True:
             # self.check_info()
