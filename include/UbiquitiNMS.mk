@@ -17,9 +17,9 @@ IMAGE-UISP-S-LITE= \
     unms-fw/DIAG_UISP_S_Lite_1.3.4.5.vmlinux.bix \
     unms-fw/UISP-S-Lite.uboot_1.2.1.bin \
 
-IMAGE-UNMS-R-LITE= \
+IMAGE-UISP-R-LITE= \
     images/ee6b* \
-    unms-fw/UISPR.mt7621.* \
+    unms-fw/UISPR.mt7621* \
 
 IMAGE-UNMS-LTE= \
     images/dca2* \
