@@ -72,6 +72,13 @@ class UVCFactoryGeneral(ScriptBase):
             self.flash_module = "m25p80_uvcg4doorbellpro.ko"
             self.helperexe = "helper_uvcg4doorbellpro"
 
+        elif self.product_name == "UVC-AI360":
+            self.board_name = "UVC AI 360"
+            self.devregpart = "/dev/mtd0"
+            self.ip = "192.168.1.20"
+            self.flash_module = ""
+            self.helperexe = "helper_uvcai360"
+
         elif self.product_name == "UVC-G3MINI":
             self.board_name = "UVC G3 Mini"
             self.devregpart = "/dev/mtd11"
@@ -102,6 +109,7 @@ class UVCFactoryGeneral(ScriptBase):
         # a572 = G4BULLET
         # a573 = G4DOME
         # a574 = G4DOORBELLPRO
+        # a5a0 = AI360
         # a590 = G3MINI
 
         # number of Ethernet
@@ -113,7 +121,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a572': "1",
             'a573': "1",
             'a574': "0",
-            'a590': "0"
+            'a590': "0",
+            'a5a0': "1",
         }
 
         # number of WiFi
@@ -125,7 +134,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a572': "0",
             'a573': "0",
             'a574': "1",
-            'a590': "1"            
+            'a590': "1",
+            'a5a0': "0"           
         }
 
         # number of Bluetooth
@@ -137,7 +147,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a572': "0",
             'a573': "0",
             'a574': "1",
-            'a590': "1" 
+            'a590': "1",
+            'a5a0': "0"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -156,7 +167,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a572': "ifconfig eth0 ",
             'a573': "ifconfig eth0 ",
             'a574': "ifconfig eth0 ",
-            'a590': "ifconfig eth0 "           
+            'a590': "ifconfig eth0 ",
+            'a5a0': "ifconfig eth0 "             
         }
 
     def ezreadini(self, path, section, item):
@@ -225,38 +237,39 @@ class UVCFactoryGeneral(ScriptBase):
         dut_path = "/tmp/{}".format(self.fillff)
         self.session.put_file(host_path, dut_path)
 
-        flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
-        mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
-        cmd_grep = "lsmod | grep {}".format(mod_name_inDUT)
-        if self.session.execmd(cmd_grep) == 0:
-            # return 0: there is m25p80, return 1: there is not.
-            log_debug("flash module {} loaded already".format(self.flash_module))
-
-        else:
-            log_debug("uploading kernal file")
-            host_path = flash_module_path
-            dut_path = "/tmp/{}".format(self.flash_module)
-            self.session.put_file(host_path, dut_path)
-
-            log_debug("installing flash module")
-            cmd_ins = "insmod /tmp/{}".format(self.flash_module)
-
-            self.session.execmd(cmd_ins)
+        if self.flash_module != "": #need to upload and install module
+            flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
+            mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
+            cmd_grep = "lsmod | grep {}".format(mod_name_inDUT)
             if self.session.execmd(cmd_grep) == 0:
-                log_debug("flash module {} installed successfully".format(self.flash_module))
-            else:
-                self.critical_error("failed to install module {}".format(self.flash_module))
+                # return 0: there is m25p80, return 1: there is not.
+                log_debug("flash module {} loaded already".format(self.flash_module))
 
-            # UVC-G3BATTERY
-            if self.product_name == "UVC-G3BATTERY":
-                log_debug("installing spi-ambarella.ko module")
-                cmd_ins = "insmod spi-ambarella.ko"
-                cmd_grep = "lsmod | grep spi_ambarella"
+            else:
+                log_debug("uploading kernal file")
+                host_path = flash_module_path
+                dut_path = "/tmp/{}".format(self.flash_module)
+                self.session.put_file(host_path, dut_path)
+
+                log_debug("installing flash module")
+                cmd_ins = "insmod /tmp/{}".format(self.flash_module)
+
                 self.session.execmd(cmd_ins)
                 if self.session.execmd(cmd_grep) == 0:
-                    log_debug("flash module spi_ambarella installed successfully")
+                    log_debug("flash module {} installed successfully".format(self.flash_module))
                 else:
-                    self.critical_error("failed to install module spi_ambarella")
+                    self.critical_error("failed to install module {}".format(self.flash_module))
+
+                # UVC-G3BATTERY
+                if self.product_name == "UVC-G3BATTERY":
+                    log_debug("installing spi-ambarella.ko module")
+                    cmd_ins = "insmod spi-ambarella.ko"
+                    cmd_grep = "lsmod | grep spi_ambarella"
+                    self.session.execmd(cmd_ins)
+                    if self.session.execmd(cmd_grep) == 0:
+                        log_debug("flash module spi_ambarella installed successfully")
+                    else:
+                        self.critical_error("failed to install module spi_ambarella")
 
         self.session.execmd('rm /tmp/eerom_backup.bin')   
         cmd_dd = "dd if={} of={} bs=1k count=128".format(self.devregpart, '/tmp/eerom_backup.bin')
