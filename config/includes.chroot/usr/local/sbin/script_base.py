@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.23"
+    __version__ = "1.0.24"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -1083,8 +1083,6 @@ class ScriptBase(object):
 
         self._upload_ui_taipei(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
         self._upload_ui_taipei_farget(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
-        self._upload_ui_usa(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev,
-                            upload_dut_logpath=upload_dut_logpath)
 
     def _upload_ui_taipei(self, uploadfolder, mac, bom):
         """
