@@ -240,6 +240,17 @@ class U6MT7622Factory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
+            # Check eth link enable
+            self.is_network_alive_in_linux(retry=200)
+            exp = [
+                "imageID_String.+U6-LR",
+                "imageMajorRev:\s*0x00",
+                "imageMinorRev:\s*0x00",
+                "imageROM_ID:\s*0x00",
+            ]
+            cmd = "aqfw"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd , post_exp=exp)
+
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 
