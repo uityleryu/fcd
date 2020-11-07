@@ -103,7 +103,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
                             "uappinit"])
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="UBNT application initialized")
 
-    def SetNetEnv_in_uboot(self):
+    def enable_console_in_uboot(self):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x70 0x00 0x20")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x21 0x06 0xfc")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
@@ -127,13 +127,13 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
         
-        #self.SetNetEnv_in_uboot()
+        #self.enable_console_in_uboot()
         if self.board_id == 'ed40':
             # self.clear_eeprom_in_uboot()
             # log_debug("Clearing EEPROM in U-Boot succeed")
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
         elif self.board_id == 'ed41':
-            self.SetNetEnv_in_uboot()
+            self.enable_console_in_uboot()
         
         
     def fwupdate(self):
@@ -186,19 +186,20 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
-    def login_kernel(self):
-        self.login(timeout=240, press_enter=True)
+    def login_kernel(self, mode):
+        if mode == "normal":
+            log_debug("{} login".format(mode))
+            self.login(timeout=240, press_enter=True)
+        else:
+            log_debug("{} login".format(mode))
+            self.pexp.expect_only(200, "Starting kernel")
+            time.sleep(40)
+            self.pexp.expect_lnxcmd(5, "", "", post_exp="login", retry=40)
+            self.pexp.expect_action(10, "", "ubnt")
+            self.pexp.expect_action(10, "Password:", "ubnt")
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
-        '''
-        log_debug("{}_login starts".format(mode))
-        self.pexp.expect_only(240, "Starting kernel")
-        time.sleep(10) if mode == "pre" else time.sleep(50)
-        self.pexp.expect_lnxcmd(10, "", "")
-        self.pexp.expect_lnxcmd(10, "", "")
-        self.login(timeout=10, press_enter=False)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
-        log_debug("{}_login ends".format(mode))
-        '''
+            
 
     def SetNetEnv(self):
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "killall ros && sleep 3")
@@ -212,7 +213,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
     def force_speed_to_1g(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "telnet 127.0.0.1 12345")
-        self.pexp.expect_lnxcmd(10, "Console#", "configure")
+        self.pexp.expect_lnxcmd(20, "Console#", "configure")
         self.pexp.expect_lnxcmd(10, "", "interface ethernet 0/0")
         self.pexp.expect_lnxcmd(10, "", "speed 1000 mode SGMII")
         self.pexp.expect_lnxcmd(10, "", "end")
@@ -243,7 +244,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         # self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         msg(15, "Login kernel")
-        self.login_kernel()
+        self.login_kernel("abnormal")
         
         if self.board_id == 'ed41':
             self.force_speed_to_1g() 
@@ -281,7 +282,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             msg(75, "Completing firmware upgrading ...")
 
         self.clear_uboot_env()
-        self.login_kernel()
+        self.login_kernel("abnormal")
 
         if self.DATAVERIFY_ENABLE is True:
             # self.check_info()
