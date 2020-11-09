@@ -1,7 +1,7 @@
 
 # Images
 
-IMAGE-BL-PRO=
+IMAGE-UA-PRO-BL=
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -21,12 +21,12 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
-TOOLS-BL-PRO+=$(TOOLS-CONFIG)
+TOOLS-UA-PRO-BL+=$(TOOLS-CONFIG)
 
 # Project target
 
-$(eval $(call ProductImage,BL-PRO,FCD_$(PRD)_UA-BL-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-PRO-BL,FCD_$(PRD)_UA-PRO-BL_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,BL-PRO,FCD_$(PRD)_UA-BL-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-PRO-BL,FCD_$(PRD)_UA-PRO-BL_$(VER)_$(FWVER)))
