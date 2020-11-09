@@ -277,7 +277,7 @@ class LS104XFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
     def lnx_netconfig(self, netifen=False):
-        cmd = "ifconfig veth0 {0} up".format(self.dutip)
+        cmd = "ifconfig br0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
         

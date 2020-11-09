@@ -10,7 +10,7 @@ IMAGE-AF60-LR= \
     af-fw/*.bin
 
 IMAGE-AF60-XG= \
-    images/dd11* \
+    images/dd1* \
     af-fw/AF60*.bin \
     af-fw/AIROS*.bin \
     af-fw/af60-xg*.bin \
