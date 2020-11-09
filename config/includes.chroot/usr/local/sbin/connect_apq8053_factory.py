@@ -134,9 +134,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         if self.dutip is False:
             error_critical("Get DUT IP address failed!!")
 
-    def connect_adb(self):
-        # ADB connection to Android platform
-        for i in range(0, 60):
+    def connect_adb_eth(self):
+        # ADB connection to Android platform by Ethernet
+        retry = 60
+        for i in range(0, retry):
             try:
                 cmd = "adb connect {0}:5555".format(self.dutip)
                 self.cnapi.xcmd(cmd)
@@ -150,7 +151,34 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             except Exception as e:
                 # Ctrl+C anyway to avoid hangup cmd
                 self.cladb.expect_action(3, "", "\003")
-                if i < 3:
+                if i < retry:
+                    print("Retry {0}".format(i + 1))
+                    time.sleep(1)
+                    continue
+                else:
+                    print("Exceeded maximum retry times {0}".format(i))
+                    raise e
+            else:
+                break
+
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(1)
+
+    def connect_adb_usb(self):
+        # ADB connection to Android platform by USB
+        retry = 60
+        for i in range(0, retry):
+            try:
+                self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
+                self.cladb.expect_only(2, "adbd is already running as root")
+
+                pexpect_cmd = "adb shell"
+                log_debug(msg=pexpect_cmd)
+                pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+            except Exception as e:
+                # Ctrl+C anyway to avoid hangup cmd
+                self.cladb.expect_action(3, "", "\003")
+                if i < retry:
                     print("Retry {0}".format(i + 1))
                     time.sleep(1)
                     continue
@@ -311,8 +339,13 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.cnapi.print_current_fcd_version()
 
-        self.get_dut_ip()
-        self.connect_adb()
+        if self.board_id == "ec60":
+            self.INFOCHECK_ENABLE = False
+            self.connect_adb_usb()
+        else:
+            self.get_dut_ip()
+            self.connect_adb_eth()
+
         msg(5, "Open serial port successfully ...")
 
         if self.PROVISION_ENABLE is True:
@@ -338,7 +371,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.check_mac()
 
         msg(100, "Complete FCD process ...")
-        self.egsw.close()
+        if self.board_id != "ec60":
+            self.egsw.close()
+
         self.close_fcd()
 
 
