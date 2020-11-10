@@ -126,7 +126,7 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0", post_exp="inet addr:", retry=6, valid_chk=True)
         cmd = "ifconfig eth0 {}".format(self.dutip)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
-        self.is_network_alive_in_linux()
+        self.is_network_alive_in_linux(retry=10)
 
     def update_uboot(self):
         uboot_img = os.path.join(self.image, self.board_id+'-uboot.bin')
