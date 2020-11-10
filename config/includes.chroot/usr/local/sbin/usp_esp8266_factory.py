@@ -67,7 +67,7 @@ class USPESP8266Factory(ScriptBase):
 
         self.FLASH_HELPER = True 
         self.DO_SECURITY  = True
-        self.GEN_CA_KEY   = True if self.board_id == 'ea74' else False
+        self.GEN_CA_KEY   = True if self.board_id == 'ee74' else False
         self.FLASH_FW     = True
 
     def check_info(self):
