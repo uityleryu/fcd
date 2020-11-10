@@ -727,6 +727,8 @@ class ScriptBase(object):
         dstp = "/tmp/{0}".format(self.eeorg)
         self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
 
+
+        log_debug("Writing the information from e.gen.{} to e.org.{}".format(self.row_id, self.row_id))
         '''
             Trying to access the initial information from the EEPROM of DUT and save to e.org.0
         '''
@@ -812,6 +814,57 @@ class ScriptBase(object):
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
 
         log_debug("Send helper output files from DUT to host ...")
+
+    def prepare_server_need_files_bspnode(self, nodes = None):
+        log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
+        # The sequencial has to be cpu id -> flash jedecid -> flash uuid
+        if nodes is None:
+            nodes = ["/proc/bsp_helper/cpu_rev_id",
+                     "/proc/bsp_helper/flash_jedec_id",
+                     "/proc/bsp_helper/flash_uid"]
+
+        if self.product_class == 'basic':
+            product_class_hexval = "0014"
+        else:
+            error_critical("product class is '{}', FCD only supports 'basic' now".format(self.product_class))
+
+        # Gen "e.t" from the nodes which were provided in BSP image
+        for i in range(0, len(nodes)):
+            sstr = [
+                "fcd_reg_val{}=`".format(i+1),
+                "cat ",
+                nodes[i],
+                " | awk -F \"x\" '{print $2}'",
+                "`"
+            ]
+            sstr = ''.join(sstr)
+            log_debug(sstr)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+       
+        sstr = [
+            "echo -e \"field=product_class_id,format=hex,value={}\n".format(product_class_hexval),
+            "field=cpu_rev_id,format=hex,value=$fcd_reg_val1\n",
+            "field=flash_jedec_id,format=hex,value=$fcd_reg_val2\n",
+            "field=flash_uid,format=hex,value=$fcd_reg_val3",
+            "\" > /tmp/{}".format(self.eetxt)
+        ]
+        sstr = ''.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+        
+        # copy "e.org" as "e.b"
+        cmd = "cp -a /tmp/{} /tmp/{}".format(self.eeorg, self.eebin)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            srcp = os.path.join(self.tftpdir, fh)
+            dstp = "/tmp/{0}".format(fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+        log_debug("Send bspnode output files from DUT to host ...")
+
 
     '''
         DUT view point

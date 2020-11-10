@@ -84,6 +84,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0005",
       "SW_ID"       : "0701"
+    },
+
+    "UDR":{
+      "INDEX"       : 7,
+      "NAME"        : "UDR",
+      "BOARDID"     : "eccc",
+      "BOMREV"      : "113-00786",
+      "DESC"        : "UniFi Dream Router",
+      "FILE"        : "udm_mt7622_bspfactory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     }
   },
 
