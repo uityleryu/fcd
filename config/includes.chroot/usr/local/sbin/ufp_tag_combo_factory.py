@@ -52,7 +52,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.bomrev = "113-" + self.bom_rev
-        self.eepmexe = "x86-64k-ee"
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
         self.dut_dhcp_ip = ""

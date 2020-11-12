@@ -91,7 +91,6 @@ class UVCFactoryGeneral(ScriptBase):
         self.fillff = "128k_ff.bin"
         self.ver_extract()
         self.firmware = "{}-fw.bin".format(self.board_id)
-        self.eepmexe = "x86-64k-ee"
         self.username = "ubnt"
         self.password = "ubnt"
         self.polling_mins = 5
@@ -671,7 +670,7 @@ class UVCFactoryGeneral(ScriptBase):
                                     username=self.username,
                                     password=self.password,
                                     polling_connect=True,
-                                    polling_mins=5)
+                                    polling_mins=7)
             self.set_sshclient_helper(ssh_client=sshclient_obj)
             log_debug("reconnected with DUT successfully")
         except Exception as e:
@@ -703,7 +702,7 @@ class UVCFactoryGeneral(ScriptBase):
                 log_debug("fw version match.")
 
         # check the following items
-        chk_items = {"board.name": self.board_name, "board.sysid": self.board_id, "board.hwaddr": self.mac}
+        chk_items = {"board.sysid": self.board_id, "board.hwaddr": self.mac}
         for keys, values in chk_items.items():
             cmd = "cat /etc/board.info | grep {}".format(keys)
             log_debug("cmd = " + cmd)
