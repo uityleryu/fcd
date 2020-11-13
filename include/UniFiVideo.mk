@@ -3,40 +3,40 @@
 
 IMAGE-UVC-G4PRO= \
     images/a563* \
-    uvc-fw/*
+    uvc-fw/UVC.S5L.*
 
 IMAGE-UVC-G3BATTERY= \
     images/a580* \
-    uvc-fw/*
+    uvc-fw/uvc.s2lb.*
 
 IMAGE-UVC-G4PTZ= \
     images/a564* \
-    uvc-fw/*
+    uvc-fw/g4ptz.*
 
 
 IMAGE-UVC-G4DOORBELL= \
     images/a571* \
-    uvc-fw/*
+    uvc-fw/g4db.*
 
 IMAGE-UVC-G4BULLET= \
     images/a572* \
-    uvc-fw/*
+    uvc-fw/g4bullet.*
 
 IMAGE-UVC-G4DOME= \
     images/a573* \
-    uvc-fw/*
+    uvc-fw/g4dome.*
 
 IMAGE-UVC-G4DOORBELLPRO= \
     images/a574* \
-    uvc-fw/*
+    uvc-fw/g4dbpro.*
 
 IMAGE-UVC-AI360= \
     images/a5a0* \
-    uvc-fw/*
+    uvc-fw/ai360.*
 
 IMAGE-UVC-G3MINI= \
     images/a590* \
-    uvc-fw/*
+    uvc-fw/g3mini.*
 
 
 
