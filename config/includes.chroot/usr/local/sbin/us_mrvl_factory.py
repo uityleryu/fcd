@@ -129,8 +129,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         
         #self.enable_console_in_uboot()
         if self.board_id == 'ed40':
-            # self.clear_eeprom_in_uboot()
-            # log_debug("Clearing EEPROM in U-Boot succeed")
+            self.clear_eeprom_in_uboot()
+            log_debug("Clearing EEPROM in U-Boot succeed")
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
         elif self.board_id == 'ed41':
             self.enable_console_in_uboot()
@@ -250,8 +250,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             self.force_speed_to_1g() 
         # for u6-s8 in kernel
 
-        #if self.board_id == 'ed40':
-        #    self.SetNetEnv()
+        if self.board_id == 'ed40':
+            self.SetNetEnv()
         
         self.is_network_alive_in_linux()
 
