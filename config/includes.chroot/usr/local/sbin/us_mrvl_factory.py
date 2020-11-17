@@ -170,9 +170,9 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Copying to 'kernel0' partition")
-        self.pexp.expect_only(180, "done")
+        self.pexp.expect_only(240, "done")
         self.pexp.expect_only(120, "Copying to 'kernel1' partition")
-        self.pexp.expect_only(180, "done")
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         """under developing
