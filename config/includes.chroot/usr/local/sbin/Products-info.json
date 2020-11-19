@@ -1255,12 +1255,25 @@
       "SW_ID"       : "1801"
     },
 
-    "USP-STRIP":{
+    "USP-STRIP_777":{
       "INDEX"       : 3,
-      "NAME"        : "USP-STRIP",
+      "NAME"        : "USP-STRIP_777",
+      "BOARDID"     : "ee74",
+      "BOMREV"      : "113-00777",
+      "DESC"        : "Unifi Smart Power STRIP",
+      "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP-STRIP_896":{
+      "INDEX"       : 4,
+      "NAME"        : "USP-STRIP_896",
       "BOARDID"     : "ee74",
       "BOMREV"      : "113-00896",
-      "DESC"        : "Unifi Smart Plug STRIP",
+      "DESC"        : "Unifi Smart Power STRIP",
       "FILE"        : "usp_esp8266_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
@@ -1269,7 +1282,7 @@
     },
 
     "USP-PDU-PRO":{
-      "INDEX"       : 4,
+      "INDEX"       : 5,
       "NAME"        : "USP-PDU-PRO",
       "BOARDID"     : "ed12",
       "BOMREV"      : "113-03098",
