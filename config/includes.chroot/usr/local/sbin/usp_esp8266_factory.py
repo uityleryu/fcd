@@ -60,6 +60,7 @@ class USPESP8266Factory(ScriptBase):
         self.recovery_bin = os.path.join(self.fwdir, self.board_id + "_recovery.bin")
 
         self.rboot_bin = os.path.join(self.fcd_uhtools, "rboot.bin")
+        self.boot_cfg_bin = os.path.join(self.fcd_uhtools, "rboot_cfg.bin")
         self.helper_bin_1 = os.path.join(self.fcd_uhtools, "helper.bin")
         self.blank_bin = os.path.join(self.fcd_uhtools, "blank.bin")
         self.esp_init_data_default_bin = os.path.join(self.fcd_uhtools, "esp_init_data_default.bin")
@@ -114,6 +115,7 @@ class USPESP8266Factory(ScriptBase):
             self.ser.add_arg(option="0x000000", value=self.rboot_bin)
             self.ser.add_arg(option="0x001000", value=self.helper_bin_1)
             self.ser.add_arg(option="0x101000", value=self.helper_bin_1)
+            self.ser.add_arg(option="0x3F7000", value=self.boot_cfg_bin)
             self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
 
         self.ser.set_stub(True)

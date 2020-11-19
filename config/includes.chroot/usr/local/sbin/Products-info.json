@@ -1259,7 +1259,7 @@
       "INDEX"       : 3,
       "NAME"        : "USP-STRIP",
       "BOARDID"     : "ee74",
-      "BOMREV"      : "113-00777",
+      "BOMREV"      : "113-00896",
       "DESC"        : "Unifi Smart Plug STRIP",
       "FILE"        : "usp_esp8266_factory.py",
       "T1FILE"      : "",
