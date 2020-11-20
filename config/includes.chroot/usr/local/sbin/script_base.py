@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.24"
+    __version__ = "1.0.25"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -312,24 +312,32 @@ class ScriptBase(object):
         else:
             log_debug("No passphrase input!")
 
-    def login(self, username="ubnt", password="ubnt", timeout=10, press_enter=False, log_level_emerg=False):
+    def login(self, username="ubnt", password="ubnt", timeout=10, press_enter=False, retry=3, log_level_emerg=False):
         """
         should be called at login console
         """
         if press_enter is True:
-            self.pexp.expect_action(timeout, "Please press Enter to activate this console", "")
+            self.pexp.expect_lnxcmd(timeout, "Please press Enter to activate this console", "")
 
-        post = [
-            "login:",
-            "Error-A12 login"
-        ]
-        ridx = self.pexp.expect_get_index(timeout, post)
-        if ridx >= 0:
-            '''
-                To give twice in order to make sure of that the username has been keyed in
-            '''
-            self.pexp.expect_action(10, "", username)
-            self.pexp.expect_action(10, "Password:", password)
+        for i in range(0, retry + 1):
+            post = [
+                "login:",
+                "Error-A12 login"
+            ]
+            ridx = self.pexp.expect_get_index(timeout, post)
+            if ridx >= 0:
+                '''
+                    To give twice in order to make sure of that the username has been keyed in
+                '''
+                self.pexp.expect_action(10, "", username)
+                self.pexp.expect_action(10, "Password:", password)
+                break
+            else:
+                self.pexp.expect_action(timeout, "", "\003")
+                print("Retry login {}/{}".format(i + 1, retry))
+                timeout = 10
+        else:
+            raise Exception("Login exceeded maximum retry times {}".format(retry))
 
         if log_level_emerg is True:
             self.pexp.expect_action(10, self.linux_prompt, "dmesg -n1")
