@@ -62,7 +62,6 @@ class MT7621MFGGeneral(ScriptBase):
 
     def reset_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
-        self.login(timeout=120, press_enter=False)
         self.pexp.expect_only(120, "Write EEPROM buffer back to eFuse")
 
     def run(self):
