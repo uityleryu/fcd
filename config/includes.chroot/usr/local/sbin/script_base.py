@@ -317,7 +317,7 @@ class ScriptBase(object):
         should be called at login console
         """
         if press_enter is True:
-            self.pexp.expect_lnxcmd(timeout, "Please press Enter to activate this console", "")
+            self.pexp.expect_action(timeout, "Please press Enter to activate this console", "")
 
         for i in range(0, retry + 1):
             post = [
