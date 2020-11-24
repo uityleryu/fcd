@@ -151,10 +151,13 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
         self.pexp.expect_only(120, "done")
 
+    def set_stp_env(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true;saveenv", "done")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+
     def check_info(self):
         #Check BT FW is included or not
         self.pexp.expect_only(30, "\[BT Power On Result\] Success")
-        self.pexp.expect_only(30, "\[HIC LE  SET ADVERTISING DATA Result\] Success")
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
@@ -237,19 +240,12 @@ class U6MT7622Factory(ScriptBase):
             msg(70, "Updating released firmware done...")
 
         if self.DATAVERIFY_ENABLE is True:
+            msg(80, "Save STP_ENV...")
+            self.enter_uboot()
+            self.set_stp_env()
+            msg(85, "Save STP_ENV done...")
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
-
-            # Check eth link enable
-            self.is_network_alive_in_linux(retry=200)
-            exp = [
-                "imageID_String.+U6-LR",
-                "imageMajorRev:\s*0x00",
-                "imageMinorRev:\s*0x00",
-                "imageROM_ID:\s*0x00",
-            ]
-            cmd = "aqfw"
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd , post_exp=exp)
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

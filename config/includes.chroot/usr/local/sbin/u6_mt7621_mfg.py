@@ -1,51 +1,8 @@
 #!/usr/bin/python3
-import re
-import sys
 import os
-import time
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
-
-
-'''
-addr_map_uap: partitially erase partition, the order is bs2kernel0 -> factory -> uboot
-format : board_id: {partition: (start_addr, len)}
-'''
-addr_map_uap = {
-                 'a610': {
-                    'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x40000'),
-                    'bs': ('0xc0000', '0x10000'),
-                    'kernel0': ('0x1d0000', '0x1e30000')
-                  },
-                  'a611': {
-                    'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x40000'),
-                    'bs': ('0xc0000', '0x10000'),
-                    'kernel0': ('0x1d0000', '0x1e30000')
-                  },
-                  'a612': {
-                    'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x40000'),
-                    'bs': ('0xc0000', '0x10000'),
-                    'kernel0': ('0x1d0000', '0x1e30000')
-                  },
-                  'a613': {
-                    'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x40000'),
-                    'bs': ('0xc0000', '0x10000'),
-                    'kernel0': ('0x1d0000', '0x1e30000')
-                  },
-                  'a614': {
-                    'uboot': ('0', '0x60000'),
-                    'factory': ('0x70000', '0x40000'),
-                    'bs': ('0xc0000', '0x10000'),
-                    'kernel0': ('0x1d0000', '0x1e30000')
-                  }
-                }
-
-uap6_uboot_ver = "U-Boot 2018.09UAP6-AFI6-UBOOT-V2-g2fc6246"
 
 class MT7621MFGGeneral(ScriptBase):
     """
@@ -62,44 +19,22 @@ class MT7621MFGGeneral(ScriptBase):
     def __init__(self):
         super(MT7621MFGGeneral, self).__init__()
 
-    def erase_partition(self, flash_addr, size):
-        """
-        run cmd in uboot :[sf erase flash_addr size]
-        Arguments:
-            flash_addr {string}
-            size {string}
-        """
-        log_debug(msg="Initializing sf => sf probe")
-        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="sf probe")
-
-        earse_cmd = "sf erase " + flash_addr + " " + size
-        log_debug(msg="run cmd " + earse_cmd)
-        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=earse_cmd)
-        self.pexp.expect_only(timeout=180, exptxt="Erased: OK")
-        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=" ")
-
-    def write_img(self, flash_addr):
-        """
-        run cmd in uboot :[sf write address size]
-        Arguments:
-            address {string}
-        """
-        log_debug(msg="Initializing sf => sf probe")
-        self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="sf probe")
-
-        cmd = "sf write ${fileaddr} " + flash_addr + " ${filesize}"
+    def write_img(self):
+        log_debug(msg="write_img")
+        cmd = "sf probe; sf erase 0x0 0x2000000; sf update 0x80010000 0x0 0x2000000; "
         log_debug(msg="run cmd " + cmd)
         self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=cmd)
-        self.pexp.expect_only(timeout=90, exptxt=self.bootloader_prompt)
+        self.pexp.expect_only(timeout=600, exptxt=self.bootloader_prompt)
         self.pexp.expect_action(timeout=10, exptxt="", action=" ")
 
+
     def stop_uboot(self, timeout=30):
-        self.set_bootloader_prompt("MT7621 #")
+        self.set_bootloader_prompt("MT7621> |MT7621 #|==>")
         if self.pexp is None:
             error_critical(msg="No pexpect obj exists!")
         else:
             log_debug(msg="Stopping U-boot")
-            self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in 2 seconds, press", action="\x1b\x1b")
+            self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in 2 seconds, press", action= "\x1b\x1b")
             try:
                 self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="\x1b\x1b")
             except Exception as e:
@@ -112,18 +47,23 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
-    def transfer_img(self, filename):
+    def transfer_img(self, address, filename):
         img = os.path.join(self.image, filename)
         img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 84000000 " +img)
-        self.pexp.expect_only(60, "Bytes transferred = "+img_size)
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpb {} {}".format(address, img))
+        self.pexp.expect_only(160, "Bytes transferred = "+img_size)
 
     def is_mfg_uboot(self):
         ret = self.pexp.expect_get_output("version", self.bootloader_prompt)
         log_debug("verison ret: "+str(ret))
-        if uap6_uboot_ver not in ret:
+        if "U-Boot " not in ret:
             return False
         return True
+
+    def reset_uboot(self):
+        self.pexp.expect_action(10, self.bootloader_prompt, "reset")
+        self.login(timeout=120, press_enter=False)
+        self.pexp.expect_only(120, "Write EEPROM buffer back to eFuse")
 
     def run(self):
         """
@@ -136,69 +76,29 @@ class MT7621MFGGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
-        msg(no=1, out="Waiting - PULG in the device...")
+        msg(no=10, out="Waiting - PULG in the device...")
         self.stop_uboot()
 
-        if self.is_mfg_uboot() is False:
-            msg(no=20, out='Setting up IP address in u-boot ...')
-            self.set_boot_netenv()
+        msg(no=20, out='Setting up IP address in u-boot ...')
+        self.set_boot_netenv()
 
-            msg(no=30, out='Checking network connection to tftp server in u-boot ...')
-            self.is_network_alive_in_uboot(retry=5)
+        msg(no=30, out='Checking network connection to tftp server in u-boot ...')
+        self.is_network_alive_in_uboot(retry=8)
 
-            if self.board_id in addr_map_uap:
-                log_debug("Back to T1 with UAP rule")
-                msg(no=40, out='flash back to calibration kernel ...')
-                self.transfer_img(self.board_id+"-mfg.kernel")
+        if self.board_id in 'a612':
+            msg(no=50, out='flash back to T1 kernel and u-boot ...')
+            self.transfer_img(address="0x80010000", filename= self.board_id + "-mfg.kernel.uboot")
+            self.write_img()
 
-                flash_addr = addr_map_uap[self.board_id]['kernel0'][0]
-                flash_size = addr_map_uap[self.board_id]['kernel0'][1]
-                log_debug("kernel from {} ,len {}".format(flash_addr, flash_size))
-                self.erase_partition(flash_addr=flash_addr, size=flash_size)
-                self.write_img(flash_addr=flash_addr)
+        msg(no=80, out='Waiting for T1 booting ...')
+        self.reset_uboot()
 
-                msg(no=50, out='Erase bootselect partition ...')
-                flash_addr = addr_map_uap[self.board_id]['bs'][0]
-                flash_size = addr_map_uap[self.board_id]['bs'][1]
-                log_debug("bs from {} to {}".format(flash_addr, flash_size))
-                self.erase_partition(flash_addr=flash_addr, size=flash_size)
-
-                if self.erasecal == "True":
-                    log_debug("Start erase factory partition ...")
-                    msg(no=40, out='flash back to default kernel ...')
-                    self.transfer_img(self.board_id + "-mfg.factory")
-
-                    msg(no=60, out='Erase calibration data ...')
-                    flash_addr = addr_map_uap[self.board_id]['factory'][0]
-                    flash_size = addr_map_uap[self.board_id]['factory'][1]
-                    log_debug("cal from {} ,len {}".format(flash_addr, flash_size))
-                    self.erase_partition(flash_addr=flash_addr, size=flash_size)
-                    self.write_img(flash_addr=flash_addr)
-
-                msg(no=70, out='flash back to calibration u-boot ...')
-                self.transfer_img(self.board_id+"-mfg.uboot")
-                flash_addr = addr_map_uap[self.board_id]['uboot'][0]
-                flash_size = addr_map_uap[self.board_id]['uboot'][1]
-                log_debug("uboot from {} ,len {}".format(flash_addr, flash_size))
-                self.erase_partition(flash_addr=flash_addr, size=flash_size)
-                self.write_img(flash_addr=flash_addr)
-
-        msg(no=80, out='Waiting for Calibration Linux ...')
-
-        self.pexp.expect_action(10, self.bootloader_prompt, "reset")
-
-        if self.board_id in addr_map_uap:
-            self.login(timeout=120, press_enter=True)
-            self.pexp.expect_action(120, "BusyBox", "")
-
-        msg(no=100, out="Back to ART has completed")
+        msg(no=100, out="Back to T1 has completed")
         self.close_fcd()
-
 
 def main():
     mt7621_mfg_general = MT7621MFGGeneral()
     mt7621_mfg_general.run()
-
 
 if __name__ == "__main__":
     main()

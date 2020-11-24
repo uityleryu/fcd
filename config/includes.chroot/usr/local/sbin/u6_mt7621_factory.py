@@ -104,6 +104,7 @@ class U6MT7621Factory(ScriptBase):
         self.FWUPDATE_ENABLE        = True
         self.DATAVERIFY_ENABLE      = True
 
+
     def boot_recovery_image(self, Img):
         cmd = "tftpboot 84000000 images/{0}".format(Img)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -184,6 +185,10 @@ class U6MT7621Factory(ScriptBase):
         self.pexp.expect_only(60, "done")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
         self.pexp.expect_only(120, "done")
+
+    def set_stp_env(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true;saveenv", "OK")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def check_info(self):
         #Check BT FW is included or not
@@ -270,8 +275,12 @@ class U6MT7621Factory(ScriptBase):
             msg(70, "Updating released firmware done...")
 
         if self.DATAVERIFY_ENABLE is True:
+            msg(80, "Save STP_ENV...")
+            self.enter_uboot()
+            self.set_stp_env()
+            msg(85, "Save STP_ENV done...")
             self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
+            msg(90, "Succeeding in checking the devreg information ...")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

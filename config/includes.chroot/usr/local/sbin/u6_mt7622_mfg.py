@@ -30,7 +30,7 @@ class MT7622MFGGeneral(ScriptBase):
         self.pexp.expect_action(timeout=10, exptxt="", action=" ")
 
     def stop_uboot(self, timeout=30):
-        self.set_bootloader_prompt("MT7622> |MT7622 #")
+        self.set_bootloader_prompt("MT7622> |MT7622 #|==>")
         if self.pexp is None:
             error_critical(msg="No pexpect obj exists!")
         else:
@@ -51,7 +51,7 @@ class MT7622MFGGeneral(ScriptBase):
     def transfer_img(self, filename):
         img = os.path.join(self.image, filename)
         img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpb " +img)
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpb ${loadaddr} " +img)
         self.pexp.expect_only(60, "Bytes transferred = "+img_size)
 
     def is_mfg_uboot(self):
