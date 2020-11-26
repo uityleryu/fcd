@@ -36,7 +36,7 @@ class LS104XFactory(ScriptBase):
         self.lnxpmt = {
             '0000': "AF60#",
             'dd11': "AF60#",
-            'dd12': "AF60#",
+            'dd12': "UBNT-v.+#",
             'dd13': "AF60#"
         }
 
