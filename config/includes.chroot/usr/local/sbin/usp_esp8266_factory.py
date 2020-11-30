@@ -1,9 +1,6 @@
 #!/usr/bin/python3
-import sys
 import time
 import os
-import stat
-import filecmp
 from script_base import ScriptBase
 from ubntlib.fcd.esptool_helper import ESPTool
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -70,14 +67,7 @@ class USPESP8266Factory(ScriptBase):
         self.DO_SECURITY  = True
         self.GEN_CA_KEY   = True if self.board_id == 'ee74' else False
         self.FLASH_FW     = True
-
-    def check_info(self):
-        """under developing
-        """
-        self.pexp.expect_action(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
-        self.pexp.expect_only(10, "systemid=" + self.board_id, err_msg="systemid error")
-        self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
+        self.ERASE_FLASH  = True
 
     def wait_device(self, timeout=120):
         while timeout > 0:
@@ -91,13 +81,24 @@ class USPESP8266Factory(ScriptBase):
             timeout -= 1
         return False
 
-    def flash_helper(self):
+    #def erase_flash(self):
+    #    self.ser.set_baudrate("921600")
+    #    self.ser.set_after_action("soft_reset")
+    #    self.ser.set_flash_size(self.ser._DETECT)
+    #    self.ser.set_flash_mode(self.ser.DOUT)
+    #    self.ser.set_stub(True)
+
+    #    stdout, rtc = self.ser.erase_flash()
+    #    log_debug(stdout)
+    #    if rtc != 0:
+    #        error_critical("Erase flash failed")
+
+    def flash_helper_fw(self):
         self.ser.set_baudrate("921600")
         self.ser.set_after_action("soft_reset")
         self.ser.set_flash_size(self.ser._DETECT)
         self.ser.set_flash_mode(self.ser.DOUT)
-
-        msg(10, "Initializing flash")
+        self.ser.set_stub(True)
 
         if self.board_id == 'ee73':
             self.ser.add_arg(option="0x000000", value=self.rboot_bin)
@@ -118,12 +119,12 @@ class USPESP8266Factory(ScriptBase):
             self.ser.add_arg(option="0x3F7000", value=self.boot_cfg_bin)
             self.ser.add_arg(option="0x3FC000", value=self.esp_init_data_default_bin)
 
-        self.ser.set_stub(True)
         stdout, rtc = self.ser.write_flash()
         log_debug(stdout)
         if rtc != 0:
             error_critical("Init flash failed")
         self.ser.clear_cur_args()
+        time.sleep(3)
 
     def do_helper(self):
         # bom       : 00645-01
@@ -134,7 +135,6 @@ class USPESP8266Factory(ScriptBase):
         bom_number = hex(int(self.bom_rev[:-3], 10)) + '00'
         bom_rev = hex(int(self.bom_rev[-2:], 10))
         bom = str(int(bom_number, 16) + int(bom_rev, 16))
-        msg(10, "Running helper")
         log_debug("BOM:" + bom)
         cmd = [
             self.helper_path,
@@ -151,8 +151,7 @@ class USPESP8266Factory(ScriptBase):
         if int(rtc) > 0:
             error_critical("Running helper failed")
 
-    def copy_eefiles_from_tmp(self):
-        msg(30, "Copying ee files generated from helper from /tmp")
+        # To copy e.t.x from /tmp to /tftpboot for registration
         eetxt = os.path.join("/tmp", "e.t" + self.row_id)
         sstr = [
             "mv",
@@ -164,12 +163,6 @@ class USPESP8266Factory(ScriptBase):
         print(sto)
 
     def flash_eeprom_and_fw(self):
-        msg(60, "Flashing firmware and eeprom files")
-        self.ser.set_baudrate("921600")
-        self.ser.set_after_action("soft_reset")
-        self.ser.set_flash_size(self.ser._DETECT)
-        self.ser.set_flash_mode(self.ser.DOUT)
-
         if self.board_id == 'ee73':
             devreg_part1 = os.path.join(self.eesign_path + "_79")
             devreg_part2 = os.path.join(self.eesign_path + "_F7")
@@ -223,7 +216,6 @@ class USPESP8266Factory(ScriptBase):
         if rtc != 0:
             error_critical("Flashing firmware and eeprom files failed")
         self.ser.clear_cur_args()
-        msg(80, "Flashing firmware and eeprom files success")
     
     def gen_CA_key(self):
         cmd = [
@@ -283,15 +275,20 @@ class USPESP8266Factory(ScriptBase):
             error_critical("Device not found!")
         log_debug("Device is connected")
 
+        #if self.ERASE_FLASH is True:
+        #    msg(10, "Flashing helper firmware")
+        #    self.erase_flash()
+
         if self.FLASH_HELPER is True:
-            self.flash_helper()
-            time.sleep(3)
+            msg(20, "Flashing helper firmware")
+            self.flash_helper_fw()
 
         if self.DO_SECURITY is True:
+            msg(25, "")
             self.erase_eefiles()
             self.data_provision_64k()
+            msg(30, "Running helper")
             self.do_helper()
-            self.copy_eefiles_from_tmp()
             msg(40, "Registering device")
             self.registration()
 
@@ -300,7 +297,9 @@ class USPESP8266Factory(ScriptBase):
             self.gen_CA_key()
 
         if self.FLASH_FW is True:
+            msg(60, "Flashing firmware and eeprom files")
             self.flash_eeprom_and_fw()
+            msg(80, "Flashing firmware and eeprom files success")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
