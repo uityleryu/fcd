@@ -29,8 +29,8 @@ IMAGE-UNMS-LTE= \
 
 IMAGE-UISP-S-PRO= \
     images/eed1* \
-    unms-fw/UISP-S-Pro.realtek930x.diag_1.3.4.5.bix \
-    unms-fw/UISP-S-Pro_Pre_u-boot-b71ea.bin \
+    unms-fw/DIAG_UISP_S_Pro_1.3.4.7.6.vmlinux.bix \
+    unms-fw/UISP-S-Pro-u-boot-41bfa.bin \
 
 IMAGE-UISP-O-LITE= \
     images/ee6c* \
