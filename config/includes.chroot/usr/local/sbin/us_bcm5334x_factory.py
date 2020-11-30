@@ -105,7 +105,7 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
         self.pexp.expect_only(10, "Done")
 
         cmd = "go $ubntaddr usetmac"
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt ,10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt ,1.5)
         match = re.search(r"MAC0: (.{2}[-:].{2}[-:].{2}[-:].{2}[-:].{2}[-:].{2})", output)
         mac_str = ""
         if match:
@@ -151,7 +151,7 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
            check board id/ bom revision/ mac address
         """
         cmd = "go $ubntaddr usetbid"
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(r"Board ID: (.{4})", output)
         board_id = None
         if match:
@@ -162,7 +162,7 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
             error_critical(msg="Board ID doesn't match!")
 
         cmd = "go $ubntaddr usetbrev"
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(r"BOM Rev: (\d+-\d+)", output)
         bom_rev = None
         if match:
@@ -173,7 +173,7 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
             error_critical(msg="BOM Revision  doesn't match!")
 
         cmd = "go $ubntaddr usetmac"
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(
                         r"MAC0: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2}).*MAC1: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2})",
                         output,
@@ -248,13 +248,13 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
     def check_board_signed(self):
         cmd = r"grep flashSize /proc/ubnthal/system.info"
         self.pexp.expect_action(10, "", "")
-        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
         match = re.search(r'flashSize=', output)
         if not match:
             error_critical(msg="Device Registration check failed!")
 
         cmd = r"grep qrid /proc/ubnthal/system.info"
-        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
         match = re.search(r'qrid=(.*)', output)
         if match:
             if match.group(1).strip() != self.qrcode:

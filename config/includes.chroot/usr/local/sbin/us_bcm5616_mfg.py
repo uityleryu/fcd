@@ -121,7 +121,7 @@ class USBCM5616_MFG(ScriptBase):
 
     def check_USGH2(self):
         # bootubnt is only For USGH2 series. ex:usw-xg
-        output = self.pexp.expect_get_output("bootubnt init", self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output("bootubnt init", self.bootloader_prompt, 2)
         if "Unknown command" in output:
             self.USGH2_SERIES = False
             self.pexp.expect_action(10, self.bootloader_prompt, ' '.join([cmd_prefix, "uappinit"]))
@@ -133,7 +133,7 @@ class USBCM5616_MFG(ScriptBase):
     def is_MFG_firmware(self):
         log_debug("Checking if U-boot has MDK")
 
-        output = self.pexp.expect_get_output("mdk_drv", self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output("mdk_drv", self.bootloader_prompt, 2)
         log_debug("mdk_drv output: "+str(output))
 
         if "Found MDK device" in output:

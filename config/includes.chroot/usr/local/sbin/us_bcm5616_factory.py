@@ -120,7 +120,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_action(timeout, "", "")
 
         # bootubnt is only For USGH2 series. ex:usw-xg
-        output = self.pexp.expect_get_output("bootubnt init", self.bootloader_prompt ,10)
+        output = self.pexp.expect_get_output("bootubnt init", self.bootloader_prompt, 2)
         if "Unknown command" in output:
             self.USGH2_SERIES = False
             self.pexp.expect_action(timeout, self.bootloader_prompt, ' '.join([cmd_prefix, "uappinit"]))
@@ -263,7 +263,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
             "usetmac"
         ]
         cmd = ' '.join(cmd)
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt ,10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(r"MAC0: (.{2}[-:].{2}[-:].{2}[-:].{2}[-:].{2}[-:].{2})", output)
         mac_str = ""
         if match:
@@ -337,7 +337,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
             "usetbid"
         ]
         cmd = ' '.join(cmd)
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(r"Board ID: (.{4})", output)
         board_id = None
         if match:
@@ -352,7 +352,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
             "usetbrev"
         ]
         cmd = ' '.join(cmd)
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(r"BOM Rev: (\d+-\d+)", output)
         bom_rev = None
         if match:
@@ -367,7 +367,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
             "usetmac"
         ]
         cmd = ' '.join(cmd)
-        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         match = re.search(
                         r"MAC0: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2}).*MAC1: (.{2}:.{2}:.{2}:.{2}:.{2}:.{2})",
                         output,
@@ -461,13 +461,13 @@ class USBCM5616FactoryGeneral(ScriptBase):
     def check_board_signed(self):
         cmd = r"grep flashSize /proc/ubnthal/system.info"
         self.pexp.expect_action(10, "", "")
-        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
         match = re.search(r'flashSize=', output)
         if not match:
             error_critical(msg="Device Registration check failed!")
 
         cmd = r"grep qrid /proc/ubnthal/system.info"
-        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 10)
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
         match = re.search(r'qrid=(.*)', output)
         if match:
             if match.group(1).strip() != self.qrcode:
