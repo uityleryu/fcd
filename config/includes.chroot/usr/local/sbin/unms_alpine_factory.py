@@ -22,7 +22,6 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
-        self.helper_path = "unms-rpro"
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
@@ -32,38 +31,53 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.tftpdir = self.tftpdir + "/"
         self.toolsdir = "tools/"
 
+        # helper path
+        helppth = {
+            'ee6a': "unms-rpro",
+            'ee6d': "uisp-rpro-xg"
+        }
+
+        self.helper_path = helppth[self.board_id]
+
         # switch chip
         self.swchip = {
-            'ee6a': "rtl83xx"
+            'ee6a': "rtl83xx",
+            'ee6d': "rtl83xx"
         }
 
         # sub-system ID
         self.wsysid = {
-            'ee6a': "77076aee"
+            'ee6a': "77076aee",
+            'ee6d': "77076dee"
         }
 
         # number of Ethernet
         self.ethnum = {
-            'ee6a': "11"
+            'ee6a': "11",
+            'ee6d': "10"
         }
 
         # number of WiFi
         self.wifinum = {
-            'ee6a': "0"
+            'ee6a': "0",
+            'ee6d': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ee6a': "1"
+            'ee6a': "1",
+            'ee6d': "1"
         }
 
         # ethernet interface
         self.netif = {
-            'ee6a': "ifconfig eth0 "
+            'ee6a': "ifconfig eth0 ",
+            'ee6d': "ifconfig eth3 "
         }
 
         self.infover = {
-            'ee6a': "Version:"
+            'ee6a': "Version:",
+            'ee6d': "Version:"
         }
 
         self.devnetmeta = {

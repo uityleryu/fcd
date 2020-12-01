@@ -1510,7 +1510,7 @@
     },
 
     "UISP-S-LITE":{
-      "INDEX"       : 1,
+      "INDEX"       : 6,
       "NAME"        : "UISP-S-LITE",
       "BOARDID"     : "ee50",
       "BOMREV"      : "113-00900",
@@ -1523,7 +1523,7 @@
     },
 
     "UISP-O-LITE":{
-      "INDEX"       : 6,
+      "INDEX"       : 7,
       "NAME"        : "UISP-O-LITE",
       "BOARDID"     : "ee6c",
       "BOMREV"      : "113-00819",
@@ -1533,7 +1533,21 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-     }
+     },
+
+     "UISP-R-PRO-XG":{
+      "INDEX"       : 8,
+      "NAME"        : "UISP-R-PRO-XG",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-00816",
+      "DESC"        : "Ubiquiti Network Management System Router Pro XG",
+      "FILE"        : "unms_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    }
+
   },
 
   "UniFiServer":

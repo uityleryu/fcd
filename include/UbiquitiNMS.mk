@@ -36,6 +36,11 @@ IMAGE-UISP-O-LITE= \
     images/ee6c* \
     unms-fw/UISPO.mt7621.* \
 
+IMAGE-UISP-R-PRO-XG= \
+    images/ee6d* \
+    unms-fw/ubnt_uispr_alpinev2_rev1_boot.img \
+    unms-fw/UISPR.alpine* \
+
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
@@ -43,6 +48,8 @@ IMAGE-UNMS+=$(IMAGE-UISP-R-LITE)
 IMAGE-UNMS+=$(IMAGE-UNMS-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
+IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
+
 
 
 # Model
@@ -86,6 +93,9 @@ TOOLS-UISP-S-PRO+= unms-spro/*
 TOOLS-UISP-O-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-O-LITE+= uisp-olite/*
 
+TOOLS-UISP-R-PRO-XG=$(TOOLS-UNMS)
+TOOLS-UISP-R-PRO-XG+= uisp-rpro-xg/*
+
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
@@ -96,6 +106,7 @@ $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -107,4 +118,5 @@ $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 
