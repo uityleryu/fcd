@@ -16,9 +16,16 @@ IMAGE-AF60-XG= \
     af-fw/af60-xg*.bin \
     af-fw/NAND_factory_ubi.img
 
+IMAGE-AF60-XR= \
+    images/ac1* \
+    af-fw/UBNT_XR.bin \
+    af-fw/af60-xr-spf*.bin \
+    af-fw/u-boot-ipq807x.bin
+
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)
 IMAGE-AF+=$(IMAGE-AF60-XG)
+IMAGE-AF+=$(IMAGE-AF60-XR)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -42,6 +49,7 @@ TOOLS-AF60+=$(TOOLS-CONFIG)
 TOOLS-AF60+= \
     af_af60/cfg_part.bin \
     af_af60/helper_IPQ40xx \
+    af_af60/helper_IPQ807x \
     af_af60/id_rsa \
     af_af60/id_rsa.pub \
     af_af60/af_af60_dummy_cal.bin \
@@ -49,6 +57,7 @@ TOOLS-AF60+= \
 
 TOOLS-AF60-LR+=$(TOOLS-AF60)
 TOOLS-AF60-XG+=$(TOOLS-AF60)
+TOOLS-AF60-XR+=$(TOOLS-AF60)
 
 # Project target
 
@@ -56,6 +65,7 @@ $(eval $(call ProductImage,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -63,3 +73,4 @@ $(eval $(call ProductCompress,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
