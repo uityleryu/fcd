@@ -33,8 +33,6 @@ class USPMT7628Factory(ScriptBase):
         self.btnum =   {'ed12': "0"}
         # flash size map
         self.flash_size = {'ed12': "16777216"}
-        # Factory/Recovery image
-        self.fcdimg = self.board_id + "-fcd.bin"
         # firmware image
         self.fwimg = self.board_id + "-fw.bin"
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -45,14 +43,14 @@ class USPMT7628Factory(ScriptBase):
         }
 
         self.UPDATE_RECOVERY_ENABLE = True
-        self.BOOT_RECOVERY_IMAGE    = True
-        self.PROVISION_ENABLE       = True
-        self.DOHELPER_ENABLE        = True
-        self.REGISTER_ENABLE        = True
+        self.BOOT_RECOVERY_IMAGE    = True 
+        self.PROVISION_ENABLE       = True 
+        self.DOHELPER_ENABLE        = True 
+        self.REGISTER_ENABLE        = True 
         self.FWUPDATE_ENABLE        = False
-        self.DATAVERIFY_ENABLE      = True
-        self.LCM_FW_CHECK_ENABLE    = True
-        self.MCU_FW_CHECK_ENABLE    = True
+        self.DATAVERIFY_ENABLE      = True 
+        self.LCM_FW_CHECK_ENABLE    = True 
+        self.MCU_FW_CHECK_ENABLE    = True 
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -73,6 +71,8 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         self.is_network_alive_in_linux()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
+                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
@@ -128,7 +128,7 @@ class USPMT7628Factory(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_RECOVERY_ENABLE is True:
-            self.fwupdate(self.fcdimg, reboot_en=False)
+            self.fwupdate(self.fwimg, reboot_en=False)
             msg(10, "Update factory successfully ...")
 
         if self.BOOT_RECOVERY_IMAGE is True:
@@ -164,11 +164,11 @@ class USPMT7628Factory(ScriptBase):
 
         if self.LCM_FW_CHECK_ENABLE is True:
             self.lcm_fw_check()
-            msg(85, "Succeeding in checking the devreg information ...")
+            msg(85, "Succeeding in checking the LCM FW information ...")
 
         if self.MCU_FW_CHECK_ENABLE is True:
             self.mcu_fw_check()
-            msg(90, "Succeeding in checking the devreg information ...")
+            msg(90, "Succeeding in checking the MCU FW information ...")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
