@@ -55,7 +55,7 @@ IMAGE-UDMLITE= \
 
 IMAGE-UDR= \
     images/eccc* \
-    udm-fw/u6-dm-bsp-helper-v3.bin 
+    udm-fw/*udr*.bin 
 	
 # Model
 # This is used for adding an option in the file of BackT1.desktop
