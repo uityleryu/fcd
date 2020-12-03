@@ -23,6 +23,7 @@ class UDMMT7622BspFactory(ScriptBase):
         # script specific vars
         self.fwimg = "images/" + self.board_id + "-fw.bin"
         self.fcdimg = "images/" + self.board_id + "-fcd.bin"
+        self.uboot_img = "images/" + self.board_id + "-uboot.bin"
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "MT7622"
@@ -50,6 +51,12 @@ class UDMMT7622BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "")
         self.set_ub_net()
         self.is_network_alive_in_uboot()
+        # Update uboot
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftp {}".format(self.uboot_img))
+        self.pexp.expect_only(120, "Bytes transferred")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "nor init; snor erase 0x60000 0x70000;")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "snor write ${loadaddr} 0x60000 ${filesize};")
+        # Update kernel
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftp {}".format(self.fcdimg))
         self.pexp.expect_only(120, "Bytes transferred")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run boot_wr_img")
