@@ -128,14 +128,22 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         log_debug("Board setting succeded")
         
         #self.enable_console_in_uboot()
-        if self.board_id == 'ed40':
-            self.clear_eeprom_in_uboot()
-            log_debug("Clearing EEPROM in U-Boot succeed")
-            self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
-        elif self.board_id == 'ed41':
-            self.enable_console_in_uboot()
+        #if self.board_id == 'ed40':
         
+        self.clear_eeprom_in_uboot()
+        log_debug("Clearing EEPROM in U-Boot succeed")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+
         
+        # if self.board_id == 'ed40':
+        #     self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+        # else:
+        #     self.enable_console_in_uboot()
+        
+        #self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")剛剛那台
+        #elif self.board_id == 'ed41':
+            #self.enable_console_in_uboot()
+
     def fwupdate(self):
         self.stop_uboot()
 
@@ -246,13 +254,14 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         msg(15, "Login kernel")
         self.login_kernel("abnormal")
         
-        if self.board_id == 'ed41':
-            self.force_speed_to_1g() 
+        #if self.board_id == 'ed41':
+        #    self.force_speed_to_1g() 
         # for u6-s8 in kernel
 
-        if self.board_id == 'ed40':
-            self.SetNetEnv()
-        
+        #if self.board_id == 'ed40':
+        #    self.SetNetEnv()
+        self.SetNetEnv()
+
         self.is_network_alive_in_linux()
 
         msg(15, "Boot up to linux console and network is good ...")
