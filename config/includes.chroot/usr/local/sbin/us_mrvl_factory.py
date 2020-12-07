@@ -127,7 +127,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
         
-        #self.enable_console_in_uboot()
+        # self.enable_console_in_uboot()
         #if self.board_id == 'ed40':
         
         self.clear_eeprom_in_uboot()
@@ -253,6 +253,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(15, "Login kernel")
         self.login_kernel("abnormal")
+
+        # self.force_speed_to_1g()
         
         #if self.board_id == 'ed41':
         #    self.force_speed_to_1g() 
