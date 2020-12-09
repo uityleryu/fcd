@@ -26,7 +26,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {}
+        self.wait_LCM_upgrade_en = {'ed41'}
 
         # number of Ethernet
         self.macnum = {
@@ -127,12 +127,12 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
         
-        # self.enable_console_in_uboot()
+        self.enable_console_in_uboot()
         #if self.board_id == 'ed40':
         
-        self.clear_eeprom_in_uboot()
-        log_debug("Clearing EEPROM in U-Boot succeed")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+        # self.clear_eeprom_in_uboot()
+        # log_debug("Clearing EEPROM in U-Boot succeed")
+        # self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         
         # if self.board_id == 'ed40':
@@ -191,7 +191,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=20)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login_kernel(self, mode):
@@ -254,7 +254,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         msg(15, "Login kernel")
         self.login_kernel("abnormal")
 
-        # self.force_speed_to_1g()
+        self.force_speed_to_1g()
         
         #if self.board_id == 'ed41':
         #    self.force_speed_to_1g() 
@@ -262,7 +262,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         #if self.board_id == 'ed40':
         #    self.SetNetEnv()
-        self.SetNetEnv()
+        # self.SetNetEnv()
 
         self.is_network_alive_in_linux()
 
