@@ -33,8 +33,8 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
         # helper path
         helppth = {
-            'ee6a': "unms-rpro",
-            'ee6d': "uisp-rpro-xg"
+            'ee6a': "uisp-r-pro",
+            'ee6d': "uisp-r-pro-xg"
         }
 
         self.helper_path = helppth[self.board_id]

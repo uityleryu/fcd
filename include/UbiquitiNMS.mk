@@ -73,7 +73,7 @@ TOOLS-CONFIG= \
 TOOLS-UNMS+=$(TOOLS-CONFIG)
 
 TOOLS-UISP-R-PRO=$(TOOLS-UNMS)
-TOOLS-UISP-R-PRO+= unms-rpro/*
+TOOLS-UISP-R-PRO+= uisp-r-pro/*
 
 TOOLS-UNMS-S-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-S-LITE+= unms-slite/*
@@ -82,7 +82,7 @@ TOOLS-UISP-S-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-S-LITE+= unms-slite/*
 
 TOOLS-UISP-R-LITE=$(TOOLS-UNMS)
-TOOLS-UISP-R-LITE+= unms-rlite/*
+TOOLS-UISP-R-LITE+= uisp-r-lite/*
 
 TOOLS-UNMS-LTE=$(TOOLS-UNMS)
 TOOLS-UNMS-LTE+= unms-lte/*
@@ -91,10 +91,10 @@ TOOLS-UISP-S-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-S-PRO+= unms-spro/*
 
 TOOLS-UISP-O-LITE=$(TOOLS-UNMS)
-TOOLS-UISP-O-LITE+= uisp-olite/*
+TOOLS-UISP-O-LITE+= uisp-o-lite/*
 
 TOOLS-UISP-R-PRO-XG=$(TOOLS-UNMS)
-TOOLS-UISP-R-PRO-XG+= uisp-rpro-xg/*
+TOOLS-UISP-R-PRO-XG+= uisp-r-pro-xg/*
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))

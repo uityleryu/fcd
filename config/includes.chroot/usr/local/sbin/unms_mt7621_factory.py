@@ -37,8 +37,8 @@ class UNMSMT7621Factory(ScriptBase):
         self.ssh_eable_list = ['ee6b']
 
         helper_path = {
-            'ee6b': "unms-rlite",
-            'ee6c': "uisp-olite"
+            'ee6b': "uisp-r-lite",
+            'ee6c': "uisp-o-lite"
         }
         # number of Ethernet
         self.ethnum = {
