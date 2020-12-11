@@ -15,6 +15,13 @@ PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
 SECCHK_EN = True
+BDINFO_EN = True
+
+'''
+    eed0: UNMS_S_LITE
+    eed1: UISP_S_PRO
+    ee50: UISP_S_LITE
+'''
 
 
 class UNMSRTL838XFactoryGeneral(ScriptBase):
@@ -250,6 +257,66 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         if SECCHK_EN is True:
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot")
             self.pexp.expect_lnxcmd(30, "UBNT_Diag", "sectest\r", "security test pass")
+
+        if BDINFO_EN is True:
+            self.pexp.expect_lnxcmd(30, "UBNT_Diag", "exit\r", self.linux_prompt)
+            self.set_lnx_net("eth0")
+            self.is_network_alive_in_linux()
+
+            epm = "eeprom_{}.bin".format(self.row_id)
+            dstf = os.path.join(self.tftpdir, epm)
+            rtf = os.path.isfile(dstf)
+            if rtf is True:
+                rmsg = "Erasing File - {} ...".format(rtf)
+                log_debug(rmsg)
+                os.chmod(dstf, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+                os.remove(dstf)
+            else:
+                rmsg = "File - {} doesn't exist ...".format(dstf)
+                log_debug(rmsg)
+
+            cmd = "dd if={} of=/tmp/{}".format(self.devregpart, epm)
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+
+            srcf = os.path.join(self.tftpdir, epm)
+            dstf = os.path.join("/tmp", epm)
+            rmsg = "Remote path(Host): {}".format(srcf)
+            log_debug(rmsg)
+            rmsg = "Local path(DUT): {}".format(dstf)
+            log_debug(rmsg)
+            self.tftp_put(remote=srcf, local=dstf, timeout=10)
+
+            cmd = "hexdump -C -s 0 -n 6 {}".format(srcf)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if rtc >= 0:
+                m_mac = re.findall("00000000  (.*) (.*) (.*) (.*) (.*) (.*)", sto)
+                if m_mac:
+                    t_mac = m_mac[0][0].replace(" ", "")
+                    if t_mac in self.mac:
+                        rmsg = "MAC: {}, check PASS".format(t_mac)
+                        log_debug(rmsg)
+                    else:
+                        rmsg = "Read MAC: {}, expected: {}, check Failed".format(t_mac, self.mac)
+                        error_critical(rmsg)
+                else:
+                    error_critical("Can't get MAC from EEPROM")
+
+            cmd = "hexdump -C -s 0x10 -n 4 {}".format(srcf)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if rtc >= 0:
+                m_bomrev = re.findall("00000010  (.*) (.*) (.*) (.*)", sto)
+                if m_bomrev:
+                    bom_2nd = int(m_bomrev[0][0][3:8].replace(" ", ""), 16)
+                    bom_3rd = int(m_bomrev[0][0][9:11], 16)
+                    bom_all = "113-{:05d}-{:02d}".format(bom_2nd, bom_3rd)
+                    if self.bom_rev in bom_all:
+                        rmsg = "BOM revision: {}, check PASS".format(bom_all)
+                        log_debug(rmsg)
+                    else:
+                        rmsg = "Read BOM revision: {}, expected: {}, check Failed".format(bom_all, self.bom_rev)
+                        error_critical(rmsg)
+                else:
+                    error_critical("Can't get BOM revision from EEPROM")
 
         msg(100, "Completing ...")
         self.close_fcd()

@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.25"
+    __version__ = "1.0.26"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -1036,11 +1036,11 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.linux_prompt, action=cmd, post_exp="RV=0", retry=0)
 
     def mac_format_str2comma(self, strmac):
-        mac_comma = ':'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
+        mac_comma = ':'.join([strmac[i: i + 2] for i in range(0, len(strmac), 2)])
         return mac_comma
 
     def mac_format_str2dash(self, strmac):
-        mac_dash = '-'.join([self.mac[i: i + 2] for i in range(0, len(self.mac), 2)])
+        mac_dash = '-'.join([strmac[i: i + 2] for i in range(0, len(strmac), 2)])
         return mac_dash
 
     def mac_format_str2list(self, strmac):
