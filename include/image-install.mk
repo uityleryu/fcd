@@ -75,6 +75,9 @@ image-ostrich-install-$1: $1-namechk
 	mkdir -p $(OSTRICH_DIR)
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(OSTRICH_DIR)/version.txt
 	sed -i s/FCDVERSION/$2/g $(OSTRICH_DIR)/version.txt
+	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
+	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
+	
 	# copy all registering scripts
 	#if [ -d $(OSTRICH_DIR)/temp_sbin ]; then
 	    #mkdir -p $(OSTRICH_DIR)/temp_sbin
