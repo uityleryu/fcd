@@ -688,7 +688,21 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
+    },
+
+    "UP-Radar":{
+      "INDEX"       : 10,
+      "NAME"        : "UP-Radar",
+      "BOARDID"     : "dcb0",
+      "BOMREV"      : "113-00806",
+      "DESC"        : "UniFi Protect Radar",
+      "FILE"        : "uap_ipq40xx_radar_factory.py",
+      "T1FILE"      : "uap_ipq40xx_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     }
+
   },
 
   "UniFiAP6":
