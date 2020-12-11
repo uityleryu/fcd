@@ -38,7 +38,7 @@ IMAGE-UISP-O-LITE= \
 
 IMAGE-UISP-R-PRO-XG= \
     images/ee6d* \
-    unms-fw/ubnt_uispr_alpinev2_rev1_boot.img \
+    unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
