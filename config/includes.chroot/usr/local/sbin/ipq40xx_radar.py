@@ -50,12 +50,12 @@ class IPQ40XXFactory(ScriptBase):
             '0000': "GBE#",
             'dc99': "GBE#",
             'dc9a': "GBE#",
-            'dc98': "UBB#",
+            'dc98': "7060#",
             'dc9c': "UBB#",
             'dc9b': "GP#",
             'dc9e': "GP#",
             'dca0': "GBE#",
-            'dcb0': "UBB#",
+            'dcb0': "7060#",
         }
 
         self.bootloader = {
@@ -163,8 +163,31 @@ class IPQ40XXFactory(ScriptBase):
             'dc9b': "af_af60",
             'dc9e': "af_af60",
             'dca0': "am",
-            'dcb0': "uap",
+            'dcb0': "ufp_radar",
         }
+
+        self.ethnum = {
+            'dcb0': "1",
+            'dc98': "1"
+        }
+
+        self.wifinum = {
+            'dcb0': "1",
+            'dc98': "0"
+        }
+
+        self.btnum = {
+            'dcb0': "1",
+            'dc98': "0"
+        }
+
+        self.devnetmeta = {
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
+        }
+
+        self.devregpart = '/dev/mtdblock3'
 
         self.product_class = self.product_class_table[self.board_id]
 
@@ -243,7 +266,7 @@ class IPQ40XXFactory(ScriptBase):
     def airos_run(self):
         WR_DUMMY_EN = False
         DOHELPER_EN = True
-        REGISTER_EN = False
+        REGISTER_EN = True
         ADDKEYS_EN = False
         WRSIGN_EN = False
         DEFAULTCONFIG_EN = False
@@ -335,18 +358,22 @@ class IPQ40XXFactory(ScriptBase):
         '''
 
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "fcd")
-        self.pexp.expect_ubcmd(10, "Password:", "fcduser")
+        self.pexp.expect_ubcmd(10, "login:", "ubnt")
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
         cmd = "ifconfig eth0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
         self.lnx_netcheck()
         
+        cmd = 'echo "5edfacbf" > /proc/ubnthal/.uf'
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
         if DOHELPER_EN is True:
             self.erase_eefiles()
             msg(40, "Do helper to get the output file to devreg server ...")
+            self.data_provision_64k(self.devnetmeta)
             self.prepare_server_need_files()
+
 
         if REGISTER_EN is True:
             self.registration()
