@@ -688,19 +688,6 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
-    },
-
-    "UP-Radar":{
-      "INDEX"       : 10,
-      "NAME"        : "UP-Radar",
-      "BOARDID"     : "dcb0",
-      "BOMREV"      : "113-00806",
-      "DESC"        : "UniFi Protect Radar",
-      "FILE"        : "uap_ipq40xx_radar_factory.py",
-      "T1FILE"      : "uap_ipq40xx_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
     }
 
   },
@@ -1247,6 +1234,19 @@
       "DESC"        : "UniFi Protect Bluetooth Card",
       "FILE"        : "ufp_efr32_factory.py",
       "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UFP-Radar":{
+      "INDEX"       : 5,
+      "NAME"        : "UFP-Radar",
+      "BOARDID"     : "dcb0",
+      "BOMREV"      : "113-00806",
+      "DESC"        : "UniFi Protect Radar",
+      "FILE"        : "uap_ipq40xx_radar_factory.py",
+      "T1FILE"      : "uap_ipq40xx_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
