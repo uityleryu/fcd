@@ -1239,7 +1239,7 @@
       "SW_ID"       : "1604"
     },
 
-    "UFP-Radar":{
+    "UFP-RADAR":{
       "INDEX"       : 5,
       "NAME"        : "UFP-RADAR",
       "BOARDID"     : "dcb0",
