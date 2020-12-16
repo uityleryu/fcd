@@ -25,7 +25,7 @@ class UVPQCS403FactoryGeneral(ScriptBase):
 
         self.ver_extract()
         self.devregpart = "/dev/mtdblock23"
-        self.helperexe = "helper_QCS403_release"
+        self.helperexe = "helper_QCS403_debug"
         self.helper_path = "uvp"
 
         # number of Ethernet
@@ -62,9 +62,11 @@ class UVPQCS403FactoryGeneral(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+
+        msg(10, "TTY initialization successfully ...")
         time.sleep(45)
 
-        self.pexp.expect_lnxcmd(10, "", action="", "")
+        self.pexp.expect_lnxcmd(10, "", "")
         self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
@@ -96,8 +98,8 @@ class UVPQCS403FactoryGeneral(ScriptBase):
             # Write MAC
             int_mac = int(self.mac, 16)
             hex_wifi_mac = hex(int_mac + 1).replace("0x", "")
-            hex_bt_mac = hex(int_mac + 2).relace("0x", "")
-            comma_mac = mac_format_str2comma(self.mac)
+            hex_bt_mac = hex(int_mac + 2).replace("0x", "")
+            comma_mac = self.mac_format_str2comma(self.mac)
             cmd = "echo {} > /persist/emac_config.ini".format(comma_mac)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
@@ -111,8 +113,8 @@ class UVPQCS403FactoryGeneral(ScriptBase):
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # Write BT MAC
-            comma_bt_mac = mac_format_str2comma(hex_bt_mac)
-            cmd = "btnvtool -b {}".format(comma_mac)
+            comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
+            cmd = "btnvtool -b {}".format(comma_bt_mac)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # Check WiFi MAC
@@ -122,9 +124,10 @@ class UVPQCS403FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             cmd = "ifconfig wlan0 | grep HWaddr"
-            comma_wifi_mac = mac_format_str2comma(hex_wifi_mac)
-            postexp = "wlan0     Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac)
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
+            comma_wifi_mac = self.mac_format_str2comma(hex_wifi_mac)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_wifi_mac.upper())
+            # postexp = "Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac.upper())
+            # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
 
             # Check BT MAC
             cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
