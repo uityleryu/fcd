@@ -10,6 +10,7 @@ IMAGE-UT-ATA= \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
 IMAGE-UT-PHONE-TOUCH=
+IMAGE-UT-PHONE-TOUCHMAX=
 
 IMAGE-UT-CONFERENCE=
 
@@ -17,7 +18,7 @@ IMAGE-UT-CONFERENCE=
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
 
-PRD_MODEL=UniFiVOIP
+PRD_MODEL=UniFiTalk
 BACKT1_PRDSRL=$(PRD_MODEL)
 DRVREG_PRDSRL=$(PRD_MODEL)
 
@@ -41,12 +42,14 @@ TOOLS-UT-CONFERENCE=$(TOOLS-CONFIG)
 TOOLS-UT-CONFERENCE+= uvp/*
 
 TOOLS-UT-PHONE-TOUCH=$(TOOLS-CONFIG)
+TOOLS-UT-PHONE-TOUCHMAX=$(TOOLS-CONFIG)
 
 # Project target
 
 $(eval $(call ProductImage,UT-PHONE-FLEX,FCD_$(PRD)_UT-PHONE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UT-ATA,FCD_$(PRD)_UT-ATA_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UT-PHONE-TOUCH,FCD_$(PRD)_UT-PHONE-TOUCH_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UT-PHONE-TOUCHMAX,FCD_$(PRD)_UT-PHONE-TOUCHMAX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -54,4 +57,5 @@ $(eval $(call ProductImage,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FWVER
 $(eval $(call ProductCompress,UT-PHONE-FLEX,FCD_$(PRD)_UT-PHONE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UT-ATA,FCD_$(PRD)_UT-ATA_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UT-PHONE-TOUCH,FCD_$(PRD)_UT-PHONE-TOUCH_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UT-PHONE-TOUCHMAX,FCD_$(PRD)_UT-PHONE-TOUCHMAX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FWVER)))

@@ -14,14 +14,16 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    ef80: UTD-7
-    ef81: UTD-13
-    ef82: UVP_Touch
-    ef83: UTD-21
-    ef84: UTD-27
-    ef85: UniFi Pay 7
-    ef86: UniFi Pay 13
-    ec60: UA-BL-PRO
+    a980: Viewport
+    ef80: UTD-7        (Android 9)
+    ef81: UTD-13       (Android 9)
+    ef82: UVP_Touch    (Android 7)
+    ef0e: UVP_TouchMax (Android 7)
+    ef83: UTD-21       (Android 9)
+    ef84: UTD-27       (Android 9)
+    ef85: UniFi Pay 7  (Android 9)
+    ef86: UniFi Pay 13 (Android 9)
+    ec60: UA-BL-PRO    (Android 9)
 '''
 
 
@@ -43,11 +45,43 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         # default product class: basic
         self.df_prod_class = "0014"
+        self.usbadb_list = ["ec60", "ef0e"]
+
+        self.ospl = {
+            'a980': "",
+            'ef80': "adr9",
+            'ef81': "adr9",
+            'ef82': "adr7",
+            'ef0e': "adr9",
+            'ef83': "adr9",
+            'ef84': "adr9",
+            'ef85': "adr9",
+            'ef86': "adr9",
+            'ec60': "adr9"
+        }
+
+        if self.ospl[self.board_id] == "adr9":
+            self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
+            self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
+            self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
+            self.f_qr_id = "/mnt/vendor/persist/qr_id"
+        else:
+            self.persist_cfg_file = "/persist/WCNSS_qcom_cfg.ini"
+            self.cfg_file = "/data/misc/wifi/WCNSS_qcom_cfg.ini"
+            self.f_eth_mac = "/persist/eth_mac"
+            self.f_qr_id = "/persist/qr_id"
+
+        if self.region == "0000":
+            self.android_cc = "000"
+        elif self.region == "002a":
+            self.android_cc = "USI"
 
         self.lnxpmt = {
+            'a980': "",
             'ef80': "msm8953_uct",
             'ef81': "unifi_p13",
             'ef82': "msm8953_uvp",
+            'ef0e': "uvp_touchmax",
             'ef83': "unifi_p21",
             'ef84': "unifi_p27",
             'ef85': "",
@@ -55,11 +89,13 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "msm8953_uapro"
         }
 
-        # number of Ethernet
+        # Number of Ethernet
         self.macnum = {
+            'a980': "",
             'ef80': "1",
             'ef81': "1",
             'ef82': "1",
+            'ef0e': "1",
             'ef83': "1",
             'ef84': "1",
             'ef85': "0",
@@ -67,11 +103,13 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1"
         }
 
-        # number of WiFi
+        # Number of WiFi
         self.wifinum = {
+            'a980': "",
             'ef80': "0",
             'ef81': "0",
             'ef82': "1",
+            'ef0e': "1",
             'ef83': "0",
             'ef84': "0",
             'ef85': "1",
@@ -79,28 +117,18 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1"
         }
 
-        # number of Bluetooth
+        # Number of Bluetooth
         self.btnum = {
+            'a980': "",
             'ef80': "1",
             'ef81': "1",
             'ef82': "1",
+            'ef0e': "1",
             'ef83': "1",
             'ef84': "1",
             'ef85': "1",
             'ef86': "1",
             'ec60': "1"
-        }
-
-        # MAC file path
-        self.macp = {
-            'ef80': "/mnt/vendor/persist/eth_mac",
-            'ef81': "/mnt/vendor/persist/eth_mac",
-            'ef82': "/persist/eth_mac",
-            'ef83': "/mnt/vendor/persist/eth_mac",
-            'ef84': "/mnt/vendor/persist/eth_mac",
-            'ef85': "/mnt/vendor/persist/eth_mac",
-            'ef86': "/mnt/vendor/persist/eth_mac",
-            'ec60': "/mnt/vendor/persist/eth_mac"
         }
 
         self.devnetmeta = {
@@ -332,6 +360,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         else:
             error_critical(msg="Can't get the MAC address from EGS!")
 
+    def check_qrcode(self):
+        pass
+
     def run(self):
         """
         Main procedure of factory
@@ -339,7 +370,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.cnapi.print_current_fcd_version()
 
-        if self.board_id == "ec60":
+        if self.board_id in self.usbadb_list:
             self.INFOCHECK_ENABLE = False
             self.connect_adb_usb()
         else:
@@ -353,13 +384,32 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.erase_eefiles()
             self.data_provision_64k(self.devnetmeta)
 
+            # Write MAC
             lmac = self.mac_format_str2list(self.mac)
             bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
-            cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.macp[self.board_id])
-
-            log_debug("cmd: " + cmd)
-            time.sleep(1)
+            cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
             self.pexp.expect_action(10, self.linux_prompt, cmd)
+
+            # Write QR code
+            cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
+            self.pexp.expect_action(10, self.linux_prompt, cmd)
+
+            # Write Country Code
+            cmd = "ls {}".format(self.cfg_file)
+            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            exp_list = [
+                "ls: /data/vendor/wifi/WCNSS_qcom_cfg.ini: No such file or directory",
+            ]
+            rtc = self.pexp.expect_get_index(10, exp_list)
+            if not rtc == 0:
+                cmd = "rm {}".format(self.cfg_file)
+                self.pexp.expect_action(10, self.linux_prompt, cmd)
+
+            cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
+            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            if self.android_cc != "000":
+                cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc, self.persist_cfg_file)
+                self.pexp.expect_action(10, self.linux_prompt, cmd)
 
         if self.REGISTER_ENABLE is True:
             msg(40, "Sendtools to DUT and data provision ...")

@@ -1038,10 +1038,23 @@
       "NAME"        : "UT-PHONE-TOUCH",
       "BOARDID"     : "ef82",
       "BOMREV"      : "113-02150",
-      "DESC"        : "UVP VOIP IP PHOME",
+      "DESC"        : "UniFi Talk IP PHOME",
       "FILE"        : "connect_apq8053_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "False",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-PHONE-TOUCHMAX":{
+      "INDEX"       : 4,
+      "NAME"        : "UT-PHONE-TOUCHMAX",
+      "BOARDID"     : "ef0e",
+      "BOMREV"      : "113-02950",
+      "DESC"        : "UniFi Talk IP PHOMEMAX",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
       "FCD_ID"      : "0007",
       "SW_ID"       : "0a01"
     }
