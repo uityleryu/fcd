@@ -378,6 +378,9 @@ class IPQ40XXFactory(ScriptBase):
         if REGISTER_EN is True:
             self.registration()
             msg(50, "Finish do registration ...")
+            self.check_devreg_data()
+            msg(55, "Finish doing signed file and EEPROM checking ...")
+
 
         '''
         cmd = "reboot -f"
