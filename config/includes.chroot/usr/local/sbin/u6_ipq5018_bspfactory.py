@@ -91,15 +91,18 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
         self.linux_prompt = "root@OpenWrt:/#"
 
         self.ethnum = {
-            'a650': "1"
+            'a650': "1",
+            'a651': "1"
         }
 
         self.wifinum = {
-            'a650': "2"
+            'a650': "2",
+            'a651': "2"
         }
 
         self.btnum = {
-            'a650': "1"
+            'a650': "1",
+            'a651': "1"
         }
 
         self.devnetmeta = {
@@ -160,7 +163,7 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        msg(100, "Completing firmware upgrading ...")
+        msg(100, "Completing FCD process ...")
         self.close_fcd()
 
 
