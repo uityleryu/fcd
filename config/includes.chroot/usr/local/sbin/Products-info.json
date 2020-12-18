@@ -717,7 +717,7 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-	"U6-PRO":{
+	  "U6-PRO":{
       "INDEX"       : 2,
       "NAME"        : "U6-PRO",
       "BOARDID"     : "a650",
@@ -729,7 +729,7 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-	"U6-Mesh":{
+    "U6-Mesh":{
       "INDEX"       : 3,
       "NAME"        : "U6-Mesh",
       "BOARDID"     : "a651",
@@ -1180,6 +1180,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000b",
       "SW_ID"       : "1203"
+    },
+
+    "LBE_5AC":{
+      "INDEX"       : 5,
+      "NAME"        : "LBE_5AC",
+      "BOARDID"     : "e7f9",
+      "BOMREV"      : "113-00497",
+      "DESC"        : "LiteBeam 5AC",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
     }
   },
 

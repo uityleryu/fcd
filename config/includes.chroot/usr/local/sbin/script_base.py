@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.26"
+    __version__ = "1.0.27"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -49,7 +49,7 @@ class ScriptBase(object):
         with open(self.fcd_version_info_file_path, 'r') as f:
             self.version_iso = f.read().rstrip('\n')
 
-        self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
+        self.cnapi.print_current_fcd_version(file=self.fcd_version_info_file_path)
         print("framework version: " + self.__version__)
         print("ubntlib version: " + ubntlib.__version__)
         self._encrpyt_passphrase_for_log()
@@ -421,7 +421,7 @@ class ScriptBase(object):
             "tr '\\n' ' '"
         ]
         cmdj = ' '.join(cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmdj)
+        [sto, rtc] = self.cnapi.xcmd(cmdj)
         if int(rtc) > 0:
             error_critical("Extract parameters failed!!")
         else:
@@ -519,7 +519,7 @@ class ScriptBase(object):
         flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
         cmd = "{0} -B {1} -d {2} -r 113-{3}".format(flasheditor, self.eesign_path, nowtime, self.bom_rev)
         log_debug("cmd: " + cmd)
-        sto, rtc = self.fcd.common.xcmd(cmd)
+        sto, rtc = self.cnapi.xcmd(cmd)
         log_debug(sto)
 
         rtf = os.path.isfile("{0}.FCD".format(self.eesign_path))
@@ -529,7 +529,7 @@ class ScriptBase(object):
         else:
             cmd = "mv {0}.FCD {1}".format(self.eesign_path, self.eesigndate_path)
             log_debug("cmd: " + cmd)
-            self.fcd.common.pcmd(cmd)
+            self.cnapi.pcmd(cmd)
 
     def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, zmodem=False, timeout=10):
         """check devreg data
@@ -596,10 +596,10 @@ class ScriptBase(object):
     def gen_and_load_key_to_dut(self):
         src = os.path.join(self.tftpdir, "dropbear_key.rsa")
         cmd = "dropbearkey -t rsa -f {0}".format(src)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
 
         cmd = "chmod 777 {0}".format(src)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
 
         srcp = "dropbear_key.rsa"
         dstp = os.path.join(self.dut_tmpdir, "dropbear_key.rsa")
@@ -662,7 +662,7 @@ class ScriptBase(object):
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         log_debug(cmd)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
         '''
             The dropbearkey command will be executed in the FCD host.
             So, it won't cost too much time
@@ -670,7 +670,7 @@ class ScriptBase(object):
         time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.rsakey_path)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
 
         rt = os.path.isfile(self.rsakey_path)
         if rt is not True:
@@ -679,7 +679,7 @@ class ScriptBase(object):
 
     def gen_dss_key(self):
         cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
         '''
             The dropbearkey command will be executed in the FCD host.
             So, it won't cost too much time
@@ -687,7 +687,7 @@ class ScriptBase(object):
         time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.dsskey_path)
-        self.fcd.common.pcmd(cmd)
+        self.cnapi.pcmd(cmd)
 
         rt = os.path.isfile(self.dsskey_path)
         if rt is not True:
@@ -719,7 +719,7 @@ class ScriptBase(object):
         ]
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        [sto, rtc] = self.cnapi.xcmd(sstr)
         time.sleep(0.5)
         if int(rtc) > 0:
             otmsg = "Flash editor filling out {0} file failed!!".format(self.eegenbin_path)
@@ -961,7 +961,7 @@ class ScriptBase(object):
             # exe send cmd on host
             cmd = "sz -e -v -b {0} < /dev/{1} > /dev/{1}".format(file, self.dev)
             log_debug("host cmd: " + cmd)
-            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            [sto, rtc] = self.cnapi.xcmd(cmd)
             if int(rtc) != 0:
                 retry -= 1
                 log_debug("Send {} to DUT incomplete, remaining retry {}".format(file, retry))
@@ -983,7 +983,7 @@ class ScriptBase(object):
 
             # exe receive cmd on host
             cmd = "rz -y -v -b < /dev/{0} > /dev/{0}".format(self.dev)
-            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            [sto, rtc] = self.cnapi.xcmd(cmd)
             if int(rtc) != 0:
                 retry -= 1
                 log_debug("Receive {} from DUT incomplete, remaining retry {}".format(file, retry))
@@ -1015,11 +1015,45 @@ class ScriptBase(object):
         ]
         cmdj = ' '.join(cmd)
         log_debug('Exec "{}"'.format(cmdj))
-        [stout, rv] = self.fcd.common.xcmd(cmdj)
+        [stout, rv] = self.cnapi.xcmd(cmdj)
         if int(rv) != 0:
             error_critical('Exec "{}" failed'.format(cmdj))
         else:
             log_debug('scp successfully')
+
+    def check_eeprom_mac(self):
+        cmd = "hexdump -C -s 0 -n 6 {}".format(self.eesigndate_path)
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if rtc >= 0:
+            m_mac = re.findall("00000000  (.*) (.*) (.*) (.*) (.*) (.*)", sto)
+            if m_mac:
+                t_mac = m_mac[0][0].replace(" ", "")
+                if t_mac in self.mac:
+                    rmsg = "MAC: {}, check PASS".format(t_mac)
+                    log_debug(rmsg)
+                else:
+                    rmsg = "Read MAC: {}, expected: {}, check Failed".format(t_mac, self.mac)
+                    error_critical(rmsg)
+            else:
+                error_critical("Can't get MAC from EEPROM")
+
+    def check_eeprom_bomrev(self):
+        cmd = "hexdump -C -s 0x10 -n 4 {}".format(self.eesigndate_path)
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if rtc >= 0:
+            m_bomrev = re.findall("00000010  (.*) (.*) (.*) (.*)", sto)
+            if m_bomrev:
+                bom_2nd = int(m_bomrev[0][0][3:8].replace(" ", ""), 16)
+                bom_3rd = int(m_bomrev[0][0][9:11], 16)
+                bom_all = "113-{:05d}-{:02d}".format(bom_2nd, bom_3rd)
+                if self.bom_rev in bom_all:
+                    rmsg = "BOM revision: {}, check PASS".format(bom_all)
+                    log_debug(rmsg)
+                else:
+                    rmsg = "Read BOM revision: {}, expected: {}, check Failed".format(bom_all, self.bom_rev)
+                    error_critical(rmsg)
+            else:
+                error_critical("Can't get BOM revision from EEPROM")
 
     def stop_http_server(self):
         self.http_srv.shutdown()
@@ -1118,15 +1152,34 @@ class ScriptBase(object):
             f.write(str(json.dumps(self.__dict__, default=lambda o: '<not serializable>', sort_keys=True, indent=4)))
 
     def _upload_prepare(self):
+        # Ex: /tftpboot/log_slot0.log
         sfile = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
+
+        # Ex: /tftpboot/log_slot0.json
         jfile = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".json")
 
+        # Ex: /tftpboot/e.sd.0
+        eefile = os.path.join("/tftpboot/", "e.sd." + str(self.row_id))
+
+        # Ex: 2020-09-04_02_16_46_856204
         timestamp = self.test_starttime_datetime.strftime('%Y-%m-%d_%H_%M_%S_%f')
+
         upload_root_folder = "/media/usbdisk/upload"
+
+        # Ex: /media/usbdisk/upload/2020-09-04_02_16_46_856204_e063da46a99b
         upload_dut_folder = os.path.join(upload_root_folder, timestamp + '_' + str(self.mac))
+
+        # Ex: /media/usbdisk/upload/2020-09-04_02_16_46_856204_e063da46a99b_Pass
         upload_dut_filename = '_'.join([timestamp, str(self.mac), str(self.test_result)])
+
+        # Ex: /media/usbdisk/upload/2020-09-04_02_16_46_856204_e063da46a99b_Pass.log
         upload_dut_logpath = os.path.join(upload_dut_folder, upload_dut_filename + ".log")
+
+        # Ex: /media/usbdisk/upload/2020-09-04_02_16_46_856204_e063da46a99b_Pass.json
         upload_dut_jsonpath = os.path.join(upload_dut_folder, upload_dut_filename + ".json")
+
+        # Ex: /media/usbdisk/upload/2020-09-04_02_16_46_856204_e063da46a99b_Pass.bin
+        upload_dut_eepath = os.path.join(upload_dut_folder, upload_dut_filename + ".bin")
 
         if not os.path.isdir(upload_dut_folder):
             os.makedirs(upload_dut_folder)
@@ -1134,7 +1187,8 @@ class ScriptBase(object):
         # We can extend more file into the upload_dict for uploading
         upload_file_dict = {
             sfile: upload_dut_logpath,
-            jfile: upload_dut_jsonpath
+            jfile: upload_dut_jsonpath,
+            eefile: upload_dut_eepath
         }
 
         for ori_file, copy_file in upload_file_dict.items():
