@@ -198,7 +198,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         for i in range(0, retry):
             try:
                 self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
-                self.cladb.expect_only(2, "adbd is already running as root")
+                self.cladb.expect_only(8, "adbd is already running as root")
 
                 pexpect_cmd = "adb shell"
                 log_debug(msg=pexpect_cmd)
