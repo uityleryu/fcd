@@ -107,7 +107,7 @@ region_names = (
 
 region_codes = (
     '0000',    # World
-    '002a',    # USA/Canada
+    '002a',    # USA/Canada/FCC
     '8168',    # Indonesia
     '8178',    # Israsel
     '8188',    # Japan

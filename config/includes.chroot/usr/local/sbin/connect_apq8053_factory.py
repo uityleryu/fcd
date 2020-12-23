@@ -421,7 +421,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.check_mac()
 
         msg(100, "Complete FCD process ...")
-        if self.board_id != "ec60":
+        if not self.board_id in self.usbadb_list:
             self.egsw.close()
 
         self.close_fcd()
