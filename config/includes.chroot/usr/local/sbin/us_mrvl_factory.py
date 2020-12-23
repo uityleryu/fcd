@@ -109,11 +109,6 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
 
     def clear_eeprom_in_uboot(self, timeout=30):
-        # Ensure sysid is empty when FW is T1 img.
-        # Some T1 image will boot so slow if get non-empty sysid
-        # self.pexp.expect_action(timeout, "Hit Esc key to stop autoboot", "\x1b")
-        # self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ucleareeprom")
-        # self.pexp.expect_action(10, self.bootloader_prompt, "reset")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcal -f", post_exp="Done")
 
     def set_data_in_uboot(self):
@@ -127,22 +122,12 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
         
-        self.enable_console_in_uboot()
-        #if self.board_id == 'ed40':
-        
-        # self.clear_eeprom_in_uboot()
-        # log_debug("Clearing EEPROM in U-Boot succeed")
-        # self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+        # self.enable_console_in_uboot()
+        # for v3 for u6-s8
 
-        
-        # if self.board_id == 'ed40':
-        #     self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
-        # else:
-        #     self.enable_console_in_uboot()
-        
-        #self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")剛剛那台
-        #elif self.board_id == 'ed41':
-            #self.enable_console_in_uboot()
+        self.clear_eeprom_in_uboot()
+        log_debug("Clearing EEPROM in U-Boot succeed")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
     def fwupdate(self):
         self.stop_uboot()
@@ -249,20 +234,14 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(5, "Set data in uboot")
         self.set_data_in_uboot()
-        # self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         msg(15, "Login kernel")
         self.login_kernel("abnormal")
 
-        self.force_speed_to_1g()
-        
-        #if self.board_id == 'ed41':
-        #    self.force_speed_to_1g() 
-        # for u6-s8 in kernel
+        # self.force_speed_to_1g() 
+        # for v3 for u6-s8
 
-        #if self.board_id == 'ed40':
-        #    self.SetNetEnv()
-        # self.SetNetEnv()
+        self.SetNetEnv()
 
         self.is_network_alive_in_linux()
 
