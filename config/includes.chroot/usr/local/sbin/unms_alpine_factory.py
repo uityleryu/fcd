@@ -130,8 +130,9 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
     def reset_uboot_env(self):
         self.pexp.expect_action(20, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "env default -a")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "env default -a -f")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")  # for second partition
         self.pexp.expect_only(20, "done")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
@@ -180,9 +181,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         ]
         sstr = ' '.join(sstr)
 
-        postexp = [ "Starting kernel" ]
-        msg(70, "Firmware upgrade done ...")
-
+        postexp = ["U-Boot"]
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
@@ -247,6 +246,8 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
+            msg(70, "Firmware upgrade done ...")
+            self.reset_uboot_env()
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
 
         if self.DATAVERIFY_ENABLE is True:
