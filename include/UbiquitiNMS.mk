@@ -3,7 +3,7 @@
 
 IMAGE-UISP-R-PRO= \
     images/ee6a* \
-    unms-fw/ubnt_uispr_pro_rev1_boot_1022.img \
+    unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
