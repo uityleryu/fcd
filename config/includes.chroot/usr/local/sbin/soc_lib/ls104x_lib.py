@@ -207,6 +207,23 @@ class LS104XFactory(ScriptBase):
 
         self.pexp.expect_ubcmd(120, T1_PROMPT, "uptime")
 
+        output = self.pexp.expect_get_output("lspci", T1_PROMPT)
+        if "Network controller: Qualcomm Device 1201" not in output:
+            error_critical("Cannot detect 60G Module")
+
+        if "Network controller: Ubiquiti Networks, Inc. Device 11ac" not in output:
+            error_critical("Cannot detect 5G Module")
+
+        output = self.pexp.expect_get_output("lsusb", T1_PROMPT)
+        if "Cambridge Silicon Radio, Ltd Bluetooth Dongle" not in output:
+            error_critical("Cannot detect BLE modulee")
+
+        #output = self.pexp.expect_get_output("i2cget -y 1 0x18 0x54", T1_PROMPT)
+        #if "0x80" not in output:
+        #    error_critical("Cannot detect SFP module")
+
+        log_debug("60G/5G/BLE module detect OK")
+
         output = self.pexp.expect_get_output("cat /proc/helper_LS1046A_release/cpu_rev_id", T1_PROMPT)
         self.cpu_rev_id = output.split('\n')[1][2:].strip().zfill(8)
         output = self.pexp.expect_get_output("cat /proc/helper_LS1046A_release/flash_jedec_id", T1_PROMPT)
