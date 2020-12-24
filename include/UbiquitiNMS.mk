@@ -3,6 +3,7 @@
 
 IMAGE-UISP-R-PRO= \
     images/ee6a* \
+    images/ee6d* \
     unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
