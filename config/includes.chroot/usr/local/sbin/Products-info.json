@@ -97,6 +97,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0005",
       "SW_ID"       : "0701"
+    },
+
+    "UDM-PRO-SE":{
+      "INDEX"       : 8,
+      "NAME"        : "UDM-PRO-SE",
+      "BOARDID"     : "ea2c",
+      "BOMREV"      : "113-00917",
+      "DESC"        : "UniFi Dream Machine Pro SE",
+      "FILE"        : "udm_al324_debian_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     }
   },
 
@@ -735,6 +748,30 @@
       "BOARDID"     : "a651",
       "BOMREV"      : "113-10743",
       "DESC"        : "UniFi AP6 Mesh Point",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-IW":{
+      "INDEX"       : 4,
+      "NAME"        : "U6-IW",
+      "BOARDID"     : "a652",
+      "BOMREV"      : "113-10745",
+      "DESC"        : "UniFi AP6 InWall",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Extender":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-10746",
+      "DESC"        : "UniFi AP6 Extender",
       "FILE"        : "u6_ipq5018_bspfactory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

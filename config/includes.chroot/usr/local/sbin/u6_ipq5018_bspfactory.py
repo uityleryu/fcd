@@ -92,17 +92,23 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
 
         self.ethnum = {
             'a650': "1",
-            'a651': "1"
+            'a651': "1",
+            'a652': "1",
+            'a653': "1"
         }
 
         self.wifinum = {
             'a650': "2",
-            'a651': "2"
+            'a651': "2",
+            'a652': "2",
+            'a653': "2"
         }
 
         self.btnum = {
             'a650': "1",
-            'a651': "1"
+            'a651': "1",
+            'a652': "1",
+            'a653': "1"
         }
 
         self.devnetmeta = {
@@ -112,7 +118,7 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
         }
 
     def init_bsp_image(self):
-        self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", "")
+        self.pexp.expect_lnxcmd(90, "UBNT BSP INIT", "dmesg -n1", "")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
         self.is_network_alive_in_linux()
 
@@ -136,6 +142,7 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
+        self.pexp.expect_only(30, "Starting kernel")
         if BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
             msg(10, "Boot up to linux console and network is good ...")
