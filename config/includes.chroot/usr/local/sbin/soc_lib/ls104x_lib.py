@@ -23,6 +23,9 @@ class LS104XFactory(ScriptBase):
         '''
         airFiber:
             dd11: AF60-XG
+            dd13: AF60-HD
+        UnifiAP
+            dd12: UBB-XG
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -211,8 +214,9 @@ class LS104XFactory(ScriptBase):
         if "Network controller: Qualcomm Device 1201" not in output:
             error_critical("Cannot detect 60G Module")
 
-        if "Network controller: Ubiquiti Networks, Inc. Device 11ac" not in output:
-            error_critical("Cannot detect 5G Module")
+        if self.board_id != 'dd13':
+            if "Network controller: Ubiquiti Networks, Inc. Device 11ac" not in output:
+                error_critical("Cannot detect 5G Module")
 
         output = self.pexp.expect_get_output("lsusb", T1_PROMPT)
         if "Cambridge Silicon Radio, Ltd Bluetooth Dongle" not in output:
@@ -487,7 +491,11 @@ class LS104XMFG(ScriptBase):
 
     def init_vars(self):
         '''
+        airFiber:
             dd11: AF60-XG
+            dd13: AF60-HD
+        UnifiAP
+            dd12: UBB-XG
         '''
         # U-boot prompt
         self.ubpmt = {
