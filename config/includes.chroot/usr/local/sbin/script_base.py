@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.27"
+    __version__ = "1.0.28"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -1197,7 +1197,7 @@ class ScriptBase(object):
                 time.sleep(1)
 
         self._upload_ui_taipei(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
-        self._upload_ui_taipei_farget(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
+        # self._upload_ui_taipei_fargate(uploadfolder=upload_dut_folder, mac=self.mac, bom=self.bom_rev)
 
     def _upload_ui_taipei(self, uploadfolder, mac, bom):
         """
@@ -1238,7 +1238,7 @@ class ScriptBase(object):
         except:
             log_debug("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
 
-    def _upload_ui_taipei_farget(self, uploadfolder, mac, bom):
+    def _upload_ui_taipei_fargate(self, uploadfolder, mac, bom):
         """
             command parameter description for trigger /api/v1/uploadlog WebAPI in Cloud
             command: python3
@@ -1264,6 +1264,7 @@ class ScriptBase(object):
             '--bom', bom,
             '--srv farget',
             '--stage', FCDtype]
+
         execcmd = ' '.join(cmd)
         log_debug("cmd: " + execcmd)
 

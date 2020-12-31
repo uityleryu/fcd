@@ -21,6 +21,7 @@ BDINFO_EN = True
     eed0: UNMS_S_LITE
     eed1: UISP_S_PRO
     ee50: UISP_S_LITE
+    eed3: UISP_O_PRO
 '''
 
 
@@ -34,35 +35,40 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.bdmd = {
             'eed0': "UNMS_S_LITE",
             'eed1': "UISP_S_PRO",
-            'ee50': "UISP_S_LITE"
+            'ee50': "UISP_S_LITE",
+            'eed3': "UISP_O_PRO"
         }
 
         # number of Ethernet
         ethnum = {
             'eed0': "3",
             'eed1': "3",
-            'ee50': "3"
+            'ee50': "3",
+            'eed3': "3"
         }
 
         # number of WiFi
         wifinum = {
             'eed0': "0",
             'eed1': "0",
-            'ee50': "0"
+            'ee50': "0",
+            'eed3': "0"
         }
 
         # number of Bluetooth
         btnum = {
             'eed0': "0",
-            'eed1': "0",
-            'ee50': "0"
+            'eed1': "1",
+            'ee50': "0",
+            'eed3': "1"
         }
 
         btprmt = {
             '0000': "RTL838x#",
             'eed0': "RTL838x#",
             'eed1': "RTL9300#",
-            'ee50': "RTL838x#"
+            'ee50': "RTL838x#",
+            'eed3': "RTL9300#"
         }
 
         # helper path
@@ -70,7 +76,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             '0000': "unms-slite",
             'eed0': "unms-slite",
             'eed1': "unms-spro",
-            'ee50': "unms-slite"
+            'ee50': "unms-slite",
+            'eed3': "unms-spro"
         }
 
         # helper executable file
@@ -78,7 +85,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             '0000': "helper_RTL838x_release",
             'eed0': "helper_RTL838x_release",
             'eed1': "helper_RTL930x_release",
-            'ee50': "helper_RTL838x_release"
+            'ee50': "helper_RTL838x_release",
+            'eed3': "helper_RTL930x_release"
         }
 
         # EEPROM device
@@ -86,13 +94,15 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             '0000': "/dev/mtdblock6",
             'eed0': "/dev/mtdblock6",
             'eed1': "/dev/mtdchar12",
-            'ee50': "/dev/mtdblock6"
+            'ee50': "/dev/mtdblock6",
+            'eed3': "/dev/mtdchar12"
         }
 
         self.netif = {
             'eed0': "ifconfig eth0 ",
             'eed1': "ifconfig eth0 ",
-            'ee50': "ifconfig eth0 "
+            'ee50': "ifconfig eth0 ",
+            'eed3': "ifconfig eth0 "
         }
 
         self.bootloader_prompt = btprmt[self.board_id]
@@ -105,6 +115,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'wifinum'         : wifinum,
             'btnum'           : btnum,
         }
+
+        self.developed = ["eed1", "eed3"]
 
     def stop_at_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
@@ -175,10 +187,16 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
         msg(1, "Stop at U-Boot ...")
         self.stop_at_uboot()
-
-        msg(5, "Upgrading U-Boot ...")
         self.uboot_config()
-        self.uboot_upgrade()
+
+        # msg(5, "Upgrading U-Boot ...")
+        '''
+        To remove the U-Boot upgrade temporarily
+        20201224
+        '''
+        if self.board_id in self.developed:
+            self.uboot_upgrade()
+
         self.set_ub_net()
 
         msg(10, "Upgrading DIAG image ...")
@@ -216,7 +234,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
 
-        if self.board_id == "eed1":
+        if self.board_id == "eed1" or self.board_id == "eed3":
             flerase_host_path = os.path.join(self.tools, self.helper_path, "flash_eraseall")
             flerase_dut_path = os.path.join(self.dut_tmpdir, "flash_eraseall")
             self.tftp_get(remote=flerase_host_path, local=flerase_dut_path, timeout=15)
@@ -231,7 +249,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         if PROVISION_EN is True:
             self.erase_eefiles()
             msg(20, "Send tools to DUT and data provision ...")
-            if self.board_id == "eed1":
+            if self.board_id == "eed1" or self.board_id == "eed3":
                 cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
                 self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
 
@@ -244,7 +262,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            if self.board_id == "eed1":
+            if self.board_id == "eed1" or self.board_id == "eed3":
                 cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
                 self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
 
