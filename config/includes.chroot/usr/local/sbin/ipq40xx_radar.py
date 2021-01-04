@@ -55,7 +55,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9b': "GP#",
             'dc9e': "GP#",
             'dca0': "GBE#",
-            'dcb0': "7060#",
+            'dcb0': "pre#",
         }
 
         self.bootloader = {
@@ -67,7 +67,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9b': "dc9b-bootloader.bin",
             'dc9e': "dc9e-bootloader.bin",
             'dca0': "dca0-bootloader.bin",
-            'dcb0': "dca0-bootloader.bin"
+            'dcb0': "dcb0-bootloader.bin"
         }
 
         self.ubaddr = {
@@ -79,7 +79,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9b': "0xf0000",
             'dc9e': "0xf0000",
             'dca0': "0xf0000",
-            'dcb0': "0xf0000"
+            'dcb0': "0x00000"
         }
 
         self.ubsz = {
@@ -91,7 +91,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9b': "0x80000",
             'dc9e': "0x80000",
             'dca0': "0x80000",
-            'dcb0': "0x80000"
+            'dcb0': "0x10a0000"
         }
 
         self.cfgaddr = {
@@ -241,11 +241,17 @@ class IPQ40XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
-        cmd = "sf probe; sf erase {0} {1}; sf write 0x84000000 {0} {1}".format(self.uboot_address, self.uboot_size)
+        
+        cmd = "sf probe;sf erase {0} {1};sf write 0x84000000 {0} {1}".format(self.uboot_address, self.uboot_size)
+        log_debug(cmd)
+
+        
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(1)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
-        self.stop_uboot()
+        self.pexp.expect_ubcmd(200, self.bootloader_prompt, "re")
+        #self.stop_uboot()
+        
+        
 
     def lnx_netcheck(self, netifen=False):
         postexp = [
@@ -288,13 +294,13 @@ class IPQ40XXFactory(ScriptBase):
         time.sleep(1)
 
         #------------------------------
-        #self.uboot_update()
+        self.uboot_update()
         #------------------------------
+
+        msg(10, "Finishing update U-Boot")
 
 
         '''
-        msg(10, "Finishing update U-Boot")
-
         if (WR_DUMMY_EN is True) and (self.board_id == "dc9e" or self.board_id == "dca0" ):
             self.set_uboot_network()
             cmd = "tftpboot 0x84000000 tools/{0}/{0}_dummy_cal.bin".format(self.pd_dir)
@@ -357,6 +363,10 @@ class IPQ40XXFactory(ScriptBase):
         msg(35, "urescue: complete")
         '''
 
+
+        #-----------------------------------------------------------------------------------
+        # metal: register ok
+        
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
@@ -380,6 +390,10 @@ class IPQ40XXFactory(ScriptBase):
             msg(50, "Finish do registration ...")
             self.check_devreg_data()
             msg(55, "Finish doing signed file and EEPROM checking ...")
+        
+        #-----------------------------------------------------------------------------------
+
+
 
 
         '''
@@ -441,181 +455,3 @@ class IPQ40XXFactory(ScriptBase):
         msg(100, "Formal firmware completed...")
         self.close_fcd()
 
-
-class IPQ40XXMFG(ScriptBase):
-    def __init__(self):
-        super(IPQ40XXMFG, self).__init__()
-        self.init_vars()
-
-    def init_vars(self):
-        '''
-        AirMax: AME
-            dc99: GBE
-            dc9a: GBE-LR
-            dca0: GBE-AP
-        UAP:
-            dc98: UAP-UBB
-            dc9c: UAP-UBB 831
-        AirFiber:
-            dc9b: AF60
-            dc9e: AF60-LR
-        '''
-        # U-boot prompt
-        self.ubpmt = {
-            '0000': "\(IPQ40xx\) # ",
-            'dc99': "\(IPQ40xx\) # ",
-            'dc9a': "\(IPQ40xx\) # ",
-            'dc98': "\(IPQ40xx\) # ",
-            'dc9c': "\(IPQ40xx\) # ",
-            'dc9b': "\(IPQ40xx\) # ",
-            'dc9e': "\(IPQ40xx\) # ",
-            'dca0': "\(IPQ40xx\) # "
-        }
-
-        # linux console prompt
-        self.lnxpmt = {
-            '0000': "root@OpenWrt",
-            'dc99': "root@OpenWrt",
-            'dc9a': "root@OpenWrt",
-            'dc98': "root@OpenWrt",
-            'dc9c': "root@OpenWrt",
-            'dc9b': "root@OpenWrt",
-            'dc9e': "root@OpenWrt",
-            'dca0': "root@OpenWrt"
-        }
-
-        self.artimg = {
-            '0000': "dc99-mfg.bin",
-            'dc99': "dc99-mfg.bin",
-            'dc9a': "dc9a-mfg.bin",
-            'dc98': "dc98-mfg.bin",
-            'dc9c': "dc9c-mfg.bin",
-            'dc9b': "dc9b-mfg.bin",
-            'dc9e': "dc9b-mfg.bin",
-            'dca0': "dc9b-mfg.bin"
-        }
-
-        self.knladdr = {
-            '0000': "0x0",
-            'dc99': "0x0",
-            'dc9a': "0x0",
-            'dc98': "0x0",
-            'dc9c': "0x0",
-            'dc9b': "0x0",
-            'dc9e': "0x0",
-            'dca0': "0x0"
-        }
-
-        self.knlsz = {
-            '0000': "0x170000",
-            'dc99': "0x170000",
-            'dc9a': "0x170000",
-            'dc98': "0x170000",
-            'dc9c': "0x170000",
-            'dc9b': "0x170000",
-            'dc9e': "0x170000",
-            'dca0': "0x170000"
-        }
-
-        self.rfaddr = {
-            '0000': "0x180000",
-            'dc99': "0x180000",
-            'dc9a': "0x180000",
-            'dc98': "0x180000",
-            'dc9c': "0x180000",
-            'dc9b': "0x180000",
-            'dc9e': "0x180000",
-            'dca0': "0x180000"
-        }
-
-        self.rfsz = {
-            '0000': "0x1a00000",
-            'dc99': "0x1a00000",
-            'dc9a': "0x1a00000",
-            'dc98': "0x1d00000",
-            'dc9c': "0x1d00000",
-            'dc9b': "0x1d00000",
-            'dc9e': "0x1d00000",
-            'dca0': "0x1a00000"
-        }
-
-        self.linux_prompt = self.lnxpmt[self.board_id]
-        self.bootloader_prompt = self.ubpmt[self.board_id]
-
-        self.kernel_address =  self.knladdr[self.board_id]
-        self.kernel_size =  self.knlsz[self.board_id]
-        self.rootfs_address = self.rfaddr[self.board_id]
-        self.rootfs_size = self.rfsz[self.board_id]
-
-    def stop_uboot(self):
-        self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
-
-    def set_uboot_network(self):
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-
-    def run(self):
-        """
-        Main procedure of factory
-        """
-        msg(1, "Start Procedure")
-        self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
-        # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
-        log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
-
-        msg(5, "Stop U-boot")
-        self.stop_uboot()
-        time.sleep(3)
-        self.set_uboot_network()
-
-        msg(10, "Get ART Image")
-        cmd = "tftpboot 84000000 images/{}".format(self.artimg[self.board_id])
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(30, "Bytes transferred")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "usetprotect spm off")
-
-        msg(30, "Starting erasing Kernel")
-        cmd = "sf probe; sf erase {0} {1}".format(self.kernel_address, self.kernel_size)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
-        msg(40, "Starting writing Kernel")
-        cmd = "sf probe; sf write 0x84000000 {0} {1}".format(self.kernel_address, self.kernel_size)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        time.sleep(5)
-
-        if self.erasecal == "True":
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf erase 0x170000 0x10000")
-            time.sleep(5)
-
-        msg(50, "Clean RootFS")
-        cmd = "sf probe; sf erase {0} {1}".format(self.rootfs_address, self.rootfs_size)
-        self.pexp.expect_ubcmd(300, self.bootloader_prompt, cmd)
-        time.sleep(5)
-
-        msg(60, "Write RootFS")
-        cmd = "sf prob; sf write 0x84180000 {0} {1}".format(self.rootfs_address, self.rootfs_size)
-        self.pexp.expect_ubcmd(180, self.bootloader_prompt, cmd)
-        time.sleep(5)
-
-        self.pexp.expect_ubcmd(600, self.bootloader_prompt, "printenv")
-
-        msg(70, "Cleanup CountryCode")
-        cmd = "sf read 0x84000000 0x170000 0x10000 && mw 0x8400100c 00200000 && mw 0x8400500c 00200000 && sf write 0x84000000 0x170000 0x10000"
-        self.pexp.expect_action(180, self.ubpmt[self.board_id], cmd)
-        time.sleep(5)
-
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
-        time.sleep(60)
-
-        msg(90, "Reboot")
-        self.pexp.expect_only(120, "Linux version 4.4.60")
-
-        msg(100, "Back to ART has completed")
-        self.close_fcd()
