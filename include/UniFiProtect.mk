@@ -13,7 +13,9 @@ TOOLS-CARD-COMBO=
 
 IMAGE-GARAGE=
 
-IMAGE-RADAR=
+IMAGE-RADAR= \
+    images/dcb0* \
+    up-fw/UP-Radar*
 
 
 IMAGE-UFP+=$(IMAGE-SENSE)
