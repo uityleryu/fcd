@@ -17,10 +17,15 @@ IMAGE-UNVR-AI= \
     images/ea21* \
     unas/*
 
+IMAGE-UNVR-HD= \
+    images/ea30* \
+    unas/*
+
 IMAGE-UNVR+=$(IMAGE-UNVR4)
 IMAGE-UNVR+=$(IMAGE-UNVR-BT)
 IMAGE-UNVR+=$(IMAGE-UNVR-PRO)
 IMAGE-UNVR+=$(IMAGE-UNVR-AI)
+IMAGE-UNVR+=$(IMAGE-UNVR-HD)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -52,6 +57,7 @@ TOOLS-UNVR4+=$(TOOLS-UNVR)
 TOOLS-UNVR-BT+=$(TOOLS-UNVR)
 TOOLS-UNVR-PRO+=$(TOOLS-UNVR)
 TOOLS-UNVR-AI+=$(TOOLS-UNVR)
+TOOLS-UNVR-HD+=$(TOOLS-UNVR)
 
 # Project target
 
@@ -60,6 +66,7 @@ $(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-AI,FCD_$(PRD)_UNVR-AI_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -68,3 +75,4 @@ $(eval $(call ProductCompress,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-AI,FCD_$(PRD)_UNVR-AI_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))

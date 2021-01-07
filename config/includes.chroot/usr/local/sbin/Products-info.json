@@ -1013,6 +1013,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0006",
       "SW_ID"       : "0801"
+    },
+
+    "UNVR-HD":{
+      "INDEX"       : 4,
+      "NAME"        : "UNVR-HD",
+      "BOARDID"     : "ea30",
+      "BOMREV"      : "113-03298",
+      "DESC"        : "UniFi Protect NVR HD",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
     }
   },
 
