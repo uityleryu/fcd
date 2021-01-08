@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from ipq40xx_radar import IPQ40XXFactory
+from soc_lib.ipq40xx import IPQ40XXFactory
 
 class UAPIPQ40XXFactory(IPQ40XXFactory):
     def __init__(self):
