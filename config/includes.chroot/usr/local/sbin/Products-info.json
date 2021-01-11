@@ -702,6 +702,7 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     }
+
   },
 
   "UniFiAP6":
@@ -1320,6 +1321,19 @@
       "BOMREV"      : "113-03033",
       "DESC"        : "UniFi Protect Bluetooth Card",
       "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UFP-RADAR":{
+      "INDEX"       : 5,
+      "NAME"        : "UFP-RADAR",
+      "BOARDID"     : "dcb0",
+      "BOMREV"      : "113-00806",
+      "DESC"        : "UniFi Protect Radar",
+      "FILE"        : "ufp_uboot_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000d",

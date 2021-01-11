@@ -13,11 +13,17 @@ TOOLS-CARD-COMBO=
 
 IMAGE-GARAGE=
 
+IMAGE-RADAR= \
+    images/dcb0* \
+    up-fw/UP-Radar*
+
+
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
 IMAGE-UFP+=$(IMAGE-ULM)
 IMAGE-UFP+=$(IMAGE-CARD-COMBO)
+IMAGE-UFP+=$(IMAGE-RADAR)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -56,7 +62,9 @@ TOOLS-CARD-COMBO=$(TOOLS-UFP)
 TOOLS-CARD-COMBO+= \
     ufp/nxp-nfc-nci
 
-
+TOOLS-RADAR=$(TOOLS-UFP)
+TOOLS-RADAR+= \
+    ufp_radar/helper_IPQ40xx
 
 # Project target
 
@@ -66,6 +74,7 @@ $(eval $(call ProductImage,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULM,FCD_$(PRD)_ULM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -75,3 +84,4 @@ $(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULM,FCD_$(PRD)_ULM_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR$(VER)_$(FWVER)))
