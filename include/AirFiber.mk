@@ -18,9 +18,9 @@ IMAGE-AF60-XG= \
 
 IMAGE-AF60-XR= \
     images/ac1* \
-    af-fw/UBNT_XR.bin \
+    af-fw/XR*.bin \
     af-fw/af60-xr-spf*.bin \
-    af-fw/u-boot-ipq807x.bin
+    af-fw/u-boot*
 
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)
