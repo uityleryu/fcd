@@ -698,7 +698,6 @@ class UVCFactoryGeneral(ScriptBase):
         print(rmsg)
         log_debug(rmsg)
 
-
         # show fw version
         cmd = 'cat /usr/lib/version'
         fwver_read = (self.session.execmd_getmsg(cmd)).split()[0]
