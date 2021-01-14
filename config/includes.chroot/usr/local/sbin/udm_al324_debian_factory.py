@@ -5,6 +5,8 @@ from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 import time
+import os
+
 
 class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
     def __init__(self):
@@ -23,36 +25,36 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         self.username = "root"
         self.password = "ubnt"
         self.linux_prompt = "#"
-       
-        # Base path 
+
+        # Base path
         self.tftpdir = self.tftpdir + "/"
         self.toolsdir = "tools/"
- 
+
         # switch chip
         self.swchip = {
             'ea2c': "rtl83xx"
         }
-        
+
         # number of Ethernet
         self.ethnum = {
             'ea2c': "11"
         }
-        
+
         # number of WiFi
         self.wifinum = {
             'ea2c': "0"
         }
-        
+
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1"
         }
-       
+
         # ethernet interface 
         self.netif = {
             'ea2c': "enp0s1"
         }
-        
+
         self.infover = {
             'ea2c': "Version:"
         }
@@ -71,7 +73,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         self.DOHELPER_ENABLE       = True 
         self.REGISTER_ENABLE       = True 
         self.FWUPDATE_ENABLE       = False
-        self.DATAVERIFY_ENABLE     = False
+        self.DATAVERIFY_ENABLE     = True
         self.LCM_CHECK_ENABLE      = False
 
     def set_boot_net(self):
@@ -81,13 +83,38 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
     def update_uboot(self):
         pass
 
+    def copy_fw_to_tftpserver(self, source, dest):
+        sstr = [
+            "cp",
+            "-p",
+            source,
+            dest
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
+        if int(rtc) > 0:
+            error_critical("Copying FW to tftp server failed")
+
     def boot_recovery_image(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(20, "host " + self.tftp_server + " is alive")
+
+        # copy recovery image
+        self.copy_fw_to_tftpserver(
+            source=os.path.join(self.fwdir, self.board_id + "-recovery"),
+            dest=os.path.join(self.tftpdir, "uImage")
+        )
+
+        # copy FW image
+        self.copy_fw_to_tftpserver(
+            source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
+            dest=os.path.join(self.tftpdir, "fw-image.bin")
+        )
+
+        self.is_network_alive_in_uboot(retry=9)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'server={} factory'".format(self.tftp_server))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
@@ -105,7 +132,6 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         pass
 
     def check_info(self):
-        self.pexp.expect_lnxcmd(3, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)

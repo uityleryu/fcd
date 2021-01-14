@@ -56,7 +56,13 @@ IMAGE-UDMLITE= \
 IMAGE-UDR= \
     images/eccc* \
     udm-fw/*udr*.bin 
-	
+
+IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
+IMAGE-UDMPRO-SE+= \
+    images/ea2c* \
+    udm-fw/uImage-udm-se-1fee0.bin \
+    udm-fw/UDMPROSE.arm64*
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -93,6 +99,8 @@ TOOLS-UDMB+= udm_b/*
 TOOLS-UDMLITE+=$(TOOLS-CONFIG)
 TOOLS-UDMLITE+= udm/*
 
+TOOLS-UDMPRO-SE=$(TOOLS-UDM)
+
 # Project target
 $(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
@@ -102,6 +110,7 @@ $(eval $(call ProductImage,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductImage,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UDM,FCD_$(PRD)_UDM_$(VER)))
@@ -112,3 +121,4 @@ $(eval $(call ProductCompress,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductCompress,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
