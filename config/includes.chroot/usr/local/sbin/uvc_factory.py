@@ -648,6 +648,21 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(cmd)
         self.session.execmd(cmd)
 
+        try:
+            cmd = 'ps | grep burnin.sh | grep -v grep | awk \'{print $1}\' | xargs kill -9'
+            log_debug(cmd)
+            self.session.execmd(cmd)
+
+            cmd = 'sed -i "s@null::respawn:/bin/ubnt_ctlserver@#null::respawn:/bin/ubnt_ctlserver@"   /etc/inittab && init -q && killall -9 ubnt_ctlserver'
+            log_debug(cmd)
+            self.session.execmd(cmd)
+        except:
+            print('skip')
+
+        cmd = 'cfgmtd -c'
+        log_debug(cmd)
+        self.session.execmd(cmd)       
+
         cmd = "echo \"test.factory=1\" >> /tmp/system.cfg"
         log_debug(cmd)
         self.session.execmd(cmd)
@@ -682,7 +697,6 @@ class UVCFactoryGeneral(ScriptBase):
         rmsg = 'md5_server.pem_new: ' + rmsg
         print(rmsg)
         log_debug(rmsg)
-
 
         # show fw version
         cmd = 'cat /usr/lib/version'
