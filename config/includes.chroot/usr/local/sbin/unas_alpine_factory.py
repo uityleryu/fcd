@@ -63,7 +63,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea1a': "2",
             'ea20': "2",
             'ea21': "3",
-            'ea30': "3",
+            'ea30': "2",
         }
 
         # number of WiFi
