@@ -57,12 +57,18 @@ IMAGE-UISP-O-PRO= \
     unms-fw/DIAG_UISP_O_Pro_1.3.4.7.8-Dev03.vmlinux.bix \
     unms-fw/UISP_O_PRO_Pre_u-boot-60495.bin
 
+<<<<<<< HEAD
 IMAGE-UISP-S-MICRO= \
     images/ee6f* \
     unms-fw/DIAG_UISP_S_Micro_1.3.6.vmlinux.bix \
     unms-fw/UISP-S-Micro.uboot_1.2.4-737d.bin \
 
 IMAGE-ee6f=$(IMAGE-UISP-S-MICRO)
+=======
+IMAGE-UISP-R-Micro= \
+    images/ee6e* \
+    unms-fw/UISPR.mt7621* \
+>>>>>>> [UISP-R-Micro]
 
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
@@ -73,6 +79,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
 IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
+IMAGE-UNMS+=$(IMAGE-UISP-R-Micro)
 
 
 
@@ -125,6 +132,8 @@ TOOLS-UISP-O-PRO+= unms-spro/*
 
 TOOLS-UISP-S-MICRO=$(TOOLS-UNMS)
 TOOLS-UISP-S-MICRO+= uisp-s-micro/*
+TOOLS-UISP-R-Micro=$(TOOLS-UNMS)
+TOOLS-UISP-R-Micro+= uisp-r-lite/helper_MT7621_release
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -139,6 +148,7 @@ $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-Micro,FCD_$(PRD)_UISP-R-Micro_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -154,3 +164,5 @@ $(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FW
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-Micro,FCD_$(PRD)_UISP-R-Micro_$(VER)_$(FWVER)))
+
