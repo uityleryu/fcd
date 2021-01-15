@@ -660,6 +660,8 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
 
     def gen_rsa_key(self):
+        if os.path.isfile(self.rsakey_path):
+            os.remove(self.rsakey_path)
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         log_debug(cmd)
         self.cnapi.pcmd(cmd)
@@ -678,6 +680,8 @@ class ScriptBase(object):
             error_critical(otmsg)
 
     def gen_dss_key(self):
+        if os.path.isfile(self.dsskey_path):
+            os.remove(self.dsskey_path)
         cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
         self.cnapi.pcmd(cmd)
         '''

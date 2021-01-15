@@ -11,7 +11,6 @@ REGISTER_ENABLE = True
 FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = True
 
-
 class UAPQCA9563Factory(ScriptBase):
     def __init__(self):
         super(UAPQCA9563Factory, self).__init__()
@@ -28,20 +27,15 @@ class UAPQCA9563Factory(ScriptBase):
         self.linux_prompt = "# "
         self.cmd_prefix = "go 0x80200020 "
         self.product_class = "radio"  # For this product using radio
-
-        self.helperexe_path = os.path.join(self.tftpdir, self.helperexe)
+        self.devregpart = "/dev/mtdblock6"
 
     def enter_uboot(self):
-        self.pexp.expect_action(300, "Hit any key to", "")
+        self.pexp.expect_action(180, "Hit any key to", "")
         time.sleep(2)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix+ "uappinit" )
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_lnxcmd(10, self.bootloader_prompt,  "ping " + self.tftp_server, "host " + self.tftp_server + " is alive",  retry=5 )
-
-    def fromOS_retest(self):
-        self.pexp.expect_action(5, " ", "")
-        self.pexp.expect_action(30, self.linux_prompt, "reboot" )
 
     def fwupdate(self):
 
@@ -51,7 +45,7 @@ class UAPQCA9563Factory(ScriptBase):
         time.sleep(2)
 
         # TFTP bin from TestServer
-        fw_path = os.path.join(self.tftpdir, self.board_id + ".bin")
+        fw_path = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         log_debug(msg="firmware path:" + fw_path)
         atftp_cmd = 'exec atftp --option "mode octet" -p -l {} {}'.format(fw_path, self.dutip)
         log_debug(msg="Run cmd on host:" + atftp_cmd)
@@ -66,6 +60,7 @@ class UAPQCA9563Factory(ScriptBase):
         self.enter_uboot()
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbid -f " + self.board_id)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbrev " + self.bom_rev)
+        # It seems not working at all, the region domain came from calibration area
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetrd " + self.region)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearcfg")
@@ -75,35 +70,36 @@ class UAPQCA9563Factory(ScriptBase):
         # Check Info
         self.enter_uboot()
         self.gen_and_upload_ssh_key()
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv fileaddr")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv filesize")
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbid")
         self.pexp.expect_only(15, self.board_id)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbrev")
         self.pexp.expect_only(15, self.bom_rev)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetrd")
         self.pexp.expect_only(15, self.region)
-        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetmac " + self.mac)
-        self.pexp.expect_only(15, self.mac)
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetmac")
 
 
-    def boot_image(self):
+    def boot_image(self, registration_mode = False):
         # Boot into OS and enable console
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'" )
         self.pexp.expect_action(30, self.bootloader_prompt, "boot" )
         self.pexp.expect_action(200, "Please press Enter to activate this console.", "" )
-        os.system("sleep 5")
         self.pexp.expect_action(30, "", "")
-        self.pexp.expect_action(30, "UBNT login:", "ubnt")
+        self.pexp.expect_action(30, "login:", "ubnt")
         self.pexp.expect_action(30, "Password: ", "ubnt")
         time.sleep(3)
 
-        # Disable Console NotExpected output
-        self.pexp.expect_action(30, self.linux_prompt ,'#')
-        self.pexp.expect_action(60, self.linux_prompt, "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done")
-        self.pexp.expect_action(60, self.linux_prompt, "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab")
-        self.pexp.expect_action(60, self.linux_prompt, "init -q; sleep 15")
-        time.sleep(15)
-        self.pexp.expect_action(60, self.linux_prompt, "dmesg -n 1")
-        time.sleep(5)
+        if registration_mode is True:
+            # Disable Console NotExpected output
+            self.pexp.expect_action(30, self.linux_prompt ,'#')
+            self.pexp.expect_action(60, self.linux_prompt, "while true; do grep -q 'hostapd' /etc/inittab; if [ $? -eq 0 ]; then echo \"hostapd exists in /etc/inittab\"; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done")
+            self.pexp.expect_action(60, self.linux_prompt, "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab")
+            self.pexp.expect_action(60, self.linux_prompt, "init -q; sleep 15")
+            time.sleep(15)
+            self.pexp.expect_action(60, self.linux_prompt, "dmesg -n 1")
+            self.pexp.expect_action(10, self.linux_prompt, "[ ! -f /proc/ubnthal/.uf ] || echo 5edfacbf > /proc/ubnthal/.uf")
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -111,8 +107,8 @@ class UAPQCA9563Factory(ScriptBase):
 
         # Upload the RSA key
         cmd = [
-            "tftpboot",
-            "80800000",
+            "tftp",
+            "0x80800000",
             self.rsakey
         ]
         cmd = ' '.join(cmd)
@@ -127,12 +123,12 @@ class UAPQCA9563Factory(ScriptBase):
         ]
         cmd = ' '.join(cmd)
         self.pexp.expect_action(5, self.bootloader_prompt, cmd)
-        #self.pexp.expect_only(15, "Done")
+        self.pexp.expect_only(15, "Done")
 
         # Upload the DSS key
         cmd = [
-            "tftpboot",
-            "0x01000000",
+            "tftp",
+            "0x80800000",
             self.dsskey
         ]
         cmd = ' '.join(cmd)
@@ -147,12 +143,16 @@ class UAPQCA9563Factory(ScriptBase):
         ]
         cmd = ' '.join(cmd)
         self.pexp.expect_action(5, self.bootloader_prompt, cmd)
-        #self.pexp.expect_only(15, "Done")
+        self.pexp.expect_only(15, "Done")
         log_debug(msg="ssh keys uploaded successfully")
 
 
     def check_info(self):
+        self.pexp.expect_action(10, self.linux_prompt, "reboot")
+        self.enter_uboot()
+        self.boot_image()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
@@ -170,34 +170,28 @@ class UAPQCA9563Factory(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        # For development reboot to retest
-        # self.fromOS_retest()
-
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
-            msg(10, "Succeeding in update bin file ...")
-            self.boot_image()
+            msg(30, "Updating FW successfully ...")
+            self.boot_image(registration_mode = True)
+            msg(50, "Boot into kerenl successfully ...")
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
-            msg(20, "Do helper to get the output file to devreg server ...")
+            msg(60, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
         if REGISTER_ENABLE is True:
             self.registration()
-            msg(30, "Finish doing registration ...")
+            msg(70, "Finish doing registration ...")
             self.check_devreg_data()
-            msg(40, "Finish doing signed file and EEPROM checking ...")
+            msg(80, "Finish doing signed file and EEPROM checking ...")
 
         if DATAVERIFY_ENABLE is True:
             self.check_info()
-            msg(50, "Succeeding in checking the devrenformation ...")
+            msg(90, "Succeeding in checking the devrenformation ...")
 
-        msg(100, "Completing firmware upgrading ...")
-
-        if UPLOADLOG_ENABLE is True:
-            self.uploadlog()
-
+        msg(100, "Complete FCD procedure ...")
         self.close_fcd()
 
 def main():
