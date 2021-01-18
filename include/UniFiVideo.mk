@@ -36,7 +36,7 @@ IMAGE-UVC-AI360= \
 
 IMAGE-UVC-G3MINI= \
     images/a590* \
-    uvc-fw/g3mini.*
+    uvc-fw/g3ins.*
 
 
 
