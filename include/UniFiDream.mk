@@ -60,7 +60,8 @@ IMAGE-UDR= \
 IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO-SE+= \
     images/ea2c* \
-    udm-fw/uImage-udm-se-1fee0.bin \
+    udm-fw/uImage-udmpro-se* \
+    udm-fw/boot-udmpro-se*
     udm-fw/UDMPROSE.arm64*
 
 # Model

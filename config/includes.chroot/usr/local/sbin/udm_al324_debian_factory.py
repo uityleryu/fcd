@@ -52,7 +52,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
 
         # ethernet interface 
         self.netif = {
-            'ea2c': "enp0s1"
+            'ea2c': "eth0"
         }
 
         self.infover = {
@@ -65,7 +65,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             'btnum'           : self.btnum
         }
 
-        self.UPDATE_UBOOT          = False
+        self.UPDATE_UBOOT          = True
         self.BOOT_RECOVERY_IMAGE   = True 
         self.INIT_RECOVERY_IMAGE   = True 
         self.NEED_DROPBEAR         = True 
@@ -80,8 +80,8 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
-    def update_uboot(self):
-        pass
+        # FIXME: Use SFP port for temp due to FW is not ready
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact al_eth0")  # # set sfp 0 or 2 for SPF+
 
     def copy_fw_to_tftpserver(self, source, dest):
         sstr = [
@@ -96,11 +96,31 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         if int(rtc) > 0:
             error_critical("Copying FW to tftp server failed")
 
+    def update_uboot(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_boot_net()
+
+        time.sleep(2)
+
+        self.is_network_alive_in_uboot(retry=9, timeout=10)
+
+        self.copy_fw_to_tftpserver(
+            source=os.path.join(self.fwdir, self.board_id + "-uboot.bin"),
+            dest=os.path.join(self.tftpdir, "boot.img")
+        )
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'server={} factory'".format(self.tftp_server))
+        self.pexp.expect_action(10, self.bootloader_prompt, "run bootupd")  # tranfer img and update
+        self.pexp.expect_only(30, "Bytes transferred")
+        self.pexp.expect_action(60, self.bootloader_prompt, "run delenv")
+
     def boot_recovery_image(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_boot_net()
         time.sleep(2)
+
+        self.is_network_alive_in_uboot(retry=9, timeout=10)
 
         # copy recovery image
         self.copy_fw_to_tftpserver(
@@ -114,7 +134,6 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "fw-image.bin")
         )
 
-        self.is_network_alive_in_uboot(retry=9)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'server={} factory'".format(self.tftp_server))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
@@ -159,13 +178,15 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
 
         if self.UPDATE_UBOOT is True:
             self.update_uboot()
+            self.pexp.expect_action(10, self.bootloader_prompt, "reset")
+            msg(10, "Finish boot updating")
 
         if self.BOOT_RECOVERY_IMAGE is True:
             self.boot_recovery_image()
 
         if self.INIT_RECOVERY_IMAGE is True:
             self.init_recovery_image()
-            msg(10, "Boot up to linux console and network is good ...")
+            msg(15, "Boot up to linux console and network is good ...")
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
@@ -181,6 +202,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+            self.pexp.expect_action(10, self.linux_prompt, "reset")  # for correct ubnthal
 
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
