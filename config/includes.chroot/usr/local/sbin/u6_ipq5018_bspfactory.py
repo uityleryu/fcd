@@ -6,77 +6,14 @@ from udm_alpine_factory import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
-BOOT_BSP_IMAGE    = True
-PROVISION_ENABLE  = True
-DOHELPER_ENABLE   = True
-REGISTER_ENABLE   = True
-FWUPDATE_ENABLE   = False
+BOOT_BSP_IMAGE    = True 
+PROVISION_ENABLE  = True 
+DOHELPER_ENABLE   = True 
+REGISTER_ENABLE   = True 
+FWUPDATE_ENABLE   = True 
 DATAVERIFY_ENABLE = False
 
-class temp_ScriptBase(ScriptBase):
-
-    def prepare_server_need_files_bspnode(self, nodes=None):
-        log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
-        # The sequencial has to be cpu id -> flash jedecid -> flash uuid
-        if nodes is None:
-            nodes = ["/proc/bsp_helper/cpu_rev_id",
-                     "/proc/bsp_helper/flash_jedec_id",
-                     "/proc/bsp_helper/flash_uid"]
-
-        if self.product_class == 'basic':
-            product_class_hexval = "0014"
-        else:
-            error_critical("product class is '{}', FCD only supports 'basic' now".format(self.product_class))
-
-        # Gen "e.t" from the nodes which were provided in BSP image
-        for i in range(0, len(nodes)):
-            if nodes[i] == "/proc/bsp_helper/flash_uid" :
-                sstr = [
-                    "fcd_reg_val{}=`".format(i + 1),
-                    "cat ",
-                    nodes[i],
-                    "`"
-                ]
-            else :
-                sstr = [
-                    "fcd_reg_val{}=`".format(i + 1),
-                    "cat ",
-                    nodes[i],
-                    " | awk -F \"x\" '{print $2}'",
-                    "`"
-                ]
-
-            sstr = ''.join(sstr)
-            log_debug(sstr)
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
-                                    valid_chk=True)
-
-        sstr = [
-            "echo -e \"field=product_class_id,format=hex,value={}\n".format(product_class_hexval),
-            "field=cpu_rev_id,format=hex,value=$fcd_reg_val1\n",
-            "field=flash_jedec_id,format=hex,value=$fcd_reg_val2\n",
-            "field=flash_uid,format=hex,value=$fcd_reg_val3",
-            "\" > /tmp/{}".format(self.eetxt)
-        ]
-        sstr = ''.join(sstr)
-        log_debug(sstr)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
-                                valid_chk=True)
-
-        # copy "e.org" as "e.b"
-        cmd = "cp -a /tmp/{} /tmp/{}".format(self.eeorg, self.eebin)
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-
-        files = [self.eetxt, self.eebin]
-        for fh in files:
-            srcp = os.path.join(self.tftpdir, fh)
-            dstp = "/tmp/{0}".format(fh)
-            self.tftp_put(remote=srcp, local=dstp, timeout=10)
-        log_debug("Send bspnode output files from DUT to host ...")
-
-
-
-class U6IPQ5018BspFactory(temp_ScriptBase):
+class U6IPQ5018BspFactory(ScriptBase):
     def __init__(self):
         super(U6IPQ5018BspFactory, self).__init__()
         self.init_vars()
@@ -118,15 +55,48 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
         }
 
     def init_bsp_image(self):
+        self.pexp.expect_only(30, "Starting kernel")
         self.pexp.expect_lnxcmd(90, "UBNT BSP INIT", "dmesg -n1", "")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
         self.is_network_alive_in_linux()
 
+    def set_boot_net(self):                                                                                                 
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.is_network_alive_in_uboot()
+
+    def _ramboot_uap_fwupdate(self):
+        self.pexp.expect_action(40, "to stop", "\033")
+        self.set_boot_net()
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;      bootm 0x44000000"')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 lede-ipq-ipq50xx_64-UAP6-IPQ50XX-initramfs-kernel.bin')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
+        self.linux_prompt = "UBNT-BZ.ca-spf113cs#"
+        self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
+        time.sleep(30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
+        self.is_network_alive_in_linux()
+        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
+                     dst_file=self.dut_tmpdir + "/fwupdate.bin")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m {}".format(self.dut_tmpdir + "/fwupdate.bin"))
+
     def fwupdate(self):
-        pass
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
+        self._ramboot_uap_fwupdate()
+        self._ramboot_uap_fwupdate()
+        self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
-        pass
+        self.pexp.expect_lnxcmd(3, "", "info", self.linux_prompt)
+        self.pexp.expect_lnxcmd(3, self.linux_prompt, "info", "Version", retry=5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
+        self.pexp.expect_only(10, "systemid=" + self.board_id)
+        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
         """Main procedure of factory
@@ -142,7 +112,6 @@ class U6IPQ5018BspFactory(temp_ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        self.pexp.expect_only(30, "Starting kernel")
         if BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
             msg(10, "Boot up to linux console and network is good ...")

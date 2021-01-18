@@ -18,12 +18,16 @@ IMAGE-U6= \
     uap-fw/BZ.mt7622.*
 
 IMAGE-U6-PRO= \
+	images/u6-fw/* \
     images/a650* 
 IMAGE-U6-Mesh= \
+	images/u6-fw/* \
     images/a651* 
 IMAGE-U6-IW= \
+	images/u6-fw/* \
     images/a652*
 IMAGE-U6-Extender= \
+	images/u6-fw/* \
     images/a653*
 
 # Model
@@ -47,7 +51,6 @@ TOOLS-CONFIG= \
 
 TOOLS-CONFIG-U6-IPQ= \
     common/sshd_config \
-    common/tmux.conf \
     common/x86-64k-ee \
     common/aarch64-rpi4-64k-ee 
 
