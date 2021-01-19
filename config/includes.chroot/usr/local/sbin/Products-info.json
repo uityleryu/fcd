@@ -959,6 +959,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
       "SW_ID"       : "1001"
+    },
+
+    "WaveAP":{
+      "INDEX"       : 8,
+      "NAME"        : "WaveAP",
+      "BOARDID"     : "dc9f",
+      "BOMREV"      : "113-00953",
+      "DESC"        : "Wave AP",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "af_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     }
   },
 

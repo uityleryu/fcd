@@ -31,6 +31,7 @@ class IPQ40XXFactory(ScriptBase):
         AirFiber:
             dc9b: AF60
             dc9e: AF60-LR
+            dc9f: WaveAP
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -41,6 +42,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "\(IPQ40xx\) # ",
             'dc9b': "\(IPQ40xx\) # ",
             'dc9e': "\(IPQ40xx\) # ",
+            'dc9f': "\(IPQ40xx\) # ",
             'dca0': "\(IPQ40xx\) # "
         }
 
@@ -53,6 +55,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "UBB#",
             'dc9b': "GP#",
             'dc9e': "GP#",
+            'dc9f': "GMP#",
             'dca0': "GBE#"
         }
 
@@ -64,6 +67,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "dc98-bootloader.bin",
             'dc9b': "dc9b-bootloader.bin",
             'dc9e': "dc9e-bootloader.bin",
+            'dc9f': "dc9f-bootloader.bin",
             'dca0': "dca0-bootloader.bin"
         }
 
@@ -75,6 +79,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0xf0000",
             'dc9b': "0xf0000",
             'dc9e': "0xf0000",
+            'dc9f': "0xf0000",
             'dca0': "0xf0000"
         }
 
@@ -86,6 +91,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0x80000",
             'dc9b': "0x80000",
             'dc9e': "0x80000",
+            'dc9f': "0x80000",
             'dca0': "0x80000"
         }
 
@@ -97,6 +103,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0x1fc0000",
             'dc9b': "0x1fc0000",
             'dc9e': "0x1fc0000",
+            'dc9f': "0x1fc0000",
             'dca0': "0x1fc0000"
         }
 
@@ -108,6 +115,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0x40000",
             'dc9b': "0x40000",
             'dc9e': "0x40000",
+            'dc9f': "0x40000",
             'dca0': "0x40000"
         }
 
@@ -119,6 +127,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0x170000",
             'dc9b': "0x170000",
             'dc9e': "0x170000",
+            'dc9f': "0x170000",
             'dca0': "0x170000"
         }
 
@@ -130,6 +139,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "0x10000",
             'dc9b': "0x10000",
             'dc9e': "0x10000",
+            'dc9f': "0x10000",
             'dca0': "0x10000"
         }
 
@@ -141,6 +151,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "radio",
             'dc9b': "radio",
             'dc9e': "basic",
+            'dc9f': "basic",
             'dca0': "basic"
         }
 
@@ -152,6 +163,7 @@ class IPQ40XXFactory(ScriptBase):
             'dc9c': "uap",
             'dc9b': "af_af60",
             'dc9e': "af_af60",
+            'dc9f': "af_af60",
             'dca0': "am"
         }
 
@@ -298,14 +310,15 @@ class IPQ40XXFactory(ScriptBase):
         cmd = "atftp --option \"mode octet\" -p -l {0}/{1} {2}".format(self.fwdir, self.fwimg, self.dutip)
         log_debug("Run cmd on host:" + cmd)
         self.fcd.common.xcmd(cmd=cmd)
-        self.pexp.expect_only(30, "Firmware Version:")
-        log_debug("urescue: FW loaded")
-        self.pexp.expect_only(30, "Image Signature Verfied, Success.")
-        log_debug("urescue: FW verified")
-        self.pexp.expect_only(300, "Copying partition 'kernel' to flash memory:")
-        log_debug("urescue: uboot updated")
-        self.pexp.expect_only(300, "Copying partition 'rootfs' to flash memory:")
-        log_debug("urescue: kernel updated")
+        if self.board_id != "dc9f":
+            self.pexp.expect_only(30, "Firmware Version:")
+            log_debug("urescue: FW loaded")
+            self.pexp.expect_only(30, "Image Signature Verfied, Success.")
+            log_debug("urescue: FW verified")
+            self.pexp.expect_only(300, "Copying partition 'kernel' to flash memory:")
+            log_debug("urescue: uboot updated")
+            self.pexp.expect_only(300, "Copying partition 'rootfs' to flash memory:")
+            log_debug("urescue: kernel updated")
         self.pexp.expect_only(180, "Firmware update complete.")
         msg(35, "urescue: complete")
 
@@ -401,6 +414,7 @@ class IPQ40XXMFG(ScriptBase):
         AirFiber:
             dc9b: AF60
             dc9e: AF60-LR
+            dc9f: WaveAP
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -411,6 +425,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "\(IPQ40xx\) # ",
             'dc9b': "\(IPQ40xx\) # ",
             'dc9e': "\(IPQ40xx\) # ",
+            'dc9f': "\(IPQ40xx\) # ",
             'dca0': "\(IPQ40xx\) # "
         }
 
@@ -423,6 +438,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "root@OpenWrt",
             'dc9b': "root@OpenWrt",
             'dc9e': "root@OpenWrt",
+            'dc9f': "root@OpenWrt",
             'dca0': "root@OpenWrt"
         }
 
@@ -434,6 +450,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "dc9c-mfg.bin",
             'dc9b': "dc9b-mfg.bin",
             'dc9e': "dc9b-mfg.bin",
+            'dc9f': "dc9b-mfg.bin",
             'dca0': "dc9b-mfg.bin"
         }
 
@@ -445,6 +462,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "0x0",
             'dc9b': "0x0",
             'dc9e': "0x0",
+            'dc9f': "0x0",
             'dca0': "0x0"
         }
 
@@ -456,6 +474,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "0x170000",
             'dc9b': "0x170000",
             'dc9e': "0x170000",
+            'dc9f': "0x170000",
             'dca0': "0x170000"
         }
 
@@ -467,6 +486,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "0x180000",
             'dc9b': "0x180000",
             'dc9e': "0x180000",
+            'dc9f': "0x180000",
             'dca0': "0x180000"
         }
 
@@ -478,6 +498,7 @@ class IPQ40XXMFG(ScriptBase):
             'dc9c': "0x1d00000",
             'dc9b': "0x1d00000",
             'dc9e': "0x1d00000",
+            'dc9f': "0x1d00000",
             'dca0': "0x1a00000"
         }
 
