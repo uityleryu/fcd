@@ -150,6 +150,9 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
     def fwupdate(self):
         pass
 
+    def login(self):
+        self.pexp.expect_only(180, "Welcome to UniFi")
+
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
@@ -202,13 +205,14 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            self.pexp.expect_action(10, self.linux_prompt, "reset")  # for correct ubnthal
 
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
 
         if self.DATAVERIFY_ENABLE is True:
+            self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
+            self.login()
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
