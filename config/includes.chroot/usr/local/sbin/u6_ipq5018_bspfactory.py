@@ -21,7 +21,7 @@ class U6IPQ5018BspFactory(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.fwimg = "images/" + self.board_id + "-fw.bin"
-        self.fcdimg = "images/" + self.board_id + "-fcd.bin"
+        self.initramfs = "images/" + self.board_id + "-initramfs.bin"
         self.devregpart = "/dev/mtdblock9"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "IPQ5018#"
@@ -71,7 +71,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;      bootm 0x44000000"')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 lede-ipq-ipq50xx_64-UAP6-IPQ50XX-initramfs-kernel.bin')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 {}'.format(self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
         self.linux_prompt = "UBNT-BZ.ca-spf113cs#"
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
