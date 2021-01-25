@@ -22,11 +22,11 @@ IMAGE-UISP-R-LITE= \
     images/ee6b* \
     unms-fw/UISPR.mt7621* \
 
-IMAGE-UNMS-LTE= \
+IMAGE-UISP-LTE= \
     images/dca2* \
     images/dca3* \
     unms-fw/LL.qca956x.* \
-    unms-fw/unms-lte-initramfs-64MB.img \
+    unms-fw/uisp-lte-initramfs-64MB.img \
 
 IMAGE-UISP-S-PRO= \
     images/eed1* \
@@ -51,7 +51,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-R-LITE)
-IMAGE-UNMS+=$(IMAGE-UNMS-LTE)
+IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
@@ -91,8 +91,8 @@ TOOLS-UISP-S-LITE+= unms-slite/*
 TOOLS-UISP-R-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-R-LITE+= uisp-r-lite/*
 
-TOOLS-UNMS-LTE=$(TOOLS-UNMS)
-TOOLS-UNMS-LTE+= unms-lte/*
+TOOLS-UISP-LTE=$(TOOLS-UNMS)
+TOOLS-UISP-LTE+= unms-lte/*
 
 TOOLS-UISP-S-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-S-PRO+= unms-spro/*
@@ -113,7 +113,7 @@ $(eval $(call ProductImage,UISP-R-LITE,FCD_$(PRD)_UISP-R-LITE_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
@@ -126,7 +126,7 @@ $(eval $(call ProductCompress,UISP-R-LITE,FCD_$(PRD)_UISP-R-LITE_$(VER)_$(FWVER)
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNMS-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))

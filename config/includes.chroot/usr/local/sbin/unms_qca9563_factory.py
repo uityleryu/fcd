@@ -53,6 +53,18 @@ class UNMSQCA9563Factory(ScriptBase):
             'dca3': "+10000"
         }
 
+        self.cfgaddr = {
+            '0000': "0x9f0c0000",
+            'dca2': "0x9f0c0000",
+            'dca3': "0x9f0c0000"
+        }
+
+        self.cfgsize = {
+            '0000': "+340000",
+            'dca2': "+340000",
+            'dca3': "+340000"
+        }
+
         # number of mac
         self.macnum = {
             'dca2': "2",
@@ -86,9 +98,12 @@ class UNMSQCA9563Factory(ScriptBase):
         self.bootloader_prompt = self.ubpmt[self.board_id]
         self.bootloader = self.bootloader_img[self.board_id]
         self.uboot_address = self.ubaddr[self.board_id]
-
+        self.bootenv_address = "0x9f080000"
+        self.bootenv_size = "+10000"
         self.eeprom_address = self.eepromaddr[self.board_id]
         self.eeprom_size = self.eepromsize[self.board_id]
+        self.cfg_address = self.cfgaddr[self.board_id]
+        self.cfg_size = self.cfgsize[self.board_id]
 
         self.helper_path = "unms-lte"
         self.helperexe = "helper_ARxxxx_debug"
@@ -118,17 +133,18 @@ class UNMSQCA9563Factory(ScriptBase):
         self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
         self.pexp.expect_action(50, self.bootloader_prompt, "erase {} +$filesize".format(self.uboot_address))
         self.pexp.expect_action(50, self.bootloader_prompt, "cp.b $fileaddr {} $filesize".format(self.uboot_address))
-        self.pexp.expect_action(50, self.bootloader_prompt, "erase 0x9f080000 +10000")
+        self.pexp.expect_action(50, self.bootloader_prompt, "erase {} {}".format(self.bootenv_address, self.bootenv_size))
+        self.pexp.expect_action(50, self.bootloader_prompt, "erase {} {}".format(self.cfg_address, self.cfg_size))
         self.pexp.expect_action(50, self.bootloader_prompt, "reset")
 
     def ubootwriteinfo(self):
         self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearcfg")
         self.pexp.expect_action(50, self.bootloader_prompt, "erase {} {}".format(self.eeprom_address, self.eeprom_size))
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbid -f " + self.board_id)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbrev " + self.bom_rev)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetrd " + self.region)
-        #self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
-        #self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearcfg")
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetmac " + self.mac)
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
         
@@ -149,29 +165,31 @@ class UNMSQCA9563Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def fwupdate(self):
-        self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
-        self.pexp.expect_action(50, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
-        time.sleep(2)
+        #self.pexp.expect_action(50, self.bootloader_prompt, "protect off all")
+        #self.pexp.expect_action(50, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
+        #time.sleep(2)
 
         # TFTP bin from TestServer
-        fw_path = self.tftpdir + "/images/" + self.board_id + ".bin"
-        log_debug(msg="firmware path:" + fw_path)
-        atftp_cmd = 'exec atftp --option "mode octet" -p -l {} {}'.format(fw_path, self.dutip)
-        log_debug(msg="Run cmd on host:" + atftp_cmd)
-        self.fcd.common.xcmd(cmd=atftp_cmd)
+        #fw_path = self.tftpdir + "/images/" + self.board_id + ".bin"
+        #log_debug(msg="firmware path:" + fw_path)
+        #atftp_cmd = 'exec atftp --option "mode octet" -p -l {} {}'.format(fw_path, self.dutip)
+        #log_debug(msg="Run cmd on host:" + atftp_cmd)
+        #self.fcd.common.xcmd(cmd=atftp_cmd)
 
         # Check Bin from DUT
-        self.pexp.expect_only(120, "Bytes transferred")
-        self.pexp.expect_action(100, self.bootloader_prompt, self.cmd_prefix+ "uwrite -f" )
-        log_debug(msg="TFTP Finished")
-
+        #self.pexp.expect_only(120, "Bytes transferred")
+        #self.pexp.expect_action(100, self.bootloader_prompt, self.cmd_prefix+ "uwrite -f" )
+        #log_debug(msg="TFTP Finished")
+        self.pexp.expect_action(50, self.bootloader_prompt, "setenv bootargs console=ttyS0,115200 panic=3 recovery")
+        self.pexp.expect_action(50, self.bootloader_prompt, "tftp 0x81000000 images/{}.bin".format(self.board_id))
+        self.pexp.expect_ubcmd(180, "Bytes transferred", "bootm 0x81000000")
 
     def boot_image(self):
         # Boot into OS and enable console
         # self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'" )
         # self.pexp.expect_action(30, self.bootloader_prompt, "boot" )
         #self.pexp.expect_action(200, "Please press Enter to activate this console.", "" )
-        self.pexp.expect_action(300, "Welcome to UbiOS", "" )
+        self.pexp.expect_action(360, "Welcome to UbiOS", "" )
         time.sleep(20)
         self.pexp.expect_action(30, "", "")
         #self.pexp.expect_action(30, "UBNT login:", "ubnt")
@@ -184,9 +202,19 @@ class UNMSQCA9563Factory(ScriptBase):
         #self.pexp.expect_action(60, self.linux_prompt, "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done")
         #self.pexp.expect_action(60, self.linux_prompt, "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab")
         #self.pexp.expect_action(60, self.linux_prompt, "init -q; sleep 15")
-        time.sleep(15)
+        time.sleep(5)
         self.pexp.expect_action(60, self.linux_prompt, "dmesg -n 1")
         time.sleep(5)
+        cmd = "ifconfig eth0 {0} up".format(self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.chk_lnxcmd_valid()
+        
+        postexp = [
+            "64 bytes from",
+            self.linux_prompt
+        ]
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.chk_lnxcmd_valid()
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()

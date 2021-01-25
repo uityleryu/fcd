@@ -1597,9 +1597,9 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-LTE-US":{
+    "UISP-LTE-US":{
       "INDEX"       : 3,
-      "NAME"        : "UNMS-LTE-US",
+      "NAME"        : "UISP-LTE-US",
       "BOARDID"     : "dca2",
       "BOMREV"      : "113-00782",
       "DESC"        : "Ubiquiti Network Management System LTE US version",
@@ -1610,9 +1610,9 @@
       "SW_ID"       : "1a01"
     },
 
-    "UNMS-LTE-EU":{
+    "UISP-LTE-EU":{
       "INDEX"       : 4,
-      "NAME"        : "UNMS-LTE-EU",
+      "NAME"        : "UISP-LTE-EU",
       "BOARDID"     : "dca3",
       "BOMREV"      : "113-00832",
       "DESC"        : "Ubiquiti Network Management System LTE EU version",
