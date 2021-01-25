@@ -31,7 +31,7 @@ IMAGE-UNMS-LTE= \
 IMAGE-UISP-S-PRO= \
     images/eed1* \
     unms-fw/DIAG_UISP_S_Pro_1.3.5-DEV01.vmlinux.bix \
-    unms-fw/UISP-S-Pro-u-boot-41bfa.bin
+    unms-fw/u-boot-uisp-s-pro_1.3.0.bin
 
 IMAGE-UISP-O-LITE= \
     images/ee6c* \
