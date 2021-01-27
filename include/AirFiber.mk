@@ -27,6 +27,8 @@ IMAGE-WAVE-AP= \
     af-fw/GMP*.bin \
     af-fw/u-boot*
 
+IMAGE-LTU = 
+
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)
 IMAGE-AF+=$(IMAGE-AF60-XG)
@@ -58,13 +60,15 @@ TOOLS-AF60+= \
     af_af60/helper_IPQ807x \
     af_af60/id_rsa \
     af_af60/id_rsa.pub \
-    af_af60/af_af60_dummy_cal.bin \
-    af_ltu5/helper_UBNTAME
+    af_af60/af_af60_dummy_cal.bin
 
 TOOLS-AF60-LR+=$(TOOLS-AF60)
 TOOLS-AF60-XG+=$(TOOLS-AF60)
 TOOLS-AF60-XR+=$(TOOLS-AF60)
 TOOLS-WAVE-AP+=$(TOOLS-AF60)
+
+TOOLS-LTU+=$(TOOLS-CONFIG)
+TOOLS-LTU+=af_ltu5/helper_UBNTAME
 
 # Project target
 
@@ -74,6 +78,7 @@ $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -83,3 +88,4 @@ $(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))

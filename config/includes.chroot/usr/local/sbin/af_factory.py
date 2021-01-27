@@ -23,7 +23,8 @@ class AFAMEFactroy(ScriptBase):
         soctype = {
             'ae06': 'AME',
             'ae08': 'AME',
-            'ae0b': 'AME'
+            'ae0b': 'AME',
+            'ae11': 'AME'
         }
 
         self.product = soctype[self.board_id]
@@ -41,7 +42,7 @@ class AFAMEFactroy(ScriptBase):
             if os.path.isdir(self.fcd_toolsdir) is False:
                 error_critical("Can't find {}".format(self.fcd_toolsdir))
 
-            if os.path.isdir("/home/pi/usbdisk/keys") is False:
+            if os.path.isdir("/home/ubnt/usbdisk/keys") is False:
                 error_critical("Can't find keys")
 
             if status:

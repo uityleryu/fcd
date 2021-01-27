@@ -972,6 +972,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
       "SW_ID"       : "1001"
+    },
+
+    "LTU-XR":{
+      "INDEX"       : 9,
+      "NAME"        : "LTU-XR",
+      "BOARDID"     : "ae11",
+      "BOMREV"      : "113-00966",
+      "DESC"        : "AirFiber LTU-XR",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     }
   },
 
