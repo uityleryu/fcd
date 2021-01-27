@@ -219,7 +219,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         cmd = "setenv ethaddr 00:E0:4C:00:00:0{}; saveenv".format(self.row_id)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         time.sleep(1)
 
         cmd = "boota"
@@ -230,7 +230,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             And the DIAG image will start running another shell.
             And it only could accept the "\r" as an Enter key in this shell.
         '''
-        self.pexp.expect_lnxcmd(30, "UBNT_Diag", "exit\r", self.linux_prompt)
+        self.pexp.expect_lnxcmd(60, "UBNT_Diag", "exit\r", self.linux_prompt)
         self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
 
@@ -239,7 +239,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             flerase_dut_path = os.path.join(self.dut_tmpdir, "flash_eraseall")
             self.tftp_get(remote=flerase_host_path, local=flerase_dut_path, timeout=15)
             cmd = "chmod 777 {}".format(flerase_dut_path)
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
         '''
             ============ Registration start ============
@@ -251,7 +251,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             msg(20, "Send tools to DUT and data provision ...")
             if self.board_id == "eed1" or self.board_id == "eed3":
                 cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
-                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
             self.data_provision_64k(self.devnetmeta)
 
@@ -264,7 +264,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             if self.board_id == "eed1" or self.board_id == "eed3":
                 cmd = "/tmp/flash_eraseall {}".format(self.devregpart)
-                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
@@ -273,8 +273,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         '''
 
         if SECCHK_EN is True:
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot")
-            self.pexp.expect_lnxcmd(30, "UBNT_Diag", "sectest\r", "security test pass")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+            self.pexp.expect_lnxcmd(10, "UBNT_Diag", "sectest\r", "security test pass")
 
         if BDINFO_EN is True:
             self.pexp.expect_lnxcmd(30, "UBNT_Diag", "exit\r", self.linux_prompt)
@@ -335,6 +335,16 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
                         error_critical(rmsg)
                 else:
                     error_critical("Can't get BOM revision from EEPROM")
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+        self.stop_at_uboot()
+
+        cmdset = [
+            "setenv telnet 1",
+            "saveenv",
+        ]
+        for idx in range(len(cmdset)):
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmdset[idx])
 
         msg(100, "Completing ...")
         self.close_fcd()
