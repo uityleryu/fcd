@@ -133,25 +133,25 @@ unifi_region_codes = (
 )
 
 erasewifidata = [
-    False,
-    False,
-    False,
-    False,
-    False,
-    False,
-    False,
-    False
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True
 ]
 
 erase_devreg_data = [
-    False,
-    False,
-    False,
-    False,
-    False,
-    False,
-    False,
-    False
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True,
+    True
 ]
 
 

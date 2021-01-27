@@ -83,19 +83,6 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         # FIXME: Use SFP port for temp due to FW is not ready
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact al_eth0")  # # set sfp 0 or 2 for SPF+
 
-    def copy_fw_to_tftpserver(self, source, dest):
-        sstr = [
-            "cp",
-            "-p",
-            source,
-            dest
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
-        time.sleep(1)
-        if int(rtc) > 0:
-            error_critical("Copying FW to tftp server failed")
-
     def update_uboot(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
         self.set_boot_net()
@@ -104,7 +91,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
 
         self.is_network_alive_in_uboot(retry=9, timeout=10)
 
-        self.copy_fw_to_tftpserver(
+        self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-uboot.bin"),
             dest=os.path.join(self.tftpdir, "boot.img")
         )
@@ -123,13 +110,13 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         self.is_network_alive_in_uboot(retry=9, timeout=10)
 
         # copy recovery image
-        self.copy_fw_to_tftpserver(
+        self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-recovery"),
             dest=os.path.join(self.tftpdir, "uImage")
         )
 
         # copy FW image
-        self.copy_fw_to_tftpserver(
+        self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
             dest=os.path.join(self.tftpdir, "fw-image.bin")
         )

@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.28"
+    __version__ = "1.0.29"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -1020,6 +1020,21 @@ class ScriptBase(object):
             error_critical('Exec "{}" failed'.format(cmdj))
         else:
             log_debug('scp successfully')
+
+    def copy_file(self, source, dest):
+        sstr = [
+            "cp",
+            "-p",
+            source,
+            dest
+        ]
+        sstrj = ' '.join(sstr)
+        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        time.sleep(1)
+        if int(rtc) > 0:
+            error_critical("Copying FW to tftp server failed")
+        else:
+            log_debug('Copy {} to {} successfully'.format(source, dest))
 
     def check_eeprom_mac(self):
         cmd = "hexdump -C -s 0 -n 6 {}".format(self.eesigndate_path)

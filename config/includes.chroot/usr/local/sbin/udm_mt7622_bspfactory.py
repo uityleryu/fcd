@@ -10,24 +10,26 @@ BOOT_BSP_IMAGE    = True
 PROVISION_ENABLE  = True
 DOHELPER_ENABLE   = True
 REGISTER_ENABLE   = True
-FWUPDATE_ENABLE   = False
-DATAVERIFY_ENABLE = False
+FWUPDATE_ENABLE   = True
+DATAVERIFY_ENABLE = True
 
 
 class UDMMT7622BspFactory(ScriptBase):
     def __init__(self):
         super(UDMMT7622BspFactory, self).__init__()
+        self.ver_extract()
         self.init_vars()
 
     def init_vars(self):
         # script specific vars
-        self.fwimg = "images/" + self.board_id + "-fw.bin"
-        self.fcdimg = "images/" + self.board_id + "-fcd.bin"
-        self.uboot_img = "images/" + self.board_id + "-uboot.bin"
+        self.fw_img = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        self.fw_uboot = os.path.join(self.fwdir, self.board_id + "-fw.uboot")
+        self.fw_recovery = os.path.join(self.fwdir, self.board_id + "-recovery")
+
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "MT7622"
-        self.linux_prompt = "root@LEDE:/#"
+        self.linux_prompt = "#"
 
         self.ethnum = {
             'eccc': "5"
@@ -47,18 +49,32 @@ class UDMMT7622BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
-    def boot_bsp_image(self):
-        self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "")
-        self.set_ub_net()
+    def enter_uboot(self, timeout=60):
+        self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
+
+        log_debug("Setting network in uboot ...")
+        self.set_ub_net(premac="00:11:22:33:44:5" + str(self.row_id))
         self.is_network_alive_in_uboot()
-        # Update uboot
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftp {}".format(self.uboot_img))
-        self.pexp.expect_only(120, "Bytes transferred")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "nor init; snor erase 0x60000 0x70000;")
+
+    def update_uboot(self, uboot_image):
+        log_debug("Updating uboot ...")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftp {}".format(uboot_image), "Bytes transferred")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init; snor erase 0x60000 0x160000;")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "snor write ${loadaddr} 0x60000 ${filesize};")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "invaild_env")
+
+    def boot_bsp_image(self):
+        self.enter_uboot()
+
+        # Update uboot
+        self.update_uboot(self.fcd_uboot)
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+        self.enter_uboot()
+
         # Update kernel
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "tftp {}".format(self.fcdimg))
-        self.pexp.expect_only(120, "Bytes transferred")
+        log_debug("Updating FCD image ...")
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "tftp {}".format(self.fcd_img), "Bytes transferred")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run boot_wr_img")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "boot")
 
@@ -68,17 +84,50 @@ class UDMMT7622BspFactory(ScriptBase):
         self.is_network_alive_in_linux()
 
     def fwupdate(self):
-        pass
+        self.enter_uboot()
+
+        # Update uboot
+        self.update_uboot(self.fw_uboot)
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+        self.enter_uboot()
+
+        log_debug("Updating FW image ...")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory server={}'".format(self.tftp_server))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootargsemmcdual0")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mmc init")
+
+        # copy recovery image to tftp server
+        self.copy_file(
+            source=self.fw_recovery,
+            dest=os.path.join(self.tftpdir, "uImage")  # fixed name
+        )
+
+        # copy fw image to tftp server
+        self.copy_file(
+            source=self.fw_img,
+            dest=os.path.join(self.tftpdir, "fw-image.bin")  # fixed name
+        )
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
+
+    def login(self):
+        self.pexp.expect_only(240, "Welcome to UniFi")
 
     def check_info(self):
-        pass
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
+        self.pexp.expect_only(10, "systemid=" + self.board_id)
+        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
         """Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
-        self.ver_extract()
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
@@ -88,7 +137,6 @@ class UDMMT7622BspFactory(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if BOOT_BSP_IMAGE is True:
-            self.boot_bsp_image()
             self.init_bsp_image()
             msg(10, "Boot up to linux console and network is good ...")
 
@@ -107,21 +155,25 @@ class UDMMT7622BspFactory(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
+
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
-            msg(70, "Succeeding in downloading the upgrade tar file ...")
+            msg(70, "Upgrading FW ...")
 
         if DATAVERIFY_ENABLE is True:
+            self.login()
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        msg(100, "Completing firmware upgrading ...")
+        msg(100, "Completed FCD process ...")
         self.close_fcd()
 
 
 def main():
     udmmt7622_bspfactory = UDMMT7622BspFactory()
     udmmt7622_bspfactory.run()
+
 
 if __name__ == "__main__":
     main()

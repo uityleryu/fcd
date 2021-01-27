@@ -54,7 +54,8 @@ IMAGE-UDMLITE= \
 
 IMAGE-UDR= \
     images/eccc* \
-    udm-fw/*udr*.bin 
+    udm-fw/*udr*.bin \
+    udm-fw/UDR.mt7622*
 
 IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO-SE+= \
