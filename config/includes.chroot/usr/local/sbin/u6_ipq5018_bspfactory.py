@@ -11,7 +11,7 @@ PROVISION_ENABLE  = True
 DOHELPER_ENABLE   = True 
 REGISTER_ENABLE   = True 
 FWUPDATE_ENABLE   = True 
-DATAVERIFY_ENABLE = False
+DATAVERIFY_ENABLE = True
 
 class U6IPQ5018BspFactory(ScriptBase):
     def __init__(self):
@@ -22,6 +22,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         # script specific vars
         self.fwimg = "images/" + self.board_id + "-fw.bin"
         self.initramfs = "images/" + self.board_id + "-initramfs.bin"
+        self.gpt = "images/" + self.board_id + "-gpt.bin"
         self.devregpart = "/dev/mtdblock9"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "IPQ5018#"
@@ -68,12 +69,13 @@ class U6IPQ5018BspFactory(ScriptBase):
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033")
         self.set_boot_net()
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && mmc write 0x50000000 0x00000000 22'.format(self.gpt))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;      bootm 0x44000000"')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 {}'.format(self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
-        self.linux_prompt = "UBNT-BZ.ca-spf113cs#"
+        self.linux_prompt = "UBNT-BZ.ca-spf113cs-fcd#"
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
         time.sleep(30)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
@@ -81,17 +83,17 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
                      src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
                      dst_file=self.dut_tmpdir + "/fwupdate.bin")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m {}".format(self.dut_tmpdir + "/fwupdate.bin"))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
+        self.linux_prompt = "#"
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        self._ramboot_uap_fwupdate()
         self._ramboot_uap_fwupdate()
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(3, "", "info", self.linux_prompt)
-        self.pexp.expect_lnxcmd(3, self.linux_prompt, "info", "Version", retry=5)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
