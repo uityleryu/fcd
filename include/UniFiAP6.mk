@@ -18,16 +18,16 @@ IMAGE-U6= \
     uap-fw/BZ.mt7622.*
 
 IMAGE-U6-PRO= \
-	images/u6-fw/* \
+	u6-fw/* \
     images/a650* 
 IMAGE-U6-Mesh= \
-	images/u6-fw/* \
+	u6-fw/* \
     images/a651* 
 IMAGE-U6-IW= \
-	images/u6-fw/* \
+	u6-fw/* \
     images/a652*
 IMAGE-U6-Extender= \
-	images/u6-fw/* \
+	u6-fw/* \
     images/a653*
 
 # Model
