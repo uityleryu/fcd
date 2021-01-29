@@ -77,7 +77,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
         self.linux_prompt = "UBNT-BZ.ca-spf113cs-fcd#"
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
-        time.sleep(30)
+        time.sleep(50)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
         self.is_network_alive_in_linux()
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
