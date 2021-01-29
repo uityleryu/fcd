@@ -89,7 +89,7 @@ class UVCFactoryGeneral(ScriptBase):
         elif self.product_name == "UVC-G4INS":
             self.board_name = "UVC G4 Instant"
             self.devregpart = "/dev/mtd11"
-            self.ip = "168.95.2.20"
+            self.ip = "169.254.2.20"
             self.flash_module = "m25p80_uvcg4ins.ko"
             self.helperexe = "helper_uvcg4ins"
 
