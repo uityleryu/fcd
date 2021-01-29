@@ -57,18 +57,16 @@ IMAGE-UISP-O-PRO= \
     unms-fw/DIAG_UISP_O_Pro_1.3.4.7.8-Dev03.vmlinux.bix \
     unms-fw/UISP_O_PRO_Pre_u-boot-60495.bin
 
-<<<<<<< HEAD
 IMAGE-UISP-S-MICRO= \
     images/ee6f* \
     unms-fw/DIAG_UISP_S_Micro_1.3.6.vmlinux.bix \
     unms-fw/UISP-S-Micro.uboot_1.2.4-737d.bin \
 
 IMAGE-ee6f=$(IMAGE-UISP-S-MICRO)
-=======
+
 IMAGE-UISP-R-Micro= \
     images/ee6e* \
     unms-fw/UISPR.mt7621* \
->>>>>>> [UISP-R-Micro]
 
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
