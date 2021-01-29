@@ -86,6 +86,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.flash_module = "m25p80_uvcg3flexmini.ko"
             self.helperexe = "helper_uvcg3flexmini"
 
+        elif self.product_name == "UVC-G4INS":
+            self.board_name = "UVC G4 Instant"
+            self.devregpart = "/dev/mtd11"
+            self.ip = "168.95.2.20"
+            self.flash_module = "m25p80_uvcg4ins.ko"
+            self.helperexe = "helper_uvcg4ins"
 
 
         self.fillff = "128k_ff.bin"
@@ -110,6 +116,7 @@ class UVCFactoryGeneral(ScriptBase):
         # a574 = G4DOORBELLPRO
         # a5a0 = AI360
         # a590 = G3MINI
+        # a595 = G4INS
 
         # number of Ethernet
         ethnum = {
@@ -121,6 +128,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a573': "1",
             'a574': "0",
             'a590': "0",
+            'a595': "0",
             'a5a0': "1",
         }
 
@@ -134,6 +142,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a573': "0",
             'a574': "1",
             'a590': "1",
+            'a595': "1",
             'a5a0': "0"           
         }
 
@@ -147,6 +156,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a573': "0",
             'a574': "1",
             'a590': "1",
+            'a595': "1",
             'a5a0': "0"
         }
 
@@ -167,6 +177,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a573': "ifconfig eth0 ",
             'a574': "ifconfig eth0 ",
             'a590': "ifconfig eth0 ",
+            'a595': "ifconfig eth0 ",
             'a5a0': "ifconfig eth0 "             
         }
 
