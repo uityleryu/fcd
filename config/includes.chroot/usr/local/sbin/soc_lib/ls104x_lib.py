@@ -462,9 +462,10 @@ class LS104XFactory(ScriptBase):
             time.sleep(5)
 
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv NORESET")
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip 192.168.1.254")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip 192.168.1.1")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr 192.168.1.20")
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs root=/dev/mtdblock5 init=/init")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact FM1@DTSEC6")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethprime FM1@DTSEC6")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
             time.sleep(3)
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ubntw dump")
