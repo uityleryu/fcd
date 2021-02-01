@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.29"
+    __version__ = "1.0.30"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -330,7 +330,7 @@ class ScriptBase(object):
                     To give twice in order to make sure of that the username has been keyed in
                 '''
                 self.pexp.expect_action(10, "", username)
-                self.pexp.expect_action(10, "Password:", password)
+                self.pexp.expect_action(30, "Password:", password)
                 break
             else:
                 self.pexp.expect_action(timeout, "", "\003")
