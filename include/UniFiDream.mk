@@ -113,7 +113,7 @@ $(eval $(call ProductImage,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
-$(eval $(call ProductCompress,UDM,FCD_$(PRD)_UDM_$(VER)))
+$(eval $(call ProductCompress,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
 $(eval $(call ProductCompress,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
