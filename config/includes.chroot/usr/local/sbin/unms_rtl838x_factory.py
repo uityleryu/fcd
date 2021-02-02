@@ -22,6 +22,7 @@ BDINFO_EN = True
     eed1: UISP_S_PRO
     ee50: UISP_S_LITE
     eed3: UISP_O_PRO
+    ee6f: UISP_S_MICRO
 '''
 
 
@@ -36,7 +37,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "UNMS_S_LITE",
             'eed1': "UISP_S_PRO",
             'ee50': "UISP_S_LITE",
-            'eed3': "UISP_O_PRO"
+            'eed3': "UISP_O_PRO",
+            'ee6f': "UISP_S_MICRO"
         }
 
         # number of Ethernet
@@ -44,7 +46,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "3",
             'eed1': "3",
             'ee50': "3",
-            'eed3': "3"
+            'eed3': "3",
+            'ee6f': "3"
         }
 
         # number of WiFi
@@ -52,7 +55,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "0",
             'eed1': "0",
             'ee50': "0",
-            'eed3': "0"
+            'eed3': "0",
+            'ee6f': "0"
         }
 
         # number of Bluetooth
@@ -60,7 +64,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "0",
             'eed1': "1",
             'ee50': "0",
-            'eed3': "1"
+            'eed3': "1",
+            'ee6f': "1"
         }
 
         btprmt = {
@@ -68,7 +73,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "RTL838x#",
             'eed1': "RTL9300#",
             'ee50': "RTL838x#",
-            'eed3': "RTL9300#"
+            'eed3': "RTL9300#",
+            'ee6f': "RTL838x#"
         }
 
         # helper path
@@ -77,7 +83,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "unms-slite",
             'eed1': "unms-spro",
             'ee50': "unms-slite",
-            'eed3': "unms-spro"
+            'eed3': "unms-spro",
+            'ee6f': "unms-slite"
         }
 
         # helper executable file
@@ -86,7 +93,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "helper_RTL838x_release",
             'eed1': "helper_RTL930x_release",
             'ee50': "helper_RTL838x_release",
-            'eed3': "helper_RTL930x_release"
+            'eed3': "helper_RTL930x_release",
+            'ee6f': "helper_RTL838x_release"
         }
 
         # EEPROM device
@@ -95,14 +103,16 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed0': "/dev/mtdblock6",
             'eed1': "/dev/mtdchar12",
             'ee50': "/dev/mtdblock6",
-            'eed3': "/dev/mtdchar12"
+            'eed3': "/dev/mtdchar12",
+            'ee6f': "/dev/mtdblock6"
         }
 
         self.netif = {
             'eed0': "ifconfig eth0 ",
             'eed1': "ifconfig eth0 ",
             'ee50': "ifconfig eth0 ",
-            'eed3': "ifconfig eth0 "
+            'eed3': "ifconfig eth0 ",
+            'ee6f': "ifconfig eth0 "
         }
 
         self.bootloader_prompt = btprmt[self.board_id]
@@ -116,7 +126,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'btnum'           : btnum,
         }
 
-        self.developed = ["eed1", "eed3"]
+        self.developed = ["eed1", "ee6f", "eed3"]
 
     def stop_at_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
@@ -125,7 +135,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         cmd = "upgrade loader {0}/{1}-uboot.img".format(self.image, self.board_id)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         wmsg = "Upgrade loader image \[{0}/{1}-uboot.img\] success".format(self.image, self.board_id)
-        self.pexp.expect_only(30, wmsg)
+        self.pexp.expect_only(60, wmsg)
 
         cmd = "reset"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)

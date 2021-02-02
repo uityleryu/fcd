@@ -77,8 +77,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
 IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
-IMAGE-UNMS+=$(IMAGE-UISP-R-Micro)
-
+IMAGE-UNMS+=$(IMAGE-UISP-S-MICRO)
 
 
 # Model
@@ -129,7 +128,11 @@ TOOLS-UISP-O-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-O-PRO+= unms-spro/*
 
 TOOLS-UISP-S-MICRO=$(TOOLS-UNMS)
-TOOLS-UISP-S-MICRO+= uisp-s-micro/*
+TOOLS-UISP-S-MICRO+= unms-slite/*
+
+TOOLS-ee6f=$(TOOLS-UNMS)
+TOOLS-ee6f+= unms-slite/*
+
 TOOLS-UISP-R-Micro=$(TOOLS-UNMS)
 TOOLS-UISP-R-Micro+= uisp-r-lite/helper_MT7621_release
 
@@ -163,4 +166,3 @@ $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R-Micro,FCD_$(PRD)_UISP-R-Micro_$(VER)_$(FWVER)))
-

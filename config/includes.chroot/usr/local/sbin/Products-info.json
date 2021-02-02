@@ -1725,6 +1725,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-MICRO":{
+      "INDEX"       : 12,
+      "NAME"        : "UISP-S-MICRO",
+      "BOARDID"     : "ee6f",
+      "BOMREV"      : "113-00988",
+      "DESC"        : "Ubiquiti Network Management System Switch Micro",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 
