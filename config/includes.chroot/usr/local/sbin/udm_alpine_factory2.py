@@ -104,7 +104,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.REGISTER_ENABLE       = True 
         self.FWUPDATE_ENABLE       = True 
         self.DATAVERIFY_ENABLE     = True 
-        self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea15" else False
+        self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea11" or self.board_id == "ea15" else False
         self.LCM_CHECK_ENABLE      = True if self.board_id == "ea15" or self.board_id == "ea19" else False
 
     def set_boot_net(self):
@@ -112,7 +112,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def set_fake_EEPROM(self):
-        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
         if self.board_id == 'ea15':
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
@@ -187,7 +187,7 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
-        self.pexp.expect_lnxcmd(3, self.linux_prompt, "info", self.infover[self.board_id], retry=5)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", self.infover[self.board_id], retry=12)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)

@@ -6,24 +6,23 @@ IMAGE-UDM-BASIC= \
 IMAGE-UDM+=$(IMAGE-UDM-BASIC)
 IMAGE-UDM+= \
     images/ea11* \
-    images/ea15* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v1.5.3.b103f40.191112.1446.bin
+    udm-fw/uImage-udm-udmp.r \
+    udm-fw/UDM.alpinev2.v1.8.6.6a09c7c.210125.1544.bin
 
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
     images/ea13* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage.r \
+    udm-fw/uImage-udmse.r \
     udm-fw/UDM.alpinev2.v1.0.30+builder.1762.cfb07db.190916.1318.bin
 
 IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
     images/ea15* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage.r \
-    udm-fw/UDM.alpinev2.v1.6.8.1ebd9a8.200603.1853.bin
+    udm-fw/uImage-udm-udmp.r \
+    udm-fw/UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin
 
 IMAGE-UXGPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UXGPRO+= \

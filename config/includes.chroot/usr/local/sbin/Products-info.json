@@ -7,9 +7,11 @@
       "BOARDID"     : "ea11",
       "BOMREV"      : "113-00623",
       "DESC"        : "UniFi Dream Machine",
-      "FILE"        : "udm_alpine_factory.py",
+      "FILE"        : "udm_alpine_factory2.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True"
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     },
 
     "UDM-SE":{
