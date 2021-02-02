@@ -102,7 +102,7 @@ TOOLS-UDMLITE+= udm/*
 TOOLS-UDMPRO-SE=$(TOOLS-UDM)
 
 # Project target
-$(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)))
+$(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
 $(eval $(call ProductImage,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
