@@ -68,7 +68,7 @@ class UVCFactoryGeneral(ScriptBase):
         elif self.product_name == "UVC-G4DOORBELLPRO":
             self.board_name = "UVC G4 Doorbell Pro"
             self.devregpart = "/dev/mtd8"
-            self.ip = "192.168.2.20"
+            self.ip = "169.254.2.20"
             self.flash_module = "m25p80_uvcg4doorbellpro.ko"
             self.helperexe = "helper_uvcg4doorbellpro"
 
