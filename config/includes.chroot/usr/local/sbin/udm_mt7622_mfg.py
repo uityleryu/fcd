@@ -40,7 +40,7 @@ class UDMMT7622MFG(ScriptBase):
 
     def transfer_img(self, image):
         log_debug("Transfer image ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftp {}".format(image), "Bytes transferred")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpb {}".format(image), "Bytes transferred")
 
     def erase_partition(self, start, length):
         log_debug("Erase flash from {} to {}...".format(start, length))

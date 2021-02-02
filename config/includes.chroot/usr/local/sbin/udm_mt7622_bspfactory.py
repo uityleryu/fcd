@@ -58,7 +58,7 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def update_uboot(self, uboot_image):
         log_debug("Updating uboot ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftp {}".format(uboot_image), "Bytes transferred")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpb {}".format(uboot_image), "Bytes transferred")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init; snor erase 0x60000 0x160000;")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "snor write ${loadaddr} 0x60000 ${filesize};")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "invaild_env")
@@ -74,7 +74,7 @@ class UDMMT7622BspFactory(ScriptBase):
 
         # Update kernel
         log_debug("Updating FCD image ...")
-        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "tftp {}".format(self.fcd_img), "Bytes transferred")
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "tftpb {}".format(self.fcd_img), "Bytes transferred")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run boot_wr_img")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "boot")
 
