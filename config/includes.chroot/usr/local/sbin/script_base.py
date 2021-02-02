@@ -392,7 +392,7 @@ class ScriptBase(object):
         else:
             clientbin = "/usr/local/sbin/client_x86_release_20200519"
             regparam = [
-                "-h stage.udrs.io",
+                "-h prod.udrs.io",
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
