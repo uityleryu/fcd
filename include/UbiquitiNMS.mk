@@ -133,8 +133,8 @@ TOOLS-UISP-S-MICRO+= unms-slite/*
 TOOLS-ee6f=$(TOOLS-UNMS)
 TOOLS-ee6f+= unms-slite/*
 
-TOOLS-UISP-R-Micro=$(TOOLS-UNMS)
-TOOLS-UISP-R-Micro+= uisp-r-lite/helper_MT7621_release
+TOOLS-UISP-R-MICRO=$(TOOLS-UNMS)
+TOOLS-UISP-R-MICRO+= uisp-r-lite/helper_MT7621_release
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -149,7 +149,7 @@ $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UISP-R-Micro,FCD_$(PRD)_UISP-R-Micro_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -165,4 +165,4 @@ $(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FW
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UISP-R-Micro,FCD_$(PRD)_UISP-R-Micro_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO$(VER)_$(FWVER)))

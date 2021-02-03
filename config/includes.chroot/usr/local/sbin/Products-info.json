@@ -1728,9 +1728,9 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R-Micro":{
+    "UISP-R-MICRO":{
       "INDEX"       : 11,
-      "NAME"        : "UISP-R-Micro",
+      "NAME"        : "UISP-R-MICRO",
       "BOARDID"     : "ee6e",
       "BOMREV"      : "113-00989",
       "DESC"        : "Ubiquiti Network Management System Router Micro",
