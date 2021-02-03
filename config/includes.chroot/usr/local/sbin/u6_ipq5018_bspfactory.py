@@ -6,13 +6,6 @@ from udm_alpine_factory import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
-BOOT_BSP_IMAGE    = True 
-PROVISION_ENABLE  = True 
-DOHELPER_ENABLE   = True 
-REGISTER_ENABLE   = True 
-FWUPDATE_ENABLE   = True 
-DATAVERIFY_ENABLE = True
-
 class U6IPQ5018BspFactory(ScriptBase):
     def __init__(self):
         super(U6IPQ5018BspFactory, self).__init__()
@@ -32,21 +25,24 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a650': "1",
             'a651': "1",
             'a652': "1",
-            'a653': "1"
+            'a653': "1",
+            'a654': "1"
         }
 
         self.wifinum = {
             'a650': "2",
             'a651': "2",
             'a652': "2",
-            'a653': "2"
+            'a653': "2",
+            'a654': "2"
         }
 
         self.btnum = {
             'a650': "1",
             'a651': "1",
             'a652': "1",
-            'a653': "1"
+            'a653': "1",
+            'a654': "1"
         }
 
         self.devnetmeta = {
@@ -55,9 +51,16 @@ class U6IPQ5018BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.BOOT_BSP_IMAGE    = True 
+        self.PROVISION_ENABLE  = True 
+        self.DOHELPER_ENABLE   = True 
+        self.REGISTER_ENABLE   = True 
+        self.FWUPDATE_ENABLE   = True if self.board_id != "a654" else False
+        self.DATAVERIFY_ENABLE = True if self.board_id != "a654" else False         
+
     def init_bsp_image(self):
         self.pexp.expect_only(30, "Starting kernel")
-        self.pexp.expect_lnxcmd(90, "UBNT BSP INIT", "dmesg -n1", "")
+        self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", "")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
         self.is_network_alive_in_linux()
 
@@ -114,30 +117,30 @@ class U6IPQ5018BspFactory(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        if BOOT_BSP_IMAGE is True:
+        if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
             msg(10, "Boot up to linux console and network is good ...")
 
-        if PROVISION_ENABLE is True:
+        if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
-        if DOHELPER_ENABLE is True:
+        if self.DOHELPER_ENABLE is True:
             self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
 
-        if REGISTER_ENABLE is True:
+        if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if FWUPDATE_ENABLE is True:
+        if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
             msg(70, "Succeeding in downloading the upgrade tar file ...")
 
-        if DATAVERIFY_ENABLE is True:
+        if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
