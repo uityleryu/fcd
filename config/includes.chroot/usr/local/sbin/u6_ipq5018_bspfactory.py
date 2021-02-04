@@ -59,9 +59,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.DATAVERIFY_ENABLE = True if self.board_id != "a654" else False         
 
     def init_bsp_image(self):
-        self.pexp.expect_only(30, "Starting kernel")
-        self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", "")
-        self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
+        self.pexp.expect_only(60, "Starting kernel")
+        self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.is_network_alive_in_linux()
 
     def set_boot_net(self):                                                                                                 
@@ -72,15 +71,18 @@ class U6IPQ5018BspFactory(ScriptBase):
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033")
         self.set_boot_net()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;      bootm 0x44000000"')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
+                                                           'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;'\
+                                                           'bootm 0x44000000"')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 {}'.format(self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
         self.linux_prompt = "UBNT-BZ.ca-spf113cs-fcd#"
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
-        time.sleep(50)
+        self.disable_udhcpc()
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
         self.is_network_alive_in_linux()
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,

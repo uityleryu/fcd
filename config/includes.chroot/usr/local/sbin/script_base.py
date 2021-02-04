@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.30"
+    __version__ = "1.0.31"
     __authors__ = "FCD team"
     __contact__ = "fcd@ui.com"
 
@@ -658,6 +658,12 @@ class ScriptBase(object):
         cmd = "ifconfig; ping -c 3 {0}".format(ipaddr)
         exp = r"64 bytes from {0}".format(ipaddr)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
+
+    def disable_udhcpc(self):
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; "\
+                                                       "do echo 'Wait udhcpc...'; sleep 1; done", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'sed -i "/udhcpc/d" /etc/inittab', self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
 
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
