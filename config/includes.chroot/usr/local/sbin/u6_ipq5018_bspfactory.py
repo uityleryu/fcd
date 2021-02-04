@@ -63,14 +63,10 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.is_network_alive_in_linux()
 
-    def set_boot_net(self):                                                                                                 
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.is_network_alive_in_uboot()
-
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033")
-        self.set_boot_net()
+        self.set_ub_net(self.premac)                                                                                               
+        self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
                                                            'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;'\

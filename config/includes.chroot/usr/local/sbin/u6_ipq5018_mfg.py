@@ -21,6 +21,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         self.mem_addr = "0x44000000"
         self.nor_bin = "{}-nor.bin".format(self.board_id)
         self.emmc_img = "{}-emmc.img".format(self.board_id)
+        self.set_bootloader_prompt("IPQ5018#")
 
     def update_nor(self):
         cmd = "sf probe; sf erase 0x0 0x230000; sf write {} 0x0 0x230000".format(self.mem_addr)
@@ -40,15 +41,8 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def stop_uboot(self, timeout=60):
-        self.set_bootloader_prompt("IPQ5018#")
-        self.pexp.expect_action(timeout=timeout, 
-                                exptxt="Hit any key to stop autoboot|Autobooting in 2 seconds, press", action= "\x1b\x1b")
-
-    def set_boot_netenv(self):
-        self.pexp.expect_action(10, self.bootloader_prompt, "")
-        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_action(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.is_network_alive_in_uboot(retry=8)
+        self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
+                                action= "\x1b\x1b")
 
     def transfer_img(self, address, filename):
         img = os.path.join(self.image, filename)
@@ -75,7 +69,8 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # Update NOR(uboot)
         self.stop_uboot()
         msg(10, 'Stop in uboot...')
-        self.set_boot_netenv()
+        self.set_ub_net(self.premac)
+        self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.nor_bin)
         msg(30, 'Transfer NOR done')
@@ -85,7 +80,8 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # Update EMMC(kernel)
         self.stop_uboot()
         msg(50, 'Stop in uboot...')
-        self.set_boot_netenv()
+        self.set_ub_net(self.premac)
+        self.is_network_alive_in_uboot()
         msg(60, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.emmc_img)
         msg(70, 'Transfer EMMC done')
