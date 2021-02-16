@@ -974,12 +974,12 @@
       "SW_ID"       : "1001"
     },
 
-    "AF60-XR":{
+    "WaveBridge":{
       "INDEX"       : 7,
-      "NAME"        : "AF60-XR",
+      "NAME"        : "WaveBridge",
       "BOARDID"     : "ac11",
       "BOMREV"      : "113-00719",
-      "DESC"        : "AirFiber 60 XR",
+      "DESC"        : "AirFiber Wave Bridge",
       "FILE"        : "af_ipq80xx_factory.py",
       "T1FILE"      : "af_ipq80xx_mfg.py",
       "QRCHECK"     : "False",

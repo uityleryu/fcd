@@ -121,6 +121,8 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+        time.sleep(10)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
         self.pexp.expect_only(10, "is alive")
     def uboot_update(self):
         self.stop_uboot()
@@ -206,7 +208,7 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(240, "running real init", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-        cmd = "ifconfig eth0 {0} up".format(self.dutip)
+        cmd = "ifconfig br0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
         self.lnx_netcheck()
