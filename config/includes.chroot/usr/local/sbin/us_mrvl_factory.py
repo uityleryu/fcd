@@ -10,7 +10,6 @@ import os
 import stat
 import filecmp
 
-
 class USW_MARVELL_FactoryGeneral(ScriptBase):
     CMD_PREFIX = "go $ubntaddr"
 
@@ -27,7 +26,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {}
+        self.wait_LCM_upgrade_en = {'ed41'}
 
         # number of Ethernet
         self.macnum = {
@@ -68,9 +67,15 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             'ed41': "helper_MRVL_XCAT3_release",
         }
 
+        cfg_name = {
+            'ed40': "usw-flex-xg",
+            'ed41': "u6-s8",
+        }
+
         self.devregpart = devregpart[self.board_id]
         self.helper_path = helper_path[self.board_id]
         self.helperexe = helperexe[self.board_id]
+        self.cfg_name = cfg_name[self.board_id]
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -98,11 +103,16 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
                             "uappinit"])
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="UBNT application initialized")
 
+    def enable_console_in_uboot(self):
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x70 0x00 0x20")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x21 0x06 0xfc")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
+
+    def clear_eeprom_in_uboot(self, timeout=30):
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcal -f", post_exp="Done")
 
     def set_data_in_uboot(self):
-
         self.stop_uboot(uappinit_en=True)
-
         cmd = [
             self.CMD_PREFIX,
             "usetbid",
@@ -111,11 +121,13 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         cmd = ' '.join(cmd)
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, post_exp="Done")
         log_debug("Board setting succeded")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x70 0x00 0x20")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x21 0x06 0xfc")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
         
+        # self.enable_console_in_uboot()
+        # for v3 for u6-s8
 
+        self.clear_eeprom_in_uboot()
+        log_debug("Clearing EEPROM in U-Boot succeed")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
     def fwupdate(self):
         self.stop_uboot()
@@ -144,17 +156,16 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         self.pexp.expect_only(30, "Bytes transferred = ")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uappinit")
-        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite -f")
 
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Signature Verfied, Success.")
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Copying to 'kernel0' partition")
-        self.pexp.expect_only(180, "done")
+        self.pexp.expect_only(240, "done")
         self.pexp.expect_only(120, "Copying to 'kernel1' partition")
-        self.pexp.expect_only(180, "done")
-
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         """under developing
@@ -165,30 +176,41 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=20)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
-    def login_kernel(self):
-        self.login(timeout=240, press_enter=True)
+    def login_kernel(self, mode):
+        if mode == "normal":
+            log_debug("{} login".format(mode))
+            self.login(timeout=240, press_enter=True)
+        else:
+            log_debug("{} login".format(mode))
+            self.pexp.expect_only(200, "Starting kernel")
+            time.sleep(40)
+            self.pexp.expect_lnxcmd(5, "", "", post_exp="login", retry=40)
+            self.pexp.expect_action(10, "", "ubnt")
+            self.pexp.expect_action(10, "Password:", "ubnt")
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
+            
 
     def SetNetEnv(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
-        if self.board_id == "ed2d":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
-        self.is_network_alive_in_linux()
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "killall ros && sleep 3")
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "appDemo -config /usr/etc/{}.cfg -daemon".format(self.cfg_name))
 
-
-    def clear_eeprom_in_uboot(self, timeout=30):
-        # Ensure sysid is empty when FW is T1 img.
-        # Some T1 image will boot so slow if get non-empty sysid
-        self.pexp.expect_action(timeout, "Hit Esc key to stop autoboot", "\x1b")
-        self.pexp.expect_action(10, self.bootloader_prompt, "bootubnt ucleareeprom")
+    def clear_uboot_env(self):
+        self.stop_uboot()
+        self.pexp.expect_action(10, self.bootloader_prompt, "env default -f -a")
+        self.pexp.expect_action(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
+
+    def force_speed_to_1g(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "telnet 127.0.0.1 12345")
+        self.pexp.expect_lnxcmd(20, "Console#", "configure")
+        self.pexp.expect_lnxcmd(10, "", "interface ethernet 0/0")
+        self.pexp.expect_lnxcmd(10, "", "speed 1000 mode SGMII")
+        self.pexp.expect_lnxcmd(10, "", "end")
+        self.pexp.expect_lnxcmd(10, "", "CLIexit")
 
     def run(self):  
         """
@@ -212,20 +234,15 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(5, "Set data in uboot")
         self.set_data_in_uboot()
-        #self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
         msg(15, "Login kernel")
-        self.login_kernel()
-        
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "telnet 127.0.0.1 12345")
-        self.pexp.expect_lnxcmd(10, "Console#", "configure")
-        self.pexp.expect_lnxcmd(10, "", "interface ethernet 0/0")
-        self.pexp.expect_lnxcmd(10, "", "speed 1000 mode SGMII")
-        self.pexp.expect_lnxcmd(10, "", "end")
-        self.pexp.expect_lnxcmd(10, "", "CLIexit")
-        
-        #self.SetNetEnv()
-        
+        self.login_kernel("abnormal")
+
+        # self.force_speed_to_1g() 
+        # for v3 for u6-s8
+
+        self.SetNetEnv()
+
         self.is_network_alive_in_linux()
 
         msg(15, "Boot up to linux console and network is good ...")
@@ -254,7 +271,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             self.fwupdate()
             msg(75, "Completing firmware upgrading ...")
 
-        self.login_kernel()
+        self.clear_uboot_env()
+        self.login_kernel("abnormal")
 
         if self.DATAVERIFY_ENABLE is True:
             # self.check_info()
