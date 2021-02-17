@@ -26,7 +26,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "1",
             'a652': "1",
             'a653': "1",
-            'a654': "1"
+            'a654': "1",
+            'a655': "1"
         }
 
         self.wifinum = {
@@ -34,7 +35,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "2",
             'a652': "2",
             'a653': "2",
-            'a654': "2"
+            'a654': "2",
+            'a655': "2"
         }
 
         self.btnum = {
@@ -42,7 +44,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "1",
             'a652': "1",
             'a653': "1",
-            'a654': "1"
+            'a654': "1",
+            'a655': "1"
         }
 
         self.devnetmeta = {
@@ -55,8 +58,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        self.FWUPDATE_ENABLE   = True if self.board_id != "a654" else False
-        self.DATAVERIFY_ENABLE = True if self.board_id != "a654" else False         
+        if self.board_id == "a654" or self.board_id == "a655":
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False 
+        else:
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -65,7 +72,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033")
-        self.set_ub_net(self.premac)                                                                                               
+        self.set_ub_net(self.premac)
         self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
                                                            'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
@@ -78,6 +85,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.linux_prompt = "UBNT-BZ.ca-spf113cs-fcd#"
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
         self.disable_udhcpc()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
         self.is_network_alive_in_linux()
@@ -93,7 +101,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
-        self.pexp.expect_lnxcmd(3, "", "info", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
