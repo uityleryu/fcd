@@ -1713,7 +1713,7 @@
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
     },
-
+    
     "UISP-R-PRO-SSD":{
       "INDEX"       : 9,
       "NAME"        : "UISP-R-PRO",
@@ -1760,6 +1760,19 @@
       "BOMREV"      : "113-00988",
       "DESC"        : "Ubiquiti Network Management System Switch Micro",
       "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-LITE":{
+      "INDEX"       : 13,
+      "NAME"        : "UISP-P-LITE",
+      "BOARDID"     : "eefa",
+      "BOMREV"      : "113-00821",
+      "DESC"        : "Ubiquiti Internet Service Provider Power Lite",
+      "FILE"        : "uisp_ar933x_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",

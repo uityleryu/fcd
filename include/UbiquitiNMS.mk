@@ -1,5 +1,11 @@
 
 # Images
+IMAGE-UISP-P-LITE= \
+    images/eefa* \
+    unms-fw/UISP-P-Lite.bin \
+    unms-fw/u-boot-ar933x-ep.bin \
+    unms-fw/uisp_p_lite_epx_cfg.bin \
+    unms-fw/UISPP* \
 
 IMAGE-UISP-R-PRO= \
     images/ee6a* \
@@ -79,7 +85,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
 IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-S-MICRO)
 IMAGE-UNMS+=$(IMAGE-UISP-R-MICRO)
-
+IMAGE-UNMS+=$(IMAGE-UISP-P-LITE)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -137,6 +143,9 @@ TOOLS-ee6f+= unms-slite/*
 TOOLS-UISP-R-MICRO=$(TOOLS-UNMS)
 TOOLS-UISP-R-MICRO+= uisp-r-lite/helper_MT7621_release
 
+TOOLS-UISP-P-LITE=$(TOOLS-UNMS)
+TOOLS-UISP-P-LITE+= uisp-p-lite/*
+
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
@@ -151,6 +160,7 @@ $(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -167,3 +177,4 @@ $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
