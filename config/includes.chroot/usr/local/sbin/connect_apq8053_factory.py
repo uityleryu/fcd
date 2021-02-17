@@ -197,7 +197,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         for i in range(0, retry):
             try:
                 self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
-                self.cladb.expect_only(8, "adbd is already running as root")
+                self.cladb.expect_only(2, "adbd is already running as root")
 
                 pexpect_cmd = "adb shell"
                 log_debug(msg=pexpect_cmd)
@@ -277,8 +277,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
-        self.eebin_path = self.eegenbin_path
-
     def registration(self):
         log_debug("Starting to do registration ...")
         regsubparams = self.access_chips_id()
@@ -306,7 +304,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "-k " + self.pass_phrase,
             regsubparams,
             reg_qr_field,
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
+            "-i field=flash_eeprom,format=binary,pathname=" + self.eegenbin_path,
             "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
