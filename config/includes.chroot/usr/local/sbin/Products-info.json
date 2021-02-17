@@ -1165,9 +1165,9 @@
 
   "Connect":
   {
-    "UTD-7":{
+    "UC-DISPLAY-7":{
       "INDEX"       : 0,
-      "NAME"        : "UTD-7",
+      "NAME"        : "UC-DISPLAY-7",
       "BOARDID"     : "ef80",
       "BOMREV"      : "113-03168",
       "DESC"        : "UniFi Connect Panel 7",
@@ -1178,9 +1178,9 @@
       "SW_ID"       : "1c01"
     },
 
-    "UTD-13":{
+    "UC-DISPLAY-13":{
       "INDEX"       : 1,
-      "NAME"        : "UTD-13",
+      "NAME"        : "UC-DISPLAY-13",
       "BOARDID"     : "ef81",
       "BOMREV"      : "113-03182",
       "DESC"        : "UniFi Connect Panel 13",
@@ -1191,9 +1191,9 @@
       "SW_ID"       : "1c01"
     },
 
-    "UTD-21":{
+    "UC-DISPLAY-21":{
       "INDEX"       : 2,
-      "NAME"        : "UTD-21",
+      "NAME"        : "UC-DISPLAY-21",
       "BOARDID"     : "ef81",
       "BOMREV"      : "113-03287",
       "DESC"        : "UniFi Connect Panel 21",
@@ -1204,9 +1204,9 @@
       "SW_ID"       : "1c01"
     },
 
-    "UTD-27":{
+    "UC-DISPLAY-27":{
       "INDEX"       : 3,
-      "NAME"        : "UTD-27",
+      "NAME"        : "UC-DISPLAY-27",
       "BOARDID"     : "ef81",
       "BOMREV"      : "113-03256",
       "DESC"        : "UniFi Connect Panel 27",

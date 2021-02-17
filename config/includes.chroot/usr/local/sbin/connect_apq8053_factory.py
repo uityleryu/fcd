@@ -15,17 +15,16 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a980: Viewport
-    ef80: UTD-7        (Android 9)
-    ef81: UTD-13       (Android 9)
-    ef82: UVP_Touch    (Android 7)
-    ef0e: UVP_TouchMax (Android 7)
-    ef83: UTD-21       (Android 9)
-    ef84: UTD-27       (Android 9)
-    ef85: UniFi Pay 7  (Android 9)
-    ef86: UniFi Pay 13 (Android 9)
-    ec60: UA-BL-PRO    (Android 9)
+    ef80: UC-Display-7        (Android 9)
+    ef81: UC-Display-13       (Android 9)
+    ef82: UVP_Touch           (Android 7)
+    ef0e: UVP_TouchMax        (Android 7)
+    ef83: UC-Display-21       (Android 9)
+    ef84: UC-Display-27       (Android 9)
+    ef85: UniFi Pay 7         (Android 9)
+    ef86: UniFi Pay 13        (Android 9)
+    ec60: UA-BL-PRO           (Android 9)
 '''
-
 
 
 class CONNECTAPQ8053actoryGeneral(ScriptBase):
