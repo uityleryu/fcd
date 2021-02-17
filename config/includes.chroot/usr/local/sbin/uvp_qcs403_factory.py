@@ -19,6 +19,11 @@ REGISTER_EN = True
 W_MAC_EN = True
 
 
+'''
+    ef11:  UVP-CONF-SPK
+'''
+
+
 class UVPQCS403FactoryGeneral(ScriptBase):
     def __init__(self):
         super(UVPQCS403FactoryGeneral, self).__init__()
@@ -138,6 +143,8 @@ class UVPQCS403FactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+            cmd = "echo enable > /data/keymfg_mode"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
         '''
             ============ Registration End ============
         '''
