@@ -7,19 +7,23 @@ IMAGE-UNVR4= \
 
 IMAGE-UNVR-BT= \
     images/ea1a* \
-    unas/*
+    images/unifinvr-bt-fw.bin \
+    unas/UNVR4*
 
 IMAGE-UNVR-PRO= \
     images/ea20* \
-    unas/*
+    images/unifinvr-pro-fw.bin \
+    unas/UNVRPRO*
 
 IMAGE-UNVR-AI= \
     images/ea21* \
-    unas/*
+    images/unifinvr-ai-fw.bin \
+    unas/UNVRAI*
 
 IMAGE-UNVR-HD= \
     images/ea30* \
-    unas/*
+    images/unifinvr-hd-fw.bin \
+    unas/UNVRHD*
 
 IMAGE-UNVR+=$(IMAGE-UNVR4)
 IMAGE-UNVR+=$(IMAGE-UNVR-BT)
