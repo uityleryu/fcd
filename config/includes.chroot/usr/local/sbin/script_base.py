@@ -529,7 +529,7 @@ class ScriptBase(object):
         else:
             cmd = "mv {0}.FCD {1}".format(self.eesign_path, self.eesigndate_path)
             log_debug("cmd: " + cmd)
-            self.cnapi.pcmd(cmd)
+            self.cnapi.xcmd(cmd)
 
     def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, zmodem=False, timeout=10):
         """check devreg data
@@ -596,10 +596,10 @@ class ScriptBase(object):
     def gen_and_load_key_to_dut(self):
         src = os.path.join(self.tftpdir, "dropbear_key.rsa")
         cmd = "dropbearkey -t rsa -f {0}".format(src)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
 
         cmd = "chmod 777 {0}".format(src)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
 
         srcp = "dropbear_key.rsa"
         dstp = os.path.join(self.dut_tmpdir, "dropbear_key.rsa")
@@ -668,7 +668,7 @@ class ScriptBase(object):
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         log_debug(cmd)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
         '''
             The dropbearkey command will be executed in the FCD host.
             So, it won't cost too much time
@@ -676,7 +676,7 @@ class ScriptBase(object):
         time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.rsakey_path)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
 
         rt = os.path.isfile(self.rsakey_path)
         if rt is not True:
@@ -685,7 +685,7 @@ class ScriptBase(object):
 
     def gen_dss_key(self):
         cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
         '''
             The dropbearkey command will be executed in the FCD host.
             So, it won't cost too much time
@@ -693,7 +693,7 @@ class ScriptBase(object):
         time.sleep(1)
 
         cmd = "chmod 777 {0}".format(self.dsskey_path)
-        self.cnapi.pcmd(cmd)
+        self.cnapi.xcmd(cmd)
 
         rt = os.path.isfile(self.dsskey_path)
         if rt is not True:

@@ -43,7 +43,6 @@ class winFcdFactory(Gtk.Window):
         Gtk.Window.__init__(self)
 
         self.xcmd = Common().xcmd
-        self.pcmd = Common().pcmd
 
         # vboxdashboard used to show each DUT information
         self.vboxdashboard = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)

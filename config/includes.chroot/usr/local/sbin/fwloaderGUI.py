@@ -84,7 +84,6 @@ class fraMonitorPanel(Gtk.Frame):
         self.id = id
         Gtk.Frame.__init__(self, label=frametitle)
         self.xcmd = Common().xcmd
-        self.pcmd = Common().pcmd
         self.devregready = False
         self.progressvalue = 0
         self.starttime = ""
@@ -278,7 +277,7 @@ class fraMonitorPanel(Gtk.Frame):
         GPath.reportdir = reportdir
 
         if not (os.path.isdir(GPath.reportdir)):
-            result = self.pcmd("mkdir -p "+GPath.reportdir)
+            result = self.xcmd("mkdir -p " + GPath.reportdir, rtmsg=False)
             if (result is False):
                 msgerrror(self, "Can't create a log directory in the USB disk")
 
