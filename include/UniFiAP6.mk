@@ -18,20 +18,23 @@ IMAGE-U6= \
     uap-fw/BZ.mt7622.*
 
 IMAGE-U6-PRO= \
-	u6-fw/* \
+	u6-fw/ipq5018/* \
     images/a650* 
 IMAGE-U6-Mesh= \
-	u6-fw/* \
+	u6-fw/ipq5018/* \
     images/a651* 
 IMAGE-U6-IW= \
-	u6-fw/* \
+	u6-fw/ipq5018/* \
     images/a652*
 IMAGE-U6-Extender= \
-	u6-fw/* \
+	u6-fw/ipq5018/* \
     images/a653*
 IMAGE-U6-Enterprise= \
-	u6-fw/* \
+	u6-fw/ipq5018/* \
     images/a654*
+IMAGE-U6-LR= \
+	u6-fw/mt7622/* \
+	images/a620*
 
 
 # Model
@@ -48,23 +51,19 @@ TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
-    common/helper_UNIFI_MT7621_release \
-    common/aarch64-rpi4-64k-ee \
-    common/helper_UAP6_MT7621_release \
-    common/helper_UAP6_MT7622_release
+    common/aarch64-rpi4-64k-ee
 
-TOOLS-CONFIG-U6-IPQ= \
-    common/sshd_config \
-    common/x86-64k-ee \
-    common/aarch64-rpi4-64k-ee 
+TOOLS-CONFIG-U6-MT7622= \
+    common/helper_UAP6_MT7622_release
 
 # Project specific tools
 TOOLS-U6+=$(TOOLS-CONFIG)
-TOOLS-U6-PRO+=$(TOOLS-CONFIG-U6-IPQ)
-TOOLS-U6-Mesh+=$(TOOLS-CONFIG-U6-IPQ)
-TOOLS-U6-IW+=$(TOOLS-CONFIG-U6-IPQ)
-TOOLS-U6-Extender+=$(TOOLS-CONFIG-U6-IPQ)
-TOOLS-U6-Enterprise+=$(TOOLS-CONFIG-U6-IPQ)
+TOOLS-U6-PRO+=$(TOOLS-CONFIG)
+TOOLS-U6-Mesh+=$(TOOLS-CONFIG)
+TOOLS-U6-IW+=$(TOOLS-CONFIG)
+TOOLS-U6-Extender+=$(TOOLS-CONFIG)
+TOOLS-U6-Enterprise+=$(TOOLS-CONFIG)
+TOOLS-U6-LR+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7622)
 
 # Project target
 $(eval $(call ProductImage,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
@@ -73,6 +72,7 @@ $(eval $(call ProductImage,U6-Mesh,FCD_$(PRD)_U6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Extender,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
@@ -81,3 +81,4 @@ $(eval $(call ProductCompress,U6-Mesh,FCD_$(PRD)_U6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Extender,FCD_$(PRD)_U6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
