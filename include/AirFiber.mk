@@ -16,8 +16,8 @@ IMAGE-AF60-XG= \
     af-fw/af60-xg*.bin \
     af-fw/NAND_factory_ubi.img
 
-IMAGE-AF60-XR= \
-    images/ac1* \
+IMAGE-WAVE-BRIDGE= \
+    images/ac11* \
     af-fw/XR*.bin \
     af-fw/af60-xr-spf*.bin \
     af-fw/u-boot*
@@ -32,7 +32,7 @@ IMAGE-LTU =
 IMAGE-AF+=$(IMAGE-AF60)
 IMAGE-AF+=$(IMAGE-AF60-LR)
 IMAGE-AF+=$(IMAGE-AF60-XG)
-IMAGE-AF+=$(IMAGE-AF60-XR)
+IMAGE-AF+=$(IMAGE-WAVE-BRIDGE)
 IMAGE-AF+=$(IMAGE-WAVE-AP)
 
 # Model
@@ -64,7 +64,7 @@ TOOLS-AF60+= \
 
 TOOLS-AF60-LR+=$(TOOLS-AF60)
 TOOLS-AF60-XG+=$(TOOLS-AF60)
-TOOLS-AF60-XR+=$(TOOLS-AF60)
+TOOLS-WAVE-BRIDGE+=$(TOOLS-AF60)
 TOOLS-WAVE-AP+=$(TOOLS-AF60)
 
 TOOLS-LTU+=$(TOOLS-CONFIG)
@@ -76,7 +76,7 @@ $(eval $(call ProductImage,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,WAVE-BRIDGE,FCD_$(PRD)_WAVE-BRIDGE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))
 
@@ -86,6 +86,6 @@ $(eval $(call ProductCompress,AF-ALL,FCD_$(PRD)_AF-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60,FCD_$(PRD)_AF60_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-LR,FCD_$(PRD)_AF60-LR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,AF60-XR,FCD_$(PRD)_AF60-XR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,WAVE-BRIDGE,FCD_$(PRD)_WAVE-BRIDGE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))
