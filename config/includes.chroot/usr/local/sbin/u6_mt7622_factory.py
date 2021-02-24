@@ -86,7 +86,12 @@ class U6MT7622Factory(ScriptBase):
         self.login(timeout=240,press_enter=True)
 
     def init_recovery_image(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig", "br0", retry=10)
+        # To enable ethernet in 1G unit
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "devmem 0x1b1280e8 w 0x10; devmem 0x1b12a028 w 0x14813; " \
+                                                       "devmem 0x1b128020 w 0x31120103; devmem 0x1b128008 w 0x1; " \
+                                                       "devmem 0x1b128000 w 0x1340; devmem 0x1b1280e8 w 0x0")
         self.is_network_alive_in_linux(retry=10)
 
     def update_uboot(self):
@@ -108,7 +113,7 @@ class U6MT7622Factory(ScriptBase):
 
     def enter_uboot(self):
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-
+            
         retry = 2
         while retry > 0:
             if rt != 0:
@@ -152,7 +157,7 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_only(120, "done")
 
     def set_stp_env(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true;saveenv", "done")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def check_info(self):
@@ -161,7 +166,7 @@ class U6MT7622Factory(ScriptBase):
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
         cmd = "cat /proc/ubnthal/system.info"
         exp = [
             "flashSize={0}".format(self.flash_size[self.board_id]),
@@ -171,9 +176,14 @@ class U6MT7622Factory(ScriptBase):
         ]
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=exp)
         cmd = "cat /usr/lib/build.properties"
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
         cmd = "cat /usr/lib/version"
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
+        self.pexp.expect_action(10, self.linux_prompt, "reboot")
+        self.pexp.expect_only(60, "\[BT Power On Result\] Success")
+        self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
 
     def run(self):
         """
