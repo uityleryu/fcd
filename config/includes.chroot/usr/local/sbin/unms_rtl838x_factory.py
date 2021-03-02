@@ -349,12 +349,13 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
         self.stop_at_uboot()
 
-        cmdset = [
-            "setenv telnet 1",
-            "saveenv",
-        ]
-        for idx in range(len(cmdset)):
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmdset[idx])
+        if self.board_id != "ee50":
+            cmdset = [
+                "setenv telnet 1",
+                "saveenv",
+            ]
+            for idx in range(len(cmdset)):
+                self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmdset[idx])
 
         msg(100, "Completing ...")
         self.close_fcd()
