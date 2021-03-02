@@ -3,16 +3,14 @@
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from os_lib.ubios_lib import UbiOSLib
 
-import sys
 import time
-import os
-import stat
-import filecmp
 
-class UDMALPINEFactoryGeneral(ScriptBase):
+class UbiosAlpineFactoryGeneral(ScriptBase):
     def __init__(self):
-        super(UDMALPINEFactoryGeneral, self).__init__()
+        super(UbiosAlpineFactoryGeneral, self).__init__()
+        self.ubios_obj = UbiOSLib(self)
         self.ver_extract()
         self.init_vars()
 
@@ -22,16 +20,12 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
-        self.helper_path = "udm"
+        self.helper_path = "uxg" if self.board_id == "ea19" else "udm"
         self.bomrev = "113-" + self.bom_rev
         self.username = "root"
         self.password = "ubnt"
         self.linux_prompt = "#"
         self.unifios_prompt = "root@ubnt:/#"                                                                       
-       
-        # Base path 
-        self.tftpdir = self.tftpdir + "/"
-        self.toolsdir = "tools/"
  
         # switch chip
         self.swchip = {
@@ -167,32 +161,10 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt) 
 
     def fwupdate(self):
-        self.scp_get(dut_user="root", dut_pass=self.password, dut_ip=self.dutip, 
-                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
-                     dst_file=self.dut_tmpdir + "/upgrade.bin")
-        msg(60, "Succeeding in downloading the upgrade tar file ...")
-
-        log_debug("Starting to do fwupdate ... ")
-        sstr = [
-            "sh",
-            "/usr/bin/ubnt-upgrade",
-            "-d",
-            self.dut_tmpdir + "/upgrade.bin"
-        ]
-        sstr = ' '.join(sstr)
-
-        postexp = [ "Starting kernel" ]
-        msg(70, "Firmware upgrade done ...")
-
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
+        self.ubios_obj.fwupdate()
 
     def check_info(self):
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", self.infover[self.board_id], retry=12)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
-        self.pexp.expect_only(10, "systemid=" + self.board_id)
-        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
-        self.pexp.expect_only(10, self.linux_prompt)
+        self.ubios_obj.check_info()
 
     # The request came from FW developer(Taka/Eric)
     # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
@@ -211,7 +183,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
         if self.board_id == "ea15":
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
         elif self.board_id == "ea19":
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'grep "LCM FW up to date" /tmp/ulcmd.log', 'LCM FW up to date', retry=48)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'grep "LCM FW up to date" /tmp/ulcmd.log', 
+                                    'LCM FW up to date', retry=48)
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'cat /tmp/ulcmd.log', self.linux_prompt)
 
     def run(self):
@@ -259,7 +232,9 @@ class UDMALPINEFactoryGeneral(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
+            msg(60, "Start FW update ...")
             self.fwupdate()
+            msg(70, "FW update done ...")
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
 
         if self.DATAVERIFY_ENABLE is True:
@@ -280,8 +255,8 @@ class UDMALPINEFactoryGeneral(ScriptBase):
 
 
 def main():
-    udm_alpine_factory_general = UDMALPINEFactoryGeneral()
-    udm_alpine_factory_general.run()
+    ubios_alpine_factory_general = UbiosAlpineFactoryGeneral()
+    ubios_alpine_factory_general.run()
 
 if __name__ == "__main__":
     main()     

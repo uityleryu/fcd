@@ -27,9 +27,7 @@ IMAGE-UDMPRO+= \
 IMAGE-UXGPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UXGPRO+= \
     images/ea19* \
-    udm-fw/boot-uxg.img \
-    udm-fw/uImage-uxg.r \
-    udm-fw/UXG*
+    uxg-fw/alpine/*
 
 IMAGE-UDMXG=
 #IMAGE-UDMXG=images/ea17* \
