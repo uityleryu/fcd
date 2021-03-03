@@ -1,0 +1,16 @@
+{
+  "AirFiber": {
+    "LTU-Pro": {
+      "INDEX": 0,
+      "NAME": "LTU-Pro",
+      "BOARDID": "ae06",
+      "BOMREV": "113-00680",
+      "DESC": "AirFiber LTU-LR",
+      "FILE": "af_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001"
+    }
+  }
+}

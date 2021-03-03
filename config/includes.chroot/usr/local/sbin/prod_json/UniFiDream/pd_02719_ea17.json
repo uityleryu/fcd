@@ -1,0 +1,14 @@
+{
+  "UniFiDream": {
+    "UDM-XG": {
+      "INDEX": 0,
+      "NAME": "UDM-XG",
+      "BOARDID": "ea17",
+      "BOMREV": "113-02719",
+      "DESC": "UniFi One Dream Machine XG",
+      "FILE": "udm_xeon1521_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True"
+    }
+  }
+}

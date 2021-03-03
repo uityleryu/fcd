@@ -1,0 +1,16 @@
+{
+  "UniFiProtect": {
+    "UFP-RADAR": {
+      "INDEX": 0,
+      "NAME": "UFP-RADAR",
+      "BOARDID": "dcb0",
+      "BOMREV": "113-00806",
+      "DESC": "UniFi Protect Radar",
+      "FILE": "ufp_uboot_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000d",
+      "SW_ID": "1604"
+    }
+  }
+}

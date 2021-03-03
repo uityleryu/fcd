@@ -1,0 +1,16 @@
+{
+  "airMAX": {
+    "PrismAP": {
+      "INDEX": 0,
+      "NAME": "PrismAP",
+      "BOARDID": "dc97",
+      "BOMREV": "113-00697",
+      "DESC": "PrismStation AP",
+      "FILE": "am_qca955x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1201"
+    }
+  }
+}

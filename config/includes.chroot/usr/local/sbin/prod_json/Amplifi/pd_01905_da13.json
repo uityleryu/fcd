@@ -1,0 +1,14 @@
+{
+  "Amplifi": {
+    "AFi-ALN-R-EU": {
+      "INDEX": 0,
+      "NAME": "AFi-ALN-R-EU",
+      "BOARDID": "da13",
+      "BOMREV": "113-01905",
+      "DESC": "Amplifi ALien Router EU",
+      "FILE": "afi_ipq807x_factory.py",
+      "T1FILE": "afi_ipq807x_mfg.py",
+      "QRCHECK": "False"
+    }
+  }
+}

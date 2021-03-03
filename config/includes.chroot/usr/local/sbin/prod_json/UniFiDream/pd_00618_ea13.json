@@ -1,0 +1,14 @@
+{
+  "UniFiDream": {
+    "UDM-SE": {
+      "INDEX": 0,
+      "NAME": "UDM-SE",
+      "BOARDID": "ea13",
+      "BOMREV": "113-00618",
+      "DESC": "UniFi Dream Machine Special",
+      "FILE": "udm_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True"
+    }
+  }
+}

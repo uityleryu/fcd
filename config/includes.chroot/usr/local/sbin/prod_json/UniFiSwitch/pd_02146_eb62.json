@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "US-48-500W": {
+      "INDEX": 0,
+      "NAME": "US-48-500W",
+      "BOARDID": "eb62",
+      "BOMREV": "113-02146",
+      "DESC": "UBNT UniFiSwitch 48-Port 500W",
+      "FILE": "us_bcm5334x_factory.py",
+      "T1FILE": "us_bcm5334x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

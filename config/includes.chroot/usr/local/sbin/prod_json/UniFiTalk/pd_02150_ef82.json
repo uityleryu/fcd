@@ -1,0 +1,16 @@
+{
+  "UniFiTalk": {
+    "UT-PHONE-TOUCH": {
+      "INDEX": 0,
+      "NAME": "UT-PHONE-TOUCH",
+      "BOARDID": "ef82",
+      "BOMREV": "113-02150",
+      "DESC": "UniFi Talk IP PHOME",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01"
+    }
+  }
+}

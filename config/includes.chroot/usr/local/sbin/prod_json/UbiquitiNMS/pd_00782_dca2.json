@@ -1,0 +1,16 @@
+{
+  "UbiquitiNMS": {
+    "UISP-LTE-US": {
+      "INDEX": 0,
+      "NAME": "UISP-LTE-US",
+      "BOARDID": "dca2",
+      "BOMREV": "113-00782",
+      "DESC": "Ubiquiti Network Management System LTE US version",
+      "FILE": "unms_qca9563_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-16": {
+      "INDEX": 0,
+      "NAME": "USW-16",
+      "BOARDID": "ed23",
+      "BOMREV": "113-02943",
+      "DESC": "UBNT UniFiSwitch 16",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

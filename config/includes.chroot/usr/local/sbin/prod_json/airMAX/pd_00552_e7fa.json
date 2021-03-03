@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "LOCO5AC": {
+      "NAME"        : "LOCO5AC",
+      "BOARDID"     : "e7fa",
+      "BOMREV"      : "113-00552",
+      "DESC"        : "Loco5AC",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
+    }
+  }
+}

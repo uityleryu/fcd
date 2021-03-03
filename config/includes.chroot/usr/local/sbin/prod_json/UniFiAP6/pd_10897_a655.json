@@ -1,0 +1,16 @@
+{
+  "UniFiAP6": {
+    "U6-Infinity": {
+      "INDEX": 0,
+      "NAME": "U6-Infinity",
+      "BOARDID": "a655",
+      "BOMREV": "113-10897",
+      "DESC": "UniFi AP6 Infinity",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}

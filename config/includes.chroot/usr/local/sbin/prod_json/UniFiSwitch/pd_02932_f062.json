@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-SPINE": {
+      "INDEX": 0,
+      "NAME": "USW-SPINE",
+      "BOARDID": "f062",
+      "BOMREV": "113-02932",
+      "DESC": "UniFi Super Switch Spine",
+      "FILE": "us_udc-alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

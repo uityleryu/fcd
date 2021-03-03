@@ -1,0 +1,16 @@
+{
+  "UniFiNVR": {
+    "UNVR-BT": {
+      "INDEX": 0,
+      "NAME": "UNVR-BT",
+      "BOARDID": "ea1a",
+      "BOMREV": "113-03192",
+      "DESC": "UniFi NVR with BT",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "0801"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G3MINI": {
+      "INDEX": 0,
+      "NAME": "UVC-G3MINI",
+      "BOARDID": "a590",
+      "BOMREV": "113-03132",
+      "DESC": "UVC G3 Mini",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiNVR": {
+    "UNVR-4": {
+      "INDEX": 0,
+      "NAME": "UNVR-4",
+      "BOARDID": "ea16",
+      "BOMREV": "113-02832",
+      "DESC": "UniFi NVR 4-Bay",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "0801"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiDream": {
+    "UDM-PRO-SE": {
+      "INDEX": 0,
+      "NAME": "UDM-PRO-SE",
+      "BOARDID": "ea2c",
+      "BOMREV": "113-00917",
+      "DESC": "UniFi Dream Machine Pro SE",
+      "FILE": "udm_al324_debian_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiProtect": {
+    "UFP-CARD-COMBO": {
+      "INDEX": 0,
+      "NAME": "UFP-CARD-COMBO",
+      "BOARDID": "a914",
+      "BOMREV": "113-03089",
+      "DESC": "UniFi Protect Bluetooth Card",
+      "FILE": "ufp_tag_combo_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000d",
+      "SW_ID": "1604"
+    }
+  }
+}

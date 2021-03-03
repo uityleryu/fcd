@@ -1,0 +1,16 @@
+{
+  "AirFiber": {
+    "WaveBridge": {
+      "INDEX": 0,
+      "NAME": "WaveBridge",
+      "BOARDID": "ac11",
+      "BOMREV": "113-00719",
+      "DESC": "AirFiber Wave Bridge",
+      "FILE": "af_ipq80xx_factory.py",
+      "T1FILE": "af_ipq80xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G4DOORBELLPRO": {
+      "INDEX": 0,
+      "NAME": "UVC-G4DOORBELLPRO",
+      "BOARDID": "a574",
+      "BOMREV": "113-03194",
+      "DESC": "UVC G4 Doorbell Pro",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "US-8-60W": {
+      "INDEX": 0,
+      "NAME": "US-8-60W",
+      "BOARDID": "eb18",
+      "BOMREV": "113-02341",
+      "DESC": "UniFi Switch 8-port 60W",
+      "FILE": "us_bcm5334x_factory.py",
+      "T1FILE": "us_bcm5334x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

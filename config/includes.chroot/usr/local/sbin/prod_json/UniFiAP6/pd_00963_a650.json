@@ -1,0 +1,16 @@
+{
+  "UniFiAP6": {
+    "U6-PRO": {
+      "INDEX": 0,
+      "NAME": "U6-PRO",
+      "BOARDID": "a650",
+      "BOMREV": "113-00963",
+      "DESC": "UniFi AP6 PRO",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}

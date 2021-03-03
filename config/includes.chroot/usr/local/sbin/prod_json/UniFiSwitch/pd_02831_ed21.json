@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-24-POE": {
+      "INDEX": 0,
+      "NAME": "USW-24-POE",
+      "BOARDID": "ed21",
+      "BOMREV": "113-02831",
+      "DESC": "UBNT UniFiSwitch 24 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

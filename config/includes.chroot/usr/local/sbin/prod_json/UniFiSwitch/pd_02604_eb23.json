@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "US-6XG-150": {
+      "INDEX": 0,
+      "NAME": "US-6XG-150",
+      "BOARDID": "eb23",
+      "BOMREV": "113-02604",
+      "DESC": "UBNT UniFiSwitch 6XG",
+      "FILE": "us_bcm5616_factory.py",
+      "T1FILE": "us_bcm5616_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

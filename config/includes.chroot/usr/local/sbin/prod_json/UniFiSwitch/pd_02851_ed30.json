@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-FLEX-MINI": {
+      "INDEX": 0,
+      "NAME": "USW-FLEX-MINI",
+      "BOARDID": "ed30",
+      "BOMREV": "113-02851",
+      "DESC": "UniFi Switch Flex Mini",
+      "FILE": "us_m487_factory.py",
+      "T1FILE": "us_m487_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

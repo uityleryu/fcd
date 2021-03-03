@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "US-FLEX": {
+      "INDEX": 0,
+      "NAME": "US-FLEX",
+      "BOARDID": "ed10",
+      "BOMREV": "113-02767",
+      "DESC": "UniFi Switch Flex",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "unifi_mt7621_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

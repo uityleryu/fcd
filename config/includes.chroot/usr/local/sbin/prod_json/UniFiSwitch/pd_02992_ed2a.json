@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-LITE-8-POE": {
+      "INDEX": 0,
+      "NAME": "USW-LITE-8-POE",
+      "BOARDID": "ed2a",
+      "BOMREV": "113-02992",
+      "DESC": "UBNT UniFiSwitch Lite 8 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

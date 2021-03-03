@@ -1,0 +1,16 @@
+{
+  "USP": {
+    "USP3": {
+      "INDEX": 0,
+      "NAME": "USP3",
+      "BOARDID": "e643",
+      "BOMREV": "113-00364",
+      "DESC": "Unifi Smart Plug 3",
+      "FILE": "unifi_ar9331_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801"
+    }
+  }
+}

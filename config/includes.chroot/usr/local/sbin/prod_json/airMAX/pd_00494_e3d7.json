@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "NBE-5AC": {
+      "NAME"        : "NBE-5AC",
+      "BOARDID"     : "e3d7",
+      "BOMREV"      : "113-00494",
+      "DESC"        : "NBE 5AC",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
+    }
+  }
+}

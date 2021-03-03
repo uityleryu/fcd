@@ -1,0 +1,16 @@
+{
+  "airMAX": {
+    "LBE-5AC": {
+      "INDEX": 0,
+      "NAME": "LBE-5AC",
+      "BOARDID": "e7f9",
+      "BOMREV": "113-00497",
+      "DESC": "LiteBeam 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    }
+  }
+}

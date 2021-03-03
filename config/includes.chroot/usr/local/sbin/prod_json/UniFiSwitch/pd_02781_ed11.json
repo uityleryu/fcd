@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "ULS-RPS": {
+      "INDEX": 0,
+      "NAME": "ULS-RPS",
+      "BOARDID": "ed11",
+      "BOMREV": "113-02781",
+      "DESC": "UniFi Life Saver RPS",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "unifi_mt7621_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "USP": {
+    "USP-STRIP_896": {
+      "INDEX": 0,
+      "NAME": "USP-STRIP_896",
+      "BOARDID": "ee74",
+      "BOMREV": "113-00896",
+      "DESC": "Unifi Smart Power STRIP",
+      "FILE": "usp_esp8266_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801"
+    }
+  }
+}

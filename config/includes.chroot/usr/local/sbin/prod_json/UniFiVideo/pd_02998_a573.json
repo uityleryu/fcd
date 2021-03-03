@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G4DOME": {
+      "INDEX": 0,
+      "NAME": "UVC-G4DOME",
+      "BOARDID": "a573",
+      "BOMREV": "113-02998",
+      "DESC": "UVC G4 Dome",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

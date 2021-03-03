@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G4PTZ": {
+      "INDEX": 0,
+      "NAME": "UVC-G4PTZ",
+      "BOARDID": "a564",
+      "BOMREV": "113-02967",
+      "DESC": "UVC G4 PTZ",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

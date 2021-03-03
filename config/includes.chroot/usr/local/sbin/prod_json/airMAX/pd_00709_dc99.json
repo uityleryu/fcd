@@ -1,0 +1,16 @@
+{
+  "airMAX": {
+    "GBE-LR": {
+      "INDEX": 0,
+      "NAME": "GBE-LR",
+      "BOARDID": "dc99",
+      "BOMREV": "113-00709",
+      "DESC": "GBE",
+      "FILE": "am_ipq40xx_factory.py",
+      "T1FILE": "am_ipq40xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1201"
+    }
+  }
+}

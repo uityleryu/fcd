@@ -1,0 +1,16 @@
+{
+  "AirFiber": {
+    "AF60-HD": {
+      "INDEX": 0,
+      "NAME": "AF60-HD",
+      "BOARDID": "dd13",
+      "BOMREV": "113-00871",
+      "DESC": "AirFiber 60 HD",
+      "FILE": "af_ls104x_factory.py",
+      "T1FILE": "af_ls104x_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiProtect": {
+    "UFP-TAG-COMBO": {
+      "INDEX": 0,
+      "NAME": "UFP-TAG-COMBO",
+      "BOARDID": "a913",
+      "BOMREV": "113-02973",
+      "DESC": "UniFi Protect Bluetooth Tag",
+      "FILE": "ufp_tag_combo_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000d",
+      "SW_ID": "1604"
+    }
+  }
+}

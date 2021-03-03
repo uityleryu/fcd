@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-Enterprise-24-PoE": {
+      "INDEX": 0,
+      "NAME": "USW-Enterprise-24-PoE",
+      "BOARDID": "eb38",
+      "BOMREV": "113-03154",
+      "DESC": "UniFi Switch Enterprise 24 PoE",
+      "FILE": "us_bcm5616_factory.py",
+      "T1FILE": "us_bcm5616_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

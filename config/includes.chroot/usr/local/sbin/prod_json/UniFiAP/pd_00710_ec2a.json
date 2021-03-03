@@ -1,0 +1,16 @@
+{
+  "UniFiAP": {
+    "UAP-Industrial": {
+      "INDEX": 0,
+      "NAME": "UAP-Industrial",
+      "BOARDID": "ec2a",
+      "BOMREV": "113-00710",
+      "DESC": "UniFi AP nanoHD industrial",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}

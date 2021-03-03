@@ -1,0 +1,16 @@
+{
+  "airMAX": {
+    "GBE-AP": {
+      "INDEX": 0,
+      "NAME": "GBE-AP",
+      "BOARDID": "dca0",
+      "BOMREV": "113-00825",
+      "DESC": "GBE AP",
+      "FILE": "am_ipq40xx_factory.py",
+      "T1FILE": "am_ipq40xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1201"
+    }
+  }
+}

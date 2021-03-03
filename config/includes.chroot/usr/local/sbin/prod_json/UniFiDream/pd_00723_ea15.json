@@ -1,0 +1,16 @@
+{
+  "UniFiDream": {
+    "UDM-PRO": {
+      "INDEX": 0,
+      "NAME": "UDM-PRO",
+      "BOARDID": "ea15",
+      "BOMREV": "113-00723",
+      "DESC": "UniFi Dream Machine Pro",
+      "FILE": "udm_alpine_factory2.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    }
+  }
+}

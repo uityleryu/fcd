@@ -1,0 +1,14 @@
+{
+  "Amplifi": {
+    "AFi-ALN-P-EU": {
+      "INDEX": 0,
+      "NAME": "AFi-ALN-P-EU",
+      "BOARDID": "da14",
+      "BOMREV": "113-00957",
+      "DESC": "Amplifi ALien Mesh Point EU",
+      "FILE": "afi_ipq807x_factory.py",
+      "T1FILE": "afi_ipq807x_mfg.py",
+      "QRCHECK": "False"
+    }
+  }
+}

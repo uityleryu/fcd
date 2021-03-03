@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-AI360": {
+      "INDEX": 0,
+      "NAME": "UVC-AI360",
+      "BOARDID": "a5a0",
+      "BOMREV": "113-03268",
+      "DESC": "UVC AI 360",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

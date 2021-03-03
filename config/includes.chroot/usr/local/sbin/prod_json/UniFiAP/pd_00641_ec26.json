@@ -1,0 +1,16 @@
+{
+  "UniFiAP": {
+    "UAP-FLEX-HD": {
+      "INDEX": 0,
+      "NAME": "UAP-FLEXHD",
+      "BOARDID": "ec26",
+      "BOMREV": "113-00641",
+      "DESC": "UniFi AP Flex HD",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "unifi_mt7621_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}

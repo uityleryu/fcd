@@ -1,0 +1,16 @@
+{
+  "UniFiTalk": {
+    "UT-PHONE-FLEX": {
+      "INDEX": 0,
+      "NAME": "UT-PHONE-FLEX",
+      "BOARDID": "ef0d",
+      "BOMREV": "113-02808",
+      "DESC": "UniFi Talk Phone FLEX",
+      "FILE": "ut_dvf9918_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01"
+    }
+  }
+}

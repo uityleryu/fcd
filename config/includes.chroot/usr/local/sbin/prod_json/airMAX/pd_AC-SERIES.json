@@ -1,0 +1,112 @@
+{
+  "airMAX": {
+    "PBE-5AC": {
+      "NAME": "PBE-5AC",
+      "BOARDID": "e3d6",
+      "BOMREV": "113-00492",
+      "DESC": "PBE 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 0
+    },
+    "NBE-5AC": {
+      "NAME": "NBE-5AC",
+      "BOARDID": "e3d7",
+      "BOMREV": "113-00494",
+      "DESC": "NBE 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 1
+    },
+    "R5AC-PTP": {
+      "NAME": "R5AC-PTP",
+      "BOARDID": "e7e5",
+      "BOMREV": "113-00406",
+      "DESC": "Rocket Prism 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 2
+    },
+    "PS-5AC-US": {
+      "INDEX": 3,
+      "NAME": "PS-5AC-US",
+      "BOARDID": "e7e6",
+      "BOMREV": "113-00513",
+      "DESC": "Prisam Base Station 5AC US",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    },
+    "RP-5AC-US": {
+      "INDEX": 4,
+      "NAME": "RP-5AC-US",
+      "BOARDID": "e7e7",
+      "BOMREV": "113-00526",
+      "DESC": "Rocket Prism 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    },
+    "PS-5AC-World": {
+      "NAME": "PS-5AC-World",
+      "BOARDID": "e7e8",
+      "BOMREV": "113-00546",
+      "DESC": "Prisam Base Station 5AC World",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 5
+    },
+    "LBE-5AC": {
+      "INDEX": 6,
+      "NAME": "LBE-5AC",
+      "BOARDID": "e7f9",
+      "BOMREV": "113-00497",
+      "DESC": "LiteBeam 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    },
+    "LOCO5AC": {
+      "NAME": "LOCO5AC",
+      "BOARDID": "e7fa",
+      "BOMREV": "113-00552",
+      "DESC": "Loco5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 7
+    },
+    "LBE-5AC-XR": {
+      "INDEX": 8,
+      "NAME": "LBE-5AC-XR",
+      "BOARDID": "e7ff",
+      "BOMREV": "113-00962",
+      "DESC": "LiteBeam 5AC US",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiServer": {
+    "USRV-TT": {
+      "INDEX": 0,
+      "NAME": "USRV-TT",
+      "BOARDID": "1200",
+      "BOMREV": "113-00732",
+      "DESC": "Ubiquiti Server",
+      "FILE": "unifi_ast2500_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0010",
+      "SW_ID": "1b01"
+    }
+  }
+}

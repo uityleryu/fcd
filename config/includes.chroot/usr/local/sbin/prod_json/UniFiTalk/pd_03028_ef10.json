@@ -1,0 +1,16 @@
+{
+  "UniFiTalk": {
+    "UT-CONF-BOX": {
+      "INDEX": 0,
+      "NAME": "UT-CONF-BOX",
+      "BOARDID": "ef10",
+      "BOMREV": "113-03028",
+      "DESC": "UniFi Talk conference box",
+      "FILE": "uvp_qcs603_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01"
+    }
+  }
+}

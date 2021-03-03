@@ -1,0 +1,15 @@
+{
+  "UniFiAP": {
+    "UAP-AC-Lite": {
+      "INDEX": 0,
+      "NAME": "UAP-ACLite",
+      "BOARDID": "e517",
+      "BOMREV": "113-00391",
+      "DESC": "UniFi AC Lite",
+      "FILE": "uap_qca9563_factory.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}

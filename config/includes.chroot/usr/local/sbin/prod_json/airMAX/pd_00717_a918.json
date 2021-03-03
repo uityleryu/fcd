@@ -1,0 +1,16 @@
+{
+  "airMAX": {
+    "60G-LAS": {
+      "INDEX": 0,
+      "NAME": "60G-LAS",
+      "BOARDID": "a918",
+      "BOMREV": "113-00717",
+      "DESC": "Link Assist Sensor",
+      "FILE": "ufp_efr32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1203"
+    }
+  }
+}

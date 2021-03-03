@@ -1,0 +1,16 @@
+{
+  "USP": {
+    "USP-Plug": {
+      "INDEX": 0,
+      "NAME": "USP-Plug",
+      "BOARDID": "ee73",
+      "BOMREV": "113-00731",
+      "DESC": "UniFi smart plug",
+      "FILE": "usp_esp8266_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801"
+    }
+  }
+}

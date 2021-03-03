@@ -1,0 +1,14 @@
+{
+  "Amplifi": {
+    "AFi-ALN-P-SKU-CHANGE": {
+      "INDEX": 0,
+      "NAME": "AFi-ALN-P",
+      "BOARDID": "da12",
+      "BOMREV": "113-00657",
+      "DESC": "Amplifi Alien Mesh Point SKU change",
+      "FILE": "afi_ipq807x_sku_change.py",
+      "T1FILE": "",
+      "QRCHECK": "False"
+    }
+  }
+}

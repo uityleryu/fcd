@@ -1,0 +1,16 @@
+{
+  "UniFiDream": {
+    "UDM-B": {
+      "INDEX": 0,
+      "NAME": "UDM-B",
+      "BOARDID": "ec25",
+      "BOMREV": "113-00622",
+      "DESC": "UniFi One Dream Machine Beacon",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "unifi_mt7621_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    }
+  }
+}

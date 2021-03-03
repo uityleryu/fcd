@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-LEAF-PRO": {
+      "INDEX": 0,
+      "NAME": "USW-LEAF-PRO",
+      "BOARDID": "f063",
+      "BOMREV": "113-03162",
+      "DESC": "UniFi Super Switch 48-port",
+      "FILE": "us_udc-alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

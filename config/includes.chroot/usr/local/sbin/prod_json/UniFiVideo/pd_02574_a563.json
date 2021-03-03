@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G4PRO": {
+      "INDEX": 0,
+      "NAME": "UVC-G4PRO",
+      "BOARDID": "a563",
+      "BOMREV": "113-02574",
+      "DESC": "UVC G4 Pro",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

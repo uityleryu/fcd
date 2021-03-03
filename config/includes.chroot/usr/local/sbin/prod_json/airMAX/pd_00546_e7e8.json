@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "PS-5AC-World": {
+      "NAME"        : "PS-5AC-World",
+      "BOARDID"     : "e7e8",
+      "BOMREV"      : "113-00546",
+      "DESC"        : "Prisam Base Station 5AC World",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "AirFiber": {
+    "LTU-Lite": {
+      "INDEX": 0,
+      "NAME": "LTU-Lite",
+      "BOARDID": "ae08",
+      "BOMREV": "113-00708",
+      "DESC": "AirFiber LTU-Lite",
+      "FILE": "af_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiXG": {
+    "UXG-LITE": {
+      "INDEX": 0,
+      "NAME": "UXG-LITE",
+      "BOARDID": "b080",
+      "BOMREV": "113-00778",
+      "DESC": "UniFi Next-Generation Gateway Lite",
+      "FILE": "uxg_mt7622_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0013",
+      "SW_ID": "1e01"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiTalk": {
+    "UT-CONFERENCE": {
+      "INDEX": 0,
+      "NAME": "UT-CONFERENCE",
+      "BOARDID": "ef11",
+      "BOMREV": "113-03038",
+      "DESC": "UniFi Talk conference",
+      "FILE": "uvp_qcs403_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01"
+    }
+  }
+}

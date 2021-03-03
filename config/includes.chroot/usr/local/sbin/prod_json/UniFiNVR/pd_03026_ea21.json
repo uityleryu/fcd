@@ -1,0 +1,16 @@
+{
+  "UniFiNVR": {
+    "UNVR-AI": {
+      "INDEX": 0,
+      "NAME": "UNVR-PRO",
+      "BOARDID": "ea21",
+      "BOMREV": "113-03026",
+      "DESC": "UniFi Protect NVR AI",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "0801"
+    }
+  }
+}

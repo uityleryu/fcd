@@ -1,0 +1,14 @@
+{
+  "Amplifi": {
+    "AFi-ALN-R-SKU-CHANGE": {
+      "INDEX": 0,
+      "NAME": "AFi-ALN-R",
+      "BOARDID": "da11",
+      "BOMREV": "113-01605",
+      "DESC": "Amplifi Alien Router SKU change",
+      "FILE": "afi_ipq807x_sku_change.py",
+      "T1FILE": "",
+      "QRCHECK": "False"
+    }
+  }
+}

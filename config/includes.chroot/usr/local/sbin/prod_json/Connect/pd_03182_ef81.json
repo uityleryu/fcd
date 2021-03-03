@@ -1,0 +1,16 @@
+{
+  "Connect": {
+    "UC-DISPLAY-13": {
+      "INDEX": 0,
+      "NAME": "UC-DISPLAY-13",
+      "BOARDID": "ef81",
+      "BOMREV": "113-03182",
+      "DESC": "UniFi Connect Panel 13",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    }
+  }
+}

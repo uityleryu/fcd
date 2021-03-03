@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "PBE-5AC": {
+      "NAME"        : "PBE-5AC",
+      "BOARDID"     : "e3d6",
+      "BOMREV"      : "113-00492",
+      "DESC"        : "PBE 5AC",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
+    }
+  }
+}

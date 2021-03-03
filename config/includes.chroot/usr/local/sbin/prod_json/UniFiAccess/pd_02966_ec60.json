@@ -1,0 +1,16 @@
+{
+  "UniFiAccess": {
+    "UA-PRO-BL": {
+      "INDEX": 0,
+      "NAME": "UA-PRO-BL",
+      "BOARDID": "ec60",
+      "BOMREV": "113-02966",
+      "DESC": "UniFi PRO Backlight",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01"
+    }
+  }
+}

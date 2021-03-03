@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-G3BATTERY": {
+      "INDEX": 0,
+      "NAME": "UVC-G3BATTERY",
+      "BOARDID": "a580",
+      "BOMREV": "113-02692",
+      "DESC": "UVC G3 Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

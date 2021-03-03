@@ -1,0 +1,16 @@
+{
+  "AirFiber": {
+    "AF60-LR": {
+      "INDEX": 0,
+      "NAME": "AF60-LR",
+      "BOARDID": "dc9e",
+      "BOMREV": "113-00738",
+      "DESC": "AirFiber 60 LR",
+      "FILE": "af_ipq40xx_factory.py",
+      "T1FILE": "af_ipq40xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-Enterprise-8-PoE": {
+      "INDEX": 0,
+      "NAME": "USW-Enterprise-8-PoE",
+      "BOARDID": "ed41",
+      "BOMREV": "113-03188",
+      "DESC": "UniFi Switch Enterprise 8-port PoE",
+      "FILE": "us_mrvl_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

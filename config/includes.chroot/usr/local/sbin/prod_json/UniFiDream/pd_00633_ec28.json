@@ -1,0 +1,16 @@
+{
+  "UniFiDream": {
+    "UDM-LITE": {
+      "INDEX": 0,
+      "NAME": "UDM-LITE",
+      "BOARDID": "ec28",
+      "BOMREV": "113-00633",
+      "DESC": "UniFi One Dream Machine LITE",
+      "FILE": "udm_mt7622_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-48-PRO": {
+      "INDEX": 0,
+      "NAME": "USW-48-PRO",
+      "BOARDID": "eb68",
+      "BOMREV": "113-02952",
+      "DESC": "UBNT UniFiSwitch 48-Port Pro",
+      "FILE": "us_bcm5616_factory.py",
+      "T1FILE": "us_bcm5616_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

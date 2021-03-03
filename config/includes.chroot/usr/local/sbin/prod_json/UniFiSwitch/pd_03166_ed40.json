@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "USW-FLEX-XG": {
+      "INDEX": 0,
+      "NAME": "USW-FLEX-XG",
+      "BOARDID": "ed40",
+      "BOMREV": "113-03166",
+      "DESC": "UniFi Switch Flex XG",
+      "FILE": "us_mrvl_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

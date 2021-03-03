@@ -1,0 +1,16 @@
+{
+  "UniFiSwitch": {
+    "US-24-250W": {
+      "INDEX": 0,
+      "NAME": "US-24-250W",
+      "BOARDID": "eb31",
+      "BOMREV": "113-02147",
+      "DESC": "UBNT UniFiSwitch 24-Port 250W",
+      "FILE": "us_bcm5334x_factory.py",
+      "T1FILE": "us_bcm5334x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201"
+    }
+  }
+}

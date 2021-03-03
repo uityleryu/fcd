@@ -1,0 +1,16 @@
+{
+  "UniFiAP6": {
+    "U6-Enterprise": {
+      "INDEX": 0,
+      "NAME": "U6-Enterprise",
+      "BOARDID": "a654",
+      "BOMREV": "113-10898",
+      "DESC": "UniFi AP6 Enterprise",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}
