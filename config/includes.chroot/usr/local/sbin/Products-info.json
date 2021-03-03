@@ -1011,6 +1011,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000a",
       "SW_ID"       : "1001"
+    },
+
+    "LTU-FEED":{
+      "INDEX"       : 10,
+      "NAME"        : "LTU-FEED",
+      "BOARDID"     : "ae10",
+      "BOMREV"      : "113-00927",
+      "DESC"        : "AirFiber LTU-FEED",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
     }
   },
 

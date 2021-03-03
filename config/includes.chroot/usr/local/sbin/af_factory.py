@@ -24,6 +24,7 @@ class AFAMEFactroy(ScriptBase):
             'ae06': 'AME',
             'ae08': 'AME',
             'ae0b': 'AME',
+            'ae10': 'AME',
             'ae11': 'AME'
         }
 
