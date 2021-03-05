@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 import time
-import os
-import stat
-from udm_alpine_factory import ScriptBase
+
+from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
@@ -58,7 +57,10 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a654" or self.board_id == "a655":
+        if self.board_id == "a651" or \
+           self.board_id == "a652" or \
+           self.board_id == "a653" or \
+           self.board_id == "a654":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
