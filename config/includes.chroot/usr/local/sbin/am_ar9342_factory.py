@@ -14,7 +14,49 @@ from ubntlib.fcd.common import Common
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    e7f9: LBE-5AC
+    E1F5: 113-00348 Rocket 5AC Lite
+    E3D5: 113-00341 PowerBeam 5AC 500
+    E4F5: 113-00346 NanoBeam 5AC 19
+    E3F5: 113-02082 Rocket 5AC PTP
+    E5F5: 113-00363 PowerBeam 5AC 620
+    E3F5: 113-00357 Rocket M5 AC PTMP
+    E6F5: 113-00379 PowerBeam 5AC 300
+    E7F5: 113-00383 PowerBeam 5AC 400
+    E8F5: 113-00396 LiteBeam 5AC 23
+    E9F5: 113-00361 NanoBeam 5AC 16
+    E8E5: 113-00402 LiteAP AC
+    E7E5: 113-00406 Rocket 5AC Prism M
+    E3D5: 113-00416 PowerBeam 5AC 500 ISO
+    E5F5: 113-00421 PowerBeam 5AC 620
+    E3D5: 113-00427 PowerBeam 5AC 500 ISO
+    E5F5: 113-00429 PowerBeam 5AC 620
+    E7E5: 113-00450 Rocket 5AC Prism M
+    E2F2: 113-00351 Rocket 2AC
+    E4F2: 113-00360 NanoBeam 2AC 13
+    E3F3: 113-00568 PowerBeam 2AC 400 Gen2
+    E3D5: 113-00477 PowerBeam 5AC 500
+    E6F5: 113-00479 PowerBeam 5AC 300 ISO
+    E7F5: 113-00478 PowerBeam 5AC 400 ISO
+    E3D6: 113-00492 PowerBeam 5AC G2
+    E3D7: 113-00494 NanoBeam 5AC G2
+    E3D8: 113-00496 NanoStation 5AC G2
+    E7E6: 113-00513 PrismStation 5AC G2
+    E7F7: 113-00485 ISO Station 5AC G2
+    E7F9: 113-00497 LiteBeam 5AC G2
+    E7E7: 113-00526 Rocket Prism 5AC Gen2
+    E7E9: 113-00545 Rocket Prism 5AC Gen2
+    E7E8: 113-00546 PrismStation 5AC G2
+    E7FA: 113-00552 NanoStation 5AC LOCO (Loco5AC)
+    E3D6: 113-00559 PowerBeam 5AC 400 ISO Gen2
+    E7FC: 113-00556 NanoBeam 5AC Gen2(W)
+    E7FB: 113-00554 NanoStation 5AC
+    E2C5: 113-00549 Bullet AC
+    E4F3: 113-00569 NanoBeam 2AC 13 G2
+    E2F3: 113-00570 Rocket 2AC Prism
+    E3D9: 113-00585 PowerBeam 5AC X Gen2
+    E2C7: 113-00592 BulletAC-ip67
+    E7FD: 113-00616 LiteAP GPS
+    E7FE: 113-00643 LiteBeam 5AC Long-Range
 '''
 
 
@@ -29,7 +71,7 @@ class AMAR9342Factory(ScriptBase):
         self.product_class = "radio"
         self.devregpart = "/dev/mtdblock5"
         self.helperexe = "helper_ARxxxx_11ac"
-        self.bootloader_prompt = "ar7240>"
+
         self.uboot_img = "{}/{}-uboot.bin".format(self.image, self.board_id)
         self.cfg_part = os.path.join(self.tools, "am", "cfg_part_ar9342.bin")
         self.helper_path = "am"
@@ -42,54 +84,44 @@ class AMAR9342Factory(ScriptBase):
 
         # Country Lock is a value
         self.country_lock = 0
-        self.second_radio = False
 
-        self.is_wasp = ["e7f9"]
+        self.second_wifi_found = False
+
+        self.is_wasp = ["e3d6", "e7f9", "e7fa", "e7fb"]
+
         self.dfs_lock_list = [
-            "e7e5", "e1f5", "e3f5", "e3f5", "e3d5", "e3d5", "e5f5", "e6f5",
-            "e6f5", "e6f5", "e6f5", "e4f5", "e9f5", "e8f5", "e9f5", "e7f7",
-            "e7f9", "e3d6", "e3d7", "e3d8", "e7e6", "e7e7"
+            "e1f5", "e3d5", "e3d6", "e3d7", "e3d8", "e3f5", "e4f5", "e5f5",
+            "e6f5", "e7e5", "e7e6", "e7e7", "e7f7", "e7f9", "e8f5", "e9f5"
         ]
-
-        # number of mac
-        self.macnum = {
-            'e7f9': "2"
-        }
 
         # number of WiFi
         self.wifinum = {
-            'e7f9': "2"
+            'e1f5': "n", 'e2f2': "n", 'e3d5': "n", 'e3d6': "2",
+            'e3d7': "2", 'e3d8': "n", 'e3f3': "n", 'e3f5': "n",
+            'e4f5': "n", 'e5f5': "n", 'e6f5': "n", 'e7e5': "1",
+            'e7e6': "2", 'e7f5': "n", 'e8e5': "n", 'e8f5': "n",
+            'e9f5': "n", 'e4f2': "n", 'e7f7': "n", 'e7f9': "2",
+            'e7e7': "2", 'e7e9': "n", 'e7e8': "2", 'e7fa': "2",
+            'e7fc': "n", 'e7fb': "2", 'e2c5': "n", 'e4f3': "n",
+            'e2f3': "n", 'e3d9': "n", 'e2c7': "n", 'e7fd': "n",
+            'e7fe': "n"
         }
 
-        # number of Bluetooth
-        self.btnum = {
-            'e7f9': "0"
+        ubpmt = {
+            'e1f5': "", 'e2f2': "", 'e3d5': "", 'e3d6': "",
+            'e3d7': "", 'e3d8': "", 'e3f3': "", 'e3f5': "",
+            'e4f5': "", 'e5f5': "", 'e6f5': "", 'e7e5': "",
+            'e7e6': "ath>", 'e7f5': "", 'e8e5': "", 'e8f5': "",
+            'e9f5': "", 'e4f2': "", 'e7f7': "", 'e7f9': "ar7240>",
+            'e7e7': "ath>", 'e7e9': "", 'e7e8': "ath>", 'e7fa': "",
+            'e7fc': "", 'e7fb': "", 'e2c5': "", 'e4f3': "",
+            'e2f3': "", 'e3d9': "", 'e2c7': "", 'e7fd': "",
+            'e7fe': ""
         }
-
-        # vlan port mapping
-        # self.vlanport_idx = {
-        #     'e7f9': "'6 0'"
-        # }
-
-        # flash size map
-        # self.flash_size = {
-        #     'e7f9': "33554432"
-        # }
-
-        # firmware image
-        self.fwimg = {
-            'e7f9': self.board_id + ".bin"
-        }
+        self.bootloader_prompt = ubpmt[self.board_id]
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
-        self.devnetmeta = {
-            'ethnum'          : self.macnum,
-            'wifinum'         : self.wifinum,
-            'btnum'           : self.btnum,
-            'flashed_dir'     : self.flashed_dir
-        }
-
-        self.zero_ip = self.cnapi.get_zeroconfig_ip(self.mac)
+        self.zero_ip = self.get_zeroconfig_ip(self.mac)
 
         self.UPDATE_UBOOT_EN    = True
         self.PROVISION_EN       = True
@@ -113,7 +145,7 @@ class AMAR9342Factory(ScriptBase):
             log_debug("U-Boot is formal FW U-Boot, MAC set command is different")
             comma_mac = self.mac_format_str2comma(self.mac)
             cmd = "go ${{ubntaddr}} usetmac -a {}".format(comma_mac)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, "Writing EEPROM")
             self.uboot_w_app = True
         elif index == 1:
             log_debug("Old setmac found")
@@ -136,12 +168,14 @@ class AMAR9342Factory(ScriptBase):
         if self.board_id in self.is_wasp:
             cmd = "erase 9f000000 +0x50000; cp.b 0x81000000 0x9f000000 0x40000"
         else:
-            cmd = "erase 9f000000 +0x50000; cp.b \$fileaddr 0x9f000000 \$filesize"
+            cmd = "erase 9f000000 +0x50000; cp.b $fileaddr 0x9f000000 $filesize"
 
         self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd)
+        time.sleep(2)
         self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
         self.stop_uboot()
         self.set_mac()
+        time.sleep(1)
         self.set_ub_net()
         self.is_network_alive_in_uboot()
 
@@ -151,14 +185,15 @@ class AMAR9342Factory(ScriptBase):
         cmd = "tftp 0x83000000 {}".format(self.cfg_part)
         self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
         self.pexp.expect_only(20, os.path.basename(self.cfg_part))
+        self.pexp.expect_only(20, "Bytes transferred")
 
         cmd = "go ${ubntaddr} uclearcfg 0x83000000 0x40000"
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(5, "Writing EEPROM")
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd, "Writing EEPROM")
+        time.sleep(1)
 
         log_debug("do_urescue !!!")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "urescue -f -e")
-        self.pexp.expect_only(20, "Waiting for connection")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "urescue -f -e", "Waiting for connection")
+
         fw_path = "{}/{}.bin".format(self.fwdir, self.board_id)
         cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.dutip)
         log_debug("host cmd:" + cmd)
@@ -230,10 +265,26 @@ class AMAR9342Factory(ScriptBase):
             os.chmod(srcp, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
             time.sleep(2)
 
-            cmd = "tftp -p -r {} -l {} {}".format(srcp, dstp, self.host_ip)
+            cmd = "tftp -p -r {} -l {} {}".format(os.path.basename(srcp), dstp, self.host_ip)
             self.ssh_DUT.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
         log_debug("Send helper output files from DUT to host ...")
+
+    def get_zeroconfig_ip(self, mac):
+        mac.replace(":", "")
+        zeroip = "169.254."
+        b1 = str(int(mac[8:10], 16))
+        b2 = str(int(mac[10:12], 16))
+        # ubnt specific translation
+
+        if b1 == "0" and b2 == "0":
+            b2 = "128"
+        elif b1 == "255" and b2 == "255":
+            b2 = "127"
+
+        zeroip = zeroip + b1 + "." + b2
+        print("zeroip:" + zeroip)
+        return zeroip
 
     def data_provision_64k(self):
         log_debug("Checking calibration")
@@ -256,12 +307,12 @@ class AMAR9342Factory(ScriptBase):
         self.pexp.expect_action(5, self.bootloader_prompt, "md.b 0xbfff1000 2")
         exp_list = ["bfff1000: 02 02"]
         index = self.pexp.expect_get_index(5, exp_list)
-        if index == self.pexp.TIMEOUT:
-            if self.board_id == "e2f3":
-                error_critical("Unable to get the second calibration data")
-        elif index == 0:
-            log_debug("Second radio found")
-            self.second_radio = True
+        if index == 0:
+            self.second_wifi_found = True
+            log_debug("Find second WiFi Calibration data")
+        else:
+            self.second_wifi_found = False
+            log_debug("Doesn't find second WiFi Calibration data")
 
         log_debug("Writing Sytem ID")
         cmd = "go ${{ubntaddr}} usetbid {}".format(self.board_id)
@@ -287,7 +338,7 @@ class AMAR9342Factory(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         log_debug("Writing country code")
-        if self.region == "002a":
+        if self.region == "002a": # mapping to UniFi region code: USA/Canada
             log_debug("Will set FCC lock")
             self.country_lock = 10752
         elif self.region == "8168":
@@ -297,21 +348,39 @@ class AMAR9342Factory(ScriptBase):
             ''' 
             log_debug("Will set Indonesia lock")
             self.country_lock = 26753
-        else:
+        else: # mapping to UniFi region code: World
             log_debug("Will unset FCC lock")
 
+        '''
+            Lock country code
+        '''
         country_lock_hex = hex(self.country_lock).replace("0x", "")
         rmsg = "Country code in hex: {:0>4}".format(country_lock_hex)
         log_debug(rmsg)
         log_debug("Checking ccode LOCK mark")
 
-        cmd = "go ${{ubntaddr}} usetrd {:0>4} 1 1".format(country_lock_hex)
+        cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 1".format(country_lock_hex)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_only(10, "Writing EEPROM")
-        if self.second_radio is True:
-            cmd = "go ${{ubntaddr}} usetrd {:0>4} 1 0".format(country_lock_hex)
+        '''
+            PBE-5AC(e3d6) requires this 0.5s
+        '''
+        time.sleep(0.5)
+
+        if self.second_wifi_found is True:
+            log_debug("wifi num: " + self.wifinum[self.board_id])
+
+        if self.second_wifi_found is True and self.wifinum[self.board_id] == "2":
+            log_debug("Write region code to 2nd WiFi interface")
+            cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 0".format(country_lock_hex)
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-            self.pexp.expect_only(10, "Writing EEPROM")
+            self.pexp.expect_only(15, "Writing EEPROM")
+        elif self.second_wifi_found is False and self.wifinum[self.board_id] == "2":
+            error_critical("Unable to get the second calibration data")
+        elif self.second_wifi_found is True and self.wifinum[self.board_id] == "1":
+            error_critical("Found only two WiFi interface but spec is one")
+        else:
+            log_debug("Found only one WiFi interface")
 
         # Check SSID
         cmd = "go ${ubntaddr} usetbid"
@@ -322,11 +391,20 @@ class AMAR9342Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, self.bom_rev)
 
         # Check region domain
-        cmd = "go ${ubntaddr} usetrd"
-        rmsg = "WIFI0: {}".format(country_lock_hex)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, rmsg)
-        rmsg = "Correct country code: {}".format(country_lock_hex)
+        rmsg = "Correct country code: {:0>4}".format(country_lock_hex)
         log_debug(rmsg)
+
+        cmd = "go ${ubntaddr} usetrd"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        if self.second_wifi_found is True:
+            rmsg = "WIFI0: {:0>4}".format(country_lock_hex)
+            self.pexp.expect_only(10, rmsg)
+            rmsg = "WIFI1: {:0>4}".format(country_lock_hex)
+            self.pexp.expect_only(10, rmsg)
+        else:
+            rmsg = "WIFI1: {:0>4}".format(country_lock_hex)
+            self.pexp.expect_only(10, rmsg)
 
         # Check MAC address
         cmd = "go ${ubntaddr} usetmac"
@@ -371,19 +449,20 @@ class AMAR9342Factory(ScriptBase):
         [regsubparams, rtc] = self.cnapi.xcmd(cmd)
         regsubparams = regsubparams.split("\n")
 
-        cmd = "grep cpu_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
-        [cpu_rev_id, rtc] = self.cnapi.xcmd(cmd)
-        int_cpu_rev_id = int(cpu_rev_id, 16)
-        cpu_rev_id_msk = hex(int_cpu_rev_id & int_mask_16bit)
-        new_cpu_rev_id = "-i field=ARxxxx_cpu_rev_id,format=hex,value={:0>8}".format(cpu_rev_id_msk.replace("0x", ""))
-        regsubparams[1] = new_cpu_rev_id
+        if self.board_id in self.is_wasp:
+            cmd = "grep cpu_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
+            [cpu_rev_id, rtc] = self.cnapi.xcmd(cmd)
+            int_cpu_rev_id = int(cpu_rev_id, 16)
+            cpu_rev_id_msk = hex(int_cpu_rev_id & int_mask_16bit)
+            new_cpu_rev_id = "-i field=ARxxxx_cpu_rev_id,format=hex,value={:0>8}".format(cpu_rev_id_msk.replace("0x", ""))
+            regsubparams[1] = new_cpu_rev_id
 
-        cmd = "grep radio1_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
-        [radio1_rev_id, rtc] = self.cnapi.xcmd(cmd)
-        int_radio1_rev_id = int(radio1_rev_id, 16)
-        radio1_rev_id_msk = hex(int_radio1_rev_id& int_mask_16bit)
-        new_radio1_rev_id = "-i field=ARxxxx_radio1_rev_id,format=hex,value={:0>8}".format(radio1_rev_id_msk.replace("0x", ""))
-        regsubparams[2] = new_radio1_rev_id
+            cmd = "grep radio1_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
+            [radio1_rev_id, rtc] = self.cnapi.xcmd(cmd)
+            int_radio1_rev_id = int(radio1_rev_id, 16)
+            radio1_rev_id_msk = hex(int_radio1_rev_id& int_mask_16bit)
+            new_radio1_rev_id = "-i field=ARxxxx_radio1_rev_id,format=hex,value={:0>8}".format(radio1_rev_id_msk.replace("0x", ""))
+            regsubparams[2] = new_radio1_rev_id
 
         regsubparams = " ".join(regsubparams)
 
@@ -541,6 +620,7 @@ class AMAR9342Factory(ScriptBase):
 
         self.stop_uboot()
         self.set_mac()
+        time.sleep(1)
         self.set_ub_net()
         self.is_network_alive_in_uboot()
 
