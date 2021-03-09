@@ -14,15 +14,15 @@
     },
     "NBE-5AC": {
       "NAME": "NBE-5AC",
-      "BOARDID": "e3d7",
-      "BOMREV": "113-00494",
-      "DESC": "NBE 5AC",
+      "BOARDID": "e7fc",
+      "BOMREV": "113-00556",
+      "DESC": "NanoBeam 5AC",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
       "SW_ID": "1202",
-      "INDEX": 1
+      "INDEX": 8
     },
     "R5AC-PTP": {
       "NAME": "R5AC-PTP",
@@ -96,8 +96,20 @@
       "SW_ID": "1202",
       "INDEX": 7
     },
+    "NBE-2AC-13": {
+      "NAME": "NBE-2AC-13",
+      "BOARDID": "e4f3",
+      "BOMREV": "113-00569",
+      "DESC": "NanoBeam 2AC 13",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 9
+    },
     "LBE-5AC-XR": {
-      "INDEX": 8,
+      "INDEX": 10,
       "NAME": "LBE-5AC-XR",
       "BOARDID": "e7ff",
       "BOMREV": "113-00962",

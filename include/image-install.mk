@@ -19,8 +19,8 @@ image-install-$1: $1-namechk
 	sed -i s/FCDVERSION/$2/g $(FCDAPP_DIR)/etc/skel/Desktop/version.txt
 	sed -i s/PRODUCTSRL/$(BACKT1_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
 	sed -i s/PRODUCTSRL/$(DRVREG_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
-	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
 	# remove the content under sbin for preventing some errors.
+	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/* $(NEWSQUASHFS)/usr/local/sbin
 	# copy the desktop icons to new squash folder
 	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*
@@ -69,7 +69,7 @@ $1-ostrich-update: image-ostrich-install-$1
 
 image-ostrich-install-$1: $1-namechk
 	@echo " ****************************************************************** "
-	@echo "   FCD ISO NAME          = $2                                              "
+	@echo "   FCD TGZ NAME          = $2                                              "
 	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "
 	@echo " ****************************************************************** "
 	@echo " >> copy prep scripts to new squashfs "
@@ -79,24 +79,38 @@ image-ostrich-install-$1: $1-namechk
 	sed -i s/FCDVERSION/$2/g $(OSTRICH_DIR)/version.txt
 	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
-	
-	# copy all registering scripts
-	#if [ -d $(OSTRICH_DIR)/temp_sbin ]; then
-	    #mkdir -p $(OSTRICH_DIR)/temp_sbin
-		#cp -rf $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/temp_sbin
-		#cp -rf $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/temp_sbin
-		# The following options, just choose one
-		# Option_1
-		#python3 compileall $(OSTRICH_DIR)/temp_sbin
-        # Option_2
-		#python3 compileall $(OSTRICH_DIR)/temp_sbin/script_base.py
-		#python3 compileall $(OSTRICH_DIR)/temp_sbin/ubntlib
-
 	cp -rfL $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/
 	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
 	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
 	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
 	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
 	cd $(OUTDIR); tar -cvzf $2.tgz ostrich
+
+endef
+
+
+define ProductCompress2
+
+$1-antman-local: gitrepo image-antman-install-$1
+$1-antman-update: image-antman-install-$1
+
+image-antman-install-$1:
+	@echo " ****************************************************************** "
+	@echo "   FCD TGZ NAME          = $2                                              "
+	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "
+	@echo " ****************************************************************** "
+	@echo " >> copy prep scripts to new squashfs "
+	rm -rf $(OSTRICH_DIR)
+	mkdir -p $(OSTRICH_DIR)
+	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
+	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
+	python3 include/prepare_fcd_scripts.py -l=$(PRD) -n=$1 -v=$(VER) -j=$(FWVER)
+	$(eval FCD_FL_NAME := $(shell cat $(OSTRICH_DIR)/version.txt))
+	python3 include/namechk.py $(FCD_FL_NAME)
+	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
+	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
+	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
+	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
+	cd $(OUTDIR); tar -cvzf $(FCD_FL_NAME).tgz ostrich
 
 endef

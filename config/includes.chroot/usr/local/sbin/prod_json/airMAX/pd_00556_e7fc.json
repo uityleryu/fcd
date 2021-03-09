@@ -1,10 +1,10 @@
 {
   "airMAX": {
-    "PBE-5AC-US": {
-      "NAME"        : "PBE-5AC-US",
-      "BOARDID"     : "e3d6",
-      "BOMREV"      : "113-00492",
-      "DESC"        : "PBE 5AC",
+    "NBE-5AC-US": {
+      "NAME"        : "NBE-5AC-US",
+      "BOARDID"     : "e7fc",
+      "BOMREV"      : "113-00556",
+      "DESC"        : "NanoBeam 5AC US",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",
