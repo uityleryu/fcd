@@ -154,7 +154,7 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
         self.pexp.expect_only(60, "done")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(240, "done")
 
     def set_stp_env(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
