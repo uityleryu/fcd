@@ -5,7 +5,7 @@ IMAGE-UA-PRO-BL=
 
 IMAGE-UA-GATE= \
     images/ec46* \
-    ua-fw/GT.mt7621.*
+    ua-fw/GT.mt7621.* \
     ua-fw/ua-gate*
 
 
