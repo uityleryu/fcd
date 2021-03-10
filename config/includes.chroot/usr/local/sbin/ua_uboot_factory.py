@@ -39,7 +39,7 @@ class UAUBOOTFactory(ScriptBase):
 
         self.lnxpmt_fcdfw = {
             'dcb0': "#",
-            'ec46': "root@LEDE:/#"
+            'ec46': "#"
         }
 
         self.bootloader = {
@@ -59,7 +59,7 @@ class UAUBOOTFactory(ScriptBase):
 
         self.ubsz = {
             'dcb0': "0x10a0000",
-            'ec46': "0x10a0000"
+            'ec46': "0x2000000"
         }
 
         self.cfgaddr = {
@@ -164,7 +164,7 @@ class UAUBOOTFactory(ScriptBase):
 
     def stop_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
+        #self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
 
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -178,18 +178,52 @@ class UAUBOOTFactory(ScriptBase):
 
         log_debug("Starting doing U-Boot update")
         cmd = "tftpboot {0} images/{1}".format(self.cache_address, self.bootloader[self.board_id])
+        log_debug(cmd)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
         cmd = "sf probe;sf erase {0} {1};sf write {2} {0} {1}".format(self.uboot_address, self.uboot_size, self.cache_address)
         log_debug(cmd)
-        
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(1)
+
         self.pexp.expect_ubcmd(200, self.bootloader_prompt, "re")
         self.stop_uboot()
         
-        
+    def boot_to_T1(self):
+        self.set_uboot_network()
+
+        cmd = "sf probe; sf read 0x83000000 0x1a0000 0xE00000; bootm 0x83000000"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "\n\n")
+        time.sleep(3)
+        self.pexp.expect_ubcmd(10, self.linux_prompt, "\n")
+        self.pexp.expect_ubcmd(20, self.linux_prompt, "\n")
+        cmd = 'cat /proc/bsp_helper/cpu_rev_id'
+        self.pexp.expect_ubcmd(20, self.linux_prompt, cmd)
+
+
+    def update_fcdfw(self):
+        self.stop_uboot()
+        time.sleep(1)
+        self.set_uboot_network()
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "set do_urescue TRUE")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_ubcmd(30, "Listening for TFTP transfer on", "")
+
+        cmd = "atftp -p -l {0}/{1} {2}".format(self.fwdir, "{}-fw.bin".format(self.board_id), self.dutip)
+        log_debug("host cmd: " + cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if (int(rtc) > 0):
+            error_critical("Failed to upload firmware image")
+        else:
+            log_debug("Uploading firmware image successfully")
+
+
+        self.check_info2()
+
+
 
     def lnx_netcheck(self, netifen=False):
         postexp = [
@@ -202,11 +236,8 @@ class UAUBOOTFactory(ScriptBase):
 
     def check_info(self):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-
-        cmd = "cat /proc/ubnthal/board.info"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        cmd = 'cat /proc/bsp_helper/cpu_rev_id'
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd)
 
 
     def check_info2(self):
@@ -214,14 +245,24 @@ class UAUBOOTFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
-        cmd = "cat /proc/ubnthal/system.info"
+        cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
-        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        self.pexp.expect_only(10, "GT.mt7621.v4.0.11.363.gf7b428d.210121.1453")
+
+        cmd = "cat /etc/board.info | grep sysid"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+        self.pexp.expect_only(10, "board.sysid=0x" + self.board_id)
+
+        cmd = "cat /etc/board.info | grep hwaddr"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+        self.pexp.expect_only(10, "board.hwaddr=" + self.mac.upper())
 
 
     def run(self):
+        UPDATE_UBOOT_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
+        UPDATE_FCDFW_EN = True
         DATAVERIFY_EN = True
         #-----------------------------------------------------------------------------------
 
@@ -241,42 +282,26 @@ class UAUBOOTFactory(ScriptBase):
         time.sleep(1)
         #-----------------------------------------------------------------------------------
 
-        msg(5, "update U-Boot")
-        self.uboot_update()
-        #-----------------------------------------------------------------------------------
-
-        msg(20, "Login new U-Boot")
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-        cmd = "ifconfig eth0 {0} up".format(self.dutip)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-        self.chk_lnxcmd_valid()
-        self.lnx_netcheck()
-        cmd = 'echo "5edfacbf" > /proc/ubnthal/.uf'
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        if UPDATE_UBOOT_EN is True:
+            msg(5, "update U-Boot")
+            self.uboot_update()
         #-----------------------------------------------------------------------------------
 
         if DOHELPER_EN is True:
+            self.boot_to_T1()
             self.erase_eefiles()
             msg(40, "Do helper to get the output file to devreg server ...")
             self.data_provision_64k(self.devnetmeta)
-            self.prepare_server_need_files()
+            #self.prepare_server_need_files()
+
+            self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
         #-----------------------------------------------------------------------------------
 
-        if REGISTER_EN is True:
-            self.registration()
-            msg(50, "Finish do registration ...")
-            self.check_devreg_data()
-            msg(55, "Finish doing signed file and EEPROM checking ...")
-        #-----------------------------------------------------------------------------------
 
-        cmd = "reboot -f"
-        self.pexp.expect_lnxcmd(180, self.linux_prompt, cmd)
-        if DATAVERIFY_EN is True:
-            self.check_info2()
-            msg(90, "Succeeding in checking the devreg information ...")
-        #-----------------------------------------------------------------------------------
+        if UPDATE_FCDFW_EN is True:
+            msg(70, "update firmware...")
+            self.update_fcdfw()
+
         
         msg(100, "Formal firmware completed...")
         self.close_fcd()
