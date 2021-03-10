@@ -158,9 +158,9 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
 
     def lcm_fw_ver_check(self):
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.tool_folder, "nvr-lcm-tools_1.0.0-14+g34097ad_arm64.deb"),
+                     src_file=os.path.join(self.tool_folder, "nvr-lcm-tools*"),
                      dst_file=self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools_1.0.0-14+g34097ad_arm64.deb")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
 
     def run(self):
