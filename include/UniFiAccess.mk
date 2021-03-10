@@ -30,9 +30,12 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
-TOOLS-UA-PRO-BL+=$(TOOLS-CONFIG)
+TOOLS-UA+=$(TOOLS-CONFIG)
 
-TOOLS-UA-UA-GATE+=$(TOOLS-CONFIG)
+
+TOOLS-UA-PRO-BL+=$(TOOLS-UA)
+
+TOOLS-UA-GATE+=$(TOOLS-UA)
 
 
 # Project target
