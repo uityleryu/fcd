@@ -98,7 +98,9 @@ TOOLS-UDMLITE+=$(TOOLS-CONFIG)
 TOOLS-UDMLITE+= udm/*
 
 TOOLS-UDMPRO-SE=$(TOOLS-UDM)
-TOOLS-UDMPRO-SE+= udm_pro_se/nvr-lcm-tools*
+TOOLS-UDMPRO-SE+= \
+    udm_pro_se/nvr-lcm-tools* \
+    udm_pro_se/unas.pub
 
 # Project target
 $(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
