@@ -1822,7 +1822,20 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0012",
       "SW_ID"       : "1d01"
-     }
+     },
+
+    "UA-GATE":{
+      "INDEX"       : 1,
+      "NAME"        : "UA-GATE",
+      "BOARDID"     : "ec46",
+      "BOMREV"      : "113-03329",
+      "DESC"        : "UniFi Access Gate",
+      "FILE"        : "ua_uboot_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+    }
   },
 
   "UniFiXG":
