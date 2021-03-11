@@ -1604,6 +1604,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4INS":{
+      "INDEX"       : 9,
+      "NAME"        : "UVC-G4INS",
+      "BOARDID"     : "a595",
+      "BOMREV"      : "113-03346",
+      "DESC"        : "UVC G4 Instant",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
     }
 
   },

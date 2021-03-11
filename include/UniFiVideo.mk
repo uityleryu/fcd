@@ -38,7 +38,9 @@ IMAGE-UVC-G3MINI= \
     images/a590* \
     uvc-fw/g3ins.*
 
-
+IMAGE-UVC-G4INS= \
+    images/a595* \
+    uvc-fw/g4ins.*
 
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
@@ -49,7 +51,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G4DOME)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPRO)
 IMAGE-UVC+=$(IMAGE-UVC-AI360)
 IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
-
+IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -127,6 +129,12 @@ TOOLS-UVC-G3MINI+= \
     uvc/128k_ff.bin
 
 
+TOOLS-UVC-G4INS+=$(TOOLS-UVC)
+TOOLS-UVC-G4INS+= \
+    uvc/helper_uvcg4ins \
+    uvc/m25p80_uvcg4ins.ko \
+    uvc/128k_ff.bin
+
 
 # Project target
 
@@ -139,7 +147,7 @@ $(eval $(call ProductImage,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLPRO,FCD_$(PRD)_G4DOORBELLPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-AI360,FCD_$(PRD)_AI360_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
-
+$(eval $(call ProductImage,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -152,6 +160,6 @@ $(eval $(call ProductCompress,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPRO,FCD_$(PRD)_G4DOORBELLPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-AI360,FCD_$(PRD)_AI360_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 
 
