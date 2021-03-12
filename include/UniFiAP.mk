@@ -58,12 +58,21 @@ IMAGE-UBB-XG= \
     uap-fw/af60* \
     uap-fw/NAND_factory_ubi.img
 
+IMAGE-ULTE-FLEX= \
+    images/e614* \
+    images/e615* \
+    uap-fw/XD.qca956x-LSDK-ART-ULTE-FLEX-V4.img \
+    uap-fw/qca956x-ulte-flex-u-boot.bin \
+    uap-fw/ULTE-Flex*
+
+
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UAP-NANO-IW-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 IMAGE-UAP+=$(IMAGE-UBB-XG)
+IMAGE-UAP+=$(IMAGE-ULTE-FLEX)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -102,9 +111,14 @@ TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
 TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UBB-XG+=$(TOOLS-CONFIG)
 
+TOOLS-ULTE-FLEX+=$(TOOLS-CONFIG)
+TOOLS-ULTE-FLEX+= \
+    ulte_flex/helper
+
 # Assign UAP series tools
 TOOLS-UAP+=$(TOOLS-UBB)
 TOOLS-UAP+=$(TOOLS-UAP-INDUSTRIAL)
+
 
 # Project target
 
@@ -115,6 +129,7 @@ $(eval $(call ProductImage,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$(VE
 $(eval $(call ProductImage,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductImage,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -125,3 +140,4 @@ $(eval $(call ProductCompress,UAP-NANO-IW-FLEXHD,FCD_$(PRD)_UAP-NANO-IW-FLEXHD_$
 $(eval $(call ProductCompress,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductCompress,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))

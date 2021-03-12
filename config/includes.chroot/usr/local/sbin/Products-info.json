@@ -693,13 +693,39 @@
     },
 
     "UBB-XG":{
-      "INDEX"       : 9,
+      "INDEX"       : 7,
       "NAME"        : "UBB-XG",
       "BOARDID"     : "dd12",
       "BOMREV"      : "113-00958",
       "DESC"        : "UniFi AP Building Bridge XG",
       "FILE"        : "uap_ls104x_factory.py",
       "T1FILE"      : "uap_ls104x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-FLEX-EU":{
+      "INDEX"       : 8,
+      "NAME"        : "ULTE-FLEX-EU",
+      "BOARDID"     : "e614",
+      "BOMREV"      : "113-00830",
+      "DESC"        : "UniFi LTE FLEX EU",
+      "FILE"        : "uap_qca956x_factory2.py",
+      "T1FILE"      : "uap_qca956x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-FLEX-US":{
+      "INDEX"       : 9,
+      "NAME"        : "ULTE-FLEX-US",
+      "BOARDID"     : "e615",
+      "BOMREV"      : "113-00758",
+      "DESC"        : "UniFi LTE FLEX US",
+      "FILE"        : "uap_qca956x_factory2.py",
+      "T1FILE"      : "uap_qca956x_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
