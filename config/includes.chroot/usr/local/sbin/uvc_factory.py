@@ -655,10 +655,6 @@ class UVCFactoryGeneral(ScriptBase):
         print(rmsg)
         log_debug(rmsg)
 
-        cmd = 'touch /etc/persistent/reset.flag; cfgmtd -w -p /etc'
-        log_debug(cmd)
-        self.session.execmd(cmd)
-
         try:
             cmd = 'ps | grep burnin.sh | grep -v grep | awk \'{print $1}\' | xargs kill -9'
             log_debug(cmd)
@@ -668,13 +664,13 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug(cmd)
             self.session.execmd(cmd)
         except:
-            print('skip')
-
-        cmd = 'cfgmtd -c'
-        log_debug(cmd)
-        self.session.execmd(cmd)       
+            print('skip')   
 
         cmd = "echo \"test.factory=1\" >> /tmp/system.cfg"
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
+        cmd = 'touch /etc/persistent/reset.flag; cfgmtd -w -p /etc'
         log_debug(cmd)
         self.session.execmd(cmd)
 
