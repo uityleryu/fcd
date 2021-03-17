@@ -19,17 +19,15 @@ class UAPQCA9563Factory(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.devregpart = "/dev/"
+        self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
-
         self.helperexe = "helper_ARxxxx_musl"
+        self.helper_path = "uap"
         self.user = "root"
         self.bootloader_prompt = "ath>"
         self.linux_prompt = "# "
         self.cmd_prefix = "go 0x80200020 "
         self.product_class = "radio"  # For this product using radio
-
-        self.helperexe_path = os.path.join(self.tftpdir, self.helperexe)
 
     def enter_uboot(self):
         self.pexp.expect_action(300, "Hit any key to", "")
@@ -44,14 +42,13 @@ class UAPQCA9563Factory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "reboot" )
 
     def fwupdate(self):
-
         # Uboot booting initial and Set IP on DUT
         self.enter_uboot()
         self.pexp.expect_action(50, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
         time.sleep(2)
 
         # TFTP bin from TestServer
-        fw_path = os.path.join(self.tftpdir, self.board_id + ".bin")
+        fw_path = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         log_debug(msg="firmware path:" + fw_path)
         atftp_cmd = 'exec atftp --option "mode octet" -p -l {} {}'.format(fw_path, self.dutip)
         log_debug(msg="Run cmd on host:" + atftp_cmd)
@@ -89,21 +86,9 @@ class UAPQCA9563Factory(ScriptBase):
         # Boot into OS and enable console
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'" )
         self.pexp.expect_action(30, self.bootloader_prompt, "boot" )
-        self.pexp.expect_action(200, "Please press Enter to activate this console.", "" )
-        os.system("sleep 5")
-        self.pexp.expect_action(30, "", "")
-        self.pexp.expect_action(30, "UBNT login:", "ubnt")
-        self.pexp.expect_action(30, "Password: ", "ubnt")
-        time.sleep(3)
-
-        # Disable Console NotExpected output
-        self.pexp.expect_action(30, self.linux_prompt ,'#')
-        self.pexp.expect_action(60, self.linux_prompt, "while true; do grep -q 'hostapd' /etc/inittab; if \[ $? -eq 0 \]; then echo 'hostapd exists in /etc/inittab'; break; else echo \"hostapd doesn't exist in /etc/inittab\"; sleep 1; fi; done")
-        self.pexp.expect_action(60, self.linux_prompt, "sed -i 's/null::respawn:\\/usr\\/sbin\\/hostapd/#null::respawn:\\/usr\\/sbin\\/hostapd/g' /etc/inittab")
-        self.pexp.expect_action(60, self.linux_prompt, "init -q; sleep 15")
-        time.sleep(15)
-        self.pexp.expect_action(60, self.linux_prompt, "dmesg -n 1")
-        time.sleep(5)
+        self.login(timeout=120, press_enter=True)
+        self.disable_hostapd()
+        self.is_network_alive_in_linux()
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -152,9 +137,12 @@ class UAPQCA9563Factory(ScriptBase):
 
 
     def check_info(self):
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+        self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
         """Main procedure of factory
@@ -170,16 +158,14 @@ class UAPQCA9563Factory(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        # For development reboot to retest
-        # self.fromOS_retest()
-
         if FWUPDATE_ENABLE is True:
+            self.erase_eefiles()
             self.fwupdate()
             msg(10, "Succeeding in update bin file ...")
+            self.enter_uboot()
             self.boot_image()
 
         if DOHELPER_ENABLE is True:
-            self.erase_eefiles()
             msg(20, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
@@ -194,10 +180,6 @@ class UAPQCA9563Factory(ScriptBase):
             msg(50, "Succeeding in checking the devrenformation ...")
 
         msg(100, "Completing firmware upgrading ...")
-
-        if UPLOADLOG_ENABLE is True:
-            self.uploadlog()
-
         self.close_fcd()
 
 def main():

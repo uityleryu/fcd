@@ -69,7 +69,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
-        self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
+        self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.is_network_alive_in_linux()
 
     def _ramboot_uap_fwupdate(self):

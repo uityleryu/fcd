@@ -28,8 +28,8 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.31"
-    __authors__ = "FCD team"
+    __version__ = "1.0.32"
+    __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
     def __init__(self):
@@ -360,7 +360,7 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
-        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign,
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.dsskey, self.eegenbin, self.eesign,
                  self.eesigndate]
 
         for f in files:
@@ -659,11 +659,18 @@ class ScriptBase(object):
         exp = r"64 bytes from {0}".format(ipaddr)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
 
-    def disable_udhcpc(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; "\
-                                                       "do echo 'Wait udhcpc...'; sleep 1; done", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'sed -i "/udhcpc/d" /etc/inittab', self.linux_prompt)
+    def disable_inittab_process(self, process):
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, "while ! grep -q \"{}\" /etc/inittab; "\
+                                "do echo 'Wait {}...'; sleep 1; done".format(process, process), self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'sed -i "/{}/d" /etc/inittab'.format(process), 
+                                self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
+
+    def disable_udhcpc(self):
+        self.disable_inittab_process("udhcpc")
+
+    def disable_hostapd(self):
+        self.disable_inittab_process("hostapd")
 
     def gen_rsa_key(self):
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
@@ -839,6 +846,8 @@ class ScriptBase(object):
 
         if self.product_class == 'basic':
             product_class_hexval = "0014"
+        elif self.product_class == 'radio':
+            product_class_hexval = "0001"
         else:
             error_critical("product class is '{}', FCD only supports 'basic' now".format(self.product_class))
 
