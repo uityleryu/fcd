@@ -2,7 +2,7 @@
 import time
 import os
 import stat
-from udm_alpine_factory import ScriptBase
+from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 

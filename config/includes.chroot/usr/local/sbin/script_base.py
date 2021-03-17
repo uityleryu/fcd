@@ -1009,6 +1009,30 @@ class ScriptBase(object):
         if retry == 0:
             error_critical("Failed to receive {} from DUT".format(file))
 
+    def set_ntptime_to_dut(self, timeout=10):
+        [ntp_strf, ntp_ctime] = Common.RequestTimefromNtp("0.cn.pool.ntp.org")
+        if ntp_strf is False or ntp_ctime is False:
+            error_critical("Timeout waiting for NTP packet")
+
+        cmd = "date -s \"{}\"; hwclock -w".format(ntp_strf)
+        self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd)
+
+        output = self.pexp.expect_get_output("hwclock", self.linux_prompt)
+
+        match = re.findall(ntp_ctime, output, re.S)
+
+        '''
+            url: https://en.wikipedia.org/wiki/C_date_and_time_functions
+            strftime: converts a struct tm object to custom textual representation
+            ctime: converts a time_t value to a textual representation
+        '''
+
+        if match:
+            otmsg = match[0]
+            log_debug("Time written in DUT: " + otmsg)
+        else:
+            error_critical("Can't set the initial time to system clock!!!")
+
     '''
         DUT view point
         To get the file from the host by scp command

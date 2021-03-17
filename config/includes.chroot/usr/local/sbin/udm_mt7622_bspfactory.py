@@ -2,9 +2,10 @@
 import time
 import os
 import stat
-from udm_alpine_factory import ScriptBase
+from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+
 
 BOOT_BSP_IMAGE    = True
 PROVISION_ENABLE  = True
@@ -112,9 +113,10 @@ class UDMMT7622BspFactory(ScriptBase):
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
+        self.pexp.expect_only(300, "Upgrading firmware")
 
     def login(self):
-        self.pexp.expect_only(240, "Welcome to UniFi")
+        self.pexp.expect_only(180, "Welcome to UniFi")
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -165,6 +167,9 @@ class UDMMT7622BspFactory(ScriptBase):
             self.login()
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
+
+        self.set_ntptime_to_dut()
+        msg(95, "Set NTP time to DUT ...")
 
         msg(100, "Completed FCD process ...")
         self.close_fcd()
