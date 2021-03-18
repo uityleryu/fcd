@@ -35,7 +35,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "2",
             'a653': "2",
             'a654': "2",
-            'a655': "2"
+            'a655': "3"
         }
 
         self.btnum = {
@@ -60,7 +60,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.board_id == "a651" or \
            self.board_id == "a652" or \
            self.board_id == "a653" or \
-           self.board_id == "a654":
+           self.board_id == "a654" or \
+           self.board_id == "a655":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:

@@ -32,6 +32,9 @@ IMAGE-U6-Extender= \
 IMAGE-U6-Enterprise= \
 	u6-fw/ipq5018/* \
     images/a654*
+IMAGE-U6-Infinity= \
+	u6-fw/ipq5018/* \
+    images/a655*
 IMAGE-U6-LR= \
 	u6-fw/mt7622/* \
 	images/a620*
@@ -72,6 +75,7 @@ $(eval $(call ProductImage,U6-Mesh,FCD_$(PRD)_U6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Extender,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -81,4 +85,5 @@ $(eval $(call ProductCompress,U6-Mesh,FCD_$(PRD)_U6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Extender,FCD_$(PRD)_U6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
