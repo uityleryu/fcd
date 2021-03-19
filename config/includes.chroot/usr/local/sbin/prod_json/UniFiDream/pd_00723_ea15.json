@@ -6,7 +6,7 @@
       "BOARDID": "ea15",
       "BOMREV": "113-00723",
       "DESC": "UniFi Dream Machine Pro",
-      "FILE": "udm_alpine_factory2.py",
+      "FILE": "ubios_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",

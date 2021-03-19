@@ -6,7 +6,7 @@
       "BOARDID": "ea19",
       "BOMREV": "113-00740",
       "DESC": "UniFi Next-Generation Gateway",
-      "FILE": "udm_alpine_factory2.py",
+      "FILE": "ubios_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",

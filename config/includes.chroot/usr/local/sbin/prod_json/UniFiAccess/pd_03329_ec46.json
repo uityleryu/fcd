@@ -1,7 +1,7 @@
 {
   "UniFiAccess": {
     "UA-GATE": {
-      "INDEX": 1,
+      "INDEX": 0,
       "NAME": "UA-GATE",
       "BOARDID": "ec46",
       "BOMREV": "113-03329",
