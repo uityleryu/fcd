@@ -108,7 +108,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "boot.img")
         )
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'server={} factory'".format(self.tftp_server))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootupd")  # tranfer img and update
         self.pexp.expect_only(30, "Bytes transferred")
         self.pexp.expect_action(60, self.bootloader_prompt, "run delenv")
@@ -139,7 +139,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "unas.pub")
         )
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'server={} factory'".format(self.tftp_server))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
 

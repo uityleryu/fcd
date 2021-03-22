@@ -154,7 +154,7 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
         self.pexp.expect_only(60, "Erased: OK", err_msg="Erase config failed")
 
-        self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra server=" + self.tftp_server)
+        self.pexp.expect_action(30, self.ubpmt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
         self.pexp.expect_action(10, self.ubpmt, "run bootcmdspi")
         msg(15, "Installing fw on nand")
         self.pexp.expect_only(10, "bootargs=", err_msg="Cannot see reboot msg after enter boot cmd in uboot")

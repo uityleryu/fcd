@@ -94,7 +94,7 @@ class UDMMT7622BspFactory(ScriptBase):
         self.enter_uboot()
 
         log_debug("Updating FW image ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory server={}'".format(self.tftp_server))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootargsemmcdual0")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mmc init")
