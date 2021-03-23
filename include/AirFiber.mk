@@ -25,6 +25,7 @@ IMAGE-WAVE-BRIDGE= \
 IMAGE-WAVE-AP= \
     images/dc9f* \
     af-fw/GMP*.bin \
+    af-fw/af60-spf6.1.1_nor-v1.bin \
     af-fw/u-boot*
 
 IMAGE-LTU = 
