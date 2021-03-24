@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.32"
+    __version__ = "1.0.33"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
