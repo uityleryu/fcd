@@ -33,7 +33,7 @@ class ScriptBase(object):
     __contact__ = "fcd@ui.com"
 
     def __init__(self):
-        self.cnapi = Common()
+        self.cnapi = Common(
         self.input_args = self._init_parse_inputs()
         self._init_share_var()
         self.fcd = FCDHelper()
