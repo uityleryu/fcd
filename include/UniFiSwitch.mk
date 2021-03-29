@@ -82,7 +82,7 @@ IMAGE-USW-EnterpriseXG-24= \
 IMAGE-USW-MISSION-CRITICAL= \
     images/ed2c* \
     usw-fw/unifiswitch-mc-* \
-    usw-fw/US.rtl838x*
+    usw-fw/UM.rtl838x*
 
 IMAGE-USW-Enterprise-24-PoE= \
     images/eb38* \
