@@ -22,6 +22,13 @@ IMAGE-LBE-5AC-XR= \
     am-fw/AR934X_ART_UB.bin \
     am-fw/AR934X_UB.bin \
 
+IMAGE-ACB-SERIES= \
+    images/e8f8* \
+    am-fw/u-boot-ar934x-aic.bin \
+    am-fw/u-boot-art-ar934x-aic.bin \
+    am-fw/u-boot-art-qca953x-aic.bin \
+    am-fw/u-boot-qca953x-aic.bin
+
 IMAGE-AC-SERIES= \
     images/e1f5* images/e3d5* images/e3f5* images/e4f5* \
     images/e5f5* images/e6f5* images/e7f5* images/e8f5* \
@@ -58,6 +65,10 @@ IMAGE-AC-SERIES= \
     am-fw/WA.v8.7.2.44330.210106.1337.bin \
     am-fw/2XC.v8.7.2.44330.210106.1337.bin \
     am-fw/XC.v8.7.2.44330.210106.1337.bin \
+    am-fw/2WA.v8.7.4-beta2.44988.210323.1827.bin \
+    am-fw/2XC.v8.7.4-beta2.44988.210323.1827.bin \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/XC.v8.7.4-beta2.44988.210323.1828.bin \
     am-fw/UBNT_WA.bin \
     am-fw/UBNT_2WA.bin \
     am-fw/UBNT_XC.bin \
@@ -113,6 +124,10 @@ TOOLS-AC-SERIES= \
     am/id_rsa.pub \
     am/fl_lock_11ac_re
 
+TOOLS-ACB-SERIES= \
+    am/helper_ARxxxx_aircube \
+    am/aic_cred_gen.sh
+
 TOOLS-LBE-5AC-XR=$(TOOLS-AC-SERIES)
 
 
@@ -136,6 +151,7 @@ $(eval $(call ProductImage,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ACB-SERIES,FCD_$(PRD)_ACB-SERIES_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LBE-5AC-XR,FCD_$(PRD)_LBE-5AC-XR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -150,24 +166,82 @@ $(eval $(call ProductCompress,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER),$(A
 
 # ==================================================================================================
 
-IMAGE-e7ff= \
-    images/e7ff* \
+IMAGE-AR9342-AC-SERIES= \
     am-fw/u-boot-ar934x.bin \
     am-fw/u-boot-art-ar934x.bin \
-    am-fw/WA.v8.7.4-beta.44660.210219.1654.bin \
-    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
     am-fw/AR934X_ART_UB.bin \
     am-fw/AR934X_UB.bin \
 
-TOOLS-e7ff= \
-    am/helper_ARxxxx_11ac \
+IMAGE-e3d6=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-e3d6+= \
+    images/e3d6* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
+
+IMAGE-e8f8= \
+    images/e8f8* \
+    am-fw/u-boot-ar934x-aic.bin \
+    am-fw/u-boot-art-ar934x-aic.bin \
+    am-fw/u-boot-art-qca953x-aic.bin \
+    am-fw/u-boot-qca953x-aic.bin
+
+IMAGE-e7f9=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-e7f9+= \
+    images/e7f9* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
+
+IMAGE-e7fa=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-e7fa+= \
+    images/e7fa* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img \
+
+IMAGE-e7fc=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-e7fc+= \
+    images/e7fc* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART2_815-NBE-5AC-G2-Wasp-16M-V4.img \
+
+IMAGE-e7ff=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-e7ff+= \
+    images/e7ff* \
+    am-fw/WA.v8.7.4-beta.44660.210219.1654.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
+
+# -----------------------------------------------------------------------------------------
+
+TOOLS-AR9432-AC-SERIES= \
+    am/helper_ARxxxx_11ac_20210329 \
     am/cfg_part_ar9342.bin \
     am/id_rsa \
     am/id_rsa.pub \
     am/fl_lock_11ac_re
 
+TOOLS-e3d6=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-e3d6+=$(TOOLS-CONFIG)
+
+TOOLS-e7f9=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-e7f9+=$(TOOLS-CONFIG)
+
+TOOLS-e7fa=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-e7fa+=$(TOOLS-CONFIG)
+
+TOOLS-e7fc=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-e7fc+=$(TOOLS-CONFIG)
+
+TOOLS-e7ff=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e7ff+=$(TOOLS-CONFIG)
+
+TOOLS-e8f8= \
+    am/helper_ARxxxx_aircube \
+    am/aic_cred_gen.sh
 
 # Project compressed type2 file for RPi FCD host
 
+$(eval $(call ProductCompress2,e3d6,FCD_$(PRD)_e3d6_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,e7f9,FCD_$(PRD)_e7f9_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,e7fa,FCD_$(PRD)_e7fa_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,e7fc,FCD_$(PRD)_e7fc_$(VER)_$(FWVER),$(ALL)))
 $(eval $(call ProductCompress2,e7ff,FCD_$(PRD)_e7ff_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,e8f8,FCD_$(PRD)_e8f8_$(VER)_$(FWVER),$(ALL)))

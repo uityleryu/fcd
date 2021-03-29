@@ -105,7 +105,8 @@ image-antman-install-$1:
 	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
 	python3 include/prepare_fcd_scripts.py -l=$(PRD) -n=$1 -v=$(VER) -j=$(FWVER)
-	$(eval FCD_FL_NAME := $(shell cat $(OSTRICH_DIR)/version.txt))
+	$(eval FCD_FL_NAME := $(shell cat $(FCDAPP_DIR)/$(APP_DIR)/prod_json/version.txt))
+	@echo "FCD_FL_NAME : $(FCD_FL_NAME)"
 	python3 include/namechk.py $(FCD_FL_NAME)
 	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
 	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf

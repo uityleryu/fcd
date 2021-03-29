@@ -70,7 +70,7 @@ class AMAR9342Factory(ScriptBase):
         self.ver_extract()
         self.product_class = "radio"
         self.devregpart = "/dev/mtdblock5"
-        self.helperexe = "helper_ARxxxx_11ac"
+        self.helperexe = "helper_ARxxxx_11ac_20210329"
 
         self.uboot_img = "{}/{}-uboot.bin".format(self.image, self.board_id)
         self.cfg_part = os.path.join(self.tools, "am", "cfg_part_ar9342.bin")
@@ -330,7 +330,13 @@ class AMAR9342Factory(ScriptBase):
         bomrev = "13-{}".format(self.bom_rev)
         cmd = "go ${{ubntaddr}} usetbrev {}".format(bomrev)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(10, "Writing EEPROM")
+        expect_list = [
+            "Writing EEPROM",
+            "Done"
+        ]
+        index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+        if index < 0:
+            error_critical("Can't find expected message after usetbrev ... ")
 
         self.lock_dfs = True
         log_debug("Forcing UNII unlock for all AC devices")
@@ -362,7 +368,13 @@ class AMAR9342Factory(ScriptBase):
 
         cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 1".format(country_lock_hex)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(10, "Writing EEPROM")
+        expect_list = [
+            "Writing EEPROM",
+            "Done"
+        ]
+        index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+        if index < 0:
+            error_critical("Can't find expected message after usetrd ... ")
         '''
             PBE-5AC(e3d6) requires this 0.5s
         '''
@@ -375,7 +387,13 @@ class AMAR9342Factory(ScriptBase):
             log_debug("Write region code to 2nd WiFi interface")
             cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 0".format(country_lock_hex)
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-            self.pexp.expect_only(15, "Writing EEPROM")
+            expect_list = [
+                "Writing EEPROM",
+                "Done"
+            ]
+            index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+            if index < 0:
+                error_critical("Can't find expected message after usetrd ... ")
         elif self.second_wifi_found is False and self.wifinum[self.board_id] == "2":
             error_critical("Unable to get the second calibration data")
         elif self.second_wifi_found is True and self.wifinum[self.board_id] == "1":
