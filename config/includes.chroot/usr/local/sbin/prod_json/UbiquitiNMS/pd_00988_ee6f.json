@@ -1,11 +1,11 @@
 {
   "UbiquitiNMS": {
-    "UISP-S-MICRO": {
+    "UISP-S": {
       "INDEX": 0,
-      "NAME": "UISP-S-MICRO",
+      "NAME": "UISP-S",
       "BOARDID": "ee6f",
       "BOMREV": "113-00988",
-      "DESC": "Ubiquiti Network Management System Switch Micro",
+      "DESC": "Ubiquiti Network Management System Switch",
       "FILE": "unms_rtl838x_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

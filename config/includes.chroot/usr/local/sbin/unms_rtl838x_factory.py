@@ -22,7 +22,7 @@ BDINFO_EN = True
     eed1: UISP_S_PRO
     ee50: UISP_S_LITE
     eed3: UISP_O_PRO
-    ee6f: UISP_S_MICRO
+    ee6f: UISP_S
 '''
 
 
@@ -38,7 +38,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "UISP_S_PRO",
             'ee50': "UISP_S_LITE",
             'eed3': "UISP_O_PRO",
-            'ee6f': "UISP_S_MICRO"
+            'ee6f': "UISP_S"
         }
 
         # number of Ethernet

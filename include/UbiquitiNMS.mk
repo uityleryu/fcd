@@ -13,36 +13,26 @@ IMAGE-UISP-R-PRO= \
     unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
-IMAGE-ee6a=$(IMAGE-UISP-R-PRO)
-
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 IMAGE-UNMS-S-LITE= \
     images/eed0* \
     unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.2.bix \
     unms-fw/UNMS-S-Lite.uboot_1.1.0.bin \
 
-IMAGE-eed0=$(IMAGE-UNMS-S-LITE)
-
 IMAGE-UISP-S-LITE= \
     images/ee50* \
     unms-fw/DIAG_UISP_S_Lite_1.3.4.5.vmlinux.bix \
     unms-fw/UISP-S-Lite.uboot_1.2.1.bin \
 
-IMAGE-ee50=$(IMAGE-UISP-S-LITE)
-
 IMAGE-UISP-R-LITE= \
     images/ee6b* \
     unms-fw/UISPR.mt7621* \
-
-IMAGE-ee6b=$(UISP-R-LITE)
 
 IMAGE-UISP-LTE= \
     images/dca2* \
     images/dca3* \
     unms-fw/LL.qca956x.* \
     unms-fw/uisp-lte-initramfs-64MB.img \
-
-IMAGE-dca2=$(IMAGE-UISP-LTE)
 
 IMAGE-UISP-S-PRO= \
     images/eed1* \
@@ -62,13 +52,6 @@ IMAGE-UISP-O-PRO= \
     images/eed3* \
     unms-fw/DIAG_UISP_O_Pro_1.3.4.7.8-Dev03.vmlinux.bix \
     unms-fw/UISP_O_PRO_Pre_u-boot-60495.bin
-
-IMAGE-UISP-S-MICRO= \
-    images/ee6f* \
-    unms-fw/DIAG_UISP_S_Micro_1.3.6.vmlinux.bix \
-    unms-fw/UISP-S-Micro.uboot_1.2.4-737d.bin \
-
-IMAGE-ee6f=$(IMAGE-UISP-S-MICRO)
 
 IMAGE-UISP-R-MICRO= \
     images/ee6e* \
@@ -134,12 +117,6 @@ TOOLS-UISP-R-PRO-XG+= uisp-r-pro-xg/*
 TOOLS-UISP-O-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-O-PRO+= unms-spro/*
 
-TOOLS-UISP-S-MICRO=$(TOOLS-UNMS)
-TOOLS-UISP-S-MICRO+= unms-slite/*
-
-TOOLS-ee6f=$(TOOLS-UNMS)
-TOOLS-ee6f+= unms-slite/*
-
 TOOLS-UISP-R-MICRO=$(TOOLS-UNMS)
 TOOLS-UISP-R-MICRO+= uisp-r-lite/helper_MT7621_release
 
@@ -158,7 +135,6 @@ $(eval $(call ProductImage,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 
@@ -174,7 +150,37 @@ $(eval $(call ProductCompress,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UISP-S-MICRO,FCD_$(PRD)_UISP-S-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R-MICRO,FCD_$(PRD)_UISP-R-MICRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
+
+# ==================================================================================================
+
+IMAGE-ee6a=$(IMAGE-UISP-R-PRO)
+IMAGE-eed0=$(IMAGE-UNMS-S-LITE)
+IMAGE-ee50=$(IMAGE-UISP-S-LITE)
+IMAGE-ee6b=$(UISP-R-LITE)
+IMAGE-dca2=$(IMAGE-UISP-LTE)
+
+# UISP-S
+IMAGE-ee6f= \
+    images/ee6f* \
+    unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix \
+    unms-fw/u-boot-1.3.0-c174.bin \
+
+# ---------------------------------------------------------------------------------------------------
+
+TOOLS-ee6f=$(TOOLS-UNMS)
+TOOLS-ee6f+= unms-slite/*
+
+TOOLS-eed0=$(TOOLS-UNMS)
+TOOLS-eed0+=unms-slite/*
+
+TOOLS-ee50=$(TOOLS-UNMS)
+TOOLS-ee50+=unms-slite/*
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,eed0,FCD_$(PRD)_eed0_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,ee50,FCD_$(PRD)_ee50_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER),$(ALL)))

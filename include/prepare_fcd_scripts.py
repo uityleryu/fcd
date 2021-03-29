@@ -187,11 +187,16 @@ def copy_required_files():
         os.makedirs(ostrich_bin_dir)
 
     for ct in register_libs:
+        if ct == "":
+            continue
+
         src = os.path.join(reg_bs_dir, ct)
         cmd = "cp -rfL {} {}".format(src, ostrich_bin_dir)
+        print("cmd: " + cmd)
         cn.xcmd(cmd)
 
     cmd = "cd {}; ln -s {} client_rpi4".format(ostrich_bin_dir, sclient_f)
+    print("cmd: " + cmd)
     cn.xcmd(cmd)
 
 
