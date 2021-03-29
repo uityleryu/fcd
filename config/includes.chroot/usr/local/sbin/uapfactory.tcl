@@ -116,7 +116,7 @@ proc stop_uboot {} {
     log_debug "Stopping U-boot"
     #send "any key"
     
-    set timeout 30
+    set timeout 60
     expect  "Hit any key to stop autoboot" { send "\r"} \
     timeout { error_critical "Device not found!" }  
 
@@ -528,7 +528,7 @@ proc update_firmware { boardid } {
     set timeout 180
     expect timeout { 
         error_critical "Failed to flash firmware !" 
-    } "Firmware update complet"
+    } "U-Boot unifi"
 
     log_progress 45 "Firmware flashed"
 }
