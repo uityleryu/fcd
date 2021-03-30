@@ -325,7 +325,7 @@ proc update_new_firmware { boardid } {
     set timeout 180
     expect timeout {
         error_critical "Failed to flash firmware !"
-    } "Firmware update complet"
+    } "U-Boot unifi"
     
     log_progress 90 "Firmware flashed"
 }
