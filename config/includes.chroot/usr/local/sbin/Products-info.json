@@ -682,7 +682,7 @@
 
     "UAP-AC-Lite":{
       "INDEX"       : 6,
-      "NAME"        : "UAP-ACLite",
+      "NAME"        : "UAP-AC-Lite",
       "BOARDID"     : "e517",
       "BOMREV"      : "113-00391",
       "DESC"        : "UniFi AC Lite",
@@ -704,9 +704,20 @@
       "SW_ID"       : "0601"
     },
 
+    "UAP-AC-PRO":{
+      "INDEX"       : 8,
+      "NAME"        : "UAP-AC-PRO",
+      "BOARDID"     : "e537",
+      "BOMREV"      : "113-00390",
+      "DESC"        : "UniFi AC PRO",
+      "FILE"        : "uap_qca9563_factory.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
 
     "UBB-XG":{
-      "INDEX"       : 7,
+      "INDEX"       : 9,
       "NAME"        : "UBB-XG",
       "BOARDID"     : "dd12",
       "BOMREV"      : "113-00958",
@@ -719,7 +730,7 @@
     },
 
     "ULTE-FLEX-EU":{
-      "INDEX"       : 8,
+      "INDEX"       : 10,
       "NAME"        : "ULTE-FLEX-EU",
       "BOARDID"     : "e614",
       "BOMREV"      : "113-00830",
@@ -732,7 +743,7 @@
     },
 
     "ULTE-FLEX-US":{
-      "INDEX"       : 9,
+      "INDEX"       : 11,
       "NAME"        : "ULTE-FLEX-US",
       "BOARDID"     : "e615",
       "BOMREV"      : "113-00758",

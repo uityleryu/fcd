@@ -29,23 +29,24 @@ class UAPQCA9563Factory(ScriptBase):
         self.cmd_prefix = "go 0x80200020 "
         self.product_class = "radio"  # For this product using radio
 
-    def enter_uboot(self):
+    def enter_uboot(self, set_network = True):
         self.pexp.expect_action(300, "Hit any key to", "")
         time.sleep(2)
-        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix+ "uappinit" )
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_lnxcmd(10, self.bootloader_prompt,  "ping " + self.tftp_server, "host " + self.tftp_server + " is alive",  retry=5 )
-
-    def fromOS_retest(self):
-        self.pexp.expect_action(5, " ", "")
-        self.pexp.expect_action(30, self.linux_prompt, "reboot" )
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uappinit")
+        if set_network is True:
+            self.set_ub_net(self.premac)
+            self.is_network_alive_in_uboot()
 
     def fwupdate(self):
+        # Clear uboot env
+        self.enter_uboot(set_network = False)
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
+        self.pexp.expect_action(30, self.bootloader_prompt, "reset")
+
         # Uboot booting initial and Set IP on DUT
-        self.enter_uboot()
+        self.enter_uboot(set_network = True)
         self.pexp.expect_action(50, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
-        time.sleep(2)
+        time.sleep(10)
 
         # TFTP bin from TestServer
         fw_path = os.path.join(self.fwdir, self.board_id + "-fw.bin")
@@ -60,7 +61,7 @@ class UAPQCA9563Factory(ScriptBase):
         log_debug(msg="TFTP Finished")
 
         # Set MAC
-        self.enter_uboot()
+        self.enter_uboot(set_network = False)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbid -f " + self.board_id)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetbrev " + self.bom_rev)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetrd " + self.region)
@@ -82,13 +83,15 @@ class UAPQCA9563Factory(ScriptBase):
         self.pexp.expect_only(15, self.mac)
 
 
-    def boot_image(self):
+    def boot_image(self, boot_only = False):
         # Boot into OS and enable console
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'" )
         self.pexp.expect_action(30, self.bootloader_prompt, "boot" )
         self.login(timeout=120, press_enter=True)
-        self.disable_hostapd()
-        self.is_network_alive_in_linux()
+        if boot_only is False:
+            self.disable_hostapd()
+            self.set_lnx_net(intf="br0")
+            self.is_network_alive_in_linux()
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -157,12 +160,11 @@ class UAPQCA9563Factory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
+        self.erase_eefiles()
 
         if FWUPDATE_ENABLE is True:
-            self.erase_eefiles()
             self.fwupdate()
             msg(10, "Succeeding in update bin file ...")
-            self.enter_uboot()
             self.boot_image()
 
         if DOHELPER_ENABLE is True:
@@ -176,6 +178,9 @@ class UAPQCA9563Factory(ScriptBase):
             msg(40, "Finish doing signed file and EEPROM checking ...")
 
         if DATAVERIFY_ENABLE is True:
+            self.pexp.expect_action(10, self.linux_prompt, "reboot")
+            self.enter_uboot(set_network = False)
+            self.boot_image(boot_only = True)
             self.check_info()
             msg(50, "Succeeding in checking the devrenformation ...")
 
