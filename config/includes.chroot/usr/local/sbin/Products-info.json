@@ -1442,7 +1442,21 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
+    },
+
+    "UP-KEYPAD":{
+      "INDEX"       : 6,
+      "NAME"        : "UP-KEYPAD",
+      "BOARDID"     : "a920",
+      "BOMREV"      : "113-03325",
+      "DESC"        : "UniFi Protect Keypad",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
     }
+
   },
 
   "USP":
