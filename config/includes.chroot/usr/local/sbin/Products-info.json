@@ -760,17 +760,34 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-    "U6-LR":{
-      "INDEX"       : 1,
-      "NAME"        : "U6-LR",
-      "BOARDID"     : "a620",
-      "BOMREV"      : "113-00744",
-      "DESC"        : "UniFi AP6 LR",
-      "FILE"        : "u6_mt7622_factory.py",
-      "T1FILE"      : "u6_mt7622_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
+    "U6-LR": {
+      "INDEX": 1,
+      "NAME": "U6-LR",
+      "BOARDID": "a620",
+      "BOMREV": "113-00744",
+      "DESC": "UniFi AP6 LR",
+      "FILE": "u6_mt7622_factory.py",
+      "T1FILE": "u6_mt7622_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "BLACK_LIST": {
+        "LED": {
+          "reg": "ht52241_write",
+          "level": "fail",
+          "assignee": "CM"
+        },
+        "KERNEL_PANIC": {
+          "reg": "Kernel panic",
+          "level": "warning",
+          "assignee": "FW"
+        },
+        "WATCHDOG": {
+          "reg": "watchdog time out",
+          "level": "warning",
+          "assignee": "FW"
+        }
+      }
     },
 	  "U6-PRO":{
       "INDEX"       : 2,

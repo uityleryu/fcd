@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.34"
+    __version__ = "1.0.35"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -1213,8 +1213,41 @@ class ScriptBase(object):
 
     def close_fcd(self):
         self.test_result = 'Pass'
+        self.check_blacklist()
         time.sleep(2)
         exit(0)
+
+    def check_blacklist(self):
+        try :
+            # Read Log file
+            logpath = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
+            with open(logpath, 'r') as logfile:
+                logcontent = logfile.read()
+
+            # Read BlackList Dict
+            if 'BLACK_LIST' in self.fsiw[self.product_line][self.product_name]:
+                self.blacklist_dict = self.fsiw[self.product_line][self.product_name]['BLACK_LIST']
+
+                # Check Reg
+                for failure, subdict in self.blacklist_dict.items():
+                    matchresult, reg= '', ''
+
+                    if 'reg' in self.blacklist_dict[failure] :
+                        reg = self.blacklist_dict[failure]['reg']
+                        matchresult = ''.join(re.findall(reg, logcontent))
+                    else :
+                        continue
+
+                    del self.blacklist_dict[failure]['reg']
+                    if matchresult:
+                        error_critical_str = ''.join(['{}: {}\n'.format(k, v) for k, v in self.blacklist_dict[failure].items()])
+                        error_critical('BlackList Error, please find Engineer for checking\nFailure: {}\n'.format(failure) + error_critical_str  )
+                    else :
+                        log_debug('Checked BlackList-{}'.format(failure) )
+
+        except Exception as e:
+            log_debug (e)
+
 
     def __del__(self):
         try:
@@ -1380,67 +1413,4 @@ class ScriptBase(object):
         except:
             log_debug("[Upload_ui_taipei farget Unexpected error: {}]".format(sys.exc_info()[0]))
 
-    def _upload_ui_usa(self, uploadfolder, mac, bom, upload_dut_logpath):
-        """
-            Mike Taylor's uploadlog client. If any error , give up uploading
-        """
-        if not self.pass_phrase:
-            log_debug("[Upload_ui_usa Skip - pass_phrase is None]")
-            return
 
-        try:
-            stage = 'FCD'
-            timestampstr = '%Y-%m-%d_%H_%M_%S_%f'
-            tpe_tz = datetime.timezone(datetime.timedelta(hours=8))
-            start_time = datetime.datetime.now(tpe_tz)
-            start_timestr = start_time.strftime(timestampstr)
-            uploadpath = os.path.join(uploadfolder, '{}_{}{}'.format(start_timestr, mac, ".tar.gz"))
-            with tarfile.open(uploadpath, mode="w|gz") as tf:
-                if os.path.isdir(upload_dut_logpath):
-                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac)
-                    tf.add(upload_dut_logpath, tar_dir)
-                elif os.path.isfile(upload_dut_logpath):
-                    tar_dir = os.path.join(stage, bom, start_timestr + '_' + mac, os.path.basename(upload_dut_logpath))
-                    tf.add(upload_dut_logpath, tar_dir)
-
-            cmd = "uname -a"
-            [sto, rtc] = self.cnapi.xcmd(cmd)
-            if int(rtc) > 0:
-                error_critical("Get linux information failed!!")
-            else:
-                log_debug("Get linux information successfully")
-                match = re.findall("armv7l", sto)
-                if match:
-                    clientbin = "/usr/local/sbin/upload_rpi4_release"
-                else:
-                    clientbin = "/usr/local/sbin/upload_x86_release"
-
-            regparam = [
-                "-h prod.udrs.io",
-                "--input field=name,format=binary,value={}".format(os.path.basename(uploadpath)),
-                "--input field=content,format=binary,pathname={}".format(uploadpath),
-                "--input field=type_id,format=hex,value=00000001",
-                "--output field=result",
-                "--output field=upload_id",
-                "--output field=registration_status_id",
-                "--output field=registration_status_msg",
-                "--output field=error_message",
-                "-k " + self.pass_phrase,
-                "-x " + os.path.join(self.key_dir, "ca.pem"),
-                "-y " + os.path.join(self.key_dir, "key.pem"),
-                "-z " + os.path.join(self.key_dir, "crt.pem")
-            ]
-            regparam = ' '.join(regparam)
-            execcmd = "sudo {0} {1}".format(clientbin, regparam)
-
-            uploadproc = subprocess.check_output(execcmd, shell=True)
-            log_debug('\n[Start upload_x86_client Command]\n{}\n'.format(execcmd))
-            if "field=result,format=u_int,value=1" in str(uploadproc.decode('utf-8')):
-                log_debug('[Upload_ui_usa Success]')
-            else:
-                raise subprocess.CalledProcessError
-
-        except subprocess.CalledProcessError as e:
-            log_debug('\n{}\n{}\n[Upload_ui_usa Fail]'.format(e.output.decode('utf-8'), e.returncode))
-        except:
-            log_debug("[Upload_ui_usa Unexpected error: {}]".format(sys.exc_info()[0]))
