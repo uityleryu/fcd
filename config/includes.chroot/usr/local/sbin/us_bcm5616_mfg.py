@@ -294,6 +294,8 @@ class USBCM5616_MFG(ScriptBase):
         self.stop_uboot()
         self.check_USGH2()
 
+        have_updated_in_kernel = False
+
         isMFG = self.is_MFG_firmware()
         if isMFG is False:
             # it means current fw is production version
@@ -320,6 +322,7 @@ class USBCM5616_MFG(ScriptBase):
                 error_critical("Failed to init MDK_DRV after upgrade")
             else:
                 log_debug("Inited MDK_DRV after upgrade")
+                have_updated_in_kernel = True
         else:
             pass
 
@@ -327,10 +330,21 @@ class USBCM5616_MFG(ScriptBase):
         msg(50, "Cleaned Env in uboot ...")
 
         self.set_data_in_uboot()
-        self.is_network_alive_in_uboot()
+       
+        if not have_updated_in_kernel:
+            self.is_network_alive_in_uboot()
+            log_debug("Starting upgrade firmware by urescue")
+            self.update_firmware_in_uboot()
+        else:
+            self.pexp.expect_action(10, self.bootloader_prompt, "reset")
 
-        log_debug("Starting upgrade firmware by urescue")
-        self.update_firmware_in_uboot()
+        # self.set_data_in_uboot()
+        # self.is_network_alive_in_uboot()
+        # log_debug("Starting upgrade firmware by urescue")
+        # self.update_firmware_in_uboot()
+        
+        # ^^^ Original process. 
+
         msg(no=80, out="Firmware update complete.")
 
         self.login()
