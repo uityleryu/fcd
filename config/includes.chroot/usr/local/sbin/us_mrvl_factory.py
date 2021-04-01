@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 from script_base import ScriptBase
 from ubntlib.fcd.expect_tty import ExpttyProcess
 from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
@@ -9,6 +7,8 @@ import time
 import os
 import stat
 import filecmp
+
+dummy = '*Notice* this is a dummy command for testing, please correct before release.'
 
 class USW_MARVELL_FactoryGeneral(ScriptBase):
     CMD_PREFIX = "go $ubntaddr"
@@ -47,8 +47,8 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         }
 
         self.netif = {
-            'ed40': "ifconfig tap0 ",
-            'ed41': "ifconfig tap0 ",
+            'ed40': "ifconfig eth0 ",
+            'ed41': "ifconfig eth0 ",
         }
 
         devregpart = {
@@ -72,10 +72,16 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             'ed41': "u6-s8",
         }
 
+        ip_cfg = {
+            'ed40': "00:50:43:05:00:01",
+            'ed41': "00:50:43:08:00:01",
+        }
+
         self.devregpart = devregpart[self.board_id]
         self.helper_path = helper_path[self.board_id]
         self.helperexe = helperexe[self.board_id]
         self.cfg_name = cfg_name[self.board_id]
+        self.ip_cfg = ip_cfg[self.board_id]
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -110,6 +116,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
     def clear_eeprom_in_uboot(self, timeout=30):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcal -f", post_exp="Done")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcfg", post_exp="Done")
 
     def set_data_in_uboot(self):
         self.stop_uboot(uappinit_en=True)
@@ -129,14 +136,17 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         log_debug("Clearing EEPROM in U-Boot succeed")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
-    def fwupdate(self):
-        self.stop_uboot()
-
-        msg(65, "Reboot into Uboot again for urescue")
+    def upload_fw(self):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "mini_xcat3")
+
+        try:
+            self.is_network_alive_in_uboot()
+        except:
+            log_error('Uboot network does not work.')
+            return False
+
         self.pexp.expect_action(30, self.bootloader_prompt, "urescue -u")
         self.pexp.expect_only(60, "Listening for TFTP transfer on")
 
@@ -144,22 +154,51 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
                "-p",
                "-l",
                self.fwdir + "/" + self.fwimg,
-               self.dutip]
+               self.dutip, "--verbose", "--trace"]
         cmdj = ' '.join(cmd)
         time.sleep(3)
-        msg(65, "Uploading released firmware...")
+        log_debug('FCD Host send: \n{}'.format(cmdj))
+        
         [sto, rtc] = self.fcd.common.xcmd(cmdj)
         if (int(rtc) > 0):
-            error_critical("Failed to upload firmware image")
-        else:
-            log_debug("Uploading firmware image successfully")
+            log_error("atftp failed.")
+            log_error("The error message of atftp is \n{}".format(sto))
+            return False
 
-        self.pexp.expect_only(30, "Bytes transferred = ")
+        log_debug("The logging of atftp is \n{}".format(sto))
+
+        try:
+            self.pexp.expect_only(60, "Bytes transferred = ")
+        except:
+            log_error('Expect "Bytes transferred =" failed.')
+            return False
+        
+        return True
+
+    def fwupdate(self):
+        self.stop_uboot()
+
+        msg(60, "Reboot into Uboot again for urescue")
+
+        msg(65, "Uploading released firmware...")
+
+        retry_cnt = 0
+        while(retry_cnt <= 3):
+            if (self.upload_fw() == True):
+                log_debug("Uploading firmware image successfully")
+                break
+            else:
+                log_error("Failed to upload firmware image")
+                retry_cnt += 1
+                log_error("FW upload retry {}".format(retry_cnt))
+        else:
+            error_critical("Failed to upload firmware image, after retry {} times.".format(retry_cnt - 1))
+
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uappinit")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite -f")
 
         self.pexp.expect_only(30, "Firmware Version:")
-        self.pexp.expect_only(30, "Signature Verfied, Success.")
+        self.pexp.expect_only(60, "Signature Verfied, Success.")
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Copying to 'kernel0' partition")
@@ -176,7 +215,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno(mac) error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=20)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=30)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login_kernel(self, mode):
@@ -187,16 +226,36 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             log_debug("{} login".format(mode))
             self.pexp.expect_only(200, "Starting kernel")
             time.sleep(40)
-            self.pexp.expect_lnxcmd(5, "", "", post_exp="login", retry=40)
-            self.pexp.expect_action(10, "", "ubnt")
-            self.pexp.expect_action(10, "Password:", "ubnt")
+
+            login_retry_cnt = 0
+
+            while login_retry_cnt < 5:
+                try:
+                    self.pexp.expect_lnxcmd(5, "", "", post_exp="login", retry=40)
+                    self.pexp.expect_action(10, "", "ubnt")
+                    self.pexp.expect_action(10, "Password:", "ubnt")
+                    break
+                except:
+                    time.sleep(2)
+                    login_retry_cnt += 1
+                    log_error('Login failed, retry {}'.format(login_retry_cnt))
+            else:
+                error_critical('Login failed after {} retries'.format(login_retry_cnt))
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
-            
 
     def SetNetEnv(self):
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "killall ros && sleep 3")
+        mac = str(self.dutip.strip()[-2:])
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "sed -i \"s/{}/00:50:43:05:00:{}/\" /usr/etc/{}.cfg".format(self.ip_cfg, mac, self.cfg_name))
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "appDemo -config /usr/etc/{}.cfg -daemon".format(self.cfg_name))
+
+    def SetNetEnv_ip(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=5, pre_exp=self.linux_prompt, action='ifconfig', post_exp='eth0', retry=12)
+        set_ip = self.netif[self.board_id] + self.dutip
+        self.pexp.expect_lnxcmd(timeout=5, pre_exp=self.linux_prompt, action=set_ip, post_exp=self.linux_prompt, retry=12)
 
     def clear_uboot_env(self):
         self.stop_uboot()
@@ -212,6 +271,51 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, "", "end")
         self.pexp.expect_lnxcmd(10, "", "CLIexit")
 
+    def is_network_alive_in_uboot(self, ipaddr=None, retry=5, timeout=5):
+        is_alive = False
+        if ipaddr is None:
+            ipaddr = self.tftp_server
+
+        cmd = "ping {0}".format(ipaddr)
+        exp = "host {0} is alive".format(ipaddr)
+
+        ping_retry_cnt = 0
+        while ping_retry_cnt < 2:
+            try:
+                self.pexp.expect_ubcmd(timeout=timeout, exptxt="", action=cmd, post_exp=exp, retry=retry)
+                log_debug('ping is successful, the ARP table of FCD Host is \n')
+                self.fcd.common.xcmd(cmd='arp -a')
+                break
+            except:
+                log_error('ping is failed, the ARP table of FCD Host is \n')
+                self.fcd.common.xcmd(cmd='arp -a')
+                ping_retry_cnt += 1
+
+        else:
+            error_critical('ping is failed in uboot, after {} retries.'.format(retry * (ping_retry_cnt)))
+
+    def is_network_alive_in_linux(self, ipaddr=None, retry=5):
+        if ipaddr is None:
+            ipaddr = self.tftp_server
+
+        cmd = "ifconfig; ping -c 3 {0}".format(ipaddr)
+        exp = r"64 bytes from {0}".format(ipaddr)
+
+        ping_retry_cnt = 0
+        while ping_retry_cnt < 2:
+            try:
+                self.pexp.expect_lnxcmd(timeout=5, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
+                log_debug('ping is successful, the ARP table of FCD Host is \n')
+                self.fcd.common.xcmd(cmd='arp -a')
+                break
+            except:
+                log_error('ping is failed, the ARP table of FCD Host is \n')
+                self.fcd.common.xcmd(cmd='arp -a')
+                ping_retry_cnt += 1
+            
+        else:
+            error_critical('ping is failed in linux kernel, after {} retries.'.format(retry * (ping_retry_cnt)))
+    
     def run(self):  
         """
         Main procedure of factory
@@ -242,7 +346,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         # for v3 for u6-s8
 
         self.SetNetEnv()
-
+        self.SetNetEnv_ip()
         self.is_network_alive_in_linux()
 
         msg(15, "Boot up to linux console and network is good ...")
@@ -285,7 +389,6 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
-
 
 def main():
     us_factory_general = USW_MARVELL_FactoryGeneral()
