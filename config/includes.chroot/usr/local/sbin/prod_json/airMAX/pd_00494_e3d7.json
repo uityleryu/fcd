@@ -1,7 +1,7 @@
 {
   "airMAX": {
-    "NBE-5AC": {
-      "NAME"        : "NBE-5AC",
+    "NBE-5AC-QCA9557": {
+      "NAME"        : "NBE-5AC-QCA9557",
       "BOARDID"     : "e3d7",
       "BOMREV"      : "113-00494",
       "DESC"        : "NBE 5AC",

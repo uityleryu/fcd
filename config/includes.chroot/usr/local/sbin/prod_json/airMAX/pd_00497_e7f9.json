@@ -1,8 +1,7 @@
 {
   "airMAX": {
-    "LBE-5AC-US": {
-      "INDEX": 0,
-      "NAME": "LBE-5AC-US",
+    "LBE-5AC": {
+      "NAME": "LBE-5AC",
       "BOARDID": "e7f9",
       "BOMREV": "113-00497",
       "DESC": "LiteBeam 5AC",

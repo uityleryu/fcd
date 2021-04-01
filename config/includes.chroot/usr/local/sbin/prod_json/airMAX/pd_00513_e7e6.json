@@ -1,11 +1,10 @@
 {
   "airMAX": {
     "PS-5AC-US": {
-      "INDEX"       : "1",
       "NAME"        : "PS-5AC-US",
       "BOARDID"     : "e7e6",
       "BOMREV"      : "113-00513",
-      "DESC"        : "Prisam Base Station 5AC US",
+      "DESC"        : "Prisam Base Station 5AC (US)",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",

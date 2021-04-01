@@ -4,7 +4,7 @@
       "NAME"        : "PS-5AC-World",
       "BOARDID"     : "e7e8",
       "BOMREV"      : "113-00546",
-      "DESC"        : "Prisam Base Station 5AC World",
+      "DESC"        : "Prisam Base Station 5AC (World)",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",

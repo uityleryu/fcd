@@ -340,7 +340,7 @@ class AMAR9342Factory(ScriptBase):
         bomrev = "13-{}".format(self.bom_rev)
         cmd = "go ${{ubntaddr}} usetbrev {}".format(bomrev)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        time.sleep(0.5)
+        time.sleep(1)
         expect_list = [
             "Writing EEPROM",
             "Done"

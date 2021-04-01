@@ -65,15 +65,17 @@ class AMAR9342MFG(ScriptBase):
         self.bootloader_prompt = "ar7240>"
         self.uboot_art_img = "{}/{}-art-uboot.bin".format(self.image, self.board_id)
 
-        self.grp1 = ["e7f9"]
+        self.grp1 = ["e3d6", "e7f9", "e7fa", "e7fc", "e7ff"]
         self.grp2 = []
 
         self.mfgtype = {
             "e2f2": "img",
-            "e7f9": "bin"
+            "e3d6": "img",
+            "e7f9": "img",
+            "e7fa": "img",
+            "e7fc": "img",
+            "e7ff": "img"
         }
-
-        self.uboot_w_app = 0
 
     def stop_uboot(self):
         self.pexp.expect_action(120, "Hit any key to stop autoboot", "\033")
@@ -86,7 +88,18 @@ class AMAR9342MFG(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubntctrl enabled")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "ubnt_hwp SPM off")
 
-        if self.uboot_w_app == 1:
+        '''
+            Use the command: setmac to check if it is ART U-Boot or Shipping U-Boot
+            This is not a good way but there is no any way could diferentiate between them
+        '''
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setmac")
+        expect_list = [
+            "Unknown command"
+        ]
+        index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+        if index < 0:
+            error_critical("Can't find expected message after usetbrev ... ")
+        else:
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "go ${ubntaddr} usetprotect spm off")
 
     def update_uboot(self):
@@ -95,10 +108,13 @@ class AMAR9342MFG(ScriptBase):
         self.pexp.expect_only(30, self.uboot_art_img)
         self.pexp.expect_only(30, "Bytes transferred =")
 
+        cmd = ""
         if self.board_id in self.grp1:
             cmd = "erase 9f000000 +0x50000; cp.b 0x81000000 0x9f000000 0x40000"
         elif self.board_id in self.grp2:
             cmd = "erase 9f000000 +0x50000; cp.b \$fileaddr 0x9f000000 \$filesize"
+        else:
+            error_critical("Not support ... ")
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, "reset")
@@ -131,9 +147,12 @@ class AMAR9342MFG(ScriptBase):
             self.pexp.expect_only(200, "Firmware update complete.")
             msg(90, "Flashing Completed")
         else:
-            cmd = "tftp 81000000 {}".format(self.uboot_art_img)
+            '''
+               Write the whole 16M SPI
+            '''
+            fw_path = "{}/{}-mfg.bin".format(self.image, self.board_id)
+            cmd = "tftp 81000000 {}".format(fw_path)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-            self.pexp.expect_only(30, self.uboot_art_img)
             self.pexp.expect_only(30, "Bytes transferred =")
 
             '''
@@ -141,11 +160,9 @@ class AMAR9342MFG(ScriptBase):
             '''
             cmd = "erase 0x9f000000 +0xff0000; cp.b 0x81000000 0x9f000000 0xff0000"
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
+            self.pexp.expect_only(600, "done")
+            time.sleep(2)
             self.pexp.expect_ubcmd(60, self.bootloader_prompt, "reset")
-            self.stop_uboot()
-            self.set_ub_net()
-            self.is_network_alive_in_uboot()
 
     def run(self):
         """

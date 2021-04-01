@@ -12,18 +12,6 @@
       "SW_ID": "1202",
       "INDEX": 0
     },
-    "NBE-5AC": {
-      "NAME": "NBE-5AC",
-      "BOARDID": "e7fc",
-      "BOMREV": "113-00556",
-      "DESC": "NanoBeam 5AC",
-      "FILE": "am_ar9342_factory.py",
-      "T1FILE": "am_ar9342_mfg.py",
-      "QRCHECK": "False",
-      "FCD_ID": "000b",
-      "SW_ID": "1202",
-      "INDEX": 8
-    },
     "R5AC-PTP": {
       "NAME": "R5AC-PTP",
       "BOARDID": "e7e5",
@@ -34,22 +22,21 @@
       "QRCHECK": "False",
       "FCD_ID": "000b",
       "SW_ID": "1202",
-      "INDEX": 2
+      "INDEX": 1
     },
     "PS-5AC-US": {
-      "INDEX": 3,
       "NAME": "PS-5AC-US",
       "BOARDID": "e7e6",
       "BOMREV": "113-00513",
-      "DESC": "Prisam Base Station 5AC US",
+      "DESC": "Prisam Base Station 5AC (US)",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "INDEX": 2
     },
     "RP-5AC-US": {
-      "INDEX": 4,
       "NAME": "RP-5AC-US",
       "BOARDID": "e7e7",
       "BOMREV": "113-00526",
@@ -58,22 +45,22 @@
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "INDEX": 3
     },
     "PS-5AC-World": {
       "NAME": "PS-5AC-World",
       "BOARDID": "e7e8",
       "BOMREV": "113-00546",
-      "DESC": "Prisam Base Station 5AC World",
+      "DESC": "Prisam Base Station 5AC (World)",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
       "SW_ID": "1202",
-      "INDEX": 5
+      "INDEX": 4
     },
     "LBE-5AC": {
-      "INDEX": 6,
       "NAME": "LBE-5AC",
       "BOARDID": "e7f9",
       "BOMREV": "113-00497",
@@ -82,13 +69,26 @@
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "INDEX": 5
     },
     "LOCO5AC": {
       "NAME": "LOCO5AC",
       "BOARDID": "e7fa",
       "BOMREV": "113-00552",
       "DESC": "Loco5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "INDEX": 6
+    },
+    "NBE-5AC-WASP": {
+      "NAME": "NBE-5AC-WASP",
+      "BOARDID": "e7fc",
+      "BOMREV": "113-00556",
+      "DESC": "NanoBeam 5AC US",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
@@ -106,10 +106,9 @@
       "QRCHECK": "False",
       "FCD_ID": "000b",
       "SW_ID": "1202",
-      "INDEX": 9
+      "INDEX": 8
     },
     "LBE-5AC-XR": {
-      "INDEX": 10,
       "NAME": "LBE-5AC-XR",
       "BOARDID": "e7ff",
       "BOMREV": "113-00962",
@@ -118,7 +117,8 @@
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "INDEX": 9
     }
   }
 }

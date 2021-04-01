@@ -1,7 +1,7 @@
 {
   "airMAX": {
-    "PBE-5AC-US": {
-      "NAME"        : "PBE-5AC-US",
+    "PBE-5AC": {
+      "NAME"        : "PBE-5AC",
       "BOARDID"     : "e3d6",
       "BOMREV"      : "113-00492",
       "DESC"        : "PBE 5AC",

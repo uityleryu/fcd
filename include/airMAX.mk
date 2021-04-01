@@ -118,7 +118,7 @@ TOOLS-60G-LAS= \
     common/helper_UNIFI_MT7621_release \
 
 TOOLS-AC-SERIES= \
-    am/helper_ARxxxx_11ac \
+    am/helper_ARxxxx_11ac_20210329 \
     am/cfg_part_ar9342.bin \
     am/id_rsa \
     am/id_rsa.pub \
