@@ -146,7 +146,16 @@ class AMAR9342Factory(ScriptBase):
             log_debug("U-Boot is formal FW U-Boot, MAC set command is different")
             comma_mac = self.mac_format_str2comma(self.mac)
             cmd = "go ${{ubntaddr}} usetmac -a {}".format(comma_mac)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, "Writing EEPROM")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+            time.sleep(0.5)
+            expect_list = [
+                "Writing EEPROM",
+                "Done"
+            ]
+            index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+            if index < 0:
+                error_critical("Can't find expected message after usetmac ... ")
+
             self.uboot_w_app = True
         elif index == 1:
             log_debug("Old setmac found")
@@ -317,7 +326,8 @@ class AMAR9342Factory(ScriptBase):
 
         log_debug("Writing Sytem ID")
         cmd = "go ${{ubntaddr}} usetbid {}".format(self.board_id)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        time.sleep(0.5)
         expect_list = [
             "Board ID is programmed as {} already!".format(self.board_id),
             "Writing EEPROM"
@@ -330,6 +340,7 @@ class AMAR9342Factory(ScriptBase):
         bomrev = "13-{}".format(self.bom_rev)
         cmd = "go ${{ubntaddr}} usetbrev {}".format(bomrev)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        time.sleep(0.5)
         expect_list = [
             "Writing EEPROM",
             "Done"
@@ -342,7 +353,15 @@ class AMAR9342Factory(ScriptBase):
         log_debug("Forcing UNII unlock for all AC devices")
         if self.lock_dfs is True:
             cmd = "go ${{ubntaddr}} usetdfs {}".format(self.unlock_mark)
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+            time.sleep(0.5)
+            expect_list = [
+                "Writing EEPROM",
+                "Done"
+            ]
+            index = self.pexp.expect_get_index(timeout=10, exptxt=expect_list)
+            if index < 0:
+                error_critical("Can't find expected message after usetrd ... ")
 
         log_debug("Writing country code")
         if self.region == "002a": # mapping to UniFi region code: USA/Canada
@@ -368,6 +387,7 @@ class AMAR9342Factory(ScriptBase):
 
         cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 1".format(country_lock_hex)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        time.sleep(0.5)
         expect_list = [
             "Writing EEPROM",
             "Done"
@@ -387,6 +407,7 @@ class AMAR9342Factory(ScriptBase):
             log_debug("Write region code to 2nd WiFi interface")
             cmd = "go ${{ubntaddr}} usetrd 0x{:0>4} 1 0".format(country_lock_hex)
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+            time.sleep(0.5)
             expect_list = [
                 "Writing EEPROM",
                 "Done"
