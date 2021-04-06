@@ -3,7 +3,7 @@
     "UC-DISPLAY-27": {
       "INDEX": 0,
       "NAME": "UC-DISPLAY-27",
-      "BOARDID": "ef81",
+      "BOARDID": "ef84",
       "BOMREV": "113-03256",
       "DESC": "UniFi Connect Panel 27",
       "FILE": "connect_apq8053_factory.py",

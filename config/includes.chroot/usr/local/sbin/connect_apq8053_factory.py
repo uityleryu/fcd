@@ -15,8 +15,10 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a980: Viewport
-    ef80: UC-Display-7        (Android 9)
-    ef81: UC-Display-13       (Android 9)
+    ef80: UC-Display-7  (BLE)       (Android 9)
+    ef81: UC-Display-13 (BLE)       (Android 9)
+    ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
+    ef88: UC-Display-13 (BLE/WIFI)  (Android 9)
     ef82: UVP_Touch           (Android 7)
     ef0e: UVP_TouchMax        (Android 7)
     ef83: UC-Display-21       (Android 9)
@@ -44,13 +46,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         # default product class: basic
         self.df_prod_class = "0014"
-        self.usbadb_list = ["ec60", "ef0e"]
+        self.usbadb_list = ["ec60", "ef0e", "ef83"]
 
         self.ospl = {
             'a980': "",
             'ef80': "adr9",
             'ef81': "adr9",
             'ef82': "adr7",
+            'ef87': "adr9",
+            'ef88': "adr7",
             'ef0e': "adr9",
             'ef83': "adr9",
             'ef84': "adr9",
@@ -79,6 +83,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'a980': "",
             'ef80': "msm8953_uct",
             'ef81': "unifi_p13",
+            'ef87': "msm8953_uct",
+            'ef88': "unifi_p13",
             'ef82': "msm8953_uvp",
             'ef0e': "uvp_touchmax",
             'ef83': "unifi_p21",
@@ -93,6 +99,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'a980': "",
             'ef80': "1",
             'ef81': "1",
+            'ef87': "1",
+            'ef88': "1",
             'ef82': "1",
             'ef0e': "1",
             'ef83': "1",
@@ -107,10 +115,12 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'a980': "",
             'ef80': "0",
             'ef81': "0",
+            'ef87': "1",
+            'ef88': "1",
             'ef82': "1",
             'ef0e': "1",
-            'ef83': "0",
-            'ef84': "0",
+            'ef83': "1",
+            'ef84': "1",
             'ef85': "1",
             'ef86': "1",
             'ec60': "1"
@@ -121,6 +131,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'a980': "",
             'ef80': "1",
             'ef81': "1",
+            'ef87': "1",
+            'ef88': "1",
             'ef82': "1",
             'ef0e': "1",
             'ef83': "1",
