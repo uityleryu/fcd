@@ -1,0 +1,16 @@
+{
+  "UniFiTalk": {
+    "UT-ATA-MAX": {
+      "INDEX": 0,
+      "NAME": "UT-ATA-MAX",
+      "BOARDID": "ef12",
+      "BOMREV": "113-03370",
+      "DESC": "UniFi Talk Analog Telephone Adapter",
+      "FILE": "ut_dvf9918_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01"
+    }
+  }
+}

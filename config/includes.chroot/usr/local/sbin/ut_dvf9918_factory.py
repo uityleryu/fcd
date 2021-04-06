@@ -21,6 +21,7 @@ FWUPDATE_EN = False
 '''
     ef0d: UT-PHONE-FLEX
     ef0f: UT-ATA
+    ef12: UT-ATA-MAX
 '''
 
 
@@ -31,33 +32,43 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.devregpart = "/dev/mtdblock2"
         self.user = "root"
         self.bootloader_prompt = "DVF99 #"
-        self.linux_prompt = "root@dvf9918:~#"
         self.helper_path = "uvp"
         self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.13"
+
+        # linux prompt
+        lnxpt = {
+            'ef0d': "root@dvf9918:~#",
+            'ef0f': "root@dvf9918:~#",
+            'ef12': "root@dvf99"
+        }
 
         # number of Ethernet
         ethnum = {
             'ef0d': "1",
-            'ef0f': "1"
+            'ef0f': "1",
+            'ef12': "1"
         }
 
         # number of WiFi
         wifinum = {
             'ef0d': "0",
-            'ef0f': "0"
+            'ef0f': "0",
+            'ef12': "1"
         }
 
         # number of Bluetooth
         btnum = {
             'ef0d': "0",
-            'ef0f': "0"
+            'ef0f': "0",
+            'ef12': "0"
         }
 
         # helper
         hlp = {
             '0000': "helper_DVF99_release",
             'ef0d': "helper_DVF99_release",
-            'ef0f': "helper_DVF99_release_ata"
+            'ef0f': "helper_DVF99_release_ata",
+            'ef12': "helper_DVF99_release_ata_max"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -70,10 +81,12 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         self.netif = {
             'ef0d': "ifconfig eth0 ",
-            'ef0f': "ifconfig eth0 "
+            'ef0f': "ifconfig eth0 ",
+            'ef12': "ifconfig eth0 "
         }
 
         self.helperexe = hlp[self.board_id]
+        self.linux_prompt = lnxpt[self.board_id]
 
     def mac_colon_format(self, mac):
         mcf = [
@@ -136,6 +149,11 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         if DOHELPER_EN is True:
             self.erase_eefiles()
+
+            if self.board_id == "ef12":
+                cmd = "mknod /dev/ubnthal c 240 0"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
@@ -160,7 +178,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             mcf = self.mac_colon_format(self.mac)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
             self.pexp.expect_action(60, "stop autoboot", "\033")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv ethaddr")
+            self.pexp.expect_ubcmd(15, self.bootloader_prompt, "printenv ethaddr")
             self.pexp.expect_only(30, "ethaddr=" + mcf)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "securedev")
             postexp = [
