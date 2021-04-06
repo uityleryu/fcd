@@ -642,7 +642,12 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
                                 valid_chk=True)
 
-    def is_network_alive_in_uboot(self, ipaddr=None, retry=10, timeout=3):
+    def logging_ARP_table(self):
+        log_debug('The ARP table of FCD host is')
+        cmd = 'arp -a'
+        self.cnapi.xcmd(cmd)
+
+    def is_network_alive_in_uboot(self, ipaddr=None, retry=10, timeout=3, arp_logging_en=False):
         is_alive = False
         if ipaddr is None:
             ipaddr = self.tftp_server
@@ -650,14 +655,20 @@ class ScriptBase(object):
         cmd = "ping {0}".format(ipaddr)
         exp = "host {0} is alive".format(ipaddr)
         self.pexp.expect_ubcmd(timeout=timeout, exptxt="", action=cmd, post_exp=exp, retry=retry)
+        
+        if arp_logging_en:
+            self.logging_ARP_table()
 
-    def is_network_alive_in_linux(self, ipaddr=None, retry=3):
+    def is_network_alive_in_linux(self, ipaddr=None, retry=3, arp_logging_en=False):
         if ipaddr is None:
             ipaddr = self.tftp_server
 
         cmd = "ifconfig; ping -c 3 {0}".format(ipaddr)
         exp = r"64 bytes from {0}".format(ipaddr)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
+
+        if arp_logging_en:
+            self.logging_ARP_table()
 
     def disable_inittab_process(self, process):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "while ! grep -q \"{}\" /etc/inittab; "\
