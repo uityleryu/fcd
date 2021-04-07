@@ -52,7 +52,7 @@ TOOLS-CONFIG= \
 TOOLS-UNVR+=$(TOOLS-CONFIG)
 TOOLS-UNVR+= \
     unas/al324-ee \
-    unas/helper_UNAS-AL324_release \
+    unas/helper_UNVR-AL324 \
     unas/config_gu.sh \
     unas/enp0s1.network \
     unas/enp0s2.network

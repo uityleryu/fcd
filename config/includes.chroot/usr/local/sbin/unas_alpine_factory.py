@@ -43,7 +43,7 @@ class UNASALPINEFactory(ScriptBase):
         }
         self.devregpart = self.devregparts[self.board_id]
         self.bomrev = "113-" + self.bom_rev
-        self.helperexe = "helper_UNAS-AL324_release"
+        self.helperexe = "helper_UNVR-AL324"
         self.dut_nasdir = os.path.join(self.dut_tmpdir, "unas")
         self.helper_path = os.path.join(self.dut_nasdir, self.helperexe)
         self.eepmexe_path = os.path.join(self.dut_nasdir, self.eepmexe)
