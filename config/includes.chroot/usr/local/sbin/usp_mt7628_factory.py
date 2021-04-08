@@ -26,11 +26,14 @@ class USPMT7628Factory(ScriptBase):
         self.helper_path = "pdu_pro"
 
         # number of mac
-        self.macnum =  {'ed12': "2"}
+        self.macnum =  {'ed12': "2",
+                        'ed14': "0"}
         # number of WiFi
-        self.wifinum = {'ed12': "0"}
+        self.wifinum = {'ed12': "0",
+                        'ed14': "1"}
         # number of Bluetooth
-        self.btnum =   {'ed12': "0"}
+        self.btnum =   {'ed12': "0",
+                        'ed14': "1"}
         # flash size map
         self.flash_size = {'ed12': "16777216"}
         # firmware image
@@ -42,15 +45,15 @@ class USPMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
-        self.UPDATE_RECOVERY_ENABLE = True
+        self.UPDATE_RECOVERY_ENABLE = False
         self.BOOT_RECOVERY_IMAGE    = True 
         self.PROVISION_ENABLE       = True 
         self.DOHELPER_ENABLE        = True 
         self.REGISTER_ENABLE        = True 
         self.FWUPDATE_ENABLE        = False
         self.DATAVERIFY_ENABLE      = True 
-        self.LCM_FW_CHECK_ENABLE    = True 
-        self.MCU_FW_CHECK_ENABLE    = True 
+        self.LCM_FW_CHECK_ENABLE    = False 
+        self.MCU_FW_CHECK_ENABLE    = False 
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -61,14 +64,15 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def init_recovery_image(self):
-        self.pexp.expect_only(30, "reading kernel")
-        self.login(press_enter=True, log_level_emerg=True, timeout=60)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; do echo 'Wait udhcpc...'; sleep 1; done",self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i 's/null::respawn:\\/sbin\\/udhcpc/#null::respawn:\\/sbin\\/udhcpc/g' /etc/inittab",self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
-        time.sleep(45)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
+        #self.pexp.expect_only(30, "reading kernel")
+        #self.login(press_enter=True, log_level_emerg=True, timeout=60)
+        self.pexp.expect_lnxcmd(30, "", "", self.linux_prompt)
+        #self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; do echo 'Wait udhcpc...'; sleep 1; done",self.linux_prompt)
+        #self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i 's/null::respawn:\\/sbin\\/udhcpc/#null::respawn:\\/sbin\\/udhcpc/g' /etc/inittab",self.linux_prompt)
+        #self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
+        #time.sleep(45)
+        #self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+        #self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
