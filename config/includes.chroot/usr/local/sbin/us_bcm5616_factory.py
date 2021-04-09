@@ -177,10 +177,14 @@ class USBCM5616FactoryGeneral(ScriptBase):
             if index == self.pexp.TIMEOUT:
                 error_critical(msg="Failed to flash firmware.")
         else:
+
+            update_kernel_partition_timeout = 230
+            log_debug('The timeout val of updating kernel partition is {} (sec).'.format(update_kernel_partition_timeout))
+
             self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
-            self.pexp.expect_only(180, "Done")
+            self.pexp.expect_only(update_kernel_partition_timeout, "Done")
             self.pexp.expect_only(120, "Updating kernel1 partition \(and skip identical blocks\)")
-            self.pexp.expect_only(180, "Done")
+            self.pexp.expect_only(update_kernel_partition_timeout, "Done")
             msg(no=70, out="Firmware update complete.")
 
         self.pexp.expect_only(timeout=150, exptxt="Starting kernel")
