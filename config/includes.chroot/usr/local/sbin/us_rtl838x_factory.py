@@ -115,13 +115,34 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "Resetting to default environment")
         self.pexp.expect_only(60, "done")
         self.pexp.expect_action(120, "Hit Esc key to stop autoboot", "\x1b")
-        msg(63, "Reboot into Uboot again for urescue")
-        self.pexp.expect_action(15, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_action(15, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt ubntrescue")
-        self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
-        self.pexp.expect_only(60, "Listening for TFTP transfer on")
 
+        msg(63, "Reboot into Uboot again for urescue")
+
+        def set_ip_and_urescue():
+            self.pexp.expect_action(15, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+            self.pexp.expect_action(15, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+            self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt ubntrescue")
+            self.pexp.expect_action(15, self.bootloader_prompt, "bootubnt")
+
+        set_ip_and_urescue()
+
+        wrong_boardmodel = 'Wrong boardmodel'
+        listening_tftp = 'Listening for TFTP transfer on'
+        expect_list = [wrong_boardmodel, listening_tftp]
+        index = self.pexp.expect_get_index(timeout=60, exptxt=expect_list)
+
+        if index == self.pexp.TIMEOUT:
+            error_critical(msg='Can not detect "Wrong boardmodel" or "TFTP transfer on", failed to start urescue.')
+        elif index == 0:
+            log_debug('Detected "Wrong boardmodel", reboot into Uboot again for urescue.')
+            
+            self.pexp.expect_action(120, "Hit Esc key to stop autoboot", "\x1b")
+            set_ip_and_urescue()
+            self.pexp.expect_only(60, "Listening for TFTP transfer on.")
+        elif index == 1:
+            log_debug('No "Wrong boardmodel" error, continue to FW upload.')
+            pass
+   
         cmd = ["atftp",
                "-p",
                "-l",
