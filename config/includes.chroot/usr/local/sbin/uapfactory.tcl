@@ -1088,7 +1088,7 @@ proc do_security { boardid } {
     expect timeout { error_critical "Command promt not found" } "#"
     
     send "\r"
-    send "reboot\r"
+    send "reboot -f\r"
     expect timeout { error_critical "Command promt not found" } "#" 
 
     send "exit\r"
