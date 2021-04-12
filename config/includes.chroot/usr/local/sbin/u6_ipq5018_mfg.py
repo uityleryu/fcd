@@ -24,11 +24,28 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         self.set_bootloader_prompt("IPQ5018#")
 
     def update_nor(self):
-        cmd = "sf probe; sf erase 0x0 0x230000; sf write {} 0x0 0x230000".format(self.mem_addr)
+        cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_only(60, "Erased: OK")
         self.pexp.expect_only(60, "Written: OK")
+
+        if bool(self.erasecal) is True:
+            cal_offset = "0x1C0000"
+            cmd = "sf erase 0x1C0000 0x070000"
+            log_debug("Erase calibration data ...")
+            log_debug(cmd)
+            self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+            self.pexp.expect_only(60, "Erased: OK")
+
+        if bool(self.erase_devreg) is True:
+            devreg_offset = "0x230000"
+            cmd = "sf erase 0x230000 0x010000"
+            log_debug("Erase devreg data ...")
+            log_debug(cmd)
+            self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+            self.pexp.expect_only(60, "Erased: OK")
+
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def update_emmc(self):
