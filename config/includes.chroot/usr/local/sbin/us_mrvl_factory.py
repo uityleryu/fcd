@@ -154,7 +154,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
                "-p",
                "-l",
                self.fwdir + "/" + self.fwimg,
-               self.dutip, "--verbose", "--trace"]
+               self.dutip]
         cmdj = ' '.join(cmd)
         time.sleep(3)
         log_debug('FCD Host send: \n{}'.format(cmdj))
