@@ -44,7 +44,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3",  # usw-lite-8-poe
-            'ed2c': "3",  # usw-missioon-critical
+            'ed2c': "2",  # usw-missioon-critical. Total 3 (eth:2 + bt:1). Mike taylor could not increse so workaround it
             'ed2d': "3"   # usw-aggregation
         }
 
@@ -72,7 +72,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "0",
             'ed26': "0",
             'ed2a': "0",
-            'ed2c': "0",
+            'ed2c': "1",
             'ed2d': "0"
         }
 
