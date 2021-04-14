@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.32"
+    __version__ = "1.0.33"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -441,7 +441,7 @@ class ScriptBase(object):
         if self.fcd_id == "" or self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
             clientbin = "/usr/local/sbin/client_x86_release"
             regparam = [
-                "-h devreg-prod.ubnt.com",
+                "-h prod.udrs.io",
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
