@@ -23,6 +23,11 @@ class UVCFactoryGeneral(ScriptBase):
     def __init__(self):
         super(UVCFactoryGeneral, self).__init__()
 
+        self.devregpart = ''
+        self.helper_rule = 0
+        '''
+        Please set "self.helper_rule = 1" in each product if it follows new rule that doesn't need m25p80 and helper, refer to "UVC-G4PTZ"
+        '''
         if self.product_name == "UVC-G3BATTERY":
             self.board_name = "UVC G3 Battery"
             self.devregpart = "/dev/mtd15"
@@ -39,10 +44,8 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-G4PTZ":
             self.board_name = "UVC G4 PTZ"
-            self.devregpart = "/dev/mtd8"
             self.ip = "192.168.1.20"
-            self.flash_module = "m25p80_uvcg4ptz.ko"
-            self.helperexe = "helper_uvcg4ptz"
+            self.helper_rule = 1
 
         elif self.product_name == "UVC-G4DOORBELL":
             self.board_name = "UVC G4 Doorbell"
@@ -241,45 +244,114 @@ class UVCFactoryGeneral(ScriptBase):
             version = ''
         return version
 
+    def get_devreg_mtd(self):
+        mtd = self.session.execmd_getmsg('cat /proc/mtd | grep spi')
+        mtd = '/dev/{}'.format(mtd.split(':')[0])
+        return mtd
+
+    def get_cpu_id(self):
+        res = self.session.execmd_getmsg('cat /tmp/bsp_helper/cpuid').strip('\n')
+        if res == 'AMBA':
+            ssi_ident_id = '414d4241'
+            ssi_version_id = '312e3030'
+        else:
+            ssi_ident_id = '00000000'
+            ssi_version_id = '00000000'
+        return ssi_ident_id, ssi_version_id
+
+    def get_jedec_id(self):
+        res = self.session.execmd_getmsg('cat /tmp/bsp_helper/jedec_id').strip('\n')
+        id = res.zfill(8)
+        return id
+
+    def get_flash_uid(self):
+        res = self.session.execmd_getmsg('cat /tmp/bsp_helper/otp').strip('\n')
+        id = res
+        return id
+
+    def helper_generate_e_t(self, output_path='/tmp/e.t'):
+        log_debug('helper_generate_e_t to {}'.format(output_path))
+        ssi_ident_id, ssi_version_id = self.get_cpu_id()
+        jedec_id = self.get_jedec_id()
+        flash_uid = self.get_flash_uid()
+
+        sstr = [
+            'field=product_class_id,format=hex,value=000a',
+            'field=flash_jedec_id,format=hex,value={}'.format(jedec_id),
+            'field=flash_uid,format=hex,value={}'.format(flash_uid),
+            'field=AMBA_ssi_ident_id,format=hex,value={}'.format(ssi_ident_id),
+            'field=AMBA_ssi_version_id,format=hex,value={}'.format(ssi_version_id)
+        ]
+        sstr = '\n'.join(sstr)
+        log_debug(sstr)
+
+        cmd = 'echo "{}" > {}'.format(sstr, output_path)
+        if self.session.execmd(cmd) == 0:
+            log_debug("provided {} successfully".format(output_path))
+        else:
+            self.critical_error("provided {} failed".format(output_path))
+
+
+    def helper_generate_e_b(self, output_path='/tmp/e.b'):
+        log_debug('helper_generate_e_b to {}'.format(output_path))
+        
+        cmd_dd = "dd if={} of={} bs=1k count=64".format(self.devregpart, output_path)
+        if self.session.execmd(cmd_dd) == 0:
+            log_debug("provided {} successfully".format(output_path))
+        else:
+            self.critical_error("provided {} failed".format(output_path))
+
+
     def upload_flash_module(self):
-        flash_fillff_path = os.path.join(self.host_toolsdir_dedicated, self.fillff)
-        host_path = flash_fillff_path
-        dut_path = "/tmp/{}".format(self.fillff)
-        self.session.put_file(host_path, dut_path)
+        if self.devregpart == '':
+            self.devregpart = self.get_devreg_mtd()
+        log_debug('devpart:' + self.devregpart)
 
-        if self.flash_module != "": #need to upload and install module
-            flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
-            mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
-            cmd_grep = "lsmod | grep {}".format(mod_name_inDUT)
-            if self.session.execmd(cmd_grep) == 0:
-                # return 0: there is m25p80, return 1: there is not.
-                log_debug("flash module {} loaded already".format(self.flash_module))
+        if self.helper_rule == 1:
+            dut_ff_path = "/tmp/{}".format(self.fillff)
+            cmd = "tr '\\000' '\\377' < /dev/zero | dd of={} bs=1k count=128".format(dut_ff_path)
+            log_debug(cmd)
+            self.session.execmd(cmd)
 
-            else:
-                log_debug("uploading kernal file")
-                host_path = flash_module_path
-                dut_path = "/tmp/{}".format(self.flash_module)
-                self.session.put_file(host_path, dut_path)
+        else:
+            flash_fillff_path = os.path.join(self.host_toolsdir_dedicated, self.fillff)
+            host_path = flash_fillff_path
+            dut_path = "/tmp/{}".format(self.fillff)
+            self.session.put_file(host_path, dut_path)
 
-                log_debug("installing flash module")
-                cmd_ins = "insmod /tmp/{}".format(self.flash_module)
-
-                self.session.execmd(cmd_ins)
+            if self.flash_module != "": #need to upload and install module
+                flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
+                mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
+                cmd_grep = "lsmod | grep {}".format(mod_name_inDUT)
                 if self.session.execmd(cmd_grep) == 0:
-                    log_debug("flash module {} installed successfully".format(self.flash_module))
-                else:
-                    self.critical_error("failed to install module {}".format(self.flash_module))
+                    # return 0: there is m25p80, return 1: there is not.
+                    log_debug("flash module {} loaded already".format(self.flash_module))
 
-                # UVC-G3BATTERY
-                if self.product_name == "UVC-G3BATTERY":
-                    log_debug("installing spi-ambarella.ko module")
-                    cmd_ins = "insmod spi-ambarella.ko"
-                    cmd_grep = "lsmod | grep spi_ambarella"
+                else:
+                    log_debug("uploading kernal file")
+                    host_path = flash_module_path
+                    dut_path = "/tmp/{}".format(self.flash_module)
+                    self.session.put_file(host_path, dut_path)
+
+                    log_debug("installing flash module")
+                    cmd_ins = "insmod /tmp/{}".format(self.flash_module)
+
                     self.session.execmd(cmd_ins)
                     if self.session.execmd(cmd_grep) == 0:
-                        log_debug("flash module spi_ambarella installed successfully")
+                        log_debug("flash module {} installed successfully".format(self.flash_module))
                     else:
-                        self.critical_error("failed to install module spi_ambarella")
+                        self.critical_error("failed to install module {}".format(self.flash_module))
+
+                    # UVC-G3BATTERY
+                    if self.product_name == "UVC-G3BATTERY":
+                        log_debug("installing spi-ambarella.ko module")
+                        cmd_ins = "insmod spi-ambarella.ko"
+                        cmd_grep = "lsmod | grep spi_ambarella"
+                        self.session.execmd(cmd_ins)
+                        if self.session.execmd(cmd_grep) == 0:
+                            log_debug("flash module spi_ambarella installed successfully")
+                        else:
+                            self.critical_error("failed to install module spi_ambarella")
 
         self.session.execmd('rm /tmp/eerom_backup.bin')   
         cmd_dd = "dd if={} of={} bs=1k count=128".format(self.devregpart, '/tmp/eerom_backup.bin')
@@ -417,11 +489,6 @@ class UVCFactoryGeneral(ScriptBase):
         [sto, rtc] = self.fcd.common.xcmd(sstr)
         time.sleep(1)
 
-        #<--------
-
-
-
-
 
         host_path = "/tftpboot/{}".format(self.eegenbin)
         dut_path = "/tmp/{}".format(self.eegenbin)
@@ -447,49 +514,59 @@ class UVCFactoryGeneral(ScriptBase):
             self.critical_error("{} duplicated failed".format(devregpart_name))
 
     def prepare_server_need_files_ssh(self):
-        log_debug("Starting to do " + self.helperexe + "...")
+        log_debug('prepare_server_need_files_ssh()')
 
-        src = os.path.join(self.host_toolsdir_dedicated, self.helperexe)
-        helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
-
-        self.session.execmd("rm {}".format(helperexe_path))
-
-        host_path = src
-        dut_path = helperexe_path
-        self.session.put_file(host_path, dut_path)
-        time.sleep(1)
-
-        # check if it uploaded successfully
-        cmd_grep = "ls {} | grep {}".format(self.dut_tmpdir, self.helperexe)
-        if self.session.execmd(cmd_grep) == 0:
-            log_debug("{} uploaded successfully".format(self.helperexe))
+        if self.helper_rule == 1:
+            eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+            eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+            self.helper_generate_e_t(eetxt_dut_path)
+            self.helper_generate_e_b(eebin_dut_path)
         else:
-            self.critical_error("{} uploaded failed".format(self.helperexe))
 
-        cmd_chmod = "chmod 777 {}".format(helperexe_path)
-        if self.session.execmd(cmd_chmod) == 0:
-            log_debug("{} chmod 777 successfully".format(self.helperexe))
-        else:
-            self.critical_error("{} chmod 777 failed".format(self.helperexe))
+            log_debug("Starting to do " + self.helperexe + "...")
 
-        eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
-        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
-        sstr = [
-            helperexe_path,
-            "-q",
-            "-c product_class=camera2",
-            "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
-            ">",
-            eetxt_dut_path
-        ]
-        sstr = ' '.join(sstr)
+            src = os.path.join(self.host_toolsdir_dedicated, self.helperexe)
+            helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
 
-        log_debug(sstr)
-        self.session.execmd(sstr)
-        if self.session.execmd(cmd_chmod) == 0:
-            log_debug("provided {} & {} successfully".format(self.eebin, self.eetxt))
-        else:
-            self.critical_error("provided {} & {} failed".format(self.eebin, self.eetxt))
+            self.session.execmd("rm {}".format(helperexe_path))
+
+            host_path = src
+            dut_path = helperexe_path
+            self.session.put_file(host_path, dut_path)
+            time.sleep(1)
+
+            # check if it uploaded successfully
+            cmd_grep = "ls {} | grep {}".format(self.dut_tmpdir, self.helperexe)
+            if self.session.execmd(cmd_grep) == 0:
+                log_debug("{} uploaded successfully".format(self.helperexe))
+            else:
+                self.critical_error("{} uploaded failed".format(self.helperexe))
+
+            cmd_chmod = "chmod 777 {}".format(helperexe_path)
+            if self.session.execmd(cmd_chmod) == 0:
+                log_debug("{} chmod 777 successfully".format(self.helperexe))
+            else:
+                self.critical_error("{} chmod 777 failed".format(self.helperexe))
+
+            eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+            eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+            sstr = [
+                helperexe_path,
+                "-q",
+                "-c product_class=camera2",
+                "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
+                ">",
+                eetxt_dut_path
+            ]
+            sstr = ' '.join(sstr)
+
+            log_debug(sstr)
+            self.session.execmd(sstr)
+            if self.session.execmd(cmd_chmod) == 0:
+                log_debug("provided {} & {} successfully".format(self.eebin, self.eetxt))
+            else:
+                self.critical_error("provided {} & {} failed".format(self.eebin, self.eetxt))
+
 
         log_debug("Send helper output tgz file from DUT to host ...")
         files = [self.eebin, self.eetxt, self.eegenbin]
@@ -853,6 +930,8 @@ class UVCFactoryGeneral(ScriptBase):
               The following flow almost become a regular procedure for the registration.
               So, it doesn't have to change too much. All APIs are came from script_base.py
         '''
+
+
         if self.finalret is True:
             if PROVISION_EN is True:
                 time_start = time.time()
@@ -868,7 +947,6 @@ class UVCFactoryGeneral(ScriptBase):
                 duration = int(time.time() - time_start)
                 log_debug('==> duration_{cap}: {time} seconds'.format(cap='PROVISION', time=duration))
 
-        
         if self.finalret is True:
             if DOHELPER_EN is True:
                 time_start = time.time()
