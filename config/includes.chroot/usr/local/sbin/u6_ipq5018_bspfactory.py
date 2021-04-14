@@ -46,6 +46,24 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "1",
             'a655': "1"
         }
+        
+        self.bootm_addr = {
+            'a650': "0x44000000",
+            'a651': "0x50000000",
+            'a652': "n/a",
+            'a653': "n/a",
+            'a654': "n/a",
+            'a655': "n/a"
+        }
+        
+        self.linux_prompt_select = {
+            'a650': "UBNT-BZ.ca-spf113cs-fcd#",
+            'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
+            'a652': "n/a",
+            'a653': "n/a",
+            'a654': "n/a",
+            'a655': "n/a"
+        }
 
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -57,8 +75,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a651" or \
-           self.board_id == "a652" or \
+        if self.board_id == "a652" or \
            self.board_id == "a653" or \
            self.board_id == "a654" or \
            self.board_id == "a655":
@@ -79,13 +96,13 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
                                                            'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read 0x44000000 0x00000022 0x00020022;'\
-                                                           'bootm 0x44000000"')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read {} 0x00000022 0x00020022;'.format(self.bootm_addr[self.board_id]) + \
+                                                           'bootm {}"'.format(self.bootm_addr[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x44000000 {}'.format(self.initramfs))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
-        self.linux_prompt = "UBNT-BZ.ca-spf113cs-fcd#"
+        self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
         self.disable_udhcpc()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
