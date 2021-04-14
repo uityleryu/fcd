@@ -1,0 +1,16 @@
+{
+    "UniFiProtect": {
+      "UP-KEYPAD": {
+        "INDEX": 0,
+        "NAME": "UP-KEYPAD",
+        "BOARDID": "a920",
+        "BOMREV": "113-03325",
+        "DESC": "UniFi Protect Keypad",
+        "FILE": "up_a920_factory.py",
+        "T1FILE": "",
+        "QRCHECK": "True",
+        "FCD_ID": "000d",
+        "SW_ID": "1601"
+      }
+    }
+  }

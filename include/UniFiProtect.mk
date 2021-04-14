@@ -100,3 +100,15 @@ $(eval $(call ProductCompress,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UP-Chime,FCD_$(PRD)_UP-CHIME_$(VER)_$(FWVER)))
+
+# ==================================================================================================
+IMAGE-a920=
+
+# -----------------------------------------------------------------------------------------
+
+TOOLS-a920+=$(TOOLS-CONFIG)
+
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,a920,FCD_$(PRD)_a920_$(VER)_$(FWVER),$(ALL)))
