@@ -19,6 +19,8 @@ IMAGE-RADAR= \
 
 IMAGE-KEYPAD=
 
+IMAGE-UP-Chime=
+
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
@@ -26,6 +28,8 @@ IMAGE-UFP+=$(IMAGE-ULM)
 IMAGE-UFP+=$(IMAGE-CARD-COMBO)
 IMAGE-UFP+=$(IMAGE-RADAR)
 IMAGE-UFP+=$(IMAGE-KEYPAD)
+IMAGE-UFP+=$(IMAGE-UP-Chime)
+
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -41,8 +45,9 @@ TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
-    common/helper_UNIFI_MT7621_release \
-    common/aarch64-rpi4-64k-ee
+    common/x86-4k-ee \
+    common/aarch64-rpi4-64k-ee \
+    common/aarch64-rpi4-4k-ee
 
 # Project specific tools
 
@@ -70,6 +75,8 @@ TOOLS-RADAR+= \
 
 TOOLS-KEYPAD=$(TOOLS-UFP)
 
+TOOLS-UP-Chime=$(TOOLS-UFP)
+
 # Project target
 
 $(eval $(call ProductImage,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
@@ -80,6 +87,7 @@ $(eval $(call ProductImage,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UP-Chime,FCD_$(PRD)_UFP-CHIME_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -89,5 +97,6 @@ $(eval $(call ProductCompress,TAG-COMBO,FCD_$(PRD)_TAG-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULM,FCD_$(PRD)_ULM_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,CARD-COMBO,FCD_$(PRD)_CARD-COMBO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,GARAGE,FCD_$(PRD)_UFP-GARAGE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,KEYPAD,FCD_$(PRD)_UFP-KEYPAD$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UP-Chime,FCD_$(PRD)_UP-CHIME_$(VER)_$(FWVER)))

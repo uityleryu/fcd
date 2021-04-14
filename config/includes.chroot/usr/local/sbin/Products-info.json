@@ -1455,8 +1455,20 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
-    }
+    },
 
+    "UP-Chime":{
+      "INDEX"       : 7,
+      "NAME"        : "UP-Chime",
+      "BOARDID"     : "ab12",
+      "BOMREV"      : "113-03302",
+      "DESC"        : "UniFi Protect Chime",
+      "FILE"        : "ufp_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    }
   },
 
   "USP":

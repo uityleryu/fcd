@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.33"
+    __version__ = "1.0.34"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -156,9 +156,11 @@ class ScriptBase(object):
             log_debug("Get linux information successfully")
             match = re.findall("armv7l", sto)
             if match:
-                self.eepmexe = "aarch64-rpi4-64k-ee"
+                self.eepmexe   = "aarch64-rpi4-64k-ee"
+                self.eepmexe4k = "aarch64-rpi4-4k-ee"
             else:
-                self.eepmexe = "x86-64k-ee"
+                self.eepmexe   = "x86-64k-ee"
+                self.eepmexe4k = "x86-4k-ee"
 
         '''
            Will be defined by the specifi model script
@@ -428,9 +430,10 @@ class ScriptBase(object):
             log_debug("Extract parameters successfully")
             return sto
 
-    def registration(self):
+    def registration(self, regsubparams = None):
         log_debug("Starting to do registration ...")
-        regsubparams = self.access_chips_id()
+        if regsubparams is None:
+            regsubparams = self.access_chips_id()
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
@@ -718,6 +721,38 @@ class ScriptBase(object):
             otmsg = "Can't find the DSS key file"
             error_critical(otmsg)
 
+    def data_provision_4k(self, netmeta):
+        self.FCD_TLV_data = False
+        otmsg = "Starting to do {0} ...".format(self.eepmexe4k)
+        log_debug(otmsg)
+        flasheditor = os.path.join(self.fcd_commondir, self.eepmexe4k)
+        sstr = [
+            flasheditor,
+            "-F",
+            "-f " + self.eegenbin_path,
+            "-r 113-{0}".format(self.bom_rev),
+            "-s 0x" + self.board_id,
+            "-m " + self.mac,
+            "-c 0x" + self.region,
+            "-e " + netmeta['ethnum'][self.board_id],
+            "-w " + netmeta['wifinum'][self.board_id],
+            "-b " + netmeta['btnum'][self.board_id],
+        ]
+        sstr = ' '.join(sstr)
+        log_debug("flash editor cmd: " + sstr)
+        [output, rv] = self.cnapi.xcmd(sstr)
+        time.sleep(0.5)
+        if int(rv) > 0 or output:
+            otmsg = "Flash editor filling out {0} file failed!!".format(self.eegenbin_path)
+            error_critical(otmsg)
+        else:
+            otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
+            log_debug(otmsg)
+
+        cmd = "mv {} {}".format(self.eegenbin_path, self.eebin_path)
+        log_debug("cmd: " + cmd)
+        self.cnapi.xcmd(cmd)
+
     def data_provision_64k(self, netmeta, post_en=True):
         self.gen_rsa_key()
 
@@ -860,7 +895,7 @@ class ScriptBase(object):
         elif self.product_class == 'radio':
             product_class_hexval = "0001"
         else:
-            error_critical("product class is '{}', FCD only supports 'basic' now".format(self.product_class))
+            error_critical("product class is '{}', FCD doesn't support \"{}\" class now".format(self.product_class))
 
         # Gen "e.t" from the nodes which were provided in BSP image
         for i in range(0, len(nodes)):
