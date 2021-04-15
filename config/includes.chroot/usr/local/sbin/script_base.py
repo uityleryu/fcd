@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.35"
+    __version__ = "1.0.36"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -392,6 +392,7 @@ class ScriptBase(object):
             print("No semantic version and fw version found in version.txt")
 
         # version mapping
+        
         fh = open('/usr/local/sbin/Products-info.json')
         self.fsiw = json.load(fh)
         fh.close()
@@ -1213,7 +1214,9 @@ class ScriptBase(object):
 
     def close_fcd(self):
         self.test_result = 'Pass'
-        self.check_blacklist()
+        # if do back to T1, there will be string value for "selfe.rasecal" so do not check blacklist
+        if not self.erasecal:
+            self.check_blacklist()
         time.sleep(2)
         exit(0)
 
@@ -1223,7 +1226,7 @@ class ScriptBase(object):
             logpath = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
             with open(logpath, 'r') as logfile:
                 logcontent = logfile.read()
-
+            
             # Read BlackList Dict
             if 'BLACK_LIST' in self.fsiw[self.product_line][self.product_name]:
                 self.blacklist_dict = self.fsiw[self.product_line][self.product_name]['BLACK_LIST']
