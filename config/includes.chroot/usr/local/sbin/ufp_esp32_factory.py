@@ -12,6 +12,7 @@ import os
 import re
 import traceback
 
+FWUPDATE_ENABLE     = True
 PROVISION_ENABLE    = True 
 DOHELPER_ENABLE     = True 
 REGISTER_ENABLE     = True 
@@ -28,6 +29,11 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # script specific vars
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
+        self.fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader.bin".format(self.board_id))
+        self.fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota.bin".format(self.board_id))
+        self.fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-ptn-table.bin".format(self.board_id))
+        self.fw_app        = os.path.join(self.tftpdir, "images", "{}-app.bin".format(self.board_id))
+
         self.regsubparams = ""
         # number of Ethernet
         self.ethnum = {
@@ -64,6 +70,27 @@ class UFPESP32FactoryGeneral(ScriptBase):
                             " -i field=flash_jedec_id,format=hex,value={}".format(flash_jedec_id)       + \
                             " -i field=flash_uid,format=hex,value={}".format(flash_uuid) 
 
+    def fwupdate(self):
+        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
+              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
+              "{} {} {} {} {} {} {} {}".format(self.row_id,
+                                              "0x1000" , self.fw_bootloader,
+                                              "0xd000" , self.fw_ota_data  ,
+                                              "0x8000" , self.fw_ptn_table ,
+                                              "0x10000", self.fw_app       )
+        log_debug(cmd)
+
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = "Flash FW into DUT failed"
+            error_critical(otmsg)
+
+        # The waiting time         
+        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.pexp.expect_only(60, self.esp32_prompt)
+        log_debug("Device boots well")
+
     def put_devreg_data_in_dut(self):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
@@ -72,15 +99,15 @@ class UFPESP32FactoryGeneral(ScriptBase):
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
-        time.sleep(0.5)
         if int(rv) > 0:
             otmsg = "Flash e.s.{} into DUT failed".format(self.row_id)
             error_critical(otmsg)
         
-        # The waiting time         
-        time.sleep(5)
+        ## The waiting time         
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(5)
+        self.pexp.expect_only(60, self.esp32_prompt)
 
     def check_devreg_data(self):
         output = self.pexp.expect_get_output("info", "", timeout=3)
@@ -106,16 +133,14 @@ class UFPESP32FactoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
-        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
         self.erase_eefiles()
         msg(10, "Finish erasing ee files ...")
-        
-        self.pexp.expect_only(60, self.esp32_prompt)
-        msg(15, "Device boots well")
+    
+        if FWUPDATE_ENABLE is True:
+            self.fwupdate()    
+            msg(15, "Finish FW updating ...")
 
         if PROVISION_ENABLE is True:
             self.data_provision_4k(netmeta=self.devnetmeta)
