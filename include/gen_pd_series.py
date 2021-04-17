@@ -58,23 +58,17 @@ class UIpopen(object):
 
 
 '''
-    Product series definition
-'''
-airmax_ac_series = [
-    "00492_e3d6", "00406_e7e5", "00513_e7e6", "00526_e7e7", "00546_e7e8", "00497_e7f9",
-    "00552_e7fa", "00556_e7fc", "00569_e4f3", "00962_e7ff"
-]
-
-
-'''
    Main Function
 '''
-cwd_dir = os.getcwd()
+curdir = os.getcwd()
+reg_bs_dir = os.path.join(curdir, "config/includes.chroot/usr/local/sbin")
+prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 
 cn = UIpopen()
 parse = argparse.ArgumentParser(description="Generating product json file")
-parse.add_argument('--prodline', '-p', dest='prodline', help='Product Line', default=None)
-parse.add_argument('--model', '-m', dest='model', help='Model', default=None)
+parse.add_argument('--prodline', '-pl', dest='prodline', help='Product Line', default=None)
+parse.add_argument('--series', '-sr', dest='series', help='Series', default=None)
+parse.add_argument('--pdseries', '-psr', dest='pdseries', help='Product Series', default=None)
 args, _ = parse.parse_known_args()
 
 if args.prodline is None:
@@ -84,29 +78,27 @@ else:
     pl = args.prodline
     print("Product line: " + pl)
 
-if args.model is None:
+if args.series is None:
     print("Please provide the models")
     exit(1)
 else:
-    mdl = args.model
-    print("Model: " + mdl)
-    if mdl == "AC-SERIES":
-        model_list = airmax_ac_series
-    else:
-        print("Build singel model")
+    print("Product series: " + args.series)
+    product_series = args.series.split(" ")
+
+a_series = args.pdseries
+
 
 def main():
-    target_dir = os.path.join(cwd_dir, pl)
-    print("Target dir: " + target_dir)
+    print("Target dir: " + prod_json_dir)
 
     thk = {}
     thk[pl] = {}
     kidx = 0
-    for i in model_list:
-        xpd = "pd_{}.json".format(i.lower())
-        target = os.path.join(target_dir, xpd)
+    for pn in product_series:
+        print(pn)
+        xpd = "pd_{}_{}.json".format(pn.split("-")[0], pn.split("-")[1].lower())
+        target = os.path.join(prod_json_dir, pl, xpd)
         if os.path.isfile(target):
-            print("product: " + target)
             fh = open(target)
             pjson = json.load(fh)
             fh.close()
@@ -119,8 +111,8 @@ def main():
     output = json.dumps(thk, indent=2)
 
     # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_AC-SERIES.json
-    pd_series_name = "pd_{}.json".format(mdl)
-    src = os.path.join(cwd_dir, pl, pd_series_name)
+    a_series_name = "pd_{}.json".format(a_series)
+    src = os.path.join(prod_json_dir, pl, a_series_name)
     ft = open(src, 'w')
     ft.write(output)
     ft.close()

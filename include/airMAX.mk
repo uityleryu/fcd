@@ -66,10 +66,7 @@ IMAGE-AC-SERIES= \
     am-fw/WA.v8.7.2.44330.210106.1337.bin \
     am-fw/2XC.v8.7.2.44330.210106.1337.bin \
     am-fw/XC.v8.7.2.44330.210106.1337.bin \
-    am-fw/2WA.v8.7.4-beta2.44988.210323.1827.bin \
-    am-fw/2XC.v8.7.4-beta2.44988.210323.1827.bin \
-    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
-    am-fw/XC.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/UBNT_WA.bin \
     am-fw/UBNT_2WA.bin \
     am-fw/UBNT_XC.bin \
@@ -78,7 +75,6 @@ IMAGE-AC-SERIES= \
     am-fw/AR934X_UB.bin \
     am-fw/QCA955X_ART_UB.bin \
     am-fw/QCA955X_UB.bin \
-    am-fw/WA.v8.7.4-beta.44660.210219.1654.bin
 
 IMAGE-AIRMAX+=$(IMAGE-GBE)
 IMAGE-AIRMAX+=$(IMAGE-PRISMAP)
@@ -166,6 +162,8 @@ $(eval $(call ProductCompress,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER),$(A
 
 
 # ==================================================================================================
+# Single product definition
+# ==================================================================================================
 
 IMAGE-AR9342-AC-SERIES= \
     am-fw/u-boot-ar934x.bin \
@@ -179,10 +177,10 @@ IMAGE-00477-e3d5+= \
     am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
 
-IMAGE-e3d6=$(IMAGE-AR9342-AC-SERIES)
-IMAGE-e3d6+= \
+IMAGE-00492-e3d6=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00492-e3d6+= \
     images/e3d6* \
-    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
 
 IMAGE-00559-e3d6=$(IMAGE-AR9342-AC-SERIES)
@@ -203,33 +201,33 @@ IMAGE-00643-e7fe+= \
     am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
 
-IMAGE-e8f8= \
+IMAGE-00488-e8f8= \
     images/e8f8* \
     am-fw/u-boot-ar934x-aic.bin \
     am-fw/u-boot-art-ar934x-aic.bin \
     am-fw/u-boot-art-qca953x-aic.bin \
     am-fw/u-boot-qca953x-aic.bin
 
-IMAGE-e7f9=$(IMAGE-AR9342-AC-SERIES)
-IMAGE-e7f9+= \
+IMAGE-00497-e7f9=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00497-e7f9+= \
     images/e7f9* \
-    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
 
-IMAGE-e7fa=$(IMAGE-AR9342-AC-SERIES)
-IMAGE-e7fa+= \
+IMAGE-00552-e7fa=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00552-e7fa+= \
     images/e7fa* \
-    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img \
 
-IMAGE-e7fc=$(IMAGE-AR9342-AC-SERIES)
-IMAGE-e7fc+= \
+IMAGE-00556-e7fc=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00556-e7fc+= \
     images/e7fc* \
-    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/WA.ar934x-LSDK-ART2_815-NBE-5AC-G2-Wasp-16M-V4.img \
 
-IMAGE-e7ff=$(IMAGE-AR9342-AC-SERIES)
-IMAGE-e7ff+= \
+IMAGE-00962-e7ff=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00962-e7ff+= \
     images/e7ff* \
     am-fw/WA.v8.7.4-beta.44660.210219.1654.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
@@ -246,8 +244,11 @@ TOOLS-AR9432-AC-SERIES= \
 TOOLS-00477-e3d5=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-00477-e3d5+=$(TOOLS-CONFIG)
 
-TOOLS-e3d6=$(TOOLS-AR9432-AC-SERIES)
-TOOLS-e3d6+=$(TOOLS-CONFIG)
+TOOLS-00492-e3d6=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00492-e3d6+=$(TOOLS-CONFIG)
+
+TOOLS-00497-e7f9=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00497-e7f9+=$(TOOLS-CONFIG)
 
 TOOLS-00429-e5f5=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-00429-e5f5+=$(TOOLS-CONFIG)
@@ -258,31 +259,69 @@ TOOLS-00559-e3d6+=$(TOOLS-CONFIG)
 TOOLS-e7f9=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e7f9+=$(TOOLS-CONFIG)
 
-TOOLS-e7fa=$(TOOLS-AR9432-AC-SERIES)
-TOOLS-e7fa+=$(TOOLS-CONFIG)
+TOOLS-00552-e7fa=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00552-e7fa+=$(TOOLS-CONFIG)
 
 TOOLS-00643-e7fe=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-00643-e7fe+=$(TOOLS-CONFIG)
 
-TOOLS-e7fc=$(TOOLS-AR9432-AC-SERIES)
-TOOLS-e7fc+=$(TOOLS-CONFIG)
+TOOLS-00556-e7fc=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00556-e7fc+=$(TOOLS-CONFIG)
 
-TOOLS-e7ff=$(TOOLS-AR9432-AC-SERIES)
-TOOLS-e7ff+=$(TOOLS-CONFIG)
+TOOLS-00962-e7ff=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00962-e7ff+=$(TOOLS-CONFIG)
 
-TOOLS-e8f8= \
+TOOLS-00488-e8f8= \
     am/helper_ARxxxx_aircube \
     am/aic_cred_gen.sh
+
+
+# ==================================================================================================
+# Product series definition
+# ==================================================================================================
+
+IMAGE-AC-SERIES+=$(IMAGE-00477-e3d5)
+IMAGE-AC-SERIES+=$(IMAGE-00492-e3d6)
+IMAGE-AC-SERIES+=$(IMAGE-00559-e3d6)
+IMAGE-AC-SERIES+=$(IMAGE-00429-e5f5)
+IMAGE-AC-SERIES+=$(IMAGE-00497-e7f9)
+IMAGE-AC-SERIES+=$(IMAGE-00552-e7fa)
+IMAGE-AC-SERIES+=$(IMAGE-00556-e7fc)
+IMAGE-AC-SERIES+=$(IMAGE-00643-e7fe)
+IMAGE-AC-SERIES+=$(IMAGE-00962-e7ff)
+
+TOOLS-AC-SERIES+=$(TOOLS-00477-e3d5)
+TOOLS-AC-SERIES+=$(TOOLS-00492-e3d6)
+TOOLS-AC-SERIES+=$(TOOLS-00559-e3d6)
+TOOLS-AC-SERIES+=$(TOOLS-00429-e5f5)
+TOOLS-AC-SERIES+=$(TOOLS-00497-e7f9)
+TOOLS-AC-SERIES+=$(TOOLS-00552-e7fa)
+TOOLS-AC-SERIES+=$(TOOLS-00556-e7fc)
+TOOLS-AC-SERIES+=$(TOOLS-00643-e7fe)
+TOOLS-AC-SERIES+=$(TOOLS-00962-e7ff)
+
+# 00492 and 00559 use the identical PCBA but the ID is different
+# So, they share the same system ID
+PRODUCT-AC-SERIES+=00477-e3d5
+PRODUCT-AC-SERIES+=00492-e3d6
+PRODUCT-AC-SERIES+=00559-e3d6
+PRODUCT-AC-SERIES+=00429-e5f5
+PRODUCT-AC-SERIES+=00497-e7f9
+PRODUCT-AC-SERIES+=00552-e7fa
+PRODUCT-AC-SERIES+=00556-e7fc
+PRODUCT-AC-SERIES+=00643-e7fe
+PRODUCT-AC-SERIES+=00962-e7ff
 
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00477-e3d5))
-$(eval $(call ProductCompress2,e3d6,FCD_$(PRD)_e3d6_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00492-e3d6))
 $(eval $(call ProductCompress2,00559-e3d6))
 $(eval $(call ProductCompress2,00429-e5f5))
-$(eval $(call ProductCompress2,e7f9,FCD_$(PRD)_e7f9_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,e7fa,FCD_$(PRD)_e7fa_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,e7fc,FCD_$(PRD)_e7fc_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00497-e7f9))
+$(eval $(call ProductCompress2,00552-e7fa))
+$(eval $(call ProductCompress2,00556-e7fc))
 $(eval $(call ProductCompress2,00643-e7fe))
-$(eval $(call ProductCompress2,e7ff,FCD_$(PRD)_e7ff_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,e8f8,FCD_$(PRD)_e8f8_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00962-e7ff))
+$(eval $(call ProductCompress2,00488-e8f8))
+$(eval $(call ProductCompress2,AC-SERIES))

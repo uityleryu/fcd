@@ -62,29 +62,29 @@ $(eval $(call ProductCompress,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FW
 
 # ==================================================================================================
 
-IMAGE-ef0d= \
+IMAGE-02808-ef0d= \
     images/ef0d* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
-IMAGE-ef0f= \
+IMAGE-03808-ef0f= \
     images/ef0f* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
-IMAGE-ef12=
+IMAGE-03370-ef12=
 
 # -----------------------------------------------------------------------------------------
 
-TOOLS-ef0d=$(TOOLS-CONFIG)
-TOOLS-ef0d+= uvp/*
+TOOLS-02808-ef0d=$(TOOLS-CONFIG)
+TOOLS-02808-ef0d+= uvp/*
 
-TOOLS-ef0f=$(TOOLS-CONFIG)
-TOOLS-ef0f+= uvp/*
+TOOLS-03808-ef0f=$(TOOLS-CONFIG)
+TOOLS-03808-ef0f+= uvp/*
 
-TOOLS-ef12=$(TOOLS-CONFIG)
-TOOLS-ef12+= uvp/helper_DVF99_release_ata_max
+TOOLS-03370-ef12=$(TOOLS-CONFIG)
+TOOLS-03370-ef12+= uvp/helper_DVF99_release_ata_max
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,ef0d,FCD_$(PRD)_ef0d_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ef0f,FCD_$(PRD)_ef0f_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ef12,FCD_$(PRD)_ef12_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,02808-ef0d))
+$(eval $(call ProductCompress2,03808-ef0f))
+$(eval $(call ProductCompress2,03370-ef12))

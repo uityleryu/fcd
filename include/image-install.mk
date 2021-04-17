@@ -64,8 +64,8 @@ endef
 
 define ProductCompress
 
-$1-ostrich-local: gitrepo image-ostrich-install-$1
-$1-ostrich-update: image-ostrich-install-$1
+$1-ostrich: gitrepo image-ostrich-install-$1
+$1-ostrich-local: image-ostrich-install-$1
 
 image-ostrich-install-$1: $1-namechk
 	@echo " ****************************************************************** "
@@ -91,27 +91,25 @@ endef
 
 define ProductCompress2
 
-$1-antman-local: gitrepo image-antman-install-$1
-$1-antman-update: image-antman-install-$1
+MATCH_SINGLE := $(shell [[ $1 =~ [0-9]{5}-[0-9a-f]{4} ]] && echo matched)
+
+$1-antman: gitrepo image-antman-install-$1
+$1-antman-local: image-antman-install-$1
 
 image-antman-install-$1:
-	@echo " ****************************************************************** "
-	@echo "   FCD TGZ NAME          = $2                                              "
-	@echo "   PRD_MODEL             = $(PRD_MODEL)                                    "
-	@echo " ****************************************************************** "
-	@echo " >> copy prep scripts to new squashfs "
 	rm -rf $(OSTRICH_DIR)
 	mkdir -p $(OSTRICH_DIR)
 	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
-	python3 include/prepare_fcd_scripts.py -l=$(PRD) -n=$1 -v=$(VER) -j=$(FWVER)
-	$(eval FCD_FL_NAME := $(shell cat $(FCDAPP_DIR)/$(APP_DIR)/prod_json/version.txt))
-	@echo "FCD_FL_NAME : $(FCD_FL_NAME)"
-	python3 include/namechk.py $(FCD_FL_NAME)
-	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
+	cp -rfL $(UBNTLIB_DIR)/ $(OSTRICH_DIR)/sbin/
 	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
 	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
 	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
-	cd $(OUTDIR); tar -cvzf $(FCD_FL_NAME).tgz ostrich
+ifndef MATCH_SINGLE
+	python3 include/gen_pd_series.py -pl=$(PRD) -sr="$(PRODUCT-$1)" -psr=$1
+	python3 include/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -tp="buildseries"
+else
+	python3 include/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -tp="buildsingle"
+endif
 
 endef

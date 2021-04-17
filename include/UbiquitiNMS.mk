@@ -13,17 +13,6 @@ IMAGE-UISP-R-PRO= \
     unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
-# UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
-IMAGE-UNMS-S-LITE= \
-    images/eed0* \
-    unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.2.bix \
-    unms-fw/UNMS-S-Lite.uboot_1.1.0.bin \
-
-IMAGE-UISP-S-LITE= \
-    images/ee50* \
-    unms-fw/DIAG_UISP_S_Lite_1.3.4.5.vmlinux.bix \
-    unms-fw/UISP-S-Lite.uboot_1.2.1.bin \
-
 IMAGE-UISP-R-LITE= \
     images/ee6b* \
     unms-fw/UISPR.mt7621* \
@@ -58,8 +47,6 @@ IMAGE-UISP-R-MICRO= \
     unms-fw/UISPR.mt7621* \
 
 IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
-IMAGE-UNMS+=$(IMAGE-UNMS-S-LITE)
-IMAGE-UNMS+=$(IMAGE-UISP-S-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-R-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
@@ -156,31 +143,40 @@ $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)
 
 # ==================================================================================================
 
-IMAGE-ee6a=$(IMAGE-UISP-R-PRO)
-IMAGE-eed0=$(IMAGE-UNMS-S-LITE)
-IMAGE-ee50=$(IMAGE-UISP-S-LITE)
+IMAGE-00815-ee6a=$(IMAGE-UISP-R-PRO)
 IMAGE-ee6b=$(UISP-R-LITE)
 IMAGE-dca2=$(IMAGE-UISP-LTE)
 
+# UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
+IMAGE-00900-ee50=\
+    images/ee50* \
+    unms-fw/DIAG_UISP_S_Lite_1.3.4.5.vmlinux.bix \
+    unms-fw/UISP-S-Lite.uboot_1.2.1.bin \
+
+IMAGE-00817-eed0=\
+    images/eed0* \
+    unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.2.bix \
+    unms-fw/UNMS-S-Lite.uboot_1.1.0.bin \
+
 # UISP-S
-IMAGE-ee6f= \
+IMAGE-00988-ee6f= \
     images/ee6f* \
     unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix \
     unms-fw/u-boot-1.3.0-c174.bin \
 
 # ---------------------------------------------------------------------------------------------------
 
-TOOLS-ee6f=$(TOOLS-UNMS)
-TOOLS-ee6f+= unms-slite/*
+TOOLS-00988-ee6f=$(TOOLS-UNMS)
+TOOLS-00988-ee6f+= unms-slite/*
 
-TOOLS-eed0=$(TOOLS-UNMS)
-TOOLS-eed0+=unms-slite/*
+TOOLS-00817-eed0=$(TOOLS-UNMS)
+TOOLS-00817-eed0+=unms-slite/*
 
-TOOLS-ee50=$(TOOLS-UNMS)
-TOOLS-ee50+=unms-slite/*
+TOOLS-00900-ee50=$(TOOLS-UNMS)
+TOOLS-00900-ee50+=unms-slite/*
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,eed0,FCD_$(PRD)_eed0_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ee50,FCD_$(PRD)_ee50_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00817-eed0))
+$(eval $(call ProductCompress2,00900-ee50))
+$(eval $(call ProductCompress2,00988-ee6f))

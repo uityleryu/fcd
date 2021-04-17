@@ -48,21 +48,22 @@ $(eval $(call ProductCompress,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FW
 
 
 # ==================================================================================================
-IMAGE-ef80=
-IMAGE-ef81=
-IMAGE-ef83=
-IMAGE-ef84=
+IMAGE-03168-ef80=
+IMAGE-03182-ef81=
+IMAGE-03256-ef83=
+IMAGE-03287-ef84=
 
 
 # ---------------------------------------------------------------------------------------------------
-TOOLS-ef80=$(TOOLS-CONFIG)
-TOOLS-ef81=$(TOOLS-CONFIG)
-TOOLS-ef83=$(TOOLS-CONFIG)
-TOOLS-ef84=$(TOOLS-CONFIG)
+
+TOOLS-03168-ef80=$(TOOLS-CONFIG)
+TOOLS-03182-ef81=$(TOOLS-CONFIG)
+TOOLS-03256-ef83=$(TOOLS-CONFIG)
+TOOLS-03287-ef84=$(TOOLS-CONFIG)
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,ef80,FCD_$(PRD)_ef80_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ef81,FCD_$(PRD)_ef81_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ef83,FCD_$(PRD)_ef83_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress2,ef84,FCD_$(PRD)_ef84_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,03168-ef80))
+$(eval $(call ProductCompress2,03182-ef81))
+$(eval $(call ProductCompress2,03256-ef83))
+$(eval $(call ProductCompress2,03287-ef84))

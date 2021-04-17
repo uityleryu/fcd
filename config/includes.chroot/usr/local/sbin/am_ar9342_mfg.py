@@ -70,10 +70,13 @@ class AMAR9342MFG(ScriptBase):
 
         self.mfgtype = {
             "e2f2": "img",
+            "e3d5": "img",
             "e3d6": "img",
+            "e5f5": "img",
             "e7f9": "img",
             "e7fa": "img",
             "e7fc": "img",
+            "e7fe": "img",
             "e7ff": "img"
         }
 
