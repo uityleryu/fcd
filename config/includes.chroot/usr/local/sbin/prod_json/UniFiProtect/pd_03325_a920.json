@@ -8,7 +8,7 @@
         "DESC": "UniFi Protect Keypad",
         "FILE": "up_a920_factory.py",
         "T1FILE": "",
-        "QRCHECK": "True",
+        "QRCHECK": "False",
         "FCD_ID": "000d",
         "SW_ID": "1601"
       }
