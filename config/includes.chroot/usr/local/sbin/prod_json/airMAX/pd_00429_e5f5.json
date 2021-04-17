@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "PBE-5AC-620": {
+      "NAME"        : "PBE-5AC-620",
+      "BOARDID"     : "e5f5",
+      "BOMREV"      : "113-00429",
+      "DESC"        : "PowerBeam 5AC 620",
+      "FILE"        : "am_ar9342_factory.py",
+      "T1FILE"      : "am_ar9342_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1202"
+    }
+  }
+}

@@ -38,7 +38,8 @@ IMAGE-AC-SERIES= \
     images/e7e7* images/e7e9* images/e7e8* images/e7fa* \
     images/e7fc* images/e7fb* images/e2c5* images/e4f3* \
     images/e2f3* images/e3d9* images/e2c7* images/e7fd* \
-    images/e7fe* images/e7ff*\
+    images/e7fe* images/e7ff*
+
     am-fw/u-boot-ar934x.bin \
     am-fw/u-boot-art-ar934x.bin \
     am-fw/u-boot-qca955x.bin \
@@ -172,9 +173,33 @@ IMAGE-AR9342-AC-SERIES= \
     am-fw/AR934X_ART_UB.bin \
     am-fw/AR934X_UB.bin \
 
+IMAGE-00477-e3d5=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00477-e3d5+= \
+    images/e3d5* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
+
 IMAGE-e3d6=$(IMAGE-AR9342-AC-SERIES)
 IMAGE-e3d6+= \
     images/e3d6* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
+
+IMAGE-00559-e3d6=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00559-e3d6+= \
+    images/e3d6* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
+
+IMAGE-00429-e5f5=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00429-e5f5+= \
+    images/e5f5* \
+    am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
+    am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
+
+IMAGE-00643-e7fe=$(IMAGE-AR9342-AC-SERIES)
+IMAGE-00643-e7fe+= \
+    images/e7fe* \
     am-fw/WA.v8.7.4-beta2.44988.210323.1828.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.bin \
 
@@ -218,14 +243,26 @@ TOOLS-AR9432-AC-SERIES= \
     am/id_rsa.pub \
     am/fl_lock_11ac_re
 
+TOOLS-00477-e3d5=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00477-e3d5+=$(TOOLS-CONFIG)
+
 TOOLS-e3d6=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e3d6+=$(TOOLS-CONFIG)
+
+TOOLS-00429-e5f5=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00429-e5f5+=$(TOOLS-CONFIG)
+
+TOOLS-00559-e3d6=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00559-e3d6+=$(TOOLS-CONFIG)
 
 TOOLS-e7f9=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e7f9+=$(TOOLS-CONFIG)
 
 TOOLS-e7fa=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e7fa+=$(TOOLS-CONFIG)
+
+TOOLS-00643-e7fe=$(TOOLS-AR9432-AC-SERIES)
+TOOLS-00643-e7fe+=$(TOOLS-CONFIG)
 
 TOOLS-e7fc=$(TOOLS-AR9432-AC-SERIES)
 TOOLS-e7fc+=$(TOOLS-CONFIG)
@@ -239,9 +276,13 @@ TOOLS-e8f8= \
 
 # Project compressed type2 file for RPi FCD host
 
+$(eval $(call ProductCompress2,00477-e3d5))
 $(eval $(call ProductCompress2,e3d6,FCD_$(PRD)_e3d6_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00559-e3d6))
+$(eval $(call ProductCompress2,00429-e5f5))
 $(eval $(call ProductCompress2,e7f9,FCD_$(PRD)_e7f9_$(VER)_$(FWVER),$(ALL)))
 $(eval $(call ProductCompress2,e7fa,FCD_$(PRD)_e7fa_$(VER)_$(FWVER),$(ALL)))
 $(eval $(call ProductCompress2,e7fc,FCD_$(PRD)_e7fc_$(VER)_$(FWVER),$(ALL)))
+$(eval $(call ProductCompress2,00643-e7fe))
 $(eval $(call ProductCompress2,e7ff,FCD_$(PRD)_e7ff_$(VER)_$(FWVER),$(ALL)))
 $(eval $(call ProductCompress2,e8f8,FCD_$(PRD)_e8f8_$(VER)_$(FWVER),$(ALL)))
