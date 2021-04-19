@@ -19,7 +19,9 @@ IMAGE-RADAR= \
 
 IMAGE-KEYPAD=
 
-IMAGE-UP-Chime=
+IMAGE-UP-Chime= \
+    images/ab12* \
+    up-fw/up-chime/*
 
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
