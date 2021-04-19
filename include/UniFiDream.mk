@@ -59,7 +59,7 @@ IMAGE-UDMPRO-SE+= \
     images/ea2c* \
     udm-fw/uImage-udmpro-se* \
     udm-fw/boot-udmpro-se* \
-    udm-fw/UDMPROSE.arm64*
+    udm-fw/UDMPROSE.al324*
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -97,8 +97,9 @@ TOOLS-UDMB+= udm_b/*
 TOOLS-UDMLITE+=$(TOOLS-CONFIG)
 TOOLS-UDMLITE+= udm/*
 
-TOOLS-UDMPRO-SE=$(TOOLS-UDM)
+TOOLS-UDMPRO-SE+=$(TOOLS-CONFIG)
 TOOLS-UDMPRO-SE+= \
+    udm/helper_AL324* \
     udm_pro_se/nvr-lcm-tools* \
     udm_pro_se/unas.pub
 

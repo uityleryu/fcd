@@ -142,6 +142,7 @@ class UDM_AL324_DEBIAN_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
+        self.pexp.expect_only(360, "Restarting system")
 
     def init_recovery_image(self):
         self.set_kernel_net()
