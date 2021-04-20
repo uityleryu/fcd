@@ -38,8 +38,7 @@ IMAGE-AC-SERIES= \
     images/e7e7* images/e7e9* images/e7e8* images/e7fa* \
     images/e7fc* images/e7fb* images/e2c5* images/e4f3* \
     images/e2f3* images/e3d9* images/e2c7* images/e7fd* \
-    images/e7fe* images/e7ff*
-
+    images/e7fe* images/e7ff* \
     am-fw/u-boot-ar934x.bin \
     am-fw/u-boot-art-ar934x.bin \
     am-fw/u-boot-qca955x.bin \

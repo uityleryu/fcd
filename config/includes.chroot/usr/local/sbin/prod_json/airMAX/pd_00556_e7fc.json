@@ -1,7 +1,7 @@
 {
   "airMAX": {
-    "NBE-5AC-WASP": {
-      "NAME"        : "NBE-5AC-WASP",
+    "NBE-5AC": {
+      "NAME"        : "NBE-5AC",
       "BOARDID"     : "e7fc",
       "BOMREV"      : "113-00556",
       "DESC"        : "NanoBeam 5AC US",
