@@ -1396,8 +1396,21 @@
       "SW_ID"       : "1602"
     },
 
-    "ULM":{
+    "UFP-LOCK-R-HK":{
       "INDEX"       : 2,
+      "NAME"        : "UFP-LOCK-R",
+      "BOARDID"     : "a941",
+      "BOMREV"      : "113-02765",
+      "DESC"        : "UniFi Protect Doorlock (HomeKit)",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1602"
+    },
+
+    "ULM":{
+      "INDEX"       : 3,
       "NAME"        : "ULM",
       "BOARDID"     : "a919",
       "BOMREV"      : "113-03025",
@@ -1410,7 +1423,7 @@
     },
 
     "UFP-TAG-COMBO":{
-      "INDEX"       : 3,
+      "INDEX"       : 4,
       "NAME"        : "UFP-TAG-COMBO",
       "BOARDID"     : "a913",
       "BOMREV"      : "113-02973",
@@ -1423,7 +1436,7 @@
     },
 
     "UFP-CARD-COMBO":{
-      "INDEX"       : 3,
+      "INDEX"       : 5,
       "NAME"        : "UFP-CARD-COMBO",
       "BOARDID"     : "a914",
       "BOMREV"      : "113-03089",
@@ -1436,7 +1449,7 @@
     },
 
     "UFP-GARAGE":{
-      "INDEX"       : 4,
+      "INDEX"       : 6,
       "NAME"        : "UFP-GARAGE",
       "BOARDID"     : "a915",
       "BOMREV"      : "113-03033",
@@ -1449,7 +1462,7 @@
     },
 
     "UFP-RADAR":{
-      "INDEX"       : 5,
+      "INDEX"       : 7,
       "NAME"        : "UFP-RADAR",
       "BOARDID"     : "dcb0",
       "BOMREV"      : "113-00806",
@@ -1462,7 +1475,7 @@
     },
 
     "UP-KEYPAD":{
-      "INDEX"       : 6,
+      "INDEX"       : 8,
       "NAME"        : "UP-KEYPAD",
       "BOARDID"     : "a920",
       "BOMREV"      : "113-03325",
@@ -1821,7 +1834,7 @@
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
     },
-    
+
     "UISP-R-PRO-SSD":{
       "INDEX"       : 9,
       "NAME"        : "UISP-R-PRO",
