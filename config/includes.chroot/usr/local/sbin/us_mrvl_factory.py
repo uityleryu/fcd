@@ -114,12 +114,16 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "i2c mw 0x21 0x06 0xfc")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "run bootcmd")
 
-    def clear_eeprom_in_uboot(self, timeout=30):
+    def clear_eeprom_and_config_in_uboot(self, timeout=30):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcal -f", post_exp="Done")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uclearcfg", post_exp="Done")
 
     def set_data_in_uboot(self):
         self.stop_uboot(uappinit_en=True)
+
+        self.clear_eeprom_and_config_in_uboot()
+        log_debug("Clearing EEPROM and config in U-Boot succeed")
+
         cmd = [
             self.CMD_PREFIX,
             "usetbid",
@@ -132,8 +136,6 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         # self.enable_console_in_uboot()
         # for v3 for u6-s8
 
-        self.clear_eeprom_in_uboot()
-        log_debug("Clearing EEPROM in U-Boot succeed")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
 
     def upload_fw(self):
