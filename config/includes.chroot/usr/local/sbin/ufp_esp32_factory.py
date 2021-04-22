@@ -88,7 +88,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # The waiting time         
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        self.pexp.expect_only(60, self.esp32_prompt)
+        self.pexp.expect_only(180, self.esp32_prompt)
         log_debug("Device boots well")
 
     def put_devreg_data_in_dut(self):
