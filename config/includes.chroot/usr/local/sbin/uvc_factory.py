@@ -91,10 +91,8 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-G4INS":
             self.board_name = "UVC G4 Instant"
-            self.devregpart = "/dev/mtd11"
             self.ip = "169.254.2.20"
-            self.flash_module = "m25p80_uvcg4ins.ko"
-            self.helperexe = "helper_uvcg4ins"
+            self.helper_rule = 1
 
 
         self.fillff = "128k_ff.bin"
@@ -254,6 +252,9 @@ class UVCFactoryGeneral(ScriptBase):
         if res == 'AMBA':
             ssi_ident_id = '414d4241'
             ssi_version_id = '312e3030'
+        elif res == 'SStar':
+            ssi_ident_id = '53537461'
+            ssi_version_id = '53537461'        
         else:
             ssi_ident_id = '00000000'
             ssi_version_id = '00000000'
