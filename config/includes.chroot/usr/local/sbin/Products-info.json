@@ -773,7 +773,7 @@
       "SW_ID": "0601",
       "BLACK_LIST": {
         "LED": {
-          "reg": "ht52241_write",
+          "reg": "ht52241_write_byte\\] I2C write error",
           "level": "fail",
           "assignee": "CM"
         },

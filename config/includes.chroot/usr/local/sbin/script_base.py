@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.36"
+    __version__ = "1.0.37"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -1225,7 +1225,7 @@ class ScriptBase(object):
             # Read Log file
             logpath = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
             with open(logpath, 'r') as logfile:
-                logcontent = logfile.read()
+                logcontent = logfile.read().rsplit('Ubiquiti Device Security Client')[-1]
             
             # Read BlackList Dict
             if 'BLACK_LIST' in self.fsiw[self.product_line][self.product_name]:
