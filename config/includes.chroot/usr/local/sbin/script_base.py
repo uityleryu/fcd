@@ -1213,10 +1213,11 @@ class ScriptBase(object):
         self.eebin_path = "{}.regdmn".format(eebin)
 
     def close_fcd(self):
-        self.test_result = 'Pass'
         # if do back to T1, there will be string value for "selfe.rasecal" so do not check blacklist
         if not self.erasecal:
             self.check_blacklist()
+            
+        self.test_result = 'Pass'
         time.sleep(2)
         exit(0)
 
