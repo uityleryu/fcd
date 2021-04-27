@@ -26,7 +26,8 @@ class U6MT7622Factory(ScriptBase):
         self.ver_extract()
         self.devregpart = "/dev/mtdblock5"
         self.helperexe = "helper_UAP6_MT7622_release"
-        self.bootloader_prompt = "MT7622"
+        # self.bootloader_prompt = "MT7622"
+        self.bootloader_prompt = "MT7622>"
         self.fcdimg = self.board_id + "-fcd.bin"
         self.helper_path = "common"
 
@@ -89,9 +90,6 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig", "br0", retry=10)
         # To enable ethernet in 1G unit
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "devmem 0x1b1280e8 w 0x10; devmem 0x1b12a028 w 0x14813; " \
-                                                       "devmem 0x1b128020 w 0x31120103; devmem 0x1b128008 w 0x1; " \
-                                                       "devmem 0x1b128000 w 0x1340; devmem 0x1b1280e8 w 0x0")
         self.is_network_alive_in_linux(retry=10)
 
     def update_uboot(self):
@@ -113,7 +111,7 @@ class U6MT7622Factory(ScriptBase):
 
     def enter_uboot(self):
         rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
-            
+
         retry = 2
         while retry > 0:
             if rt != 0:
@@ -122,10 +120,12 @@ class U6MT7622Factory(ScriptBase):
                 self.pexp.expect_action(10, self.bootloader_prompt, "")
                 break
             except Exception as e:
-                self.bootloader_prompt = "=>"
+                self.bootloader_prompt = "#"
                 log_debug("Change prompt to {}".format(self.bootloader_prompt))
                 retry -= 1
 
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.mac)
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
         self.set_ub_net(premac=self.premac)
         self.is_network_alive_in_uboot()
 
@@ -179,10 +179,47 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
+
+        # BT FW will be checked by kernel, below info is for record
+        ## BT "need" to be update will be like this
+        # [   57.178542] [btmtk_info] btmtk_load_flash_init send
+        # [   57.179347] [btmtk_info] btmtk_load_flash_chech_version send
+        # [   57.180105] [btmtk_info] Get event result: NG
+        # [   57.180105] 
+        # [   57.180132] [btmtk_info] btmtk_cif_receive_evt, len = 22 Recv CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 32 34 31 30 32 35 32 39
+        # [   57.180144] [btmtk_info] btmtk_cif_receive_evt, len = 22 Expect CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 30 34 32 30 31 32 34 33
+
+        ## BT "no need" to be updated will be like this
+        # [   42.418357] [btmtk_info] btmtk_load_flash_init send
+        # [   42.419253] [btmtk_info] btmtk_load_flash_chech_version send
+        # [   42.420077] [btmtk_err] ***btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update***
+        # [   43.020197] mtk_soc_eth 1b100000.ethernet: path gmac1_sgmii in set_mux_gdm1_to_gmac1_esw updated = 1
+
+        number_time = 0 # one loop is 5sec for 1 time
+        while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 
+            time.sleep(5)
+            cmd = 'dmesg | grep -i "btmtk_load_flash_programing"'
+            output = self.pexp.expect_get_output(action=cmd, prompt= "" ,timeout=3)
+            log_debug(output)
+            if output.find("btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update") >= 0:
+                log_debug("BT fw will 'not' need to be updated")
+                break
+            
+            cmd = 'dmesg | grep -i "Get event result:"'
+            output = self.pexp.expect_get_output(action=cmd, prompt= "" ,timeout=3)
+            log_debug(output)
+            if output.find("Get event result: NG") >= 0:
+                log_debug("BT fw will need to be updated, it will reboot system automatically")
+                self.pexp.expect_only(300, "\[BT Power On Result\] Success")
+                self.login(timeout=240,press_enter=True)
+                break
+
+            number_time = number_time + 1
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
         self.pexp.expect_action(10, self.linux_prompt, "reboot")
-        self.pexp.expect_only(60, "\[BT Power On Result\] Success")
+        self.pexp.expect_only(120, "\[BT Power On Result\] Success")
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
 
     def run(self):
@@ -255,7 +292,7 @@ class U6MT7622Factory(ScriptBase):
             self.set_stp_env()
             msg(85, "Save STP_ENV done...")
             self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
+            msg(90, "Succeeding in checking the devreg information ...")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
