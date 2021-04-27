@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.37"
+    __version__ = "1.0.38"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -688,6 +688,8 @@ class ScriptBase(object):
         self.disable_inittab_process("hostapd")
 
     def gen_rsa_key(self):
+        if os.path.isfile(self.rsakey_path):
+            os.remove(self.rsakey_path)
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
@@ -706,6 +708,8 @@ class ScriptBase(object):
             error_critical(otmsg)
 
     def gen_dss_key(self):
+        if os.path.isfile(self.dsskey_path):
+            os.remove(self.dsskey_path)
         cmd = "dropbearkey -t dss -f {0}".format(self.dsskey_path)
         self.cnapi.xcmd(cmd)
         '''
@@ -1213,8 +1217,8 @@ class ScriptBase(object):
         self.eebin_path = "{}.regdmn".format(eebin)
 
     def close_fcd(self):
-        # if do back to T1, there will be string value for "selfe.rasecal" so do not check blacklist
-        if not self.erasecal:
+        # If do back to T1, self.key_dir should be None and do not check blacklist
+        if self.key_dir:
             self.check_blacklist()
             
         self.test_result = 'Pass'

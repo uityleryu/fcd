@@ -65,6 +65,12 @@ IMAGE-ULTE-FLEX= \
     uap-fw/qca956x-ulte-flex-u-boot.bin \
     uap-fw/ULTE-Flex*
 
+IMAGE-UAP-AC-Lite-LR-Pro= \
+    images/e517* \
+    images/e527* \
+    images/e537* \
+    uap-fw/BZ.qca956x*-uboot.bin\
+    uap-fw/ART.qca956x*ART*.bin
 
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UAP-IWHD)
@@ -91,8 +97,7 @@ TOOLS-CONFIG= \
     common/helper_UNIFI_MT7621_release \
     common/aarch64-rpi4-64k-ee 
 
-# Project specific tools
-
+# Assign common tool for every model
 TOOLS-UBB+= \
     uap/cfg_part.bin \
     uap/helper_IPQ40xx \
@@ -102,18 +107,21 @@ TOOLS-UBB+= \
 TOOLS-UAP-INDUSTRIAL+= \
     uap/helper_UNIFI_MT7621_release
 
+TOOLS-ULTE-FLEX+=$(TOOLS-CONFIG)
+TOOLS-ULTE-FLEX+= \
+    ulte_flex/helper
+
+TOOLS-UAP-AC-Lite-LR-Pro+=$(TOOLS-CONFIG)
+TOOLS-UAP-AC-Lite-LR-Pro+= \
+    uap/helper_ARxxxx_musl
+
 TOOLS-UAP-FLEXHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-IWHD+=$(TOOLS-CONFIG)
 TOOLS-UAP-NANO-IW-FLEXHD+=$(TOOLS-CONFIG)
-
-# Assign common tool for every model
 TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
 TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UBB-XG+=$(TOOLS-CONFIG)
 
-TOOLS-ULTE-FLEX+=$(TOOLS-CONFIG)
-TOOLS-ULTE-FLEX+= \
-    ulte_flex/helper
 
 # Assign UAP series tools
 TOOLS-UAP+=$(TOOLS-UBB)
@@ -130,6 +138,7 @@ $(eval $(call ProductImage,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductImage,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UAP-AC-Lite-LR-Pro,FCD_$(PRD)_UAP-AC-Lite-LR-Pro_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -141,3 +150,4 @@ $(eval $(call ProductCompress,UBB,FCD_$(PRD)_UAP-UBB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductCompress,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UAP-AC-Lite-LR-Pro,FCD_$(PRD)_UAP-AC-Lite-LR-Pro_$(VER)_$(FWVER)))
