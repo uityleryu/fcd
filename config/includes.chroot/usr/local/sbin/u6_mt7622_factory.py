@@ -95,6 +95,12 @@ class U6MT7622Factory(ScriptBase):
     def update_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "nor init")
         time.sleep(2)
+        fake_EEPROM_img = os.path.join(self.image, self.board_id+"-fake_EEPROM.bin")
+        log_debug("fake_EEPROM_img: " + fake_EEPROM_img)
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x4007ff28 {}".format(fake_EEPROM_img))
+        time.sleep(1)
+        self.pexp.expect_action(10, self.bootloader_prompt, "snor erase 0x110000 0x10000; snor write 0x4007ff28 0x110000 0x10000")
+        time.sleep(2)
         self.pexp.expect_action(10, self.bootloader_prompt, "")
         time.sleep(2)
 
@@ -179,21 +185,6 @@ class U6MT7622Factory(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
-
-        # BT FW will be checked by kernel, below info is for record
-        ## BT "need" to be update will be like this
-        # [   57.178542] [btmtk_info] btmtk_load_flash_init send
-        # [   57.179347] [btmtk_info] btmtk_load_flash_chech_version send
-        # [   57.180105] [btmtk_info] Get event result: NG
-        # [   57.180105] 
-        # [   57.180132] [btmtk_info] btmtk_cif_receive_evt, len = 22 Recv CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 32 34 31 30 32 35 32 39
-        # [   57.180144] [btmtk_info] btmtk_cif_receive_evt, len = 22 Expect CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 30 34 32 30 31 32 34 33
-
-        ## BT "no need" to be updated will be like this
-        # [   42.418357] [btmtk_info] btmtk_load_flash_init send
-        # [   42.419253] [btmtk_info] btmtk_load_flash_chech_version send
-        # [   42.420077] [btmtk_err] ***btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update***
-        # [   43.020197] mtk_soc_eth 1b100000.ethernet: path gmac1_sgmii in set_mux_gdm1_to_gmac1_esw updated = 1
 
         number_time = 0 # one loop is 5sec for 1 time
         while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 

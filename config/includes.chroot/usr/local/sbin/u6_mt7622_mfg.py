@@ -44,7 +44,6 @@ class MT7622MFGGeneral(ScriptBase):
                 self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
 
     def set_boot_netenv(self):
-        # self.pexp.expect_action(10, self.bootloader_prompt, "mtk network on")
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.premac)
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
