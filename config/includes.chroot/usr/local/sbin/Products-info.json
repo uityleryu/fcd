@@ -1758,19 +1758,6 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R-LITE":{
-      "INDEX"       : 2,
-      "NAME"        : "UISP-R-LITE",
-      "BOARDID"     : "ee6b",
-      "BOMREV"      : "113-00814",
-      "DESC"        : "Ubiquiti Network Management System Router Lite",
-      "FILE"        : "unms_mt7621_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "000f",
-      "SW_ID"       : "1a01"
-    },
-
     "UISP-LTE-US":{
       "INDEX"       : 3,
       "NAME"        : "UISP-LTE-US",
@@ -1875,12 +1862,12 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R-MICRO":{
+    "UISP-R":{
       "INDEX"       : 11,
-      "NAME"        : "UISP-R-MICRO",
+      "NAME"        : "UISP-R",
       "BOARDID"     : "ee6e",
       "BOMREV"      : "113-00989",
-      "DESC"        : "Ubiquiti Network Management System Router Micro",
+      "DESC"        : "Ubiquiti Network Management System Router",
       "FILE"        : "unms_mt7621_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

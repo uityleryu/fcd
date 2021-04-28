@@ -1,11 +1,11 @@
 {
   "UbiquitiNMS": {
-    "UISP-R-MICRO": {
+    "UISP-R": {
       "INDEX": 0,
-      "NAME": "UISP-R-MICRO",
+      "NAME": "UISP-R",
       "BOARDID": "ee6e",
       "BOMREV": "113-00989",
-      "DESC": "Ubiquiti Network Management System Router Micro",
+      "DESC": "Ubiquiti Network Management System Router",
       "FILE": "unms_mt7621_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

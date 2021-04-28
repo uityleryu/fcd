@@ -11,9 +11,8 @@ import stat
 import filecmp
 
 '''
-    ee6b: UISP-R-LITE
     ee6c: UISP-O-LITE
-    ee6e: UISP-R-Micro
+    ee6e: UISP-R
 '''
 
 
@@ -35,37 +34,32 @@ class UNMSMT7621Factory(ScriptBase):
         # Base path
         self.tftpdir = self.tftpdir + "/"
         self.toolsdir = "tools/"
-        self.ssh_eable_list = ['ee6b', 'ee6e']
+        self.ssh_eable_list = ['ee6e']
 
         helper_path = {
-            'ee6b': "uisp-r-lite",
             'ee6c': "uisp-o-lite",
-            'ee6e': "uisp-r-lite",  # TODO: rename to r-micro after verification
+            'ee6e': "uisp-r",
         }
         # number of Ethernet
         self.ethnum = {
-            'ee6b': "13",
             'ee6c': "7",
             'ee6e': "11",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ee6b': "0",
             'ee6c': "0",
             'ee6e': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ee6b': "1",
             'ee6c': "1",
             'ee6e': "1",
         }
 
         # ethernet interface
         self.netif = {
-            'ee6b': "ifconfig eth0 ",
             'ee6c': "ifconfig eth0 ",
             'ee6e': "ifconfig eth0 ",
         }
