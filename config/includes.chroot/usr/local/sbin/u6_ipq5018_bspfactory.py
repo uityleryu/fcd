@@ -34,7 +34,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "2",
             'a652': "2",
             'a653': "2",
-            'a654': "2",
+            'a654': "3",
             'a655': "3"
         }
 
@@ -52,7 +52,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "0x50000000",
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "n/a",
+            'a654': "0x50000000",
             'a655': "n/a"
         }
         
@@ -61,7 +61,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "n/a",
+            'a654': "UBNT-BZ.ca-spf11.3-default-a654#",
             'a655': "n/a"
         }
 
@@ -77,7 +77,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a652" or \
            self.board_id == "a653" or \
-           self.board_id == "a654" or \
            self.board_id == "a655":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
@@ -94,11 +93,15 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_action(40, "to stop", "\033")
         self.set_ub_net(self.premac)
         self.is_network_alive_in_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
-                                                           'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read {} 0x00000022 0x00020022;'.format(self.bootm_addr[self.board_id]) + \
-                                                           'bootm {}"'.format(self.bootm_addr[self.board_id]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {} && mmc erase 0x00000000 22 && '\
+                                                           'mmc write {} 0x00000000 22'.format(
+                                                            self.bootm_addr[self.board_id],
+                                                            self.gpt,
+                                                            self.bootm_addr[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd mmc read {} 0x00000022 0x00020022;bootm {}'.format(
+                                                            self.bootm_addr[self.board_id], 
+                                                            self.bootm_addr[self.board_id]))
+        #self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
