@@ -1,10 +1,10 @@
 {
   "airMAX": {
-    "RP-5AC-US": {
-      "NAME"        : "RP-5AC-US",
-      "BOARDID"     : "e7e7",
-      "BOMREV"      : "113-00526",
-      "DESC"        : "Rocket Prism 5AC US",
+    "NBE-5AC-19": {
+      "NAME"        : "NBE-5AC-19",
+      "BOARDID"     : "e4f5",
+      "BOMREV"      : "113-00346",
+      "DESC"        : "NanoBeam 5AC 19",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",

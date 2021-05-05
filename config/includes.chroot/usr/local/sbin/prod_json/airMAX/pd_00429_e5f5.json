@@ -1,10 +1,10 @@
 {
   "airMAX": {
-    "PBE-5AC-620": {
-      "NAME"        : "PBE-5AC-620",
+    "PBE-5AC-620-WORLD": {
+      "NAME"        : "PBE-5AC-620-WORLD",
       "BOARDID"     : "e5f5",
       "BOMREV"      : "113-00429",
-      "DESC"        : "PowerBeam 5AC 620",
+      "DESC"        : "PowerBeam 5AC 620 World",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",

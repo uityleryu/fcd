@@ -69,15 +69,28 @@ class AMAR9342MFG(ScriptBase):
         self.grp2 = []
 
         self.mfgtype = {
+            "e1f5": "img",
+            "e2c5": "img",
+            "e2c7": "img",
             "e2f2": "img",
+            "e2f3": "img",
+            "e4f3": "img",
+            "e4f5": "img",
+            "e5f5": "img",
             "e3d5": "img",
             "e3d6": "img",
             "e5f5": "img",
+            "e7e6": "img",
+            "e7e7": "img",
+            "e7e8": "img",
+            "e7e9": "img",
             "e7f9": "img",
             "e7fa": "img",
+            "e7fb": "img",
             "e7fc": "img",
             "e7fe": "img",
-            "e7ff": "img"
+            "e7ff": "img",
+            "e8e5": "img"
         }
 
     def stop_uboot(self):

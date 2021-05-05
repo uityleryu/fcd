@@ -18,7 +18,6 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
     E3D5: 113-00341 PowerBeam 5AC 500
     E4F5: 113-00346 NanoBeam 5AC 19
     E3F5: 113-02082 Rocket 5AC PTP
-    E5F5: 113-00363 PowerBeam 5AC 620
     E3F5: 113-00357 Rocket M5 AC PTMP
     E6F5: 113-00379 PowerBeam 5AC 300
     E7F5: 113-00383 PowerBeam 5AC 400
@@ -27,7 +26,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
     E8E5: 113-00402 LiteAP AC
     E7E5: 113-00406 Rocket 5AC Prism M
     E3D5: 113-00416 PowerBeam 5AC 500 ISO
-    E5F5: 113-00421 PowerBeam 5AC 620
+    E5F5: 113-00421 PowerBeam 5AC 620 US
     E3D5: 113-00427 PowerBeam 5AC 500 ISO
     E5F5: 113-00429 PowerBeam 5AC 620
     E7E5: 113-00450 Rocket 5AC Prism M
@@ -71,9 +70,9 @@ class AMAR9342Factory(ScriptBase):
         self.product_class = "radio"
         self.devregpart = "/dev/mtdblock5"
         self.helperexe = "helper_ARxxxx_11ac_20210329"
-
+        self.bootloader_prompt = ">"
         self.uboot_img = "{}/{}-uboot.bin".format(self.image, self.board_id)
-        self.cfg_part = os.path.join(self.tools, "am", "cfg_part_ar9342.bin")
+        self.cfg_part = os.path.join(self.tools, "am", "cfg_part_ac_series.bin")
         self.helper_path = "am"
         self.uboot_w_app = False
         self.lock_dfs = False
@@ -87,39 +86,25 @@ class AMAR9342Factory(ScriptBase):
 
         self.second_wifi_found = False
 
-        self.is_wasp = ["e3d6", "e7f9", "e7fa", "e7fb", "e7fc", "e7ff"]
+        self.is_wasp = [
+            "e2c5", "e2c7", "e3d6", "e4f3", "e7f5", "e7f7", "e7fa", "e7fb", "e7fc", "e7ff", "e7fe", "e8e5"
+        ]
 
         self.dfs_lock_list = [
-            "e1f5", "e3d5", "e3d6", "e3d8", "e3f5", "e4f5", "e5f5",
-            "e6f5", "e7e5", "e7e6", "e7e7", "e7f7", "e7f9", "e8f5", "e9f5",
-            "e7ff"
+            "e1f5", "e2c5", "e2c7", "e2f3", "e3d5", "e3d6", "e3d8", "e3f5", "e4f3", "e4f5", "e5f5", "e6f5",
+            "e7e5", "e7e6", "e7e7", "e7e8", "e7e9", "e7f5", "e7f7", "e7f9", "e8f5", "e9f5", "e7ff", "e7fe",
+            "e7fb", "e8e5"
         ]
 
         # number of WiFi
         self.wifinum = {
-            'e1f5': "n", 'e2f2': "n", 'e3d5': "n", 'e3d6': "2",
-            'e3d8': "n", 'e3f3': "n", 'e3f5': "n", 'e7ff': "2",
-            'e4f5': "n", 'e5f5': "n", 'e6f5': "n", 'e7e5': "1",
-            'e7e6': "2", 'e7f5': "n", 'e8e5': "n", 'e8f5': "n",
-            'e9f5': "n", 'e4f2': "n", 'e7f7': "n", 'e7f9': "2",
-            'e7e7': "2", 'e7e9': "n", 'e7e8': "2", 'e7fa': "2",
-            'e7fc': "2", 'e7fb': "2", 'e2c5': "n", 'e4f3': "n",
-            'e2f3': "n", 'e3d9': "n", 'e2c7': "n", 'e7fd': "n",
-            'e7fe': "n"
+            'e1f5': "1", 'e2f2': "n", 'e2f3': "2", 'e2c5': "2", 'e2c7': "2", 'e3d5': "1", 'e3d6': "2",
+            'e3d8': "n", 'e3f3': "n", 'e3f5': "n", 'e7ff': "2", 'e4f3': "2", 'e4f5': "n", 'e4f5': "n",
+            'e5f5': "1", 'e6f5': "n", 'e7e5': "1", 'e7e6': "2", 'e7f5': "n", 'e8e5': "1", 'e8f5': "n",
+            'e9f5': "n", 'e4f2': "n", 'e7f7': "2", 'e7f9': "2", 'e7e7': "2", 'e7e8': "2", 'e7e9': "2",
+            'e7fa': "2", 'e7fc': "2", 'e7fb': "2", 'e2c5': "n", 'e2f3': "n", 'e3d9': "n",
+            'e2c7': "n", 'e7fd': "n", 'e7fe': "2"
         }
-
-        ubpmt = {
-            'e1f5': "", 'e2f2': "", 'e3d5': "", 'e3d6': "",
-            'e3d8': "", 'e3f3': "", 'e3f5': "",
-            'e4f5': "", 'e5f5': "", 'e6f5': "", 'e7e5': "",
-            'e7e6': "ath>", 'e7f5': "", 'e8e5': "", 'e8f5': "",
-            'e9f5': "", 'e4f2': "", 'e7f7': "", 'e7f9': "ar7240>",
-            'e7e7': "ath>", 'e7e9': "", 'e7e8': "ath>", 'e7fa': "",
-            'e7fc': "ar7240>", 'e7fb': "", 'e2c5': "", 'e4f3': "",
-            'e2f3': "", 'e3d9': "", 'e2c7': "", 'e7fd': "",
-            'e7fe': "", 'e7ff': "ar7240>"
-        }
-        self.bootloader_prompt = ubpmt[self.board_id]
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.zero_ip = self.get_zeroconfig_ip(self.mac)
@@ -536,7 +521,7 @@ class AMAR9342Factory(ScriptBase):
                 clientbin = "/usr/local/sbin/client_x86_release_20190507"
 
         regparam = [
-            "-h devreg-prod.ubnt.com",
+            "-h prod.udrs.io",
             "-k " + self.pass_phrase,
             regsubparams,
             reg_qr_field,

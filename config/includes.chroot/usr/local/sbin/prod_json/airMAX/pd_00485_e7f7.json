@@ -1,0 +1,15 @@
+{
+  "airMAX": {
+    "IS-5AC": {
+      "NAME": "IS-5AC",
+      "BOARDID": "e7f7",
+      "BOMREV": "113-00485",
+      "DESC": "ISO Station 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    }
+  }
+}

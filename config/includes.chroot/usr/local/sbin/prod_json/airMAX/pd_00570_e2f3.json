@@ -1,10 +1,10 @@
 {
   "airMAX": {
-    "RP-5AC-US": {
-      "NAME"        : "RP-5AC-US",
-      "BOARDID"     : "e7e7",
-      "BOMREV"      : "113-00526",
-      "DESC"        : "Rocket Prism 5AC US",
+    "R2AC-PRISM": {
+      "NAME"        : "R2AC-PRISM",
+      "BOARDID"     : "e2f3",
+      "BOMREV"      : "113-00570",
+      "DESC"        : "Rocket 2AC PRISM",
       "FILE"        : "am_ar9342_factory.py",
       "T1FILE"      : "am_ar9342_mfg.py",
       "QRCHECK"     : "False",
