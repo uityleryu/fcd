@@ -46,7 +46,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         # default product class: basic
         self.df_prod_class = "0014"
-        self.usbadb_list = ["ec60", "ef0e", "ef83"]
+        self.usbadb_list = ["ec60", "ef0e", "ef82", "ef83"]
 
         self.ospl = {
             'a980': "",
@@ -209,14 +209,16 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         for i in range(0, retry):
             try:
                 self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
-                self.cladb.expect_only(2, "adbd is already running as root")
+                self.cladb.expect_only(10, "adbd is already running as root")
 
                 pexpect_cmd = "adb shell"
                 log_debug(msg=pexpect_cmd)
                 pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
             except Exception as e:
                 # Ctrl+C anyway to avoid hangup cmd
-                self.cladb.expect_action(3, "", "\003")
+                self.cladb.expect_action(7, "", "\003")
+                self.cladb.close()
+                self.cladb = None
                 if i < retry:
                     print("Retry {0}".format(i + 1))
                     time.sleep(1)
@@ -377,7 +379,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
-        self.cnapi.print_current_fcd_version()
 
         if self.board_id in self.usbadb_list:
             self.INFOCHECK_ENABLE = False
