@@ -48,7 +48,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         }
         
         self.bootm_addr = {
-            'a650': "0x44000000",
+            'a650': "0x50000000",
             'a651': "0x50000000",
             'a652': "n/a",
             'a653': "n/a",
@@ -57,7 +57,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         }
         
         self.linux_prompt_select = {
-            'a650': "UBNT-BZ.ca-spf113cs-fcd#",
+            'a650': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
             'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
             'a652': "n/a",
             'a653': "n/a",
