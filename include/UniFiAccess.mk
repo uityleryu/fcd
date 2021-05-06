@@ -1,14 +1,10 @@
 
 # Images
 
-IMAGE-UA-PRO-BL=
-
 IMAGE-UA-GATE= \
     images/ec46* \
     ua-fw/*
 
-
-IMAGE-UA+=$(IMAGE-UA-PRO-BL)
 IMAGE-UA+=$(IMAGE-UA-GATE)
 
 
@@ -32,18 +28,27 @@ TOOLS-CONFIG= \
 
 TOOLS-UA+=$(TOOLS-CONFIG)
 
-
-TOOLS-UA-PRO-BL+=$(TOOLS-UA)
-
 TOOLS-UA-GATE+=$(TOOLS-UA)
 
 
 # Project target
 
-$(eval $(call ProductImage,UA-PRO-BL,FCD_$(PRD)_UA-PRO-BL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,UA-PRO-BL,FCD_$(PRD)_UA-PRO-BL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+
+
+# ==================================================================================================
+
+# UA-PRO-BL
+IMAGE-02966-ec60=
+
+# -----------------------------------------------------------------------------------------
+
+TOOLS-02966-ec60+=$(TOOLS-CONFIG)
+
+# -----------------------------------------------------------------------------------------
+
+$(eval $(call ProductCompress2,02966-ec60))
