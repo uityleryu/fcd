@@ -20,6 +20,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
     ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
     ef88: UC-Display-13 (BLE/WIFI)  (Android 9)
     ef82: UVP_Touch           (Android 7)
+    ef13: UT-PHONE-TOUCH-W    (Android 7)
     ef0e: UVP_TouchMax        (Android 7)
     ef83: UC-Display-21       (Android 9)
     ef84: UC-Display-27       (Android 9)
@@ -46,13 +47,14 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         # default product class: basic
         self.df_prod_class = "0014"
-        self.usbadb_list = ["ec60", "ef0e", "ef82", "ef83"]
+        self.usbadb_list = ["ec60", "ef0e", "ef82", "ef83", "ef13"]
 
         self.ospl = {
             'a980': "",
             'ef80': "adr9",
             'ef81': "adr9",
             'ef82': "adr7",
+            'ef13': "adr7",
             'ef87': "adr9",
             'ef88': "adr7",
             'ef0e': "adr9",
@@ -86,6 +88,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "msm8953_uct",
             'ef88': "unifi_p13",
             'ef82': "msm8953_uvp",
+            'ef13': "msm8953_uvp",
             'ef0e': "uvp_touchmax",
             'ef83': "unifi_p21",
             'ef84': "unifi_p27",
@@ -102,6 +105,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "1",
             'ef88': "1",
             'ef82': "1",
+            'ef13': "1",
             'ef0e': "1",
             'ef83': "1",
             'ef84': "1",
@@ -118,6 +122,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "1",
             'ef88': "1",
             'ef82': "1",
+            'ef13': "1",
             'ef0e': "1",
             'ef83': "1",
             'ef84': "1",
@@ -134,6 +139,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "1",
             'ef88': "1",
             'ef82': "1",
+            'ef13': "1",
             'ef0e': "1",
             'ef83': "1",
             'ef84': "1",

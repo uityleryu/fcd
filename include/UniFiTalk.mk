@@ -9,9 +9,6 @@ IMAGE-UT-ATA= \
     images/ef0f* \
     uvp-fw/uvp-flex_1.0.13.bin.unsign
 
-IMAGE-UT-PHONE-TOUCH=
-IMAGE-UT-PHONE-TOUCHMAX=
-
 IMAGE-UT-CONFERENCE=
 
 # Model
@@ -41,23 +38,16 @@ TOOLS-UT-ATA+= uvp/*
 TOOLS-UT-CONFERENCE=$(TOOLS-CONFIG)
 TOOLS-UT-CONFERENCE+= uvp/*
 
-TOOLS-UT-PHONE-TOUCH=$(TOOLS-CONFIG)
-TOOLS-UT-PHONE-TOUCHMAX=$(TOOLS-CONFIG)
-
 # Project target
 
 $(eval $(call ProductImage,UT-PHONE-FLEX,FCD_$(PRD)_UT-PHONE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UT-ATA,FCD_$(PRD)_UT-ATA_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UT-PHONE-TOUCH,FCD_$(PRD)_UT-PHONE-TOUCH_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UT-PHONE-TOUCHMAX,FCD_$(PRD)_UT-PHONE-TOUCHMAX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UT-PHONE-FLEX,FCD_$(PRD)_UT-PHONE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UT-ATA,FCD_$(PRD)_UT-ATA_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UT-PHONE-TOUCH,FCD_$(PRD)_UT-PHONE-TOUCH_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UT-PHONE-TOUCHMAX,FCD_$(PRD)_UT-PHONE-TOUCHMAX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UT-CONFERENCE,FCD_$(PRD)_UT-CONFERENCE_$(VER)_$(FWVER)))
 
 # ==================================================================================================
@@ -72,8 +62,12 @@ IMAGE-03808-ef0f= \
 
 IMAGE-03370-ef12=
 IMAGE-02950-ef0e=
+
+# UVP-TOUCH
 IMAGE-02150-ef82=
-IMAGE-03150-ef82=
+
+# UT-PHONE-TOUCH-W
+IMAGE-03150-ef13=
 
 # -----------------------------------------------------------------------------------------
 
@@ -88,7 +82,7 @@ TOOLS-03370-ef12+= uvp/helper_DVF99_release_ata_max
 
 TOOLS-02950-ef0e=$(TOOLS-CONFIG)
 TOOLS-02150-ef82=$(TOOLS-CONFIG)
-TOOLS-03150-ef82=$(TOOLS-CONFIG)
+TOOLS-03150-ef13=$(TOOLS-CONFIG)
 
 
 # Project compressed type2 file for RPi FCD host
@@ -98,4 +92,4 @@ $(eval $(call ProductCompress2,03808-ef0f))
 $(eval $(call ProductCompress2,03370-ef12))
 $(eval $(call ProductCompress2,02950-ef0e))
 $(eval $(call ProductCompress2,02150-ef82))
-$(eval $(call ProductCompress2,03150-ef82))
+$(eval $(call ProductCompress2,03150-ef13))
