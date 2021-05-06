@@ -69,7 +69,8 @@ register_libs = [
     "soc_lib",
     "script_base.py",
     "Products-info.json",
-    "rpi-config.py"
+    "rpi-config.py",
+    "blacklist"
 ]
 
 pjson = ""
