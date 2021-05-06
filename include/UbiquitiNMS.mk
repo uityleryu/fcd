@@ -7,9 +7,8 @@ IMAGE-UISP-P-LITE= \
     unms-fw/uisp_p_lite_epx_cfg.bin \
     unms-fw/UISPP* \
 
-IMAGE-UISP-R-PRO= \
+IMAGE-UISP-Console= \
     images/ee6a* \
-    images/ee6d* \
     unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
 
@@ -28,11 +27,6 @@ IMAGE-UISP-O-LITE= \
     images/ee6c* \
     unms-fw/UISPO.mt7621.* \
 
-IMAGE-UISP-R-PRO-XG= \
-    images/ee6d* \
-    unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
-    unms-fw/UISPR.alpine* \
-
 IMAGE-UISP-O-PRO= \
     images/eed3* \
     unms-fw/DIAG_UISP_O_Pro_1.3.4.7.8-Dev03.vmlinux.bix \
@@ -42,11 +36,10 @@ IMAGE-UISP-R= \
     images/ee6e* \
     unms-fw/UISPR.mt7621* \
 
-IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
+IMAGE-UNMS+=$(IMAGE-UISP-Console)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
-IMAGE-UNMS+=$(IMAGE-UISP-R-PRO-XG)
 IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-S-MICRO)
 IMAGE-UNMS+=$(IMAGE-UISP-R)
@@ -72,8 +65,8 @@ TOOLS-CONFIG= \
 
 TOOLS-UNMS+=$(TOOLS-CONFIG)
 
-TOOLS-UISP-R-PRO=$(TOOLS-UNMS)
-TOOLS-UISP-R-PRO+= uisp-r-pro/*
+TOOLS-UISP-Console=$(TOOLS-UNMS)
+TOOLS-UISP-Console+= uisp-console/*
 
 TOOLS-UNMS-S-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-S-LITE+= unms-slite/*
@@ -90,9 +83,6 @@ TOOLS-UISP-S-PRO+= unms-spro/*
 TOOLS-UISP-O-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-O-LITE+= uisp-o-lite/*
 
-TOOLS-UISP-R-PRO-XG=$(TOOLS-UNMS)
-TOOLS-UISP-R-PRO-XG+= uisp-r-pro-xg/*
-
 TOOLS-UISP-O-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-O-PRO+= unms-spro/*
 
@@ -104,28 +94,26 @@ TOOLS-UISP-P-LITE+= uisp-p-lite/*
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-Console,FCD_$(PRD)_UISP-Console_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-Console,FCD_$(PRD)_UISP-Console_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-PRO,FCD_$(PRD)_UISP-S-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UISP-R-PRO-XG,FCD_$(PRD)_UISP-R-PRO-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ee6f,FCD_$(PRD)_ee6f_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
@@ -133,7 +121,7 @@ $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)
 
 # ==================================================================================================
 
-IMAGE-00815-ee6a=$(IMAGE-UISP-R-PRO)
+IMAGE-00815-ee6a=$(IMAGE-UISP-Console)
 IMAGE-dca2=$(IMAGE-UISP-LTE)
 
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name

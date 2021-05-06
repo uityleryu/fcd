@@ -1715,19 +1715,6 @@
 
   "UbiquitiNMS":
   {
-    "UISP-R-PRO":{
-      "INDEX"       : 0,
-      "NAME"        : "UISP-R-PRO",
-      "BOARDID"     : "ee6a",
-      "BOMREV"      : "113-00815",
-      "DESC"        : "Ubiquiti Network Management System Router Pro",
-      "FILE"        : "unms_alpine_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "000f",
-      "SW_ID"       : "1a01"
-    },
-
     "UNMS-S-LITE":{
       "INDEX"       : 1,
       "NAME"        : "UNMS-S-LITE",
@@ -1806,25 +1793,12 @@
       "SW_ID"       : "1a01"
      },
 
-     "UISP-R-PRO-XG":{
-      "INDEX"       : 8,
-      "NAME"        : "UISP-R-PRO-XG",
-      "BOARDID"     : "ee6d",
-      "BOMREV"      : "113-00816",
-      "DESC"        : "Ubiquiti Network Management System Router Pro XG",
-      "FILE"        : "unms_alpine_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "000f",
-      "SW_ID"       : "1a01"
-    },
-
-    "UISP-R-PRO-SSD":{
+    "UISP-Console":{
       "INDEX"       : 9,
-      "NAME"        : "UISP-R-PRO",
+      "NAME"        : "UISP-Console",
       "BOARDID"     : "ee6a",
       "BOMREV"      : "113-00973",
-      "DESC"        : "Ubiquiti Network Management System Router Pro",
+      "DESC"        : "Ubiquiti Network Management System Router Console",
       "FILE"        : "unms_alpine_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",

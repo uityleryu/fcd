@@ -33,8 +33,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
         # helper path
         helppth = {
-            'ee6a': "uisp-r-pro",
-            'ee6d': "uisp-r-pro-xg"
+            'ee6a': "uisp-console",
         }
 
         self.helper_path = helppth[self.board_id]
@@ -42,42 +41,35 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         # switch chip
         self.swchip = {
             'ee6a': "rtl83xx",
-            'ee6d': "rtl83xx"
         }
 
         # sub-system ID
         self.wsysid = {
             'ee6a': "77076aee",
-            'ee6d': "77076dee"
         }
 
         # number of Ethernet
         self.ethnum = {
             'ee6a': "11",
-            'ee6d': "10"
         }
 
         # number of WiFi
         self.wifinum = {
             'ee6a': "0",
-            'ee6d': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ee6a': "1",
-            'ee6d': "1"
         }
 
         # ethernet interface
         self.netif = {
             'ee6a': "ifconfig eth0 ",
-            'ee6d': "ifconfig eth3 "
         }
 
         self.infover = {
             'ee6a': "Version:",
-            'ee6d': "Version:"
         }
 
         self.devnetmeta = {
@@ -144,7 +136,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
         self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x08000004 images/" + self.board_id + "-recovery")
-        self.pexp.expect_only(30, "Bytes transferred")
+        self.pexp.expect_only(90, "Bytes transferred")
         self.pexp.expect_action(11, self.bootloader_prompt, "bootm $fitbootconf")
 
     def init_recovery_image(self):
@@ -196,7 +188,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         unms-r-pro default ssh connection is disabled
         need to enable it manually before FTU test
         '''
-        cmd = "ubios-udapi-client put /services \'{\"sshServer\": {\"enabled\": true,\"sshPort\":22}}\'"
+        cmd = 'ubios-udapi-client put -r /services "$(ubios-udapi-client get -r /services | jq \'.sshServer.enabled = true\')"'
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True, retry=5)
 
     def run(self):
