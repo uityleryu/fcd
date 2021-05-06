@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.38"
+    __version__ = "1.0.39"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -1227,14 +1227,20 @@ class ScriptBase(object):
 
     def check_blacklist(self):
         try :
+            blacklist_path = '/usr/local/sbin/blacklist/blacklist.json'
+            if not os.path.exists(blacklist_path): return
+
             # Read Log file
             logpath = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
             with open(logpath, 'r') as logfile:
                 logcontent = logfile.read().rsplit('Ubiquiti Device Security Client')[-1]
             
             # Read BlackList Dict
-            if 'BLACK_LIST' in self.fsiw[self.product_line][self.product_name]:
-                self.blacklist_dict = self.fsiw[self.product_line][self.product_name]['BLACK_LIST']
+            with open(blacklist_path) as fh:
+                self.blacklist_json = json.load(fh)
+
+            if 'BLACK_LIST' in self.blacklist_json[self.product_line][self.product_name]:
+                self.blacklist_dict = self.blacklist_json[self.product_line][self.product_name]['BLACK_LIST']
 
                 # Check Reg
                 for failure, subdict in self.blacklist_dict.items():
@@ -1246,7 +1252,6 @@ class ScriptBase(object):
                     else :
                         continue
 
-                    del self.blacklist_dict[failure]['reg']
                     if matchresult:
                         error_critical_str = ''.join(['{}: {}\n'.format(k, v) for k, v in self.blacklist_dict[failure].items()])
                         error_critical('BlackList Error, please find Engineer for checking\nFailure: {}\n'.format(failure) + error_critical_str  )
@@ -1254,7 +1259,7 @@ class ScriptBase(object):
                         log_debug('Checked BlackList-{}'.format(failure) )
 
         except Exception as e:
-            log_debug (e)
+            log_debug(e)
 
 
     def __del__(self):
@@ -1329,8 +1334,9 @@ class ScriptBase(object):
         upload_file_dict = {
             sfile: upload_dut_logpath,
             jfile: upload_dut_jsonpath,
-            eefile: upload_dut_eepath
         }
+        if self.test_result == 'Pass':
+            upload_file_dict[eefile] = upload_dut_eepath
 
         for ori_file, copy_file in upload_file_dict.items():
             if os.path.isfile(ori_file):

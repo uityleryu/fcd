@@ -170,6 +170,8 @@ class winFcdFactory(Gtk.Window):
             msgerrror(self, "Inputs information incorrect. Exiting...")
             return False
 
+        self._sync_cloud_blacklist()
+
         return True
 
     def net_setting_inspect(self, fd, cond, proc):
@@ -400,3 +402,16 @@ class winFcdFactory(Gtk.Window):
         dialog.destroy()
 
         return True
+
+    def _sync_cloud_blacklist(self):
+        """
+            command parameter description for sync Blackist WebAPI in Cloud
+            command: python3
+        """
+        cmd = ["sudo", "/usr/bin/python3", "/usr/local/sbin/blacklist/blacklist_sync.py"]
+        execcmd = ' '.join(cmd)
+
+        try:
+            subprocess.check_output(execcmd, shell=True)
+        except Exception as e:
+            log.info ("_sync_cloud_blacklist fail-{}".format(e))

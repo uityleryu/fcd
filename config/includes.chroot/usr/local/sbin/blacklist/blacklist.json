@@ -1,0 +1,63 @@
+{
+  "UniFiAP6":
+  {
+    "U6-LITE":{
+      "NAME"        : "U6-LITE",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-00773"
+    },
+    "U6-LR": {
+      "NAME"        : "U6-LR",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-00744",
+      "FWVER"       : "5.60.1",
+      "BLACK_LIST": {
+        "LED": {
+          "reg": "led_ht52241 0\\-0030\\: failed writing",
+          "level": "fail",
+          "assignee": "CM"
+        },
+        "KERNEL_PANIC": {
+          "reg": "Kernel panic",
+          "level": "warning",
+          "assignee": "FW"
+        },
+        "WATCHDOG": {
+          "reg": "watchdog time out",
+          "level": "warning",
+          "assignee": "FW" 
+        }
+      }
+    },
+    "U6-PRO":{
+      "NAME"        : "U6-PRO", 
+      "BOARDID"     : "a650",
+      "BOMREV"      : "113-00963"
+    },
+    "U6-Mesh":{
+      "NAME"        : "U6-Mesh",
+      "BOARDID"     : "a651",
+      "BOMREV"      : "113-10743"
+    },
+    "U6-IW":{
+      "NAME"        : "U6-IW",
+      "BOARDID"     : "a652",
+      "BOMREV"      : "113-10745"
+    },
+    "U6-Extender":{
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-10746"
+    },
+    "U6-Enterprise":{
+      "NAME"        : "U6-Enterprise",
+      "BOARDID"     : "a654",
+      "BOMREV"      : "113-10898"
+    },
+    "U6-Infinity":{
+      "NAME"        : "U6-Infinity",
+      "BOARDID"     : "a655",
+      "BOMREV"      : "113-10897"
+    }
+  }
+}

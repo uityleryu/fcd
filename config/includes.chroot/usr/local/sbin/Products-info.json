@@ -784,24 +784,7 @@
       "T1FILE": "u6_mt7622_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601",
-      "BLACK_LIST": {
-        "LED": {
-          "reg": "led_ht52241 0\\-0030\\: failed writing",
-          "level": "fail",
-          "assignee": "CM"
-        },
-        "KERNEL_PANIC": {
-          "reg": "Kernel panic",
-          "level": "warning",
-          "assignee": "FW"
-        },
-        "WATCHDOG": {
-          "reg": "watchdog time out",
-          "level": "warning",
-          "assignee": "FW"
-        }
-      }
+      "SW_ID": "0601"
     },
 	  "U6-PRO":{
       "INDEX"       : 2,
