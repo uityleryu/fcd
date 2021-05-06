@@ -7,7 +7,7 @@ IMAGE-UISP-P-LITE= \
     unms-fw/uisp_p_lite_epx_cfg.bin \
     unms-fw/UISPP* \
 
-IMAGE-UISP-Console= \
+IMAGE-UISP-CONSOLE= \
     images/ee6a* \
     unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
     unms-fw/UISPR.alpine* \
@@ -36,7 +36,7 @@ IMAGE-UISP-R= \
     images/ee6e* \
     unms-fw/UISPR.mt7621* \
 
-IMAGE-UNMS+=$(IMAGE-UISP-Console)
+IMAGE-UNMS+=$(IMAGE-UISP-CONSOLE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-S-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
@@ -65,8 +65,8 @@ TOOLS-CONFIG= \
 
 TOOLS-UNMS+=$(TOOLS-CONFIG)
 
-TOOLS-UISP-Console=$(TOOLS-UNMS)
-TOOLS-UISP-Console+= uisp-console/*
+TOOLS-UISP-CONSOLE=$(TOOLS-UNMS)
+TOOLS-UISP-CONSOLE+= uisp-console/*
 
 TOOLS-UNMS-S-LITE=$(TOOLS-UNMS)
 TOOLS-UNMS-S-LITE+= unms-slite/*
@@ -94,7 +94,7 @@ TOOLS-UISP-P-LITE+= uisp-p-lite/*
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UISP-Console,FCD_$(PRD)_UISP-Console_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-CONSOLE,FCD_$(PRD)_UISP-CONSOLE_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductImage,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
@@ -107,7 +107,7 @@ $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UISP-Console,FCD_$(PRD)_UISP-Console_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-CONSOLE,FCD_$(PRD)_UISP-CONSOLE_$(VER)_$(FWVER)))
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
 $(eval $(call ProductCompress,UNMS-S-LITE,FCD_$(PRD)_UNMS-S-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-LITE,FCD_$(PRD)_UISP-S-LITE_$(VER)_$(FWVER)))
@@ -121,7 +121,7 @@ $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)
 
 # ==================================================================================================
 
-IMAGE-00815-ee6a=$(IMAGE-UISP-Console)
+IMAGE-00973-ee6a=$(IMAGE-UISP-CONSOLE)
 IMAGE-dca2=$(IMAGE-UISP-LTE)
 
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
