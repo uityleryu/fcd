@@ -1258,8 +1258,11 @@ class ScriptBase(object):
                     else :
                         log_debug('Checked BlackList-{}'.format(failure) )
 
+        except KeyError:
+            pass
+
         except Exception as e:
-            log_debug(e)
+            log_debug(str(e))
 
 
     def __del__(self):
