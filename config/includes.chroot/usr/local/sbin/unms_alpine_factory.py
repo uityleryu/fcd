@@ -140,7 +140,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_action(11, self.bootloader_prompt, "bootm $fitbootconf")
 
     def init_recovery_image(self):
-        self.login(self.username, self.password, timeout=60, log_level_emerg=True)
+        self.login(self.username, self.password, timeout=180, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
