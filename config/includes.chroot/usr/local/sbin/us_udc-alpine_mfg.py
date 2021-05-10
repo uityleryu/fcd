@@ -11,8 +11,8 @@ sys.path.append("/tftpboot/tools")
 
 from usw_leaf.decrypt import Decrypt
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
 
 VTYSH_EN = True
 UPDATEUB_EN = True

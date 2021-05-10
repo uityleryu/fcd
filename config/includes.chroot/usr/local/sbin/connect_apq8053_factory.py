@@ -9,9 +9,9 @@ import stat
 import filecmp
 
 from script_base import ScriptBase
-from ubntlib.equipment.edgeswitch import EdgeSwitch
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Ubnt import EdgeSwitch
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a980: Viewport

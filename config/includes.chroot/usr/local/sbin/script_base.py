@@ -10,18 +10,18 @@ import stat
 import filecmp
 import argparse
 import json
-import ubntlib
+import PAlib
 import datetime
 import tarfile
 import shutil
 import subprocess
 import data.constant as CONST
 
-from ubntlib.fcd.common import Tee, Common
-from ubntlib.fcd.helper import FCDHelper
-from ubntlib.fcd.logger import log_debug, log_info, log_error, msg, error_critical
-from ubntlib.fcd.singleton import errorcollecter
-from ubntlib.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.common import Tee, Common
+from PAlib.FrameWork.fcd.helper import FCDHelper
+from PAlib.FrameWork.fcd.logger import log_debug, log_info, log_error, msg, error_critical
+from PAlib.FrameWork.fcd.singleton import errorcollecter
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
@@ -45,13 +45,13 @@ class ScriptBase(object):
         self.__ssh_client_obj = None
 
         self.version_scriptbase = self.__version__
-        self.version_ubntlib = ubntlib.__version__
+        self.version_PAlib = PAlib.__version__
         with open(self.fcd_version_info_file_path, 'r') as f:
             self.version_iso = f.read().rstrip('\n')
 
         self.cnapi.print_current_fcd_version(file=self.fcd_version_info_file_path)
         print("framework version: " + self.__version__)
-        print("ubntlib version: " + ubntlib.__version__)
+        print("PAlib version: " + PAlib.__version__)
         self._encrpyt_passphrase_for_log()
         log_debug(str(self.input_args))
 
@@ -146,7 +146,7 @@ class ScriptBase(object):
         self.fcd_toolsdir = os.path.join(self.tftpdir, self.tools)
         self.fcd_commondir = os.path.join(self.tftpdir, self.tools, "common")
         self.fcd_scripts_dir = os.path.join('/usr', 'local', 'sbin')
-        self.ubntlib_dir = os.path.join(self.fcd_scripts_dir, 'ubntlib')
+        self.PAlib_dir = os.path.join(self.fcd_scripts_dir, 'PAlib')
 
         cmd = "uname -a"
         [sto, rtc] = self.cnapi.xcmd(cmd)
@@ -1285,12 +1285,12 @@ class ScriptBase(object):
             print (e)
 
     def __store_error_function(self):
-        ubntlib_errorcollecter = errorcollecter()
+        PAlib_errorcollecter = errorcollecter()
 
-        self.progress = ubntlib_errorcollecter.msgno
+        self.progress = PAlib_errorcollecter.msgno
 
         if self.test_result != 'Pass':
-            self.error_function = ubntlib_errorcollecter.error_function
+            self.error_function = PAlib_errorcollecter.error_function
             # Can implement original error_code
             self.error_code = self.error_function
 
@@ -1358,7 +1358,7 @@ class ScriptBase(object):
             --bom:   BOM Rev version
             --stage:   FCD or FTU
         """
-        logupload_client_path = os.path.join(self.ubntlib_dir, 'fcd', 'logupload_client.py')
+        logupload_client_path = os.path.join(self.PAlib_dir, 'fcd', 'logupload_client.py')
 
         if bom is None:
             bom = '99999-99'  # Workaround For BackToArt , GUI won't assign BOM version.
@@ -1398,7 +1398,7 @@ class ScriptBase(object):
             --srv:   UI-cloud
             --stage: FCD or FTU
         """
-        logupload_client_path = os.path.join(self.ubntlib_dir, 'fcd', 'logupload_client.py')
+        logupload_client_path = os.path.join(self.PAlib_dir, 'fcd', 'logupload_client.py')
 
         if bom is None:
             bom = '99999-99'  # Workaround For BackToArt , GUI won't assign BOM version.

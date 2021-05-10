@@ -10,7 +10,7 @@ sys.path.append(append_dir)
 
 from gui.ui_logsync import LogSyncUI
 from gui_funs.logsyncfunc import LogsyncFunc
-# from ubntlib.fcd.common import Common
+# from PAlib.FrameWork.fcd.common import Common
 # from threading import Thread
 
 

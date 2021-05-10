@@ -13,8 +13,8 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, GLib
 from gui.fraMonitorPanel import fraMonitorPanel
 from gui.dlgUserInput import dlgUserInput
-from ubntlib.fcd.common import Common
-from ubntlib.gui.msgdialog import msgerrror
+from PAlib.FrameWork.fcd.common import Common
+from PAlib.FrameWork.gui.msgdialog import msgerrror
 
 '''
     Prefix expression

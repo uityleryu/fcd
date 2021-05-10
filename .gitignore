@@ -22,5 +22,5 @@ BackT1.desktop
 Factory.desktop
 version.txt
 cscope.*
-config/includes.chroot/usr/local/sbin/ubntlib
+config/includes.chroot/usr/local/sbin/PAlib
 *.swp

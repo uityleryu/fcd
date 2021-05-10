@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import time, os
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
 
 class UbiOSLib(object):
     def __init__(self, ubios_obj):

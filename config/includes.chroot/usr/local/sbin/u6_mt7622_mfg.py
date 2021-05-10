@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import os
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
 
 class MT7622MFGGeneral(ScriptBase):
     """

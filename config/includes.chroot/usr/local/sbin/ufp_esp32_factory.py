@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 from script_base import ScriptBase
-from ubntlib.fcd.pserial import SerialExpect
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, msg, error_critical, log_info
+from PAlib.FrameWork.fcd.pserial import SerialExpect
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.logger import log_debug, msg, error_critical, log_info
 from xmodem import XMODEM
 
 import sys

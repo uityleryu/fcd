@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 from gi.repository import Gtk, Gdk, GLib, GObject
-from ubntlib.gui.gui_variable import GPath, GCommon
+from PAlib.FrameWork.gui.gui_variable import GPath, GCommon
 from time import sleep
-from ubntlib.gui.msgdialog import msgerrror, msginfo
-from ubntlib.fcd.common import Common
-from ubntlib.third_party.DHCPServer import dhcp
+from PAlib.FrameWork.gui.msgdialog import msgerrror, msginfo
+from PAlib.FrameWork.fcd.common import Common
+from PAlib.ThirdParty.DHCPServer import dhcp
 
 import gi
 import re

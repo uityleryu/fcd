@@ -9,9 +9,9 @@ import shutil
 import filecmp
 
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.common import Common
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.common import Common
+from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
 
 PROVISION_EN = True
 DOHELPER_EN = True

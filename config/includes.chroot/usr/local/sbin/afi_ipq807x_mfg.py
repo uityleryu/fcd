@@ -3,8 +3,8 @@ import time
 from distutils.util import strtobool
 
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, msg
+from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.FrameWork.fcd.logger import log_debug, msg
 
 class AFIIPQ807XMFG(ScriptBase):
     def __init__(self):
