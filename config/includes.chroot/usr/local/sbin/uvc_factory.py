@@ -757,6 +757,11 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(cmd)
         self.session.execmd(cmd)
 
+        cmd = 'touch /etc/persistent/fastboot.flag && cfgmtd -w -p /etc'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+        time.sleep(0.2)
+
         log_debug("installing firmware")
         cmd = "fwupdate -m"
         log_debug(cmd)
