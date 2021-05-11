@@ -121,7 +121,6 @@ $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)
 
 # ==================================================================================================
 
-IMAGE-00973-ee6a=$(IMAGE-UISP-CONSOLE)
 IMAGE-dca2=$(IMAGE-UISP-LTE)
 
 # UNMS-S-LITE is a special case that it will keep this BOM revision, system ID and model name
