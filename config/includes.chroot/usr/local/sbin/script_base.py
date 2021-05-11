@@ -17,11 +17,11 @@ import shutil
 import subprocess
 import data.constant as CONST
 
-from PAlib.FrameWork.fcd.common import Tee, Common
-from PAlib.FrameWork.fcd.helper import FCDHelper
-from PAlib.FrameWork.fcd.logger import log_debug, log_info, log_error, msg, error_critical
-from PAlib.FrameWork.fcd.singleton import errorcollecter
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.common import Tee, Common
+from PAlib.Framework.fcd.helper import FCDHelper
+from PAlib.Framework.fcd.logger import log_debug, log_info, log_error, msg, error_critical
+from PAlib.Framework.fcd.singleton import errorcollecter
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac

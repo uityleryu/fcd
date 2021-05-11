@@ -3,7 +3,7 @@ import sys
 from nose import with_setup 
 from nose.tools import *
 import pexpect
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 
 class TestExpttyProcess():
 
@@ -20,7 +20,7 @@ class TestExpttyProcess():
         pass
 
     def test_01_import(cls):
-        from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
+        from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 
     def test_02_exptty(cls):
         pass

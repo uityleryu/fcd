@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 from script_base import ScriptBase
-from PAlib.FrameWork.fcd.pserial import SerialExpect
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
-from PAlib.FrameWork.fcd.logger import log_debug, msg, error_critical, log_info
+from PAlib.Framework.fcd.pserial import SerialExpect
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
 from xmodem import XMODEM
-from PAlib.FrameWork.fcd.ssh_client import SSHClient
+from PAlib.Framework.fcd.ssh_client import SSHClient
 
 import sys
 import time

@@ -7,9 +7,9 @@ import os
 import stat
 import shutil
 from script_base import ScriptBase
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
-from PAlib.FrameWork.fcd.common import Common
-from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.common import Common
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class USPMT7628Factory(ScriptBase):

@@ -3,8 +3,8 @@ import time
 import os
 import stat
 from udm_alpine_factory import ScriptBase
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
-from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 BOOT_RECOVERY_IMAGE = True
 PROVISION_ENABLE = True

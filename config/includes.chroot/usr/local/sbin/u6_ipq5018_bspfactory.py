@@ -2,8 +2,8 @@
 import time
 
 from script_base import ScriptBase
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
-from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 class U6IPQ5018BspFactory(ScriptBase):
     def __init__(self):

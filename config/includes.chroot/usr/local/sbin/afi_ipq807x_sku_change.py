@@ -11,9 +11,9 @@ import socket
 
 from script_base import ScriptBase
 from binascii import unhexlify
-from PAlib.FrameWork.fcd.ssh_client import SSHClient
-from PAlib.FrameWork.fcd.expect_tty import ExpttyProcess
-from PAlib.FrameWork.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.ssh_client import SSHClient
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class AFIIPQ807XSKUCHANGE(ScriptBase):

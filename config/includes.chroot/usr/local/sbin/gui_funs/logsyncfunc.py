@@ -7,7 +7,7 @@ import stat
 import configparser
 import tkinter as tk
 
-from PAlib.FrameWork.fcd.common import Common
+from PAlib.Framework.fcd.common import Common
 from threading import Thread
 
 

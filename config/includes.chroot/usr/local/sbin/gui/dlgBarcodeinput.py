@@ -8,7 +8,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from PAlib.FrameWork.gui.msgdialog import msgerrror
+from PAlib.Framework.gui.msgdialog import msgerrror
 
 log = logging.getLogger('uigui')
 

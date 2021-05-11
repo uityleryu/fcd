@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
 from gi.repository import Gtk, Gdk, GLib, GObject
-from PAlib.FrameWork.gui.gui_variable import GPath, GCommon
+from PAlib.Framework.gui.gui_variable import GPath, GCommon
 from time import sleep
-from PAlib.FrameWork.gui.msgdialog import msgerrror, msginfo
-from PAlib.FrameWork.fcd.common import Common
+from PAlib.Framework.gui.msgdialog import msgerrror, msginfo
+from PAlib.Framework.fcd.common import Common
 from PAlib.ThirdParty.DHCPServer import dhcp
 
 import gi
