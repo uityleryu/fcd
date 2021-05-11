@@ -1793,9 +1793,9 @@
       "SW_ID"       : "1a01"
      },
 
-    "UISP-Console":{
+    "UISP-CONSOLE":{
       "INDEX"       : 9,
-      "NAME"        : "UISP-Console",
+      "NAME"        : "UISP-CONSOLE",
       "BOARDID"     : "ee6a",
       "BOMREV"      : "113-00973",
       "DESC"        : "Ubiquiti Network Management System Router Console",
