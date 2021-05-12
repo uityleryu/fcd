@@ -775,15 +775,25 @@ proc turn_on_burnin_mode { boardid } {
 
         # save config
         send "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart\r"
-        expect 50 { error_critical "Command promt not found" } "exec"
 
         sleep 10
-        #send \003
-        expect 10 { error_critical "Command promt not found" } "#"
-        send "grep \"burnin\" system.cfg\r"
-        expect timeout {
+
+        set x 0
+        set looplimit 4
+        while { $x < $looplimit } {
+            send "grep \"burnin\" system.cfg\r"
+            expect -re $burnin_flag {
+                log_debug "Done to set burnin flag"
+                sleep 5
+                break
+            }
+            log_debug "Retry for checking burnin flag"
+            sleep 5
+            incr x
+        }
+        if { $x == $looplimit} {
             error_critical "Burnin config is not set correctly"
-        } -re $burnin_flag
+        }
 
     } else {
         log_debug "Skip burnin mode enabling"
