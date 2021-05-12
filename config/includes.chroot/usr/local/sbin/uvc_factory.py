@@ -763,6 +763,7 @@ class UVCFactoryGeneral(ScriptBase):
         self.session.close()
 
     def check_info_ssh(self):
+        time_start = time.time()
         time.sleep(40)
 
         try:
@@ -777,11 +778,11 @@ class UVCFactoryGeneral(ScriptBase):
             print(str(e))
             self.critical_error("reconnected with DUT timeout fail")
 
+        log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
+
         cmd = 'md5sum /etc/persistent/server.pem'
         rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
-        rmsg = 'md5_server.pem_new: ' + rmsg
-        print(rmsg)
-        log_debug(rmsg)
+        log_debug('md5_server.pem_new: {}'.format(rmsg))
 
         # show fw version
         cmd = 'cat /usr/lib/version'
