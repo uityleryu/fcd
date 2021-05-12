@@ -195,26 +195,20 @@ class UVCFactoryGeneral(ScriptBase):
     def fwinfo_extract(self):
         log_debug("fwinfo_path: " + self.fwinfo_path)
 
-        self.main_fw_bin_path = self.ezreadini(self.fwinfo_path, 'MAIN', 'main_fw_bin_path')
-        print("main_fw_bin_path: " + self.main_fw_bin_path)
+        self.fw_dir = self.ezreadini(self.fwinfo_path, 'MAIN', 'fw_dir')
+        print("fw_dir: " + self.fw_dir)
 
-        ini_fw_dir = os.path.join(self.tftpdir, self.main_fw_bin_path)
+        ini_fw_dir = os.path.join(self.tftpdir, self.fw_dir)
         print("ini_fw_dir: " + ini_fw_dir)
 
-        self.main_fw_bin_name = self.ezreadini(self.fwinfo_path, 'MAIN', 'main_fw_bin_name')
-        print("main_fw_bin_name: " + self.main_fw_bin_name)
+        self.fw_name = self.ezreadini(self.fwinfo_path, 'MAIN', 'fw_name')
+        print("fw_name: " + self.fw_name)
 
-        self.ini_fw_path = os.path.join(self.tftpdir, ini_fw_dir, self.main_fw_bin_name)
+        self.ini_fw_path = os.path.join(self.tftpdir, ini_fw_dir, self.fw_name)
         print("ini_fw_path: " + self.ini_fw_path)
 
-        self.main_fw_bin_md5 = self.ezreadini(self.fwinfo_path, 'MAIN', 'main_fw_bin_md5')
-        print("main_fw_bin_md5: " + self.main_fw_bin_md5)
-
-        self.main_fw_bin_size = self.ezreadini(self.fwinfo_path, 'MAIN', 'main_fw_bin_size')
-        print("main_fw_bin_size: " + self.main_fw_bin_size)
-
-        self.main_fw_version = self.ezreadini(self.fwinfo_path, 'MAIN', 'main_fw_version')
-        print("main_fw_version: " + self.main_fw_version)
+        self.fw_version = self.ezreadini(self.fwinfo_path, 'MAIN', 'fw_version')
+        print("fw_version: " + self.fw_version)
 
 
 
@@ -718,16 +712,13 @@ class UVCFactoryGeneral(ScriptBase):
         # check if it uploaded successfully
         cmd_grep = "ls /tmp | grep fwupdate.bin"
         if self.session.execmd(cmd_grep) == 0:
-            log_debug("firmware {} uploaded successfully".format(self.firmware))
+            log_debug("firmware {} uploaded successfully".format(self.ini_fw_path))
         else:
-            self.critical_error("firmware {} uploaded failed".format(self.firmware))
+            self.critical_error("firmware {} uploaded failed".format(self.ini_fw_path))
 
         cmdstr = 'md5sum /tmp/fwupdate.bin'
         rmsg = (self.session.execmd_getmsg(cmdstr)).split()[0]
         print('fw md5 upload: ' + rmsg)
-        print('fw md5 expect: ' + self.main_fw_bin_md5)
-
-
 
         # reset2defaults
         log_debug("=== reset2defaults ===")
@@ -766,13 +757,13 @@ class UVCFactoryGeneral(ScriptBase):
         cmd = "fwupdate -m"
         log_debug(cmd)
         if self.session.execmd(cmd) == 0:
-            log_debug("firmware {} updated successfully".format(self.firmware))
+            log_debug("firmware {} updated successfully".format(self.ini_fw_path))
         else:
-            log_debug("firmware {} updated failed".format(self.firmware))
+            log_debug("firmware {} updated failed".format(self.ini_fw_path))
         self.session.close()
 
-
     def check_info_ssh(self):
+        time_start = time.time()
         time.sleep(40)
 
         try:
@@ -787,28 +778,26 @@ class UVCFactoryGeneral(ScriptBase):
             print(str(e))
             self.critical_error("reconnected with DUT timeout fail")
 
+        log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
+
         cmd = 'md5sum /etc/persistent/server.pem'
         rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
-        rmsg = 'md5_server.pem_new: ' + rmsg
-        print(rmsg)
-        log_debug(rmsg)
+        log_debug('md5_server.pem_new: {}'.format(rmsg))
 
         # show fw version
         cmd = 'cat /usr/lib/version'
         fwver_read = (self.session.execmd_getmsg(cmd)).split()[0]
-        msgstr_read   = "fw version   read: [{}]".format(fwver_read)
+        msgstr_read = "fw version in DUT = [{}]".format(fwver_read)
         log_debug(msgstr_read)
 
-        msgstr_expect = "fw version expect: [{}]".format(self.main_fw_version)
-        print(msgstr_read)
-        print(msgstr_expect)
+        msgstr_expect = "fw version expect = [{}]".format(self.fw_version)
 
-        if self.main_fw_version != "":
+        if self.fw_version != "":
             log_debug(msgstr_expect)
-            if fwver_read != self.main_fw_version:
-                self.critical_error('fw version not match')
+            if fwver_read != self.fw_version:
+                self.critical_error('[Fail] fw version not match')
             else:
-                log_debug("fw version match.")
+                log_debug("[Pass] fw version match.")
 
         # check the following items
         chk_items = {"board.sysid": self.board_id, "board.hwaddr": self.mac}
@@ -826,7 +815,7 @@ class UVCFactoryGeneral(ScriptBase):
                 otmsg = logmsg + "{} in host and DUT are the same".format(keys)
                 log_debug(otmsg)
 
-        msg_info= self.session.execmd_getmsg('cat /etc/board.info')
+        msg_info = self.session.execmd_getmsg('cat /etc/board.info')
         print(msg_info)
 
 
