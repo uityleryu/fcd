@@ -1358,7 +1358,7 @@ class ScriptBase(object):
             --bom:   BOM Rev version
             --stage:   FCD or FTU
         """
-        logupload_client_path = os.path.join(self.PAlib_dir, 'fcd', 'logupload_client.py')
+        logupload_client_path = os.path.join(self.PAlib_dir, 'Framework', 'fcd', 'logupload_client.py')
 
         if bom is None:
             bom = '99999-99'  # Workaround For BackToArt , GUI won't assign BOM version.
