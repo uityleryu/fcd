@@ -1569,7 +1569,7 @@
       "INDEX"       : 5,
       "NAME"        : "USP-PDU-PRO",
       "BOARDID"     : "ed12",
-      "BOMREV"      : "113-03098",
+      "BOMREV"      : "113-00986",
       "DESC"        : "UniFi Smart Power PDU PRO",
       "FILE"        : "usp_mt7628_factory.py",
       "T1FILE"      : "",
