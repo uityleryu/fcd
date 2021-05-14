@@ -596,6 +596,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USP-RPS-PRO":{
+      "INDEX"       : 35,
+      "NAME"        : "USP-RPS-PRO",
+      "BOARDID"     : "ed13",
+      "BOMREV"      : "113-03086",
+      "DESC"        : "UniFi SmartPower RPS Pro",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

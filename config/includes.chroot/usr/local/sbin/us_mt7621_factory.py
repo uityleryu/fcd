@@ -19,6 +19,7 @@ from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
     ec26: UAP-FLEXHD
     ec2a: UAP nanoHD industrial
     ed11: USP-RPS
+    ed13: USP-RPS-PRO
 '''
 
 
@@ -39,7 +40,7 @@ class USFLEXFactory(ScriptBase):
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
         self.zeroip_en = {'ed10', 'ed11'}
-        self.wait_LCM_upgrade_en = {'ed11'}
+        self.wait_LCM_upgrade_en = {'ed11', 'ed13'}
         self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
 
         # number of mac
@@ -50,7 +51,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': "1",
             'ec26': "1",
             'ec2a': "1",
-            'ed11': "2"
+            'ed11': "2",
+            'ed13': "2"
         }
         # number of WiFi
         self.wifinum = {
@@ -60,7 +62,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': "2",
             'ec26': "2",
             'ec2a': "2",
-            'ed11': "0"
+            'ed11': "0",
+            'ed13': "0",
         }
         # number of Bluetooth
         self.btnum = {
@@ -70,7 +73,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': "1",
             'ec26': "1",
             'ec2a': "0",
-            'ed11': "0"
+            'ed11': "0",
+            'ed13': "1",
         }
         # vlan port mapping
         self.vlanport_idx = {
@@ -80,7 +84,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': "'6 0'",
             'ec26': "'6 0'",
             'ec2a': "'6 0'",
-            'ed11': "'6 0'"
+            'ed11': "'6 0'",
+            'ed13': "'6 0'"
         }
         # flash size map
         self.flash_size = {
@@ -90,7 +95,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': "33554432",
             'ec26': "33554432",
             'ec2a': "33554432",
-            'ed11': "16777216"
+            'ed11': "16777216",
+            'ed13': "33554432",
         }
         # firmware image
         self.fwimg = {
@@ -100,7 +106,8 @@ class USFLEXFactory(ScriptBase):
             'ec25': self.board_id + ".bin",
             'ec26': self.board_id + ".bin",
             'ec2a': self.board_id + ".bin",
-            'ed11': self.board_id + "-diag.bin"
+            'ed11': self.board_id + "-diag.bin",
+            'ed13': self.board_id + "-fw.bin",
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -134,6 +141,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set enable_vlan 1")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set vid 1")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set ports " + self.vlanport_idx[self.board_id])
+        self.pexp.expect_action(30, self.linux_prompt, " swconfig dev switch0 port 0 set disable 0")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set apply")
         self.pexp.expect_action(30, self.linux_prompt, "[ $(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up")
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.dutip)
@@ -172,7 +180,10 @@ class USFLEXFactory(ScriptBase):
             print("Pass checking radio status")
 
     def wait_lcm_upgrade(self):                                                                                                     
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        if self.board_id == 'ed13':
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp='version"', retry=24)
+        else:    
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def update_uboot(self):
@@ -295,33 +306,17 @@ class USFLEXFactory(ScriptBase):
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(self.devnetmeta)
 
-        # retry for unstable helper_UAP6
-        retry = 3
-        while retry >= 0:
-            if self.DOHELPER_ENABLE is True:
-                self.erase_eefiles()
-                msg(30, "Do helper to get the output file to devreg server ...")
-                self.prepare_server_need_files()
-
-                eetxt_dut_path = os.path.join(self.tftpdir, self.eetxt)
-                [uid_long, rtc] = self.fcd.common.xcmd("cat {}|grep uid".format(eetxt_dut_path))
-                uid = re.search(r'value=(.*)', uid_long, re.S).group(1).strip()
-                log_debug("Flash UID="+str(uid))
-                if uid is not '':
-                    break
-                else:
-                    if retry == 0:
-                        error_critical("Failed to gen files by helper")
-                    log_debug("Retrying to run helper, remaining {}.".format(retry))
-                    retry -= 1
-                    time.sleep(2)
+        if self.DOHELPER_ENABLE is True:
+            msg(30, "Do helper to get the output file to devreg server ...")
+            self.erase_eefiles()
+            self.prepare_server_need_files()
 
         if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-
+       
         if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
             self.fwupdate()
@@ -340,7 +335,7 @@ class USFLEXFactory(ScriptBase):
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Wait LCM upgrading ...")
                 self.wait_lcm_upgrade()
-
+    
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 
