@@ -12,12 +12,13 @@ import os
 import re
 import traceback
 
-FWUPDATE_ENABLE     = True
+FWUPDATE_ENABLE     = True 
 PROVISION_ENABLE    = True 
 DOHELPER_ENABLE     = True 
 REGISTER_ENABLE     = True 
 FLASH_DEVREG_DATA   = True
 DEVREG_CHECK_ENABLE = True
+SPIFF_FORMAT_CHECK  = True
 
 class UFPESP32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -57,7 +58,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         }
 
     def prepare_server_need_files(self):
-        output = self.pexp.expect_get_output("uniqueid", "", timeout=3)
+        output = self.pexp.expect_get_output("uniqueid", self.esp32_prompt, timeout=10)
         log_debug(output)
         id_list = re.findall(r'id: 0x(\w+)', output)
         cpu_id = id_list[0]
@@ -103,14 +104,15 @@ class UFPESP32FactoryGeneral(ScriptBase):
             otmsg = "Flash e.s.{} into DUT failed".format(self.row_id)
             error_critical(otmsg)
         
-        ## The waiting time         
+        ## The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
-        self.pexp.expect_only(60, "Security check result: Pass")
+        self.pexp.expect_only(60, "DEVREG:") # The security check will fail if spiff isn't mounted
 
     def check_devreg_data(self):
-        output = self.pexp.expect_get_output("info", "", timeout=3)
+        output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
+        log_debug("output:".format(output))
         info = {}
         # value is our expected string
         devreg_data_dict = {'System ID'   : self.board_id              ,
@@ -129,20 +131,23 @@ class UFPESP32FactoryGeneral(ScriptBase):
             else:
                 log_debug("{}: {}".format(key, info[key]))
 
+    def check_spiff_mount(self):
+        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.esp32_prompt, action="spiffs_get_info", 
+                                post_exp="spiffs_cmd: mount", retry=80)
+
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
         msg(5, "Open serial port successfully ...")
-
-        self.erase_eefiles()
-        msg(10, "Finish erasing ee files ...")
     
         if FWUPDATE_ENABLE is True:
-            self.fwupdate()    
-            msg(15, "Finish FW updating ...")
+            self.fwupdate()
+            msg(10, "Finish FW updating ...")
 
         if PROVISION_ENABLE is True:
+            self.erase_eefiles()
+            msg(15, "Finish erasing ee files ...")
             self.data_provision_4k(netmeta=self.devnetmeta)
             msg(20, "Finish 4K binary generating ...")
 
@@ -161,6 +166,10 @@ class UFPESP32FactoryGeneral(ScriptBase):
         if DEVREG_CHECK_ENABLE is True:
             self.check_devreg_data()
             msg(70, "Finish checking MAC in DUT ...")
+
+        if SPIFF_FORMAT_CHECK is True:
+            self.check_spiff_mount()
+            msg(90, "Spiff mounted")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
