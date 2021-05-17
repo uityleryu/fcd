@@ -1,11 +1,11 @@
 {
   "Connect": {
-    "UCD-13-B": {
+    "UCD-13": {
       "INDEX": 0,
-      "NAME": "UCD-13-B",
-      "BOARDID": "ef81",
-      "BOMREV": "113-03182",
-      "DESC": "UniFi Connect Display 13 (BLE)",
+      "NAME": "UCD-13",
+      "BOARDID": "ef88",
+      "BOMREV": "113-03396",
+      "DESC": "UniFi Connect Disply 13 (BLE/WiFi)",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

@@ -9,9 +9,9 @@ import stat
 import filecmp
 
 from script_base import ScriptBase
-from ubntlib.equipment.edgeswitch import EdgeSwitch
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Ubnt import EdgeSwitch
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a980: Viewport
@@ -47,7 +47,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         # default product class: basic
         self.df_prod_class = "0014"
-        self.usbadb_list = ["ec60", "ef0e", "ef82", "ef83", "ef13"]
+        self.usbadb_list = [
+            "ec60", "ef0e", "ef80", "ef81", "ef82", "ef83", "ef84", "ef87", "ef88", "ef13"
+        ]
 
         self.ospl = {
             'a980': "",

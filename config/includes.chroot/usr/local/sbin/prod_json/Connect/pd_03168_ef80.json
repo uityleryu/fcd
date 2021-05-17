@@ -1,11 +1,11 @@
 {
   "Connect": {
-    "UC-DISPLAY-7": {
+    "UCD-7-B": {
       "INDEX": 0,
-      "NAME": "UC-DISPLAY-7",
+      "NAME": "UCD-7-B",
       "BOARDID": "ef80",
       "BOMREV": "113-03168",
-      "DESC": "UniFi Connect Panel 7",
+      "DESC": "UniFi Connect Display 7 (BLE)",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

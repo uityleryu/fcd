@@ -10,10 +10,10 @@ import datetime
 
 from pexpect import *
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.common import Common
-from ubntlib.fcd.pyssh import pyssh
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.common import Common
+from PAlib.Framework.fcd.pyssh import pyssh
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class AFAMEFactroy(ScriptBase):

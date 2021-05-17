@@ -30,9 +30,9 @@ image-install-$1: $1-namechk
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Logsync.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/version.txt $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/MountUSB.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
-	rm -rf $(NEWSQUASHFS)/usr/local/sbin/ubntlib
-	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/ubntlib
-	cp -rf $(UBNTLIB_DIR)/ubntlib/* $(NEWSQUASHFS)/usr/local/sbin/ubntlib/
+	rm -rf $(NEWSQUASHFS)/usr/local/sbin/PAlib
+	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/PAlib
+	cp -rf $(UBNTLIB_DIR)/PAlib/* $(NEWSQUASHFS)/usr/local/sbin/PAlib/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
 	bash include/cp2tftp.sh iso $(IMAGE-$1)
 	bash include/tar2tftp.sh iso $(TOOLS-$1)
@@ -74,14 +74,14 @@ image-ostrich-install-$1: $1-namechk
 	@echo " ****************************************************************** "
 	@echo " >> copy prep scripts to new squashfs "
 	rm -rf $(OSTRICH_DIR)
-	mkdir -p $(OSTRICH_DIR)
+	mkdir -p $(OSTRICH_DIR)/sbin
 	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/version.txt.template $(OSTRICH_DIR)/version.txt
 	sed -i s/FCDVERSION/$2/g $(OSTRICH_DIR)/version.txt
 	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
-	cp -rfL $(FCDAPP_DIR)/usr/local/sbin $(OSTRICH_DIR)/
-	cp -rfL $(UBNTLIB_DIR)/ubntlib $(OSTRICH_DIR)/sbin/
-	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
+	cp -rfL $(FCDAPP_DIR)/usr/local/sbin/* $(OSTRICH_DIR)/sbin/.
+	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
+	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
 	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
 	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
 	cd $(OUTDIR); tar -cvzf $2.tgz ostrich
@@ -90,7 +90,6 @@ endef
 
 
 define ProductCompress2
-
 MATCH_SINGLE := $(shell [[ $1 =~ [0-9]{5}-[0-9a-f]{4} ]] && echo matched)
 
 $1-antman: gitrepo image-antman-install-$1
@@ -98,11 +97,11 @@ $1-antman-local: image-antman-install-$1
 
 image-antman-install-$1:
 	rm -rf $(OSTRICH_DIR)
-	mkdir -p $(OSTRICH_DIR)
+	mkdir -p $(OSTRICH_DIR)/sbin
 	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
-	cp -rfL $(UBNTLIB_DIR)/ $(OSTRICH_DIR)/sbin/
-	find $(OSTRICH_DIR)/sbin -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
+	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
+	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
 	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
 	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
 ifndef MATCH_SINGLE

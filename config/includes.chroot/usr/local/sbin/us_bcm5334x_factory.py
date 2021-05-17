@@ -6,8 +6,8 @@ import os
 import time
 
 from soc_lib.bcm5334x_lib import BCM5334xLIB
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True

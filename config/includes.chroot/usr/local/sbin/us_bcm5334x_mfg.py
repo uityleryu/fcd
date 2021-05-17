@@ -6,8 +6,8 @@ import os
 import time
 
 from soc_lib.bcm5334x_lib import BCM5334xLIB
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 flash_mtdparts_64M = r"mtdparts=spi1.0:1920k(u-boot),64k(u-boot-env),64k(shmoo),31168k(kernel0),31232k(kernel1),1024k(cfg),64k(EEPROM)"
 flash_mtdparts_32M = r"mtdparts=spi1.0:768k(u-boot),64k(u-boot-env),64k(shmoo),15360k(kernel0),15424k(kernel1),1024k(cfg),64k(EEPROM)"

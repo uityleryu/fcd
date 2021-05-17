@@ -4,7 +4,7 @@ import hashlib
 from nose import with_setup 
 from nose.tools import *
 import pexpect
-from ubntlib.fcd.ssh_client import SSHClient
+from PAlib.Framework.fcd.ssh_client import SSHClient
 import paramiko
 import socket
 
@@ -24,7 +24,7 @@ class TestSSHClient():
         pass
 
     def test_01_import(cls):
-        from ubntlib.fcd.ssh_client import SSHClient
+        from PAlib.Framework.fcd.ssh_client import SSHClient
 
     def test_02_construct(cls):
         global ssh

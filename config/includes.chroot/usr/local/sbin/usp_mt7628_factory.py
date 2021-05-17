@@ -7,9 +7,9 @@ import os
 import stat
 import shutil
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.common import Common
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.common import Common
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 
 class USPMT7628Factory(ScriptBase):
@@ -63,8 +63,6 @@ class USPMT7628Factory(ScriptBase):
     def init_recovery_image(self):
         self.pexp.expect_only(30, "reading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "while ! grep -q \"udhcpc\" /etc/inittab; do echo 'Wait udhcpc...'; sleep 1; done",self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i 's/null::respawn:\\/sbin\\/udhcpc/#null::respawn:\\/sbin\\/udhcpc/g' /etc/inittab",self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)

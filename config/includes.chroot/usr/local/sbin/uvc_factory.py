@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
 from script_base import ScriptBase
-from ubntlib.fcd.expect_tty import ExpttyProcess
-from ubntlib.fcd.ssh_client import SSHClient
-from ubntlib.fcd.logger import log_debug, msg, error_critical, log_error
+from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.ssh_client import SSHClient
+from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_error
 
 import time
 import os

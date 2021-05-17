@@ -596,6 +596,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USP-RPS-PRO":{
+      "INDEX"       : 35,
+      "NAME"        : "USP-RPS-PRO",
+      "BOARDID"     : "ed13",
+      "BOMREV"      : "113-03086",
+      "DESC"        : "UniFi SmartPower RPS Pro",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
@@ -1257,30 +1270,30 @@
       "SW_ID"       : "1c01"
     },
 
-    "UC-DISPLAY-21":{
-      "INDEX"       : 2,
-      "NAME"        : "UC-DISPLAY-21",
-      "BOARDID"     : "ef81",
-      "BOMREV"      : "113-03287",
-      "DESC"        : "UniFi Connect Panel 21",
-      "FILE"        : "connect_apq8053_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0011",
-      "SW_ID"       : "1c01"
+    "UC-DISPLAY-21": {
+      "INDEX": 0,
+      "NAME": "UC-DISPLAY-21",
+      "BOARDID": "ef83",
+      "BOMREV": "113-03287",
+      "DESC": "UniFi Connect Panel 21",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
     },
 
-    "UC-DISPLAY-27":{
-      "INDEX"       : 3,
-      "NAME"        : "UC-DISPLAY-27",
-      "BOARDID"     : "ef81",
-      "BOMREV"      : "113-03256",
-      "DESC"        : "UniFi Connect Panel 27",
-      "FILE"        : "connect_apq8053_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0011",
-      "SW_ID"       : "1c01"
+    "UC-DISPLAY-27": {
+      "INDEX": 0,
+      "NAME": "UC-DISPLAY-27",
+      "BOARDID": "ef84",
+      "BOMREV": "113-03256",
+      "DESC": "UniFi Connect Panel 27",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
     }
   },
 
@@ -1351,17 +1364,16 @@
       "SW_ID"       : "1203"
     },
 
-    "LBE_5AC":{
-      "INDEX"       : 5,
-      "NAME"        : "LBE_5AC",
-      "BOARDID"     : "e7f9",
-      "BOMREV"      : "113-00497",
-      "DESC"        : "LiteBeam 5AC",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+    "LBE-5AC": {
+      "NAME": "LBE-5AC",
+      "BOARDID": "e7f9",
+      "BOMREV": "113-00497",
+      "DESC": "LiteBeam 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
     }
   },
 
@@ -1471,17 +1483,17 @@
       "SW_ID"       : "1604"
     },
 
-    "UP-KEYPAD":{
-      "INDEX"       : 8,
-      "NAME"        : "UP-KEYPAD",
-      "BOARDID"     : "a920",
-      "BOMREV"      : "113-03325",
-      "DESC"        : "UniFi Protect Keypad",
-      "FILE"        : "ufp_efr32_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000d",
-      "SW_ID"       : "1604"
+    "UP-KEYPAD": {
+      "INDEX": 0,
+      "NAME": "UP-KEYPAD",
+      "BOARDID": "a920",
+      "BOMREV": "113-03325",
+      "DESC": "UniFi Protect Keypad",
+      "FILE": "up_a920_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000d",
+      "SW_ID": "1601"
     },
 
     "UP-Chime":{
@@ -1569,7 +1581,7 @@
       "INDEX"       : 5,
       "NAME"        : "USP-PDU-PRO",
       "BOARDID"     : "ed12",
-      "BOMREV"      : "113-03098",
+      "BOMREV"      : "113-00986",
       "DESC"        : "UniFi Smart Power PDU PRO",
       "FILE"        : "usp_mt7628_factory.py",
       "T1FILE"      : "",
@@ -1806,9 +1818,9 @@
       "SW_ID"       : "1a01"
      },
 
-    "UISP-Console":{
+    "UISP-CONSOLE":{
       "INDEX"       : 9,
-      "NAME"        : "UISP-Console",
+      "NAME"        : "UISP-CONSOLE",
       "BOARDID"     : "ee6a",
       "BOMREV"      : "113-00973",
       "DESC"        : "Ubiquiti Network Management System Router Console",
@@ -1845,17 +1857,17 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-S-MICRO":{
-      "INDEX"       : 12,
-      "NAME"        : "UISP-S-MICRO",
-      "BOARDID"     : "ee6f",
-      "BOMREV"      : "113-00988",
-      "DESC"        : "Ubiquiti Network Management System Switch Micro",
-      "FILE"        : "unms_rtl838x_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "000f",
-      "SW_ID"       : "1a01"
+    "UISP-S": {
+      "INDEX": 0,
+      "NAME": "UISP-S",
+      "BOARDID": "ee6f",
+      "BOMREV": "113-00988",
+      "DESC": "Ubiquiti Network Management System Switch",
+      "FILE": "unms_rtl838x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01"
     },
 
     "UISP-P-LITE":{

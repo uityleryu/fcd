@@ -1,11 +1,11 @@
 {
   "Connect": {
-    "UC-DISPLAY-27": {
+    "UCD-27": {
       "INDEX": 0,
-      "NAME": "UC-DISPLAY-27",
+      "NAME": "UCD-27",
       "BOARDID": "ef84",
       "BOMREV": "113-03256",
-      "DESC": "UniFi Connect Panel 27",
+      "DESC": "UniFi Connect Display 27",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

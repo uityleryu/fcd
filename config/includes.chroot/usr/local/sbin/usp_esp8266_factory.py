@@ -2,8 +2,8 @@
 import time
 import os
 from script_base import ScriptBase
-from ubntlib.fcd.esptool_helper import ESPTool
-from ubntlib.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.esptool_helper import ESPTool
+from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 class USPESP8266Factory(ScriptBase):
     def __init__(self):

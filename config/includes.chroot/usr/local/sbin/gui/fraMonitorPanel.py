@@ -14,7 +14,7 @@ import datetime
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk, GLib, GObject
-from ubntlib.fcd.common import Common
+from PAlib.Framework.fcd.common import Common
 from gui.dlgBarcodeinput import dlgBarcodeinput
 from threading import Thread
 

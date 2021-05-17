@@ -1,11 +1,11 @@
 {
   "UbiquitiNMS": {
-    "UISP-R-PRO-SSD": {
+    "UISP-CONSOLE": {
       "INDEX": 0,
-      "NAME": "UISP-R-PRO",
+      "NAME": "UISP-CONSOLE",
       "BOARDID": "ee6a",
       "BOMREV": "113-00973",
-      "DESC": "Ubiquiti Network Management System Router Pro",
+      "DESC": "Ubiquiti Network Management System Router Console",
       "FILE": "unms_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
