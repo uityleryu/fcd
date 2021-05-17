@@ -127,6 +127,10 @@ TOOLS-UVC-AI360+= \
     uvc/helper_uvcai360 \
     uvc/128k_ff.bin
 
+TOOLS-UVC-AIBULLET+=$(TOOLS-UVC)
+TOOLS-UVC-AIBULLET+= \
+    uvc/128k_ff.bin
+
 TOOLS-UVC-G3MINI+=$(TOOLS-UVC)
 TOOLS-UVC-G3MINI+= \
     uvc/helper_uvcg3flexmini \
