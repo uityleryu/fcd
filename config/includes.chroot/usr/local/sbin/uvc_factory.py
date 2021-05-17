@@ -12,6 +12,18 @@ import filecmp
 import configparser
 
 
+# a580 = G3BATTERY
+# a563 = G4PRO
+# a564 = G4PTZ
+# a571 = G4DOORBELL
+# a572 = G4BULLET
+# a573 = G4DOME
+# a574 = G4DOORBELLPRO
+# a5a0 = AI360
+# a590 = G3MINI
+# a595 = G4INS
+# a5a2 = AIBullet
+
 PROVISION_EN  = True
 DOHELPER_EN   = True
 REGISTER_EN   = True
@@ -24,9 +36,11 @@ class UVCFactoryGeneral(ScriptBase):
         super(UVCFactoryGeneral, self).__init__()
 
         self.devregpart = ''
+        self.mtd_name = 'spi'
         self.helper_rule = 0
         '''
-        Please set "self.helper_rule = 1" in each product if it follows new rule that doesn't need m25p80 and helper, refer to "UVC-G4PTZ"
+        Please set "self.helper_rule = 1" in each product if it follows new rule that
+        doesn't need m25p80 and helper, refer to "UVC-G4PTZ"
         '''
         if self.product_name == "UVC-G3BATTERY":
             self.board_name = "UVC G3 Battery"
@@ -94,6 +108,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.ip = "169.254.2.20"
             self.helper_rule = 1
 
+        elif self.product_name == "UVC-AIBULLET":
+            self.board_name = "UVC AI Bullet"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -108,17 +128,6 @@ class UVCFactoryGeneral(ScriptBase):
         self.eerom_status = 0
         self.errmsg = ""
 
-        # a580 = G3BATTERY
-        # a563 = G4PRO
-        # a564 = G4PTZ
-        # a571 = G4DOORBELL
-        # a572 = G4BULLET
-        # a573 = G4DOME
-        # a574 = G4DOORBELLPRO
-        # a5a0 = AI360
-        # a590 = G3MINI
-        # a595 = G4INS
-
         # number of Ethernet
         ethnum = {
             'a580': "0",
@@ -131,6 +140,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "0",
             'a595': "0",
             'a5a0': "1",
+            'a5a2': '1'
         }
 
         # number of WiFi
@@ -144,7 +154,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a574': "1",
             'a590': "1",
             'a595': "1",
-            'a5a0': "0"
+            'a5a0': "0",
+            'a5a2': '0'
         }
 
         # number of Bluetooth
@@ -158,7 +169,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a574': "1",
             'a590': "1",
             'a595': "1",
-            'a5a0': "0"
+            'a5a0': "0",
+            'a5a2': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -179,7 +191,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a574': "ifconfig eth0 ",
             'a590': "ifconfig eth0 ",
             'a595': "ifconfig eth0 ",
-            'a5a0': "ifconfig eth0 "
+            'a5a0': "ifconfig eth0 ",
+            'a5a2': "ifconfig eth0 "
         }
 
     def ezreadini(self, path, section, item):
@@ -210,14 +223,12 @@ class UVCFactoryGeneral(ScriptBase):
         self.fw_version = self.ezreadini(self.fwinfo_path, 'MAIN', 'fw_version')
         print("fw_version: " + self.fw_version)
 
-
-
     def critical_error(self, msg):
         self.finalret = False
         self.errmsg = msg
         log_error(msg)
 
-    def get_urescue_fw_version(self):
+    def _get_urescue_fw_version(self):
         try:
             mtd = self.session.execmd_getmsg('cat /proc/mtd | grep urc')
             mtd = '/dev/{}'.format(mtd.split(':')[0])
@@ -242,7 +253,7 @@ class UVCFactoryGeneral(ScriptBase):
         return version
 
     def get_devreg_mtd(self):
-        mtd = self.session.execmd_getmsg('cat /proc/mtd | grep spi')
+        mtd = self.session.execmd_getmsg('cat /proc/mtd | grep {}'.format(self.mtd_name))
         mtd = '/dev/{}'.format(mtd.split(':')[0])
         return mtd
 
@@ -291,7 +302,6 @@ class UVCFactoryGeneral(ScriptBase):
         else:
             self.critical_error("provided {} failed".format(output_path))
 
-
     def helper_generate_e_b(self, output_path='/tmp/e.b'):
         log_debug('helper_generate_e_b to {}'.format(output_path))
 
@@ -300,7 +310,6 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug("provided {} successfully".format(output_path))
         else:
             self.critical_error("provided {} failed".format(output_path))
-
 
     def upload_flash_module(self):
         if self.devregpart == '':
@@ -319,7 +328,7 @@ class UVCFactoryGeneral(ScriptBase):
             dut_path = "/tmp/{}".format(self.fillff)
             self.session.put_file(host_path, dut_path)
 
-            if self.flash_module != "": #need to upload and install module
+            if self.flash_module != "":  # need to upload and install module
                 flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
                 mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
                 cmd_grep = "lsmod | grep {}".format(mod_name_inDUT)
@@ -357,7 +366,6 @@ class UVCFactoryGeneral(ScriptBase):
         cmd_dd = "dd if={} of={} bs=1k count=128".format(self.devregpart, '/tmp/eerom_backup.bin')
         log_debug(cmd_dd)
         self.session.execmd(cmd_dd)
-
 
     def erase_flash_rom(self):
         log_debug("erasing flash module")
@@ -403,18 +411,18 @@ class UVCFactoryGeneral(ScriptBase):
 
         return True
 
-
-
     def check_if_need_restore_eerom(self):
         log_debug('check_if_need_restore_eerom')
         cmdstr = 'wc /tmp/eerom_backup.bin &> /dev/null; echo $?'
         rmsg = self.session.execmd_getmsg(cmdstr)
-        if  int(rmsg) != 0:
-            log_debug('/tmp/eerom_backup.bin does not exist')
-            return -1
-        log_debug('/tmp/eerom_backup.bin exist')
+        print('rmsg = {}'.format(rmsg))
 
-        if self.eerom_status !=0 and self.eerom_status != 9:
+        if int(rmsg) != 0:
+            log_debug('"/tmp/eerom_backup.bin" does "NOT" exist')
+            return -1
+        log_debug('"/tmp/eerom_backup.bin" exist')
+
+        if self.eerom_status != 0 and self.eerom_status != 9:
             log_debug('need to restore previos eerom back')
             self.erase_flash_rom()
             cmd_dd = "dd if={} of={} bs=1k count=128".format('/tmp/eerom_backup.bin', self.devregpart)
@@ -423,7 +431,6 @@ class UVCFactoryGeneral(ScriptBase):
             self.eerom_status = 0
             return 1
         return 0
-
 
     def data_provision_64k_ssh(self, netmeta):
 
@@ -469,12 +476,12 @@ class UVCFactoryGeneral(ScriptBase):
         print('devregpart:')
         print(self.devregpart)
 
-        region_value = 255
         if self.region == '002a':
             print("SKU: US")
             region_value = 0
         else:
             print("SKU: WorldWide")
+            region_value = 255
 
         sstr = [
             "sudo echo -e '\\x{:02x}'".format(region_value),
@@ -488,7 +495,6 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug("add region to flash cmd: " + sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
         time.sleep(1)
-
 
         host_path = "/tftpboot/{}".format(self.eegenbin)
         dut_path = "/tmp/{}".format(self.eegenbin)
@@ -508,6 +514,8 @@ class UVCFactoryGeneral(ScriptBase):
         # check if it duplicated successfully
         devregpart_name = self.devregpart.split("/")[-1]
         cmd_grep = "ls /{} | grep {}".format(self.devregpart.replace(devregpart_name, ""), devregpart_name)
+        log_debug("cmd_grep: {}".format(cmd_grep))
+
         if self.session.execmd(cmd_grep) == 0:
             log_debug("{} duplicated successfully".format(devregpart_name))
         else:
@@ -685,7 +693,7 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug(otmsg)
             rtc = filecmp.cmp(self.eechk_path, self.eesign_path)
             if rtc is True:
-                self.eerom_status = 9 #eerom on DUT has devreg success data
+                self.eerom_status = 9  # eerom on DUT has devreg success data
                 log_debug("Comparing files successfully")
             else:
                 self.critical_error("Comparing files failed!!")
@@ -818,7 +826,6 @@ class UVCFactoryGeneral(ScriptBase):
         msg_info = self.session.execmd_getmsg('cat /etc/board.info')
         print(msg_info)
 
-
     def eesign_datecode(self):
 
         log_debug("Adding the datecode into eesign(e.s.0)")
@@ -893,9 +900,33 @@ class UVCFactoryGeneral(ScriptBase):
             else:
                 log_debug("Modified e.g.0 files successfully")
 
+    def _get_init_dut_info(self):
+        log_debug('===Init dut info'.ljust(80, '='))
+
+        pwd = self.session.execmd_getmsg("pwd")
+        print('pwd = {}'.format(pwd))
+
+        uptime = self.session.execmd_getmsg("uptime")
+        print('uptime = {}'.format(uptime))
+
+        fw_version = self.session.execmd_getmsg("cat /usr/lib/version")
+        print('fw_version = {}'.format(fw_version))
+
+        board_info = self.session.execmd_getmsg("cat /etc/board.info")
+        print('board_info = {}'.format(board_info))
+
+        urescue_fw_version = self._get_urescue_fw_version()
+        print('urescue_fw = {}'.format(urescue_fw_version))
+
+        time.sleep(1)
+
+    def _log_duration(self, action, time_start):
+        duration_msg = '\n\n ===> [Time Elapsed] {cap}: {time} sec'
+        duration = int(time.time() - time_start)
+        log_debug(duration_msg.format(cap=action, time=duration))
+
     def run(self):
-        """
-        Main procedure of factory
+        """  Main procedure of factory
         """
 
         sshclient_obj = SSHClient(host=self.ip,
@@ -905,13 +936,7 @@ class UVCFactoryGeneral(ScriptBase):
                                   polling_mins=self.polling_mins)
 
         self.set_sshclient_helper(ssh_client=sshclient_obj)
-        log_debug(self.session.execmd_getmsg("pwd"))
-        log_debug(self.session.execmd_getmsg("uptime"))
-        log_debug(self.session.execmd_getmsg("cat /usr/lib/version"))
-        log_debug(self.session.execmd_getmsg("cat /etc/board.info"))
-        log_debug('urescue_fw: {}'.format(self.get_urescue_fw_version()))
-
-        time.sleep(1)
+        self._get_init_dut_info()
 
         log_debug("Uploading flash module...")
 
@@ -919,18 +944,13 @@ class UVCFactoryGeneral(ScriptBase):
         self.upload_flash_module()
         self.eerom_status = 0
         self.finalret = True
-        duration = int(time.time() - time_start)
-        log_debug('==> duration_{cap}: {time} seconds'.format(cap='upload_flash', time=duration))
-
-
-
+        self._log_duration('upload_flash', time_start)
 
         '''
             ============ Registration start ============
               The following flow almost become a regular procedure for the registration.
               So, it doesn't have to change too much. All APIs are came from script_base.py
         '''
-
 
         if self.finalret is True:
             if PROVISION_EN is True:
@@ -943,9 +963,7 @@ class UVCFactoryGeneral(ScriptBase):
                 if self.finalret is True:
                     msg(25, "Send tools to DUT and data provision ...")
                     self.data_provision_64k_ssh(self.devnetmeta)
-
-                duration = int(time.time() - time_start)
-                log_debug('==> duration_{cap}: {time} seconds'.format(cap='PROVISION', time=duration))
+                self._log_duration('PROVISION', time_start)
 
         if self.finalret is True:
             if DOHELPER_EN is True:
@@ -961,10 +979,7 @@ class UVCFactoryGeneral(ScriptBase):
                 if self.finalret is True:
                     msg(30, "Do helper to get the output file to devreg server ...")
                     self.prepare_server_need_files_ssh()
-
-                duration = int(time.time() - time_start)
-                log_debug('==> duration_{cap}: {time} seconds'.format(cap='DOHELPER', time=duration))
-
+                self._log_duration('DOHELPER', time_start)
 
         if self.finalret is True:
             if REGISTER_EN is True:
@@ -985,40 +1000,31 @@ class UVCFactoryGeneral(ScriptBase):
                             msg(48, "register FAIL")
                             self.critical_error("register FAIL")
 
-
                     if self.finalret is True:
                         self.check_devreg_data_ssh()
                         msg(50, "Finish doing signed file and EEPROM checking ...")
+                self._log_duration('REGISTER', time_start)
 
-                duration = int(time.time() - time_start)
-                log_debug('==> duration_{cap}: {time} seconds'.format(cap='REGISTER', time=duration))
-
-
-        #always check if need to write back eerom bin
+        # always check if need to write back eerom bin
         self.check_if_need_restore_eerom()
 
-
-        '''
-            ============ Registration End ============
+        ''' ============ Registration End ============
         '''
         if self.finalret is True:
             if FWUPDATE_EN is True:
                 time_start = time.time()
                 self.fwupdate()
                 msg(70, "Succeeding in downloading the upgrade tar file ...")
-                duration = int(time.time() - time_start)
-                log_debug('==> duration_{cap}: {time} seconds'.format(cap='FWUPDATE', time=duration))
+                self._log_duration('FWUPDATE', time_start)
 
         if self.finalret is True:
             if DATAVERIFY_EN is True:
                 time_start = time.time()
                 self.check_info_ssh()
                 msg(80, "Succeeding in checking the devreg information ...")
-                duration = int(time.time() - time_start)
-                log_debug('==> duration_{cap}: {time} seconds'.format(cap='DATAVERIFY', time=duration))
+                self._log_duration('DATAVERIFY', time_start)
 
         log_debug('=================================================================================.')
-
 
         if self.finalret is True:
             msg(100, "Complete FCD process.")
