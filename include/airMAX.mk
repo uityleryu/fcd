@@ -50,7 +50,7 @@ IMAGE-AC-SERIES= \
     am-fw/WA.v8.7.4.45112.210415.1103.bin \
     am-fw/XC.v8.7.4.45112.210415.1103.bin \
     am-fw/2WA.v8.7.4.45112.210415.1103.bin \
-    am-fw/2XC.v8.7.4.45112.210415.1103.bin \
+    am-fw/2XC.v8.7.4.45112.210415.1102.bin \
     am-fw/WA.v8.7.5-alpha.45137.210419.1121.bin \
     am-fw/UBNT_WA.bin \
     am-fw/UBNT_2WA.bin \
@@ -60,6 +60,16 @@ IMAGE-AC-SERIES= \
     am-fw/AR934X_UB.bin \
     am-fw/QCA955X_ART_UB.bin \
     am-fw/QCA955X_UB.bin \
+    am-fw/WA.ar934x-LSDK-ART-LBE-AC-90-BR-16M-V1.img \
+    am-fw/WA.v8.7.5-alpha2.45300.210507.1454.bin \
+    am-fw/LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.img \
+    am-fw/XC.qca955x-LSDK-ART-ROCKET-2AC-HSR-16M-V3.img \
+    am-fw/XC.qca955x.LSDK-ART.NBE-5AC-G2-v2.img \
+    am-fw/LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.img \
+    am-fw/QCA955X_QCA9882_AR8033_HSR_V07.bin \
+    am-fw/XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img \
+    am-fw/LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.bin \
+    am-fw/openwrt-ath79-lbe-5ac-xr-initramfs-kernel-v2.bin
 
 IMAGE-AIRMAX+=$(IMAGE-GBE)
 IMAGE-AIRMAX+=$(IMAGE-PRISMAP)
@@ -98,6 +108,14 @@ TOOLS-PRISMAP= \
 
 TOOLS-60G-LAS= \
     common/helper_UNIFI_MT7621_release \
+
+TOOLS-AC-SERIES+=$(TOOLS-CONFIG)
+TOOLS-AC-SERIES+= \
+    am/helper_ARxxxx_11ac_20210329 \
+    am/cfg_part_ac_series.bin \
+    am/id_rsa \
+    am/id_rsa.pub \
+    am/fl_lock_11ac_re
 
 TOOLS-ACB-SERIES= \
     am/helper_ARxxxx_aircube \
