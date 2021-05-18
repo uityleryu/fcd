@@ -34,6 +34,10 @@ IMAGE-UVC-AI360= \
     images/a5a0* \
     uvc-fw/ai360.*
 
+IMAGE-UVC-AIBULLET= \
+    images/a5a2* \
+    uvc-fw/aibullet.*
+
 IMAGE-UVC-G3MINI= \
     images/a590* \
     uvc-fw/g3ins.*
@@ -50,6 +54,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G4BULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOME)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPRO)
 IMAGE-UVC+=$(IMAGE-UVC-AI360)
+IMAGE-UVC+=$(IMAGE-UVC-AIBULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
 IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 
@@ -122,6 +127,10 @@ TOOLS-UVC-AI360+= \
     uvc/helper_uvcai360 \
     uvc/128k_ff.bin
 
+TOOLS-UVC-AIBULLET+=$(TOOLS-UVC)
+TOOLS-UVC-AIBULLET+= \
+    uvc/128k_ff.bin
+
 TOOLS-UVC-G3MINI+=$(TOOLS-UVC)
 TOOLS-UVC-G3MINI+= \
     uvc/helper_uvcg3flexmini \
@@ -146,6 +155,7 @@ $(eval $(call ProductImage,UVC-G4BULLET,FCD_$(PRD)_G4BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLPRO,FCD_$(PRD)_G4DOORBELLPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-AI360,FCD_$(PRD)_AI360_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-AIBULLET,FCD_$(PRD)_AIBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 
@@ -159,6 +169,7 @@ $(eval $(call ProductCompress,UVC-G4BULLET,FCD_$(PRD)_G4BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOME,FCD_$(PRD)_G4DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPRO,FCD_$(PRD)_G4DOORBELLPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-AI360,FCD_$(PRD)_AI360_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-AIBULLET,FCD_$(PRD)_AIBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 
