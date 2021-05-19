@@ -52,7 +52,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "0x50000000",
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "n/a",
+            'a654': "0x50000000",
             'a655': "n/a"
         }
         
@@ -61,7 +61,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "n/a",
+            'a654': "UBNT-BZ.ca-spf11.3-default-a654#",
             'a655': "n/a"
         }
 
@@ -77,7 +77,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a652" or \
            self.board_id == "a653" or \
-           self.board_id == "a654" or \
            self.board_id == "a655":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
