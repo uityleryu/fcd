@@ -27,9 +27,10 @@ import configparser
 PROVISION_EN  = True
 DOHELPER_EN   = True
 REGISTER_EN   = True
-FWUPDATE_EN   = True
-DATAVERIFY_EN = True
-
+# FWUPDATE_EN   = True
+# DATAVERIFY_EN = True
+FWUPDATE_EN   = False
+DATAVERIFY_EN = False
 
 class UVCFactoryGeneral(ScriptBase):
     def __init__(self):
@@ -89,12 +90,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.flash_module = "m25p80_uvcg4doorbellpro.ko"
             self.helperexe = "helper_uvcg4doorbellpro"
 
-        elif self.product_name == "UVC-AI360":
-            self.board_name = "UVC AI 360"
-            self.devregpart = "/dev/mtd0"
-            self.ip = "192.168.1.20"
-            self.flash_module = ""
-            self.helperexe = "helper_uvcai360"
+        # elif self.product_name == "UVC-AI360":
+        #     self.board_name = "UVC AI 360"
+        #     self.devregpart = "/dev/mtd0"
+        #     self.ip = "192.168.1.20"
+        #     self.flash_module = ""
+        #     self.helperexe = "helper_uvcai360"
 
         elif self.product_name == "UVC-G3MINI":
             self.board_name = "UVC G3 Mini"
@@ -113,6 +114,13 @@ class UVCFactoryGeneral(ScriptBase):
             self.ip = "192.168.1.20"
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
+
+        elif self.product_name == "UVC-AI360":
+            self.board_name = "UVC AI 360"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
 
         ''' '''
         self.fillff = "128k_ff.bin"
