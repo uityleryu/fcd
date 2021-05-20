@@ -7,11 +7,11 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 
-BOOT_BSP_IMAGE    = True
-PROVISION_ENABLE  = True
-DOHELPER_ENABLE   = True
-REGISTER_ENABLE   = True
-FWUPDATE_ENABLE   = True
+BOOT_BSP_IMAGE    = True 
+PROVISION_ENABLE  = True 
+DOHELPER_ENABLE   = True 
+REGISTER_ENABLE   = True 
+FWUPDATE_ENABLE   = True 
 DATAVERIFY_ENABLE = True
 
 
@@ -24,9 +24,8 @@ class UDMMT7622BspFactory(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.fw_img = os.path.join(self.fwdir, self.board_id + "-fw.bin")
-        self.fw_uboot = os.path.join(self.fwdir, self.board_id + "-fw.uboot")
-        self.fw_recovery = os.path.join(self.fwdir, self.board_id + "-recovery")
-
+        self.fw_uboot = os.path.join(self.image, self.board_id + "-fw.uboot")
+        self.fw_recovery = os.path.join(self.image, self.board_id + "-recovery")
         self.devregpart = "/dev/mtdblock6"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "MT7622"
@@ -52,7 +51,6 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def enter_uboot(self, timeout=60):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
-
         log_debug("Setting network in uboot ...")
         self.set_ub_net(premac="00:11:22:33:44:5" + str(self.row_id))
         self.is_network_alive_in_uboot()
@@ -66,13 +64,10 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def boot_bsp_image(self):
         self.enter_uboot()
-
         # Update uboot
         self.update_uboot(self.fcd_uboot)
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
         self.enter_uboot()
-
         # Update kernel
         log_debug("Updating FCD image ...")
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "tftpb {}".format(self.fcd_img), "Bytes transferred")
@@ -86,37 +81,36 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def fwupdate(self):
         self.enter_uboot()
-
         # Update uboot
         self.update_uboot(self.fw_uboot)
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
         self.enter_uboot()
-
         log_debug("Updating FW image ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory client={} nc_transfer'".\
+                               format(self.dutip))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootargsemmcdual0")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mmc init")
 
         # copy recovery image to tftp server
         self.copy_file(
-            source=self.fw_recovery,
+            source=os.path.join(self.fwdir, self.board_id + "-recovery"),
             dest=os.path.join(self.tftpdir, "uImage")  # fixed name
-        )
-
-        # copy fw image to tftp server
-        self.copy_file(
-            source=self.fw_img,
-            dest=os.path.join(self.tftpdir, "fw-image.bin")  # fixed name
         )
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
-        self.pexp.expect_only(300, "Upgrading firmware")
-
-    def login(self):
-        self.pexp.expect_only(180, "Welcome to UniFi")
+        self.pexp.expect_only(120, "enter factory install mode")
+        log_debug(msg="Enter factory install mode ...")
+        self.pexp.expect_only(120, "Wait for nc client")
+        log_debug(msg="nc ready ...")
+        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, self.fw_img)
+        [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
+        if (int(rtc) > 0):
+            error_critical("cmd: \"{}\" fails, return value: {}".format(nc_cmd, rtc))
+        log_debug(msg="Upgrading FW ...")
+        self.pexp.expect_only(120, "Reboot system safely")
+        log_debug(msg="FW update done ...")
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -130,7 +124,7 @@ class UDMMT7622BspFactory(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
-        # Connect into DU and set pexpect helper for class using picocom
+        # Connect into DUT and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
@@ -157,18 +151,18 @@ class UDMMT7622BspFactory(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
-
         if FWUPDATE_ENABLE is True:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
             self.fwupdate()
-            msg(70, "Upgrading FW ...")
+            msg(70, "Rebooting ...")
 
         if DATAVERIFY_ENABLE is True:
-            self.login()
+            self.login(timeout=600, log_level_emerg=True)
+            time.sleep(5)
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        self.set_ntptime_to_dut()
+        self.set_ntptime_to_dut(rtc_tool="busybox hwclock")
         msg(95, "Set NTP time to DUT ...")
 
         msg(100, "Completed FCD process ...")

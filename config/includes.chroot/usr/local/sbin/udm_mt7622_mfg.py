@@ -25,8 +25,8 @@ class UDMMT7622MFG(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.mfg_uboot_cal = os.path.join(self.fwdir, self.board_id + "-mfg.bin")
-        self.mfg_img = os.path.join(self.fwdir, self.board_id + "-fcd.bin")
+        self.mfg_uboot_cal = os.path.join(self.image, self.board_id + "-mfg.bin")
+        self.mfg_img = os.path.join(self.image, self.board_id + "-fcd.bin")
 
         self.bootloader_prompt = "MT7622"
         self.linux_prompt = "#"

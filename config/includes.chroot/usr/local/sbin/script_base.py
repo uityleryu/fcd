@@ -1060,15 +1060,15 @@ class ScriptBase(object):
         if retry == 0:
             error_critical("Failed to receive {} from DUT".format(file))
 
-    def set_ntptime_to_dut(self, timeout=10):
+    def set_ntptime_to_dut(self, rtc_tool="hwclock", timeout=10):
         [ntp_strf, ntp_ctime] = Common.RequestTimefromNtp("0.cn.pool.ntp.org")
         if ntp_strf is False or ntp_ctime is False:
             error_critical("Timeout waiting for NTP packet")
 
-        cmd = "date -s \"{}\"; hwclock -w".format(ntp_strf)
+        cmd = "date -s \"{}\"; {} -w".format(ntp_strf, rtc_tool)
         self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd)
 
-        output = self.pexp.expect_get_output("hwclock", self.linux_prompt)
+        output = self.pexp.expect_get_output(rtc_tool, self.linux_prompt)
 
         match = re.findall(ntp_ctime, output, re.S)
 
