@@ -1,6 +1,7 @@
 {
   "airMAX": {
     "LBE-5AC": {
+      "INDEX": "0",
       "NAME": "LBE-5AC",
       "BOARDID": "e7f9",
       "BOMREV": "113-00497",
@@ -9,7 +10,52 @@
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "WA.v8.7.4.45112.210415.1103.bin",
+            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7f9-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7f9.bin",
+          "../am-fw/WA.v8.7.4.45112.210415.1103.bin"
+        ],
+        [
+          "tftp/images/e7f9-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img"
+        ],
+        [
+          "tftp/images/e7f9-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }

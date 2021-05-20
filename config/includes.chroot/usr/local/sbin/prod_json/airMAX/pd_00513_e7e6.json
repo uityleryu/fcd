@@ -1,15 +1,61 @@
 {
   "airMAX": {
     "PS-5AC-US": {
-      "NAME"        : "PS-5AC-US",
-      "BOARDID"     : "e7e6",
-      "BOMREV"      : "113-00513",
-      "DESC"        : "Prisam Base Station 5AC (US)",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "PS-5AC-US",
+      "BOARDID": "e7e6",
+      "BOMREV": "113-00513",
+      "DESC": "Prisam Base Station 5AC (US)",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "QCA955X_ART_UB.bin",
+            "UBNT_XC.bin",
+            "XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img",
+            "QCA955X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7e6-art-uboot.bin",
+          "../am-fw/QCA955X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7e6.bin",
+          "../am-fw/UBNT_XC.bin"
+        ],
+        [
+          "tftp/images/e7e6-mfg.bin",
+          "../am-fw/XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img"
+        ],
+        [
+          "tftp/images/e7e6-uboot.bin",
+          "../am-fw/QCA955X_UB.bin"
+        ]
+      ]
     }
   }
 }

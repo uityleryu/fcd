@@ -1,15 +1,67 @@
 {
   "airMAX": {
     "RP-5AC-US": {
-      "NAME"        : "RP-5AC-US",
-      "BOARDID"     : "e7e7",
-      "BOMREV"      : "113-00526",
-      "DESC"        : "Rocket Prism 5AC US",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "RP-5AC-US",
+      "BOARDID": "e7e7",
+      "BOMREV": "113-00526",
+      "DESC": "Rocket Prism 5AC US",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "QCA955X_ART_UB.bin",
+            "UBNT_XC.bin",
+            "XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img",
+            "QCA955X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/am",
+          "DST_PATH": "tools/am",
+          "FILES": [
+            "helper_ARxxxx_11ac_20210329",
+            "cfg_part_ac_series.bin",
+            "id_rsa",
+            "id_rsa.pub",
+            "fl_lock_11ac_re"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7e7-art-uboot.bin",
+          "../am-fw/QCA955X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7e7.bin",
+          "../am-fw/UBNT_XC.bin"
+        ],
+        [
+          "tftp/images/e7e7-mfg.bin",
+          "../am-fw/XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img"
+        ],
+        [
+          "tftp/images/e7e7-uboot.bin",
+          "../am-fw/QCA955X_UB.bin"
+        ]
+      ]
     }
   }
 }

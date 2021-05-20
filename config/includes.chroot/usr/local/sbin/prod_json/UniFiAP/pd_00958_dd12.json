@@ -10,7 +10,57 @@
       "T1FILE": "uap_ls104x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "UBBXG.v0.9.20.d25106ef.210420.0730.bin",
+            "UBB_XG_SR3_V027_FULL_NOR_IMAGE.bin",
+            "af60-xg_ls1046_2g_nand_v9.bin",
+            "af60-xg_ls1046_2g_nor_v9.bin",
+            "NAND_factory_ubi.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dd12.bin",
+          "../uap-fw/UBBXG.v0.9.20.d25106ef.210420.0730.bin"
+        ],
+        [
+          "tftp/images/dd12-boot.bin",
+          "../uap-fw/UBB_XG_SR3_V027_FULL_NOR_IMAGE.bin"
+        ],
+        [
+          "tftp/images/dd12-mfg-nand.bin",
+          "../uap-fw/af60-xg_ls1046_2g_nand_v9.bin"
+        ],
+        [
+          "tftp/images/dd12-mfg-nor.bin",
+          "../uap-fw/af60-xg_ls1046_2g_nor_v9.bin"
+        ],
+        [
+          "tftp/images/dd12-nand.bin",
+          "../uap-fw/NAND_factory_ubi.img"
+        ]
+      ]
     }
   }
 }

@@ -10,7 +10,37 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0006",
-      "SW_ID": "0801"
+      "SW_ID": "0801",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unas",
+          "DST_PATH": "unas",
+          "FILES": [
+            "unifinvr-hd-fw.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea30-fw.bin",
+          "../unas/unifinvr-hd-fw.bin"
+        ]
+      ]
     }
   }
 }

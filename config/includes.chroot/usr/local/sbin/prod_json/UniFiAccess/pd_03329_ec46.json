@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0012",
-      "SW_ID": "1d01"
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw",
+          "DST_PATH": "ua-fw",
+          "FILES": [
+            "GT.mt7621.v4.0.11.363.gf7b428d.210121.1453-uboot.bin",
+            "ua-gate-nor-v2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec46-fw.bin",
+          "../ua-fw/GT.mt7621.v4.0.11.363.gf7b428d.210121.1453-uboot.bin"
+        ],
+        [
+          "tftp/images/ec46-t1.bin",
+          "../ua-fw/ua-gate-nor-v2.bin"
+        ]
+      ]
     }
   }
 }

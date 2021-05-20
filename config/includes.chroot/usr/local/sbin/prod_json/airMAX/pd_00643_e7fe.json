@@ -1,15 +1,61 @@
 {
   "airMAX": {
     "LBE-5AC-LR": {
-      "NAME"        : "LBE-5AC-LR",
-      "BOARDID"     : "e7fe",
-      "BOMREV"      : "113-00643",
-      "DESC"        : "LiteBeam 5AC LR",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "LBE-5AC-LR",
+      "BOARDID": "e7fe",
+      "BOMREV": "113-00643",
+      "DESC": "LiteBeam 5AC LR",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "UBNT_WA.bin",
+            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7fe-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7fe.bin",
+          "../am-fw/UBNT_WA.bin"
+        ],
+        [
+          "tftp/images/e7fe-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img"
+        ],
+        [
+          "tftp/images/e7fe-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }

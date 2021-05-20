@@ -102,8 +102,6 @@ image-antman-install-$1:
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
 	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
 	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
-	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
-	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
 ifndef MATCH_SINGLE
 	python3 include/gen_pd_series.py -pl=$(PRD) -sr="$(PRODUCT-$1)" -psr=$1
 	python3 include/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -tp="buildseries"

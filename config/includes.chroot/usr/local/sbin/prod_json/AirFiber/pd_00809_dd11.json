@@ -10,7 +10,57 @@
       "T1FILE": "af_ls104x_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000a",
-      "SW_ID": "1001"
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "AF60.v0.17.0-beta4.cdf54f2e.210325.1659.bin",
+            "AF60_XG_SR5_V027_FULL_NOR_IMAGE.bin",
+            "af60-xg_ls1046_2g_nand_v9.bin",
+            "af60-xg_ls1046_2g_nor_v9.bin",
+            "NAND_factory_ubi.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dd11.bin",
+          "../af-fw/AF60.v0.17.0-beta4.cdf54f2e.210325.1659.bin"
+        ],
+        [
+          "tftp/images/dd11-boot.bin",
+          "../af-fw/AF60_XG_SR5_V027_FULL_NOR_IMAGE.bin"
+        ],
+        [
+          "tftp/images/dd11-mfg-nand.bin",
+          "../af-fw/af60-xg_ls1046_2g_nand_v9.bin"
+        ],
+        [
+          "tftp/images/dd11-mfg-nor.bin",
+          "../af-fw/af60-xg_ls1046_2g_nor_v9.bin"
+        ],
+        [
+          "tftp/images/dd11-nand.bin",
+          "../af-fw/NAND_factory_ubi.img"
+        ]
+      ]
     }
   }
 }

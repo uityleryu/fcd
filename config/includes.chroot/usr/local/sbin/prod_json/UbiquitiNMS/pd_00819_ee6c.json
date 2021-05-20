@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "UISPO.mt7621.v0.0.3+ubnt.3384.7e05c2a.201207.1657.bin",
+            "UISPO.mt7621.recovery.v0.0.3+ubnt.3384.7e05c2a.201207.1714.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee6c-fw.bin",
+          "../unms-fw/UISPO.mt7621.v0.0.3+ubnt.3384.7e05c2a.201207.1657.bin"
+        ],
+        [
+          "tftp/images/ee6c-recovery.bin",
+          "../unms-fw/UISPO.mt7621.recovery.v0.0.3+ubnt.3384.7e05c2a.201207.1714.bin"
+        ]
+      ]
     }
   }
 }

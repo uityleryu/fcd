@@ -328,7 +328,7 @@ IMAGE-00643-e7fe+= \
 IMAGE-00962-e7ff=$(IMAGE-AR9342-AC-SERIES)
 IMAGE-00962-e7ff+= \
     images/e7ff* \
-    am-fw/WA.v8.7.5-alpha.45137.210419.1121.bin \
+    am-fw/WA.v8.7.5-alpha2.45300.210507.1454.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
     am-fw/UBNT_WA.bin
 

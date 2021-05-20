@@ -1,6 +1,7 @@
 {
   "airMAX": {
     "IS-5AC": {
+      "INDEX": "0",
       "NAME": "IS-5AC",
       "BOARDID": "e7f7",
       "BOMREV": "113-00485",
@@ -9,7 +10,52 @@
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1202"
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "UBNT_WA.bin",
+            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7f7-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7f7.bin",
+          "../am-fw/UBNT_WA.bin"
+        ],
+        [
+          "tftp/images/e7f7-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img"
+        ],
+        [
+          "tftp/images/e7f7-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }

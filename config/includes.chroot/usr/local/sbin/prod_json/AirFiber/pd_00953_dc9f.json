@@ -10,7 +10,47 @@
       "T1FILE": "af_ipq40xx_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000a",
-      "SW_ID": "1001"
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "GMP.v3.0.0-alpha.44886.210310.1441.bin",
+            "u-boot-ipq40xx.bin.rom",
+            "af60-spf6.1.1_nor-v1.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dc9f.bin",
+          "../af-fw/GMP.v3.0.0-alpha.44886.210310.1441.bin"
+        ],
+        [
+          "tftp/images/dc9f-bootloader.bin",
+          "../af-fw/u-boot-ipq40xx.bin.rom"
+        ],
+        [
+          "tftp/images/dc9f-mfg.bin",
+          "../af-fw/af60-spf6.1.1_nor-v1.bin"
+        ]
+      ]
     }
   }
 }

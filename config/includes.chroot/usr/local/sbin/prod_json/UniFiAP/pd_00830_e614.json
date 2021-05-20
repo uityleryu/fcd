@@ -10,7 +10,52 @@
       "T1FILE": "uap_qca956x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "ULTE-Flex.qca956x.v0.0.6.0-ge36e6b5-recovery.bin",
+            "XD.qca956x-LSDK-ART-ULTE-FLEX-V4.img",
+            "ULTE-Flex-recovery-0.0.6.bin",
+            "qca956x-ulte-flex-u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e614.bin",
+          "../uap-fw/ULTE-Flex.qca956x.v0.0.6.0-ge36e6b5-recovery.bin"
+        ],
+        [
+          "tftp/images/e614-mfg.bin",
+          "../uap-fw/XD.qca956x-LSDK-ART-ULTE-FLEX-V4.img"
+        ],
+        [
+          "tftp/images/e614-recovery.bin",
+          "../uap-fw/ULTE-Flex-recovery-0.0.6.bin"
+        ],
+        [
+          "tftp/images/e614-uboot.bin",
+          "../uap-fw/qca956x-ulte-flex-u-boot.bin"
+        ]
+      ]
     }
   }
 }

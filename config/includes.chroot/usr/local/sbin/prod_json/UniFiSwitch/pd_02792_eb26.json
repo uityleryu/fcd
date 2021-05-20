@@ -10,7 +10,42 @@
       "T1FILE": "us_bcm5616_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
-      "SW_ID": "0201"
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-xg48poe-fw.bin",
+            "unifiswitch-xg48poe-mfg.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/eb26.bin",
+          "../usw-fw/unifiswitch-xg48poe-fw.bin"
+        ],
+        [
+          "tftp/images/eb26-mfg.bin",
+          "../usw-fw/unifiswitch-xg48poe-mfg.bin"
+        ]
+      ]
     }
   }
 }

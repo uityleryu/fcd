@@ -8,6 +8,7 @@ import shutil
 import json
 import time
 import subprocess
+import glob
 
 
 class UIpopen(object):
@@ -73,6 +74,15 @@ register_libs = [
     "blacklist"
 ]
 
+# Ex: this is common tools for every project
+common_tools = [
+    "common",
+    "common/sshd_config",
+    "common/tmux.conf",
+    "common/x86-64k-ee",
+    "common/aarch64-rpi4-64k-ee"
+]
+
 pjson = ""
 fcdname = ""
 series_type = False
@@ -83,6 +93,7 @@ curdir = os.getcwd()
 ostrich_bs_dir = os.path.join(curdir, "output/ostrich")
 reg_bs_dir = os.path.join(curdir, "config/includes.chroot/usr/local/sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
+ftp_server_url = "http://10.2.0.33:8088"
 
 print("Current DIR: " + curdir)
 print("register base DIR: " + reg_bs_dir)
@@ -117,6 +128,75 @@ if args.prodname is None:
 else:
     pn = args.prodname
     print("Product Name: " + pn)
+
+
+def download_images():
+    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp
+    ostrich_tftp_dir = os.path.join(ostrich_bs_dir, "tftp")
+    if os.path.isdir(ostrich_tftp_dir) is False:
+        os.makedirs(ostrich_tftp_dir)
+
+    download_wget_list = []
+    for im in pjson[pl].keys():
+        rmsg = "**** WGET FTP files for Model: {} ****".format(im)
+        print(rmsg)
+
+        if "DOWNLOAD_FILE" in pjson[pl][im].keys():
+            download_list = pjson[pl][im]["DOWNLOAD_FILE"]
+            for item in download_list:
+                # Ex: http://10.2.0.33:8088/fcd-image/am-fw
+                url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
+                # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                local_dir = os.path.join(ostrich_tftp_dir, item["DST_PATH"])
+                if os.path.isdir(local_dir) is False:
+                    os.makedirs(local_dir)
+
+                for i in item["FILES"]:
+                    # Ex: http://10.2.0.33:8088/fcd-image/am-fw/u-boot-art-qca955x.bin
+                    src_file_path = os.path.join(url_dir, i)
+                    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                    cmd = "wget -P {} {} 2> download_error.txt".format(local_dir, src_file_path)
+                    if cmd not in download_wget_list:
+                        download_wget_list.append(cmd)
+        else:
+            print("Can't find the DOWNLOAD_FILE the projects")
+
+    print(download_wget_list)
+    for wgetcmd in download_wget_list:
+        print("WGET: " + wgetcmd)
+        cn.xcmd(wgetcmd)
+        # cmd = "chmod 777 {}".format(dst_file_path)
+        # cn.xcmd(wgetcmd)
+
+    for im in pjson[pl].keys():
+        if "CREATE_LINK" in pjson[pl][im].keys():
+            symoblic_list = pjson[pl][im]["CREATE_LINK"]
+            for item in symoblic_list:
+                # Ex: ../am-fw/u-boot-art-qca955x.bin
+                src_path = item[1]
+                # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/images/e7e7-art-uboot.bin
+                dst_path = os.path.join(ostrich_bs_dir, item[0])
+                dst_dir = os.path.dirname(dst_path)
+                if os.path.isdir(dst_dir) is False:
+                    os.makedirs(dst_dir)
+
+                if os.path.islink(dst_path) is False:
+                    cmd = "ln -s {} {}".format(src_path, dst_path)
+                    cn.xcmd(cmd)
+
+    tools_dir = os.path.join(ostrich_tftp_dir, "tools")
+    tools_all = []
+    for dh in glob.glob(tools_dir + "/*"):
+        tools_all.append(os.path.basename(dh))
+
+    tg = " ".join(tools_all)
+    cmd = "cd {}; tar -cvzf tools.tar {}; chmod 777 tools.tar".format(tools_dir, tg)
+    print("TAR cmd: " + cmd)
+    cn.xcmd(cmd)
+    for i in tools_all:
+        i_path = os.path.join(tools_dir, i)
+        if os.path.isdir(i_path) is True:
+            shutil.rmtree(i_path)
 
 
 def gen_prod_json():
@@ -296,6 +376,7 @@ def create_fcd_tgz():
 def main():
     gen_prod_json()
     fcd_name_check()
+    download_images()
     copy_required_files()
     create_fcd_tgz()
 

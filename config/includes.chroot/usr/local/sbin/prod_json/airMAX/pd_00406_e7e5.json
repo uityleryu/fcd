@@ -1,15 +1,61 @@
 {
   "airMAX": {
     "R5AC-PTP": {
-      "NAME"        : "R5AC-PTP",
-      "BOARDID"     : "e7e5",
-      "BOMREV"      : "113-00406",
-      "DESC"        : "Rocket Prism 5AC",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "R5AC-PTP",
+      "BOARDID": "e7e5",
+      "BOMREV": "113-00406",
+      "DESC": "Rocket Prism 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "QCA955X_ART_UB.bin",
+            "UBNT_XC.bin",
+            "XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img",
+            "QCA955X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7e5-art-uboot.bin",
+          "../am-fw/QCA955X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7e5.bin",
+          "../am-fw/UBNT_XC.bin"
+        ],
+        [
+          "tftp/images/e7e5-mfg.bin",
+          "../am-fw/XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img"
+        ],
+        [
+          "tftp/images/e7e5-uboot.bin",
+          "../am-fw/QCA955X_UB.bin"
+        ]
+      ]
     }
   }
 }

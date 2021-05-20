@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1201"
+      "SW_ID": "1201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "XC.v8.7.0-devel-cs-AOV-3810.41005.190705.1430.bin",
+            "XC.qca955x.v8.7.0-devel-cs-AOV-3810.41005.190705.1430.u-boot"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dc97.bin",
+          "../am-fw/XC.v8.7.0-devel-cs-AOV-3810.41005.190705.1430.bin"
+        ],
+        [
+          "tftp/images/dc97-bootloader.bin",
+          "../am-fw/XC.qca955x.v8.7.0-devel-cs-AOV-3810.41005.190705.1430.u-boot"
+        ]
+      ]
     }
   }
 }

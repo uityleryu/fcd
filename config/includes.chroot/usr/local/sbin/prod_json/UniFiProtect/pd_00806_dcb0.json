@@ -10,7 +10,37 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000d",
-      "SW_ID": "1604"
+      "SW_ID": "1604",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/up-fw",
+          "DST_PATH": "up-fw",
+          "FILES": [
+            "UP-Radar-spf6.1.1_nor-v1.20210104.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dcb0-bootloader.bin",
+          "../up-fw/UP-Radar-spf6.1.1_nor-v1.20210104.bin"
+        ]
+      ]
     }
   }
 }

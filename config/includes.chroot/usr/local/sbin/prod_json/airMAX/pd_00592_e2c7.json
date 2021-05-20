@@ -1,16 +1,61 @@
 {
   "airMAX": {
     "BULLETAC-IP67": {
-      "NAME"        : "BULLETAC-IP67",
-      "BOARDID"     : "e2c7",
-      "BOMREV"      : "113-00592",
-      "DESC"        : "BulletAC IP67",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "BULLETAC-IP67",
+      "BOARDID": "e2c7",
+      "BOMREV": "113-00592",
+      "DESC": "BulletAC IP67",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "UBNT_WA.bin",
+            "WA.ar934x--LSDK-10.1.389__ubnt-wasp-peregrine-5G-std-16M_V4.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e2c7-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e2c7.bin",
+          "../am-fw/UBNT_WA.bin"
+        ],
+        [
+          "tftp/images/e2c7-mfg.bin",
+          "../am-fw/WA.ar934x--LSDK-10.1.389__ubnt-wasp-peregrine-5G-std-16M_V4.img"
+        ],
+        [
+          "tftp/images/e2c7-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }
-

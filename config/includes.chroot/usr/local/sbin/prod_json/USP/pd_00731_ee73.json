@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000e",
-      "SW_ID": "1801"
+      "SW_ID": "1801",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usp/plug",
+          "DST_PATH": "usp/plug",
+          "FILES": [
+            "USP1.esp8266-RECOVERY.2.1.1.472+210202.1019-unsigned.bin",
+            "USP1.esp8266-0_2.1.1.472+210202.1019-unsigned.bin",
+            "USP1.esp8266-1_2.1.1.472+210202.1019-unsigned.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee73_recovery.bin",
+          "../usp/plug/USP1.esp8266-RECOVERY.2.1.1.472+210202.1019-unsigned.bin"
+        ],
+        [
+          "tftp/images/ee73_user1.bin",
+          "../usp/plug/USP1.esp8266-0_2.1.1.472+210202.1019-unsigned.bin"
+        ],
+        [
+          "tftp/images/ee73_user2.bin",
+          "../usp/plug/USP1.esp8266-1_2.1.1.472+210202.1019-unsigned.bin"
+        ]
+      ]
     }
   }
 }

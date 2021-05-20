@@ -10,7 +10,47 @@
       "T1FILE": "unifi_mt7621_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
-      "SW_ID": "0201"
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-ulsrps-diag.bin",
+            "unifiswitch-ulsrps-fcd.bin",
+            "unifiswitch-ulsrps-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed11-diag.bin",
+          "../usw-fw/unifiswitch-ulsrps-diag.bin"
+        ],
+        [
+          "tftp/images/ed11-fcd.bin",
+          "../usw-fw/unifiswitch-ulsrps-fcd.bin"
+        ],
+        [
+          "tftp/images/ed11-uboot.bin",
+          "../usw-fw/unifiswitch-ulsrps-uboot.bin"
+        ]
+      ]
     }
   }
 }

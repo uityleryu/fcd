@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "UNMS-S-Lite.realtek838x.diag_1.1.2.bix",
+            "UISP-S-Lite.uboot_1.2.3.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/eed0-fw.bin",
+          "../unms-fw/UNMS-S-Lite.realtek838x.diag_1.1.2.bix"
+        ],
+        [
+          "tftp/images/eed0-uboot.img",
+          "../unms-fw/UISP-S-Lite.uboot_1.2.3.bin"
+        ]
+      ]
     }
   }
 }

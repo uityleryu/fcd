@@ -10,7 +10,57 @@
       "T1FILE": "unifi_mt7621_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
-      "SW_ID": "0701"
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw",
+          "DST_PATH": "udm-fw",
+          "FILES": [
+            "udm-b-fw.bin",
+            "udm-b-fcd.bin",
+            "udm-b-mfg.kernel",
+            "udm-b-mfg.uboot",
+            "unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec25.bin",
+          "../udm-fw/udm-b-fw.bin"
+        ],
+        [
+          "tftp/images/ec25-fcd.bin",
+          "../udm-fw/udm-b-fcd.bin"
+        ],
+        [
+          "tftp/images/ec25-mfg.kernel",
+          "../udm-fw/udm-b-mfg.kernel"
+        ],
+        [
+          "tftp/images/ec25-mfg.uboot",
+          "../udm-fw/udm-b-mfg.uboot"
+        ],
+        [
+          "tftp/images/ec25-uboot.bin",
+          "../udm-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin"
+        ]
+      ]
     }
   }
 }

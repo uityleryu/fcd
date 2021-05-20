@@ -1,15 +1,61 @@
 {
   "airMAX": {
     "LAP-120": {
-      "NAME"        : "LAP-120",
-      "BOARDID"     : "e8e5",
-      "BOMREV"      : "113-00402",
-      "DESC"        : "LiteAP AC",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "LAP-120",
+      "BOARDID": "e8e5",
+      "BOMREV": "113-00402",
+      "DESC": "LiteAP AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "UBNT_WA.bin",
+            "LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e8e5-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e8e5.bin",
+          "../am-fw/UBNT_WA.bin"
+        ],
+        [
+          "tftp/images/e8e5-mfg.bin",
+          "../am-fw/LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.img"
+        ],
+        [
+          "tftp/images/e8e5-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }

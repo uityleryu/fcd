@@ -1,15 +1,61 @@
 {
   "airMAX": {
     "PBE-5AC-620-US": {
-      "NAME"        : "PBE-5AC-620-US",
-      "BOARDID"     : "e5f5",
-      "BOMREV"      : "113-00421",
-      "DESC"        : "PowerBeam 5AC 620 US",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "PBE-5AC-620-US",
+      "BOARDID": "e5f5",
+      "BOMREV": "113-00421",
+      "DESC": "PowerBeam 5AC 620 US",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "QCA955X_ART_UB.bin",
+            "UBNT_XC.bin",
+            "QCA955X_QCA9882_AR8033_V08.img",
+            "QCA955X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e5f5-art-uboot.bin",
+          "../am-fw/QCA955X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e5f5.bin",
+          "../am-fw/UBNT_XC.bin"
+        ],
+        [
+          "tftp/images/e5f5-mfg.bin",
+          "../am-fw/QCA955X_QCA9882_AR8033_V08.img"
+        ],
+        [
+          "tftp/images/e5f5-uboot.bin",
+          "../am-fw/QCA955X_UB.bin"
+        ]
+      ]
     }
   }
 }
