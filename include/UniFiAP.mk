@@ -151,3 +151,19 @@ $(eval $(call ProductCompress,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductCompress,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UAP-AC-Lite-LR-Pro,FCD_$(PRD)_UAP-AC-Lite-LR-Pro_$(VER)_$(FWVER)))
+
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,00390-e537))
+$(eval $(call ProductCompress2,00800-dc9c))
+$(eval $(call ProductCompress2,00958-dd12))
+$(eval $(call ProductCompress2,00391-e517))
+$(eval $(call ProductCompress2,00758-e615))
+$(eval $(call ProductCompress2,00600-ec22))
+$(eval $(call ProductCompress2,00641-ec26))
+$(eval $(call ProductCompress2,00694-dc98))
+$(eval $(call ProductCompress2,00573-ec20))
+$(eval $(call ProductCompress2,00710-ec2a))
+$(eval $(call ProductCompress2,00830-e614))
+$(eval $(call ProductCompress2,00392-e527))

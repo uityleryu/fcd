@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
-      "SW_ID": "0701"
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw",
+          "DST_PATH": "udm-fw",
+          "FILES": [
+            "UDM.mt7622.v1.8.0-pre+ubnt.2718.a4c17ceM.200430.0902.bin",
+            "UDM.lite.uImage.recovery"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec28-fw.bin",
+          "../udm-fw/UDM.mt7622.v1.8.0-pre+ubnt.2718.a4c17ceM.200430.0902.bin"
+        ],
+        [
+          "tftp/images/ec28-recovery",
+          "../udm-fw/UDM.lite.uImage.recovery"
+        ]
+      ]
     }
   }
 }

@@ -328,7 +328,7 @@ IMAGE-00643-e7fe+= \
 IMAGE-00962-e7ff=$(IMAGE-AR9342-AC-SERIES)
 IMAGE-00962-e7ff+= \
     images/e7ff* \
-    am-fw/WA.v8.7.5-alpha.45137.210419.1121.bin \
+    am-fw/WA.v8.7.5-alpha2.45300.210507.1454.bin \
     am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img \
     am-fw/UBNT_WA.bin
 
@@ -557,4 +557,11 @@ $(eval $(call ProductCompress2,00556-e7fc))
 $(eval $(call ProductCompress2,00643-e7fe))
 $(eval $(call ProductCompress2,00962-e7ff))
 $(eval $(call ProductCompress2,00488-e8f8))
+$(eval $(call ProductCompress2,00717-a918))
+$(eval $(call ProductCompress2,00714-dc9a))
+$(eval $(call ProductCompress2,00494-e3d7))
+$(eval $(call ProductCompress2,00825-dca0))
+$(eval $(call ProductCompress2,00697-dc97))
+$(eval $(call ProductCompress2,00709-dc99))
+$(eval $(call ProductCompress2,00406-e7e5))
 $(eval $(call ProductCompress2,AC-SERIES))

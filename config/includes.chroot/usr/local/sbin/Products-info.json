@@ -1969,5 +1969,21 @@
       "FCD_ID"      : "0013",
       "SW_ID"       : "1e01"
     }
+  },
+
+  "UniFiCK":
+  {
+    "UCKP":{
+      "INDEX"       : 0,
+      "NAME"        : "UCKP",
+      "BOARDID"     : "e970",
+      "BOMREV"      : "113-02570",
+      "DESC"        : "UniFi Cloudy Key Plus",
+      "FILE"        : "uck_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0013",
+      "SW_ID"       : "0c01"
+    }
   }
 }

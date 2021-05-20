@@ -10,7 +10,42 @@
       "T1FILE": "uap_qca9563_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin",
+            "BZ.qca956x.v4.3.31.11368.210326.1839-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e537-art.bin",
+          "../uap-fw/ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin"
+        ],
+        [
+          "tftp/images/e537-fw.bin",
+          "../uap-fw/BZ.qca956x.v4.3.31.11368.210326.1839-uboot.bin"
+        ]
+      ]
     }
   }
 }

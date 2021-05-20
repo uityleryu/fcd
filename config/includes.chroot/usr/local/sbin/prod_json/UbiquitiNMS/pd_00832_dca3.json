@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "LL.qca956x.recovery.v0.9.3.e6ac2be.210204.1419.eu.bin",
+            "uisp-lte-initramfs-64MB.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dca3.bin",
+          "../unms-fw/LL.qca956x.recovery.v0.9.3.e6ac2be.210204.1419.eu.bin"
+        ],
+        [
+          "tftp/images/dca3-bootloader.bin",
+          "../unms-fw/uisp-lte-initramfs-64MB.img"
+        ]
+      ]
     }
   }
 }

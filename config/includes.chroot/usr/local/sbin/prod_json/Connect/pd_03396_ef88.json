@@ -10,7 +10,9 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0011",
-      "SW_ID": "1c01"
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
   }
 }

@@ -10,7 +10,42 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix",
+            "u-boot-1.3.0-c174.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee6f-fw.bin",
+          "../unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix"
+        ],
+        [
+          "tftp/images/ee6f-uboot.img",
+          "../unms-fw/u-boot-1.3.0-c174.bin"
+        ]
+      ]
     }
   }
 }

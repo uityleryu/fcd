@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "UISPR.alpinev2.v1.9.0-rc.1+ubnt.3768.bb85fa9.210504.1452.bin",
+            "UISPR.alpinev2.recovery.v1.9.0-rc.1+ubnt.3768.bb85fa9.210504.1502.bin",
+            "ubnt_uispr_alpinev2_rev1_boot_1208.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee6a-fw.bin",
+          "../unms-fw/UISPR.alpinev2.v1.9.0-rc.1+ubnt.3768.bb85fa9.210504.1452.bin"
+        ],
+        [
+          "tftp/images/ee6a-recovery",
+          "../unms-fw/UISPR.alpinev2.recovery.v1.9.0-rc.1+ubnt.3768.bb85fa9.210504.1502.bin"
+        ],
+        [
+          "tftp/images/ee6a_signed_boot.img",
+          "../unms-fw/ubnt_uispr_alpinev2_rev1_boot_1208.img"
+        ]
+      ]
     }
   }
 }

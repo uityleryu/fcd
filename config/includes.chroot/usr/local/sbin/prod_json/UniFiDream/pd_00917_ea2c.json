@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
-      "SW_ID": "0701"
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw",
+          "DST_PATH": "udm-fw",
+          "FILES": [
+            "UDMPROSE.al324.v1.0.15.401da3b.210420.1858.bin",
+            "uImage-udmpro-se.bin",
+            "boot-udmpro-se.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea2c-fw.bin",
+          "../udm-fw/UDMPROSE.al324.v1.0.15.401da3b.210420.1858.bin"
+        ],
+        [
+          "tftp/images/ea2c-recovery",
+          "../udm-fw/uImage-udmpro-se.bin"
+        ],
+        [
+          "tftp/images/ea2c-uboot.bin",
+          "../udm-fw/boot-udmpro-se.bin"
+        ]
+      ]
     }
   }
 }

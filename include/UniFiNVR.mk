@@ -80,3 +80,11 @@ $(eval $(call ProductCompress,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-AI,FCD_$(PRD)_UNVR-AI_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,03137-ea20))
+$(eval $(call ProductCompress2,03192-ea1a))
+$(eval $(call ProductCompress2,02832-ea16))
+$(eval $(call ProductCompress2,03026-ea21))
+$(eval $(call ProductCompress2,03298-ea30))

@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000e",
-      "SW_ID": "1801"
+      "SW_ID": "1801",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usp/strip",
+          "DST_PATH": "usp/strip",
+          "FILES": [
+            "USP6.esp8266-RECOVERY.2.0.12.388+201109.1849-unsigned.bin",
+            "USP6.esp8266-0_2.0.12.388+201109.1849-unsigned.bin",
+            "USP6.esp8266-1_2.0.12.388+201109.1849-unsigned.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee74_recovery.bin",
+          "../usp/strip/USP6.esp8266-RECOVERY.2.0.12.388+201109.1849-unsigned.bin"
+        ],
+        [
+          "tftp/images/ee74_user1.bin",
+          "../usp/strip/USP6.esp8266-0_2.0.12.388+201109.1849-unsigned.bin"
+        ],
+        [
+          "tftp/images/ee74_user2.bin",
+          "../usp/strip/USP6.esp8266-1_2.0.12.388+201109.1849-unsigned.bin"
+        ]
+      ]
     }
   }
 }

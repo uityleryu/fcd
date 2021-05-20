@@ -10,7 +10,37 @@
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0009",
-      "SW_ID": "0e03"
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "uvc.s2lb.v4.13.39.67-debug.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a580-fw.bin",
+          "../uvc-fw/uvc.s2lb.v4.13.39.67-debug.bin"
+        ]
+      ]
     }
   }
 }

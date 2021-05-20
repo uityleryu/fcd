@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "BZ.ipq50xx_ca-spf11.3-default-a654+13228.210426.0648-uboot.bin",
+            "maple-4g-gpt.bin",
+            "a654-initramfs.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a654-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_ca-spf11.3-default-a654+13228.210426.0648-uboot.bin"
+        ],
+        [
+          "tftp/images/a654-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt.bin"
+        ],
+        [
+          "tftp/images/a654-initramfs.bin",
+          "../u6-fw/ipq5018/a654-initramfs.bin"
+        ]
+      ]
     }
   }
 }

@@ -10,7 +10,52 @@
       "T1FILE": "u6_mt7621_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "BZ.mt7621.v5.43.14.12476.201120.0121-uboot.bin",
+            "uap6-fcd.bin",
+            "u6-kernel-mt7603-mt7915a-2x2-nor-v7.bin",
+            "uap6-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a612.bin",
+          "../uap-fw/BZ.mt7621.v5.43.14.12476.201120.0121-uboot.bin"
+        ],
+        [
+          "tftp/images/a612-fcd.bin",
+          "../uap-fw/uap6-fcd.bin"
+        ],
+        [
+          "tftp/images/a612-mfg.kernel.uboot",
+          "../uap-fw/u6-kernel-mt7603-mt7915a-2x2-nor-v7.bin"
+        ],
+        [
+          "tftp/images/a612-uboot.bin",
+          "../uap-fw/uap6-uboot.bin"
+        ]
+      ]
     }
   }
 }

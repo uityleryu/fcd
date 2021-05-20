@@ -74,3 +74,11 @@ $(eval $(call ProductCompress,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,00731-ee73))
+$(eval $(call ProductCompress2,00896-ee74))
+$(eval $(call ProductCompress2,00365-e648))
+$(eval $(call ProductCompress2,03098-ed12))
+$(eval $(call ProductCompress2,00777-ee74))
+$(eval $(call ProductCompress2,00364-e643))

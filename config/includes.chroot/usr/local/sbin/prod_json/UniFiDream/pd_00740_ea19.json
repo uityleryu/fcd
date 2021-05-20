@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
-      "SW_ID": "0701"
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
+          "DST_PATH": "uxg-fw/alpine",
+          "FILES": [
+            "UXG.alpinev2.v0.5.0-2.3238f5d.210203.0317.bin",
+            "uImage.r",
+            "boot-uxg.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea19-fw.bin",
+          "../uxg-fw/alpine/UXG.alpinev2.v0.5.0-2.3238f5d.210203.0317.bin"
+        ],
+        [
+          "tftp/images/ea19-recovery",
+          "../uxg-fw/alpine/uImage.r"
+        ],
+        [
+          "tftp/images/ea19_signed_boot.img",
+          "../uxg-fw/alpine/boot-uxg.img"
+        ]
+      ]
     }
   }
 }

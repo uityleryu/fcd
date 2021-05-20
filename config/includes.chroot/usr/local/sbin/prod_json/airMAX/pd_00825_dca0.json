@@ -10,7 +10,47 @@
       "T1FILE": "am_ipq40xx_mfg.py",
       "QRCHECK": "False",
       "FCD_ID": "000b",
-      "SW_ID": "1201"
+      "SW_ID": "1201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "GBE.v2.0.0-alpha1.f860e7b0.200907.1730.bin",
+            "ubnthd-u-boot.rom",
+            "gigabeam_qca_sparrow-rev01-ilq5.1.cs6_nor-v2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/dca0.bin",
+          "../am-fw/GBE.v2.0.0-alpha1.f860e7b0.200907.1730.bin"
+        ],
+        [
+          "tftp/images/dca0-bootloader.bin",
+          "../am-fw/ubnthd-u-boot.rom"
+        ],
+        [
+          "tftp/images/dca0-mfg.bin",
+          "../am-fw/gigabeam_qca_sparrow-rev01-ilq5.1.cs6_nor-v2.bin"
+        ]
+      ]
     }
   }
 }

@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000f",
-      "SW_ID": "1a01"
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "unms-fw",
+          "FILES": [
+            "UISP-P-Lite.bin",
+            "uisp_p_lite_epx_cfg.bin",
+            "u-boot-ar933x-ep.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/eefa.bin",
+          "../unms-fw/UISP-P-Lite.bin"
+        ],
+        [
+          "tftp/images/eefa_epx_cfg.bin",
+          "../unms-fw/uisp_p_lite_epx_cfg.bin"
+        ],
+        [
+          "tftp/images/eefa-uboot.bin",
+          "../unms-fw/u-boot-ar933x-ep.bin"
+        ]
+      ]
     }
   }
 }

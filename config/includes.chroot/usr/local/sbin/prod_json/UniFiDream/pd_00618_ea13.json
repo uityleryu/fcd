@@ -8,7 +8,49 @@
       "DESC": "UniFi Dream Machine Special",
       "FILE": "udm_alpine_factory.py",
       "T1FILE": "",
-      "QRCHECK": "True"
+      "QRCHECK": "True",
+      "FCD_ID": {},
+      "SW_ID": {},
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw",
+          "DST_PATH": "udm-fw",
+          "FILES": [
+            "UDM.alpinev2.v1.0.30+builder.1762.cfb07db.190916.1318.bin",
+            "uImage-udmse.r",
+            "ubnt_udm_all_rev1_boot.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea13-fw.bin",
+          "../udm-fw/UDM.alpinev2.v1.0.30+builder.1762.cfb07db.190916.1318.bin"
+        ],
+        [
+          "tftp/images/ea13-recovery",
+          "../udm-fw/uImage-udmse.r"
+        ],
+        [
+          "tftp/images/ea13_signed_boot.img",
+          "../udm-fw/ubnt_udm_all_rev1_boot.img"
+        ]
+      ]
     }
   }
 }

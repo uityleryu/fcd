@@ -10,7 +10,42 @@
       "T1FILE": "us_rtl838x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
-      "SW_ID": "0201"
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-24poe-fw.bin",
+            "unifiswitch-24poe-fw.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed21-fw.bin",
+          "../usw-fw/unifiswitch-24poe-fw.bin"
+        ],
+        [
+          "tftp/images/ed21-t1.bin",
+          "../usw-fw/unifiswitch-24poe-fw.bin"
+        ]
+      ]
     }
   }
 }

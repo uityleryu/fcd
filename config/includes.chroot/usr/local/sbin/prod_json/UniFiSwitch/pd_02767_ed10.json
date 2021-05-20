@@ -10,7 +10,47 @@
       "T1FILE": "unifi_mt7621_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
-      "SW_ID": "0201"
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-usflex-diag.bin",
+            "unifiswitch-usflex-fcd.bin",
+            "unifiswitch-mt7621-mfg.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed10-diag.bin",
+          "../usw-fw/unifiswitch-usflex-diag.bin"
+        ],
+        [
+          "tftp/images/ed10-fcd.bin",
+          "../usw-fw/unifiswitch-usflex-fcd.bin"
+        ],
+        [
+          "tftp/images/ed10-mfg.bin",
+          "../usw-fw/unifiswitch-mt7621-mfg.bin"
+        ]
+      ]
     }
   }
 }

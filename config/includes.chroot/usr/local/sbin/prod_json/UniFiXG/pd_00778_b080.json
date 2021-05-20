@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0013",
-      "SW_ID": "1e01"
+      "SW_ID": "1e01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uxg",
+          "DST_PATH": "uxg",
+          "FILES": [
+            "UXG.mt7622.v0.4.0-pre+ubnt.3221.0b9cd65.200928.0549.bin",
+            "uImage",
+            "ubnt_udm-uxg_all_rev1_boot.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/b080-fw.bin",
+          "../uxg/UXG.mt7622.v0.4.0-pre+ubnt.3221.0b9cd65.200928.0549.bin"
+        ],
+        [
+          "tftp/images/b080-recovery",
+          "../uxg/uImage"
+        ],
+        [
+          "tftp/images/b080-uboot.img",
+          "../uxg/ubnt_udm-uxg_all_rev1_boot.img"
+        ]
+      ]
     }
   }
 }

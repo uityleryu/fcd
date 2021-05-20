@@ -10,7 +10,37 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0007",
-      "SW_ID": "0a01"
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvp-fw",
+          "DST_PATH": "uvp-fw",
+          "FILES": [
+            "uvp-flex_9.1.3.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ef0d-fw.bin.unsign",
+          "../uvp-fw/uvp-flex_9.1.3.bin"
+        ]
+      ]
     }
   }
 }

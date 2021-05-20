@@ -10,7 +10,52 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000d",
-      "SW_ID": "1604"
+      "SW_ID": "1604",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/up-fw/up-chime",
+          "DST_PATH": "up-fw/up-chime",
+          "FILES": [
+            "up_chime_fw.bin",
+            "bootloader.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ab12-app.bin",
+          "../up-fw/up-chime/up_chime_fw.bin"
+        ],
+        [
+          "tftp/images/ab12-bootloader.bin",
+          "../up-fw/up-chime/bootloader.bin"
+        ],
+        [
+          "tftp/images/ab12-ota.bin",
+          "../up-fw/up-chime/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ab12-ptn-table.bin",
+          "../up-fw/up-chime/partition-table.bin"
+        ]
+      ]
     }
   }
 }

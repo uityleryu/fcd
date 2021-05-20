@@ -32,3 +32,8 @@ $(eval $(call ProductImage,SERVER,FCD_$(PRD)_SERVER_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,SERVER,FCD_$(PRD)_SERVER_$(VER)_$(FWVER)))
+
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,00732-1200))

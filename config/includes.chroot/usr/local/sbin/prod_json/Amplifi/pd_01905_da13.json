@@ -8,7 +8,64 @@
       "DESC": "Amplifi ALien Router EU",
       "FILE": "afi_ipq807x_factory.py",
       "T1FILE": "afi_ipq807x_mfg.py",
-      "QRCHECK": "False"
+      "QRCHECK": "False",
+      "FCD_ID": {},
+      "SW_ID": {},
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/afi-fw",
+          "DST_PATH": "afi-fw",
+          "FILES": [
+            "afi-3.4.4-0-g0272830086-uboot.bin",
+            "devcfg.mbn",
+            "fake_eeprom_aln_r_EU.bin",
+            "afi-3.4.4-0-g0272830086-ipq807x-afi-aln-r-factory.img",
+            "afi-aln-spf.10.0_nor-hw2-eu-v2.img",
+            "tz.mbn"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/da13-bootloader.bin",
+          "../afi-fw/afi-3.4.4-0-g0272830086-uboot.bin"
+        ],
+        [
+          "tftp/images/da13-devcfg.mbn",
+          "../afi-fw/devcfg.mbn"
+        ],
+        [
+          "tftp/images/da13-eeprom.bin",
+          "../afi-fw/fake_eeprom_aln_r_EU.bin"
+        ],
+        [
+          "tftp/images/da13-fw.img",
+          "../afi-fw/afi-3.4.4-0-g0272830086-ipq807x-afi-aln-r-factory.img"
+        ],
+        [
+          "tftp/images/da13-mfg.img",
+          "../afi-fw/afi-aln-spf.10.0_nor-hw2-eu-v2.img"
+        ],
+        [
+          "tftp/images/da13-tz.mbn",
+          "../afi-fw/tz.mbn"
+        ]
+      ]
     }
   }
 }

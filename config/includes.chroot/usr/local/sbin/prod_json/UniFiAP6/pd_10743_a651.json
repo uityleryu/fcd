@@ -10,7 +10,57 @@
       "T1FILE": "u6_ipq5018_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_1gb-v13.img",
+            "BZ.ipq50xx_5.55.10+13192.210401.1448-uboot.bin",
+            "maple-4g-gpt.bin",
+            "lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_mesh.bin",
+            "u6-pro_1gb-v13_nor.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a651-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_1gb-v13.img"
+        ],
+        [
+          "tftp/images/a651-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.55.10+13192.210401.1448-uboot.bin"
+        ],
+        [
+          "tftp/images/a651-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt.bin"
+        ],
+        [
+          "tftp/images/a651-initramfs.bin",
+          "../u6-fw/ipq5018/lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_mesh.bin"
+        ],
+        [
+          "tftp/images/a651-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_1gb-v13_nor.bin"
+        ]
+      ]
     }
   }
 }

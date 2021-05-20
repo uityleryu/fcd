@@ -10,7 +10,57 @@
       "T1FILE": "unifi_mt7621_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "uap-flexhd-fw.bin",
+            "uap-nanohd-fcd.bin",
+            "unifiap-mt7621-mfg.kernel",
+            "unifiap-mt7621-mfg.uboot",
+            "unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec26.bin",
+          "../uap-fw/uap-flexhd-fw.bin"
+        ],
+        [
+          "tftp/images/ec26-fcd.bin",
+          "../uap-fw/uap-nanohd-fcd.bin"
+        ],
+        [
+          "tftp/images/ec26-mfg.kernel",
+          "../uap-fw/unifiap-mt7621-mfg.kernel"
+        ],
+        [
+          "tftp/images/ec26-mfg.uboot",
+          "../uap-fw/unifiap-mt7621-mfg.uboot"
+        ],
+        [
+          "tftp/images/ec26-uboot.bin",
+          "../uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin"
+        ]
+      ]
     }
   }
 }

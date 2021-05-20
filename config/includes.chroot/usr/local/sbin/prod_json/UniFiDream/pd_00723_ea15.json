@@ -10,7 +10,47 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
-      "SW_ID": "0701"
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw",
+          "DST_PATH": "udm-fw",
+          "FILES": [
+            "UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin",
+            "uImage-udm-udmp.r",
+            "ubnt_udm_all_rev1_boot.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea15-fw.bin",
+          "../udm-fw/UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin"
+        ],
+        [
+          "tftp/images/ea15-recovery",
+          "../udm-fw/uImage-udm-udmp.r"
+        ],
+        [
+          "tftp/images/ea15_signed_boot.img",
+          "../udm-fw/ubnt_udm_all_rev1_boot.img"
+        ]
+      ]
     }
   }
 }

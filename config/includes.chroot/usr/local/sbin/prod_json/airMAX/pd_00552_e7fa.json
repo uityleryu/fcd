@@ -1,15 +1,72 @@
 {
   "airMAX": {
     "LOCO5AC": {
-      "NAME"        : "LOCO5AC",
-      "BOARDID"     : "e7fa",
-      "BOMREV"      : "113-00552",
-      "DESC"        : "Loco5AC",
-      "FILE"        : "am_ar9342_factory.py",
-      "T1FILE"      : "am_ar9342_mfg.py",
-      "QRCHECK"     : "False",
-      "FCD_ID"      : "000b",
-      "SW_ID"       : "1202"
+      "INDEX": "0",
+      "NAME": "LOCO5AC",
+      "BOARDID": "e7fa",
+      "BOMREV": "113-00552",
+      "DESC": "Loco5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR934X_ART_UB.bin",
+            "WA.v8.7.4.45112.210415.1103.bin",
+            "openwrt-ath79-lbe-5ac-xr-initramfs-kernel-v2.bin",
+            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img",
+            "AR934X_UB.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/am",
+          "DST_PATH": "tools/am",
+          "FILES": [
+            "helper_ARxxxx_11ac_20210329",
+            "cfg_part_ac_series.bin",
+            "id_rsa",
+            "id_rsa.pub",
+            "fl_lock_11ac_re"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e7fa-art-uboot.bin",
+          "../am-fw/AR934X_ART_UB.bin"
+        ],
+        [
+          "tftp/images/e7fa.bin",
+          "../am-fw/WA.v8.7.4.45112.210415.1103.bin"
+        ],
+        [
+          "tftp/images/e7fa-bsp.bin",
+          "../am-fw/openwrt-ath79-lbe-5ac-xr-initramfs-kernel-v2.bin"
+        ],
+        [
+          "tftp/images/e7fa-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V3.img"
+        ],
+        [
+          "tftp/images/e7fa-uboot.bin",
+          "../am-fw/AR934X_UB.bin"
+        ]
+      ]
     }
   }
 }
