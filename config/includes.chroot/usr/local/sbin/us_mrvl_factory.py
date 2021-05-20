@@ -200,7 +200,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "go $ubntaddr uwrite -f")
 
         self.pexp.expect_only(30, "Firmware Version:")
-        self.pexp.expect_only(60, "Signature Verfied, Success.")
+        self.pexp.expect_only(90, "Signature Verfied, Success.")
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Copying to 'kernel0' partition")
@@ -243,11 +243,9 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
                     log_error('Login failed, retry {}'.format(login_retry_cnt))
             else:
                 error_critical('Login failed after {} retries'.format(login_retry_cnt))
-
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
     def SetNetEnv(self):
-        self.pexp.expect_lnxcmd(15, self.linux_prompt, "killall ros && sleep 3")
         mac = str(self.dutip.strip()[-2:])
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "sed -i \"s/{}/00:50:43:05:00:{}/\" /usr/etc/{}.cfg".format(self.ip_cfg, mac, self.cfg_name))
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "appDemo -config /usr/etc/{}.cfg -daemon".format(self.cfg_name))
@@ -286,15 +284,26 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
             try:
                 self.pexp.expect_ubcmd(timeout=timeout, exptxt="", action=cmd, post_exp=exp, retry=retry)
                 log_debug('ping is successful, the ARP table of FCD Host is \n')
-                self.fcd.common.xcmd(cmd='arp -a')
+                self.fcd.common.xcmd(cmd='arp -n')
                 break
             except:
                 log_error('ping is failed, the ARP table of FCD Host is \n')
-                self.fcd.common.xcmd(cmd='arp -a')
+                self.fcd.common.xcmd(cmd='arp -n')
                 ping_retry_cnt += 1
-
         else:
             error_critical('ping is failed in uboot, after {} retries.'.format(retry * (ping_retry_cnt)))
+
+    def clear_dut_ip_in_arp_table_of_host(self):
+        log_debug('Before clear DUT IP ({}) in ARP table of FCD host, show the ARP table of FCD host as below.'.format(self.dutip))
+        self.fcd.common.xcmd(cmd='arp -n')
+
+        log_debug('Clear DUT IP ({}) in ARP table of FCD host.'.format(self.dutip))
+        clear_cmd = 'arp -d {}'.format(self.dutip)
+        log_debug('FCD host send: {}'.format(clear_cmd))
+        self.fcd.common.xcmd(cmd=clear_cmd)
+
+        log_debug('After clear DUT IP ({}) in ARP table of host, show the ARP table of FCD host as below.'.format(self.dutip))
+        self.fcd.common.xcmd(cmd='arp -n')
 
     def is_network_alive_in_linux(self, ipaddr=None, retry=5):
         if ipaddr is None:
@@ -302,19 +311,18 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
 
         cmd = "ifconfig; ping -c 3 {0}".format(ipaddr)
         exp = r"64 bytes from {0}".format(ipaddr)
-
         ping_retry_cnt = 0
+        
         while ping_retry_cnt < 2:
             try:
                 self.pexp.expect_lnxcmd(timeout=5, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
                 log_debug('ping is successful, the ARP table of FCD Host is \n')
-                self.fcd.common.xcmd(cmd='arp -a')
+                self.fcd.common.xcmd(cmd='arp -n')
                 break
             except:
                 log_error('ping is failed, the ARP table of FCD Host is \n')
-                self.fcd.common.xcmd(cmd='arp -a')
+                self.fcd.common.xcmd(cmd='arp -n')
                 ping_retry_cnt += 1
-            
         else:
             error_critical('ping is failed in linux kernel, after {} retries.'.format(retry * (ping_retry_cnt)))
     
@@ -347,6 +355,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         # self.force_speed_to_1g() 
         # for v3 for u6-s8
 
+        self.clear_dut_ip_in_arp_table_of_host()
         self.SetNetEnv()
         self.SetNetEnv_ip()
         self.is_network_alive_in_linux()
