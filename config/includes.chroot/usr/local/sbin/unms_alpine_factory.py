@@ -135,9 +135,9 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         time.sleep(2)
         self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x08000004 images/" + self.board_id + "-recovery")
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x18000004 images/" + self.board_id + "-recovery")
         self.pexp.expect_only(90, "Bytes transferred")
-        self.pexp.expect_action(11, self.bootloader_prompt, "bootm $fitbootconf")
+        self.pexp.expect_action(11, self.bootloader_prompt, "bootm 0x18000004#uisprpro@2")
 
     def init_recovery_image(self):
         self.login(self.username, self.password, timeout=180, log_level_emerg=True)
