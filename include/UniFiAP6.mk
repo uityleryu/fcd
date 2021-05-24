@@ -88,3 +88,15 @@ $(eval $(call ProductCompress,U6-Extender,FCD_$(PRD)_U6-Extender_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
+
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,10743-a651))
+$(eval $(call ProductCompress2,00963-a650))
+$(eval $(call ProductCompress2,10745-a652))
+$(eval $(call ProductCompress2,00744-a620))
+$(eval $(call ProductCompress2,10897-a655))
+$(eval $(call ProductCompress2,00773-a612))
+$(eval $(call ProductCompress2,10746-a653))
+$(eval $(call ProductCompress2,10898-a654))

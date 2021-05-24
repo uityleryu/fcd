@@ -35,3 +35,8 @@ $(eval $(call ProductImage,UXGLITE,FCD_$(PRD)_UXGLITE_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UXGLITE,FCD_$(PRD)_UXGLITE_$(VER)_$(FWVER)))
+
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,00778-b080))

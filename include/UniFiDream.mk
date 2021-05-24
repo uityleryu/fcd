@@ -123,3 +123,15 @@ $(eval $(call ProductCompress,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
+
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,00917-ea2c))
+$(eval $(call ProductCompress2,00623-ea11))
+$(eval $(call ProductCompress2,00740-ea19))
+$(eval $(call ProductCompress2,02719-ea17))
+$(eval $(call ProductCompress2,00618-ea13))
+$(eval $(call ProductCompress2,00723-ea15))
+$(eval $(call ProductCompress2,00622-ec25))
+$(eval $(call ProductCompress2,00786-eccc))
+$(eval $(call ProductCompress2,00633-ec28))

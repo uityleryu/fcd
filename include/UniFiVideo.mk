@@ -174,3 +174,15 @@ $(eval $(call ProductCompress,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 
 
+# Project compressed type2 file for RPi FCD host
+
+$(eval $(call ProductCompress2,03268-a5a0))
+$(eval $(call ProductCompress2,02574-a563))
+$(eval $(call ProductCompress2,03194-a574))
+$(eval $(call ProductCompress2,02967-a564))
+$(eval $(call ProductCompress2,02987-a572))
+$(eval $(call ProductCompress2,03346-a595))
+$(eval $(call ProductCompress2,03132-a590))
+$(eval $(call ProductCompress2,02712-a571))
+$(eval $(call ProductCompress2,02998-a573))
+$(eval $(call ProductCompress2,02692-a580))

@@ -51,4 +51,7 @@ TOOLS-02966-ec60+=$(TOOLS-CONFIG)
 
 # -----------------------------------------------------------------------------------------
 
+# Project compressed type2 file for RPi FCD host
+
 $(eval $(call ProductCompress2,02966-ec60))
+$(eval $(call ProductCompress2,03329-ec46))
