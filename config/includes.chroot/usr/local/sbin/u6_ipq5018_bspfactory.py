@@ -61,7 +61,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "UBNT-BZ.ca-spf11.3-default-a654#",
+            'a654': "UBNT-BZ.ca-5.63.2#",
             'a655': "n/a"
         }
 
