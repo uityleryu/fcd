@@ -18,6 +18,11 @@ IMAGE-USP-3-8= \
     images/e648* \
     usp/vport-fw.bin
 
+
+IMAGE-USP-RPS-PRO= \
+    images/ed13* \
+    usp/rps-pro/*
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -37,6 +42,7 @@ TOOLS-USP-PLUG +=$(TOOLS-CONFIG)
 TOOLS-USP-3-8 +=$(TOOLS-CONFIG)
 TOOLS-USP-STRIP +=$(TOOLS-CONFIG)
 TOOLS-USP-PDU-PRO +=$(TOOLS-CONFIG)
+TOOLS-USP-RPS-PRO +=$(TOOLS-CONFIG)
 
 TOOLS-USP-PLUG+= \
     usp/*
@@ -57,6 +63,8 @@ $(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
+
 
 # Project compressed file for RPi FCD host
 
@@ -64,3 +72,5 @@ $(eval $(call ProductCompress,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
+

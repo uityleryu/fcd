@@ -141,7 +141,7 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set enable_vlan 1")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set vid 1")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 vlan 1 set ports " + self.vlanport_idx[self.board_id])
-        self.pexp.expect_action(30, self.linux_prompt, " swconfig dev switch0 port 0 set disable 0")
+        self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 port 0 set disable 0")
         self.pexp.expect_action(30, self.linux_prompt, "swconfig dev switch0 set apply")
         self.pexp.expect_action(30, self.linux_prompt, "[ $(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up")
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig eth0 "+self.dutip)
@@ -179,11 +179,13 @@ class USFLEXFactory(ScriptBase):
         else:
             print("Pass checking radio status")
 
-    def wait_lcm_upgrade(self):                                                                                                     
-        if self.board_id == 'ed13':
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp='version"', retry=24)
-        else:    
+    def wait_lcm_upgrade(self):
+        try:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-ctrl -t dump", post_exp="version", retry=24)
+        except Exception as e:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /tmp/.lcm_fwupdate.log")
+            raise e
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def update_uboot(self):
@@ -316,7 +318,7 @@ class USFLEXFactory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-       
+
         if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
             self.fwupdate()
@@ -335,7 +337,7 @@ class USFLEXFactory(ScriptBase):
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(90, "Wait LCM upgrading ...")
                 self.wait_lcm_upgrade()
-    
+
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 

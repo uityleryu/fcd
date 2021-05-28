@@ -30,13 +30,6 @@ IMAGE-ULS-RPS= \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
     usw-fw/US.mt7621.*
-
-IMAGE-USP-RPS-PRO= \
-    images/ed13* \
-    usw-fw/unifiswitch-usprpspro-* \
-    usw-fw/US.mt7621.* \
-    usw-fw/UM.mt7621* \
-    usw-fw/lede-ramips-mt7621-USW-FLEX-initramfs-kernel.bin
     
 IMAGE-USW-16-24-48= \
     images/ed20* \
@@ -140,7 +133,6 @@ IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
-IMAGE-USW+=$(IMAGE-USP-RPS-PRO)
 IMAGE-USW+=$(IMAGE-USW-16-24-48)
 IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
@@ -216,8 +208,6 @@ TOOLS-ULS-RPS+= \
     uls_rps/uls_get_power_status_fcd.sh \
     uls_rps/uls_power.sh
 
-TOOLS-USP-RPS-PRO=$(TOOLS-USW)
-
 TOOLS-USW-FLEX-MINI=$(TOOLS-USW)
 TOOLS-USW-FLEX-MINI+= \
     usw_mini/x86-4k-ee
@@ -258,7 +248,6 @@ $(eval $(call ProductImage,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
@@ -283,7 +272,6 @@ $(eval $(call ProductCompress,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
 $(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
