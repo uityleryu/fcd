@@ -57,8 +57,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         }
         
         self.linux_prompt_select = {
-            'a650': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
-            'a651': "UBNT-BZ.ca-5.55.10_tony@ui-dev#",
+            'a650': "UBNT-BZ.5.65.0#",
+            'a651': "UBNT-BZ.5.65.0#",
             'a652': "n/a",
             'a653': "n/a",
             'a654': "UBNT-BZ.ca-5.63.2#",
@@ -102,7 +102,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'bootm')
         self.linux_prompt = self.linux_prompt_select[self.board_id]
-        self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
         self.disable_udhcpc()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
@@ -111,6 +111,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
                      src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
                      dst_file=self.dut_tmpdir + "/fwupdate.bin")
+        if self.board_id == 'a650' or self.board_id == 'a651':
+            time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
         self.linux_prompt = "#"
 
