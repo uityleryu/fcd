@@ -149,11 +149,6 @@ class UVPDVF99FactoryGeneral(ScriptBase):
 
         if DOHELPER_EN is True:
             self.erase_eefiles()
-
-            if self.board_id == "ef12":
-                cmd = "mknod /dev/ubnthal c 240 0"
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
-
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
