@@ -53,7 +53,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "n/a",
             'a653': "n/a",
             'a654': "0x50000000",
-            'a655': "n/a"
+            'a655': "0x50000000"
         }
         
         self.linux_prompt_select = {
@@ -62,7 +62,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "n/a",
             'a653': "n/a",
             'a654': "UBNT-BZ.ca-5.63.2#",
-            'a655': "n/a"
+            'a655': "UBNT-BZ.ca-5.63.2#"
         }
 
         self.devnetmeta = {
@@ -76,8 +76,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a652" or \
-           self.board_id == "a653" or \
-           self.board_id == "a655":
+           self.board_id == "a653" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
