@@ -13,7 +13,8 @@ DOHELPER_ENABLE   = True
 REGISTER_ENABLE   = True 
 FWUPDATE_ENABLE   = True 
 DATAVERIFY_ENABLE = True
-
+DIAG_MODE_ENABLE  = True
+SET_NTP_ENABLE    = True
 
 class UDMMT7622BspFactory(ScriptBase):
     def __init__(self):
@@ -119,6 +120,11 @@ class UDMMT7622BspFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
 
+    def enter_diag_mode(self):
+        # Disable some services (protect/network controller app) to speed up the time of booting up
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable unifi-core unifi-protect unifi --now")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -r ubnt-report")
+
     def run(self):
         """Main procedure of factory
         """
@@ -162,8 +168,12 @@ class UDMMT7622BspFactory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        self.set_ntptime_to_dut(rtc_tool="busybox hwclock")
-        msg(95, "Set NTP time to DUT ...")
+        if DIAG_MODE_ENABLE is True:
+            self.enter_diag_mode()
+
+        if SET_NTP_ENABLE is True:
+            self.set_ntptime_to_dut(rtc_tool="busybox hwclock")
+            msg(95, "Set NTP time to DUT ...")
 
         msg(100, "Completed FCD process ...")
         self.close_fcd()
