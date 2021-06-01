@@ -269,6 +269,7 @@ class USFLEXFactory(ScriptBase):
 
     def check_info(self):
         self.login(timeout=120, press_enter=True)
+        time.sleep(15)
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
         self.pexp.expect_only(30, "systemid="+self.board_id)
