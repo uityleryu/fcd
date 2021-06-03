@@ -58,7 +58,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef82': "adr7",
             'ef13': "adr7",
             'ef87': "adr9",
-            'ef88': "adr7",
+            'ef88': "adr9",
             'ef0e': "adr9",
             'ef83': "adr9",
             'ef84': "adr9",
@@ -322,12 +322,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 clientbin = "/usr/local/sbin/client_x86_release_20190507"
 
         regparam = [
-            "-h devreg-prod.ubnt.com",
+            "-h prod.udrs.io",
             "-k " + self.pass_phrase,
             regsubparams,
             reg_qr_field,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eegenbin_path,
-            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -406,28 +405,28 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             lmac = self.mac_format_str2list(self.mac)
             bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
             cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
-            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
             cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
-            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write Country Code
-            cmd = "ls {}".format(self.cfg_file)
-            self.pexp.expect_action(10, self.linux_prompt, cmd)
-            exp_list = [
-                "ls: /data/vendor/wifi/WCNSS_qcom_cfg.ini: No such file or directory",
-            ]
-            rtc = self.pexp.expect_get_index(10, exp_list)
-            if not rtc == 0:
-                cmd = "rm {}".format(self.cfg_file)
-                self.pexp.expect_action(10, self.linux_prompt, cmd)
+            '''
+                If finding
+                   /data/vendor/wifi/WCNSS_qcom_cfg.ini (Android9)
+                   /data/misc/wifi/WCNSS_qcom_cfg.ini   (Android7)
+                then, remove them
+            '''
+            cmd = "rm {}".format(self.cfg_file)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
+            # Write persist cfg file
             cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
-            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
             if self.android_cc != "000":
                 cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc, self.persist_cfg_file)
-                self.pexp.expect_action(10, self.linux_prompt, cmd)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
         if self.REGISTER_ENABLE is True:
             msg(40, "Sendtools to DUT and data provision ...")
