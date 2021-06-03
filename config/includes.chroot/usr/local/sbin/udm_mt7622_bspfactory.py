@@ -122,8 +122,17 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def enter_diag_mode(self):
         # Disable some services (protect/network controller app) to speed up the time of booting up
-        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable unifi-core unifi-protect unifi --now")
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable "\
+                                                        "unifi-core "\
+                                                        "unifi-protect "\
+                                                        "unifi postgresql "\
+                                                        "postgresql@9.6-main postgresql@9.6-protect "\
+                                                        "postgresql-cluster@9.6-main "\
+                                                        "postgresql-cluster@9.6-protect-cleanup "\
+                                                        "postgresql-cluster@9.6-protect "\
+                                                        "ulp-go --now")
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -r ubnt-report")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "sync; sync; sync;")
 
     def run(self):
         """Main procedure of factory
@@ -164,7 +173,7 @@ class UDMMT7622BspFactory(ScriptBase):
 
         if DATAVERIFY_ENABLE is True:
             self.login(timeout=600, log_level_emerg=True)
-            time.sleep(5)
+            time.sleep(10)
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
