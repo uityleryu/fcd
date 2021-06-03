@@ -9,7 +9,6 @@
       "FILE": "am_ipq40xx_factory.py",
       "T1FILE": "am_ipq40xx_mfg.py",
       "QRCHECK": "False",
-      "FCD_ID": "000b",
       "SW_ID": "1201",
       "DOWNLOAD_FILE": [
         {
