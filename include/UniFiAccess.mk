@@ -5,7 +5,12 @@ IMAGE-UA-GATE= \
     images/ec46* \
     ua-fw/*
 
+IMAGE-UA-ThermalScan= \
+    images/ec70* \
+    ua-fw/thermalscan.*
+
 IMAGE-UA+=$(IMAGE-UA-GATE)
+IMAGE-UA+=$(IMAGE-UA-ThermalScan)
 
 
 # Model
@@ -30,14 +35,19 @@ TOOLS-UA+=$(TOOLS-CONFIG)
 
 TOOLS-UA-GATE+=$(TOOLS-UA)
 
+TOOLS-UA-ThermalScan+=$(TOOLS-UA)
+TOOLS-UA-ThermalScan+= \
+    uvc/128k_ff.bin
 
 # Project target
 
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 
 
 # ==================================================================================================

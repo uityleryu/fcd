@@ -1952,6 +1952,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0012",
       "SW_ID"       : "1d01"
+    },
+
+    "UA-Thermal-Scan":{
+      "INDEX"       : 10,
+      "NAME"        : "UA-Thermal-Scan",
+      "BOARDID"     : "ec70",
+      "BOMREV"      : "113-03274",
+      "DESC"        : "UniFi Thermal Scan",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
     }
   },
 

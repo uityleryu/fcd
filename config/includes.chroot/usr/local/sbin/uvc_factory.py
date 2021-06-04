@@ -23,6 +23,8 @@ import configparser
 # a590 = G3MINI
 # a595 = G4INS
 # a5a2 = AIBullet
+# ec70 = Thermal Scan
+
 
 PROVISION_EN  = True
 DOHELPER_EN   = True
@@ -121,6 +123,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UA-Thermal-Scan":
+            self.board_name = "UniFi Thermal Scan"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -147,7 +155,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "0",
             'a595': "0",
             'a5a0': "1",
-            'a5a2': '1'
+            'a5a2': '1',
+            'ec70': '1'
         }
 
         # number of WiFi
@@ -162,7 +171,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "1",
             'a595': "1",
             'a5a0': "0",
-            'a5a2': '0'
+            'a5a2': '0',
+            'ec70': '0'
         }
 
         # number of Bluetooth
@@ -177,7 +187,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "1",
             'a595': "1",
             'a5a0': "0",
-            'a5a2': '0'
+            'a5a2': '0',
+            'ec70': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -200,6 +211,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a595': "ifconfig eth0 ",
             'a5a0': "ifconfig eth0 ",
             'a5a2': "ifconfig eth0 "
+            'ec70': "ifconfig eth0 "
+
         }
 
     def ezreadini(self, path, section, item):
