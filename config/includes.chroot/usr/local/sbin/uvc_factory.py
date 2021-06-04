@@ -90,11 +90,18 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbellpro"
 
         elif self.product_name == "UVC-AI360":
-            self.board_name = "UVC AI 360"
-            self.devregpart = "/dev/mtd0"
-            self.ip = "192.168.1.20"
-            self.flash_module = ""
-            self.helperexe = "helper_uvcai360"
+            second_falsh_en = False
+            if second_falsh_en is True:
+                self.board_name = "UVC AI 360"
+                self.ip = "192.168.1.20"
+                self.mtd_name = 'amba_nor'
+                self.helper_rule = 1
+            else:
+                self.board_name = "UVC AI 360"
+                self.devregpart = "/dev/mtd0"
+                self.ip = "192.168.1.20"
+                self.flash_module = ""
+                self.helperexe = "helper_uvcai360"
 
         elif self.product_name == "UVC-G3MINI":
             self.board_name = "UVC G3 Mini"
