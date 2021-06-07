@@ -30,9 +30,20 @@ class UAPQCA9563Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock6"
 
     def enter_uboot(self, boot_only = False):
+        uboot_env_fixed = "uboot env fix. Clearing u-boot env and resetting the board.."
+        ubnt_app_init = "UBNT application initialized"
+        expect_list = [uboot_env_fixed, ubnt_app_init]
+
         self.pexp.expect_action(120, "Hit any key to", "")
         time.sleep(2)
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix+ "uappinit" )
+        index = self.pexp.expect_get_index(timeout=30, exptxt=expect_list)
+        if index == self.pexp.TIMEOUT:
+            error_critical('UBNT Application failed to initialize!')
+        elif index == 0:
+            log_debug('uboot env fixed, rebooting...')
+            self.enter_uboot()
+ 
         if boot_only is False:
             self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
             self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
@@ -189,8 +200,8 @@ class UAPQCA9563Factory(ScriptBase):
         self.close_fcd()
 
 def main():
-    uAPQCA9563Factory = UAPQCA9563Factory()
-    uAPQCA9563Factory.run()
+    uap_qca9563_factory = UAPQCA9563Factory()
+    uap_qca9563_factory.run()
 
 if __name__ == "__main__":
     main()
