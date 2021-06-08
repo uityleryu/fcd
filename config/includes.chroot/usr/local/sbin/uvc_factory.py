@@ -29,8 +29,11 @@ import configparser
 PROVISION_EN  = True
 DOHELPER_EN   = True
 REGISTER_EN   = True
-FWUPDATE_EN   = True
-DATAVERIFY_EN = True
+# FWUPDATE_EN   = True
+# DATAVERIFY_EN = True
+# REGISTER_EN   = False
+FWUPDATE_EN   = False
+DATAVERIFY_EN = False
 
 
 class UVCFactoryGeneral(ScriptBase):
@@ -210,7 +213,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "ifconfig eth0 ",
             'a595': "ifconfig eth0 ",
             'a5a0': "ifconfig eth0 ",
-            'a5a2': "ifconfig eth0 "
+            'a5a2': "ifconfig eth0 ",
             'ec70': "ifconfig eth0 "
 
         }
