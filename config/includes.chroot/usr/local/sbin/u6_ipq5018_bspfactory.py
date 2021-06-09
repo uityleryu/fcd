@@ -57,12 +57,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         }
         
         self.linux_prompt_select = {
-            'a650': "UBNT-BZ.5.65.0#",
-            'a651': "UBNT-BZ.5.65.0#",
+            'a650': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
+            'a651': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a652': "n/a",
             'a653': "n/a",
-            'a654': "UBNT-BZ.ca-5.63.2#",
-            'a655': "UBNT-BZ.ca-5.63.2#"
+            'a654': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
+            'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
         }
 
         self.devnetmeta = {
@@ -106,7 +106,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
-        self.is_network_alive_in_linux()
+        if self.board_id == 'a654' or self.board_id != 'a655':  #find u6-enterprise can't ping in ramfs
+            self.is_network_alive_in_linux()
+            
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
                      src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
                      dst_file=self.dut_tmpdir + "/fwupdate.bin")
