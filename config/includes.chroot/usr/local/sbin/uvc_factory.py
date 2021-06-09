@@ -276,7 +276,11 @@ class UVCFactoryGeneral(ScriptBase):
         return version
 
     def get_devreg_mtd(self):
+        mtd_all = self.session.execmd_getmsg('cat /proc/mtd')
+        print('mtd all = {}'.format(mtd_all))
+
         mtd = self.session.execmd_getmsg('cat /proc/mtd | grep {}'.format(self.mtd_name))
+        print('mtd = {}'.format(mtd))
         mtd = '/dev/{}'.format(mtd.split(':')[0])
         return mtd
 
@@ -405,6 +409,8 @@ class UVCFactoryGeneral(ScriptBase):
         self.eerom_status = 1
 
     def check_if_need_register_again(self):
+        return False
+
         log_debug('check_if_need_register_again')
         exp_md5_00 = '7bb95b85a48f9db61088daed1363e030'
         exp_md5_ff = '2a274787910027a701cab3e3592304b4'
@@ -811,6 +817,7 @@ class UVCFactoryGeneral(ScriptBase):
 
         log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
 
+        time.sleep(5)
         cmd = 'md5sum /etc/persistent/server.pem'
         rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
         log_debug('md5_server.pem_new: {}'.format(rmsg))
@@ -933,7 +940,7 @@ class UVCFactoryGeneral(ScriptBase):
         print('uptime = {}'.format(uptime))
 
         fw_version = self.session.execmd_getmsg("cat /usr/lib/version")
-        print('fw_version = {}'.format(fw_version))
+        print('cat /usr/lib/version = \n{}'.format(fw_version))
 
         board_info = self.session.execmd_getmsg("cat /etc/board.info")
         print('board_info = {}'.format(board_info))
