@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.40"
+    __version__ = "1.0.39"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -54,6 +54,8 @@ class ScriptBase(object):
         print("PAlib version: " + PAlib.__version__)
         self._encrpyt_passphrase_for_log()
         log_debug(str(self.input_args))
+
+
 
     @property
     def pexp(self):
@@ -231,6 +233,7 @@ class ScriptBase(object):
         baseip = 31
         self.dutip = "192.168.1." + str((int(self.row_id) + baseip))
 
+        self.fcd_id = ""
         self.sem_ver = ""
         self.sw_id = ""
         self.fw_ver = ""
@@ -394,6 +397,9 @@ class ScriptBase(object):
         self.fsiw = json.load(fh)
         fh.close()
 
+        # FCD_ID (this name is called by Mike) like product line
+        self.fcd_id = self.fsiw[self.product_line][self.product_name]['FCD_ID']
+
         # SW_ID (this name is called by Mike) like product model
         self.sw_id = self.fsiw[self.product_line][self.product_name]['SW_ID']
 
@@ -436,7 +442,7 @@ class ScriptBase(object):
         else:
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
-        if self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
+        if self.fcd_id == "" or self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
             clientbin = "/usr/local/sbin/client_x86_release"
             regparam = [
                 "-h prod.udrs.io",
@@ -455,7 +461,7 @@ class ScriptBase(object):
                 "-y " + self.key_dir + "key.pem",
                 "-z " + self.key_dir + "crt.pem"
             ]
-            print("WARNING: should plan to add SW_ID ... won't block this time")
+            print("WARNING: should plan to add FCD_ID, SW_ID ... won't block this time")
         else:
             cmd = "uname -a"
             [sto, rtc] = self.cnapi.xcmd(cmd)
@@ -475,6 +481,7 @@ class ScriptBase(object):
                 regsubparams,
                 reg_qr_field,
                 "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
+                "-i field=fcd_id,format=hex,value=" + self.fcd_id,
                 "-i field=fcd_version,format=hex,value=" + self.sem_ver,
                 "-i field=sw_id,format=hex,value=" + self.sw_id,
                 "-i field=sw_version,format=hex,value=" + self.fw_ver,
