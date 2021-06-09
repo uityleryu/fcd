@@ -57,6 +57,41 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             'e970': "ifconfig eth0 ",
         }
 
+    def prepare_server_need_files(self):
+        log_debug("Starting to do " + self.helperexe + "...")
+        srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
+        helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
+        self.tftp_get(remote=srcp, local=helperexe_path, timeout=30)
+
+        cmd = "chmod 777 {0}".format(helperexe_path)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
+
+        eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+        sstr = [
+            helperexe_path,
+            "-q",
+            "-c product_class=" + self.product_class,
+            "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
+            ">",
+            eetxt_dut_path
+        ]
+        sstr = ' '.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt, valid_chk=True)
+        cmd = "sync"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+        time.sleep(1)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            srcp = os.path.join(self.tftpdir, fh)
+            dstp = "/tmp/{0}".format(fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
+        log_debug("Send helper output files from DUT to host ...")
+
     def mac_colon_format(self, mac):
         mcf = [
             self.mac[0:2],
@@ -85,7 +120,27 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Boot to linux console ...")
-        # self.pexp.expect_only(180, self.linux_prompt)
+        # self.pexp.expect_action(200, "login", "\n")
+        '''
+            For the postexp sets, they are for the case of that
+                "Firmware version:"
+                  - preload image is a certain version of the formal images before 0.8.12.
+                "Welcome to CloudKey FCD"
+                  - when FCD is failed after uploading the MFG image. Then, the initial image will be
+                  MFG image when redoing the FCD script.
+        '''
+        postexp = [
+            "Firmware version:",
+            "Welcome to CloudKey FCD"
+        ]
+        index = self.pexp.expect_get_index(200, postexp)
+        if index == 0 or index == 1:
+            self.pexp.expect_action(10, "", "\n")
+            self.pexp.expect_only(10, self.linux_prompt)
+        else:
+            self.pexp.expect_action(10, "", "\n")
+            self.login()
+
         self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
         colon_mac = self.mac_colon_format(self.mac)
@@ -101,7 +156,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
             cmd = "dd if=/tmp/{}-mfg.bin of=/dev/disk/by-partlabel/boot bs=1M".format(self.board_id)
             self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
-            time.sleep(3)
+            time.sleep(5)
             msg(15, "Upgrade to the MFG image successfully")
 
         '''
@@ -113,11 +168,20 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "reboot -f"
             self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
 
+            self.pexp.expect_only(200, "Welcome to CloudKey FCD")
+            self.set_lnx_net("eth0")
+            self.is_network_alive_in_linux()
+
             cmd = "ck-ee -F -r 113-{} -s 0x{} -m {} 2>/dev/null".format(self.bom_rev, self.board_id, self.mac)
-            self.pexp.expect_lnxcmd(200, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
             cmd = "ck-ee -I 2>&1"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            self.pexp.expect_only(5, "EEPROM is valid")
+            self.pexp.expect_only(5, "MAGIC: 55424e54")
+            self.pexp.expect_only(5, "eth0 hwaddr: {}".format(colon_mac.upper()))
+            self.pexp.expect_only(5, "system ID: 0777:{}".format(self.board_id))
+            self.pexp.expect_only(5, "BOM: 113-{}".format(self.bom_rev))
 
             cmd = "ax88179-ee weeprom 0 /firmware/ax88179/std-eeprom.bin 512"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "Write completely")
@@ -145,9 +209,6 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
             cmd = "cd /tmp; ./check-part.sh"
             self.pexp.expect_lnxcmd(600, self.linux_prompt, cmd, self.linux_prompt)
-
-            self.set_lnx_net("eth0")
-            self.is_network_alive_in_linux()
             msg(20, "Send tools to DUT and data provision ...")
 
         if DOHELPER_EN is True:
@@ -197,7 +258,17 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "DONE")
 
             cmd = "reboot -f"
-            self.pexp.expect_lnxcmd(200, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(200, self.linux_prompt, cmd)
+            self.pexp.expect_action(200, "login", "\n")
+            postexp = [
+                self.linux_prompt
+            ]
+            index = self.pexp.expect_get_index(10, postexp)
+            if index == 0:
+                self.pexp.expect_only(10, self.linux_prompt)
+            else:
+                self.login()
+
             self.set_lnx_net("eth0")
             self.is_network_alive_in_linux()
             msg(70, "Completing the image update")
