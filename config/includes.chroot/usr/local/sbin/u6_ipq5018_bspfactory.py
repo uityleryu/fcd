@@ -106,9 +106,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
-        if self.board_id == 'a654' or self.board_id != 'a655':  #find u6-enterprise can't ping in ramfs
-            self.is_network_alive_in_linux()
-            
+        self.is_network_alive_in_linux()
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
                      src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
                      dst_file=self.dut_tmpdir + "/fwupdate.bin")
