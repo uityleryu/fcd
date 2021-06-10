@@ -29,11 +29,11 @@ import configparser
 PROVISION_EN  = True
 DOHELPER_EN   = True
 REGISTER_EN   = True
-# FWUPDATE_EN   = True
-# DATAVERIFY_EN = True
+FWUPDATE_EN   = True
+DATAVERIFY_EN = True
 # REGISTER_EN   = False
-FWUPDATE_EN   = False
-DATAVERIFY_EN = False
+# FWUPDATE_EN   = False
+# DATAVERIFY_EN = False
 
 
 class UVCFactoryGeneral(ScriptBase):
