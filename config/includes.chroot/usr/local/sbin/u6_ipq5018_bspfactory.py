@@ -23,7 +23,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.ethnum = {
             'a650': "1",
             'a651': "1",
-            'a652': "5",
+            'a652': "1",
             'a653': "0",
             'a654': "1",
             'a655': "1"
