@@ -21,8 +21,7 @@ IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO+= \
     images/ea15* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage-udm-udmp.r \
-    udm-fw/UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin
+    udm-fw/udmp/* 
 
 IMAGE-UXGPRO+=$(IMAGE-UDM-BASIC)
 IMAGE-UXGPRO+= \
