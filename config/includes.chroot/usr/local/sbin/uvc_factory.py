@@ -95,7 +95,8 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbellpro"
 
         elif self.product_name == "UVC-AI360":
-            second_falsh_en = False
+            # second_falsh_en = False
+            second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC AI 360"
                 self.ip = "192.168.1.20"
