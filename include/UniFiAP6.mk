@@ -37,12 +37,12 @@ IMAGE-U6-Infinity= \
     images/a655*
 IMAGE-U6-QCA-Series= \
 	u6-fw/ipq5018/* \
-    images/a650* 
-    images/a651* 
-    images/a652*
-    images/a653*
-    images/a654*
-    images/a655*
+    images/a650* \
+    images/a651* \
+    images/a652* \
+    images/a653* \
+    images/a654* \
+    images/a655* 
 IMAGE-U6-LR= \
 	u6-fw/mt7622/* \
 	images/a620*
