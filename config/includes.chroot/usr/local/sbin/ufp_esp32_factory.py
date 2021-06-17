@@ -108,7 +108,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
-        self.pexp.expect_only(60, "DEVREG:") # The security check will fail if spiff isn't mounted
+        self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
@@ -131,9 +131,9 @@ class UFPESP32FactoryGeneral(ScriptBase):
             else:
                 log_debug("{}: {}".format(key, info[key]))
 
-    def check_spiff_mount(self):
-        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.esp32_prompt, action="spiffs_get_info", 
-                                post_exp="spiffs_cmd: mount", retry=80)
+    def check_littlefs_mount(self):
+        self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.esp32_prompt, action="littlefs_get_info", 
+                                post_exp="littlefs_cmd: mount", retry=80)
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
@@ -168,8 +168,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
             msg(70, "Finish checking MAC in DUT ...")
 
         if SPIFF_FORMAT_CHECK is True:
-            self.check_spiff_mount()
-            msg(90, "Spiff mounted")
+            self.check_littlefs_mount()
+            msg(90, "Littlefs mounted")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
