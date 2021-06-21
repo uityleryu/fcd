@@ -1947,7 +1947,20 @@
       "BOARDID"     : "ec46",
       "BOMREV"      : "113-03329",
       "DESC"        : "UniFi Access Gate",
-      "FILE"        : "ua_uboot_factory.py",
+      "FILE"        : "ua_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+    },
+
+    "UA-ELEVATOR":{
+      "INDEX"       : 2,
+      "NAME"        : "UA-ELEVATOR",
+      "BOARDID"     : "ec3b",
+      "BOMREV"      : "113-03003",
+      "DESC"        : "UniFi Access Elevator",
+      "FILE"        : "ua_mt7621_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0012",

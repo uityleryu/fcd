@@ -12,109 +12,126 @@ import os
 import stat
 import shutil
 
-
-class UAUBOOTFactory(ScriptBase):
+class UAMT7621Factory(ScriptBase):
     def __init__(self):
-        super(UAUBOOTFactory, self).__init__()
+        super(UAMT7621Factory, self).__init__()
         self.ver_extract()
         self.init_vars()
 
     def init_vars(self):
         '''
-        UniFi-Protect:
             dcb0: Radar
             ec46: Gate
+            ec3b: Elevator
         '''
-        # U-boot prompt
+
         self.ubpmt = {
             'dcb0': "\(IPQ40xx\) # ",
-            'ec46': "MT7621 #"
+            'ec46': "MT7621 #",
+            'ec3b': "MT7621 #"
         }
 
         # linux console prompt
         self.lnxpmt = {
             'dcb0': "pre#",
-            'ec46': "root@LEDE:/#"
+            'ec46': "root@LEDE:/#",
+            'ec3b': "root@LEDE:/#"
         }
 
         self.lnxpmt_fcdfw = {
             'dcb0': "#",
-            'ec46': "#"
+            'ec46': "#",
+            'ec3b': "#"
         }
 
         self.bootloader = {
             'dcb0': "dcb0-bootloader.bin",
-            'ec46': "ec46-t1.bin"
+            'ec46': "ec46-t1.bin", 
+            'ec3b': "ec3b-t1.bin"
         }
 
         self.cacheaddr = {
             'dcb0': "0x84000000",
-            'ec46': "0x83000000"
+            'ec46': "0x83000000",
+            'ec3b': "0x83000000"
         }
 
         self.ubaddr = {
             'dcb0': "0x00000",
-            'ec46': "0x00000"
+            'ec46': "0x00000",
+            'ec3b': "0x00000"
         }
 
         self.ubsz = {
             'dcb0': "0x10a0000",
-            'ec46': "0x2000000"
+            'ec46': "0x2000000", 
+            'ec3b': "0x2000000"
         }
 
         self.cfgaddr = {
             'dcb0': "0x1fc0000",
-            'ec46': "0x1fc0000"
+            'ec46': "0x1fc0000",
+            'ec3b': "0x1fc0000"
         }
 
         self.cfgsz = {
             'dcb0': "0x40000",
-            'ec46': "0x40000"
+            'ec46': "0x40000",
+            'ec3b': "0x40000"
         }
 
         self.epromaddr = {
             'dcb0': "0x170000",
-            'ec46': "0x170000"
+            'ec46': "0x170000",
+            'ec3b': "0x170000"
         }
 
         self.epromsz = {
             'dcb0': "0x10000",
-            'ec46': "0x10000"
+            'ec46': "0x10000",
+            'ec3b': "0x10000"
         }
 
         self.product_class_table = {
             'dcb0': "basic",
-            'ec46': "basic"
+            'ec46': "basic", 
+            'ec3b': "basic"
         }
 
         self.devregmtd = {
             'dcb0': "/dev/mtdblock3",
-            'ec46': "/dev/mtdblock3"
+            'ec46': "/dev/mtdblock3",
+            'ec3b': "/dev/mtdblock3"
         }
 
         self.helpername = {
             'dcb0': "helper_IPQ40xx",
-            'ec46': ""
+            'ec46': "",
+            'ec3b': ""
         }
 
         self.pd_dir_table = {
             'dcb0': "ufp_radar",
             'ec46': "ua-gate",
+            'ec3b': "ua_elevator"
         }
 
         self.ethnum = {
             'dcb0': "1",
-            'ec46': "1"
+            'ec46': "1",
+            'ec3b': "1"
         }
 
         self.wifinum = {
             'dcb0': "1",
-            'ec46': "1"
+            'ec46': "1",
+            'ec3b': "1"
         }
 
         self.btnum = {
             'dcb0': "1",
-            'ec46': "1"
+            'ec46': "1",
+            'ec3b': "1"
         }
 
         self.devnetmeta = {
@@ -124,14 +141,11 @@ class UAUBOOTFactory(ScriptBase):
         }
 
         self.devregpart = self.devregmtd[self.board_id]
-
         self.product_class = self.product_class_table[self.board_id]
 
         self.linux_prompt = self.lnxpmt[self.board_id]
         self.linux_prompt_fcdfw = self.lnxpmt_fcdfw[self.board_id]
-        
         self.bootloader_prompt = self.ubpmt[self.board_id]
-
 
         self.cache_address = self.cacheaddr[self.board_id]
         self.uboot_address = self.ubaddr[self.board_id]
@@ -142,7 +156,6 @@ class UAUBOOTFactory(ScriptBase):
 
         self.eeprom_address = self.epromaddr[self.board_id]
         self.eeprom_size = self.epromsz[self.board_id]
-
         self.tftpdir = self.tftpdir + "/"
 
         # EX: /tftpboot/tools/af_af60
@@ -159,13 +172,11 @@ class UAUBOOTFactory(ScriptBase):
 
         # EX: /tftpboot/tools/commmon/x86-64k-ee
         self.eetool = os.path.join(self.fcd_commondir, self.eepmexe)
-
         self.dropbear_key = "/tmp/dropbear_key.rsa.{0}".format(self.row_id)
 
     def stop_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
-        #self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
-
+       
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
@@ -197,11 +208,8 @@ class UAUBOOTFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "\n\n")
         time.sleep(3)
-        self.pexp.expect_ubcmd(10, self.linux_prompt, "\n")
-        self.pexp.expect_ubcmd(20, self.linux_prompt, "\n")
-        cmd = 'cat /proc/bsp_helper/cpu_rev_id'
-        self.pexp.expect_ubcmd(20, self.linux_prompt, cmd)
-
+        self.pexp.expect_ubcmd(5, self.linux_prompt, "\n", retry=10)
+        self.is_network_alive_in_linux()
 
     def update_fcdfw(self):
         self.stop_uboot()
@@ -220,11 +228,6 @@ class UAUBOOTFactory(ScriptBase):
         else:
             log_debug("Uploading firmware image successfully")
 
-
-        self.check_info2()
-
-
-
     def lnx_netcheck(self, netifen=False):
         postexp = [
             "64 bytes from",
@@ -233,21 +236,15 @@ class UAUBOOTFactory(ScriptBase):
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
         self.chk_lnxcmd_valid()
 
-
     def check_info(self):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         cmd = 'cat /proc/bsp_helper/cpu_rev_id'
         self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd)
 
-
     def check_info2(self):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-
-        cmd = "cat /usr/lib/version"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
-        self.pexp.expect_only(10, "GT.mt7621.v4.0.11.363.gf7b428d.210121.1453")
 
         cmd = "cat /etc/board.info | grep sysid"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
@@ -257,14 +254,13 @@ class UAUBOOTFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
         self.pexp.expect_only(10, "board.hwaddr=" + self.mac.upper())
 
-
     def run(self):
         UPDATE_UBOOT_EN = True
+        PROVISION_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
         UPDATE_FCDFW_EN = True
         DATAVERIFY_EN = True
-        #-----------------------------------------------------------------------------------
 
         """
         Main procedure of factory
@@ -280,39 +276,44 @@ class UAUBOOTFactory(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
-        #-----------------------------------------------------------------------------------
 
         if UPDATE_UBOOT_EN is True:
-            msg(5, "update U-Boot")
+            msg(5, "Update U-Boot ...")
             self.uboot_update()
-        #-----------------------------------------------------------------------------------
-
-        if DOHELPER_EN is True:
+            msg(10, "Booting the T1 image ...")
             self.boot_to_T1()
+
+        if PROVISION_EN is True:    
+            msg(20, "Sendtools to DUT and data provision ...")
             self.erase_eefiles()
-            msg(40, "Do helper to get the output file to devreg server ...")
             self.data_provision_64k(self.devnetmeta)
-            #self.prepare_server_need_files()
+        
+        if DOHELPER_EN is True:
+            msg(40, "Do helper to get the output file to devreg server ...")
+            self.prepare_server_need_files_bspnode()
 
-            self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
-        #-----------------------------------------------------------------------------------
+        if REGISTER_EN is True:
+            self.registration()
+            msg(50, "Finish doing registration ...")
+            self.check_devreg_data()
+            msg(60, "Finish doing signed file and EEPROM checking ...")
 
-
+        self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
+        
         if UPDATE_FCDFW_EN is True:
             msg(70, "update firmware...")
             self.update_fcdfw()
 
-        
-        msg(100, "Formal firmware completed...")
+        if DATAVERIFY_EN is True:
+            self.check_info2()
+            msg(80, "Succeeding in checking the devreg information ...")
+
+        msg(100, "Complete FCD process ...")
         self.close_fcd()
-        #-----------------------------------------------------------------------------------
-
-
-
+        
 def main():
-    print('hello')
-    ua_uboot_factory = UAUBOOTFactory()
-    ua_uboot_factory.run()
+    ua_mt7621_factory = UAMT7621Factory()
+    ua_mt7621_factory.run()
 
 if __name__ == "__main__":
     main()

@@ -3,10 +3,18 @@
 
 IMAGE-UA-GATE= \
     images/ec46* \
-    ua-fw/*
+    ua-fw/ua-gate* \
+    ua-fw/GT.mt7621*
 
 IMAGE-UA+=$(IMAGE-UA-GATE)
 
+IMAGE-UA-ELEVATOR= \
+    images/ec3b* \
+    ua-fw/ua-elevator* \
+    ua-fw/ua-gate-nor-v2.bin \
+    ua-fw/EL.mt7621*
+
+IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -25,20 +33,17 @@ TOOLS-CONFIG= \
     common/aarch64-rpi4-64k-ee
 
 # Project specific tools
-
 TOOLS-UA+=$(TOOLS-CONFIG)
-
 TOOLS-UA-GATE+=$(TOOLS-UA)
-
+TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 
 # Project target
-
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
-
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 
@@ -55,3 +60,4 @@ TOOLS-02966-ec60+=$(TOOLS-CONFIG)
 
 $(eval $(call ProductCompress2,02966-ec60))
 $(eval $(call ProductCompress2,03329-ec46))
+$(eval $(call ProductCompress2,03329-ec3b))
