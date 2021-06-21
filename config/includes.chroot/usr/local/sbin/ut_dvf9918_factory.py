@@ -162,6 +162,10 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         '''
 
         if SETUBMACID_EN is True:
+            if self.board_id == "ef12":
+                cmd = "fw_setenv shield=CA"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
             mcf = self.mac_colon_format(self.mac)
             cmd = "fw_setenv ethaddr {0}; sync".format(mcf)
             self.pexp.expect_lnxcmd(90, self.linux_prompt, cmd, self.linux_prompt)
