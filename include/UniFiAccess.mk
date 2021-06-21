@@ -60,4 +60,4 @@ TOOLS-02966-ec60+=$(TOOLS-CONFIG)
 
 $(eval $(call ProductCompress2,02966-ec60))
 $(eval $(call ProductCompress2,03329-ec46))
-$(eval $(call ProductCompress2,03329-ec3b))
+$(eval $(call ProductCompress2,03003-ec3b))

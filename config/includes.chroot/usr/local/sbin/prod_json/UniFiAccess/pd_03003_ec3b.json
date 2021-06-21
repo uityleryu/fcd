@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-GATE": {
-      "INDEX": 1,
-      "NAME": "UA-GATE",
-      "BOARDID": "ec46",
-      "BOMREV": "113-03329",
-      "DESC": "UniFi Access Gate",
+    "UA-ELEVATOR": {
+      "INDEX": 2,
+      "NAME": "UA-ELEVATOR",
+      "BOARDID": "ec3b",
+      "BOMREV": "113-03003",
+      "DESC": "UniFi Access Elevator",
       "FILE": "ua_mt7621_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "GT.mt7621.v4.0.12.26.gb151e3f.210607.1715-uboot.bin",
+            "EL.mt7621.v4.0.12.26.gb151e3f.210607.1703-uboot.bin",
             "ua-gate-nor-v2.bin"
           ]
         },
@@ -38,20 +38,20 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec46-t1.bin",
-          "../ua-fw/ua-gate-t1.bin"
+          "tftp/images/ec3b-t1.bin",
+          "../ua-fw/ua-elevator-t1.bin"
         ],
         [
-          "tftp/ua-fw/ua-gate-t1.bin",
+          "tftp/ua-fw/ua-elevator-t1.bin",
           "../ua-fw/ua-gate-nor-v2.bin"
         ],
         [
-          "tftp/images/ec46-fw.bin",
-          "../ua-fw/ua-gate-fw.bin"
+          "tftp/images/ec3b-fw.bin",
+          "../ua-fw/ua-elevator-fw.bin"
         ],
         [
-          "tftp/ua-fw/ua-gate-fw.bin",
-          "../ua-fw/GT.mt7621.v4.0.12.26.gb151e3f.210607.1715-uboot.bin"
+          "tftp/ua-fw/ua-elevator-fw.bin",
+          "../ua-fw/EL.mt7621.v4.0.12.26.gb151e3f.210607.1703-uboot.bin"
         ]
       ]
     }
