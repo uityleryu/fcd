@@ -15,7 +15,13 @@ IMAGE-LVDU-4-24= \
     lvdu-fw/lvdu-4-fw.bin \
     lvdu-fw/LH*
 
+IMAGE-LVDU-1= \
+    images/ec48* \
+    lvdu-fw/lvdu-1/*
+
+
 IMAGE-LVDU+=$(IMAGE-LVDU-4-24)
+IMAGE-LVDU+=$(IMAGE-LVDU-1)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -41,8 +47,9 @@ TOOLS-UC-DISPLAY-21+=$(TOOLS-CONFIG)
 TOOLS-UC-DISPLAY-27+=$(TOOLS-CONFIG)
 
 TOOLS-LVDU-4-24+=$(TOOLS-CONFIG)
-TOOLS-LVDU-4-24+= \
-    lvdu_4_24/helper*
+TOOLS-LVDU-1= \
+    $(TOOLS-CONFIG) \
+    common/aarch64-rpi4-4k-ee
 
 # Project target
 
@@ -51,6 +58,7 @@ $(eval $(call ProductImage,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FWVER
 $(eval $(call ProductImage,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -59,6 +67,7 @@ $(eval $(call ProductCompress,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FW
 $(eval $(call ProductCompress,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 IMAGE-03168-ef80=

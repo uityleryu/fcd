@@ -1283,6 +1283,19 @@
       "SW_ID": "1c01"
     },
 
+    "LVDU-1":{
+      "INDEX"       : 0,
+      "NAME"        : "LVDU-1",
+      "BOARDID"     : "ec48",
+      "BOMREV"      : "113-03435",
+      "DESC"        : "Low Voltage Distribution Unit 1 Port",
+      "FILE"        : "ua_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+     },
+  
     "LVDU-4":{
       "INDEX"       : 4,
       "NAME"        : "LVDU-4",
