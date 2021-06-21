@@ -171,10 +171,19 @@ class AMAR9342MFG(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(30, "Bytes transferred =")
 
-            '''
-               Keep the T1 calibration datat (EEPROM partition)
-            '''
-            cmd = "erase 0x9f000000 +0xff0000; cp.b 0x81000000 0x9f000000 0xff0000"
+            cmd = "md 0x9fff1000 0x100"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            cmd = "md 0x9fff5000 0x100"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+            if self.erasecal == "True":
+                cmd "erase 0x9f000000 +0x1000000; cp.b 0x81000000 0x9f000000 0x1000000"
+            else:
+                '''
+                   Keep the T1 calibration datat (EEPROM partition)
+                '''
+                cmd = "erase 0x9f000000 +0xff0000; cp.b 0x81000000 0x9f000000 0xff0000"
+
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(600, "done")
             time.sleep(2)
