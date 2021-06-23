@@ -137,7 +137,7 @@ class UAP_QCA953X_Factory(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.is_network_alive_in_uboot()
-        
+
     def fwupdate(self):
         log_debug("Firmware is {}".format(self.fwimg))
 
@@ -172,7 +172,7 @@ class UAP_QCA953X_Factory(ScriptBase):
         msg(15, "Flashing firmware...")
         self.pexp.expect_only(15, "Copying partition 'kernel' to flash memory:")
         msg(20, "Flashing firmware...")
-        self.pexp.expect_only(180, "Firmware update complete")
+        self.pexp.expect_only(240, "Firmware update complete")
         msg(45, "Firmware flashed")
 
     def erase_linux_config(self):
