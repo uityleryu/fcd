@@ -38,17 +38,17 @@ class UAESP32FactoryGeneral(ScriptBase):
         self.regsubparams = ""
         # number of Ethernet
         self.ethnum = {
-            'ec48': "0",
+            'ec48': "1",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ec48': "1",
+            'ec48': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ec48': "1",
+            'ec48': "0",
         }
 
         self.partion_offset = {
@@ -116,7 +116,6 @@ class UAESP32FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
-        self.pexp.expect_only(60, "Security check result: Pass")
 
     def check_devreg_data(self):
         output = self.pexp.expect_get_output("info", "", timeout=3)
