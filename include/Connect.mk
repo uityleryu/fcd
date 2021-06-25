@@ -47,6 +47,9 @@ TOOLS-UC-DISPLAY-21+=$(TOOLS-CONFIG)
 TOOLS-UC-DISPLAY-27+=$(TOOLS-CONFIG)
 
 TOOLS-LVDU-4-24+=$(TOOLS-CONFIG)
+TOOLS-LVDU-4-24+= \
+    lvdu_4_24/helper*
+
 TOOLS-LVDU-1= \
     $(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
