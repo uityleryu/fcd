@@ -51,6 +51,14 @@ class UAESP32FactoryGeneral(ScriptBase):
             'ec48': "0",
         }
 
+        self.flash_size = {
+            'ec48': "16MB",
+        }
+
+        self.eeprom_offset = {
+            'ec48': "0xfff000",
+        }
+
         self.partion_offset = {
             'ec48': {
                 'bootloader': '0x1000',
@@ -81,8 +89,9 @@ class UAESP32FactoryGeneral(ScriptBase):
 
     def fwupdate(self):
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 16MB " \
+              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size {} " \
               "{} {} {} {} {} {} {} {}".format(self.row_id,
+                                               self.flash_size[self.board_id],
                                                self.partion_offset[self.board_id]['bootloader'], self.fw_bootloader,
                                                self.partion_offset[self.board_id]['partition_table'], self.fw_ptn_table,
                                                self.partion_offset[self.board_id]['ota'], self.fw_ota_data,
@@ -102,9 +111,16 @@ class UAESP32FactoryGeneral(ScriptBase):
 
     def put_devreg_data_in_dut(self):
         self.pexp.close()
+        time.sleep(1)
+
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size {} {} /tftpboot/e.s.{}".format(
+                  self.row_id,
+                  self.flash_size[self.board_id],
+                  self.eeprom_offset[self.board_id],
+                  self.row_id)
+
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
