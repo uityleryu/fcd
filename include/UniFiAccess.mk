@@ -61,6 +61,7 @@ $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,02966_ec60))
-$(eval $(call ProductCompress2,03329_ec46))
-$(eval $(call ProductCompress2,03003_ec3b))
+$(eval $(call ProductCompress2,02966-ec60))
+$(eval $(call ProductCompress2,03329-ec46))
+$(eval $(call ProductCompress2,03329-ec3b))
+$(eval $(call ProductCompress2,03291-ec43))
