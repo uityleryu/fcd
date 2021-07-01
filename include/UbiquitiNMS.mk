@@ -29,7 +29,7 @@ IMAGE-UISP-O-PRO= \
 
 IMAGE-UISP-R= \
     images/ee6e* \
-    unms-fw/UISPR.mt7621* \
+    unms-fw/uisp-r/UISPR.mt7621* \
 
 IMAGE-UNMS+=$(IMAGE-UISP-CONSOLE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
