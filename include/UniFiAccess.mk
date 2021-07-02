@@ -6,7 +6,12 @@ IMAGE-UA-GATE= \
     ua-fw/ua-gate* \
     ua-fw/GT.mt7621*
 
+IMAGE-UA-ThermalScan= \
+    images/ec70* \
+    ua-fw/thermalscan.*
+
 IMAGE-UA+=$(IMAGE-UA-GATE)
+IMAGE-UA+=$(IMAGE-UA-ThermalScan)
 
 IMAGE-UA-ELEVATOR= \
     images/ec3b* \
@@ -35,14 +40,22 @@ TOOLS-CONFIG= \
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
+
+TOOLS-UA-ThermalScan+=$(TOOLS-UA)
+TOOLS-UA-ThermalScan+= \
+    uvc/128k_ff.bin
+
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
+
 $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================

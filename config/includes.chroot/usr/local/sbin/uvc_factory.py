@@ -23,12 +23,17 @@ import configparser
 # a590 = G3MINI
 # a595 = G4INS
 # a5a2 = AIBullet
+# ec70 = Thermal Scan
+
 
 PROVISION_EN  = True
 DOHELPER_EN   = True
 REGISTER_EN   = True
 FWUPDATE_EN   = True
 DATAVERIFY_EN = True
+# REGISTER_EN   = False
+# FWUPDATE_EN   = False
+# DATAVERIFY_EN = False
 
 
 class UVCFactoryGeneral(ScriptBase):
@@ -90,7 +95,8 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbellpro"
 
         elif self.product_name == "UVC-AI360":
-            second_falsh_en = False
+            # second_falsh_en = False
+            second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC AI 360"
                 self.ip = "192.168.1.20"
@@ -121,6 +127,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UA-Thermal-Scan":
+            self.board_name = "UniFi Thermal Scan"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -147,7 +159,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "0",
             'a595': "0",
             'a5a0': "1",
-            'a5a2': '1'
+            'a5a2': '1',
+            'ec70': '1'
         }
 
         # number of WiFi
@@ -162,7 +175,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "1",
             'a595': "1",
             'a5a0': "0",
-            'a5a2': '0'
+            'a5a2': '0',
+            'ec70': '0'
         }
 
         # number of Bluetooth
@@ -177,7 +191,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "1",
             'a595': "1",
             'a5a0': "0",
-            'a5a2': '0'
+            'a5a2': '0',
+            'ec70': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -199,7 +214,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a590': "ifconfig eth0 ",
             'a595': "ifconfig eth0 ",
             'a5a0': "ifconfig eth0 ",
-            'a5a2': "ifconfig eth0 "
+            'a5a2': "ifconfig eth0 ",
+            'ec70': "ifconfig eth0 "
+
         }
 
     def ezreadini(self, path, section, item):
@@ -260,7 +277,11 @@ class UVCFactoryGeneral(ScriptBase):
         return version
 
     def get_devreg_mtd(self):
+        mtd_all = self.session.execmd_getmsg('cat /proc/mtd')
+        print('mtd all = {}'.format(mtd_all))
+
         mtd = self.session.execmd_getmsg('cat /proc/mtd | grep {}'.format(self.mtd_name))
+        print('mtd = {}'.format(mtd))
         mtd = '/dev/{}'.format(mtd.split(':')[0])
         return mtd
 
@@ -389,6 +410,8 @@ class UVCFactoryGeneral(ScriptBase):
         self.eerom_status = 1
 
     def check_if_need_register_again(self):
+        return False
+
         log_debug('check_if_need_register_again')
         exp_md5_00 = '7bb95b85a48f9db61088daed1363e030'
         exp_md5_ff = '2a274787910027a701cab3e3592304b4'
@@ -795,6 +818,7 @@ class UVCFactoryGeneral(ScriptBase):
 
         log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
 
+        time.sleep(5)
         cmd = 'md5sum /etc/persistent/server.pem'
         rmsg = (self.session.execmd_getmsg(cmd)).split()[0]
         log_debug('md5_server.pem_new: {}'.format(rmsg))
@@ -917,7 +941,7 @@ class UVCFactoryGeneral(ScriptBase):
         print('uptime = {}'.format(uptime))
 
         fw_version = self.session.execmd_getmsg("cat /usr/lib/version")
-        print('fw_version = {}'.format(fw_version))
+        print('cat /usr/lib/version = \n{}'.format(fw_version))
 
         board_info = self.session.execmd_getmsg("cat /etc/board.info")
         print('board_info = {}'.format(board_info))

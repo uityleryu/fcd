@@ -274,7 +274,7 @@ class winFcdFactory(Gtk.Window):
         return True
 
     def check_comport(self):
-        if (CONST.active_product_series != "UniFiVideo"):
+        if (CONST.active_product_series not in ["UniFiVideo", 'UniFiAccess']):
             __FUNC = sys._getframe().f_code.co_name
             cmd = "ls /dev | grep 'ttyUSB\|ttyACM'"
             log.info("search tty cmd: " + cmd)
@@ -301,7 +301,7 @@ class winFcdFactory(Gtk.Window):
 
                 CONST.active_tty.append(itty)
         else:
-            CONST.active_tty.append("ttyUSB0")        
+            CONST.active_tty.append("ttyUSB0")
 
         num = len(CONST.active_tty)
         self.slot1.apply_comport_item(CONST.active_tty)
