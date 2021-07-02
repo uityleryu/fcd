@@ -76,7 +76,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
               "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
               "{} {} {} {} {} {} {} {}".format(self.row_id,
                                               "0x1000" , self.fw_bootloader,
-                                              "0xa000" , self.fw_ptn_table ,
+                                              "0xb000" , self.fw_ptn_table ,
                                               "0xd000" , self.fw_ota_data  ,
                                               "0x10000", self.fw_app       )
         log_debug(cmd)
