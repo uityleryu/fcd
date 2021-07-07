@@ -1096,21 +1096,8 @@
   "UniFiNVR":
   {
     "UNVR-4":{
-      "INDEX"       : 0,
-      "NAME"        : "UNVR-4",
-      "BOARDID"     : "ea16",
-      "BOMREV"      : "113-02832",
-      "DESC"        : "UniFi NVR 4-Bay",
-      "FILE"        : "unas_alpine_factory.py",
-      "T1FILE"      : "",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0006",
-      "SW_ID"       : "0801"
-    },
-
-    "UNVR-BT":{
       "INDEX"       : 1,
-      "NAME"        : "UNVR-BT",
+      "NAME"        : "UNVR-4",
       "BOARDID"     : "ea1a",
       "BOMREV"      : "113-03192",
       "DESC"        : "UniFi NVR with BT",
