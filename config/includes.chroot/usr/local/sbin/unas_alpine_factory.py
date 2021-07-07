@@ -35,7 +35,6 @@ class UNASALPINEFactory(ScriptBase):
         # script specific vars
         self.devregparts = {
             '0000': "/dev/mtdblock9",
-            'ea16': "/dev/mtdblock9",
             'ea1a': "/dev/mtdblock4",
             'ea20': "/dev/mtdblock4",
             'ea21': "/dev/mtdblock4",
@@ -59,7 +58,6 @@ class UNASALPINEFactory(ScriptBase):
 
         # number of Ethernet
         self.ethnum = {
-            'ea16': "2",
             'ea1a': "2",
             'ea20': "2",
             'ea21': "3",
@@ -68,7 +66,6 @@ class UNASALPINEFactory(ScriptBase):
 
         # number of WiFi
         self.wifinum = {
-            'ea16': "0",
             'ea1a': "0",
             'ea20': "0",
             'ea21': "0",
@@ -77,7 +74,6 @@ class UNASALPINEFactory(ScriptBase):
 
         # number of Bluetooth
         self.btnum = {
-            'ea16': "0",
             'ea1a': "1",
             'ea20': "1",
             'ea21': "1",
@@ -85,7 +81,6 @@ class UNASALPINEFactory(ScriptBase):
         }
 
         self.netif = {
-            'ea16': "ifconfig enp0s1 ",
             'ea1a': "ifconfig enp0s1 ",
             'ea20': "ifconfig enp0s1 ",
             'ea21': "ifconfig enp0s1 ",

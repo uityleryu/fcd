@@ -2,12 +2,8 @@
 # Images
 
 IMAGE-UNVR4= \
-    images/ea16* \
-    unas/*
-
-IMAGE-UNVR-BT= \
     images/ea1a* \
-    unas/unifinvr-bt-fw.bin \
+    unas/unifinvr-4-fw.bin \
     unas/UNVR4*
 
 IMAGE-UNVR-PRO= \
@@ -26,7 +22,6 @@ IMAGE-UNVR-HD= \
     unas/UNVRHD*
 
 IMAGE-UNVR+=$(IMAGE-UNVR4)
-IMAGE-UNVR+=$(IMAGE-UNVR-BT)
 IMAGE-UNVR+=$(IMAGE-UNVR-PRO)
 IMAGE-UNVR+=$(IMAGE-UNVR-AI)
 IMAGE-UNVR+=$(IMAGE-UNVR-HD)
@@ -58,25 +53,20 @@ TOOLS-UNVR+= \
     unas/enp0s2.network
 
 TOOLS-UNVR4+=$(TOOLS-UNVR)
-TOOLS-UNVR-BT+=$(TOOLS-UNVR)
 TOOLS-UNVR-PRO+=$(TOOLS-UNVR)
 TOOLS-UNVR-AI+=$(TOOLS-UNVR)
 TOOLS-UNVR-HD+=$(TOOLS-UNVR)
 
 # Project target
 
-$(eval $(call ProductImage,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-AI,FCD_$(PRD)_UNVR-AI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
-$(eval $(call ProductCompress,UNVR,FCD_$(PRD)_UNVR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR4,FCD_$(PRD)_UNVR4_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNVR-BT,FCD_$(PRD)_UNVR-BT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-PRO,FCD_$(PRD)_UNVR-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-AI,FCD_$(PRD)_UNVR-AI_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
@@ -85,6 +75,5 @@ $(eval $(call ProductCompress,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
 
 $(eval $(call ProductCompress2,03137-ea20))
 $(eval $(call ProductCompress2,03192-ea1a))
-$(eval $(call ProductCompress2,02832-ea16))
 $(eval $(call ProductCompress2,03026-ea21))
 $(eval $(call ProductCompress2,03298-ea30))
