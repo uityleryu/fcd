@@ -110,11 +110,18 @@ class UVCFactoryGeneral(ScriptBase):
                 self.helperexe = "helper_uvcai360"
 
         elif self.product_name == "UVC-G3MINI":
-            self.board_name = "UVC G3 Mini"
-            self.devregpart = "/dev/mtd11"
-            self.ip = "192.168.2.20"
-            self.flash_module = "m25p80_uvcg3flexmini.ko"
-            self.helperexe = "helper_uvcg3flexmini"
+            second_falsh_en = True
+            if second_falsh_en is True:
+                self.board_name = "UVC G3 Mini"
+                self.ip = "192.168.2.20"
+                self.mtd_name = 'spi'
+                self.helper_rule = 1
+            else:
+                self.board_name = "UVC G3 Mini"
+                self.devregpart = "/dev/mtd11"
+                self.ip = "192.168.2.20"
+                self.flash_module = "m25p80_uvcg3flexmini.ko"
+                self.helperexe = "helper_uvcg3flexmini"
 
         elif self.product_name == "UVC-G4INS":
             self.board_name = "UVC G4 Instant"
@@ -402,12 +409,13 @@ class UVCFactoryGeneral(ScriptBase):
         rmsg = self.session.execmd_getmsg(cmdstr)
         log_debug(rmsg)
 
-        log_debug("dump flash module")
-        cmdstr = "hexdump -C {} 2>&1".format(self.devregpart)
-        log_debug(cmdstr)
-        rmsg = self.session.execmd_getmsg(cmdstr)
-        log_debug(rmsg)
-        self.eerom_status = 1
+        if self.product_name != "UVC-G3MINI":
+            log_debug("dump flash module")
+            cmdstr = "hexdump -C {} 2>&1".format(self.devregpart)
+            log_debug(cmdstr)
+            rmsg = self.session.execmd_getmsg(cmdstr)
+            log_debug(rmsg)
+            self.eerom_status = 1
 
     def check_if_need_register_again(self):
         return False
