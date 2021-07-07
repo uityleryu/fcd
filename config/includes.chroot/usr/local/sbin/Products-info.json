@@ -1100,7 +1100,7 @@
       "NAME"        : "UNVR-4",
       "BOARDID"     : "ea1a",
       "BOMREV"      : "113-03192",
-      "DESC"        : "UniFi NVR with BT",
+      "DESC"        : "UniFi NVR",
       "FILE"        : "unas_alpine_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
