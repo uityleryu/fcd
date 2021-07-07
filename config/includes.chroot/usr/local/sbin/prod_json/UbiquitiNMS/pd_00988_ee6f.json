@@ -21,9 +21,14 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/unms-slite",
+          "DST_PATH": "tools/unms-slite",
+          "FILES": [
+            "esx_cfg.part",
+            "esx_log.part",
+            "helper_RTL838x_release_09072020",
+            "helper_RTL838x_release"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
