@@ -1,66 +1,66 @@
 {
-    "UniFiCK": {
-      "UCKP": {
-        "INDEX": "0",
-        "NAME": "UCKP",
-        "BOARDID": "e970",
-        "BOMREV": "113-02570",
-        "DESC": "UniFi CloudKey Pluss",
-        "FILE": "uck_apq8053_factory.py",
-        "T1FILE": "",
-        "QRCHECK": "True",
-        "SW_ID": "0c01",
-        "DOWNLOAD_FILE": [
-          {
-            "SRC_PATH": "images/fcd-image/uck-fw",
-            "DST_PATH": "uck-fw",
-            "FILES": [
-              "RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img",
-              "CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg",
-              "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs",
-              "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
-            ]
-          },
-          {
-            "SRC_PATH": "images/tools/uck",
-            "DST_PATH": "tools/uck",
-            "FILES": [
-              "ck-ee",
-              "DRA_ed0eb1b5_helper_APQ8053_release.strip",
-              "mmc-prep.sh",
-              "check-part.sh",
-              "check-part.txt"
-            ]
-          },
-          {
-            "SRC_PATH": "images/tools/common",
-            "DST_PATH": "tools/common",
-            "FILES": [
-              "sshd_config",
-              "tmux.conf",
-              "x86-64k-ee",
-              "aarch64-rpi4-64k-ee"
-            ]
-          }
-        ],
-        "CREATE_LINK": [
-          [
-            "tftp/images/e970-mfg.bin",
-            "../uck-fw/CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg"
-          ],
-          [
-            "tftp/images/e970-recovery.bin",
-            "../uck-fw/RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img"
-          ],
-          [
-            "tftp/images/e970-fw.bin",
-            "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs"
-          ],
-          [
-            "tftp/images/e970-uboot.img",
-            "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
+  "UniFiCK": {
+    "UCKP": {
+      "INDEX": "0",
+      "NAME": "UCKP",
+      "BOARDID": "e970",
+      "BOMREV": "113-02570",
+      "DESC": "UniFi CloudKey Pluss",
+      "FILE": "uck_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uck-fw",
+          "DST_PATH": "uck-fw",
+          "FILES": [
+            "RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img",
+            "CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg",
+            "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs",
+            "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
           ]
+        },
+        {
+          "SRC_PATH": "images/tools/uck",
+          "DST_PATH": "tools/uck",
+          "FILES": [
+            "ck-ee",
+            "DRA_ed0eb1b5_helper_APQ8053_release.strip",
+            "mmc-prep.sh",
+            "check-part.sh",
+            "check-part.txt"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e970-mfg.bin",
+          "../uck-fw/CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg"
+        ],
+        [
+          "tftp/images/e970-recovery.bin",
+          "../uck-fw/RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img"
+        ],
+        [
+          "tftp/images/e970-fw.bin",
+          "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs"
+        ],
+        [
+          "tftp/images/e970-uboot.img",
+          "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
         ]
-      }
+      ]
     }
   }
+}
