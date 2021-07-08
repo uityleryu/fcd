@@ -24,3 +24,6 @@ version.txt
 cscope.*
 config/includes.chroot/usr/local/sbin/PAlib
 *.swp
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/inspectionProfiles/profiles_settings.xml

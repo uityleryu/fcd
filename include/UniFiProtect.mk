@@ -115,7 +115,7 @@ TOOLS-a920+=$(TOOLS-CONFIG)
 
 $(eval $(call ProductCompress2,02765-a911))
 $(eval $(call ProductCompress2,03025-a919))
-$(eval $(call ProductCompress2,03033-a915))
+$(eval $(call ProductCompress2,03452-a915))
 $(eval $(call ProductCompress2,03302-ab12))
 $(eval $(call ProductCompress2,02765-a941))
 $(eval $(call ProductCompress2,02973-a913))
