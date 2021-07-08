@@ -9,6 +9,7 @@
       "FILE": "uap_qca956x_factory2.py",
       "T1FILE": "uap_qca956x_mfg.py",
       "QRCHECK": "True",
+      "FCD_ID": "0004",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {

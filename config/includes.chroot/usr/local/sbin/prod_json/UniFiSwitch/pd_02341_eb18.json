@@ -9,6 +9,7 @@
       "FILE": "us_bcm5334x_factory.py",
       "T1FILE": "us_bcm5334x_mfg.py",
       "QRCHECK": "True",
+      "FCD_ID": "0002",
       "SW_ID": "0201",
       "DOWNLOAD_FILE": [
         {

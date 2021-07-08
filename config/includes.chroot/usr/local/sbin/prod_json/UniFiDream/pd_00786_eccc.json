@@ -9,6 +9,7 @@
       "FILE": "udm_mt7622_bspfactory.py",
       "T1FILE": "udm_mt7622_mfg.py",
       "QRCHECK": "True",
+      "FCD_ID": "0005",
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
