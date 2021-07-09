@@ -73,7 +73,7 @@ $(eval $(call ProductCompress,UNVR-HD,FCD_$(PRD)_UNVR-HD_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,03137-ea20))
-$(eval $(call ProductCompress2,03192-ea1a))
-$(eval $(call ProductCompress2,03026-ea21))
-$(eval $(call ProductCompress2,03298-ea30))
+$(eval $(call ProductCompress2,03137_ea20))
+$(eval $(call ProductCompress2,03192_ea1a))
+$(eval $(call ProductCompress2,03026_ea21))
+$(eval $(call ProductCompress2,03298_ea30))

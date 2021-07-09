@@ -24,9 +24,9 @@ def main():
     result = naming_rule_re.findall(fw_filename)
 
     if len(result) < 1 or len(result[0]) < 11:
-        print("======================================") 
+        print("======================================")
         print("  Version format is invalid !!! ")
-        print("======================================") 
+        print("======================================")
         exit(1)
 
     print("======================================")  

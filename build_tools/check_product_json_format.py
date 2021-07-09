@@ -18,6 +18,7 @@ def main():
         "FILE",
         "T1FILE",
         "QRCHECK",
+        "FCD_ID",
         "SW_ID",
         "DOWNLOAD_FILE",
         "CREATE_LINK"
