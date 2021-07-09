@@ -118,7 +118,7 @@ class U6IPQ5018BspFactory(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
         self._ramboot_uap_fwupdate()
-        self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
+        self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
