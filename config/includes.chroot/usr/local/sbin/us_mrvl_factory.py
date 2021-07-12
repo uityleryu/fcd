@@ -26,7 +26,7 @@ class USW_MARVELL_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {'ed41'}
+        self.wait_LCM_upgrade_en = {}
 
         # number of Ethernet
         self.macnum = {
