@@ -78,7 +78,7 @@ class UVCFactoryGeneral(ScriptBase):
             if second_falsh_en is True:
                 self.board_name = "UVC-G4BULLET"
                 self.ip = "192.168.1.20"
-                self.mtd_name = 'amba_nor'
+                self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
                 self.board_name = "UVC G4 Bullet"
@@ -92,7 +92,7 @@ class UVCFactoryGeneral(ScriptBase):
             if second_falsh_en is True:
                 self.board_name = "UVC-G4DOME"
                 self.ip = "192.168.1.20"
-                self.mtd_name = 'amba_nor'
+                self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
                 self.board_name = "UVC G4 Dome"
@@ -124,11 +124,18 @@ class UVCFactoryGeneral(ScriptBase):
                 self.helperexe = "helper_uvcai360"
 
         elif self.product_name == "UVC-G3MINI":
-            self.board_name = "UVC G3 Mini"
-            self.devregpart = "/dev/mtd11"
-            self.ip = "192.168.2.20"
-            self.flash_module = "m25p80_uvcg3flexmini.ko"
-            self.helperexe = "helper_uvcg3flexmini"
+            second_falsh_en = True
+            if second_falsh_en is True:
+                self.board_name = "UVC G3 Mini"
+                self.ip = "192.168.2.20"
+                self.mtd_name = 'spi'
+                self.helper_rule = 1
+            else:
+                self.board_name = "UVC G3 Mini"
+                self.devregpart = "/dev/mtd11"
+                self.ip = "192.168.2.20"
+                self.flash_module = "m25p80_uvcg3flexmini.ko"
+                self.helperexe = "helper_uvcg3flexmini"
 
         elif self.product_name == "UVC-G4INS":
             self.board_name = "UVC G4 Instant"
