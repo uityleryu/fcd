@@ -28,40 +28,47 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         # Base path
         tool_name = {
-            'ea2a': "udw"
+            'ea2c': "udm_pro_se",
+            'ea2a': "udw",
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         # active port
         self.activeport = {
-            'ea2a': "al_eth3"
+            'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
+            'ea2a': "al_eth3",
         }
 
         # number of Ethernet
         self.ethnum = {
-            'ea2a': "20"
+            'ea2c': "11",
+            'ea2a': "20",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ea2a': "2"
+            'ea2c': "0",
+            'ea2a': "2",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ea2a': "1"
+            'ea2c': "1",
+            'ea2a': "1",
         }
 
         # FIXME: eth17 in future
         # ethernet interface
         self.netif = {
-            'ea2a': "br0"
+            'ea2c': "eth9",
+            'ea2a': "br0",
         }
 
         # LCM update
         self.lcmupdate = {
-            'ea2a': False
+            'ea2c': True,
+            'ea2a': False,
         }
 
         self.devnetmeta = {
@@ -89,9 +96,10 @@ class UDM_AL324_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         # FIXME: comment for tmp
-        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
-        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
-        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+        if self.board_id == "ea2c":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
 
@@ -187,7 +195,12 @@ class UDM_AL324_FACTORY(ScriptBase):
                      src_file=os.path.join(self.tool_folder, "nvr-lcm-tools*"),
                      dst_file=self.dut_tmpdir)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
+        try:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
+        except Exception as e:
+            self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
+            raise e
 
     def run(self):
         """

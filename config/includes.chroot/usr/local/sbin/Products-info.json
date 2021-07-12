@@ -107,7 +107,7 @@
       "BOARDID"     : "ea2c",
       "BOMREV"      : "113-00917",
       "DESC"        : "UniFi Dream Machine Pro SE",
-      "FILE"        : "udm_al324_debian_factory.py",
+      "FILE"        : "udm_al324_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0005",

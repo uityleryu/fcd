@@ -55,9 +55,7 @@ IMAGE-UDR= \
 IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO-SE+= \
     images/ea2c* \
-    udm-fw/uImage-udmpro-se* \
-    udm-fw/boot-udmpro-se* \
-    udm-fw/UDMPROSE.al324*
+    udm-fw/udmpro-se/*
 
 IMAGE-UDW= \
     images/ea2a* \
