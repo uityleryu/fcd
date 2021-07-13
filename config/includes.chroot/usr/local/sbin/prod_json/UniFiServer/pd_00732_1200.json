@@ -9,6 +9,7 @@
       "FILE": "unifi_ast2500_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "FCD_ID": "0010",
       "SW_ID": "1b01",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []

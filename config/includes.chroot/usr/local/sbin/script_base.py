@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.40"
+    __version__ = "1.0.41"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -625,7 +625,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=post_txt,
                                 valid_chk=True)
 
-    def set_ub_net(self, premac=None, dutaddr=None, srvaddr=None):
+    def set_ub_net(self, premac=None, dutaddr=None, srvaddr=None, ethact=None):
         if premac is not None:
             cmd = "setenv ethaddr {0}".format(premac)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -639,6 +639,10 @@ class ScriptBase(object):
             srvaddr = self.tftp_server
         cmd = "setenv serverip {0}".format(srvaddr)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
+        if ethact is not None:
+            cmd = "setenv ethact {0}".format(ethact)
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
     def set_lnx_net(self, intf):
         log_debug("Starting to configure the networking ... ")

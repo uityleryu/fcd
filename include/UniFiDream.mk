@@ -7,8 +7,7 @@ IMAGE-UDM+=$(IMAGE-UDM-BASIC)
 IMAGE-UDM+= \
     images/ea11* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage-udm-udmp.r \
-    udm-fw/UDM.alpinev2.v1.8.6.6a09c7c.210125.1544.bin
+    udm-fw/udm/*
 
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
@@ -55,9 +54,7 @@ IMAGE-UDR= \
 IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMPRO-SE+= \
     images/ea2c* \
-    udm-fw/uImage-udmpro-se* \
-    udm-fw/boot-udmpro-se* \
-    udm-fw/UDMPROSE.al324*
+    udm-fw/udmpro-se/*
 
 IMAGE-UDW= \
     images/ea2a* \
@@ -134,12 +131,12 @@ $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,00917-ea2c))
-$(eval $(call ProductCompress2,00623-ea11))
-$(eval $(call ProductCompress2,00740-ea19))
-$(eval $(call ProductCompress2,02719-ea17))
-$(eval $(call ProductCompress2,00618-ea13))
-$(eval $(call ProductCompress2,00723-ea15))
-$(eval $(call ProductCompress2,00622-ec25))
-$(eval $(call ProductCompress2,00786-eccc))
-$(eval $(call ProductCompress2,00633-ec28))
+$(eval $(call ProductCompress2,00917_ea2c))
+$(eval $(call ProductCompress2,00623_ea11))
+$(eval $(call ProductCompress2,00740_ea19))
+$(eval $(call ProductCompress2,02719_ea17))
+$(eval $(call ProductCompress2,00618_ea13))
+$(eval $(call ProductCompress2,00723_ea15))
+$(eval $(call ProductCompress2,00622_ec25))
+$(eval $(call ProductCompress2,00786_eccc))
+$(eval $(call ProductCompress2,00633_ec28))

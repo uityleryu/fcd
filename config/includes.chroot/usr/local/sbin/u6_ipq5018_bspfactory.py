@@ -26,7 +26,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "1",
             'a653': "0",
             'a654': "1",
-            'a655': "1"
+            'a655': "1",
+            'a656': "1"
         }
 
         self.wifinum = {
@@ -35,7 +36,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "2",
             'a653': "2",
             'a654': "3",
-            'a655': "3"
+            'a655': "3",
+            'a656': "3"
         }
 
         self.btnum = {
@@ -44,7 +46,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "1",
             'a653': "1",
             'a654': "1",
-            'a655': "1"
+            'a655': "1",
+            'a656': "1"
         }
         
         self.bootm_addr = {
@@ -53,7 +56,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a652': "0x50000000",
             'a653': "0x50000000",
             'a654': "0x50000000",
-            'a655': "0x50000000"
+            'a655': "0x50000000",
+            'a656': "0x50000000"
         }
         
         self.linux_prompt_select = {
@@ -63,6 +67,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a653': "#",
             'a654': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
+            'a656': "#",
         }
 
         self.devnetmeta = {
@@ -75,7 +80,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "n/a" :
+        if self.board_id == "a656" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
@@ -118,7 +123,7 @@ class U6IPQ5018BspFactory(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
         self._ramboot_uap_fwupdate()
-        self.login(self.user, self.password, timeout=120, log_level_emerg=True, press_enter=True)
+        self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)

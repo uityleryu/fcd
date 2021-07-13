@@ -1,21 +1,22 @@
 {
   "UniFiNVR": {
-    "UNVR-BT": {
+    "UNVR-4": {
       "INDEX": 0,
-      "NAME": "UNVR-BT",
+      "NAME": "UNVR-4",
       "BOARDID": "ea1a",
       "BOMREV": "113-03192",
-      "DESC": "UniFi NVR with BT",
+      "DESC": "UniFi NVR",
       "FILE": "unas_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "FCD_ID": "0006",
       "SW_ID": "0801",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/fcd-image/unas",
           "DST_PATH": "unas",
           "FILES": [
-            "unifinvr-bt-fw.bin"
+            "unifinvr-4-fw.bin"
           ]
         },
         {
@@ -37,7 +38,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea1a-fw.bin",
-          "../unas/unifinvr-bt-fw.bin"
+          "../unas/unifinvr-4-fw.bin"
         ]
       ]
     }

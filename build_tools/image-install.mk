@@ -5,7 +5,7 @@ $1-local: rootfs gitrepo image-install-$1 packiso-$1
 $1-update: image-install-$1 packiso-$1
 
 $1-namechk:
-	python3 include/namechk.py $2
+	python3 build_tools/namechk.py $2
 
 image-install-$1: $1-namechk
 	@echo " ****************************************************************** "
@@ -34,8 +34,8 @@ image-install-$1: $1-namechk
 	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/PAlib
 	cp -rf $(UBNTLIB_DIR)/PAlib/* $(NEWSQUASHFS)/usr/local/sbin/PAlib/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
-	bash include/cp2tftp.sh iso $(IMAGE-$1)
-	bash include/tar2tftp.sh iso $(TOOLS-$1)
+	bash build_tools/cp2tftp.sh iso $(IMAGE-$1)
+	bash build_tools/tar2tftp.sh iso $(TOOLS-$1)
 
 	@echo ">> change the FCD version to the desktop"
 	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
@@ -82,18 +82,17 @@ image-ostrich-install-$1: $1-namechk
 	cp -rfL $(FCDAPP_DIR)/usr/local/sbin/* $(OSTRICH_DIR)/sbin/.
 	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
 	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
-	bash include/cp2tftp.sh ostrich $(IMAGE-$1)
-	bash include/tar2tftp.sh ostrich $(TOOLS-$1)
+	bash build_tools/cp2tftp.sh ostrich $(IMAGE-$1)
+	bash build_tools/tar2tftp.sh ostrich $(TOOLS-$1)
 	cd $(OUTDIR); tar -cvzf $2.tgz ostrich
 
 endef
 
 
 define ProductCompress2
-MATCH_SINGLE := $(shell [[ $1 =~ [0-9]{5}-[0-9a-f]{4} ]] && echo matched)
+MATCH_SINGLE := $(shell [[ $1 =~ [0-9]{5}_[0-9a-f]{4} ]] && echo matched)
 
-$1-antman: gitrepo image-antman-install-$1
-$1-antman-local: image-antman-install-$1
+$1-antman: fcd-ubntlib image-antman-install-$1
 
 image-antman-install-$1:
 	rm -rf $(OSTRICH_DIR)
@@ -102,11 +101,6 @@ image-antman-install-$1:
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
 	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
 	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
-ifndef MATCH_SINGLE
-	python3 include/gen_pd_series.py -pl=$(PRD) -sr="$(PRODUCT-$1)" -psr=$1
-	python3 include/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -tp="buildseries"
-else
-	python3 include/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -tp="buildsingle"
-endif
+	python3 build_tools/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER)
 
 endef

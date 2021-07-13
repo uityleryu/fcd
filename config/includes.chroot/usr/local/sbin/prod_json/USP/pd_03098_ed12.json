@@ -9,6 +9,7 @@
       "FILE": "usp_mt7628_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "FCD_ID": "000e",
       "SW_ID": "1801",
       "DOWNLOAD_FILE": [
         {

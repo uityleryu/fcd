@@ -9,6 +9,7 @@
       "FILE": "am_qca955x_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
+      "FCD_ID": "000b",
       "SW_ID": "1201",
       "DOWNLOAD_FILE": [
         {

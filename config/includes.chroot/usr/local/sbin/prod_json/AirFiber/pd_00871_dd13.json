@@ -9,6 +9,7 @@
       "FILE": "af_ls104x_factory.py",
       "T1FILE": "af_ls104x_mfg.py",
       "QRCHECK": "False",
+      "FCD_ID": "000a",
       "SW_ID": "1001",
       "DOWNLOAD_FILE": [
         {

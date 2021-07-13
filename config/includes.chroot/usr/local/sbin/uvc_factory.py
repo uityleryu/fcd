@@ -423,12 +423,13 @@ class UVCFactoryGeneral(ScriptBase):
         rmsg = self.session.execmd_getmsg(cmdstr)
         log_debug(rmsg)
 
-        log_debug("dump flash module")
-        cmdstr = "hexdump -C {} 2>&1".format(self.devregpart)
-        log_debug(cmdstr)
-        rmsg = self.session.execmd_getmsg(cmdstr)
-        log_debug(rmsg)
-        self.eerom_status = 1
+        if self.product_name != "UVC-G3MINI":
+            log_debug("dump flash module")
+            cmdstr = "hexdump -C {} 2>&1".format(self.devregpart)
+            log_debug(cmdstr)
+            rmsg = self.session.execmd_getmsg(cmdstr)
+            log_debug(rmsg)
+            self.eerom_status = 1
 
     def check_if_need_register_again(self):
         return False

@@ -9,6 +9,7 @@
       "FILE": "ubios_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "FCD_ID": "0005",
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {

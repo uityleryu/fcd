@@ -9,6 +9,7 @@
       "FILE": "ufp_efr32_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
+      "FCD_ID": "000d",
       "SW_ID": "1602",
       "DOWNLOAD_FILE": [
         {
