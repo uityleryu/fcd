@@ -7,8 +7,7 @@ IMAGE-UDM+=$(IMAGE-UDM-BASIC)
 IMAGE-UDM+= \
     images/ea11* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
-    udm-fw/uImage-udm-udmp.r \
-    udm-fw/UDM.alpinev2.v1.8.6.6a09c7c.210125.1544.bin
+    udm-fw/udm/*
 
 IMAGE-UDMSE+=$(IMAGE-UDM-BASIC)
 IMAGE-UDMSE+= \
