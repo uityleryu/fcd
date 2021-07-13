@@ -10,7 +10,57 @@ import time
 import subprocess
 import glob
 
-from uiopen import UIpopen
+
+class UIpopen(object):
+    def __init__(self):
+        pass
+
+    """
+        If timeout is None, the process will non-stop when the command keeps running.
+        So, give a default 10 seconds to timeout
+    """
+    def xcmd(self, cmd, timeout=None, rtmsg=True, retry=3):
+        for i in range(0, retry+1):
+            try:
+                if sys.platform.startswith('win32'):
+                    proc = subprocess.Popen(cmd, shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+                else:
+                    proc = subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+
+                """
+                    Python offical website statements:
+                    deadlock when using stdout=PIPE and/or stderr=PIPE and the child process generates enough output to
+                    a pipe such that it blocks waiting for the OS pipe buffer to accept more data.
+                    Use communicate() to avoid that.
+                """
+                locd = locale.getdefaultlocale()
+
+                if timeout is not None:
+                    buf = proc.communicate(timeout=timeout)[0].decode(locd[1]).strip()
+                else:
+                    buf = proc.communicate()[0].decode(locd[1]).strip()
+
+                print("coding format: " + locd[1])
+                print(buf)
+            except Exception as e:
+                if i < retry:
+                    print("xcmd Retry {}".format(i+1))
+                    time.sleep(0.2)
+                    continue
+                else:
+                    print("Exceeded maximum retry times {}".format(i))
+                    raise e
+            else:
+                break
+
+        if rtmsg is True:
+            return [buf, proc.returncode]
+        else:
+            if proc.returncode != 0:
+                return False
+            else:
+                return True
+
 
 '''
     Registration scripts and libraries
@@ -57,6 +107,13 @@ parse.add_argument('--fcdver', '-v', dest='fcdver', help='FCD version', default=
 parse.add_argument('--fwver', '-j', dest='fwver', help='FW version', default=None)
 parse.add_argument('--type', '-tp', dest='type', help='Build Type', default=None)
 args, _ = parse.parse_known_args()
+
+if args.type is None:
+    print("Please give a Build Type")
+    exit(1)
+else:
+    build_type = args.type
+    print("Build Type: " + build_type)
 
 if args.prodline is None:
     print("Please give a product line")
@@ -148,113 +205,77 @@ def download_images():
 
 
 def gen_prod_json():
-    global pn
-    global fcdname
     global pjson
+    global fcdname
+    global series_type
 
-    m_type = re.findall(r'[0-9]{5}_[0-9a-f]{4}', pn)
-    if m_type:
-        build_type = "single"
+    '''
+        Copy specific product json file to Product-info.json
+    '''
+    if build_type == "buildsingle":
+        tg = "pd_{}_{}.json".format(pn.split("-")[0], pn.split("-")[1])
     else:
-        build_type = "series"
+        tg = "pd_{}.json".format(pn)
 
-    thk = {}
-    thk[pl] = {}
-    kidx = 0
-    if build_type == "series":
-        fh = open("build_tools/product_series_category.json")
+    cmd = "find -L {} -name {}".format(prod_json_dir, tg)
+    print(cmd)
+    [tg_path, rtc] = cn.xcmd(cmd)
+    match = re.findall(tg, tg_path)
+    if match:
+        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
+        src = tg_path
+        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
+        dst = os.path.join(reg_bs_dir, "Products-info.json")
+        print("src: " + src)
+        print("dst: " + dst)
+        shutil.copyfile(src, dst)
+    else:
+        rmsg = "Can't find model: {}".format(pn)
+        print(rmsg)
+        exit(1)
+
+    if build_type == "buildsingle":
+        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
+        tgfile = os.path.join(reg_bs_dir, "Products-info.json")
+        fh = open(tgfile)
         pjson = json.load(fh)
         fh.close()
 
-        if pn not in pjson.keys():
-            print("Can't find the product series in product_series_glossory.json")
+        for i in pjson[pl].keys():
+            if pjson[pl][i]['BOARDID'] == pn.split("-")[1]:
+                product_name = pjson[pl][i]['NAME']
+                break
+        else:
+            print("Can't find the model in Products-info.json")
             exit(1)
 
-        if pjson[pn][0] == "all":
-            # Ex: /home/vjc/malon/uifcd5/config/includes.chroot/usr/local/sbin/prod_json/airMAX
-            pattern = "{}/{}/*".format(prod_json_dir, pl)
-            tg_list = glob.glob(pattern)
-        else:
-            tg_list = []
-            for ix in pjson[pn]:
-                # Ex: /home/vjc/malon/uifcd5/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00552_e7fa.json
-                tg_list.append("{}/{}/pd_{}.json".format(prod_json_dir, pl, ix))
-
-        for iy in tg_list:
-            print(iy)
-            if os.path.isfile(iy):
-                fh = open(iy)
-                pjson = json.load(fh)
-                fh.close()
-                for iz in pjson[pl].keys():
-                    thk[pl][iz] = pjson[pl][iz]
-                    thk[pl][iz]['INDEX'] = kidx
-
-            kidx += 1
-
-        output = json.dumps(thk, indent=2)
-
-        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_AC-SERIES.json
-        a_series_name = "pd_{}.json".format(pn)
-        src = os.path.join(prod_json_dir, pl, a_series_name)
-        ft = open(src, 'w')
-        ft.write(output)
-        ft.close()
-        print(output)
-
+        '''
+            Create version.txt as the FCD version name
+        '''
+        fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, product_name, args.fcdver, args.fwver)
+        print(fcdname)
+        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/version.txt
+        verfile = os.path.join(prod_json_dir, "version.txt")
+        fh = open(verfile, 'w')
+        fh.write(fcdname)
+        fh.close()
+    else:
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
-        dst = os.path.join(reg_bs_dir, "Products-info.json")
-        if os.path.isfile(src):
-            print("src: " + src)
-            print("dst: " + dst)
-            shutil.copyfile(src, dst)
+        tgfile = os.path.join(reg_bs_dir, "Products-info.json")
+        fh = open(tgfile)
+        pjson = json.load(fh)
+        fh.close()
 
-            # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
-            tgfile = os.path.join(reg_bs_dir, "Products-info.json")
-            fh = open(tgfile)
-            pjson = json.load(fh)
-            fh.close()
-
+        '''
+            Create version.txt as the FCD version name
+        '''
         fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, pn, args.fcdver, args.fwver)
-    elif build_type == "single":
-        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
-        src = "{}/{}/pd_{}.json".format(prod_json_dir, pl, pn)
-        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
-        dst = os.path.join(reg_bs_dir, "Products-info.json")
-        if os.path.isfile(src):
-            print("src: " + src)
-            print("dst: " + dst)
-            shutil.copyfile(src, dst)
-
-            # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
-            tgfile = os.path.join(reg_bs_dir, "Products-info.json")
-            fh = open(tgfile)
-            pjson = json.load(fh)
-            fh.close()
-
-            for i in pjson[pl].keys():
-                if pjson[pl][i]['BOARDID'] == pn.split("_")[1]:
-                    product_name = pjson[pl][i]['NAME']
-                    break
-            else:
-                print("Can't find the model in Products-info.json")
-                exit(1)
-
-            fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, product_name, args.fcdver, args.fwver)
-        else:
-            rmsg = "Can't find model: {}".format(pn)
-            print(rmsg)
-            exit(1)
-
-    '''
-        Create version.txt as the FCD version name
-    '''
-    print(fcdname)
-    # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/version.txt
-    verfile = os.path.join(prod_json_dir, "version.txt")
-    fh = open(verfile, 'w')
-    fh.write(fcdname)
-    fh.close()
+        print(fcdname)
+        # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/version.txt
+        verfile = os.path.join(prod_json_dir, "version.txt")
+        fh = open(verfile, 'w')
+        fh.write(fcdname)
+        fh.close()
 
     '''
         Copy version.txt to target folder
@@ -262,7 +283,6 @@ def gen_prod_json():
     # Ex: /home/vjc/malon/uifcd1/output/ostrich/version.txt
     dst_verfile = os.path.join(ostrich_bs_dir, "version.txt")
     shutil.copyfile(verfile, dst_verfile)
-
 
 def fcd_name_check():
         '''

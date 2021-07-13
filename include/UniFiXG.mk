@@ -39,4 +39,4 @@ $(eval $(call ProductCompress,UXGLITE,FCD_$(PRD)_UXGLITE_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,00778_b080))
+$(eval $(call ProductCompress2,00778-b080))
