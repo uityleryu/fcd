@@ -86,7 +86,12 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # Update NOR(uboot)
         self.stop_uboot()
         msg(10, 'Stop in uboot...')
-        self.set_ub_net(self.premac)
+        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
+        if self.board_id == "a656":
+            self.set_ub_net(self.premac, ethact="eth1")
+        else:
+            self.set_ub_net(self.premac)
+
         self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.nor_bin)
@@ -97,7 +102,12 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # Update EMMC(kernel)
         self.stop_uboot()
         msg(50, 'Stop in uboot...')
-        self.set_ub_net(self.premac)
+        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
+        if self.board_id == "a656":
+            self.set_ub_net(self.premac, ethact="eth1")
+        else:
+            self.set_ub_net(self.premac)
+
         self.is_network_alive_in_uboot()
         msg(60, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.emmc_img)
