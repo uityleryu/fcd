@@ -1920,6 +1920,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    }, 
+
+    "UISP-P":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-P",
+      "BOARDID"     : "ee5a",
+      "BOMREV"      : "113-00990",
+      "DESC"        : "Ubiquiti Internet Service Provider Power",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-PRO":{
+      "INDEX"       : 15,
+      "NAME"        : "UISP-P-PRO",
+      "BOARDID"     : "ee5b",
+      "BOMREV"      : "113-00822",
+      "DESC"        : "Ubiquiti Internet Service Provider Power PRO",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 
