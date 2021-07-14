@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-AIBULLET": {
+      "INDEX": 0,
+      "NAME": "UVC-AIBULLET",
+      "BOARDID": "a5a2",
+      "BOMREV": "113-03388",
+      "DESC": "UVC AI Bullet",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}

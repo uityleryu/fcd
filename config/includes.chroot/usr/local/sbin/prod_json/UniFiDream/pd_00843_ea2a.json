@@ -1,0 +1,16 @@
+{
+  "UniFiDream": {
+    "UDW": {
+      "INDEX": 0,
+      "NAME": "UDW",
+      "BOARDID": "ea2a",
+      "BOMREV": "113-00843",
+      "DESC": "UniFi Dream Wall",
+      "FILE": "udm_al324_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "Connect": {
+    "LVDU-4": {
+      "INDEX": 0,
+      "NAME": "LVDU-4",
+      "BOARDID": "ec3d",
+      "BOMREV": "113-03076",
+      "DESC": "Low Voltage Distribution Unit 4 Ports",
+      "FILE": "uap_qca953x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    }
+  }
+}

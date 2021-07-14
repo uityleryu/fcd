@@ -1,0 +1,16 @@
+{
+  "UbiquitiNMS": {
+    "UISP-P": {
+      "INDEX": 0,
+      "NAME": "UISP-P",
+      "BOARDID": "ee5a",
+      "BOMREV": "113-00990",
+      "DESC": "Ubiquiti Internet Service Provider Power",
+      "FILE": "uisp_qca9531_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01"
+    }
+  }
+}

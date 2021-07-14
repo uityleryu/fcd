@@ -140,20 +140,9 @@ $(eval $(call ProductImage,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ACB-SERIES,FCD_$(PRD)_ACB-SERIES_$(VER)_$(FWVER)))
 
-# Project compressed file for RPi FCD host
-
-$(eval $(call ProductCompress,AIRMAX,FCD_$(PRD)_AIRMAX-ALL_$(VER)))
-$(eval $(call ProductCompress,GBE,FCD_$(PRD)_GBE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER),$(ALL)))
-$(eval $(call ProductCompress,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER),$(ALL)))
-
-
 # ==================================================================================================
 # Single product definition
 # ==================================================================================================
-
-# Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00348_e1f5))
 $(eval $(call ProductCompress2,00402_e8e5))
@@ -188,3 +177,4 @@ $(eval $(call ProductCompress2,00825_dca0))
 $(eval $(call ProductCompress2,00697_dc97))
 $(eval $(call ProductCompress2,00709_dc99))
 $(eval $(call ProductCompress2,00406_e7e5))
+$(eval $(call ProductCompress2,AIRMAX-AC-SERIES))
