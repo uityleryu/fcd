@@ -31,6 +31,12 @@ IMAGE-UISP-R= \
     images/ee6e* \
     unms-fw/uisp-r/UISPR.mt7621* \
 
+IMAGE-UISP-P= \
+    # images/ee5a* \
+
+IMAGE-UISP-P-PRO= \
+    # images/ee5b* \
+
 IMAGE-UNMS+=$(IMAGE-UISP-CONSOLE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
@@ -38,6 +44,8 @@ IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-S-MICRO)
 IMAGE-UNMS+=$(IMAGE-UISP-R)
 IMAGE-UNMS+=$(IMAGE-UISP-P-LITE)
+IMAGE-UNMS+=$(IMAGE-UISP-P)
+IMAGE-UNMS+=$(IMAGE-UISP-P-PRO)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -83,6 +91,15 @@ TOOLS-UISP-R+= uisp-r/helper_MT7621_release
 TOOLS-UISP-P-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-P-LITE+= uisp-p-lite/*
 
+TOOLS-UISP-P=$(TOOLS-UNMS)
+TOOLS-UISP-P+= uisp_p/*
+TOOLS-UISP-P+= uisp_p_pro/*
+
+
+TOOLS-UISP-P-PRO=$(TOOLS-UNMS)
+TOOLS-UISP-P-PRO+= uisp_p/*
+TOOLS-UISP-P-PRO+= uisp_p_pro/*
+
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-CONSOLE,FCD_$(PRD)_UISP-CONSOLE_$(VER)_$(FWVER)))
@@ -94,6 +111,8 @@ $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -106,6 +125,8 @@ $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 
@@ -149,6 +170,14 @@ IMAGE-00988-ee6f= \
     unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix \
     unms-fw/u-boot-1.3.0-c174.bin \
 
+# UISP-P
+IMAGE-00990-ee5a= \
+    images/ee5a* \
+
+# UISP-P-PRO
+IMAGE-00822-ee5b= \
+    images/ee5b* \
+
 # ---------------------------------------------------------------------------------------------------
 
 TOOLS-00988-ee6f=$(TOOLS-UNMS)
@@ -169,17 +198,24 @@ TOOLS-00782-dca2+= unms-lte/*
 TOOLS-00832-dca3=$(TOOLS-UNMS)
 TOOLS-00832-dca3+= unms-lte/*
 
+TOOLS-00990-ee5a=$(TOOLS-UNMS)
+TOOLS-00990-ee5a+= uisp_p/*
+
+TOOLS-00822-ee5b=$(TOOLS-UNMS)
+TOOLS-00822-ee5b+= uisp_p_pro/*
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,00817_eed0))
-$(eval $(call ProductCompress2,01019_eed1))
-$(eval $(call ProductCompress2,00900_ee50))
-$(eval $(call ProductCompress2,00988_ee6f))
-$(eval $(call ProductCompress2,00782_dca2))
-$(eval $(call ProductCompress2,00832_dca3))
-$(eval $(call ProductCompress2,00815_ee6a))
-$(eval $(call ProductCompress2,00819_ee6c))
-$(eval $(call ProductCompress2,00820_eed3))
-$(eval $(call ProductCompress2,00821_eefa))
-$(eval $(call ProductCompress2,00816_ee6d))
-$(eval $(call ProductCompress2,00989_ee6e))
+$(eval $(call ProductCompress2,00817-eed0))
+$(eval $(call ProductCompress2,01019-eed1))
+$(eval $(call ProductCompress2,00900-ee50))
+$(eval $(call ProductCompress2,00988-ee6f))
+$(eval $(call ProductCompress2,00782-dca2))
+$(eval $(call ProductCompress2,00832-dca3))
+$(eval $(call ProductCompress2,00815-ee6a))
+$(eval $(call ProductCompress2,00819-ee6c))
+$(eval $(call ProductCompress2,00820-eed3))
+$(eval $(call ProductCompress2,00821-eefa))
+$(eval $(call ProductCompress2,00816-ee6d))
+$(eval $(call ProductCompress2,00989-ee6e))
+$(eval $(call ProductCompress2,00990-ee5a))
+$(eval $(call ProductCompress2,00822-ee5b))

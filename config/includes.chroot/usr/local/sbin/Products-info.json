@@ -870,6 +870,18 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
+    },
+  "U6-Enterprise-IW": {
+      "INDEX"       : 8,
+      "NAME"        : "U6-Enterprise-IW",
+      "BOARDID"     : "a656",
+      "BOMREV"      : "113-00956",
+      "DESC"        : "UniFi AP6 Enterprise IW",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     }
   },
 
@@ -1920,6 +1932,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    }, 
+
+    "UISP-P":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-P",
+      "BOARDID"     : "ee5a",
+      "BOMREV"      : "113-00990",
+      "DESC"        : "Ubiquiti Internet Service Provider Power",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-PRO":{
+      "INDEX"       : 15,
+      "NAME"        : "UISP-P-PRO",
+      "BOARDID"     : "ee5b",
+      "BOMREV"      : "113-00822",
+      "DESC"        : "Ubiquiti Internet Service Provider Power PRO",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 
@@ -2019,6 +2057,22 @@
       "BOMREV"      : "113-02570",
       "DESC"        : "UniFi Cloudy Key Plus",
       "FILE"        : "uck_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0008",
+      "SW_ID"       : "0c01"
+    }
+  },
+
+  "GPON":
+  {
+    "UF-WiFi6":{
+      "INDEX"       : 0,
+      "NAME"        : "UF-WiFi6",
+      "BOARDID"     : "eec5",
+      "BOMREV"      : "113-03376",
+      "DESC"        : "UF-WiFi6",
+      "FILE"        : "uf_ecnt7521_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0008",

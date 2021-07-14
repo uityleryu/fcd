@@ -57,7 +57,7 @@ $(eval $(call ProductCompress,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,01905_da13))
-$(eval $(call ProductCompress2,00657_da12))
-$(eval $(call ProductCompress2,00957_da14))
-$(eval $(call ProductCompress2,01605_da11))
+$(eval $(call ProductCompress2,01905-da13))
+$(eval $(call ProductCompress2,00657-da12))
+$(eval $(call ProductCompress2,00957-da14))
+$(eval $(call ProductCompress2,01605-da11))
