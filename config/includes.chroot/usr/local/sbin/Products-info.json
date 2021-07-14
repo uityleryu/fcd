@@ -2062,5 +2062,21 @@
       "FCD_ID"      : "0008",
       "SW_ID"       : "0c01"
     }
+  },
+
+  "GPON":
+  {
+    "UF-WiFi6":{
+      "INDEX"       : 0,
+      "NAME"        : "UF-WiFi6",
+      "BOARDID"     : "eec5",
+      "BOMREV"      : "113-03376",
+      "DESC"        : "UF-WiFi6",
+      "FILE"        : "uf_ecnt7521_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0008",
+      "SW_ID"       : "0c01"
+    }
   }
 }
