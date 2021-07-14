@@ -35,6 +35,9 @@ IMAGE-U6-Enterprise= \
 IMAGE-U6-Infinity= \
 	u6-fw/ipq5018/* \
     images/a655*
+IMAGE-U6-Enterprise-IW= \
+	u6-fw/ipq5018/* \
+    images/a656*
 IMAGE-U6-QCA-Series= \
 	u6-fw/ipq5018/* \
     images/a650* \
@@ -42,7 +45,8 @@ IMAGE-U6-QCA-Series= \
     images/a652* \
     images/a653* \
     images/a654* \
-    images/a655* 
+    images/a655* \
+	images/a656* 
 IMAGE-U6-LR= \
 	u6-fw/mt7622/* \
 	images/a620*
@@ -74,6 +78,7 @@ TOOLS-U6-IW+=$(TOOLS-CONFIG)
 TOOLS-U6-Extender+=$(TOOLS-CONFIG)
 TOOLS-U6-Enterprise+=$(TOOLS-CONFIG)
 TOOLS-U6-Infinity+=$(TOOLS-CONFIG)
+TOOLS-U6-Enterprise-IW+=$(TOOLS-CONFIG)
 TOOLS-U6-QCA-Series+=$(TOOLS-CONFIG)
 TOOLS-U6-LR+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7622)
 
@@ -85,6 +90,7 @@ $(eval $(call ProductImage,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Extender,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-QCA-Series,FCD_$(PRD)_Series_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
 
@@ -96,6 +102,7 @@ $(eval $(call ProductCompress,U6-IW,FCD_$(PRD)_U6-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Extender,FCD_$(PRD)_U6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Enterprise,FCD_$(PRD)_U6-Enterprise_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-QCA-Series,FCD_$(PRD)_U6-QCA-Series_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
 
@@ -110,4 +117,5 @@ $(eval $(call ProductCompress2,10745-a652))
 $(eval $(call ProductCompress2,10746-a653))
 $(eval $(call ProductCompress2,10898-a654))
 $(eval $(call ProductCompress2,10897-a655))
+$(eval $(call ProductCompress2,00956-a656))
 
