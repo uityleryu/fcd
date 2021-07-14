@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-#Description    : To create tool.tar which contains the prodcut specific tool 
+#Description    : To create tool.tar which contains the prodcut specific tool
 #                 stuffs from fcd-script-tools repo
 #Revision       : 1.0.0
 ################################################################################

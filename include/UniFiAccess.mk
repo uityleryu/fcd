@@ -59,18 +59,8 @@ $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWV
 $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================
-
-# UA-PRO-BL
-IMAGE-02966-ec60=
-
-# -----------------------------------------------------------------------------------------
-
-TOOLS-02966-ec60+=$(TOOLS-CONFIG)
-
-# -----------------------------------------------------------------------------------------
-
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,02966-ec60))
-$(eval $(call ProductCompress2,03329-ec46))
-$(eval $(call ProductCompress2,03003-ec3b))
+$(eval $(call ProductCompress2,02966_ec60))
+$(eval $(call ProductCompress2,03329_ec46))
+$(eval $(call ProductCompress2,03003_ec3b))

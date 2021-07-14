@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
-#Description    : To copy the product specific images from fcd-image repo 
-# 
+#Description    : To copy the product specific images from fcd-image repo
+#
 #Revision       : 1.0.0
 ################################################################################
 # For build environmental variables

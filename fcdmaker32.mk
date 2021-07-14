@@ -1,4 +1,4 @@
-include include/image-install.mk
+include build_tools/image-install.mk
 
 # For build environmental variables
 OUTDIR      = $(shell pwd)/output
