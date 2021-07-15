@@ -215,7 +215,8 @@ def gen_prod_json():
             pjson = json.load(fh)
             fh.close()
 
-        fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, pn, args.fcdver, args.fwver)
+        # Ex: FCD_airMAX_AC-SERIES_1.77.15_8.7.4
+        fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, pn.split("_")[1], args.fcdver, args.fwver)
     elif build_type == "single":
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
         src = "{}/{}/pd_{}.json".format(prod_json_dir, pl, pn)
@@ -240,6 +241,7 @@ def gen_prod_json():
                 print("Can't find the model in Products-info.json")
                 exit(1)
 
+            # Ex: FCD_airMAX_LBE-5AC-US_1.77.15_8.7.4
             fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, product_name, args.fcdver, args.fwver)
         else:
             rmsg = "Can't find model: {}".format(pn)

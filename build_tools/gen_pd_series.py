@@ -24,7 +24,7 @@ cn = UIpopen()
 '''
     Usage:
         under ~/uifcd4/build_tools
-        python3 gen_pd_series.py -pl=airMAX -bt=series - psr=AIRMAX-AC-SERIES
+        python3 gen_pd_series.py -pl=airMAX -bt=series -psr=AIRMAX-AC-SERIES
 '''
 parse = argparse.ArgumentParser(description="Generating product json file")
 parse.add_argument('--prodline', '-pl', dest='prodline', help='Product Line', default=None)

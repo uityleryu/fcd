@@ -4,6 +4,7 @@ import json
 import csv
 import glob
 import os
+import time
 
 curdir = os.getcwd()
 product_dir = os.path.join(curdir, "../config/includes.chroot/usr/local/sbin/prod_json")
@@ -11,7 +12,10 @@ product_dir = os.path.join(curdir, "../config/includes.chroot/usr/local/sbin/pro
 
 def main():
     header_created = False
-    csv_file = open('product_info.csv', 'w')
+    t = time.time()
+    time_mon_day = time.strftime("%Y-%m-%d", time.localtime(t))
+    filename = "product_info_{}.csv".format(time_mon_day)
+    csv_file = open(filename, 'w')
     csv_writer = csv.writer(csv_file)
     epm = {}
     pjson = {}
