@@ -77,7 +77,7 @@ class UVCFactoryGeneral(ScriptBase):
             second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC-G4BULLET"
-                self.ip = "192.168.1.20"
+                self.ip = "192.168.2.20"
                 self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
@@ -91,7 +91,7 @@ class UVCFactoryGeneral(ScriptBase):
             second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC-G4DOME"
-                self.ip = "192.168.1.20"
+                self.ip = "192.168.2.20"
                 self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
