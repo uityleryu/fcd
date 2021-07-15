@@ -87,7 +87,8 @@ class AMAR9342Factory(ScriptBase):
         self.second_wifi_found = False
 
         self.is_wasp = [
-            "e2c5", "e2c7", "e3d6", "e4f3", "e7f5", "e7f7", "e7fa", "e7fb", "e7fc", "e7ff", "e7fe", "e8e5"
+            "e2c5", "e2c7", "e3d6", "e3d9", "e3f3", "e4f2", "e4f3", "e6f5", "e7f5", "e7f7", "e7f9", "e7fa",
+            "e7fb", "e7fc", "e7fd", "e7fe", "e7ff", "e8e5", "e8f5", "e9f5"
         ]
 
         self.dfs_lock_list = [
@@ -99,11 +100,10 @@ class AMAR9342Factory(ScriptBase):
         # number of WiFi
         self.wifinum = {
             'e1f5': "1", 'e2f2': "n", 'e2f3': "2", 'e2c5': "2", 'e2c7': "2", 'e3d5': "1", 'e3d6': "2",
-            'e3d8': "n", 'e3f3': "n", 'e3f5': "n", 'e7ff': "2", 'e4f3': "2", 'e4f5': "n", 'e4f5': "n",
-            'e5f5': "1", 'e6f5': "n", 'e7e5': "1", 'e7e6': "2", 'e7f5': "n", 'e8e5': "1", 'e8f5': "n",
-            'e9f5': "n", 'e4f2': "n", 'e7f7': "2", 'e7f9': "2", 'e7e7': "2", 'e7e8': "2", 'e7e9': "2",
-            'e7fa': "2", 'e7fc': "2", 'e7fb': "2", 'e2c5': "n", 'e2f3': "n", 'e3d9': "n",
-            'e2c7': "n", 'e7fd': "n", 'e7fe': "2"
+            'e3d8': "n", 'e3f3': "n", 'e3f5': "n", 'e7ff': "2", 'e4f3': "2", 'e4f5': "n", 'e5f5': "1",
+            'e6f5': "n", 'e7e5': "1", 'e7e6': "2", 'e7f5': "n", 'e8e5': "1", 'e8f5': "n", 'e9f5': "n",
+            'e4f2': "n", 'e7f7': "2", 'e7f9': "2", 'e7e7': "2", 'e7e8': "2", 'e7e9': "2", 'e7fa': "2",
+            'e7fc': "2", 'e7fb': "2", 'e3d9': "n", 'e7fd': "n", 'e7fe': "2"
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")

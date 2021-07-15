@@ -62,7 +62,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 class AMAR9342MFG(ScriptBase):
     def __init__(self):
         super(AMAR9342MFG, self).__init__()
-        self.bootloader_prompt = "ar7240>"
+        self.bootloader_prompt = "ar7240>|ath>"
         self.uboot_art_img = "{}/{}-art-uboot.bin".format(self.image, self.board_id)
 
         self.grp1 = ["e3d6", "e7f9", "e7fa", "e7fc", "e7ff"]
@@ -177,12 +177,14 @@ class AMAR9342MFG(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
             if self.erasecal == "True":
-                cmd "erase 0x9f000000 +0x1000000; cp.b 0x81000000 0x9f000000 0x1000000"
+                cmd = "erase 0x9f000000 +0x1000000; cp.b 0x81000000 0x9f000000 0x1000000"
+                log_debug("Erasing the calibration data")
             else:
                 '''
                    Keep the T1 calibration datat (EEPROM partition)
                 '''
                 cmd = "erase 0x9f000000 +0xff0000; cp.b 0x81000000 0x9f000000 0xff0000"
+                log_debug("Keeping the calibration data")
 
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(600, "done")
