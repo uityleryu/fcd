@@ -46,7 +46,7 @@
         ],
         [
           "tftp/images/a651-fw.bin",
-          "../u6-fw/ipq5018/ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin"
         ],
         [
           "tftp/images/a651-gpt.bin",
