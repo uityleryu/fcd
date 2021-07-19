@@ -16,11 +16,11 @@
           "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
-            "u6-pro_1gb-v13.img",
-            "BZ.ipq50xx_5.55.10+13192.210401.1448-uboot.bin",
+            "u6-pro_1gb-v16-t1.img",
+            "ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
             "maple-4g-gpt.bin",
-            "lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_mesh.bin",
-            "u6-pro_1gb-v13_nor.bin"
+            "u6-enterprise-5.68.0-ramload.bin",
+            "u6-pro_1gb-v16_nor.bin"
           ]
         },
         {
@@ -42,11 +42,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/a651-emmc.img",
-          "../u6-fw/ipq5018/u6-pro_1gb-v13.img"
+          "../u6-fw/ipq5018/u6-pro_1gb-v16-t1.img"
         ],
         [
           "tftp/images/a651-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.55.10+13192.210401.1448-uboot.bin"
+          "../u6-fw/ipq5018/ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin"
         ],
         [
           "tftp/images/a651-gpt.bin",
@@ -54,11 +54,11 @@
         ],
         [
           "tftp/images/a651-initramfs.bin",
-          "../u6-fw/ipq5018/lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_mesh.bin"
+          "../u6-fw/ipq5018/u6-enterprise-5.68.0-ramload.bin"
         ],
         [
           "tftp/images/a651-nor.bin",
-          "../u6-fw/ipq5018/u6-pro_1gb-v13_nor.bin"
+          "../u6-fw/ipq5018/u6-pro_1gb-v16_nor.bin"
         ]
       ]
     }
