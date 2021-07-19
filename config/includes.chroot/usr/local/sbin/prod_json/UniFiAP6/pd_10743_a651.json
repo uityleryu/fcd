@@ -17,7 +17,7 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-pro_1gb-v16-t1.img",
-            "ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
+            "BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
             "maple-4g-gpt.bin",
             "u6-enterprise-5.68.0-ramload.bin",
             "u6-pro_1gb-v16_nor.bin"
