@@ -1,8 +1,8 @@
 {
   "UniFiProtect": {
-    "UFP-GARAGE": {
+    "UP-GARAGE": {
       "INDEX": 0,
-      "NAME": "UFP-GARAGE",
+      "NAME": "UP-GARAGE",
       "BOARDID": "a915",
       "BOMREV": "113-03452",
       "DESC": "UniFi Protect Bluetooth Card",
