@@ -25,12 +25,20 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
+<<<<<<< HEAD
 
 
 class ScriptBase(object):
     __version__ = "1.0.41"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
+=======
+
+class ScriptBase(object):
+    __version__ = "1.0.9"
+    __authors__ = "FCD team"
+    __contact__ = "fcd@ubnt.com"
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
 
     def __init__(self):
         self.cnapi = Common()
@@ -45,11 +53,19 @@ class ScriptBase(object):
         self.__ssh_client_obj = None
 
         self.version_scriptbase = self.__version__
+<<<<<<< HEAD
         self.version_PAlib = PAlib.__version__
         with open(self.fcd_version_info_file_path, 'r') as f:
             self.version_iso = f.read().rstrip('\n')
 
         self.cnapi.print_current_fcd_version(file=self.fcd_version_info_file_path)
+=======
+        self.version_ubntlib = ubntlib.__version__
+        with open(self.fcd_version_info_file_path, 'r') as f:
+            self.version_iso = f.read().rstrip('\n')
+
+        self.fcd.common.print_current_fcd_version(file=self.fcd_version_info_file_path)
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         print("framework version: " + self.__version__)
         print("PAlib version: " + PAlib.__version__)
         self._encrpyt_passphrase_for_log()
@@ -248,6 +264,7 @@ class ScriptBase(object):
         self.http_port = int(self.row_id) + baseport
         self.http_srv = ""
 
+<<<<<<< HEAD
         # Test result Field
         self.test_result = 'Fail'
         self.test_starttime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
@@ -257,6 +274,10 @@ class ScriptBase(object):
         self.error_function = ''
         self.progress = 0
         self.pass_devreg_client = False
+=======
+        # Future Field
+        self.error_code = ''
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         try:
             self.teststation_mac = ':'.join(("%012X" % get_mac())[i:i + 2] for i in range(0, 12, 2))
         except Exception as e:
@@ -271,9 +292,14 @@ class ScriptBase(object):
         parse.add_argument('--tftp_server', '-ts', dest='tftp_server', help='FCD host IP', default=None)
         parse.add_argument('--board_id', '-b', dest='board_id', help='System ID, ex:eb23, eb21', default=None)
         parse.add_argument('--erasecal', '-e', dest='erasecal', help='Erase calibration data selection', default=None)
+<<<<<<< HEAD
         parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection',
                            default=None)
 
+=======
+        parse.add_argument('--erase_devreg', '-ed', dest='erase_devreg', help='Erase devreg data selection', default=None)
+                                        
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         parse.add_argument('--mac', '-m', dest='mac', help='MAC address', default=None)
         parse.add_argument('--pass_phrase', '-p', dest='pass_phrase', help='Passphrase', default=None)
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
@@ -362,9 +388,14 @@ class ScriptBase(object):
 
     def erase_eefiles(self):
         log_debug("Erase existed eeprom information files ...")
+<<<<<<< HEAD
         files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.dsskey, self.eegenbin, self.eesign,
                  self.eesigndate]
 
+=======
+        files = [self.eebin, self.eetxt, self.eechk, self.eetgz, self.rsakey, self.eegenbin, self.eesign, self.eesigndate]
+                                 
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         for f in files:
             destf = os.path.join(self.tftpdir, f)
             rtf = os.path.isfile(destf)
@@ -1052,8 +1083,16 @@ class ScriptBase(object):
             os.chdir(dest_path)
 
             # exe receive cmd on host
+<<<<<<< HEAD
             cmd = "rz -y -v -b < /dev/{0} > /dev/{0}".format(self.dev)
             [sto, rtc] = self.cnapi.xcmd(cmd)
+=======
+            cmd = ["rz", "-y -v -b",
+                   "< /dev/" + self.dev,
+                   "> /dev/" + self.dev]
+            cmd = ' '.join(cmd)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
             if int(rtc) != 0:
                 retry -= 1
                 log_debug("Receive {} from DUT incomplete, remaining retry {}".format(file, retry))
@@ -1229,6 +1268,7 @@ class ScriptBase(object):
         time.sleep(2)
         exit(0)
 
+<<<<<<< HEAD
     def check_blacklist(self):
         try :
             blacklist_path = '/usr/local/sbin/blacklist/blacklist.json'
@@ -1299,10 +1339,17 @@ class ScriptBase(object):
             self.error_code = self.error_function
 
     def __dump_JSON(self):
+=======
+    def __del__(self):
+        self._dumpJSON()
+
+    def _dumpJSON(self):
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         dumpfile = os.path.join("/tftpboot/", "log_slot" + self.row_id + ".json")
         with open(dumpfile, 'w') as f:
             self.__dict__.pop('fsiw', None)
             f.write(str(json.dumps(self.__dict__, default=lambda o: '<not serializable>', sort_keys=True, indent=4)))
+<<<<<<< HEAD
 
     def _upload_prepare(self):
         # Ex: /tftpboot/log_slot0.log
@@ -1435,3 +1482,5 @@ class ScriptBase(object):
             log_debug("[Upload_ui_taipei farget Unexpected error: {}]".format(sys.exc_info()[0]))
 
 
+=======
+>>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
