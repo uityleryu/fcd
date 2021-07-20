@@ -37,9 +37,13 @@ class USFLEXFactory(ScriptBase):
         self.fcdimg = self.board_id + "-fcd.bin"
         self.helper_path = "common"
 
+        # ed11 only support old helper so seperate it from common
+        if self.board_id == 'ed11':
+            self.helper_path = 'usp_rps'
+
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
-        self.zeroip_en = {'ed10', 'ed11'}
+        self.zeroip_en = {'ed10'}
         self.wait_LCM_upgrade_en = {'ed11', 'ed13'}
         self.uboot_upgrade_en = {'ed11', 'ec2a', 'ec20', 'ec22', 'ec25', 'ec26'}
 
@@ -106,7 +110,7 @@ class USFLEXFactory(ScriptBase):
             'ec25': self.board_id + ".bin",
             'ec26': self.board_id + ".bin",
             'ec2a': self.board_id + ".bin",
-            'ed11': self.board_id + "-diag.bin",
+            'ed11': self.board_id + "-fw.bin",
             'ed13': self.board_id + "-fw.bin",
         }
 

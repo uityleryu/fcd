@@ -23,6 +23,12 @@ IMAGE-USP-RPS-PRO= \
     images/ed13* \
     usp/rps-pro/*
 
+IMAGE-USP-RPS= \
+    images/ed11* \
+    usp/rps/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
+    usp/rps/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
+    usp/rps/US.mt7621*
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -43,6 +49,7 @@ TOOLS-USP-3-8 +=$(TOOLS-CONFIG)
 TOOLS-USP-STRIP +=$(TOOLS-CONFIG)
 TOOLS-USP-PDU-PRO +=$(TOOLS-CONFIG)
 TOOLS-USP-RPS-PRO +=$(TOOLS-CONFIG)
+TOOLS-USP-RPS +=$(TOOLS-CONFIG)
 
 TOOLS-USP-PLUG+= \
     usp/*
@@ -57,6 +64,9 @@ TOOLS-USP-STRIP+= \
 TOOLS-USP-PDU-PRO+= \
     pdu_pro/helper_MT7628_release
 
+TOOLS-USP-RPS+= \
+    usp_rps/helper_UNIFI_MT7621_release
+
 # Project target
 
 $(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
@@ -64,6 +74,7 @@ $(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
 
 
 # Project compressed file for RPi FCD host
@@ -73,6 +84,7 @@ $(eval $(call ProductCompress,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
