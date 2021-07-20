@@ -37,12 +37,20 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         
         # sub-system ID
         self.wsysid = {
-            'ea11': "770711ea",
-            'ea13': "770713ea",
-            'ea15': "770715ea",
-            'ea19': "770719ea"
+            'ea11': "0x770711ea",
+            'ea13': "0x770713ea",
+            'ea15': "0x770715ea",
+            'ea19': "0x770719ea"
         }
-        
+
+        # BOM and revision
+        self.wbom = {
+            'ea11': "0x016f0200",
+            'ea13': "0x016a0200",
+            'ea15': "0x01d30200",
+            'ea19': "0x01e40200"
+        }
+      
         # number of Ethernet
         self.ethnum = {
             'ea11': "5",
@@ -107,17 +115,23 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def set_fake_EEPROM(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
-        if self.board_id == 'ea15':
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f000c 0x4")
-        if self.board_id == 'ea15':
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000004 0x1f0010 0x4")
+
+        # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+        # set sub-system ID
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id]) 
+        # set BOM and revision
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wbom[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+       
 
     def update_uboot(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
