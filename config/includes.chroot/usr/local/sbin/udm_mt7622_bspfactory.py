@@ -122,7 +122,7 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def enter_diag_mode(self):
         # Disable some services (protect/network controller app) to speed up the time of booting up
-        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable unifi-core unifi-protect unifi --now")
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable unifi-core unifi-protect unifi postgresql postgresql@9.6-main postgresql@9.6-protect postgresql-cluster@9.6-main postgresql-cluster@9.6-protect-cleanup postgresql-cluster@9.6-protect ulp-go bt ble-http-transport --now")
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -r ubnt-report")
 
     def run(self):
