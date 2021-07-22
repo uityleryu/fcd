@@ -10,6 +10,7 @@ import os
 class UAP_QCA953X_Factory(ScriptBase):
     def __init__(self):
         super(UAP_QCA953X_Factory, self).__init__() 
+        self.ver_extract()
         self.init_vars()    
 
     def init_vars(self):
