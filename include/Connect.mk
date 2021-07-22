@@ -57,7 +57,10 @@ TOOLS-LVDU-1= \
     $(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
 
-TOOLS-UC-THERMOSTAT+=$(TOOLS-CONFIG)
+TOOLS-UC-THERMOSTAT+= \
+    $(TOOLS-CONFIG) \
+    common/aarch64-rpi4-4k-ee
+
 # Project target
 
 $(eval $(call ProductImage,UC-DISPLAY-7,FCD_$(PRD)_UC-DISPLAY-7_$(VER)_$(FWVER)))
