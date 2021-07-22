@@ -23,6 +23,9 @@ IMAGE-LVDU-1= \
 IMAGE-LVDU+=$(IMAGE-LVDU-4-24)
 IMAGE-LVDU+=$(IMAGE-LVDU-1)
 
+IMAGE-UC-THERMOSTAT =\
+    images/ec47* \
+    uc-fw/uc-thermostat/*
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -54,6 +57,7 @@ TOOLS-LVDU-1= \
     $(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
 
+IMAGE-UC-THERMOSTAT+=$(TOOLS-CONFIG)
 # Project target
 
 $(eval $(call ProductImage,UC-DISPLAY-7,FCD_$(PRD)_UC-DISPLAY-7_$(VER)_$(FWVER)))
@@ -62,6 +66,7 @@ $(eval $(call ProductImage,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER
 $(eval $(call ProductImage,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -71,6 +76,7 @@ $(eval $(call ProductCompress,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FW
 $(eval $(call ProductCompress,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -81,3 +87,4 @@ $(eval $(call ProductCompress2,03256_ef84))
 $(eval $(call ProductCompress2,03383_ef87))
 $(eval $(call ProductCompress2,03396_ef88))
 $(eval $(call ProductCompress2,UCD_SERIES))
+$(eval $(call ProductCompress2,03232_ec47))

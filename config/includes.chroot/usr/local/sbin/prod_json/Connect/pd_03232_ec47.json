@@ -10,7 +10,34 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0011",
-      "SW_ID": "1c01"
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-thermostat/testing_fw",
+          "DST_PATH": "uc-fw/uc-thermostat",
+          "FILES": [
+            "up_chime_fw.bin",
+            "bootloader.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ]
     }
   }
 }
