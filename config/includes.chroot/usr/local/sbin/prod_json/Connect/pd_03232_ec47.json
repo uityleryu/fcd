@@ -2,7 +2,7 @@
   "Connect": {
     "UC-Thermostat": {
       "INDEX": 0,
-      "NAME": "UC-Thermostat",
+      "NAME": "UC-THERMOSTAT",
       "BOARDID": "ec47",
       "BOMREV": "113-03232",
       "DESC": "",

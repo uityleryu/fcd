@@ -38,7 +38,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         #       2: burn_key option
         #       3: key binary
         self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin], 
-                              [True, "Secure boot key"              , " secure_boot_v1"     , self.secure_boot_key_bin  ],
+                              [True, "Secure boot key"              , " secure_boot"     , self.secure_boot_key_bin  ],
                               [True, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
         self.ethnum = {
@@ -107,29 +107,29 @@ class UFPESP32FactoryGeneral(ScriptBase):
             else:
                 log_info('Skip programming key "{}" because it is existed there'.format(self.dev_flash_cfg[i][1]))
 
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse FLASH_CRYPT_CONFIG 0xF"
+        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse FLASH_CRYPT_CONFIG 0xF".format(self.row_id)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
             otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CONFIG")
-            error_critical(otmsg)
+            #error_critical(otmsg)
 
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse  FLASH_CRYPT_CNT 127"
+        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse  FLASH_CRYPT_CNT 127".format(self.row_id)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
             otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CNT")
-            error_critical(otmsg)
+            #error_critical(otmsg)
 
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse DISABLE_DL_ENCRYPT"
+        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse DISABLE_DL_ENCRYPT".format(self.row_id)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
             otmsg = 'burn_key "{}" failed!'.format("DISABLE_DL_ENCRYPT")
-            error_critical(otmsg)
+            #error_critical(otmsg)
 
     def program_flash(self):
-        encrypt_postfix = "-encrypted" if self.dev_flash_cfg[2][0] is True else ""
+        encrypt_postfix = "encrypted"
         fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader-reflash-digest.{}.bin".format(self.board_id, encrypt_postfix))
         fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-partition-table.{}.bin".format(self.board_id, encrypt_postfix))
         fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota_data_initial.{}.bin".format(self.board_id, encrypt_postfix))
