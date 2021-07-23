@@ -1,10 +1,15 @@
 {
   "UniFiAP6":
   {
-    "U6-LITE":{
+    "U6-LITE_00773":{
       "NAME"        : "U6-LITE",
       "BOARDID"     : "a612",
       "BOMREV"      : "113-00773"
+    },
+    "U6-LITE_01076":{
+      "NAME"        : "U6-LITE",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-01076"
     },
     "U6-LR": {
       "NAME"        : "U6-LR",
