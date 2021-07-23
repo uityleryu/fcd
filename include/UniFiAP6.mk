@@ -50,6 +50,9 @@ IMAGE-U6-QCA-Series= \
 IMAGE-U6-LR= \
 	u6-fw/mt7622/* \
 	images/a620*
+IMAGE-U6-Lite= \
+	u6-fw/mt7621/* \
+	images/a612*
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -67,6 +70,9 @@ TOOLS-CONFIG= \
     common/x86-64k-ee \
     common/aarch64-rpi4-64k-ee
 
+TOOLS-CONFIG-U6-MT7621= \
+    common/helper_UAP6_MT7621_release
+
 TOOLS-CONFIG-U6-MT7622= \
     common/helper_UAP6_MT7622_release
 
@@ -81,6 +87,7 @@ TOOLS-U6-Infinity+=$(TOOLS-CONFIG)
 TOOLS-U6-Enterprise-IW+=$(TOOLS-CONFIG)
 TOOLS-U6-QCA-Series+=$(TOOLS-CONFIG)
 TOOLS-U6-LR+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7622)
+TOOLS-U6-Lite+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7621)
 
 # Project target
 $(eval $(call ProductImage,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
@@ -93,6 +100,7 @@ $(eval $(call ProductImage,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-QCA-Series,FCD_$(PRD)_Series_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,U6,FCD_$(PRD)_U6_$(VER)_$(FWVER)))
@@ -105,6 +113,7 @@ $(eval $(call ProductCompress,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-QCA-Series,FCD_$(PRD)_U6-QCA-Series_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 
 
 # Project compressed type2 file for RPi FCD host
