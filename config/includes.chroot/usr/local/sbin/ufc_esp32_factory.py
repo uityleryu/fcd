@@ -17,7 +17,7 @@ DOHELPER_ENABLE     = True
 REGISTER_ENABLE     = True 
 FLASH_DEVREG_DATA   = True
 DEVREG_CHECK_ENABLE = True
-SPIFF_FORMAT_CHECK  = True
+SPIFF_FORMAT_CHECK  = False
 
 class UFPESP32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -167,7 +167,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size 16MB 0xfff000  /tftpboot/e.s.{}".format(self.row_id, self.row_id)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
