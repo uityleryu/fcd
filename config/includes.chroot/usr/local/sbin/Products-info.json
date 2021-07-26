@@ -847,11 +847,23 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-	"U6-Extender":{
+	"U6-Extender-10746":{
       "INDEX"       : 5,
       "NAME"        : "U6-Extender",
       "BOARDID"     : "a653",
       "BOMREV"      : "113-10746",
+      "DESC"        : "UniFi AP6 Extender",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+  "U6-Extender-01083":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-01083",
       "DESC"        : "UniFi AP6 Extender",
       "FILE"        : "u6_ipq5018_bspfactory.py",
       "T1FILE"      : "u6_ipq5018_mfg.py",
