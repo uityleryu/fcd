@@ -1,10 +1,10 @@
 {
   "UniFiAP6": {
-    "U6-Extender-10746": {
+    "U6-Extender-01083": {
       "INDEX": 0,
       "NAME": "U6-Extender",
       "BOARDID": "a653",
-      "BOMREV": "113-10746",
+      "BOMREV": "113-01083",
       "DESC": "UniFi AP6 Extender",
       "FILE": "u6_ipq5018_bspfactory.py",
       "T1FILE": "u6_ipq5018_mfg.py",
