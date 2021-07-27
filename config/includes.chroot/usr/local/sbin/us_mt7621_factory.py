@@ -38,8 +38,8 @@ class USFLEXFactory(ScriptBase):
         self.helper_path = "common"
 
         # ed11 only support old helper so seperate it from common
-        if self.board_id == 'ed11':
-            self.helper_path = 'usp_rps'
+        #if self.board_id == 'ed11':
+        #    self.helper_path = 'usp_rps'
 
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}

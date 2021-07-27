@@ -1,0 +1,58 @@
+{
+  "USP": {
+    "USP-RPS": {
+      "INDEX": 0,
+      "NAME": "USP-RPS",
+      "BOARDID": "ed11",
+      "BOMREV": "113-02781",
+      "DESC": "UniFi SmartPower RPS",
+      "FILE": "us_mt7621_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usp/rps",
+          "DST_PATH": "usp/rps",
+          "FILES": [
+            "uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin",
+            "US.mt7621_sh-rps-ftu-rps-test-burnin+13267.210720.1056-uboot.bin",
+            "unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usp_rps",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "helper_UNIFI_MT7621_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed11-fcd.bin",
+          "../usp/rps/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ed11-fw.bin",
+          "../usp/rps/US.mt7621_sh-rps-ftu-rps-test-burnin+13267.210720.1056-uboot.bin"
+        ],
+        [
+          "tftp/images/ed11-uboot.bin",
+          "../usp/rps/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin"
+        ]
+      ]
+    }
+  }
+}
