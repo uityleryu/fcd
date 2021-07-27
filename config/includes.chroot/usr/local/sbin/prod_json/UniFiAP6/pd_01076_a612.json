@@ -13,8 +13,8 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uap-fw",
-          "DST_PATH": "uap-fw",
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
+          "DST_PATH": "u6-fw/mt7621",
           "FILES": [
             "BZ.mt7621.v5.43.14.12476.201120.0121-uboot.bin",
             "uap6-fcd.bin",
@@ -41,19 +41,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/a612.bin",
-          "../uap-fw/BZ.mt7621.v5.43.14.12476.201120.0121-uboot.bin"
+          "../u6-fw/mt7621/BZ.mt7621.v5.43.14.12476.201120.0121-uboot.bin"
         ],
         [
           "tftp/images/a612-fcd.bin",
-          "../uap-fw/uap6-fcd.bin"
+          "../u6-fw/mt7621/uap6-fcd.bin"
         ],
         [
           "tftp/images/a612-mfg.kernel.uboot",
-          "../uap-fw/u6-kernel-mt7603-mt7915a-2x2-nor-v7.bin"
+          "../u6-fw/mt7621/u6-kernel-mt7603-mt7915a-2x2-nor-v7.bin"
         ],
         [
           "tftp/images/a612-uboot.bin",
-          "../uap-fw/uap6-uboot.bin"
+          "../u6-fw/mt7621/uap6-uboot.bin"
         ]
       ]
     }

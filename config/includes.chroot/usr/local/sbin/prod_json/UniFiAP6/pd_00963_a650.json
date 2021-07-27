@@ -17,9 +17,9 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-pro_1gb-v17.img",
-            "BZ.ipq50xx_5.71.0+13252.210716.1251-uboot.bin",
+            "BZ.ipq50xx_5.71.1+13204.210727.0145-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "u6-iw-5.71.0-ramload.bin",
+            "lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_u6_pro_5.71.1.bin",
             "u6-pro_1gb-v17_nor.bin"
           ]
         },
@@ -46,7 +46,7 @@
         ],
         [
           "tftp/images/a650-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.71.0+13252.210716.1251-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.71.1+13204.210727.0145-uboot.bin"
         ],
         [
           "tftp/images/a650-gpt.bin",
@@ -54,7 +54,7 @@
         ],
         [
           "tftp/images/a650-initramfs.bin",
-          "../u6-fw/ipq5018/u6-iw-5.71.0-ramload.bin"
+          "../u6-fw/ipq5018/lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_u6_pro_5.71.1.bin"
         ],
         [
           "tftp/images/a650-nor.bin",

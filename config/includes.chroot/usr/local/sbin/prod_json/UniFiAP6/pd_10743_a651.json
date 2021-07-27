@@ -18,7 +18,7 @@
           "FILES": [
             "u6-pro_1gb-v16-t1.img",
             "BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
-            "maple-4g-gpt.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
             "u6-enterprise-5.68.0-ramload.bin",
             "u6-pro_1gb-v16_nor.bin"
           ]
@@ -50,7 +50,7 @@
         ],
         [
           "tftp/images/a651-gpt.bin",
-          "../u6-fw/ipq5018/maple-4g-gpt.bin"
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
         ],
         [
           "tftp/images/a651-initramfs.bin",
