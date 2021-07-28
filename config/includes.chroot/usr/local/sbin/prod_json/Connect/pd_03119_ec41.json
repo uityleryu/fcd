@@ -1,0 +1,16 @@
+{
+  "Connect": {
+    "LVDU-24": {
+      "INDEX": 0,
+      "NAME": "LVDU-24",
+      "BOARDID": "ec41",
+      "BOMREV": "113-03119",
+      "DESC": "Low Voltage Distribution Unit 24 Ports",
+      "FILE": "uap_qca953x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    }
+  }
+}

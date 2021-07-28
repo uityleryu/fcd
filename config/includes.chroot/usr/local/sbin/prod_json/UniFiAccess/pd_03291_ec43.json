@@ -1,0 +1,51 @@
+{
+  "UniFiAccess": {
+    "UA-LOCKER": {
+      "INDEX": 0,
+      "NAME": "UA-LOCKER",
+      "BOARDID": "ec43",
+      "BOMREV": "113-03291",
+      "DESC": "UniFi Access Locker",
+      "FILE": "ua_mt7621_factory2.py",
+      "T1FILE": "ua_mt7621_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw",
+          "DST_PATH": "ua-fw",
+          "FILES": [
+            "LK.mt7621_5.35.0+26.210616.1207-uboot.bin",
+            "unifi-v1.1.49.6-g70e763d2_uap6-mt7621-45MB_nodebug_u-boot.bin",
+            "eot-ua-locker-v3.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "helper_UAP6_MT7621_release"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec43.bin",
+          "../ua-fw/LK.mt7621_5.35.0+26.210616.1207-uboot.bin"
+        ],
+        [
+          "tftp/images/ec43-fwuboot.bin",
+          "../ua-fw/unifi-v1.1.49.6-g70e763d2_uap6-mt7621-45MB_nodebug_u-boot.bin"
+        ],
+        [
+          "tftp/images/ec43-mfg.bin",
+          "../ua-fw/eot-ua-locker-v3.bin"
+        ]
+      ]
+    }
+  }
+}

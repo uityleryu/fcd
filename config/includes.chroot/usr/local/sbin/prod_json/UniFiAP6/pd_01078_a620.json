@@ -1,0 +1,16 @@
+{
+  "UniFiAP6": {
+    "U6-LR": {
+      "INDEX": 0,
+      "NAME": "U6-LR",
+      "BOARDID": "a620",
+      "BOMREV": "113-01078",
+      "DESC": "UniFi AP6 LR",
+      "FILE": "u6_mt7622_factory.py",
+      "T1FILE": "u6_mt7622_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    }
+  }
+}
