@@ -41,12 +41,11 @@ log = logging.getLogger('uigui')
 
 
 class fraMonitorPanel(Gtk.Frame):
-    def __init__(self, slotid, frametitle, winFcdFactory_obj):
+    def __init__(self, slotid, frametitle):
         self.slotid = slotid
         Gtk.Frame.__init__(self, label=frametitle)
 
         self.frawin = Gtk.Window()
-        self.winFcdFactory_obj = winFcdFactory_obj
 
         self.xcmd = Common().xcmd
 
@@ -485,100 +484,13 @@ class fraMonitorPanel(Gtk.Frame):
         if os.path.isfile(sfile):
             shutil.copy2(sfile, tfile)
             time.sleep(1)
-<<<<<<< HEAD
-=======
-            #os.remove(sfile)
->>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
         else:
             rtmsg = "{0}: can't find the source file".format(__FUNC)
             log.info(rtmsg)
 
-        if self.winFcdFactory_obj :
-            if self.winFcdFactory_obj.cbtnuploadlog.get_active() is True:
-                self.upload_prepare( self.starttime, self.slotid, CONST.macaddr, CONST.active_bomrev, testresult)
-
         return False
 
 
-<<<<<<< HEAD
-=======
-    def upload_prepare(self, ori_starttime, slotid, mac, bom, finalresult):
-
-        tpe_tz = datetime.timezone(datetime.timedelta(hours=8))
-        start_time = datetime.datetime.fromtimestamp( ori_starttime, tpe_tz)
-        end_time = datetime.datetime.now(tpe_tz)
-        timestamp = start_time.strftime('%Y-%m-%d_%H_%M_%S_%f')
-
-        upload_root_folder = "/media/usbdisk/upload"
-        upload_dut_folder = os.path.join(upload_root_folder, timestamp + '_' + mac)
-        upload_dut_filename = '_'.join([timestamp,mac,finalresult])
-        upload_dut_logpath = os.path.join(upload_dut_folder, upload_dut_filename + ".log")
-        upload_dut_jsonpath = os.path.join(upload_dut_folder, upload_dut_filename + ".json")
-
-        sfile = "/tftpboot/log_slot{0}.log".format(slotid)
-        jfile = "/tftpboot/log_slot{0}.json".format(slotid)
-
-        if not os.path.isdir(upload_dut_folder):
-            os.makedirs(upload_dut_folder)
-
-        with open(jfile, 'r') as jsonfile:
-            json_decode = json.load(jsonfile)
-            json_decode['test_result'] = finalresult
-            json_decode['test_starttime'] = start_time.strftime('%Y-%m-%d_%H:%M:%S')
-            json_decode['test_endtime']   = end_time.strftime('%Y-%m-%d_%H:%M:%S')
-            json_decode['test_duration'] =  (end_time-start_time).seconds
-
-        with open(jfile, 'w') as jsonfile:
-            json.dump(json_decode, jsonfile, sort_keys=True, indent=4)
-
-        upload_file_dict = {
-            sfile : upload_dut_logpath ,
-            jfile : upload_dut_jsonpath
-        }
-
-        for ori_file,copy_file in upload_file_dict.items():
-            if os.path.isfile(ori_file):
-                shutil.copy2(ori_file, copy_file)
-                log.info("\n[Collect UploadLog]\n From {}\n copy to {}\n".format(ori_file, copy_file))
-                time.sleep(1)
-                self._appendlog("\n[Collect UploadLog]\n From {}\n copy to {}\n".format(ori_file, copy_file))
-            else:
-                self._appendlog("\n[Collect UploadLog]\n {0}: can't find the source file".format(ori_file))
-
-        self.uploadlog(uploadfolder=upload_dut_folder, mac=mac, bom=bom)
-
-    def uploadlog(self,uploadfolder,mac,bom):
-
-        # Start Upload
-        """
-            command parameter description for trigger /api/v1/uploadlog WebAPI in Cloud
-            command: python3
-            --path:   uploadfolder or uploadpath
-            --mac:   mac address with lowercase
-            --bom:   BOM Rev version
-            --stage:   FCD or FTU
-        """
-        cmd = [
-            "sudo", "/usr/bin/python3",
-            "/usr/local/sbin/logupload_client.py",
-            '--path', uploadfolder,
-            '--mac', mac,
-            '--bom', bom,
-            '--stage', 'FCD'
-        ]
-        execcmd = ' '.join(cmd)
-        log.info(execcmd)
-        self._appendlog('\n[Start UploadLog Command]\n{}\n'.format(execcmd))
-
-        try :
-            uploadproc = subprocess.check_output(execcmd, shell=True)
-            self._appendlog('\n{}\n[Upload Success]'.format(uploadproc.decode('utf-8')))
-
-        except subprocess.CalledProcessError as e:
-            self._appendlog('\n{}\n{}\n[Upload Fail]'.format(e.output.decode('utf-8') , e.returncode) )
-
-
->>>>>>> d741cf8a25fa129eb2c2e9df37958caa829b5900
     def _update_progress(self):
         while self.reg_process_stop is False:
             x = self.proc.stdout.readline()
