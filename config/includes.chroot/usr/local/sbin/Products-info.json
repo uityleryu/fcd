@@ -609,6 +609,58 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "US-8":{
+      "INDEX"       : 35,
+      "NAME"        : "US-8",
+      "BOARDID"     : "eb19",
+      "BOMREV"      : "113-02311",
+      "DESC"        : "UniFi Switch 8-port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24-500W":{
+      "INDEX"       : 36,
+      "NAME"        : "US-24-500W",
+      "BOARDID"     : "eb32",
+      "BOMREV"      : "113-02147",
+      "DESC"        : "UniFi Switch 24-port 500W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48-750W":{
+      "INDEX"       : 37,
+      "NAME"        : "US-48-750W",
+      "BOARDID"     : "eb63",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UniFi Switch 48-port 750W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-16-XG":{
+      "INDEX"       : 38,
+      "NAME"        : "US-16-XG",
+      "BOARDID"     : "eb20",
+      "BOMREV"      : "113-02376",
+      "DESC"        : "UniFi Switch XG 16 port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
