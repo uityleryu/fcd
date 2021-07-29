@@ -44,6 +44,7 @@ ostrich_bs_dir = os.path.join(curdir, "output/ostrich")
 reg_bs_dir = os.path.join(curdir, "config/includes.chroot/usr/local/sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 ftp_server_url = "http://10.2.0.33:8088"
+devreg_server_url = "https://10.2.2.174:20000/api/v1/product_mapping"
 
 print("Current DIR: " + curdir)
 print("register base DIR: " + reg_bs_dir)
@@ -56,6 +57,7 @@ parse.add_argument('--prodname', '-pn', dest='prodname', help='Product Name', de
 parse.add_argument('--fcdver', '-v', dest='fcdver', help='FCD version', default=None)
 parse.add_argument('--fwver', '-j', dest='fwver', help='FW version', default=None)
 parse.add_argument('--type', '-tp', dest='type', help='Build Type', default=None)
+parse.add_argument('--nicken', '-nc', dest='nickname_en', help='Nickname enabled', default=None)
 args, _ = parse.parse_known_args()
 
 if args.prodline is None:
@@ -71,6 +73,11 @@ if args.prodname is None:
 else:
     pn = args.prodname
     print("Product Name: " + pn)
+
+if args.nickname_en == "y":
+    nickname_en = True
+else:
+    nickname_en = False
 
 
 def download_images():
@@ -94,11 +101,24 @@ def download_images():
                 if os.path.isdir(local_dir) is False:
                     os.makedirs(local_dir)
 
-                for i in item["FILES"]:
-                    # Ex: http://10.2.0.33:8088/fcd-image/am-fw/u-boot-art-qca955x.bin
-                    src_file_path = os.path.join(url_dir, i)
-                    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    cmd = "wget -P {} {} >> get_file_ftp.log".format(local_dir, src_file_path)
+                if len(item["FILES"]) > 0:
+                    for i in item["FILES"]:
+                        # Ex: http://10.2.0.33:8088/fcd-image/am-fw/u-boot-art-qca955x.bin
+                        src_file_path = os.path.join(url_dir, i)
+                        src_file_path = src_file_path.replace("\\", "/")
+                        cmd = "wget -P {} {}".format(local_dir, src_file_path)
+                        if cmd not in download_wget_list:
+                            download_wget_list.append(cmd)
+                else:
+                    # Ex: url_dir: http://10.2.0.33:8088/fcd-image/am-fw
+                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                    '''
+                        wget -P /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw -r -np -nd http://10.2.0.33:8088/fcd-image/am-fw/
+                        It must need a "/" after the url http://10.2.0.33:8088/fcd-image/am-fw, then wget could download all files
+                        under the folder "am-fw", or it will copy all files under "fcd-image"
+                    '''
+                    url_dir = url_dir.replace("\\", "/")
+                    cmd = "wget -P {} -r -np -nd {}/".format(local_dir, url_dir)
                     if cmd not in download_wget_list:
                         download_wget_list.append(cmd)
         else:
@@ -216,7 +236,7 @@ def gen_prod_json():
             fh.close()
 
         # Ex: FCD_airMAX_AC-SERIES_1.77.15_8.7.4
-        fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, pn.split("_")[1], args.fcdver, args.fwver)
+        fcdname = "FCD_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver)
     elif build_type == "single":
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
         src = "{}/{}/pd_{}.json".format(prod_json_dir, pl, pn)
@@ -241,8 +261,19 @@ def gen_prod_json():
                 print("Can't find the model in Products-info.json")
                 exit(1)
 
-            # Ex: FCD_airMAX_LBE-5AC-US_1.77.15_8.7.4
-            fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, product_name, args.fcdver, args.fwver)
+            if nickname_en is True:
+                '''
+                    This WebAPI is from Mike's security server
+                '''
+                cmd = "curl -s -k -H \"x-api-key: eiWee8ep9due4deeshoa8Peichai8Eih\" -X GET {}/0777{}".format(devreg_server_url, pn.split("_")[1])
+                print("cmd: " + cmd)
+                [devreg_pd, rtc] = cn.xcmd(cmd)
+
+                # Ex: FCD_e7f9_1.77.15_8.7.4_LBE-5AC-Gen2
+                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", ""))
+            else:
+                # Ex: FCD_e7f9_1.77.15_8.7.4
+                fcdname = "FCD_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver)
         else:
             rmsg = "Can't find model: {}".format(pn)
             print(rmsg)
@@ -269,18 +300,18 @@ def gen_prod_json():
 def fcd_name_check():
         '''
             Good example:
-            FCD_US_US-24-PRO_3.2.5_5.0.55-rc2
+            FCD_e7f9_1.77.15_8.7.4
         '''
         print("FCD filename: " + fcdname)
 
         naming_rule_re = re.compile(
-            r'^FCD_([A-Za-z0-9\-]+)\_([A-Za-z0-9\-]+)\_'
+            r'^FCD_(?P<systemid>[a-f0-9]{4})\_'
             r'(?P<FCD_major>0|[1-9]\d*)\.(?P<FCD_minor>0|[1-9]\d*)\.(?P<FCD_patch>0|[1-9]\d*)(?:-'
             r'(?P<FCD_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
             r'(?P<FCD_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\_'
-            r'(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-'
-            r'(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
-            r'(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?')
+            r'(?P<FW_major>0|[1-9]\d*)\.(?P<FW_minor>0|[1-9]\d*)\.(?P<FW_patch>0|[1-9]\d*)(?:-'
+            r'(?P<FW_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
+            r'(?P<FW_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?')
 
         result = naming_rule_re.findall(fcdname)
 
