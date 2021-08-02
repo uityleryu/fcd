@@ -228,7 +228,7 @@ class PSoC6FactoryGeneral(ScriptBase):
         self.close_fcd()
 
 def main():
-    factory_general = UFPESP32FactoryGeneral()
+    factory_general = PSoC6FactoryGeneral()
     factory_general.run()
 
 
