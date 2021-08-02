@@ -261,7 +261,7 @@ class U6MT762xFactory(ScriptBase):
 
         # U6-Lite, old bom is 113-00773-15 , if rev lower 15 , the uboot could be not "BT Power On result" message
         # U6-Lite, new bom is 113-01076
-        if bom == "00773" and rev_of_bomrev <= 15:
+        if bom == "00773" and rev_of_bomrev < 15:
             pass
         else:   #for new bom U6-lIte and U6-LR
             self.pexp.expect_only(30, "\[BT Power On Result\] Success")
@@ -301,7 +301,7 @@ class U6MT762xFactory(ScriptBase):
             log_debug(output)
             if output.find("Get event result: NG") >= 0:
                 log_debug("BT fw will need to be updated, it will reboot system automatically")
-                if bom == "00773" and rev_of_bomrev <= 15:
+                if bom == "00773" and rev_of_bomrev < 15:
                     pass
                 else:   #for new bom U6-lIte and U6-LR
                     self.pexp.expect_only(30, "\[BT Power On Result\] Success")
@@ -313,7 +313,7 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
         self.pexp.expect_action(10, self.linux_prompt, "reboot")
-        if bom == "00773" and rev_of_bomrev <= 15:
+        if bom == "00773" and rev_of_bomrev < 15:
             pass
         else:   #for new bom U6-lIte and U6-LR
             self.pexp.expect_only(30, "\[BT Power On Result\] Success")
