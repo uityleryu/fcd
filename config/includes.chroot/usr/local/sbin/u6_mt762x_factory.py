@@ -256,7 +256,15 @@ class U6MT762xFactory(ScriptBase):
 
     def check_info(self):
         #Check BT FW is included or not
-        self.pexp.expect_only(30, "\[BT Power On Result\] Success")
+        bom = self.bom_rev.split("-")[0]
+        rev_of_bomrev = int(self.bom_rev.split("-")[1])
+
+        # U6-Lite, old bom is 113-00773-15 , if rev lower 15 , the uboot could be not "BT Power On result" message
+        # U6-Lite, new bom is 113-01076
+        if bom == "00773" and rev_of_bomrev <= 15:
+            pass
+        else:   #for new bom U6-lIte and U6-LR
+            self.pexp.expect_only(30, "\[BT Power On Result\] Success")
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
@@ -293,7 +301,10 @@ class U6MT762xFactory(ScriptBase):
             log_debug(output)
             if output.find("Get event result: NG") >= 0:
                 log_debug("BT fw will need to be updated, it will reboot system automatically")
-                self.pexp.expect_only(300, "\[BT Power On Result\] Success")
+                if bom == "00773" and rev_of_bomrev <= 15:
+                    pass
+                else:   #for new bom U6-lIte and U6-LR
+                    self.pexp.expect_only(30, "\[BT Power On Result\] Success")
                 self.login(timeout=240,press_enter=True)
                 break
 
@@ -302,7 +313,10 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
         self.pexp.expect_action(10, self.linux_prompt, "reboot")
-        self.pexp.expect_only(120, "\[BT Power On Result\] Success")
+        if bom == "00773" and rev_of_bomrev <= 15:
+            pass
+        else:   #for new bom U6-lIte and U6-LR
+            self.pexp.expect_only(30, "\[BT Power On Result\] Success")
 
         if self.board_id == "a612":
             self.login(timeout=240,press_enter=True)
