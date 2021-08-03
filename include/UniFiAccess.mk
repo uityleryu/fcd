@@ -51,11 +51,11 @@ TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_ua_hotel_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ua_hotel,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UA-HOTEL,FCD_$(PRD)_ua_hotel_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ua_hotel,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================
