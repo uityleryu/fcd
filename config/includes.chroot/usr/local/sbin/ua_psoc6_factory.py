@@ -11,6 +11,8 @@ import os
 import re
 import traceback
 
+DUT_STATUS =True
+
 FWUPDATE_ENABLE     = True 
 PROVISION_ENABLE    = True 
 DOHELPER_ENABLE     = True 
@@ -61,8 +63,33 @@ class PSoC6FactoryGeneral(ScriptBase):
             'btnum': self.btnum
         }
 
+    def dutbootup_check(self):
+        starttime = time.time()
+        while True:
+            output = self.pexp.expect_get_output("route2command", "Not allow sleep", timeout=10)
+            log_debug("output:".format(output))
+            output = self.pexp.expect_get_output("mfglogoff", "Not allow sleep", timeout=5)
+            log_debug("output:".format(output))
+            output = self.pexp.expect_get_output("mfg?", "devreg passed?", timeout=10)
+            log_debug("output:".format(output))
+
+            if "devreg passed?" in output:
+                msg = "Detect DUT boot up"
+                log_debug(msg)
+                break
+            else:
+                if time.time() - starttime > 20:
+                    msg = "Can't detect DUT boot up"
+                    log_debug(msg)
+                    error_critical(msg)
+
+        if "devreg passed? yes !" in output:
+            msg = "Already does devreg, please reprogram it"
+            log_debug(msg)
+            error_critical(msg)
+
     def prepare_server_need_files(self):
-        output = self.pexp.expect_get_output("uniqueid", self.esp32_prompt, timeout=10)
+        output = self.pexp.expect_get_output("mfginfo", "device CPU:", timeout=10)
         log_debug(output)
         id_list = re.findall(r'id: 0x(\w+)', output)
         cpu_id = id_list[0]
@@ -137,8 +164,6 @@ class PSoC6FactoryGeneral(ScriptBase):
         self.pexp.expect_only(180, self.esp32_prompt)
         log_debug("Device boots well")
 
-    def dutbootup_check(self):
-        
     def fwupdate(self):
         self.check_device_stat()
         self.program_keys()
@@ -193,7 +218,15 @@ class PSoC6FactoryGeneral(ScriptBase):
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
         msg(5, "Open serial port successfully ...")
-    
+        
+        if DUT_STATUS is True:
+            self.dutbootup_check()
+            msg(10, "Cehck DUT boot up ...")
+        if DOHELPER_ENABLE is True:
+            self.prepare_server_need_files()
+            msg(30, "Finish preparing the devreg file ...")
+            
+        ######old######    
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
             msg(10, "Finish FW updating ...")
