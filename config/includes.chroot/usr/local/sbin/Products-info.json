@@ -2062,7 +2062,7 @@
       "BOARDID"     : "ec40",
       "BOMREV"      : "113-02940",
       "DESC"        : "UA Hotel Lock",
-      "FILE"        : "connect_psoc6_factory.py",
+      "FILE"        : "ua_psoc6_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0012",
