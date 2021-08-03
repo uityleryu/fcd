@@ -12,9 +12,9 @@ PROVISION_ENABLE  = True
 DOHELPER_ENABLE   = True 
 REGISTER_ENABLE   = True 
 FWUPDATE_ENABLE   = True 
-DATAVERIFY_ENABLE = True
-DIAG_MODE_ENABLE  = True
-SET_NTP_ENABLE    = True
+DATAVERIFY_ENABLE = True 
+DIAG_MODE_ENABLE  = True 
+SET_NTP_ENABLE    = True 
 
 class UDMMT7622BspFactory(ScriptBase):
     def __init__(self):
@@ -76,8 +76,9 @@ class UDMMT7622BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "boot")
 
     def init_bsp_image(self):
-        self.pexp.expect_lnxcmd(120, "BusyBox", "dmesg -n1", "")
+        self.pexp.expect_lnxcmd(180, "BusyBox", "dmesg -n1", "")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
+        self.set_lnx_net("br-lan")
         self.is_network_alive_in_linux()
 
     def fwupdate(self):
@@ -98,7 +99,6 @@ class UDMMT7622BspFactory(ScriptBase):
             source=os.path.join(self.fwdir, self.board_id + "-recovery"),
             dest=os.path.join(self.tftpdir, "uImage")  # fixed name
         )
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         self.pexp.expect_only(120, "enter factory install mode")
@@ -163,8 +163,10 @@ class UDMMT7622BspFactory(ScriptBase):
             msg(70, "Rebooting ...")
 
         if DATAVERIFY_ENABLE is True:
-            self.login(timeout=600, log_level_emerg=True)
-            time.sleep(5)
+            self.login(timeout=600, retry=0)
+            self.pexp.expect_only(180, "rai0: Set DVLAN")
+            self.pexp.expect_lnxcmd(10, "", "dmesg -n1")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/uptime")
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
