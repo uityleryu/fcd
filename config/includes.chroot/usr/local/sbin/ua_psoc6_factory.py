@@ -66,6 +66,10 @@ class PSoC6FactoryGeneral(ScriptBase):
 
     def dutbootup_check(self):
         starttime = time.time()
+        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(5)
+
         while True:
             output = self.pexp.expect_get_output("route2command", "Not allow sleep", timeout=10)
             log_debug("output:".format(output))
