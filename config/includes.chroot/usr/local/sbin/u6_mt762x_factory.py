@@ -38,7 +38,7 @@ class U6MT762xFactory(ScriptBase):
         
         # Devreg location
         self.devregpart_select = {
-            "a612": "dev/mtdblock3",
+            "a612": "/dev/mtdblock3",
             "a620": "/dev/mtdblock5"
         }
         self.devregpart = self.devregpart_select[self.board_id]
