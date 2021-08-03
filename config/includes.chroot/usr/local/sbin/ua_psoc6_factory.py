@@ -71,12 +71,9 @@ class PSoC6FactoryGeneral(ScriptBase):
         time.sleep(5)
 
         while True:
-            output = self.pexp.expect_get_output("route2command", "Not allow sleep", timeout=10)
-            log_debug("output:".format(output))
-            output = self.pexp.expect_get_output("mfglogoff", "Not allow sleep", timeout=5)
-            log_debug("output:".format(output))
+            self.pexp.expect_get_output("route2command", "Not allow sleep", timeout=5)
+            self.pexp.expect_get_output("mfglogoff", "Not allow sleep", timeout=5)
             output = self.pexp.expect_get_output("mfg?", "devreg passed?", timeout=10)
-            log_debug("output:".format(output))
 
             if "devreg passed?" in output:
                 msg = "Detect DUT boot up"
@@ -88,7 +85,7 @@ class PSoC6FactoryGeneral(ScriptBase):
                     log_debug(msg)
                     error_critical(msg)
 
-        if "devreg passed? yes !" in output:
+        if "devreg passed? yes !" not in output:
             msg = "Already does devreg, please reprogram it"
             log_debug(msg)
             error_critical(msg)
@@ -96,39 +93,46 @@ class PSoC6FactoryGeneral(ScriptBase):
     def flashdutdata(self):
         bom_id = self.bom_rev.split('-')[0]
         board_rev = self.bom_rev.split('-')[1]
-        pexp.expect_action(1, "mfgbdid={}".format(self.board_id), "mfgbdid={}".format(self.board_id))
-        pexp.expect_action(1, "mfgbdmac={}".format(self.mac), "mfgbdmac={}".format(self.mac))
-        pexp.expect_action(1, "mfgqrcode={}".format(self.self.qrcode), "mfgqrcode={}".format(self.qrcode))
-        pexp.expect_action(1, "mfgcountry={}".format(self.region), "mfgcountry={}".format(self.region))
-        pexp.expect_action(1, "mfgbomrev={}".format(self.self.board_id), "mfgbomrev={}".format(bom_id))
-        pexp.expect_action(1, "mfgbdrev={}".format(self.bom_rev), "mfgbdrev={}".format(board_rev))
+        self.pexp.expect_action(1, "", "mfgbdid={}".format(self.board_id))
+        self.pexp.expect_action(1, "", "mfgbdmac={}".format(self.mac))
+        self.pexp.expect_action(1, "", "mfgqrcode={}".format(self.qrcode))
+        self.pexp.expect_action(1, "", "mfgcountry={}".format(self.region))
+        self.pexp.expect_action(1, "", "mfgbomrev={}".format(bom_id))
+        self.pexp.expect_action(1, "", "mfgbdrev={}".format(board_rev))
         output = self.pexp.expect_get_output("mfglist", "contry:", timeout=10)
-        log_debug("output:".format(output))
 
-        sysinfo_list = re.findall(r'(\w+): (\w+)', output)
-        dut_board_id = sysinfo_list[0]
-        dut_mac_id = sysinfo_list[3]
-        dut_qrcode_id = sysinfo_list[5]
-        dut_region_id = sysinfo_list[6]
-        dut_bom_id = sysinfo_list[2]
-        dut_board_rev = sysinfo_list[1]
+        sysinfo_list = re.findall(r'\w+:\s*(\w+) !', output)
+        dut_board_id = sysinfo_list[0].replace("0x", "")
+        dut_board_rev = sysinfo_list[1].replace("0x", "")
+        dut_bom_id = sysinfo_list[2].replace("0x", "")
+        dut_mac = sysinfo_list[3].replace("0x", "")
+        dut_qrcode = sysinfo_list[5]
+        dut_region = sysinfo_list[6]
 
+        itemlist = ["board_id", "board_rev", "bom_id", "mac", "qrcode", "region"]
+        expectlist = [self.board_id, self.board_rev, self.bom_id, self.mac, self.qrcode, self.region]
+        dutlist = [dut_board_id, dut_board_rev, dut_bom_id, dut_mac, dut_qrcode, dut_region]
+        for idx in range(len(itemlist)):
+            if expectlist[idx] == dutlist[idx]:
+                msg = "DUT {}: {} match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
+                log_debug(msg)
+            else:
+                msg = "DUT {}: {} doesn't match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
+                log_debug(msg)
+                error_critical(msg)
 
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("mfginfo", "device CPU:", timeout=10)
-        log_debug(output)
-        id_list = re.findall(r'(\w+): (\w+)', output)
-        cpu_id = id_list[3]
-        flash_jedec_id = id_list[1]
-        flash_uuid = id_list[0]
-
+        cpu_id = re.search(r'device CPU: (\w+-\w+)', output).group(1)
+        flash_jedec_id = "00"+re.search(r'flash jedec id: (\w+)', output).group(1)
+        flash_uuid = re.search(r'SPI Flash UUID: (\w+)', output).group(1)[:26]
         if cpu_id == 'CY8C6137BZI-F54':
-            cpu_id = 0000E217
+            cpu_id = "0000E217"
         else:
             otmsg = "Get CPU ID failed"
             error_critical(otmsg)
 
-        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
+        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid:{}".format(cpu_id, flash_jedec_id, flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \
                             " -i field=cpu_rev_id,format=hex,value={}".format(cpu_id)                   + \
                             " -i field=flash_jedec_id,format=hex,value={}".format(flash_jedec_id)       + \
@@ -267,7 +271,7 @@ class PSoC6FactoryGeneral(ScriptBase):
         
         if FLASH_DUT_DATA is True:
             self.flashdutdata()
-            msg(30, "Finish flash dut information ...")
+            msg(40, "Finish flash dut information ...")
         return
 
         ######old######    

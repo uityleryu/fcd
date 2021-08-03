@@ -35,7 +35,8 @@ TOOLS-CONFIG= \
     common/sshd_config \
     common/tmux.conf \
     common/x86-64k-ee \
-    common/aarch64-rpi4-64k-ee
+    common/aarch64-rpi4-64k-ee \
+    common/aarch64-rpi4-4k-ee
 
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
