@@ -2056,6 +2056,19 @@
       "SW_ID"       : "1d01"
     },
 
+    "ua_hotel":{
+      "INDEX"       : 3,
+      "NAME"        : "UA-HOTEL",
+      "BOARDID"     : "ec40",
+      "BOMREV"      : "113-02940",
+      "DESC"        : "UA Hotel Lock",
+      "FILE"        : "connect_psoc6_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+    },
+
     "UA-Thermal-Scan":{
       "INDEX"       : 10,
       "NAME"        : "UA-Thermal-Scan",
