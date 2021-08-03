@@ -24,11 +24,6 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/am",
           "DST_PATH": "tools/am",
           "FILES": [
