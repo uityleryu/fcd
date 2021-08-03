@@ -40,7 +40,7 @@ TOOLS-CONFIG= \
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
-TOOLS-UA-HOTEL+=$(TOOLS-CONFIG)
+TOOLS-ua-hotel+=$(TOOLS-CONFIG)
 TOOLS-UA-ThermalScan+=$(TOOLS-UA)
 TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
