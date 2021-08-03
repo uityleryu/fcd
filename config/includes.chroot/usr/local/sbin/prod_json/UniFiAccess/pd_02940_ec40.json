@@ -1,6 +1,6 @@
 {
   "UniFiAccess": {
-    "UA-ua_hotel": {
+    "ua_hotel": {
       "INDEX": 0,
       "NAME": "UA-HOTEL",
       "BOARDID": "ec40",

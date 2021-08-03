@@ -11,7 +11,8 @@ import os
 import re
 import traceback
 
-DUT_STATUS =True
+DUT_STATUS = True
+FLASH_DUT_DATA = True
 
 FWUPDATE_ENABLE     = True 
 PROVISION_ENABLE    = True 
@@ -87,15 +88,42 @@ class PSoC6FactoryGeneral(ScriptBase):
             msg = "Already does devreg, please reprogram it"
             log_debug(msg)
             error_critical(msg)
+    
+    def flashdutdata(self):
+        bom_id = self.bom_rev.split('-')[0]
+        board_rev = self.bom_rev.split('-')[1]
+        pexp.expect_action(1, "mfgbdid={}".format(self.board_id), "mfgbdid={}".format(self.board_id))
+        pexp.expect_action(1, "mfgbdmac={}".format(self.mac), "mfgbdmac={}".format(self.mac))
+        pexp.expect_action(1, "mfgqrcode={}".format(self.self.qrcode), "mfgqrcode={}".format(self.qrcode))
+        pexp.expect_action(1, "mfgcountry={}".format(self.region), "mfgcountry={}".format(self.region))
+        pexp.expect_action(1, "mfgbomrev={}".format(self.self.board_id), "mfgbomrev={}".format(bom_id))
+        pexp.expect_action(1, "mfgbdrev={}".format(self.bom_rev), "mfgbdrev={}".format(board_rev))
+        output = self.pexp.expect_get_output("mfglist", "contry:", timeout=10)
+        log_debug("output:".format(output))
+
+        sysinfo_list = re.findall(r'(\w+): (\w+)', output)
+        dut_board_id = sysinfo_list[0]
+        dut_mac_id = sysinfo_list[3]
+        dut_qrcode_id = sysinfo_list[5]
+        dut_region_id = sysinfo_list[6]
+        dut_bom_id = sysinfo_list[2]
+        dut_board_rev = sysinfo_list[1]
+
 
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("mfginfo", "device CPU:", timeout=10)
         log_debug(output)
-        id_list = re.findall(r'id: 0x(\w+)', output)
-        cpu_id = id_list[0]
+        id_list = re.findall(r'(\w+): (\w+)', output)
+        cpu_id = id_list[3]
         flash_jedec_id = id_list[1]
-        flash_uuid = id_list[2]
-        
+        flash_uuid = id_list[0]
+
+        if cpu_id == 'CY8C6137BZI-F54':
+            cpu_id = 0000E217
+        else:
+            otmsg = "Get CPU ID failed"
+            error_critical(otmsg)
+
         log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \
                             " -i field=cpu_rev_id,format=hex,value={}".format(cpu_id)                   + \
@@ -222,10 +250,22 @@ class PSoC6FactoryGeneral(ScriptBase):
         if DUT_STATUS is True:
             self.dutbootup_check()
             msg(10, "Cehck DUT boot up ...")
+
+        if PROVISION_ENABLE is True:
+            self.erase_eefiles()
+            msg(15, "Finish erasing ee files ...")
+            self.data_provision_4k(netmeta=self.devnetmeta)
+            msg(20, "Finish 4K binary generating ...")
+            
         if DOHELPER_ENABLE is True:
             self.prepare_server_need_files()
             msg(30, "Finish preparing the devreg file ...")
-            
+        
+        if FLASH_DUT_DATA is True:
+            self.flashdutdata()
+            msg(30, "Finish flash dut information ...")
+        return
+
         ######old######    
         if FWUPDATE_ENABLE is True:
             self.fwupdate()

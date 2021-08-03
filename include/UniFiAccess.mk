@@ -40,7 +40,7 @@ TOOLS-CONFIG= \
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
-
+TOOLS-UA-HOTEL+=$(TOOLS-CONFIG)
 TOOLS-UA-ThermalScan+=$(TOOLS-UA)
 TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
@@ -51,11 +51,11 @@ TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
-
+$(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_ua_hotel_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UA-HOTEL,FCD_$(PRD)_ua_hotel_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================
@@ -65,3 +65,4 @@ $(eval $(call ProductCompress2,02966-ec60))
 $(eval $(call ProductCompress2,03329-ec46))
 $(eval $(call ProductCompress2,03329-ec3b))
 $(eval $(call ProductCompress2,03291-ec43))
+$(eval $(call ProductCompress2,02940-ec40))
