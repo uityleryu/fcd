@@ -100,26 +100,27 @@ class PSoC6FactoryGeneral(ScriptBase):
         self.pexp.expect_action(1, "", "mfgbomrev={}".format(bom_id))
         self.pexp.expect_action(1, "", "mfgbdrev={}".format(board_rev))
         output = self.pexp.expect_get_output("mfglist", "contry:", timeout=10)
-
-        sysinfo_list = re.findall(r'\w+:\s*(\w+) !', output)
-        dut_board_id = sysinfo_list[0].replace("0x", "")
-        dut_board_rev = sysinfo_list[1].replace("0x", "")
-        dut_bom_id = sysinfo_list[2].replace("0x", "")
-        dut_mac = sysinfo_list[3].replace("0x", "")
-        dut_qrcode = sysinfo_list[5]
-        dut_region = sysinfo_list[6]
-
-        itemlist = ["board_id", "board_rev", "bom_id", "mac", "qrcode", "region"]
-        expectlist = [self.board_id, self.board_rev, self.bom_id, self.mac, self.qrcode, self.region]
-        dutlist = [dut_board_id, dut_board_rev, dut_bom_id, dut_mac, dut_qrcode, dut_region]
-        for idx in range(len(itemlist)):
-            if expectlist[idx] == dutlist[idx]:
-                msg = "DUT {}: {} match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
-                log_debug(msg)
-            else:
-                msg = "DUT {}: {} doesn't match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
-                log_debug(msg)
-                error_critical(msg)
+        try:
+            sysinfo_list = re.findall(r'\w+:\s+(\w+) !', output)
+            dut_board_id = sysinfo_list[0].replace("0x", "")
+            dut_board_rev = sysinfo_list[1].replace("0x", "")
+            dut_bom_id = sysinfo_list[2].replace("0x", "")
+            dut_mac = sysinfo_list[3].replace("0x", "")
+            dut_qrcode = sysinfo_list[4]
+            dut_region = sysinfo_list[5]
+            itemlist = ["board_id", "board_rev", "bom_id", "mac", "qrcode", "region"]
+            expectlist = [self.board_id, board_rev, bom_id, self.mac, self.qrcode, self.region]
+            dutlist = [dut_board_id, dut_board_rev, dut_bom_id, dut_mac, dut_qrcode, dut_region]
+            for idx in range(len(itemlist)):
+                if expectlist[idx] == dutlist[idx]:
+                    msg = "DUT {}: {} match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
+                    log_debug(msg)
+                else:
+                    msg = "DUT {}: {} doesn't match with expect info: {}".format(itemlist[idx], expectlist[idx], expectlist[idx])
+                    log_debug(msg)
+                    error_critical(msg)
+        except Exception as e:
+            log_debug("{}".format(e))
 
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("mfginfo", "device CPU:", timeout=10)
@@ -272,6 +273,10 @@ class PSoC6FactoryGeneral(ScriptBase):
         if FLASH_DUT_DATA is True:
             self.flashdutdata()
             msg(40, "Finish flash dut information ...")
+
+        if REGISTER_ENABLE is True:
+            self.registration(regsubparams=self.regsubparams)
+            msg(50, "Finish doing registration ...")
         return
 
         ######old######    
