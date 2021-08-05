@@ -1331,6 +1331,18 @@
 
   "Connect":
   {
+    "UC-Thermostat":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Thermostat",
+      "BOARDID"     : "ec47",
+      "BOMREV"      : "113-03232",
+      "DESC"        : "UniFi Connect Thermostat",
+      "FILE"        : "ufc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
     "UC-DISPLAY-7":{
       "INDEX"       : 0,
       "NAME"        : "UC-DISPLAY-7",
