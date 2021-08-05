@@ -31,7 +31,8 @@ class MT762xMFGGeneral(ScriptBase):
         elif self.board_id == "a620":
             log_debug(msg="Initializing sf => nor init")
             self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="nor init")
-            cmd = "snor erase 0x0 0x4000000; snor write ${loadaddr} 0x0 0x3ff0000"
+            # cmd = "snor erase 0x0 0x4000000; snor write ${loadaddr} 0x0 0x3ff0000"  #tmp to keep in case
+            cmd = "snor erase 0x0 0x4000000; snor write 0x4007FF28 0x0 0x3ff0000"
             log_debug(msg="run cmd " + cmd)
             self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=cmd)
             self.pexp.expect_only(timeout=300, exptxt=self.bootloader_prompt)
