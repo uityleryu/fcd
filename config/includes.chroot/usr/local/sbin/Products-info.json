@@ -2065,8 +2065,8 @@
       "FILE"        : "ua_psoc6_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
-      "FCD_ID"      : "0012",
-      "SW_ID"       : "1d01"
+      "FCD_ID"      : "0001",
+      "SW_ID"       : "0001"
     },
 
     "UA-Thermal-Scan":{
