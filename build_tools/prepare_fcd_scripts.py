@@ -305,45 +305,59 @@ def gen_prod_json():
     shutil.copyfile(verfile, dst_verfile)
 
 
-def fcd_name_check():
+def filename_check(filename):
         '''
             Good example:
             FCD_e7f9_1.77.15_8.7.4
         '''
-        print("FCD filename: " + fcdname)
+        print("Filename: " + filename)
 
-        naming_rule_re = re.compile(
+        pmatch = re.search(
             r'^FCD_(?P<systemid>[a-f0-9]{4}|.*\_.*\-.*)\_'
-            r'(?P<FCD_major>0|[1-9]\d*)\.(?P<FCD_minor>0|[1-9]\d*)\.(?P<FCD_patch>0|[1-9]\d*)(?:-'
-            r'(?P<FCD_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
-            r'(?P<FCD_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\_'
-            r'(?P<FW_major>0|[1-9]\d*)\.(?P<FW_minor>0|[1-9]\d*)\.(?P<FW_patch>0|[1-9]\d*)(?:-'
-            r'(?P<FW_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
-            r'(?P<FW_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?'
+            r'(?P<tool_major>0|[1-9]\d*)\.(?P<tool_minor>0|[1-9]\d*)\.(?P<tool_patch>0|[1-9]\d*)(?:-'
+            r'(?P<tool_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
+            r'(?P<tool_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\_'
+            r'(?P<fw_major>0|[1-9]\d*)\.(?P<fw_minor>0|[1-9]\d*)\.(?P<fw_patch>0|[1-9]\d*)(?:-'
+            r'(?P<fw_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
+            r'(?P<fw_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?',
+            filename
         )
 
-        result = naming_rule_re.findall(fcdname)
-
-        if len(result) < 1 or len(result[0]) < 11:
+        print("pattern match: {}".format(pmatch))
+        if not pmatch:
             print("======================================")
             print("  Version format is invalid !!! ")
             print("======================================")
             exit(1)
 
         print("======================================")
-        print("  Product System ID: {}".format(result[0][0]))
+        print("  Product System ID: {}".format(pmatch.group('systemid')))
 
-        if result[0][4] == '':
-            fcdmsg = "  FCD version: {}.{}.{}".format(result[0][1], result[0][2], result[0][3])
+        if pmatch.group('tool_prerelease') is None:
+            fcdmsg = "  FCD version: {}.{}.{}".format(
+                pmatch.group('tool_major'),
+                pmatch.group('tool_minor'),
+                pmatch.group('tool_patch'))
         else:
-            fcdmsg = "  FCD version: {}.{}.{}-{}".format(result[0][1], result[0][2], result[0][3], result[0][4])
+            fcdmsg = "  FCD version: {}.{}.{}-{}".format(
+                pmatch.group('tool_major'),
+                pmatch.group('tool_minor'),
+                pmatch.group('tool_patch'),
+                pmatch.group('tool_prerelease'))
 
         print(fcdmsg)
 
-        if result[0][9] == '':
-            fwmsg = "  FW version: {}.{}.{}".format(result[0][6], result[0][7], result[0][8])
+        if pmatch.group('fw_prerelease') is None:
+            fwmsg = "  FW version: {}.{}.{}".format(
+                pmatch.group('fw_major'),
+                pmatch.group('fw_minor'),
+                pmatch.group('fw_patch'))
         else:
-            fwmsg = "  FW version: {}.{}.{}-{}".format(result[0][6], result[0][7], result[0][8], result[0][9])
+            fwmsg = "  FW version: {}.{}.{}-{}".format(
+                pmatch.group('fw_major'),
+                pmatch.group('fw_minor'),
+                pmatch.group('fw_patch'),
+                pmatch.group('fw_prerelease'))
 
         print(fwmsg)
         print("======================================")
@@ -401,7 +415,7 @@ def create_fcd_tgz():
 
 def main():
     gen_prod_json()
-    fcd_name_check()
+    filename_check(fcdname)
     download_images()
     copy_required_files()
     create_fcd_tgz()
