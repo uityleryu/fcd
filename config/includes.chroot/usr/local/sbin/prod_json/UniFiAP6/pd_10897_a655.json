@@ -11,8 +11,56 @@
       "QRCHECK": "True",
       "FCD_ID": "0004",
       "SW_ID": "0601",
-      "DOWNLOAD_FILE": [],
-      "CREATE_LINK": []
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-infinity_1gb-v5.img",
+            "BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
+            "maple-4g-gpt.bin",
+            "lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_enterprise_infinity.bin",
+            "u6-infinity_1gb-v5_nor.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a655-emmc.img",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v5.img"
+        ],
+        [
+          "tftp/images/a655-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin"
+        ],
+        [
+          "tftp/images/a655-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt.bin"
+        ],
+        [
+          "tftp/images/a655-initramfs.bin",
+          "../u6-fw/ipq5018/lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_enterprise_infinity.bin"
+        ],
+        [
+          "tftp/images/a655-nor.bin",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v5_nor.bin"
+        ]
+      ]
     }
   }
 }

@@ -13,14 +13,14 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw",
+          "SRC_PATH": "images/fcd-image/udm-fw/udr",
           "DST_PATH": "udm-fw",
           "FILES": [
-            "udr-mt7622-mt7915a-v9_emmc.bin",
-            "UDR.mt7622.v1.0.0+root.5106.59dfbfb.210323.1523.bin",
-            "u-boot-udr-fw.bin",
-            "udr-mt7622-mt7915a-v9_nor.bin",
-            "uImage-udr-59dfbfb5.bin"
+            "u-boot-be302fe30f.bin",
+            "UDR.mt7622.v2.2.4.c44e8a5.210716.0207.bin",
+            "uImage",
+            "udr-mt7622-mt7915a-v11_emmc.bin",
+            "udr-mt7622-mt7915a-v11_nor.bin"
           ]
         },
         {
@@ -42,23 +42,23 @@
       "CREATE_LINK": [
         [
           "tftp/images/eccc-fcd.bin",
-          "../udm-fw/udr-mt7622-mt7915a-v9_emmc.bin"
+          "../udm-fw/udr/udr-mt7622-mt7915a-v11_emmc.bin"
         ],
         [
           "tftp/images/eccc-fw.bin",
-          "../udm-fw/UDR.mt7622.v1.0.0+root.5106.59dfbfb.210323.1523.bin"
+          "../udm-fw/udr/UDR.mt7622.v2.2.4.c44e8a5.210716.0207.bin"
         ],
         [
           "tftp/images/eccc-fw.uboot",
-          "../udm-fw/u-boot-udr-fw.bin"
+          "../udm-fw/udr/u-boot-be302fe30f.bin"
         ],
         [
           "tftp/images/eccc-mfg.bin",
-          "../udm-fw/udr-mt7622-mt7915a-v9_nor.bin"
+          "../udm-fw/udr/udr-mt7622-mt7915a-v11_nor.bin"
         ],
         [
           "tftp/images/eccc-recovery",
-          "../udm-fw/uImage-udr-59dfbfb5.bin"
+          "../udm-fw/udr/uImage"
         ]
       ]
     }

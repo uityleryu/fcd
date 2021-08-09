@@ -10,7 +10,21 @@
       "T1FILE": "u6_ipq5018_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "CREATE_LINK": [
+        [
+          "tftp/images/a656-emmc.img",
+          "../u6-fw/ipq5018/u6-enterprise-iw-v5.img"
+        ],
+        [
+          "tftp/images/a656-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt.bin"
+        ],
+        [
+          "tftp/images/a656-nor.bin",
+          "../u6-fw/ipq5018/u6-enterprise-iw-v5_nor.bin"
+        ]
+      ]
     }
   }
 }

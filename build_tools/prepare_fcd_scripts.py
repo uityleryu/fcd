@@ -44,6 +44,7 @@ ostrich_bs_dir = os.path.join(curdir, "output/ostrich")
 reg_bs_dir = os.path.join(curdir, "config/includes.chroot/usr/local/sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 ftp_server_url = "http://10.2.0.33:8088"
+devreg_server_url = "https://10.2.2.174:20000/api/v1/product_mapping"
 
 print("Current DIR: " + curdir)
 print("register base DIR: " + reg_bs_dir)
@@ -56,6 +57,7 @@ parse.add_argument('--prodname', '-pn', dest='prodname', help='Product Name', de
 parse.add_argument('--fcdver', '-v', dest='fcdver', help='FCD version', default=None)
 parse.add_argument('--fwver', '-j', dest='fwver', help='FW version', default=None)
 parse.add_argument('--type', '-tp', dest='type', help='Build Type', default=None)
+parse.add_argument('--nicken', '-nc', dest='nickname_en', help='Nickname enabled', default=None)
 args, _ = parse.parse_known_args()
 
 if args.prodline is None:
@@ -72,6 +74,11 @@ else:
     pn = args.prodname
     print("Product Name: " + pn)
 
+if args.nickname_en == "y":
+    nickname_en = True
+else:
+    nickname_en = False
+
 
 def download_images():
     # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp
@@ -87,18 +94,39 @@ def download_images():
         if "DOWNLOAD_FILE" in pjson[pl][im].keys():
             download_list = pjson[pl][im]["DOWNLOAD_FILE"]
             for item in download_list:
-                # Ex: http://10.2.0.33:8088/fcd-image/am-fw
+                # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
                 url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                 # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
                 local_dir = os.path.join(ostrich_tftp_dir, item["DST_PATH"])
                 if os.path.isdir(local_dir) is False:
                     os.makedirs(local_dir)
 
-                for i in item["FILES"]:
-                    # Ex: http://10.2.0.33:8088/fcd-image/am-fw/u-boot-art-qca955x.bin
-                    src_file_path = os.path.join(url_dir, i)
-                    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    cmd = "wget -P {} {} >> get_file_ftp.log".format(local_dir, src_file_path)
+                if len(item["FILES"]) > 0:
+                    for i in item["FILES"]:
+                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
+                        src_file_path = os.path.join(url_dir, i)
+                        src_file_path = src_file_path.replace("\\", "/")
+                        cmd = "wget -P {} {}".format(local_dir, src_file_path)
+                        if cmd not in download_wget_list:
+                            download_wget_list.append(cmd)
+                else:
+                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                    '''
+                        wget -P /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw -r -np -nd http://10.2.0.33:8088/images/fcd-image/am-fw/
+                        It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
+                        under the folder "am-fw", or it will copy all files under "fcd-image"
+                    '''
+                    url_dir = url_dir.replace("\\", "/")
+                    src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
+                    match_url = re.findall(src_pattern, url_dir)
+                    if match_url:
+                        print("!!!!!!!!! Fatal Error, you are going to copy all images from the FTP server !!!!!!!!!!!!")
+                        print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
+                        exit(1)
+
+                    cmd = "wget -P {} -r -np -nd {}".format(local_dir, url_dir)
+                    print("copy whole folder: " + cmd)
                     if cmd not in download_wget_list:
                         download_wget_list.append(cmd)
         else:
@@ -215,8 +243,8 @@ def gen_prod_json():
             pjson = json.load(fh)
             fh.close()
 
-        # Ex: FCD_airMAX_AC-SERIES_1.77.15_8.7.4
-        fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, pn.split("_")[1], args.fcdver, args.fwver)
+        # Ex: FCD_AIRMAX_AC-SERIES_1.77.15_8.7.4
+        fcdname = "FCD_{}_{}_{}".format(pn, args.fcdver, args.fwver)
     elif build_type == "single":
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
         src = "{}/{}/pd_{}.json".format(prod_json_dir, pl, pn)
@@ -241,8 +269,19 @@ def gen_prod_json():
                 print("Can't find the model in Products-info.json")
                 exit(1)
 
-            # Ex: FCD_airMAX_LBE-5AC-US_1.77.15_8.7.4
-            fcdname = "FCD_{0}_{1}_{2}_{3}".format(pl, product_name, args.fcdver, args.fwver)
+            if nickname_en is True:
+                '''
+                    This WebAPI is from Mike's security server
+                '''
+                cmd = "curl -s -k -H \"x-api-key: eiWee8ep9due4deeshoa8Peichai8Eih\" -X GET {}/0777{}".format(devreg_server_url, pn.split("_")[1])
+                print("cmd: " + cmd)
+                [devreg_pd, rtc] = cn.xcmd(cmd)
+
+                # Ex: FCD_e7f9_1.77.15_8.7.4_LBE-5AC-Gen2
+                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", ""))
+            else:
+                # Ex: FCD_e7f9_1.77.15_8.7.4
+                fcdname = "FCD_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver)
         else:
             rmsg = "Can't find model: {}".format(pn)
             print(rmsg)
@@ -266,45 +305,59 @@ def gen_prod_json():
     shutil.copyfile(verfile, dst_verfile)
 
 
-def fcd_name_check():
+def filename_check(filename):
         '''
             Good example:
-            FCD_US_US-24-PRO_3.2.5_5.0.55-rc2
+            FCD_e7f9_1.77.15_8.7.4
         '''
-        print("FCD filename: " + fcdname)
+        print("Filename: " + filename)
 
-        naming_rule_re = re.compile(
-            r'^FCD_([A-Za-z0-9\-]+)\_([A-Za-z0-9\-]+)\_'
-            r'(?P<FCD_major>0|[1-9]\d*)\.(?P<FCD_minor>0|[1-9]\d*)\.(?P<FCD_patch>0|[1-9]\d*)(?:-'
-            r'(?P<FCD_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
-            r'(?P<FCD_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\_'
-            r'(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-'
-            r'(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
-            r'(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?')
+        pmatch = re.search(
+            r'^FCD_(?P<systemid>[a-f0-9]{4}|.*\_.*\-.*)\_'
+            r'(?P<tool_major>0|[1-9]\d*)\.(?P<tool_minor>0|[1-9]\d*)\.(?P<tool_patch>0|[1-9]\d*)(?:-'
+            r'(?P<tool_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
+            r'(?P<tool_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\_'
+            r'(?P<fw_major>0|[1-9]\d*)\.(?P<fw_minor>0|[1-9]\d*)\.(?P<fw_patch>0|[1-9]\d*)(?:-'
+            r'(?P<fw_prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+'
+            r'(?P<fw_buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?',
+            filename
+        )
 
-        result = naming_rule_re.findall(fcdname)
-
-        if len(result) < 1 or len(result[0]) < 11:
+        print("pattern match: {}".format(pmatch))
+        if not pmatch:
             print("======================================")
             print("  Version format is invalid !!! ")
             print("======================================")
             exit(1)
 
         print("======================================")
-        print("  Product Line: {}".format(result[0][0]))
-        print("  Model name: {}".format(result[0][1]))
+        print("  Product System ID: {}".format(pmatch.group('systemid')))
 
-        if result[0][5] == '':
-            fcdmsg = "  FCD version: {}.{}.{}".format(result[0][2], result[0][3], result[0][4])
+        if pmatch.group('tool_prerelease') is None:
+            fcdmsg = "  FCD version: {}.{}.{}".format(
+                pmatch.group('tool_major'),
+                pmatch.group('tool_minor'),
+                pmatch.group('tool_patch'))
         else:
-            fcdmsg = "  FCD version: {}.{}.{}-{}".format(result[0][2], result[0][3], result[0][4], result[0][5])
+            fcdmsg = "  FCD version: {}.{}.{}-{}".format(
+                pmatch.group('tool_major'),
+                pmatch.group('tool_minor'),
+                pmatch.group('tool_patch'),
+                pmatch.group('tool_prerelease'))
 
         print(fcdmsg)
 
-        if result[0][10] == '':
-            fwmsg = "  FW version: {}.{}.{}".format(result[0][7], result[0][8], result[0][9])
+        if pmatch.group('fw_prerelease') is None:
+            fwmsg = "  FW version: {}.{}.{}".format(
+                pmatch.group('fw_major'),
+                pmatch.group('fw_minor'),
+                pmatch.group('fw_patch'))
         else:
-            fwmsg = "  FW version: {}.{}.{}-{}".format(result[0][7], result[0][8], result[0][9], result[0][10])
+            fwmsg = "  FW version: {}.{}.{}-{}".format(
+                pmatch.group('fw_major'),
+                pmatch.group('fw_minor'),
+                pmatch.group('fw_patch'),
+                pmatch.group('fw_prerelease'))
 
         print(fwmsg)
         print("======================================")
@@ -362,7 +415,7 @@ def create_fcd_tgz():
 
 def main():
     gen_prod_json()
-    fcd_name_check()
+    filename_check(fcdname)
     download_images()
     copy_required_files()
     create_fcd_tgz()

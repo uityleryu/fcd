@@ -11,21 +11,28 @@
       "QRCHECK": "False",
       "FCD_ID": "000b",
       "SW_ID": "1202",
+      "FCD_ID": "000B",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/fcd-image/am-fw",
           "DST_PATH": "am-fw",
           "FILES": [
             "AR934X_ART_UB.bin",
-            "WA.v8.7.5-alpha2.45300.210507.1454.bin",
+            "WA.v8.7.5.45783.210720.1004.bin",
             "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img",
             "AR934X_UB.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/am",
+          "DST_PATH": "tools/am",
+          "FILES": [
+            "cfg_part_ac_series.bin",
+            "fl_lock_11ac_re ",
+            "helper_ARxxxx_11ac_20210329",
+            "id_rsa",
+            "id_rsa.pub"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -45,7 +52,7 @@
         ],
         [
           "tftp/images/e7ff.bin",
-          "../am-fw/WA.v8.7.5-alpha2.45300.210507.1454.bin"
+          "../am-fw/WA.v8.7.5.45783.210720.1004.bin"
         ],
         [
           "tftp/images/e7ff-mfg.bin",

@@ -6,11 +6,57 @@
       "BOARDID": "a620",
       "BOMREV": "113-01078",
       "DESC": "UniFi AP6 LR",
-      "FILE": "u6_mt7622_factory.py",
-      "T1FILE": "u6_mt7622_mfg.py",
+      "FILE": "u6_mt762x_factory.py",
+      "T1FILE": "u6_mt762x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
-      "SW_ID": "0601"
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7622",
+          "DST_PATH": "u6-fw/mt7622",
+          "FILES": [
+            "BZ.MT7622_5.60.8+12971.210622.0845-uboot.bin",
+            "fake_eeprom_u6-lr-bom19.bin",
+            "lede-mtk-mt7622-UAP6-initramfs-kernel.bin",
+            "u6-lr-mt7622-mt7915a-v9.bin",
+            "unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "helper_UAP6_MT7622_release"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a620.bin",
+          "../u6-fw/mt7622/BZ.MT7622_5.60.8+12971.210622.0845-uboot.bin"
+        ],
+        [
+          "tftp/images/a620-fake_EEPROM.bin",
+          "../u6-fw/mt7622/fake_eeprom_u6-lr-bom19.bin"
+        ],
+        [
+          "tftp/images/a620-fcd.bin",
+          "../u6-fw/mt7622/lede-mtk-mt7622-UAP6-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/a620-mfg.kernel.uboot",
+          "../u6-fw/mt7622/u6-lr-mt7622-mt7915a-v9.bin"
+        ],
+        [
+          "tftp/images/a620-uboot.bin",
+          "../u6-fw/mt7622/unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+        ]
+      ]
     }
   }
 }

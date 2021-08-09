@@ -106,6 +106,7 @@ class USBCM5334x_MFG(BCM5334xLIB):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         cmd = "setenv ipaddr {0}".format(self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'mdk_drv')
 
     def run(self):
         """

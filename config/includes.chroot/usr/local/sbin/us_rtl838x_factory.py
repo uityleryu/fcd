@@ -108,7 +108,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.WAIT_LCMUPGRADE_ENABLE = True
 
     def fwupdate(self):
-        self.pexp.expect_action(10, "Hit Esc key to stop autoboot", "\x1b")
+        self.pexp.expect_action(60, "Hit Esc key to stop autoboot", "\x1b")
         msg(60, "Reboot into Uboot for resetting to default environment")
         self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel unknown")
         self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")

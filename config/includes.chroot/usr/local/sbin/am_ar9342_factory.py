@@ -206,6 +206,15 @@ class AMAR9342Factory(ScriptBase):
         time.sleep(1)
         self.pexp.close()
 
+    def fix_idrsa_permission(self):
+        host_idrsa_path = os.path.join(self.fcd_toolsdir, "am", "id_rsa")
+        cmdset = [
+            "chmod 600 {}".format(host_idrsa_path)
+        ]
+        cmd = " ".join(cmdset)
+        print("cmd: " + cmd)
+        self.cnapi.xcmd(cmd)
+
     '''
         scp_put() from Host to DUT
     '''
@@ -653,6 +662,8 @@ class AMAR9342Factory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
+
+        self.fix_idrsa_permission()
 
         self.stop_uboot()
         self.set_mac()
