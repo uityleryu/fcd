@@ -38,10 +38,14 @@ TOOLS-CONFIG= \
     common/aarch64-rpi4-64k-ee \
     common/aarch64-rpi4-4k-ee
 
+TOOLS-UA-HOTEL=\
+    ua_hotel/hash32x86
+
+
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
-TOOLS-ua_hotel+=$(TOOLS-CONFIG)
+TOOLS-UA-HOTEL+=$(TOOLS-CONFIG)
 TOOLS-UA-ThermalScan+=$(TOOLS-UA)
 TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
@@ -52,11 +56,11 @@ TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,ua_hotel,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,ua_hotel,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 
 # ==================================================================================================
