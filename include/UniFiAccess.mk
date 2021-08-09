@@ -39,7 +39,7 @@ TOOLS-CONFIG= \
     common/aarch64-rpi4-4k-ee
 
 TOOLS-UA-HOTEL=\
-    ua_hotel/hash32x86
+    ua_hotel/hash32-arm-rpi
 
 
 # Project specific tools
