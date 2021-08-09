@@ -1,0 +1,18 @@
+{
+  "Connect": {
+    "UC-THERMOSTAT": {
+      "INDEX": 0,
+      "NAME": "UC-THERMOSTAT",
+      "BOARDID": "ec47",
+      "BOMREV": "113-03232",
+      "DESC": "",
+      "FILE": "ufc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}

@@ -123,7 +123,9 @@ class U6IPQ5018BspFactory(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
         self._ramboot_uap_fwupdate()
-        self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
+        # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
+        # self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)

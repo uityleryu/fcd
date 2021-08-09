@@ -18,6 +18,9 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     eb31: US-24-250W
     eb60: US-48
     eb62: US-48-500W
+    eb19: US-8
+    eb32: US-24-500W
+    eb63: US-48-750W
 '''
 
 
@@ -40,7 +43,10 @@ class BCM5334xLIB(ScriptBase):
             'eb30': "0xc0000",
             'eb31': "0xc0000",
             'eb60': "0xc0000",
-            'eb62': "0xc0000"
+            'eb62': "0xc0000",
+            'eb19': "0xc0000",
+            'eb32': "0xc0000",
+            'eb63': "0xc0000"
         }
 
         # U-boot erase size
@@ -53,7 +59,10 @@ class BCM5334xLIB(ScriptBase):
             'eb30': "0x10000",
             'eb31': "0x10000",
             'eb60': "0x10000",
-            'eb62': "0x10000"
+            'eb62': "0x10000",
+            'eb19': "0x10000",
+            'eb32': "0x10000",
+            'eb63': "0x10000"
         }
 
         # Shmoo data address
@@ -66,7 +75,10 @@ class BCM5334xLIB(ScriptBase):
             'eb30': "0xd0000",
             'eb31': "0xd0000",
             'eb60': "0xd0000",
-            'eb62': "0xd0000"
+            'eb62': "0xd0000",
+            'eb19': "0xd0000",
+            'eb32': "0xd0000",
+            'eb63': "0xd0000"
         }
 
         # Boot argument
@@ -80,6 +92,9 @@ class BCM5334xLIB(ScriptBase):
             'eb31': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb60': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
             'eb62': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
+            'eb19': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
+            'eb32': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M,
+            'eb63': "quiet console=ttyS0,115200 mem=128M@0x0 mem=128M@0x68000000 " + self.flash_mtdparts_32M
         }
 
         self.helperexes = {
@@ -91,7 +106,10 @@ class BCM5334xLIB(ScriptBase):
             'eb30': "helper_BCM5334x",
             'eb31': "helper_BCM5334x",
             'eb60': "helper_BCM5334x",
-            'eb62': "helper_BCM5334x"
+            'eb62': "helper_BCM5334x",
+            'eb19': "helper_BCM5334x",
+            'eb32': "helper_BCM5334x",
+            'eb63': "helper_BCM5334x"
         }
 
         self.bootloader_prompt = "u-boot>"
@@ -147,6 +165,7 @@ class BCM5334xLIB(ScriptBase):
         self.pexp.expect_action(5, "", "")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_only(10, "UBNT application initialized")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'mdk_drv')
 
     def ub_config_clean(self):
         """

@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.41"
+    __version__ = "1.0.42"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -1073,7 +1073,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout, self.linux_prompt, cmd)
 
         output = self.pexp.expect_get_output(rtc_tool, self.linux_prompt)
-
+        log_debug("output: {}".format(output))
         match = re.findall(ntp_ctime, output, re.S)
 
         '''

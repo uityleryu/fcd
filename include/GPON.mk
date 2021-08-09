@@ -35,7 +35,7 @@ TOOLS-US-GEN1+=$(TOOLS-GPON)
 $(eval $(call ProductImage,UF-WiFi6,FCD_$(PRD)_UF-WiFi6_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
-$(eval $(call ProductCompress,UF-WiFi6,FCD_$(PRD)_UF-WiFi6_$(VER)))
+$(eval $(call ProductCompress,UF-WiFi6,FCD_$(PRD)_UF-WiFi6_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03376-eec5))

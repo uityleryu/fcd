@@ -113,10 +113,16 @@ IMAGE-US-GEN1= \
     images/eb31* \
     images/eb60* \
     images/eb62* \
+    images/eb19* \
+    images/eb32* \
+    images/eb63* \
     usw-fw/us-gen1-fw.bin \
     usw-fw/us-gen1-mfg.bin \
-    usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot.bin \
-    usw-fw/US.bcm5334x.v5.11.0.11599.200422.1002-uboot-mfg.bin
+    usw-fw/US.bcm5334x*
+
+IMAGE-US-16-XG= \
+    images/eb20* \
+    usw-fw/US.bcm5341x*
 
 IMAGE-USW-FLEX-XG= \
     images/ed40* \
@@ -145,6 +151,7 @@ IMAGE-USW+=$(IMAGE-USW-Enterprise-48-PoE)
 IMAGE-USW+=$(IMAGE-USW-Aggregation)
 IMAGE-USW+=$(IMAGE-USW-Aggregation-Pro)
 IMAGE-USW+=$(IMAGE-US-GEN1)
+IMAGE-USW+=$(IMAGE-US-16-XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX-XG)
 IMAGE-USW+=$(IMAGE-USW-Enterprise-8-PoE)
 
@@ -239,11 +246,13 @@ TOOLS-USW-Enterprise-8-PoE+= \
 TOOLS-USW+=$(TOOLS-CONFIG)
 
 TOOLS-US-GEN1+=$(TOOLS-USW)
+TOOLS-US-16-XG+=$(TOOLS-USW)
 
 # Project target
 
 $(eval $(call ProductImage,USW,FCD_$(PRD)_USW-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,US-GEN1,FCD_$(PRD)_US-GEN1-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,US-16-XG,FCD_$(PRD)_US-16-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
@@ -268,6 +277,7 @@ $(eval $(call ProductImage,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_
 
 $(eval $(call ProductCompress,USW,FCD_$(PRD)_USW-ALL_$(VER)))
 $(eval $(call ProductCompress,US-GEN1,FCD_$(PRD)_US-GEN1-ALL_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,US-16-XG,FCD_$(PRD)_US-16-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
 $(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))

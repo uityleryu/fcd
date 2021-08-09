@@ -191,6 +191,16 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             if index < 0:
                 error_critical("OTP program/verify failed")
 
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv mfg_mode 1")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv dev_ubntconsole true")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+            self.pexp.expect_action(60, "stop autoboot", "\033")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv mfg_mode")
+            self.pexp.expect_only(10, "mfg_mode=1")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv dev_ubntconsole")
+            self.pexp.expect_only(10, "dev_ubntconsole=true")
+
         if FWUPDATE_EN is True:
             self.set_boot_net()
             cmd = "tftp 0xc8800000 images/ef0d-fw.bin.unsign"
@@ -201,7 +211,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             self.pexp.expect_only(60, "U-Boot")
             self.pexp.expect_action(60, "login:", self.user)
             self.pexp.expect_lnxcmd(10, "", "", "")
-            cmd = "cat /etc/uvp-flex.version"
+            cmd = "cat /etc/fw.version"
             output = self.pexp.expect_get_output(cmd, self.linux_prompt)
             match = re.findall(self.fwversion, output)
             if match:

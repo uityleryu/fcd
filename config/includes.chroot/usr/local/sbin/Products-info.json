@@ -609,6 +609,58 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "US-8":{
+      "INDEX"       : 35,
+      "NAME"        : "US-8",
+      "BOARDID"     : "eb19",
+      "BOMREV"      : "113-02311",
+      "DESC"        : "UniFi Switch 8-port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24-500W":{
+      "INDEX"       : 36,
+      "NAME"        : "US-24-500W",
+      "BOARDID"     : "eb32",
+      "BOMREV"      : "113-02147",
+      "DESC"        : "UniFi Switch 24-port 500W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48-750W":{
+      "INDEX"       : 37,
+      "NAME"        : "US-48-750W",
+      "BOARDID"     : "eb63",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UniFi Switch 48-port 750W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-16-XG":{
+      "INDEX"       : 38,
+      "NAME"        : "US-16-XG",
+      "BOARDID"     : "eb20",
+      "BOMREV"      : "113-02376",
+      "DESC"        : "UniFi Switch XG 16 port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
@@ -781,8 +833,8 @@
       "BOARDID"     : "a612",
       "BOMREV"      : "113-00773",
       "DESC"        : "UniFi AP6 LITE",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
@@ -793,23 +845,35 @@
       "BOARDID"     : "a612",
       "BOMREV"      : "113-01076",
       "DESC"        : "UniFi AP6 LITE",
-      "FILE"        : "u6_mt7621_factory.py",
-      "T1FILE"      : "u6_mt7621_mfg.py",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-    "U6-LR": {
-      "INDEX": 1,
-      "NAME": "U6-LR",
-      "BOARDID": "a620",
-      "BOMREV": "113-01078",
-      "DESC": "UniFi AP6 LR",
-      "FILE": "u6_mt7622_factory.py",
-      "T1FILE": "u6_mt7622_mfg.py",
-      "QRCHECK": "True",
-      "FCD_ID": "0004",
-      "SW_ID": "0601"
+    "U6-LR-00744": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-00774",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-01078": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-01078",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
     },
 	  "U6-PRO":{
       "INDEX"       : 2,
@@ -1267,6 +1331,18 @@
 
   "Connect":
   {
+    "UC-Thermostat":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Thermostat",
+      "BOARDID"     : "ec47",
+      "BOMREV"      : "113-03232",
+      "DESC"        : "UniFi Connect Thermostat",
+      "FILE"        : "ufc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
     "UC-DISPLAY-7":{
       "INDEX"       : 0,
       "NAME"        : "UC-DISPLAY-7",
