@@ -15,7 +15,7 @@
         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
-          "FILE": [
+          "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
