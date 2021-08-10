@@ -305,7 +305,7 @@ class U6MT762xFactory(ScriptBase):
                     pass
                 else:   #for new bom U6-lIte and U6-LR
                     self.pexp.expect_only(240, "\[BT Power On Result\] Success")
-                self.login(timeout=120,press_enter=True)
+                self.login(timeout=240,press_enter=True)
                 break
 
             number_time = number_time + 1
