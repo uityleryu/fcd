@@ -11,6 +11,7 @@
       "QRCHECK": "True",
       "FCD_ID": "000d",
       "SW_ID": "1604",
+      "CLIENT_FILE": "client_rpi4_release_hk_20210412",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
