@@ -19,7 +19,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi14-64k-ee"
+            "aarch64-rpi4-64k-ee"
           ]
         }
       ],
