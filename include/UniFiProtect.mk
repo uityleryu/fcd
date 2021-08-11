@@ -115,7 +115,7 @@ TOOLS-a920+=$(TOOLS-CONFIG)
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,02765_a911))
-$(eval $(call ProductCompress2,03025_a919))
+$(eval $(call ProductCompress2,03495_a919))
 $(eval $(call ProductCompress2,03452_a915))
 $(eval $(call ProductCompress2,03302_ab12))
 $(eval $(call ProductCompress2,02765_a941))
