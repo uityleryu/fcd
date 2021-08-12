@@ -15,12 +15,18 @@ IMAGE-LVDU-4-24= \
     lvdu-fw/lvdu-4-fw.bin \
     lvdu-fw/LH*
 
+IMAGE-LVDU-4= \
+    images/ec3d* \
+    images/ec41* \
+    lvdu-fw/lvdu-4-fw.bin \
+    lvdu-fw/LH*
+
 IMAGE-LVDU-1= \
     images/ec48* \
     lvdu-fw/lvdu-1/*
 
-
 IMAGE-LVDU+=$(IMAGE-LVDU-4-24)
+IMAGE-LVDU+=$(IMAGE-LVDU-4)
 IMAGE-LVDU+=$(IMAGE-LVDU-1)
 
 IMAGE-UC-THERMOSTAT =\
@@ -53,6 +59,10 @@ TOOLS-LVDU-4-24+=$(TOOLS-CONFIG)
 TOOLS-LVDU-4-24+= \
     lvdu_4_24/helper*
 
+TOOLS-LVDU-4+=$(TOOLS-CONFIG)
+TOOLS-LVDU-4+= \
+    lvdu_4_24/helper*
+
 TOOLS-LVDU-1= \
     $(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
@@ -68,6 +78,7 @@ $(eval $(call ProductImage,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FWVER
 $(eval $(call ProductImage,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,LVDU-4,FCD_$(PRD)_LVDU-4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 
@@ -78,6 +89,7 @@ $(eval $(call ProductCompress,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FW
 $(eval $(call ProductCompress,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-DISPLAY-27,FCD_$(PRD)_UC-DISPLAY-27_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LVDU-4-24,FCD_$(PRD)_LVDU-4-24_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,LVDU-4,FCD_$(PRD)_LVDU-4_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 
