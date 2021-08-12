@@ -13,22 +13,12 @@
       "SW_ID": "1604",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/up-fw/up-chime",
+          "SRC_PATH": "images/fcd-image/up-fw/up-chime/",
           "DST_PATH": "up-fw/up-chime",
-          "FILES": [
-            "up_chime_fw.bin",
-            "bootloader.bin",
-            "ota_data_initial.bin",
-            "partition-table.bin"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
           "FILES": []
         },
         {
-          "SRC_PATH": "images/tools/common",
+          "SRC_PATH": "images/tools/common/",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
@@ -41,19 +31,51 @@
       "CREATE_LINK": [
         [
           "tftp/images/ab12-app.bin",
-          "../up-fw/up-chime/up_chime_fw.bin"
+          "../up-fw/up-chime/testing_fw/non_encrypt/up_chime_fw.bin"
+        ],
+        [
+          "tftp/images/ab12-app-encrypt.bin",
+          "../up-fw/up-chime/testing_fw/encypt/up_chime_fw-encrypt.bin"
         ],
         [
           "tftp/images/ab12-bootloader.bin",
-          "../up-fw/up-chime/bootloader.bin"
+          "../up-fw/up-chime/testing_fw/non_encrypt/bootloader-reflash-digest.bin"
+        ],
+        [
+          "tftp/images/ab12-bootloader-encrypt.bin",
+          "../up-fw/up-chime/testing_fw/encypt/bootloader-reflash-digest-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab12-flash_encrypt_key.bin",
+          "../up-fw/up-chime/testing_fw/non_encrypt/flash_encryption_key.bin"
+        ],
+        [
+          "tftp/images/ab12-nvs-key.bin",
+          "../up-fw/up-chime/testing_fw/non_encrypt/nvs-key.bin"
+        ],
+        [
+          "tftp/images/ab12-nvs-key-encrypt.bin",
+          "../up-fw/up-chime/testing_fw/encypt/nvs-key-encrypt.bin"
         ],
         [
           "tftp/images/ab12-ota.bin",
-          "../up-fw/up-chime/ota_data_initial.bin"
+          "../up-fw/up-chime/testing_fw/non_encrypt/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ab12-ota-encrypt.bin",
+          "../up-fw/up-chime/testing_fw/encypt/ota_data_initial-encrypt.bin"
         ],
         [
           "tftp/images/ab12-ptn-table.bin",
-          "../up-fw/up-chime/partition-table.bin"
+          "../up-fw/up-chime/testing_fw/non_encrypt/partition-table.bin"
+        ],
+        [
+          "tftp/images/ab12-ptn-table-encrypt.bin",
+          "../up-fw/up-chime/testing_fw/encypt/partition-table-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab12-secure_boot_key.bin",
+          "../up-fw/up-chime/testing_fw/non_encrypt/secure-bootloader-key-256.bin"
         ]
       ]
     }
