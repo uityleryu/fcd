@@ -14,12 +14,13 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    a980: Viewport
+    a980: Viewport            (Android 9)
     ef80: UC-Display-7  (BLE)       (Android 9)
     ef81: UC-Display-13 (BLE)       (Android 9)
     ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
     ef88: UC-Display-13 (BLE/WIFI)  (Android 9)
     ef82: UVP_Touch           (Android 7)
+    ef90: UC-Cast             (Android 9)
     ef13: UT-PHONE-TOUCH-W    (Android 7)
     ef0e: UVP_TouchMax        (Android 7)
     ef83: UC-Display-21       (Android 9)
@@ -27,6 +28,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ef85: UniFi Pay 7         (Android 9)
     ef86: UniFi Pay 13        (Android 9)
     ec60: UA-BL-PRO           (Android 9)
+    ec62: UA-Display-Elevator (Android 9)
 '''
 
 
@@ -48,30 +50,39 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         # default product class: basic
         self.df_prod_class = "0014"
         self.usbadb_list = [
-            "ec60", "ef0e", "ef80", "ef81", "ef82", "ef83", "ef84", "ef87", "ef88", "ef13"
+            "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
+            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13"
         ]
 
         self.ospl = {
-            'a980': "",
+            'e980': "adr9",
             'ef80': "adr9",
             'ef81': "adr9",
             'ef82': "adr7",
             'ef13': "adr7",
             'ef87': "adr9",
             'ef88': "adr9",
+            'ef90': "adr9",
             'ef0e': "adr9",
             'ef83': "adr9",
             'ef84': "adr9",
             'ef85': "adr9",
             'ef86': "adr9",
-            'ec60': "adr9"
+            'ec60': "adr9",
+            'ec62': "adr9"
         }
 
         if self.ospl[self.board_id] == "adr9":
-            self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
-            self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
-            self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
-            self.f_qr_id = "/mnt/vendor/persist/qr_id"
+            if self.board_id == "e980" or self.board_id == "ef90":
+                self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
+                self.cfg_file = ""
+                self.f_eth_mac = "/persist/eth_mac"
+                self.f_qr_id = "/persist/qr_id"
+            else:
+                self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
+                self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
+                self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
+                self.f_qr_id = "/mnt/vendor/persist/qr_id"
         else:
             self.persist_cfg_file = "/persist/WCNSS_qcom_cfg.ini"
             self.cfg_file = "/data/misc/wifi/WCNSS_qcom_cfg.ini"
@@ -84,7 +95,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.android_cc = "USI"
 
         self.lnxpmt = {
-            'a980': "",
+            'e980': "protectbox",
             'ef80': "msm8953_uct",
             'ef81': "unifi_p13",
             'ef87': "msm8953_uct",
@@ -96,12 +107,14 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef84': "unifi_p27",
             'ef85': "",
             'ef86': "",
-            'ec60': "msm8953_uapro"
+            'ef90': "uc_cast",
+            'ec60': "msm8953_uapro",
+            'ec62': ""
         }
 
         # Number of Ethernet
         self.macnum = {
-            'a980': "",
+            'e980': "1",
             'ef80': "1",
             'ef81': "1",
             'ef87': "1",
@@ -113,12 +126,14 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef84': "1",
             'ef85': "0",
             'ef86': "0",
-            'ec60': "1"
+            'ef90': "1",
+            'ec60': "1",
+            'ec62': "1"
         }
 
         # Number of WiFi
         self.wifinum = {
-            'a980': "",
+            'e980': "0",
             'ef80': "0",
             'ef81': "0",
             'ef87': "1",
@@ -130,12 +145,14 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef84': "1",
             'ef85': "1",
             'ef86': "1",
-            'ec60': "1"
+            'ef90': "1",
+            'ec60': "1",
+            'ec62': "0"
         }
 
         # Number of Bluetooth
         self.btnum = {
-            'a980': "",
+            'e980': "1",
             'ef80': "1",
             'ef81': "1",
             'ef87': "1",
@@ -147,7 +164,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef84': "1",
             'ef85': "1",
             'ef86': "1",
-            'ec60': "1"
+            'ef90': "1",
+            'ec60': "1",
+            'ec62': "1"
         }
 
         self.devnetmeta = {
@@ -422,11 +441,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
             # Write persist cfg file
-            cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            if self.android_cc != "000":
-                cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc, self.persist_cfg_file)
+            if self.board_id == "e980":
+                cmd = "echo gStaCountryCode={} > {}".format(self.android_cc, self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+            else:
+                cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+                if self.android_cc != "000":
+                    cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc, self.persist_cfg_file)
+                    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
         if self.REGISTER_ENABLE is True:
             msg(40, "Sendtools to DUT and data provision ...")
