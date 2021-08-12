@@ -91,3 +91,5 @@ $(eval $(call ProductCompress2,03383_ef87))
 $(eval $(call ProductCompress2,03396_ef88))
 $(eval $(call ProductCompress2,UCD_SERIES))
 $(eval $(call ProductCompress2,03232_ec47))
+$(eval $(call ProductCompress2,03076_ec3d))
+
