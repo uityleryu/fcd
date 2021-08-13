@@ -31,11 +31,9 @@ class U6MT762xFactory(ScriptBase):
         self.fcdimg = self.board_id + "-fcd.bin"
         self.uboot_img = os.path.join(self.image, self.board_id+'-uboot.bin')
         self.uboot_size = os.stat(os.path.join(self.tftpdir, self.uboot_img)).st_size
-        
-        
-        
+
         self.helper_path = "common"
-        
+
         # Devreg location
         self.devregpart_select = {
             "a612": "/dev/mtdblock3",
@@ -49,7 +47,7 @@ class U6MT762xFactory(ScriptBase):
             "a620": "helper_UAP6_MT7622_release"
         }
         self.helperexe = self.helperexe_select[self.board_id]
-        
+
         # bootloader prompt
         self.bootloader_prompt_select = {
             "a612": "MT7621 #",     # uboot of BSP is "=>"
@@ -86,7 +84,7 @@ class U6MT762xFactory(ScriptBase):
             'a612': "33554432",
             'a620': "67108864",
         }
-        
+
         self.recovery_addr = {
             "a612": "0x84000000",
             "a620": "0x5007ff28",
@@ -117,12 +115,12 @@ class U6MT762xFactory(ScriptBase):
 
     def boot_recovery_image(self, Img):
         cmd = "tftpboot {} images/{}".format(self.recovery_addr[self.board_id], Img)
-        
+
         if self.board_id == "a612":
             pass
         elif self.board_id == "a620":
             self.pexp.expect_action(15, self.bootloader_prompt, "nor init")
-        
+
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_only(30, "Bytes transferred = "+str(os.stat(self.fwdir+"/"+Img).st_size))
         self.pexp.expect_action(10, self.bootloader_prompt, "bootm")
@@ -130,7 +128,7 @@ class U6MT762xFactory(ScriptBase):
 
     def init_recovery_image(self):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
-        
+
         if self.board_id == "a612":
             cmd = "swconfig dev switch0 set enable_vlan 1"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
@@ -145,7 +143,7 @@ class U6MT762xFactory(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0", post_exp="inet addr:", retry=6, valid_chk=True)
             cmd = "ifconfig eth0 {}".format(self.dutip)
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
-            
+
         elif self.board_id == "a620":
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig", "br0", retry=10)
             # To enable ethernet in 1G unit
@@ -153,7 +151,7 @@ class U6MT762xFactory(ScriptBase):
         self.is_network_alive_in_linux(retry=10)
 
     def update_uboot(self):
-        
+
         if self.board_id == "a612":
             log_debug("uboot_img: " + self.uboot_img)
             cmd = "tftpboot {} {}".format(self.recovery_addr[self.board_id], self.uboot_img)
@@ -198,7 +196,7 @@ class U6MT762xFactory(ScriptBase):
                     self.bootloader_prompt = "=>"
                     log_debug("Change prompt to {}".format(self.bootloader_prompt))
                     retry -= 1
-        
+
         elif self.board_id == "a620":
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
             retry = 2
@@ -215,7 +213,7 @@ class U6MT762xFactory(ScriptBase):
 
             self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.mac)
             self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
-        
+
         self.set_ub_net(premac=self.premac)
         self.is_network_alive_in_uboot()
 
@@ -285,7 +283,7 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
-        
+
         number_time = 0 # one loop is 5sec for 1 time
         while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 
             time.sleep(5)
@@ -295,7 +293,7 @@ class U6MT762xFactory(ScriptBase):
             if output.find("btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update") >= 0:
                 log_debug("BT fw will 'not' need to be updated")
                 break
-            
+
             cmd = 'dmesg | grep -i "Get event result:"'
             output = self.pexp.expect_get_output(action=cmd, prompt= "" ,timeout=3)
             log_debug(output)
@@ -304,7 +302,7 @@ class U6MT762xFactory(ScriptBase):
                 if bom == "00773" and rev_of_bomrev < 15:
                     pass
                 else:   #for new bom U6-lIte and U6-LR
-                    self.pexp.expect_only(240, "\[BT Power On Result\] Success")
+                    self.pexp.expect_only(120, "\[BT Power On Result\] Success")
                 self.login(timeout=240,press_enter=True)
                 break
 
@@ -316,7 +314,7 @@ class U6MT762xFactory(ScriptBase):
         if bom == "00773" and rev_of_bomrev < 15:
             pass
         else:   #for new bom U6-lIte and U6-LR
-            self.pexp.expect_only(30, "\[BT Power On Result\] Success")
+            self.pexp.expect_only(120, "\[BT Power On Result\] Success")
 
         if self.board_id == "a612":
             self.login(timeout=240,press_enter=True)
