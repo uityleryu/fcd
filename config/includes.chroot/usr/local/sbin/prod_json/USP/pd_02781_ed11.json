@@ -13,13 +13,9 @@
       "SW_ID": "0201",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/usp/rps",
+          "SRC_PATH": "images/fcd-image/usp/rps/",
           "DST_PATH": "usp/rps",
-          "FILES": [
-            "uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin",
-            "US.mt7621_sh-rps-ftu-rps-test-burnin+13267.210720.1056-uboot.bin",
-            "unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin"
-          ]
+          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/usp_rps",
@@ -46,7 +42,7 @@
         ],
         [
           "tftp/images/ed11-fw.bin",
-          "../usp/rps/US.mt7621_sh-rps-ftu-rps-test-burnin+13267.210720.1056-uboot.bin"
+          "../usp/rps/US.mt7621_5.59.10+12932.210729.0727-uboot.bin"
         ],
         [
           "tftp/images/ed11-uboot.bin",
