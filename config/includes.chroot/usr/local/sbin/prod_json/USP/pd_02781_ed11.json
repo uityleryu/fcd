@@ -19,7 +19,7 @@
         },
         {
           "SRC_PATH": "images/tools/usp_rps",
-          "DST_PATH": "tools/common",
+          "DST_PATH": "tools/usp_rps",
           "FILES": [
             "helper_UNIFI_MT7621_release"
           ]
