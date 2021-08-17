@@ -390,37 +390,37 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-24-POE-02831":{
-      "INDEX"       : 19,
-      "NAME"        : "USW-24-POE",
-      "BOARDID"     : "ed21",
-      "BOMREV"      : "113-02831",
-      "DESC"        : "UBNT UniFiSwitch 24 POE",
-      "FILE"        : "us_rtl838x_factory.py",
-      "T1FILE"      : "us_rtl838x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0002",
-      "SW_ID"       : "0201"
-    },
-
-    "USW-48-POE-02865":{
-      "INDEX"       : 20,
-      "NAME"        : "USW-48-POE",
-      "BOARDID"     : "ed22",
-      "BOMREV"      : "113-02865",
-      "DESC"        : "UBNT UniFiSwitch 48 POE",
-      "FILE"        : "us_rtl838x_factory.py",
-      "T1FILE"      : "us_rtl838x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0002",
-      "SW_ID"       : "0201"
-    },
-
     "USW-16-POE-03955":{
       "INDEX"       : 18,
       "NAME"        : "USW-16-POE",
       "BOARDID"     : "ed20",
       "BOMREV"      : "113-03955",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-03959":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-03959",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-03960":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-03960",
       "DESC"        : "UBNT UniFiSwitch 16 POE",
       "FILE"        : "us_rtl838x_factory.py",
       "T1FILE"      : "us_rtl838x_mfg.py",
@@ -442,11 +442,89 @@
       "SW_ID"       : "0201"
     },
 
+    "USW-24-POE-02831":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-02831",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-03961":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-03961",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-03962":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-03962",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
     "USW-48-POE-03957":{
       "INDEX"       : 20,
       "NAME"        : "USW-48-POE",
       "BOARDID"     : "ed22",
       "BOMREV"      : "113-03957",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-02865":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-02865",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-03963":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-03963",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-03964":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-03964",
       "DESC"        : "UBNT UniFiSwitch 48 POE",
       "FILE"        : "us_rtl838x_factory.py",
       "T1FILE"      : "us_rtl838x_mfg.py",
@@ -512,6 +590,32 @@
       "NAME"        : "USW-LITE-16-POE",
       "BOARDID"     : "ed26",
       "BOMREV"      : "113-03954",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-03958":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-03958",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-03596":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-03596",
       "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
       "FILE"        : "us_rtl838x_factory.py",
       "T1FILE"      : "us_rtl838x_mfg.py",
