@@ -2208,7 +2208,7 @@
       "INDEX"       : 14,
       "NAME"        : "UISP-P",
       "BOARDID"     : "ee5a",
-      "BOMREV"      : "113-00990",
+      "BOMREV"      : "113-01103",
       "DESC"        : "Ubiquiti Internet Service Provider Power",
       "FILE"        : "uisp_qca9531_factory.py",
       "T1FILE"      : "",
