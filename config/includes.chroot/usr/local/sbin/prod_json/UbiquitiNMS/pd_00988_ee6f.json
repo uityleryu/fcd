@@ -21,8 +21,8 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/unms-slite",
-          "DST_PATH": "tools/unms-slite",
+          "SRC_PATH": "images/tools/ee6f",
+          "DST_PATH": "tools/ee6f",
           "FILES": [
             "esx_cfg.part",
             "esx_log.part",

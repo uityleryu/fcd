@@ -3,7 +3,6 @@
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
-from xmodem import XMODEM
 
 import sys
 import time
@@ -20,9 +19,9 @@ FLASH_DEVREG_DATA   = True
 DEVREG_CHECK_ENABLE = True
 
 
-class UAESP32FactoryGeneral(ScriptBase):
+class CONNECTESP32FactoryGeneral(ScriptBase):
     def __init__(self):
-        super(UAESP32FactoryGeneral, self).__init__()
+        super(CONNECTESP32FactoryGeneral, self).__init__()
         self.init_vars()
 
     def init_vars(self):
@@ -30,10 +29,18 @@ class UAESP32FactoryGeneral(ScriptBase):
         # script specific vars
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
+        self.secure_boot_key_bin = os.path.join(self.tftpdir, "images", "{}-secure_boot_key.bin".format(self.board_id))
+        self.fw_bootloader_digeset = os.path.join(self.tftpdir, "images", "{}-bootloader-digest.bin".format(self.board_id))
         self.fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader.bin".format(self.board_id))
-        self.fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota.bin".format(self.board_id))
-        self.fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-ptn-table.bin".format(self.board_id))
-        self.fw_app        = os.path.join(self.tftpdir, "images", "{}-app.bin".format(self.board_id))
+        self.fw_ota_data = os.path.join(self.tftpdir, "images", "{}-ota.bin".format(self.board_id))
+        self.fw_ptn_table = os.path.join(self.tftpdir, "images", "{}-ptn-table.bin".format(self.board_id))
+        self.fw_mfg = os.path.join(self.tftpdir, "images", "{}-mfg.bin".format(self.board_id))
+
+        # Index 0: flag to control key is existed or flash is encrypted
+        #       1: key name
+        #       2: burn_key option
+        #       3: key binary
+        self.dev_flash_cfg = [[True, "Secure boot key", "secure_boot", self.secure_boot_key_bin]]
 
         self.regsubparams = ""
         # number of Ethernet
@@ -61,10 +68,11 @@ class UAESP32FactoryGeneral(ScriptBase):
 
         self.partion_offset = {
             'ec48': {
+                'bootloader_digest': '0',
                 'bootloader': '0x1000',
-                'partition_table': '0x8000',
+                'partition_table': '0xb000',
                 'ota': '0xd000',
-                'app': '0x90000'},
+                'mfg': '0x90000'},
         }
 
         self.devnetmeta = {
@@ -87,15 +95,59 @@ class UAESP32FactoryGeneral(ScriptBase):
                             " -i field=flash_jedec_id,format=hex,value={}".format(flash_jedec_id)       + \
                             " -i field=flash_uid,format=hex,value={}".format(flash_uuid)
 
-    def fwupdate(self):
+    ### To check if keys are exist and device is first programmed or not
+    def check_device_stat(self):
+        cmd = "sudo espefuse.py -p /dev/ttyUSB{} summary".format(self.row_id)
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = "Get efuse summary failed"
+            error_critical(otmsg)
+
+        for key in self.dev_flash_cfg:
+            match = re.search(r'{}\W+= (.*) .\/.'.format(key[1]), output)
+            if match:
+                key_val = match.group(1)
+                log_info('{} = "{}"'.format(key[1], key_val))
+                if key_val == "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00" or \
+                   key_val == "0":
+                    key[0] = False
+            else:
+                error_critical("Can't parse key {}".format(key[0]))
+
+    def program_keys(self):
+        for i in range(0, len(self.dev_flash_cfg)):
+            if self.dev_flash_cfg[i][0] is False:
+                cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_key {} {}".format(self.row_id, self.dev_flash_cfg[i][2], self.dev_flash_cfg[i][3])
+                log_debug(cmd)
+                [output, rv] = self.cnapi.xcmd(cmd)
+                if int(rv) > 0:
+                    otmsg = 'burn_key "{}" failed!'.format(self.dev_flash_cfg[i][1])
+                    error_critical(otmsg)
+            else:
+                log_info('Skip programming key "{}" because it is existed there'.format(self.dev_flash_cfg[i][1]))
+
+    def program_bootloader(self, offset, file_bin):
+        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
+              "--after=no_reset write_flash --flash_mode dio --flash_freq 40m --flash_size {} " \
+              "{} {}".format(self.row_id,
+                             self.flash_size[self.board_id],
+                             offset, file_bin)
+        log_debug(cmd)
+
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = "Flash FW into DUT failed"
+            error_critical(otmsg)
+
+    def program_fw(self):
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
               "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size {} " \
-              "{} {} {} {} {} {} {} {}".format(self.row_id,
-                                               self.flash_size[self.board_id],
-                                               self.partion_offset[self.board_id]['bootloader'], self.fw_bootloader,
-                                               self.partion_offset[self.board_id]['partition_table'], self.fw_ptn_table,
-                                               self.partion_offset[self.board_id]['ota'], self.fw_ota_data,
-                                               self.partion_offset[self.board_id]['app'], self.fw_app)
+              "{} {} {} {} {} {}".format(self.row_id,
+                                         self.flash_size[self.board_id],
+                                         self.partion_offset[self.board_id]['partition_table'], self.fw_ptn_table,
+                                         self.partion_offset[self.board_id]['ota'], self.fw_ota_data,
+                                         self.partion_offset[self.board_id]['mfg'], self.fw_mfg)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -106,8 +158,15 @@ class UAESP32FactoryGeneral(ScriptBase):
         # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        self.pexp.expect_only(60, self.esp32_prompt)
+        self.pexp.expect_only(120, self.esp32_prompt)
         log_debug("Device boots well")
+
+    def fwupdate(self):
+        self.check_device_stat()
+        self.program_keys()
+        self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader'], file_bin=self.fw_bootloader)
+        self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader_digest'], file_bin=self.fw_bootloader_digeset)
+        self.program_fw()
 
     def put_devreg_data_in_dut(self):
         self.pexp.close()
@@ -131,7 +190,8 @@ class UAESP32FactoryGeneral(ScriptBase):
         # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(5)
+        self.pexp.expect_only(60, self.esp32_prompt)
+        log_debug("Device boots well")
 
     def check_devreg_data(self):
         output = self.pexp.expect_get_output("info", "", timeout=3)
@@ -175,7 +235,7 @@ class UAESP32FactoryGeneral(ScriptBase):
             msg(30, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
-            self.registration(regsubparams = self.regsubparams)
+            self.registration(regsubparams=self.regsubparams)
             msg(40, "Finish doing registration ...")
 
         if FLASH_DEVREG_DATA is True:
@@ -191,7 +251,7 @@ class UAESP32FactoryGeneral(ScriptBase):
 
 
 def main():
-    factory_general = UAESP32FactoryGeneral()
+    factory_general = CONNECTESP32FactoryGeneral()
     factory_general.run()
 
 

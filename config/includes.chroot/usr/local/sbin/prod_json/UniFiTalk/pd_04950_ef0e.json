@@ -1,0 +1,18 @@
+{
+  "UniFiTalk": {
+    "UT-PHONE-TOUCHMAX": {
+      "INDEX": 0,
+      "NAME": "UT-PHONE-TOUCHMAX",
+      "BOARDID": "ef0e",
+      "BOMREV": "113-04950",
+      "DESC": "UniFi Talk IP PHOMEMAX",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}

@@ -7,7 +7,7 @@
       "BOMREV": "113-10897",
       "DESC": "UniFi AP6 Infinity",
       "FILE": "u6_ipq5018_bspfactory.py",
-      "T1FILE": "",
+      "T1FILE": "u6_ipq5018_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
       "SW_ID": "0601",
@@ -22,11 +22,6 @@
             "lede-ipq-ipq50xx-UAP6-IPQ50XX-initramfs-kernel_enterprise_infinity.bin",
             "u6-infinity_1gb-v5_nor.bin"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",

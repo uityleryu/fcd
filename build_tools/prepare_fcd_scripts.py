@@ -24,15 +24,6 @@ register_libs = [
     "blacklist"
 ]
 
-# Ex: this is common tools for every project
-common_tools = [
-    "common",
-    "common/sshd_config",
-    "common/tmux.conf",
-    "common/x86-64k-ee",
-    "common/aarch64-rpi4-64k-ee"
-]
-
 pjson = ""
 fcdname = ""
 series_type = False
@@ -40,13 +31,15 @@ series_type = False
    Main Function
 '''
 curdir = os.getcwd()
-ostrich_bs_dir = os.path.join(curdir, "output/ostrich")
-reg_bs_dir = os.path.join(curdir, "config/includes.chroot/usr/local/sbin")
+tmp_wget_dir = os.path.join(curdir, "output", "tmp_wget")
+ostrich_bs_dir = os.path.join(curdir, "output", "ostrich")
+reg_bs_dir = os.path.join(curdir, "config", "includes.chroot", "usr", "local", "sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 ftp_server_url = "http://10.2.0.33:8088"
 devreg_server_url = "https://10.2.2.174:20000/api/v1/product_mapping"
 
 print("Current DIR: " + curdir)
+print("Temp wget DIR: " + tmp_wget_dir)
 print("register base DIR: " + reg_bs_dir)
 print("prod json DIR: " + prod_json_dir)
 
@@ -94,14 +87,14 @@ def download_images():
         if "DOWNLOAD_FILE" in pjson[pl][im].keys():
             download_list = pjson[pl][im]["DOWNLOAD_FILE"]
             for item in download_list:
-                # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
-                url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
-                # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                local_dir = os.path.join(ostrich_tftp_dir, item["DST_PATH"])
-                if os.path.isdir(local_dir) is False:
-                    os.makedirs(local_dir)
-
                 if len(item["FILES"]) > 0:
+                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
+                    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                    local_dir = os.path.join(ostrich_tftp_dir, item["DST_PATH"])
+                    if os.path.isdir(local_dir) is False:
+                        os.makedirs(local_dir)
+
                     for i in item["FILES"]:
                         # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
                         src_file_path = os.path.join(url_dir, i)
@@ -109,14 +102,25 @@ def download_images():
                         cmd = "wget -P {} {}".format(local_dir, src_file_path)
                         if cmd not in download_wget_list:
                             download_wget_list.append(cmd)
+
+                    print(download_wget_list)
+                    os.chdir(tmp_wget_dir)
+                    for wgetcmd in download_wget_list:
+                        print("WGET: " + wgetcmd)
+                        rtc = os.system(wgetcmd)
+                        if rtc != 0:
+                            print("WGET failed filename: " + wgetcmd)
+                            exit(1)
                 else:
-                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                     '''
-                        wget -P /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw -r -np -nd http://10.2.0.33:8088/images/fcd-image/am-fw/
+                        wget -P /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
                         It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
                         under the folder "am-fw", or it will copy all files under "fcd-image"
                     '''
+                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
                     url_dir = url_dir.replace("\\", "/")
                     src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
                     match_url = re.findall(src_pattern, url_dir)
@@ -125,20 +129,27 @@ def download_images():
                         print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
                         exit(1)
 
-                    cmd = "wget -P {} -r -np -nd {}".format(local_dir, url_dir)
+                    cmd = "wget -r -np -nH -R \"index.html*\" {}".format(url_dir)
                     print("copy whole folder: " + cmd)
                     if cmd not in download_wget_list:
                         download_wget_list.append(cmd)
+
+                    print(download_wget_list)
+                    os.chdir(tmp_wget_dir)
+                    for wgetcmd in download_wget_list:
+                        print("WGET: " + wgetcmd)
+                        rtc = os.system(wgetcmd)
+                        if rtc != 0:
+                            print("WGET failed filename: " + wgetcmd)
+                            exit(1)
+
+                    os.chdir(curdir)
+
+                    src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
+                    dst_path = os.path.join(ostrich_bs_dir, "tftp", item["DST_PATH"])
+                    shutil.copytree(src_path, dst_path)
         else:
             print("Can't find the DOWNLOAD_FILE the projects")
-
-    print(download_wget_list)
-    for wgetcmd in download_wget_list:
-        print("WGET: " + wgetcmd)
-        rtc = os.system(wgetcmd)
-        if rtc != 0:
-            print("WGET failed filename: " + wgetcmd)
-            exit(1)
 
     ostrich_tools_dir = os.path.join(ostrich_bs_dir, "tftp", "tools")
     cmd = "chmod -R 777 {}".format(ostrich_tools_dir)
