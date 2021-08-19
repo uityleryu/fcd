@@ -29,8 +29,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # script specific vars
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
-        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "{}-flash_encryption_key.bin".format(self.board_id))
-        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "{}-secure_bootloader_key.bin".format(self.board_id))
+        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "flash_encryption_key.bin")
+        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "secure_bootloader_key.bin")
         self.regsubparams = ""
 
         # Index 0: flag to control key is existed or flash is encrypted
@@ -130,11 +130,11 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
     def program_flash(self):
         encrypt_postfix = "encrypted"
-        fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader-reflash-digest.{}.bin".format(self.board_id, encrypt_postfix))
-        fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-partition-table.{}.bin".format(self.board_id, encrypt_postfix))
-        fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota_data_initial.{}.bin".format(self.board_id, encrypt_postfix))
-        fw_app        = os.path.join(self.tftpdir, "images", "{}-uc_thermostat_bsp.{}.bin".format(self.board_id, encrypt_postfix))
-        fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs_key.{}.bin".format(self.board_id, encrypt_postfix))
+        fw_bootloader = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin.{}".format(encrypt_postfix))
+        fw_ptn_table  = os.path.join(self.tftpdir, "images", "partition-table.bin.{}".format(encrypt_postfix))
+        fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin.{}".format(encrypt_postfix))
+        fw_app        = os.path.join(self.tftpdir, "images", "uc_thermostat_bsp.bin.{}".format(encrypt_postfix))
+        fw_nvs_key    = os.path.join(self.tftpdir, "images", "nvs_key.bin.{}".format(encrypt_postfix))
 
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
