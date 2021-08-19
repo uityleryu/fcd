@@ -7,7 +7,7 @@
       "BOMREV": "113-10898",
       "DESC": "UniFi AP6 Enterprise",
       "FILE": "u6_ipq5018_bspfactory.py",
-      "T1FILE": "",
+      "T1FILE": "u6_ipq5018_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0004",
       "SW_ID": "0601",
@@ -17,16 +17,11 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-infinity_1gb-v6.img",
-            "BZ.ipq50xx_5.71.0+13252.210716.1251-uboot.bin",
+            "BZ.ipq50xx_5.71.1+13253.210727.1443-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "u6-iw-5.71.0-ramload.bin",
+            "u6-enterprise-5.71.1-ramload.bin",
             "u6-infinity_1gb-v6_nor.bin"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -46,7 +41,7 @@
         ],
         [
           "tftp/images/a654-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.71.0+13252.210716.1251-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.71.1+13253.210727.1443-uboot.bin"
         ],
         [
           "tftp/images/a654-gpt.bin",
@@ -54,7 +49,7 @@
         ],
         [
           "tftp/images/a654-initramfs.bin",
-          "../u6-fw/ipq5018/u6-iw-5.71.0-ramload.bin"
+          "../u6-fw/ipq5018/u6-enterprise-5.71.1-ramload.bin"
         ],
         [
           "tftp/images/a654-nor.bin",

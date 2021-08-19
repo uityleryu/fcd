@@ -81,10 +81,10 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         hpth = {
             '0000': "unms-slite",
             'eed0': "unms-slite",
-            'eed1': "unms-spro",
+            'eed1': "eed1",
             'ee50': "unms-slite",
             'eed3': "unms-spro",
-            'ee6f': "unms-slite"
+            'ee6f': "ee6f"
         }
 
         # helper executable file
@@ -284,7 +284,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
         if SECCHK_EN is True:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
-            self.pexp.expect_lnxcmd(10, "UBNT_Diag", "sectest\r", "security test pass")
+            self.pexp.expect_lnxcmd(30, "UBNT_Diag", "sectest\r", "security test pass")
 
         if BDINFO_EN is True:
             self.pexp.expect_lnxcmd(30, "UBNT_Diag", "exit\r", self.linux_prompt)

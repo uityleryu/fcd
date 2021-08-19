@@ -11,7 +11,24 @@
       "QRCHECK": "True",
       "FCD_ID": "0011",
       "SW_ID": "1c01",
-      "DOWNLOAD_FILE": [],
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-thermostat/testing_fw/0.15.4",
+          "DST_PATH": "images",
+          "FILES": [
+          ]
+        }
+      ],
       "CREATE_LINK": []
     }
   }

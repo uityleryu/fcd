@@ -1,0 +1,43 @@
+{
+  "UniFiDream": {
+    "UDM-Lite": {
+      "INDEX": 0,
+      "NAME": "UDM-Lite",
+      "BOARDID": "ec2d",
+      "BOMREV": "113-01075",
+      "DESC": "UniFi Dream Machine Lite",
+      "FILE": "udm_mt7622_bspfactory.py",
+      "T1FILE": "udm_mt7622_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-lite",
+          "DST_PATH": "udm-fw/udm-lite",
+          "FILES": [
+            "udm-lite-mt7622-v1_emmc.bin",
+            "udm-lite-mt7622-v1_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec2d-fcd.bin",
+          "../udm-fw/udm-lite/udm-lite-mt7622-v1_emmc.bin"
+        ],
+        [
+          "tftp/images/ec2d-mfg.bin",
+          "../udm-fw/udm-lite/udm-lite-mt7622-v1_nor.bin"
+        ]
+      ]
+    }
+  }
+}

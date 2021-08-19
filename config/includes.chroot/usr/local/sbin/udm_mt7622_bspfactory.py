@@ -6,16 +6,6 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
-
-BOOT_BSP_IMAGE    = True 
-PROVISION_ENABLE  = True 
-DOHELPER_ENABLE   = True 
-REGISTER_ENABLE   = True 
-FWUPDATE_ENABLE   = True 
-DATAVERIFY_ENABLE = True 
-DIAG_MODE_ENABLE  = True 
-SET_NTP_ENABLE    = True 
-
 class UDMMT7622BspFactory(ScriptBase):
     def __init__(self):
         super(UDMMT7622BspFactory, self).__init__()
@@ -33,15 +23,18 @@ class UDMMT7622BspFactory(ScriptBase):
         self.linux_prompt = "#"
 
         self.ethnum = {
-            'eccc': "5"
+            'eccc': "5",
+            'ec2d': "5"
         }
 
         self.wifinum = {
-            'eccc': "2"
+            'eccc': "2",
+            'ec2d': "0"
         }
 
         self.btnum = {
-            'eccc': "1"
+            'eccc': "1",
+            'ec2d': "1"
         }
 
         self.devnetmeta = {
@@ -49,6 +42,15 @@ class UDMMT7622BspFactory(ScriptBase):
             'wifinum': self.wifinum,
             'btnum': self.btnum
         }
+
+        self.BOOT_BSP_IMAGE    = True 
+        self.PROVISION_ENABLE  = True 
+        self.DOHELPER_ENABLE   = True 
+        self.REGISTER_ENABLE   = True 
+        self.FWUPDATE_ENABLE   = False if self.board_id == "ec2d" else True
+        self.DATAVERIFY_ENABLE = False if self.board_id == "ec2d" else True 
+        self.DIAG_MODE_ENABLE  = False if self.board_id == "ec2d" else True 
+        self.SET_NTP_ENABLE    = False if self.board_id == "ec2d" else True 
 
     def enter_uboot(self, timeout=60):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
@@ -138,31 +140,31 @@ class UDMMT7622BspFactory(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        if BOOT_BSP_IMAGE is True:
+        if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
             msg(10, "Boot up to linux console and network is good ...")
 
-        if PROVISION_ENABLE is True:
+        if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
-        if DOHELPER_ENABLE is True:
+        if self.DOHELPER_ENABLE is True:
             self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
 
-        if REGISTER_ENABLE is True:
+        if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if FWUPDATE_ENABLE is True:
+        if self.FWUPDATE_ENABLE is True:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
             self.fwupdate()
             msg(70, "Rebooting ...")
 
-        if DATAVERIFY_ENABLE is True:
+        if self.DATAVERIFY_ENABLE is True:
             self.login(timeout=600, retry=0)
             self.pexp.expect_only(180, "rai0: Set DVLAN")
             self.pexp.expect_lnxcmd(10, "", "dmesg -n1")
@@ -170,10 +172,10 @@ class UDMMT7622BspFactory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        if DIAG_MODE_ENABLE is True:
+        if self.DIAG_MODE_ENABLE is True:
             self.enter_diag_mode()
 
-        if SET_NTP_ENABLE is True:
+        if self.SET_NTP_ENABLE is True:
             self.set_ntptime_to_dut(rtc_tool="busybox hwclock")
             msg(95, "Set NTP time to DUT ...")
 

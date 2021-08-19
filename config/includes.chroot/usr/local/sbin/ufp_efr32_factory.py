@@ -66,7 +66,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a912': False,
             'a915': False,
             'a918': False,
-            'a919': False,
+            'a919': True,
         }
 
         self.homekit_dict = {
@@ -144,7 +144,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         try:
             uid_rtv = self.ser.execmd_getmsg("GETUID", ignore=True)
             log_info('uid_rtv = {}'.format([uid_rtv]))
-            res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
+            if self.board_id == "a919":
+                res = re.search(r"UNIQUEID:8-(.*)\n", uid_rtv, re.S)
+            else:
+                res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
+
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
@@ -292,9 +296,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         return is_tokenid_match
 
     def homekit_setup_after_registration(self):
-        if self.homekit_dict[self.board_id] is False:
-            return
-
         if self.is_homekit_done_before is False:
             self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
         else:
@@ -317,7 +318,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         cmd = [
             "sudo {0}".format(clientbin),
-            '-h stage.udrs.io',
+            '-h prod.udrs.io',
             "-k " + self.pass_phrase,
             "-i field=product_class_id,format=hex,value=" + self.prodclass,
             "-i field=flash_jedec_id,format=hex,value=" + self.jedecid,
@@ -371,14 +372,18 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918"]:
+        if self.board_id in ["a912", "a918", "a919"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a911", "a941", "a915", "a919", "a920"]:
+        elif self.board_id in ["a911", "a941", "a915", "a920"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
         log_debug("Starting xmodem file transfer ...")
-        modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
+        if self.board_id == "a919":
+            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc)
+        else:
+            modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
+
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
@@ -418,6 +423,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         cmd_set_sku = 'FCDSKUSET:{sku}' if self.board_id != 'a941' else 'FCDMFGDATASKUSET:{sku}'
         cmd_get_sku = 'FCDSKUGET' if self.board_id != 'a941' else 'FCDMFGDATASKUGET'
         expected_rsp = 'SKU: {sku}'
+
+        '''
+            The value stored in the FW are as the following
+            Unknown: 0
+            US: 1
+            EU: 2
+            Scandi: 3
+        '''
         region_name_dict = {
             "World": 'US',
             "USA/Canada": 'US',
@@ -513,8 +526,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.registration()
             msg(40, "Finish doing registration ...")
 
-            self.homekit_setup_after_registration()
-            msg(50, "Finish Homekit setup ...")
+            if self.homekit_dict[self.board_id] is True:
+                self.homekit_setup_after_registration()
+                msg(50, "Finish Homekit setup ...")
 
             self.put_devreg_data_in_dut()
             msg(60, "Finish doing signed file and EEPROM checking ...")

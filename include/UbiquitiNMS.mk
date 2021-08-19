@@ -9,8 +9,7 @@ IMAGE-UISP-P-LITE= \
 
 IMAGE-UISP-CONSOLE= \
     images/ee6a* \
-    unms-fw/ubnt_uispr_alpinev2_rev1_boot* \
-    unms-fw/UISPR.alpine* \
+    unms-fw/uisp-console/* \
 
 IMAGE-UISP-LTE= \
     images/dca2* \
