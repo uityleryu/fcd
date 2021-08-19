@@ -11,7 +11,19 @@
       "QRCHECK": "True",
       "FCD_ID": "0001",
       "SW_ID": "0001",
-      "DOWNLOAD_FILE": [],
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        }
+      ],
       "CREATE_LINK": []
     }
   }
