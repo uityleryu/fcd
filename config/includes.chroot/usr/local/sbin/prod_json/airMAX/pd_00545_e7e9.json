@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "RP-5AC": {
+    "RP-5AC-WORLD": {
       "INDEX": "0",
-      "NAME": "RP-5AC",
+      "NAME": "RP-5AC-WORLD",
       "BOARDID": "e7e9",
       "BOMREV": "113-00545",
-      "DESC": "Rocket Prism 5AC",
+      "DESC": "Rocket Prism 5AC World",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
