@@ -1,11 +1,11 @@
 {
   "AirFiber": {
-    "WaveBridge": {
+    "AF60-XR": {
       "INDEX": 0,
-      "NAME": "WaveBridge",
+      "NAME": "AF60-XR",
       "BOARDID": "ac11",
       "BOMREV": "113-00719",
-      "DESC": "AirFiber Wave Bridge",
+      "DESC": "AirFiber 60 XR",
       "FILE": "af_ipq80xx_factory.py",
       "T1FILE": "af_ipq80xx_mfg.py",
       "QRCHECK": "False",
@@ -22,11 +22,6 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
@@ -34,6 +29,16 @@
             "tmux.conf",
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/af_af60/",
+          "DST_PATH": "tools/af_af60",
+          "FILES": [
+            "cfg_part.bin",
+            "helper_IPQ807x",
+            "id_rsa",
+            "id_rsa.pub"
           ]
         }
       ],
