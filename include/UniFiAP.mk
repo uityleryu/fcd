@@ -61,9 +61,7 @@ IMAGE-UBB-XG= \
 IMAGE-ULTE-FLEX= \
     images/e614* \
     images/e615* \
-    uap-fw/XD.qca956x-LSDK-ART-ULTE-FLEX-V4.img \
-    uap-fw/qca956x-ulte-flex-u-boot.bin \
-    uap-fw/ULTE-Flex*
+    uap-fw/ulte-flex/*
 
 IMAGE-UAP-AC-Lite-LR-Pro= \
     images/e517* \
@@ -109,7 +107,7 @@ TOOLS-UAP-INDUSTRIAL+= \
 
 TOOLS-ULTE-FLEX+=$(TOOLS-CONFIG)
 TOOLS-ULTE-FLEX+= \
-    ulte_flex/helper
+    ulte_flex/helper*
 
 TOOLS-UAP-AC-Lite-LR-Pro+=$(TOOLS-CONFIG)
 TOOLS-UAP-AC-Lite-LR-Pro+= \
