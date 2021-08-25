@@ -6,7 +6,7 @@
       "BOARDID": "a616",
       "BOMREV": "113-00775",
       "DESC": "Amplifi 6 Instant",
-      "FILE": "afi_mt7621_factory.py",
+      "FILE": "afi_mt7621_bspfactory.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0004",
