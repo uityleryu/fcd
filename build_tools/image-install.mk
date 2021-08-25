@@ -103,6 +103,6 @@ image-antman-install-$1:
 	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
 	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
 	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
-	python3 build_tools/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -nc=$(NICK_EN)
+	python3 build_tools/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -nc=$(NICK_EN) -os=RPI
 
 endef
