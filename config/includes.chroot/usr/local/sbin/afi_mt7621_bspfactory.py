@@ -12,9 +12,9 @@ PROVISION_ENABLE  = True
 DOHELPER_ENABLE   = True 
 REGISTER_ENABLE   = True 
 FWUPDATE_ENABLE   = False 
-DATAVERIFY_ENABLE = True 
-DIAG_MODE_ENABLE  = True 
-SET_NTP_ENABLE    = True 
+DATAVERIFY_ENABLE = False 
+DIAG_MODE_ENABLE  = False 
+SET_NTP_ENABLE    = False 
 
 class AFIMT7621BspFactory(ScriptBase):
     def __init__(self):
