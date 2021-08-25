@@ -7,7 +7,7 @@
       "BOMREV": "113-00775",
       "DESC": "Amplifi 6 Instant",
       "FILE": "afi_mt7621_factory.py",
-      "T1FILE": "afi_mt7621_mfg.py",
+      "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0004",
       "SW_ID": "0601",
