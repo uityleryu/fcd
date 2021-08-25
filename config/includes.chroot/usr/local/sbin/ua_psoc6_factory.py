@@ -175,6 +175,7 @@ class PSoC6FactoryGeneral(ScriptBase):
             log_debug("Hash: {}".format(hash))
             self.pexp.expect_lnxcmd(15, "", "mfgcalc", "x3=")
             self.pexp.expect_lnxcmd(15, "", "mfgkey={}".format(hash).format(self.board_id), "")
+            self.pexp.expect_lnxcmd(15, "", "mfgupdate", "update key:")
             self.pexp.expect_lnxcmd(15, "", "mfgblock={}".format(md5sum), "waiting for block of hash:")
 
         except Exception as e:
