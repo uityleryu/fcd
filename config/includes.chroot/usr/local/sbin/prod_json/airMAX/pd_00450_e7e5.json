@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "R5AC-PTP-M-US": {
+    "R5AC-PTP-M-WORLD": {
       "INDEX": "0",
-      "NAME": "R5AC-PTP-M-US",
+      "NAME": "R5AC-PTP-M-WORLD",
       "BOARDID": "e7e5",
-      "BOMREV": "113-00406",
-      "DESC": "Rocket Prism 5AC M US",
+      "BOMREV": "113-00450",
+      "DESC": "Rocket Prism 5AC M World",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
