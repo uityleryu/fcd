@@ -17,7 +17,7 @@
           "DST_PATH": "udm-fw",
           "FILES": [
             "u-boot-be302fe30f.bin",
-            "UDR.mt7622.v2.2.4.c44e8a5.210716.0207.bin",
+            "UDR.mt7622.v2.2.5.c44e8a5.210716.0207.bin",
             "uImage",
             "udr-mt7622-mt7915a-v11_emmc.bin",
             "udr-mt7622-mt7915a-v11_nor.bin"
@@ -27,9 +27,6 @@
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         }
@@ -41,7 +38,7 @@
         ],
         [
           "tftp/images/eccc-fw.bin",
-          "../udm-fw/udr/UDR.mt7622.v2.2.4.c44e8a5.210716.0207.bin"
+          "../udm-fw/udr/UDR.mt7622.v2.2.5.b286ee6.210730.2033.bin"
         ],
         [
           "tftp/images/eccc-fw.uboot",
