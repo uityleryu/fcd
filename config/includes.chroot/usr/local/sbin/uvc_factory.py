@@ -91,7 +91,7 @@ class UVCFactoryGeneral(ScriptBase):
             second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC-G4DOME"
-                self.ip = "192.168.2.20"
+                self.ip = "192.168.1.20"
                 self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
@@ -824,7 +824,7 @@ class UVCFactoryGeneral(ScriptBase):
 
     def check_info_ssh(self):
         time_start = time.time()
-        time.sleep(40)
+        time.sleep(50)
 
         try:
             sshclient_obj = SSHClient(host=self.ip,
@@ -839,6 +839,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.critical_error("reconnected with DUT timeout fail")
 
         log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
+
+        cmd = "sudo rm /t/home/ubnt/.ssh/known_hosts; sync; sleep 1".format(self.row_id)
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
 
         time.sleep(5)
         cmd = 'md5sum /etc/persistent/server.pem'
