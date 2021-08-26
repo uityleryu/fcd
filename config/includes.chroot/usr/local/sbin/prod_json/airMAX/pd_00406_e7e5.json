@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "R5AC-PTP": {
+    "R5AC-PTP-M-US": {
       "INDEX": "0",
-      "NAME": "R5AC-PTP",
+      "NAME": "R5AC-PTP-M-US",
       "BOARDID": "e7e5",
       "BOMREV": "113-00406",
-      "DESC": "Rocket Prism 5AC",
+      "DESC": "Rocket Prism 5AC M US",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
@@ -17,7 +17,7 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "QCA955X_ART_UB.bin",
-            "XC.v8.7.4.45112.210415.1103.bin",
+            "XC.v8.7.5.45783.210720.1003.bin",
             "XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img",
             "QCA955X_UB.bin"
           ]
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/e7e5.bin",
-          "../am-fw/XC.v8.7.4.45112.210415.1103.bin"
+          "../am-fw/XC.v8.7.5.45783.210720.1003.bin"
         ],
         [
           "tftp/images/e7e5-mfg.bin",

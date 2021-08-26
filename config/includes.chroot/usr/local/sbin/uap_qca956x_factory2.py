@@ -32,7 +32,7 @@ class UAPQCA956xFactory2(ScriptBase):
             'e615': "ulte_flex"
         }
 
-        self.helperexe = "helper"
+        self.helperexe = "helper_ARxxxx_release"
         self.helper_path = helppth[self.board_id]
 
         self.ethnum = {
@@ -110,7 +110,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
         self.pexp.expect_action(30, "", "md5sum /tmp/{}.bin".format(self.board_id))
         self.pexp.expect_action(30, self.linux_prompt, "afiupgrade /tmp/{}.bin".format(self.board_id))
-        self.pexp.expect_only(240, 'Starting kernel')
+        self.pexp.expect_only(360, 'Starting kernel')
 
     def _fwupdate(self):
         # TFTP bin from TestServer

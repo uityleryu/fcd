@@ -21,15 +21,15 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     E3F5: 113-00357 Rocket M5 AC PTMP
     E6F5: 113-00379 PowerBeam 5AC 300
     E7F5: 113-00383 PowerBeam 5AC 400
-    E8F5: 113-00396 LiteBeam 5AC 23
+    (EOL) E8F5: 113-00396 LiteBeam 5AC 23
     E9F5: 113-00361 NanoBeam 5AC 16
     E8E5: 113-00402 LiteAP AC
-    E7E5: 113-00406 Rocket 5AC Prism M
+    (EOL) E7E5: 113-00406 Rocket 5AC Prism M
     E3D5: 113-00416 PowerBeam 5AC 500 ISO
     E5F5: 113-00421 PowerBeam 5AC 620 US
     E3D5: 113-00427 PowerBeam 5AC 500 ISO
     E5F5: 113-00429 PowerBeam 5AC 620
-    E7E5: 113-00450 Rocket 5AC Prism M
+    (EOL) E7E5: 113-00450 Rocket 5AC Prism M
     E2F2: 113-00351 Rocket 2AC
     E4F2: 113-00360 NanoBeam 2AC 13
     E3F3: 113-00568 PowerBeam 2AC 400 Gen2

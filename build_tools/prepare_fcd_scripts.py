@@ -32,7 +32,6 @@ series_type = False
 '''
 curdir = os.getcwd()
 tmp_wget_dir = os.path.join(curdir, "output", "tmp_wget")
-ostrich_bs_dir = os.path.join(curdir, "output", "ostrich")
 reg_bs_dir = os.path.join(curdir, "config", "includes.chroot", "usr", "local", "sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 ftp_server_url = "http://10.2.0.33:8088"
@@ -51,6 +50,7 @@ parse.add_argument('--fcdver', '-v', dest='fcdver', help='FCD version', default=
 parse.add_argument('--fwver', '-j', dest='fwver', help='FW version', default=None)
 parse.add_argument('--type', '-tp', dest='type', help='Build Type', default=None)
 parse.add_argument('--nicken', '-nc', dest='nickname_en', help='Nickname enabled', default=None)
+parse.add_argument('--ostype', '-os', dest='ostype', help='OS type', default=None)
 args, _ = parse.parse_known_args()
 
 if args.prodline is None:
@@ -72,12 +72,33 @@ if args.nickname_en == "y":
 else:
     nickname_en = False
 
+if args.ostype == "ISO":
+    ostype_dir = os.path.join(curdir, "output", "stage", "NewSquashfs")
+    dst_verfile = os.path.join(ostype_dir, "etc", "skel", "Desktop", "version.txt")
+    ostype_sbin_dir = os.path.join(ostype_dir, "usr", "local", "sbin")
+    ostype_tftp_dir = os.path.join(ostype_dir, "srv", "tftp")
+    ostype_softlink_dir = os.path.join(ostype_dir, "srv")
+elif args.ostype == "RPI":
+    ostype_dir = os.path.join(curdir, "output", "ostrich")
+    dst_verfile = os.path.join(ostype_dir, "version.txt")
+    ostype_sbin_dir = os.path.join(ostype_dir, "sbin")
+    ostype_tftp_dir = os.path.join(ostype_dir, "tftp")
+    ostype_softlink_dir = ostype_dir
+else:
+    ostype_dir = os.path.join(curdir, "output", "ostrich")
+    dst_verfile = os.path.join(ostype_dir, "version.txt")
+    ostype_sbin_dir = os.path.join(ostype_dir, "sbin")
+    ostype_tftp_dir = os.path.join(ostype_dir, "tftp")
+    ostype_softlink_dir = ostype_dir
+
+print("Build the FCD to run in {}".format(args.ostype))
+
 
 def download_images():
-    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp
-    ostrich_tftp_dir = os.path.join(ostrich_bs_dir, "tftp")
-    if os.path.isdir(ostrich_tftp_dir) is False:
-        os.makedirs(ostrich_tftp_dir)
+    # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp
+    # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/srv/tftp
+    if os.path.isdir(ostype_tftp_dir) is False:
+        os.makedirs(ostype_tftp_dir)
 
     download_wget_list = []
     for im in pjson[pl].keys():
@@ -91,7 +112,7 @@ def download_images():
                     # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
                     url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                     # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    local_dir = os.path.join(ostrich_tftp_dir, item["DST_PATH"])
+                    local_dir = os.path.join(ostype_tftp_dir, item["DST_PATH"])
                     if os.path.isdir(local_dir) is False:
                         os.makedirs(local_dir)
 
@@ -102,20 +123,16 @@ def download_images():
                         cmd = "wget -P {} {}".format(local_dir, src_file_path)
                         if cmd not in download_wget_list:
                             download_wget_list.append(cmd)
-
-                    print(download_wget_list)
-                    os.chdir(tmp_wget_dir)
-                    for wgetcmd in download_wget_list:
-                        print("WGET: " + wgetcmd)
-                        rtc = os.system(wgetcmd)
-                        if rtc != 0:
-                            print("WGET failed filename: " + wgetcmd)
-                            exit(1)
+                            print("WGET: " + cmd)
+                            rtc = os.system(cmd)
+                            if rtc != 0:
+                                print("WGET failed: " + cmd)
+                                exit(1)
                 else:
                     # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
                     url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                     '''
-                        wget -P /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
+                        wget -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
                         It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
                         under the folder "am-fw", or it will copy all files under "fcd-image"
                     '''
@@ -133,26 +150,27 @@ def download_images():
                     print("copy whole folder: " + cmd)
                     if cmd not in download_wget_list:
                         download_wget_list.append(cmd)
-
-                    print(download_wget_list)
-                    os.chdir(tmp_wget_dir)
-                    for wgetcmd in download_wget_list:
-                        print("WGET: " + wgetcmd)
-                        rtc = os.system(wgetcmd)
+                        print("WGET: " + cmd)
+                        os.chdir(tmp_wget_dir)
+                        rtc = os.system(cmd)
                         if rtc != 0:
-                            print("WGET failed filename: " + wgetcmd)
+                            print("WGET failed: " + cmd)
                             exit(1)
 
-                    os.chdir(curdir)
+                        os.chdir(curdir)
 
-                    src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
-                    dst_path = os.path.join(ostrich_bs_dir, "tftp", item["DST_PATH"])
-                    shutil.copytree(src_path, dst_path)
+                        src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
+                        dst_path = os.path.join(ostype_tftp_dir, item["DST_PATH"])
+                        shutil.copytree(src_path, dst_path)
         else:
             print("Can't find the DOWNLOAD_FILE the projects")
 
-    ostrich_tools_dir = os.path.join(ostrich_bs_dir, "tftp", "tools")
-    cmd = "chmod -R 777 {}".format(ostrich_tools_dir)
+    print(download_wget_list)
+
+    # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp/tools
+    # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/tftp/tools
+    ostype_tools_dir = os.path.join(ostype_tftp_dir, "tools")
+    cmd = "chmod -R 777 {}".format(ostype_tools_dir)
     cn.xcmd(cmd)
 
     for im in pjson[pl].keys():
@@ -161,8 +179,9 @@ def download_images():
             for item in symoblic_list:
                 # Ex: ../am-fw/u-boot-art-qca955x.bin
                 src_path = item[1]
-                # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/images/e7e7-art-uboot.bin
-                dst_path = os.path.join(ostrich_bs_dir, item[0])
+                # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp/images/e7e7-art-uboot.bin
+                # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/tftp/images/e7e7-art-uboot.bin
+                dst_path = os.path.join(ostype_softlink_dir, item[0])
                 dst_dir = os.path.dirname(dst_path)
                 if os.path.isdir(dst_dir) is False:
                     os.makedirs(dst_dir)
@@ -171,17 +190,16 @@ def download_images():
                     cmd = "ln -s {} {}".format(src_path, dst_path)
                     cn.xcmd(cmd)
 
-    tools_dir = os.path.join(ostrich_tftp_dir, "tools")
     tools_all = []
-    for dh in glob.glob(tools_dir + "/*"):
+    for dh in glob.glob(ostype_tools_dir + "/*"):
         tools_all.append(os.path.basename(dh))
 
     tg = " ".join(tools_all)
-    cmd = "cd {}; tar -cvzf tools.tar {}; chmod 777 tools.tar".format(tools_dir, tg)
+    cmd = "cd {}; tar -cvzf tools.tar {}; chmod 777 tools.tar".format(ostype_tools_dir, tg)
     print("TAR cmd: " + cmd)
     cn.xcmd(cmd)
     for i in tools_all:
-        i_path = os.path.join(tools_dir, i)
+        i_path = os.path.join(ostype_tools_dir, i)
         if os.path.isdir(i_path) is True:
             shutil.rmtree(i_path)
 
@@ -311,8 +329,8 @@ def gen_prod_json():
     '''
         Copy version.txt to target folder
     '''
-    # Ex: /home/vjc/malon/uifcd1/output/ostrich/version.txt
-    dst_verfile = os.path.join(ostrich_bs_dir, "version.txt")
+    # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/version.txt
+    # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/version.txt
     shutil.copyfile(verfile, dst_verfile)
 
 
@@ -398,21 +416,21 @@ def copy_required_files():
             if poq not in register_libs:
                 register_libs.append(poq)
 
-    # Ex: /home/vjc/malon/uifcd1/output/ostrich/bin
-    ostrich_bin_dir = os.path.join(ostrich_bs_dir, "sbin")
-    if os.path.isdir(ostrich_bin_dir) is False:
-        os.makedirs(ostrich_bin_dir)
+    # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/sbin
+    # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/usr/local/sbin
+    if os.path.isdir(ostype_sbin_dir) is False:
+        os.makedirs(ostype_sbin_dir)
 
     for ct in register_libs:
         if ct == "":
             continue
 
         src = os.path.join(reg_bs_dir, ct)
-        cmd = "cp -rfL {} {}".format(src, ostrich_bin_dir)
+        cmd = "cp -rfL {} {}".format(src, ostype_sbin_dir)
         print("cmd: " + cmd)
         cn.xcmd(cmd)
 
-    cmd = "cd {}; ln -s {} client_rpi4".format(ostrich_bin_dir, sclient_f)
+    cmd = "cd {}; ln -s {} client_rpi4".format(ostype_sbin_dir, sclient_f)
     print("cmd: " + cmd)
     cn.xcmd(cmd)
 
@@ -429,7 +447,9 @@ def main():
     filename_check(fcdname)
     download_images()
     copy_required_files()
-    create_fcd_tgz()
+
+    if args.ostype == "RPI":
+        create_fcd_tgz()
 
 
 if __name__ == "__main__":

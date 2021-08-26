@@ -1,0 +1,66 @@
+{
+  "Amplifi": {
+    "AFi-6-Instant": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Instant",
+      "BOARDID": "a616",
+      "BOMREV": "113-00775",
+      "DESC": "Amplifi 6 Instant",
+      "FILE": "afi_mt7621_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/afi-fw",
+          "DST_PATH": "afi-fw",
+          "FILES": [
+            "afi-3.4.4-0-g0272830086-uboot.bin",
+            "devcfg.mbn",
+            "fake_eeprom_aln_p.bin",
+            "afi-3.4.4-0-g0272830086-ipq807x-afi-aln-p-factory.img",
+            "afi-aln-spf.10.0_nor-hw2-v4.img",
+            "tz.mbn"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/da12-bootloader.bin",
+          "../afi-fw/afi-3.4.4-0-g0272830086-uboot.bin"
+        ],
+        [
+          "tftp/images/da12-devcfg.mbn",
+          "../afi-fw/devcfg.mbn"
+        ],
+        [
+          "tftp/images/da12-eeprom.bin",
+          "../afi-fw/fake_eeprom_aln_p.bin"
+        ],
+        [
+          "tftp/images/da12-fw.img",
+          "../afi-fw/afi-3.4.4-0-g0272830086-ipq807x-afi-aln-p-factory.img"
+        ],
+        [
+          "tftp/images/da12-mfg.img",
+          "../afi-fw/afi-aln-spf.10.0_nor-hw2-v4.img"
+        ],
+        [
+          "tftp/images/da12-tz.mbn",
+          "../afi-fw/tz.mbn"
+        ]
+      ]
+    }
+  }
+}

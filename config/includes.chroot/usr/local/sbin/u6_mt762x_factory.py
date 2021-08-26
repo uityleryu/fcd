@@ -317,7 +317,10 @@ class U6MT762xFactory(ScriptBase):
             self.pexp.expect_only(120, "\[BT Power On Result\] Success")
 
         if self.board_id == "a612":
-            self.login(timeout=240,press_enter=True)
+            #to skip login action because fw update BT fw will take time , there is no this action in previous fw. 
+            # factory said it take too much time
+            # self.login(timeout=240,press_enter=True)
+            pass
         elif self.board_id == "a620":
             self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
 

@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "RP-5AC-WORLD": {
+    "R5AC-PTP-M-WORLD": {
       "INDEX": "0",
-      "NAME": "RP-5AC-WORLD",
-      "BOARDID": "e7e9",
-      "BOMREV": "113-00545",
-      "DESC": "Rocket Prism 5AC World",
+      "NAME": "R5AC-PTP-M-WORLD",
+      "BOARDID": "e7e5",
+      "BOMREV": "113-00450",
+      "DESC": "Rocket Prism 5AC M World",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
@@ -17,8 +17,8 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "QCA955X_ART_UB.bin",
-            "XC.v8.7.4.45112.210415.1103.bin",
-            "XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img",
+            "XC.v8.7.5.45783.210720.1003.bin",
+            "XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img",
             "QCA955X_UB.bin"
           ]
         },
@@ -46,19 +46,19 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e7e9-art-uboot.bin",
+          "tftp/images/e7e5-art-uboot.bin",
           "../am-fw/QCA955X_ART_UB.bin"
         ],
         [
-          "tftp/images/e7e9.bin",
-          "../am-fw/XC.v8.7.4.45112.210415.1103.bin"
+          "tftp/images/e7e5.bin",
+          "../am-fw/XC.v8.7.5.45783.210720.1003.bin"
         ],
         [
-          "tftp/images/e7e9-mfg.bin",
-          "../am-fw/XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img"
+          "tftp/images/e7e5-mfg.bin",
+          "../am-fw/XC.qca955x--V1---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img"
         ],
         [
-          "tftp/images/e7e9-uboot.bin",
+          "tftp/images/e7e5-uboot.bin",
           "../am-fw/QCA955X_UB.bin"
         ]
       ]

@@ -1135,6 +1135,19 @@
 
   "Amplifi":
   {
+    "AFi-6-Instant":{
+      "INDEX"       : 0,
+      "NAME"        : "AFi-6-Instant",
+      "BOARDID"     : "a616",
+      "BOMREV"      : "113-00775",
+      "DESC"        : "Amplifi Instant6",
+      "FILE"        : "afi_mt7621_bspfactory.py",
+      "T1FILE"      : "afi_mt7621_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
     "AFi-ALN-R":{
       "INDEX"       : 0,
       "NAME"        : "AFi-ALN-R",
