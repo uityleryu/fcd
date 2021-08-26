@@ -1500,6 +1500,18 @@
 
   "Connect":
   {
+    "UC-Plug-US":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Plug-US",
+      "BOARDID"     : "ec47",
+      "BOMREV"      : "113-03232",
+      "DESC"        : "UniFi Connect Plug ",
+      "FILE"        : "uc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
     "UC-Thermostat":{
       "INDEX"       : 0,
       "NAME"        : "UC-Thermostat",

@@ -1,0 +1,56 @@
+{
+  "Connect": {
+    "UC-Plug-US": {
+      "INDEX": 0,
+      "NAME": "UC-Plug-US",
+      "BOARDID": "ec5a",
+      "BOMREV": "113-00998",
+      "DESC": "UniFi Connect Plug",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw",
+          "DST_PATH": "uc-fw",
+          "FILES": [
+            "plug.bin",
+            "bootloader.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec5a-app.bin",
+          "../uc-fw/plug.bin"
+        ],
+        [
+          "tftp/images/ec5a-bootloader.bin",
+          "../uc-fw/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec5a-ota.bin",
+          "../uc-fw/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec5a-ptn-table.bin",
+          "../uc-fw/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}
