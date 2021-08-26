@@ -47,7 +47,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         # number of WiFi
         self.wifinum = {
-            'ec5a': "1",
+            'ec5a': "2",
         }
 
         # number of Bluetooth
@@ -55,7 +55,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             'ec5a': "1",
         }
 
-        self.devnetmeta = {                                                                                                  
+        self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
