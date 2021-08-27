@@ -7,20 +7,7 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-Flash layout
-- 0x000000000000-0x000000080000 : "u-boot"
-- 0x000000080000-0x000000090000 : "u-boot-env"
-- 0x000000090000-0x0000000a0000 : "eeprom"
-- 0x0000000a0000-0x0000000b0000 : "bs1"
-- 0x0000000b0000-0x0000000c0000 : "bs2"
-- 0x0000000c0000-0x0000000d0000 : "prst"
-- 0x0000000d0000-0x000000150000 : "cfg"
-- 0x000000150000-0x0000001f0000 : "stats"
-- 0x0000001f0000-0x0000002f0000 : "lcmfw"
-- 0x0000002f0000-0x0000022f0000 : "ltefw"
-- 0x0000022f0000-0x0000026a0000 : "recovery"
-- 0x0000026a0000-0x000003350000 : "firmware" <-- sysupgrade file goes here
-- 0x000003350000-0x000004000000 : "fw_inactive"
+This back to MFG script is for ULTE-PRO, ULTE-PRO-US, ULTE-PRO-US
 '''
 
 
@@ -33,6 +20,17 @@ class UAPQCA956xMFG(ScriptBase):
         # script specific vars
         self.bootloader_prompt = "ath>"
         self.linux_prompt = "# "
+        self.cmd_prefix = "go 0x80200020 "
+        self.ram_addr = "0x81000000"
+
+        self.erase_partition = {
+            'uboot_kernel': {'addr': '0x9f000000', 'size': '+0xff0000'},
+            'calibration': {'addr': '0x9fff0000', 'size': '+0x10000'},
+        }
+
+        self.write_partition = {
+            'uboot_kernel': {'addr': '0x9f000000', 'size': '0xff0000'},  # size syntax is different from erase_partion
+        }
 
     def enter_uboot(self, init_uapp=False):
         self.pexp.expect_action(90, "Hit any key to stop autoboot", "\033")
@@ -41,7 +39,22 @@ class UAPQCA956xMFG(ScriptBase):
         if init_uapp is True:
             log_debug(msg="Init uapp")
             # Init uapp. DUT will reset after init
+
+            uboot_env_fixed = "uboot env fix. Clearing u-boot env and resetting the board.."
+            reset_auto = "Resetting"
+            ubnt_app_init = "UBNT application initialized"
+            expect_list = [uboot_env_fixed, reset_auto, ubnt_app_init]
+
             self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uappinit")
+            index = self.pexp.expect_get_index(timeout=30, exptxt=expect_list)
+            if index == self.pexp.TIMEOUT:
+                error_critical('UBNT Application failed to initialize!')
+            elif index == 0:
+                log_debug('uboot env fixed, rebooting...')
+                self.enter_uboot()
+            elif index == 1:
+                log_debug('DUT is resetting automatically')
+                self.enter_uboot()
 
         self.set_net_uboot()
 
@@ -50,26 +63,29 @@ class UAPQCA956xMFG(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.is_network_alive_in_uboot()
 
-    def transfer_img(self, filename):
-        img = os.path.join(self.fwdir, filename)
-        img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
-        log_debug("Transferring file: {}, size: {}".format(img, img_size))
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootfile {}".format(img))
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x81000000", "Bytes transferred = {}".format(img_size))
+    def tranfer_art_fw(self):
+        art_path = os.path.join(self.fwdir, self.board_id + "-art.bin")
+        log_debug(msg="art bin path:" + art_path)
 
-    def update_uboot(self):
-        # erase and write flash
-        self.pexp.expect_action(90, self.bootloader_prompt, "erase_ext 0x0 0x90000")
-        self.pexp.expect_action(90, self.bootloader_prompt, "write_ext 0x81000000 0x0 0x90000")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootfile {}".format(art_path))
+        self.pexp.expect_ubcmd(90, self.bootloader_prompt, "tftpboot {}".format(self.ram_addr), "Bytes transferred")
 
-    def erase_cal_data(self):
-        # erase cal data
-        self.pexp.expect_action(90, self.bootloader_prompt, "erase_ext 0x90000 0x10000")
+    def erase_flash(self, addr, size):
+        # erase cal data + FW
+        cmd = "erase {} {}".format(addr, size)
+        log_debug(msg="erasing flash, cmd: {}".format(cmd))
+        self.pexp.expect_ubcmd(90, self.bootloader_prompt, cmd, "done")
 
-    def update_kernel(self):
-        # erase and write flash
-        self.pexp.expect_action(90, self.bootloader_prompt, "erase_ext 0xa0000 0xF60000")
-        self.pexp.expect_action(90, self.bootloader_prompt, "write_ext 0x810a0000 0xa0000 0xF60000")
+    def write_flash(self, addr, size):
+        cmd = "cp.b {} {} {}".format(self.ram_addr, addr, size)
+        log_debug(msg="writing flash, cmd: {}".format(cmd))
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd, "done")
+
+    def login_kernel(self):
+        log_debug(msg="Login kernel")
+        self.login(username="root", password="5up", timeout=120, press_enter=False)
+
+        self.is_network_alive_in_linux(retry=30)
 
     def run(self):
         """Main procedure of factory
@@ -84,25 +100,33 @@ class UAPQCA956xMFG(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(5, "Open serial port successfully ...")
 
-        self.enter_uboot()
-        msg(20, 'Finished net env in setting u-boot ...')
+        msg(20, "Setting uboot environment")
+        self.enter_uboot(init_uapp=True)
+        msg(30, "Transferring ART image")
+        self.tranfer_art_fw()
 
-        self.transfer_img(filename=self.board_id + "-mfg.bin")
-        msg(30, 'Finished MFG file transferring ...')
-
-        self.update_uboot()
-        msg(40, 'Finished MFG uboot update ...')
+        msg(40, "Erasing uboot and kernel")
+        self.erase_flash(
+            addr=self.erase_partition['uboot_kernel']['addr'],
+            size=self.erase_partition['uboot_kernel']['size']
+        )
 
         if self.erasecal == "True":
-            self.erase_cal_data()
-            msg(45, 'Erased calibration data ...')
+            msg(40, "Erasing calibration")
+            self.erase_flash(
+                addr=self.erase_partition['calibration']['addr'],
+                size=self.erase_partition['calibration']['size']
+            )
 
-        self.update_kernel()
-        msg(50, 'Finished MFG kernel update ...')
+        msg(50, "Writing flash")
+        self.write_flash(
+            addr=self.write_partition['uboot_kernel']['addr'],
+            size=self.write_partition['uboot_kernel']['size']
+        )
 
-        self.pexp.expect_action(90, self.bootloader_prompt, 'reset')
-
-        self.login(username="root", password="5up", timeout=120, press_enter=False)
+        msg(60, "login kernel")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+        self.login_kernel()
 
         msg(100, "Completed back to MFG ...")
         self.close_fcd()

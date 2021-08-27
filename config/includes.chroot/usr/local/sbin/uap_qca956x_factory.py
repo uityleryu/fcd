@@ -7,39 +7,45 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-This FCD script is for ULTE-FLEX, ULTE-FLEX-EU, ULTE-FLEX-US
+This back to MFG script is for ULTE-PRO, ULTE-PRO-US, ULTE-PRO-US
 '''
 
 
-class UAPQCA956xFactory2(ScriptBase):
+class UAPQCA956xFactory(ScriptBase):
     def __init__(self):
-        super(UAPQCA956xFactory2, self).__init__()
+        super(UAPQCA956xFactory, self).__init__()
         self.ver_extract()
         self.init_vars()
 
     def init_vars(self):
         # script specific vars
-        self.devregpart = "/dev/mtdblock2"
         self.bomrev = "113-" + self.bom_rev
-
         self.bootloader_prompt = "ath>"
         self.linux_prompt = "# "
         self.cmd_prefix = "go 0x80200020 "
         self.product_class = "radio"  # For this product using radio
 
+        devregpart = {
+            'e611': "/dev/mtdblock5",
+            'e612': "/dev/mtdblock5",
+            'e613': "/dev/mtdblock5",
+        }
+
+        self.devregpart = devregpart[self.board_id]
 
         # helper path
         helppth = {
-            'e614': "ulte_flex",
-            'e615': "ulte_flex"
+            'e611': "ulte_pro",
+            'e612': "ulte_pro",
+            'e613': "ulte_pro",
         }
-
-        self.helperexe = "helper_ARxxxx_release"
         self.helper_path = helppth[self.board_id]
+
+        self.helperexe = "helper_ARxxxx_musl"
 
         self.UPDATE_UBOOT          = True
         self.FWUPDATE_ENABLE       = True
-        self.BOOT_RECOVERY_IMAGE   = True
+        self.BOOT_RECOVERY_IMAGE   = False
         self.INIT_RECOVERY_IMAGE   = False
         self.PROVISION_ENABLE      = True
         self.DOHELPER_ENABLE       = True
@@ -54,7 +60,22 @@ class UAPQCA956xFactory2(ScriptBase):
         if init_uapp is True:
             log_debug(msg="Init uapp")
             # Init uapp. DUT will reset after init
+
+            uboot_env_fixed = "uboot env fix. Clearing u-boot env and resetting the board.."
+            reset_auto = "Resetting"
+            ubnt_app_init = "UBNT application initialized"
+            expect_list = [uboot_env_fixed, reset_auto, ubnt_app_init]
+
             self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uappinit")
+            index = self.pexp.expect_get_index(timeout=30, exptxt=expect_list)
+            if index == self.pexp.TIMEOUT:
+                error_critical('UBNT Application failed to initialize!')
+            elif index == 0:
+                log_debug('uboot env fixed, rebooting...')
+                self.enter_uboot(init_uapp=True)
+            elif index == 1:
+                log_debug('DUT is resetting automatically')
+                self.enter_uboot(init_uapp=True)
 
         self.set_net_uboot()
 
@@ -68,44 +89,45 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug(msg="uboot bin path:" + uboot_path)
 
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootfile {}".format(uboot_path))
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x81000000", "Bytes transferred")
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x80800000", "Bytes transferred")
 
         # erase and write flash
-        self.pexp.expect_action(30, self.bootloader_prompt, 'erase_ext 0 80000')
-        self.pexp.expect_action(60, self.bootloader_prompt, 'write_ext 0x81000000 0 80000')
-        self.pexp.expect_action(60, self.bootloader_prompt, 'erase_ext 80000 10000')
+        self.pexp.expect_action(30, self.bootloader_prompt, 'erase 0x9f000000 +$filesize')
+        self.pexp.expect_action(60, self.bootloader_prompt, 'cp.b  $fileaddr 0x9f000000 $filesize')
+        self.pexp.expect_only(60, "done")
 
-    def boot_recovery(self):
-        recovery_path = os.path.join(self.fwdir, self.board_id + "-recovery.bin")
-        log_debug(msg="recovery bin path:" + recovery_path)
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootfile {}".format(recovery_path))
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x81000000", "Bytes transferred")
-        self.pexp.expect_action(30, self.bootloader_prompt, "bootm")
+    def turn_on_console(self):
+        # Boot into OS and enable console
+        log_debug(msg="Turn on console")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'")
 
     def fwupdate(self):
-        fw_path = os.path.join(self.fwdir, self.board_id + ".bin")
-        log_debug(msg="firmware path:" + fw_path)
-
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=fw_path, dst_file=self.dut_tmpdir)
-
-        self.pexp.expect_action(30, "", "md5sum /tmp/{}.bin".format(self.board_id))
-        self.pexp.expect_action(30, self.linux_prompt, "afiupgrade /tmp/{}.bin".format(self.board_id))
-        self.pexp.expect_only(360, 'Starting kernel')
-
-    def _fwupdate(self):
         # TFTP bin from TestServer
         fw_path = os.path.join(self.fwdir, self.board_id + ".bin")
         log_debug(msg="firmware path:" + fw_path)
 
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootfile {}".format(fw_path))
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x81000000", "Bytes transferred")
+        self.pexp.expect_action(30, self.bootloader_prompt, "setenv do_urescue TRUE;urescue -u -e")
+        self.pexp.expect_only(30, "Waiting for connection")
 
-        # FIXME: replace flash w/r with initramfs for safe update
-        # erase and write flash
-        self.pexp.expect_action(90, self.bootloader_prompt, 'erase_ext 26a0000 CB0000')
-        self.pexp.expect_action(90, self.bootloader_prompt, 'write_ext 0x81000000 26a0000 CB0000')
-        self.pexp.expect_action(90, self.bootloader_prompt, '\033')
+        cmd = ["atftp",
+               '--option "mode octet"',
+               "-p",
+               "-l",
+               fw_path,
+               self.dutip]
+        cmdj = ' '.join(cmd)
+
+        [sto, rtc] = self.fcd.common.xcmd(cmdj)
+        if (int(rtc) > 0):
+            error_critical("Failed to upload firmware image")
+        else:
+            log_debug("Uploading firmware image successfully")
+
+        self.pexp.expect_only(120, "Bytes transferred")
+        log_debug(msg="TFTP Finished")
+        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uwrite -f")
+        self.pexp.expect_only(180, "U-Boot unifi")
+        log_debug(msg="Firmware update complete")
 
     def set_eeprom_info(self):
         log_debug(msg="Set Board ID:" + self.board_id)
@@ -126,13 +148,14 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(10, 'Done')
 
         log_debug(msg="Clear uboot env")
-        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
-        self.pexp.expect_only(30, 'done')
-        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearcfg")
-        self.pexp.expect_only(30, 'done')
+        # FIXME: Ansis is fixing bug
+        # self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearenv")
+        # self.pexp.expect_only(30, 'done')
+        # self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uclearcfg")
+        # self.pexp.expect_only(30, 'done')
 
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uprintenv")
-        self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usaveenv")
+        # self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usaveenv")
 
     def check_eeprom_info(self):
         log_debug(msg="Check eeprom info")
@@ -148,19 +171,15 @@ class UAPQCA956xFactory2(ScriptBase):
 
     def login_kernel(self):
         log_debug(msg="Login kernel")
-        self.pexp.expect_action(120, "Please press Enter to activate this console", "")
+        self.login(timeout=180, press_enter=True)
 
-        time.sleep(15)  # for stable system
+        time.sleep(30)  # for stable system
 
-        self.is_network_alive_in_linux(retry=10)
-        self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
-        time.sleep(3)  # for stable eth
-        self.is_network_alive_in_linux(retry=10)
+        # up eth anyway
+        self.pexp.expect_lnxcmd(10, "", "")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 up")
 
-    def enable_ssh(self):
-        self.pexp.expect_action(30, self.linux_prompt, "echo ssh | prst_tool -w misc; /etc/init.d/dropbear start")
-        self.pexp.expect_action(60, self.linux_prompt, "")
-        log_debug(msg="Enabled SSH")
+        self.is_network_alive_in_linux(retry=30)
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -169,7 +188,7 @@ class UAPQCA956xFactory2(ScriptBase):
         # Upload the RSA key
         cmd = [
             "tftpboot",
-            "80800000",
+            "0x80800000",
             self.rsakey
         ]
         cmd = ' '.join(cmd)
@@ -188,7 +207,7 @@ class UAPQCA956xFactory2(ScriptBase):
         # Upload the DSS key
         cmd = [
             "tftpboot",
-            "80800000",
+            "0x80800000",
             self.dsskey
         ]
         cmd = ' '.join(cmd)
@@ -212,6 +231,15 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
+    def enable_burnin(self):
+        srcp = os.path.join(self.tools, self.helper_path, "burnin.cfg")
+        dstp = os.path.join(self.dut_tmpdir, "system.cfg")
+        self.tftp_get(remote=srcp, local=dstp, timeout=15)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfgmtd -w -p /etc/ && killall -9 mcad && /etc/rc.d/rc restart")
+        log_debug(msg="Waiting for 30 secs")
+        time.sleep(30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'grep burnin /tmp/system.cfg', post_exp='enabled', retry=30)
+
     def run(self):
         """Main procedure of factory
         """
@@ -226,10 +254,15 @@ class UAPQCA956xFactory2(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_UBOOT is True:
-            msg(20, "Updating uboot ...")
-            self.enter_uboot()
+            msg(10, "Updating uboot...")
+            self.enter_uboot(init_uapp=True)
             self.update_uboot()
             self.pexp.expect_action(60, self.bootloader_prompt, 'reset')
+
+        if self.FWUPDATE_ENABLE is True:
+            msg(20, "Updating firmware ...")
+            self.enter_uboot(init_uapp=True)
+            self.fwupdate()
 
         if self.PROVISION_ENABLE is True:
             msg(30, "Setting EEPROM ...")
@@ -237,22 +270,19 @@ class UAPQCA956xFactory2(ScriptBase):
             self.set_eeprom_info()
             self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
-            # FIXME: bom-rev goes wrong
             msg(35, "Checking EEPROM ...")
             self.enter_uboot(init_uapp=True)
             self.check_eeprom_info()
 
             msg(40, "Uploading ssh keys ...")
             self.gen_and_upload_ssh_key()
-
             self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
-        if self.BOOT_RECOVERY_IMAGE is True:
-            msg(50, "Booting into recovery images...")
-            self.enter_uboot()
-            self.boot_recovery()
+            msg(50, "Booting image ...")
+            self.enter_uboot(init_uapp=False)
+            self.turn_on_console()
+            self.pexp.expect_action(30, self.bootloader_prompt, "boot")
             self.login_kernel()
-            self.enable_ssh()
 
         if self.DOHELPER_ENABLE is True:
             msg(55, "Do helper to get the output file to devreg server ...")
@@ -265,14 +295,16 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(65, "Checking signed file and EEPROM ...")
             self.check_devreg_data()
 
-        if self.FWUPDATE_ENABLE is True:
-            msg(80, "Updating firmware ...")
-            self.fwupdate()
-            self.login_kernel()
-
         if self.DATAVERIFY_ENABLE is True:
-            msg(90, "Checking the devrenformation ...")
+            msg(70, "Rebooting DUT ...")
+            self.pexp.expect_lnxcmd(10, "", "reboot -f")
+            self.enter_uboot(init_uapp=False)
+            self.turn_on_console()
+            self.pexp.expect_action(30, self.bootloader_prompt, "boot")
+            msg(80, "Checking the devrenformation ...")
+            self.login_kernel()
             self.check_info()
+            self.enable_burnin()
 
         msg(100, "Completed FCD process ...")
 
@@ -280,8 +312,8 @@ class UAPQCA956xFactory2(ScriptBase):
 
 
 def main():
-    uap_qca956x_factory2 = UAPQCA956xFactory2()
-    uap_qca956x_factory2.run()
+    uap_qca956x_factory = UAPQCA956xFactory()
+    uap_qca956x_factory.run()
 
 
 if __name__ == "__main__":
