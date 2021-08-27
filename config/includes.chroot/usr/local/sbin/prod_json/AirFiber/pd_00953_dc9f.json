@@ -16,15 +16,20 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "GMP.v3.0.0-alpha.44886.210310.1441.bin",
+            "GMP.v3.0.1.45632.210614.1452.bin",
             "u-boot-ipq40xx.bin.rom",
             "af60-spf6.1.1_nor-v1.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/af_af60",
+          "DST_PATH": "tools/af_af60",
+          "FILES": [
+            "cfg_part.bin",
+            "helper_IPQ40xx",
+            "id_rsa",
+            "id_rsa.pub"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -40,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dc9f.bin",
-          "../af-fw/GMP.v3.0.0-alpha.44886.210310.1441.bin"
+          "../af-fw/GMP.v3.0.1.45632.210614.1452.bin"
         ],
         [
           "tftp/images/dc9f-bootloader.bin",
