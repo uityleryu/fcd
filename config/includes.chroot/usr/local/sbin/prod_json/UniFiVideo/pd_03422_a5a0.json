@@ -1,0 +1,16 @@
+{
+  "UniFiVideo": {
+    "UVC-AITHETA": {
+      "INDEX": 0,
+      "NAME": "UVC-AITHETA",
+      "BOARDID": "a5a0",
+      "BOMREV": "113-03422",
+      "DESC": "UVC AI THETA",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  }
+}
