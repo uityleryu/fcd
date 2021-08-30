@@ -154,6 +154,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UVC-AITHETA":
+            self.board_name = "UVC AI THETA"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
