@@ -156,7 +156,7 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-AITHETA":
             self.board_name = "UVC AI THETA"
-            self.ip = "192.168.1.20"
+            self.ip = "192.168.1.73"
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
@@ -187,7 +187,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a595': "0",
             'a5a0': "1",
             'a5a2': '1',
-            'ec70': '1'
+            'ec70': '1',
+            'a5a3': '1'
         }
 
         # number of WiFi
@@ -203,7 +204,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a595': "1",
             'a5a0': "0",
             'a5a2': '0',
-            'ec70': '0'
+            'ec70': '0',
+            'a5a3': '0'
         }
 
         # number of Bluetooth
@@ -219,7 +221,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a595': "1",
             'a5a0': "0",
             'a5a2': '0',
-            'ec70': '0'
+            'ec70': '0',
+            'a5a3': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")

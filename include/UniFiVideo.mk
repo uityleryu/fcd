@@ -172,7 +172,7 @@ $(eval $(call ProductCompress,UVC-AI360,FCD_$(PRD)_AI360_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-AIBULLET,FCD_$(PRD)_AIBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UVC-AITHETA,FCD_$(PRD)_AITHETA_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -186,3 +186,4 @@ $(eval $(call ProductCompress2,03132_a590))
 $(eval $(call ProductCompress2,02712_a571))
 $(eval $(call ProductCompress2,02998_a573))
 $(eval $(call ProductCompress2,02692_a580))
+$(eval $(call ProductCompress2,03422_a5a3))
