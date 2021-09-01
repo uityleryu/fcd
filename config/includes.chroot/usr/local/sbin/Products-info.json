@@ -2382,7 +2382,7 @@
       "DESC"        : "UF-WiFi6",
       "FILE"        : "uf_ecnt7521_factory.py",
       "T1FILE"      : "",
-      "QRCHECK"     : "True",
+      "QRCHECK"     : "False",
       "FCD_ID"      : "0008",
       "SW_ID"       : "0c01"
     }
