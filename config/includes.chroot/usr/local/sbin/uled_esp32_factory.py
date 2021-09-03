@@ -11,8 +11,8 @@ import os
 import re
 import traceback
 
-FWUPDATE_ENABLE     = True 
-PROVISION_ENABLE    = True 
+FWUPDATE_ENABLE     = True
+PROVISION_ENABLE    = True
 DOHELPER_ENABLE     = True 
 REGISTER_ENABLE     = True 
 FLASH_DEVREG_DATA   = True
@@ -30,29 +30,29 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
         self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "flash_encryption_key.bin")
-        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "secure_bootloader_key.bin")
+        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "secure-bootloader-key-256.bin")
         self.regsubparams = ""
 
         # Index 0: flag to control key is existed or flash is encrypted
         #       1: key name
         #       2: burn_key option
         #       3: key binary
-        self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin], 
-                              [True, "Secure boot key"              , " secure_boot"     , self.secure_boot_key_bin  ],
-                              [True, "Flash encryption mode counter", None              , None                      ]]
+        self.dev_flash_cfg = [[True, "Secure boot key"              , " secure_boot"     , self.secure_boot_key_bin  ],
+                              [True, "Flash encryption key"         , None              , None                      ],
+                              [False, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
         self.ethnum = {
-            'ec47': "0",
+            'ec4c': "0",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ec47': "1",
+            'ec4c': "1",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ec47': "1",
+            'ec4c': "1",
         }
 
         self.devnetmeta = {                                                                                                  
@@ -96,7 +96,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                 error_critical("Can't parse key {}".format(key[0]))
 
     def program_keys(self):
-        for i in range(0, 2):
+        for i in range(0, 1):
             if self.dev_flash_cfg[i][0] is False:
                 cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_key {} {}".format(self.row_id, self.dev_flash_cfg[i][2], self.dev_flash_cfg[i][3])
                 log_debug(cmd)
@@ -107,44 +107,31 @@ class UFPESP32FactoryGeneral(ScriptBase):
             else:
                 log_info('Skip programming key "{}" because it is existed there'.format(self.dev_flash_cfg[i][1]))
 
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse FLASH_CRYPT_CONFIG 0xF".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CONFIG")
-            #error_critical(otmsg)
-
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse  FLASH_CRYPT_CNT 127".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CNT")
-            #error_critical(otmsg)
-
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse DISABLE_DL_ENCRYPT".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("DISABLE_DL_ENCRYPT")
-            #error_critical(otmsg)
 
     def program_flash(self):
-        encrypt_postfix = "encrypted"
-        fw_bootloader = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin.{}".format(encrypt_postfix))
-        fw_ptn_table  = os.path.join(self.tftpdir, "images", "partition-table.bin.{}".format(encrypt_postfix))
-        fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin.{}".format(encrypt_postfix))
-        fw_app        = os.path.join(self.tftpdir, "images", "uc_thermostat_bsp.bin.{}".format(encrypt_postfix))
-        fw_nvs_key    = os.path.join(self.tftpdir, "images", "nvs_key.bin.{}".format(encrypt_postfix))
+        fw_bootloader = os.path.join(self.tftpdir, "images", "bootloader.bin")
+        fw_ptn_table  = os.path.join(self.tftpdir, "images", "partition-table.bin")
+        fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin")
+        fw_app        = os.path.join(self.tftpdir, "images", "uled-inst_mfg.bin")
+        fw_nvs_key    = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin")
 
+        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
+              "--after=no_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 16MB " \
+              "{} {}".format(self.row_id, "0x1000", fw_bootloader)
+        log_debug(cmd)
+
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = "Flash FW into DUT failed"
+            error_critical(otmsg)
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m " \
-              "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-                                                     "0x0"     , fw_bootloader,
+              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 16MB " \
+              "{} {} {} {} {} {} {} {}".format(self.row_id,
+                                                     "0x00000", fw_nvs_key,
                                                      "0xb000"  , fw_ptn_table ,
-                                                     "0xe000"  , fw_ota_data  ,
-                                                     "0x10000" , fw_app       ,
-                                                     "0xd000", fw_nvs_key   )
+                                                     "0xd000"  , fw_ota_data  ,
+                                                     "0x90000" , fw_app)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -182,16 +169,17 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
+        output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=5)
         info = {}
+        mac_format = self.mac.upper()
         # value is our expected string
-        devreg_data_dict = {'System ID'   : self.board_id              ,
-                            'Bom Revision': self.bom_rev.split('-')[0] ,
-                            'Mac Address' : self.mac                   ,
-                            'DEVREG check': 'PASS'                     }
+        devreg_data_dict = {'"system_id"'   : self.board_id,
+                            '"bom_rev"': "{}{}".format((hex(int(self.bom_rev.split('-')[0])).replace('0x','')).zfill(6), self.bom_rev.split('-')[1]),
+                            '"mac_addr"' : mac_format,
+                            '"devreg_check"': 'PASS'}
 
         for key in devreg_data_dict:
-            regex = re.compile(r"{}: (\w+)".format(key))
+            regex = re.compile(r"{}:\"(\w+)\"".format(key))
             data_list = regex.findall(output)
             info[key] = data_list[0]
 
