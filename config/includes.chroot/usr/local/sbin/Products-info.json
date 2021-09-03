@@ -2292,6 +2292,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-PRO":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-R-PRO",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-01061",
+      "DESC"        : "Ubiquiti Network Management System Router PRO",
+      "FILE"        : "uisp_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 

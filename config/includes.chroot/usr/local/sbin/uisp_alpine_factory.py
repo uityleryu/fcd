@@ -10,9 +10,10 @@ import os
 import stat
 import filecmp
 
-class UNMSALPINEFactoryGeneral(ScriptBase):
+
+class UISPALPINEFactoryGeneral(ScriptBase):
     def __init__(self):
-        super(UNMSALPINEFactoryGeneral, self).__init__()
+        super(UISPALPINEFactoryGeneral, self).__init__()
         self.ver_extract()
         self.init_vars()
 
@@ -25,6 +26,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
+        self.diag_prompt = "RTK.0>"
         self.linux_prompt = "#"
 
         # Base path
@@ -33,72 +35,53 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
 
         # helper path
         helperpath = {
-            'ee6a': "uisp-console",
-            'ee6d': "uisp-console",
+            'ee6d': "uisp-r-pro",
         }
 
         self.helper_path = helperpath[self.board_id]
 
         # switch chip
         self.swchip = {
-            'ee6a': "rtl83xx",
             'ee6d': "rtl83xx",
         }
 
         # sub-system ID
         self.wsysid = {
-            'ee6a': "77076aee",
             'ee6d': "77076dee",
         }
 
         # number of Ethernet
         self.ethnum = {
-            'ee6a': "11",
             'ee6d': "13",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ee6a': "0",
             'ee6d': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ee6a': "1",
             'ee6d': "1",
         }
 
         # ethernet interface
         self.netif = {
-            'ee6a': "ifconfig eth0 ",
-            'ee6d': "ifconfig eth1 ",
+            'ee6d': "enp0s1",
         }
 
         self.devnetmeta = {
-            'ethnum'          : self.ethnum,
-            'wifinum'         : self.wifinum,
-            'btnum'           : self.btnum
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
         }
 
-        self.SET_FAKE_EEPROM       = True
-        self.UPDATE_UBOOT          = True
-        self.BOOT_RECOVERY_IMAGE   = True
-        self.INIT_RECOVERY_IMAGE   = True
-        self.NEED_DROPBEAR         = True
-        self.PROVISION_ENABLE      = True
-        self.DOHELPER_ENABLE       = True
-        self.REGISTER_ENABLE       = True
-        self.FWUPDATE_ENABLE       = True
-        self.DATAVERIFY_ENABLE     = True
-        self.SSH_ENABLE            = True
-
     def set_fake_EEPROM(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + self.wsysid[self.board_id])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 01d30200")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 ffdaecfc")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.w 0x0800000c 000"+str(self.row_id))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.w 0x0800000c 000" + str(self.row_id))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x410000 0x1000")
         self.pexp.expect_only(30, "Erased: OK")
@@ -112,49 +95,72 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def update_uboot(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_ub_net()
         time.sleep(2)
         self.is_network_alive_in_uboot()
+
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-uboot.bin"),
+            dest=os.path.join(self.tftpdir, "boot.img")
+        )
+
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_only(10, "bootupd done")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def reset_uboot_env(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "env default -a -f")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")  # for second partition
         self.pexp.expect_only(20, "done")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
-    def boot_recovery_image(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+    def boot_initramfs_image(self, image):
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
         self.set_ub_net()
         time.sleep(2)
         self.is_network_alive_in_uboot()
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ubnt_debug_legacy_boot on")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x18000004 images/" + self.board_id + "-recovery")
-        self.pexp.expect_only(90, "Bytes transferred")
-        self.pexp.expect_action(11, self.bootloader_prompt, "bootm 0x18000004#uisprpro@2")
 
-    def init_recovery_image(self):
-        self.login(self.username, self.password, timeout=180, log_level_emerg=True)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x18000004 {}".format(image))
+        self.pexp.expect_only(90, "Bytes transferred")
+        self.pexp.expect_action(11, self.bootloader_prompt, "bootm 0x18000004")
+
+    def init_diag_image(self):
+        self.pexp.expect_lnxcmd(120, self.diag_prompt, "exit", self.linux_prompt)
+
+        self.set_lnx_net(intf=self.netif[self.board_id])
         time.sleep(2)
-        postexp = [
-            "64 bytes from",
-            self.linux_prompt
-        ]
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt)
+
+        self.is_network_alive_in_linux(ipaddr=self.dutip, retry=30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /etc/version", self.linux_prompt)
 
     def fwupdate(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.set_ub_net()
+        time.sleep(2)
+        self.is_network_alive_in_uboot()
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "rescue -e")
+        self.pexp.expect_only(30, "Listening for TFTP transfer on")
+
+        # Recovery FW included shipping FW
+        cmd = "atftp -p -l {0}/{1} {2}".format(self.fwdir, self.board_id + "-recovery.bin", self.dutip)
+        log_debug("host cmd: " + cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if (int(rtc) > 0):
+            error_critical("Failed to upload firmware image")
+        else:
+            log_debug("Uploading firmware image successfully")
+
+        self.pexp.expect_only(180, "Firmware version:")
+
+    def xxfwupdate(self):
         sstr = [
             "tftp",
             "-g",
@@ -180,6 +186,9 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
 
     def check_info(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/version")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/board")
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
@@ -210,56 +219,54 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.SET_FAKE_EEPROM is True:
-            self.set_fake_EEPROM()
+        msg(10, "Setting fake EEPROM ...")
+        self.set_fake_EEPROM()
 
-        if self.UPDATE_UBOOT is True:
-            self.update_uboot()
-            self.reset_uboot_env()
+        msg(15, "Updating uboot ...")
+        self.update_uboot()
 
-        if self.BOOT_RECOVERY_IMAGE is True:
-            self.boot_recovery_image()
+        msg(20, "Resetting uboot environment ...")
+        self.reset_uboot_env()
 
-        if self.INIT_RECOVERY_IMAGE is True:
-            self.init_recovery_image()
-            msg(10, "Boot up to linux console and network is good ...")
+        msg(25, "Booting diag image ...")
+        self.boot_initramfs_image(image=os.path.join(self.fwdir, self.board_id + "-diag.bin"))
 
-        if self.PROVISION_ENABLE is True:
-            msg(20, "Sendtools to DUT and data provision ...")
-            self.data_provision_64k(self.devnetmeta)
+        msg(30, "Initializing diag image ...")
+        self.init_diag_image()
 
-        if self.DOHELPER_ENABLE is True:
-            self.erase_eefiles()
-            msg(30, "Do helper to get the output file to devreg server ...")
-            self.prepare_server_need_files()
+        msg(35, "Sending tools to DUT and data provision ...")
+        self.data_provision_64k(self.devnetmeta)
 
-        if self.REGISTER_ENABLE is True:
-            self.registration()
-            msg(40, "Finish doing registration ...")
-            self.check_devreg_data()
-            msg(50, "Finish doing signed file and EEPROM checking ...")
+        msg(40, "Do helper to get the output file to devreg server ...")
+        self.erase_eefiles()
+        self.prepare_server_need_files()
 
-        if self.FWUPDATE_ENABLE is True:
-            self.fwupdate()
-            msg(70, "Firmware upgrade done ...")
-            self.reset_uboot_env()
-            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+        msg(45, "Doing registration ...")
+        self.registration()
 
-        if self.DATAVERIFY_ENABLE is True:
-            self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
+        msg(50, "Checking registration ...")
+        self.check_devreg_data()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'reboot')
 
-        if self.SSH_ENABLE is True:
-            msg(85, "Enable SSH connection...")
-            self.ssh_enable()
+        msg(55, "Upgrading FW by rescue ...")
+        self.fwupdate()
+
+        msg(75, "Login kernel ...")
+        self.login(timeout=120, press_enter=False)
+
+        msg(85, "Checking info ...")
+        self.check_info()
+
+        msg(90, "Enable SSH connection ...")
+        self.ssh_enable()
 
         msg(100, "Completed FCD process ...")
         self.close_fcd()
 
 
 def main():
-    unms_alpine_factory_general = UNMSALPINEFactoryGeneral()
-    unms_alpine_factory_general.run()
+    uisp_alpine_factory_general = UISPALPINEFactoryGeneral()
+    uisp_alpine_factory_general.run()
 
 if __name__ == "__main__":
     main()

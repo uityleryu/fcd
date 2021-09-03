@@ -1,0 +1,58 @@
+{
+  "UbiquitiNMS": {
+    "UISP-R-PRO": {
+      "INDEX": 0,
+      "NAME": "UISP-R-PRO",
+      "BOARDID": "ee6d",
+      "BOMREV": "113-01061",
+      "DESC": "Ubiquiti Network Management System Router Pro XG",
+      "FILE": "uisp_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw/uisp-r-pro/",
+          "DST_PATH": "unms-fw/uisp-r-pro",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/uisp-r-pro",
+          "DST_PATH": "tools/uisp-r-pro",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ee6d-diag.bin",
+          "../unms-fw/uisp-r-pro/uisp-r-pro-diag-v0.0.1-0-g427b41.img"
+        ],
+        [
+          "tftp/images/ee6d-fw.bin",
+          "../unms-fw/uisp-r-pro/UISPR.alpinev2.v1.11.0-rc.1.45f9f1f.210830.1410.bin"
+        ],
+        [
+          "tftp/images/ee6d-recovery.bin",
+          "../unms-fw/uisp-r-pro/UISPR.alpinev2.recovery.v1.11.0-rc.1.45f9f1f.210830.1439.bin"
+        ],
+        [
+          "tftp/images/ee6d-uboot.bin",
+          "../unms-fw/uisp-r-pro/ubnt_uispr_alpinev2_rev1_boot_v1.4.0.img"
+        ]
+      ]
+    }
+  }
+}

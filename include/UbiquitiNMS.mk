@@ -30,6 +30,10 @@ IMAGE-UISP-R= \
     images/ee6e* \
     unms-fw/uisp-r/UISPR.mt7621* \
 
+IMAGE-UISP-R-PRO= \
+    images/ee6d* \
+    unms-fw/uisp-r-pro/* \
+
 IMAGE-UISP-P= \
     # images/ee5a* \
 
@@ -42,6 +46,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-O-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-S-MICRO)
 IMAGE-UNMS+=$(IMAGE-UISP-R)
+IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-P-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-P)
 IMAGE-UNMS+=$(IMAGE-UISP-P-PRO)
@@ -87,6 +92,9 @@ TOOLS-UISP-O-PRO+= unms-spro/*
 TOOLS-UISP-R=$(TOOLS-UNMS)
 TOOLS-UISP-R+= uisp-r/helper_MT7621_release
 
+TOOLS-UISP-R-PRO=$(TOOLS-UNMS)
+TOOLS-UISP-R-PRO+= uisp-r-pro/helper_AL324_release
+
 TOOLS-UISP-P-LITE=$(TOOLS-UNMS)
 TOOLS-UISP-P-LITE+= uisp-p-lite/*
 
@@ -109,6 +117,7 @@ $(eval $(call ProductImage,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
@@ -123,6 +132,7 @@ $(eval $(call ProductCompress,UISP-LTE,FCD_$(PRD)_UNMS-LTE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-LITE,FCD_$(PRD)_UISP-O-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-O-PRO,FCD_$(PRD)_UISP-O-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-R,FCD_$(PRD)_UISP-R_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
@@ -140,7 +150,7 @@ $(eval $(call ProductCompress2,00815_ee6a))
 $(eval $(call ProductCompress2,00819_ee6c))
 $(eval $(call ProductCompress2,00820_eed3))
 $(eval $(call ProductCompress2,00821_eefa))
-$(eval $(call ProductCompress2,00816_ee6d))
+$(eval $(call ProductCompress2,01061_ee6d))
 $(eval $(call ProductCompress2,00989_ee6e))
 $(eval $(call ProductCompress2,00990_ee5a))
 $(eval $(call ProductCompress2,00822_ee5b))
