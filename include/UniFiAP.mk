@@ -70,6 +70,12 @@ IMAGE-UAP-AC-Lite-LR-Pro= \
     uap-fw/BZ.qca956x*-uboot.bin\
     uap-fw/ART.qca956x*ART*.bin
 
+IMAGE-ULTE-PRO= \
+    images/e611* \
+    images/e612* \
+    images/e613* \
+    uap-fw/ulte-pro/*
+
 IMAGE-UAP+=$(IMAGE-UAP-FLEXHD)
 IMAGE-UAP+=$(IMAGE-UAP-IWHD)
 IMAGE-UAP+=$(IMAGE-UAP-NANO-IW-FLEXHD)
@@ -77,6 +83,7 @@ IMAGE-UAP+=$(IMAGE-UBB)
 IMAGE-UAP+=$(IMAGE-UAP-INDUSTRIAL)
 IMAGE-UAP+=$(IMAGE-UBB-XG)
 IMAGE-UAP+=$(IMAGE-ULTE-FLEX)
+IMAGE-UAP+=$(IMAGE-ULTE-PRO)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -120,6 +127,11 @@ TOOLS-UAP-INDUSTRIAL+=$(TOOLS-CONFIG)
 TOOLS-UBB+=$(TOOLS-CONFIG)
 TOOLS-UBB-XG+=$(TOOLS-CONFIG)
 
+TOOLS-ULTE-PRO+=$(TOOLS-CONFIG)
+TOOLS-ULTE-PRO+= \
+    ulte_pro/helper* \
+    ulte_pro/burnin.cfg
+
 
 # Assign UAP series tools
 TOOLS-UAP+=$(TOOLS-UBB)
@@ -137,6 +149,8 @@ $(eval $(call ProductImage,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductImage,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UAP-AC-Lite-LR-Pro,FCD_$(PRD)_UAP-AC-Lite-LR-Pro_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ULTE-PRO,FCD_$(PRD)_ULTE-PRO_$(VER)_$(FWVER)))
+
 
 # Project compressed file for RPi FCD host
 
@@ -149,6 +163,8 @@ $(eval $(call ProductCompress,UAP-INDUSTRIAL,FCD_$(PRD)_UAP-INDUSTRIAL_$(VER)))
 $(eval $(call ProductCompress,UBB-XG,FCD_$(PRD)_UAP-UBB-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULTE-FLEX,FCD_$(PRD)_ULTE-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UAP-AC-Lite-LR-Pro,FCD_$(PRD)_UAP-AC-Lite-LR-Pro_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ULTE-PRO,FCD_$(PRD)_ULTE-PRO_$(VER)_$(FWVER)))
+
 
 
 # Project compressed type2 file for RPi FCD host

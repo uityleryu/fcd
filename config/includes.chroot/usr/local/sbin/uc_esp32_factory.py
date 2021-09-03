@@ -29,8 +29,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # script specific vars
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
-        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "flash_encryption_key.bin")
-        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "secure_bootloader_key.bin")
+        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "{}-flash_encrypt_key.bin".format(self.board_id))
+        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "{}-secure_boot_key.bin".format(self.board_id))
         self.regsubparams = ""
 
         # Index 0: flag to control key is existed or flash is encrypted
@@ -38,24 +38,24 @@ class UFPESP32FactoryGeneral(ScriptBase):
         #       2: burn_key option
         #       3: key binary
         self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin], 
-                              [True, "Secure boot key"              , " secure_boot"     , self.secure_boot_key_bin  ],
+                              [True, "Secure boot key"              , "secure_boot"     , self.secure_boot_key_bin  ],
                               [True, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
         self.ethnum = {
-            'ec47': "0",
+            'ec5a': "0",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ec47': "1",
+            'ec5a': "2",
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ec47': "1",
+            'ec5a': "1",
         }
 
-        self.devnetmeta = {                                                                                                  
+        self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
@@ -68,7 +68,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         cpu_id = id_list[0]
         flash_jedec_id = id_list[1]
         flash_uuid = id_list[2]
-        
+
         log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \
                             " -i field=cpu_rev_id,format=hex,value={}".format(cpu_id)                   + \
@@ -107,44 +107,28 @@ class UFPESP32FactoryGeneral(ScriptBase):
             else:
                 log_info('Skip programming key "{}" because it is existed there'.format(self.dev_flash_cfg[i][1]))
 
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse FLASH_CRYPT_CONFIG 0xF".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CONFIG")
-            #error_critical(otmsg)
-
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse  FLASH_CRYPT_CNT 127".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("FLASH_CRYPT_CNT")
-            #error_critical(otmsg)
-
-        cmd = "sudo espefuse.py -p /dev/ttyUSB{} --do-not-confirm burn_efuse DISABLE_DL_ENCRYPT".format(self.row_id)
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        if int(rv) > 0:
-            otmsg = 'burn_key "{}" failed!'.format("DISABLE_DL_ENCRYPT")
-            #error_critical(otmsg)
-
     def program_flash(self):
-        encrypt_postfix = "encrypted"
-        fw_bootloader = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin.{}".format(encrypt_postfix))
-        fw_ptn_table  = os.path.join(self.tftpdir, "images", "partition-table.bin.{}".format(encrypt_postfix))
-        fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin.{}".format(encrypt_postfix))
-        fw_app        = os.path.join(self.tftpdir, "images", "uc_thermostat_bsp.bin.{}".format(encrypt_postfix))
-        fw_nvs_key    = os.path.join(self.tftpdir, "images", "nvs_key.bin.{}".format(encrypt_postfix))
-
+        encrypt_postfix = "-encrypt" if self.dev_flash_cfg[2][0] is True else ""
+        fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader{}.bin".format(self.board_id, encrypt_postfix))
+        fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-ptn-table{}.bin".format(self.board_id, encrypt_postfix))
+        fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota{}.bin".format(self.board_id, encrypt_postfix))
+        fw_app        = os.path.join(self.tftpdir, "images", "{}-app{}.bin".format(self.board_id, encrypt_postfix))
+        #fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs-key{}.bin".format(self.board_id, encrypt_postfix))
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m " \
-              "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-                                                     "0x0"     , fw_bootloader,
+              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
+            "{} {} {} {} {} {} {} {}".format(self.row_id,
+                                                     "0x1000"  , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
-                                                     "0xe000"  , fw_ota_data  ,
-                                                     "0x10000" , fw_app       ,
-                                                     "0xd000", fw_nvs_key   )
+                                                     "0xd000"  , fw_ota_data  ,
+                                                     "0x90000" , fw_app       )
+            #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+            #                                          "0x1000"     , fw_bootloader,
+            #                                          "0xb000"  , fw_ptn_table ,
+            #                                          "0xd000"  , fw_ota_data  ,
+            #                                          "0x90000" , fw_app       ,
+            #                                          "0x3fc000", fw_nvs_key   )
+
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -152,22 +136,23 @@ class UFPESP32FactoryGeneral(ScriptBase):
             otmsg = "Flash FW into DUT failed"
             error_critical(otmsg)
 
-        # The waiting time         
+        # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        # self.pexp.expect_lnxcmd(180, self.esp32_prompt, "",self.esp32_prompt)
         self.pexp.expect_only(180, self.esp32_prompt)
         log_debug("Device boots well")
 
     def fwupdate(self):
         self.check_device_stat()
-        self.program_keys()
+        # self.program_keys()
         self.program_flash()
 
     def put_devreg_data_in_dut(self):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 16MB 0xfff000  /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -183,17 +168,49 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
     def check_devreg_data(self):
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
+        log_debug("output:".format(output))
         info = {}
+        ''' ( fw cchange format)
+        Model Name: UC-Plug-US
+        System ID: ec5a
+        Board Revision: 255
+        Bom Revision: 16777215
+        FW Version: PLUG.esp32app.v0.0.2.0.g0fa6.210826.1330
+        Hash ID: 48f97312-72d4-5faa-3aef-def1d0566f61
+        GUID: 450c69ab-c7c7-4f92-8deb-7ae1e6e3585a
+        Epoch Time: 164
+        Uptime: 164057
+        Mac Address: 94:b9:7e:b4:5f:9c
+        IP Address: 0.0.0.0
+        DEVREG check: FAIL
+        Cable State: 0 () 0
+        '''
+        
         # value is our expected string
-        devreg_data_dict = {'System ID'   : self.board_id              ,
-                            'Bom Revision': self.bom_rev.split('-')[0] ,
-                            'Mac Address' : self.mac                   ,
-                            'DEVREG check': 'PASS'                     }
+        # devreg_data_dict = {'"system_id"'   : self.board_id              ,
+        #                     '"Bom Revision"': self.bom_rev.split('-')[0] ,
+        #                     '"Mac Address"' : self.mac                   ,
+        #                     '"DEVREG check"': 'PASS'                     }
+        
+        ''' Example info from DUT
+        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e601","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
+d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6e3585a","epoch_time":"3","mac_addr":"68D79A1F54D1","ip_address":"0.
+0.0.0","region":"EU","devreg_check":"PASS"}
+        '''
+        devreg_data_dict = {'system_id'     : self.board_id              ,
+                            'bom_rev'       : self.bom_rev.split('-')[0] ,
+                            'mac_addr'      : self.mac                   ,
+                            'devreg_check'  : 'pass'                     }
 
         for key in devreg_data_dict:
-            regex = re.compile(r"{}: (\w+)".format(key))
+            regex = re.compile(r'"{}":"(\w+)"'.format(key))
             data_list = regex.findall(output)
-            info[key] = data_list[0]
+            #"bom_rev":"0003e601" 0003e6=00998, 01=01 => 00998-01
+            if key == "bom_rev":
+                info[key] = str(int(data_list[0][0:6],16)).zfill(5)
+            else:
+                info[key] = data_list[0].lower()
+            # import pdb; pdb.set_trace()
 
         for key in devreg_data_dict:
             if devreg_data_dict[key] != info[key]:

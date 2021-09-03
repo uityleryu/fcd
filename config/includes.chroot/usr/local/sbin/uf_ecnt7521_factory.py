@@ -19,14 +19,12 @@ class UFECNT7521Factory(ScriptBase):
         self.init_vars()
         self.hw_revision = (int(self.bom_rev[0:5]) << 8) + int(self.bom_rev[6:8])
         self.hw_pref = 13
-        self.region_code = '1'
 
     def init_vars(self):
         self.ubpmt = {
             'eec5': ""
         }
 
-        # linux console prompt
         self.lnxpmt = {
             'eec5': "#"
         }
@@ -130,6 +128,10 @@ class UFECNT7521Factory(ScriptBase):
         mac_with_colon = self.get_mac_with_colon()
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd, post_exp=mac_with_colon.lower())
 
+        time.sleep(2)
+        cmd = "cat /proc/ubnthal/*"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd, post_exp='~')
+
     def get_mac_with_colon(self):
         ans = ''
         for i in range(len(self.mac)):
@@ -167,16 +169,27 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_only(120, "Upgrade image check ok.")
         self.pexp.expect_only(120, "done")
         self.pexp.expect_only(120, "resetting")
+    
+    def eth1_mac_new_rule(self, mac_list):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac_list[0]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000007 {}'.format(mac_list[1]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000008 {}'.format(mac_list[2]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000009 {}'.format(mac_list[3]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000a {}'.format(mac_list[4]))
+        
+        eth1_mac_last_two = (hex(int(mac_list[5], 16) + 1))[2:]
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(eth1_mac_last_two))
         
     def write_hw_info(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'erase 01f60000 10000')
+
+        time.sleep(5)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'flash_read 80000000 01f60000 10000')
 
         mac_list = []
         for i in range(0, len(self.mac), 2):
             mac_list.append(self.mac[i:i + 2])
             op = int('2', 16)
-        mac0_or_02 = hex(int(mac_list[0], 16) | op)[2:]
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000000 {}'.format(mac_list[0]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000001 {}'.format(mac_list[1]))
@@ -184,21 +197,15 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000003 {}'.format(mac_list[3]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000004 {}'.format(mac_list[4]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000005 {}'.format(mac_list[5]))
-        
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac0_or_02))
-        
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000007 {}'.format(mac_list[1]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000008 {}'.format(mac_list[2]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000009 {}'.format(mac_list[3]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000a {}'.format(mac_list[4]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(mac_list[5]))
 
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000022 {}'.format(mac_list[0]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000023 {}'.format(mac_list[1]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000024 {}'.format(mac_list[2]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000025 {}'.format(mac_list[3]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000026 {}'.format(mac_list[4]))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000027 {}'.format(mac_list[5]))
+        self.eth1_mac_old_rule(mac_list, op)
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a022 {}'.format(mac_list[0]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a023 {}'.format(mac_list[1]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a024 {}'.format(mac_list[2]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a025 {}'.format(mac_list[3]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a026 {}'.format(mac_list[4]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000a027 {}'.format(mac_list[5]))
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000c {}'.format(self.board_id[0:2]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000d {}'.format(self.board_id[2:]))
@@ -225,6 +232,7 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'flash 01f60000 80000000 10000 0')
 
     def erase_setting(self, only_cfg=False):
+        time.sleep(5)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'erase_cfg')
         
         if not only_cfg:
@@ -232,6 +240,25 @@ class UFECNT7521Factory(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'erase 01f70000 90000')
         
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'reset')
+
+    def set_board_gpon_mode(self):
+        cmds = ['echo set_flash_register 0x07050701 0x94 > /proc/pon_phy/debug',
+            'echo save_flash_matrix > /proc/pon_phy/debug',
+            'mtd bob save']
+        for cmd in cmds:
+            time.sleep(2)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, post_exp=self.linux_prompt)
+
+    def eth1_mac_old_rule(self, mac_list, op):
+        
+        mac0_or_02 = hex(int(mac_list[0], 16) | op)[2:]
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac0_or_02))
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000007 {}'.format(mac_list[1]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000008 {}'.format(mac_list[2]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000009 {}'.format(mac_list[3]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000a {}'.format(mac_list[4]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(mac_list[5]))
 
     def run(self):
         UPDATE_UBOOT_EN = True
@@ -244,12 +271,12 @@ class UFECNT7521Factory(ScriptBase):
         """
         Main procedure of factory
         """
+        
         msg(1, "Start Procedure")
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
 
-        # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\r")
@@ -288,7 +315,6 @@ class UFECNT7521Factory(ScriptBase):
         if PROVISION_EN is True:    
             msg(50, "Sendtools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=60)
-            self.data_provision_64k(self.devnetmeta)
         
         if DOHELPER_EN is True:
             msg(60, "Do helper to get the output file to devreg server ...")
@@ -305,11 +331,17 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
         self.stop_uboot()
         self.erase_setting(only_cfg=True)
+
+        time.sleep(40)
         self.login(retry=5)
 
         if DATAVERIFY_EN is True:
             self.check_onu()
             msg(90, "Succeeding in checking the MAC information ...")
+
+
+        msg(95, "Set DUT to GPON mode ...")
+        self.set_board_gpon_mode()
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
