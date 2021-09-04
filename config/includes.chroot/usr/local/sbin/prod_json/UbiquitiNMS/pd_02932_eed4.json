@@ -1,0 +1,37 @@
+{
+    "UbiquitiNMS": {
+      "UISP-Spine-100G": {
+        "INDEX": 0,
+        "NAME": "UISP-Spine-100G",
+        "BOARDID": "eed4",
+        "BOMREV": "113-02932",
+        "DESC": "UISP Managed 100Gbps Data Center Spine Switch",
+        "FILE": "uisp-alpine_factory.py",
+        "T1FILE": "",
+        "QRCHECK": "True",
+        "FCD_ID": "000f",
+        "SW_ID": "1a01",
+        "DOWNLOAD_FILE": [
+          {
+            "SRC_PATH": "images/tools/eed5",
+            "DST_PATH": "tools/eed5",
+            "FILES": [
+              "helper_AL324_release"
+            ]
+          },
+          {
+            "SRC_PATH": "images/tools/common",
+            "DST_PATH": "tools/common",
+            "FILES": [
+              "sshd_config",
+              "tmux.conf",
+              "x86-64k-ee",
+              "aarch64-rpi4-64k-ee"
+            ]
+          }
+        ],
+        "CREATE_LINK": [
+        ]
+      }
+    }
+  }
