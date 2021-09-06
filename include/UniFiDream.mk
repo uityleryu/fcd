@@ -59,6 +59,10 @@ IMAGE-UDMPRO-SE+= \
 IMAGE-UDW= \
     images/ea2a* \
     udm-fw/udw/*
+
+IMAGE-UDW-PRO-PU+= \
+    images/ea2e* \
+    udm-fw/udw-pro-pu/*
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -83,6 +87,7 @@ TOOLS-UDM+= udm/*
 
 TOOLS-UDMSE=$(TOOLS-UDM)
 TOOLS-UDMPRO=$(TOOLS-UDM)
+
 TOOLS-UXGPRO=$(TOOLS-UDM)
 TOOLS-UDR=$(TOOLS-UDM)
 
@@ -105,6 +110,10 @@ TOOLS-UDW+=$(TOOLS-CONFIG)
 TOOLS-UDW+= \
     udm/helper_AL324*
 
+TOOLS-UDW-PRO-PU=$(TOOLS-UDM)
+TOOLS-UDW-PRO-PU+= \
+    pdu_pro/helper_MT7628_release
+
 # Project target
 $(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
@@ -116,6 +125,7 @@ $(eval $(call ProductImage,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
@@ -128,10 +138,12 @@ $(eval $(call ProductCompress,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00917_ea2c))
+$(eval $(call ProductCompress2,01029_ea2e))
 $(eval $(call ProductCompress2,00623_ea11))
 $(eval $(call ProductCompress2,00740_ea19))
 $(eval $(call ProductCompress2,02719_ea17))

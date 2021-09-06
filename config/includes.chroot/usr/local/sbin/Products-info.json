@@ -125,6 +125,18 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0005",
       "SW_ID"       : "0701"
+    },
+    "UDW-PRO-PU": {
+      "INDEX": 0,
+      "NAME": "UDW-PRO-PU",
+      "BOARDID": "ea2e",
+      "BOMREV": "113-01029",
+      "DESC": "UniFi Dream Wall Pro Power unit",
+      "FILE": "udw_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
     }
   },
 

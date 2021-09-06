@@ -1,0 +1,49 @@
+{
+  "UniFiDream": {
+    "UDW-PRO-PU": {
+      "INDEX": 0,
+      "NAME": "UDW-PRO-PU",
+      "BOARDID": "ea2e",
+      "BOMREV": "113-01029",
+      "DESC": "UniFi Dream Wall Pro Power unit",
+      "FILE": "udw_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udw-pro-pu",
+          "DST_PATH": "udw-pro-pu",
+          "FILES": [
+            "lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/udw_pro_pu",
+          "DST_PATH": "tools/",
+          "FILES": [
+            "helper_MT7628_release",
+            "iperf3"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea2c-fw.bin",
+          "../udw-pro-pu/lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin"
+        ]
+      ]
+    }
+  }
+}
