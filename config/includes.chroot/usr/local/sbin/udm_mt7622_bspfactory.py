@@ -79,6 +79,7 @@ class UDMMT7622BspFactory(ScriptBase):
 
     def init_bsp_image(self):
         self.pexp.expect_lnxcmd(180, "BusyBox", "dmesg -n1", "")
+        msg(8, "Boot into BSP FW ...")
         self.pexp.expect_lnxcmd(10, "", "", self.linux_prompt)
         self.set_lnx_net("br-lan")
         self.is_network_alive_in_linux()
@@ -125,7 +126,9 @@ class UDMMT7622BspFactory(ScriptBase):
     def enter_diag_mode(self):
         # Disable some services (protect/network controller app) to speed up the time of booting up
         self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl disable unifi-core unifi-protect unifi postgresql postgresql@9.6-main postgresql@9.6-protect postgresql-cluster@9.6-main postgresql-cluster@9.6-protect-cleanup postgresql-cluster@9.6-protect ulp-go bt ble-http-transport --now")
+        self.pexp.expect_lnxcmd(180, self.linux_prompt, "systemctl mask unifi-core unifi-protect unifi postgresql postgresql@9.6-main postgresql@9.6-protect postgresql-cluster@9.6-main  postgresql-cluster@9.6-protect ulp-go bt ble-http-transport")
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -r ubnt-report")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "sync; sync; sync;")
 
     def run(self):
         """Main procedure of factory
