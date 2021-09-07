@@ -16,13 +16,15 @@
           "SRC_PATH": "images/fcd-image/up-fw",
           "DST_PATH": "up-fw",
           "FILES": [
-            "UP-Radar-spf6.1.1_nor-v1.20210104.bin"
+            "UP-Radar-v0.5.1-pre_20210907.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/ufp_radar/",
+          "DST_PATH": "tools/ufp_radar/",
+          "FILES": [
+            "helper_IPQ40xx"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -38,7 +40,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dcb0-bootloader.bin",
-          "../up-fw/UP-Radar-spf6.1.1_nor-v1.20210104.bin"
+          "../up-fw/UP-Radar-v0.5.1-pre_20210907.bin"
         ]
       ]
     }
