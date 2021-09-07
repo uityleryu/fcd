@@ -138,7 +138,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m " \
+              "--after=hard_reset write_flash --flash_mode dio --flash_freq 80m " \
               "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
                                                      "0x0"     , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
