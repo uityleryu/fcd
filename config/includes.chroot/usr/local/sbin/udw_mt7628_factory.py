@@ -23,7 +23,7 @@ class UDWMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = "uboot>"
-        self.helper_path = "pdu_pro"
+        self.helper_path = "udw_pro_pu"
 
         # number of mac
         self.macnum =  {'ea2e': "1"}
@@ -49,8 +49,8 @@ class UDWMT7628Factory(ScriptBase):
         self.REGISTER_ENABLE        = True 
         self.FWUPDATE_ENABLE        = False
         self.DATAVERIFY_ENABLE      = True 
-        self.LCM_FW_CHECK_ENABLE    = True 
-        self.MCU_FW_CHECK_ENABLE    = True 
+        self.LCM_FW_CHECK_ENABLE    = False 
+        self.MCU_FW_CHECK_ENABLE    = False
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
