@@ -29,30 +29,34 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # script specific vars
         self.esp32_prompt = "esp32>"
         self.product_class = "0015"
-        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "flash_encryption_key.bin")
-        self.secure_boot_key_bin   = os.path.join(self.tftpdir, "images", "secure-bootloader-key-256.bin")
-        self.regsubparams = ""
 
         # Index 0: flag to control key is existed or flash is encrypted
         #       1: key name
         #       2: burn_key option
         #       3: key binary
+        self.secure_boot_key_bin = os.path.join(self.tftpdir, "images", "secure-bootloader-key-256.bin")
+        self.flash_encrypt_key_bin = os.path.join(self.tftpdir, "images", "flash_encryption_key.bin")
+        self.regsubparams = ""
         self.dev_flash_cfg = [[True, "Secure boot key"              , " secure_boot"     , self.secure_boot_key_bin  ],
                               [True, "Flash encryption key"         , None              , None                      ],
                               [False, "Flash encryption mode counter", None              , None                      ]]
+
         # number of Ethernet
         self.ethnum = {
             'ec4c': "0",
+            "ec4a": "0",
         }
 
         # number of WiFi
         self.wifinum = {
             'ec4c': "1",
+            "ec4a": "1",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec4c': "1",
+            'ec4a': "1",
         }
 
         self.devnetmeta = {                                                                                                  
@@ -112,7 +116,11 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_bootloader = os.path.join(self.tftpdir, "images", "bootloader.bin")
         fw_ptn_table  = os.path.join(self.tftpdir, "images", "partition-table.bin")
         fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin")
-        fw_app        = os.path.join(self.tftpdir, "images", "uled-inst_mfg.bin")
+        if self.product_name == 'ULED-INSTANT':
+            fw_app        = os.path.join(self.tftpdir, "images", "uled-inst_mfg.bin")
+        elif self.product_name == 'ULED-BULB':
+            fw_app        = os.path.join(self.tftpdir, "images", "wifibulb_mfg.bin")
+
         fw_nvs_key    = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin")
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
@@ -128,7 +136,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
               "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 16MB " \
               "{} {} {} {} {} {} {} {}".format(self.row_id,
-                                                     "0x00000", fw_nvs_key,
+                                                     "0x00000" , fw_nvs_key,
                                                      "0xb000"  , fw_ptn_table ,
                                                      "0xd000"  , fw_ota_data  ,
                                                      "0x90000" , fw_app)

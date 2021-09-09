@@ -1,0 +1,35 @@
+{
+  "Connect": {
+    "ULED-BULB": {
+      "INDEX": 0,
+      "NAME": "ULED-BULB",
+      "BOARDID": "ec4a",
+      "BOMREV": "113-03600",
+      "DESC": "",
+      "FILE": "uled_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/temp",
+          "DST_PATH": "images",
+          "FILES": [
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
