@@ -62,6 +62,64 @@ packiso-$1:
 endef
 
 
+define ProductImage2
+
+$1-blackpanther: new-rootfs gitrepo image-blackpanther-install-$1 packiso-blackpanther-$1
+$1-blackpanther-local: rootfs image-blackpanther-install-$1 packiso-blackpanther-$1
+$1-blackpanther-update: image-blackpanther-install-$1 packiso-blackpanther-$1
+
+image-blackpanther-install-$1:
+	@echo " >> copy prep scripts to new squashfs "
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
+	cp -a $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop.template $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
+	sed -i s/PRODUCTSRL/$(BACKT1_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop
+	sed -i s/PRODUCTSRL/$(DRVREG_PRDSRL)/g $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop
+	# remove the content under sbin for preventing some errors.
+	rm -rf $(NEWSQUASHFS)/usr/local/sbin/*
+	rm -rf ${NEWSQUASHFS}/srv/tftp
+	rm -rf $(NEWSQUASHFS)/etc/skel/Desktop/*
+	rm -rf $(NEWSQUASHFS)/usr/local/sbin/PAlib
+	rm -rf $(OUTDIR)/tmp_wget
+	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/PAlib
+	mkdir -p $(OUTDIR)/tmp_wget
+	# copy the desktop icons to new squash folder
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/icons $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/data $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/gui $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/gui_funs $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/uifactorygui.py $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/MountUSB.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
+	cp -rf $(UBNTLIB_DIR)/PAlib/* $(NEWSQUASHFS)/usr/local/sbin/PAlib/
+	python3 build_tools/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -nc=$(NICK_EN) -os=ISO
+
+	@echo ">> change the FCD version to the desktop"
+	cp -f xfce-teal.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg
+	convert -gravity southeast -fill white -font DejaVu-Sans -pointsize 60 -draw "text 40,40 '$(shell cat $(NEWSQUASHFS)/etc/skel/Desktop/version.txt)'" $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.orig.jpg $(NEWSQUASHFS)/usr/share/backgrounds/xfce/xfce-teal.jpg
+
+packiso-blackpanther-$1:
+	@echo " >> Regenerating NewSquashfs file "
+	if [ -f "$(NEWLIVEDCD)/live/filesystem.squashfs" ]; then \
+		rm $(NEWLIVEDCD)/live/filesystem.squashfs; \
+	fi
+	mksquashfs $(NEWSQUASHFS) $(NEWLIVEDCD)/live/filesystem.squashfs
+
+	@echo " >> Update MD5 sums "
+	@if [ -f "$(NEWLIVEDCD)/md5sum.txt" ]; then \
+		rm $(NEWLIVEDCD)/md5sum.txt; \
+	fi
+	bash -c "cd $(NEWLIVEDCD)/ && find . -type f -exec md5sum {} + > $(NEWLIVEDCD)/md5sum.txt"
+
+	echo " >> Generating NewLivedCD ISO "
+	cd $(NEWLIVEDCD); \
+	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(shell cat $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso .
+	chmod 777 $(OUTDIR)/$(shell cat $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso
+
+endef
+
+
 define ProductCompress
 
 $1-ostrich: gitrepo image-ostrich-install-$1

@@ -331,6 +331,8 @@ def gen_prod_json():
     '''
     # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/version.txt
     # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/version.txt
+    print("verfile: " + verfile)
+    print("dst_verfile: " + dst_verfile)
     shutil.copyfile(verfile, dst_verfile)
 
 
