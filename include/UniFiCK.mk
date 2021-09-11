@@ -31,6 +31,9 @@ TOOLS-UCKP+= \
 
 $(eval $(call ProductImage,UCKP,FCD_$(PRD)_UCKP_$(VER)_$(FWVER)))
 
+
+$(eval $(call ProductImage2,02570_e970))
+
 # Project target for RPi4
 
 $(eval $(call ProductCompress2,02570_e970))

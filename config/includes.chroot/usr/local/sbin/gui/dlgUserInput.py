@@ -68,7 +68,7 @@ class dlgUserInput(Gtk.Dialog):
 
         for key, val in sorted(self.prods[CONST.active_product_series].items()):
             if val['FILE'] != "":
-                self.lsrallpdlist.append([val['INDEX'], key])
+                self.lsrallpdlist.append([int(val['INDEX']), key])
 
         self.crtrallpdlist = Gtk.CellRendererText()
         self.cmbballpd = Gtk.ComboBox.new_with_model(self.lsrallpdlist)

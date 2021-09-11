@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.42"
+    __version__ = "1.0.43"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -54,8 +54,6 @@ class ScriptBase(object):
         print("PAlib version: " + PAlib.__version__)
         self._encrpyt_passphrase_for_log()
         log_debug(str(self.input_args))
-
-
 
     @property
     def pexp(self):
@@ -397,9 +395,6 @@ class ScriptBase(object):
         self.fsiw = json.load(fh)
         fh.close()
 
-        # FCD_ID (this name is called by Mike) like product line
-        self.fcd_id = self.fsiw[self.product_line][self.product_name]['FCD_ID']
-
         # SW_ID (this name is called by Mike) like product model
         self.sw_id = self.fsiw[self.product_line][self.product_name]['SW_ID']
 
@@ -442,7 +437,7 @@ class ScriptBase(object):
         else:
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
-        if self.fcd_id == "" or self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
+        if self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
             clientbin = "/usr/local/sbin/client_x86_release"
             regparam = [
                 "-h prod.udrs.io",
@@ -461,7 +456,7 @@ class ScriptBase(object):
                 "-y " + self.key_dir + "key.pem",
                 "-z " + self.key_dir + "crt.pem"
             ]
-            print("WARNING: should plan to add FCD_ID, SW_ID ... won't block this time")
+            print("WARNING: should plan to add SW_ID ... won't block this time")
         else:
             cmd = "uname -a"
             [sto, rtc] = self.cnapi.xcmd(cmd)
@@ -473,7 +468,7 @@ class ScriptBase(object):
                 if match:
                     clientbin = "/usr/local/sbin/client_rpi4_release"
                 else:
-                    clientbin = "/usr/local/sbin/client_x86_release_20190507"
+                    clientbin = "/usr/local/sbin/client_x86_release"
 
             regparam = [
                 "-h prod.udrs.io",
@@ -481,7 +476,6 @@ class ScriptBase(object):
                 regsubparams,
                 reg_qr_field,
                 "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-                "-i field=fcd_id,format=hex,value=" + self.fcd_id,
                 "-i field=fcd_version,format=hex,value=" + self.sem_ver,
                 "-i field=sw_id,format=hex,value=" + self.sw_id,
                 "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -502,13 +496,13 @@ class ScriptBase(object):
         cmd = "sudo {0} {1}".format(clientbin, regparam)
         print("cmd: " + cmd)
         clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
+        clit.expect_only(30, "Security Service Device Registration Client")
         clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         self.pass_devreg_client = True
 
-        log_debug("Excuting client_x86 registration successfully")
+        log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
 

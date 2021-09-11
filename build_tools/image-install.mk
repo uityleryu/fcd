@@ -88,6 +88,7 @@ image-blackpanther-install-$1:
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/gui $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/gui_funs $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/usr/local/sbin/uifactorygui.py $(NEWSQUASHFS)/usr/local/sbin
+	cp -rf $(FCDAPP_DIR)/usr/local/sbin/prod-network.sh $(NEWSQUASHFS)/usr/local/sbin
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/Factory.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/BackT1.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
 	cp -rf $(FCDAPP_DIR)/etc/skel/Desktop/FWLoader.desktop $(NEWSQUASHFS)/etc/skel/Desktop/
