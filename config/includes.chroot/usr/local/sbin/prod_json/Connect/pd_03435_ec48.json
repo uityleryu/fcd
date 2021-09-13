@@ -39,7 +39,7 @@
         ],
         [
           "tftp/images/ec48-mfg.bin",
-          "../lvdu-fw/lvdu-1/LVDU.esp32mfg.v0.0.4.128.gf034.210906.1634.bin"
+          "../lvdu-fw/lvdu-1/LVDU.esp32mfg*"
         ],
         [
           "tftp/images/ec48-ota.bin",
