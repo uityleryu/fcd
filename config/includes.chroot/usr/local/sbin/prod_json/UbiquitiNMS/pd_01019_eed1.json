@@ -9,6 +9,7 @@
       "FILE": "unms_rtl838x_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "CLIENT_FILE": "client_rpi4_release_20210911",
       "FCD_ID": "000f",
       "SW_ID": "1a01",
       "DOWNLOAD_FILE": [
@@ -16,7 +17,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "DIAG_UISP_S_Pro_1.3.7_Dev02.vmlinux.bix",
+            "DIAG_UISP_S_Pro_1.3.7_Dev06.vmlinux.bix",
             "u-boot-uisp-s-pro-ge93998a.bin"
           ]
         },
@@ -44,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/eed1-fw.bin",
-          "../unms-fw/DIAG_UISP_S_Pro_1.3.7_Dev02.vmlinux.bix"
+          "../unms-fw/DIAG_UISP_S_Pro_1.3.7_Dev06.vmlinux.bix"
         ],
         [
           "tftp/images/eed1-uboot.img",
