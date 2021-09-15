@@ -1058,6 +1058,18 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
+    "U6-LR": {
+      "INDEX"       : 0,
+      "NAME"        : "U6-LR",
+      "BOARDID"     : "a614",
+      "BOMREV"      : "113-00742",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
     "U6-LR-00744": {
       "INDEX"       : 1,
       "NAME"        : "U6-LR",

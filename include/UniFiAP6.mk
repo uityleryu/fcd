@@ -50,6 +50,9 @@ IMAGE-U6-QCA-Series= \
 IMAGE-U6-LR= \
 	u6-fw/mt7622/* \
 	images/a620*
+IMAGE-U6-LR-MT7621= \
+	u6-fw/mt7621/* \
+	images/a614*
 IMAGE-U6-Lite= \
 	u6-fw/mt7621/* \
 	images/a612*
@@ -87,6 +90,7 @@ TOOLS-U6-Infinity+=$(TOOLS-CONFIG)
 TOOLS-U6-Enterprise-IW+=$(TOOLS-CONFIG)
 TOOLS-U6-QCA-Series+=$(TOOLS-CONFIG)
 TOOLS-U6-LR+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7622)
+TOOLS-U6-LR-MT7621+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7621)
 TOOLS-U6-Lite+=$(TOOLS-CONFIG) $(TOOLS-CONFIG-U6-MT7621)
 
 # Project target
@@ -100,6 +104,7 @@ $(eval $(call ProductImage,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-QCA-Series,FCD_$(PRD)_QCA-Series_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,U6-LR-MT7621,FCD_$(PRD)_U6-LR-MT7621_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -113,6 +118,7 @@ $(eval $(call ProductCompress,U6-Infinity,FCD_$(PRD)_U6-Infinity_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,U6-Enterprise-IW,FCD_$(PRD)_U6-Enterprise-IW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-QCA-Series,FCD_$(PRD)_U6-QCA-Series_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-LR,FCD_$(PRD)_U6-LR_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,U6-LR-MT7621,FCD_$(PRD)_U6-LR-MT7621_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 
 
@@ -120,6 +126,7 @@ $(eval $(call ProductCompress,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 
 $(eval $(call ProductCompress2,00773_a612))
 $(eval $(call ProductCompress2,01076_a612))
+$(eval $(call ProductCompress2,00742_a614))
 $(eval $(call ProductCompress2,00744_a620))
 $(eval $(call ProductCompress2,01078_a620))
 $(eval $(call ProductCompress2,00963_a650))
