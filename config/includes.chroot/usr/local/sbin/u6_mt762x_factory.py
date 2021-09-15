@@ -12,8 +12,9 @@ from PAlib.Framework.fcd.common import Common
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    a612:    U6-Lite
-    a620:    U6-LRv2
+    a612:    U6-Lite Mt7621
+    a614:    U6-LR Mt7621
+    a620:    U6-LRv2 MT7622
 '''
 
 
@@ -37,6 +38,7 @@ class U6MT762xFactory(ScriptBase):
         # Devreg location
         self.devregpart_select = {
             "a612": "/dev/mtdblock3",
+            "a614": "/dev/mtdblock3",
             "a620": "/dev/mtdblock5"
         }
         self.devregpart = self.devregpart_select[self.board_id]
@@ -44,6 +46,7 @@ class U6MT762xFactory(ScriptBase):
         # helper by Project(platoform)
         self.helperexe_select = {
             "a612": "helper_UAP6_MT7621_release",
+            "a614": "helper_UAP6_MT7621_release",
             "a620": "helper_UAP6_MT7622_release"
         }
         self.helperexe = self.helperexe_select[self.board_id]
@@ -51,6 +54,7 @@ class U6MT762xFactory(ScriptBase):
         # bootloader prompt
         self.bootloader_prompt_select = {
             "a612": "MT7621 #",     # uboot of BSP is "=>"
+            "a614": "MT7621 #",     # uboot of BSP is "=>"
             "a620": "MT7622>"
         }
         self.bootloader_prompt = self.bootloader_prompt_select[self.board_id]
@@ -58,41 +62,48 @@ class U6MT762xFactory(ScriptBase):
         # number of mac
         self.macnum = {
             'a612': "1",
+            'a614': "1",
             'a620': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'a612': "2",
+            'a614': "2",
             'a620': "2"
         }
 
         # number of Bluetooth
         self.btnum = {
             'a612': "1",
+            'a614': "1",
             'a620': "1",
         }
 
         # vlan port mapping
         self.vlanport_idx = {
             'a612': "'6 0'",
+            'a614': "'6 0'",
             'a620': "'6 0'",
         }
 
         # flash size map
         self.flash_size = {
             'a612': "33554432",
+            'a614': "33554432",
             'a620': "67108864",
         }
 
         self.recovery_addr = {
             "a612": "0x84000000",
+            "a614": "0x84000000",
             "a620": "0x5007ff28",
         }
 
         # firmware image
         self.fwimg = {
             'a612': self.board_id + ".bin",
+            'a614': self.board_id + ".bin",
             'a620': self.board_id + ".bin",
         }
 
@@ -116,7 +127,7 @@ class U6MT762xFactory(ScriptBase):
     def boot_recovery_image(self, Img):
         cmd = "tftpboot {} images/{}".format(self.recovery_addr[self.board_id], Img)
 
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             pass
         elif self.board_id == "a620":
             self.pexp.expect_action(15, self.bootloader_prompt, "nor init")
@@ -129,7 +140,7 @@ class U6MT762xFactory(ScriptBase):
     def init_recovery_image(self):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
 
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             cmd = "swconfig dev switch0 set enable_vlan 1"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
             cmd = "swconfig dev switch0 vlan 1 set vid 1"
@@ -152,7 +163,7 @@ class U6MT762xFactory(ScriptBase):
 
     def update_uboot(self):
 
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             log_debug("uboot_img: " + self.uboot_img)
             cmd = "tftpboot {} {}".format(self.recovery_addr[self.board_id], self.uboot_img)
             exp = "Bytes transferred = {}".format(self.uboot_size)
@@ -182,7 +193,7 @@ class U6MT762xFactory(ScriptBase):
 
     def enter_uboot(self):
 
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press", "\x1b\x1b")
             self.bootloader_prompt = "MT7621 #"  # here will need this because prompt could be changed with "=>" befoe on 1st uboot
             retry = 2
@@ -245,7 +256,7 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_only(240, "done")
 
     def set_stp_env(self):
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true;saveenv", "OK")
         elif self.board_id == "a620":
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
@@ -262,11 +273,11 @@ class U6MT762xFactory(ScriptBase):
         if bom == "00773" and rev_of_bomrev < 15:
             pass
         else:   #for new bom U6-lIte and U6-LR
-            self.pexp.expect_only(30, "\[BT Power On Result\] Success")
+            self.pexp.expect_only(30, "\[BT Power On Result\] Success") 
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         elif self.board_id == "a620":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
@@ -283,6 +294,22 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+
+        # BT FW will be checked by kernel, below info is for record
+        ## BT "need" to be update will be like this
+        # [   57.178542] [btmtk_info] btmtk_load_flash_init send
+        # [   57.179347] [btmtk_info] btmtk_load_flash_chech_version send
+        # [   57.180105] [btmtk_info] Get event result: NG
+        # [   57.180105] 
+        # [   57.180132] [btmtk_info] btmtk_cif_receive_evt, len = 22 Recv CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 32 34 31 30 32 35 32 39
+        # [   57.180144] [btmtk_info] btmtk_cif_receive_evt, len = 22 Expect CMD:  Length(22):  E4 14 02 3F 10 00 05 00 32 30 32 31 30 32 30 34 32 30 31 32 34 33
+
+        ## BT "no need" to be updated will be like this
+        # [   42.418357] [btmtk_info] btmtk_load_flash_init send
+        # [   42.419253] [btmtk_info] btmtk_load_flash_chech_version send
+        # [   42.420077] [btmtk_err] ***btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update***
+        # [   43.020197] mtk_soc_eth 1b100000.ethernet: path gmac1_sgmii in set_mux_gdm1_to_gmac1_esw updated = 1
+
 
         number_time = 0 # one loop is 5sec for 1 time
         while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 
@@ -316,7 +343,7 @@ class U6MT762xFactory(ScriptBase):
         else:   #for new bom U6-lIte and U6-LR
             self.pexp.expect_only(120, "\[BT Power On Result\] Success")
 
-        if self.board_id == "a612":
+        if self.board_id == "a612" or self.board_id == "a614":
             #to skip login action because fw update BT fw will take time , there is no this action in previous fw. 
             # factory said it take too much time
             # self.login(timeout=240,press_enter=True)

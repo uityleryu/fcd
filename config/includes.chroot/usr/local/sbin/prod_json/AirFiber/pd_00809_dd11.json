@@ -16,17 +16,12 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "AF60.v0.17.0-beta4.cdf54f2e.210325.1659.bin",
-            "AF60_XG_SR5_V027_FULL_NOR_IMAGE.bin",
+            "2081-airmax-0.20.1-44b4f94ac6e1405198d6cefb08cb0c5d.bin",
+            "AF60_CR1_V031_FULL_NOR_IMAGE.bin",
             "af60-xg_ls1046_2g_nand_v9.bin",
             "af60-xg_ls1046_2g_nor_v9.bin",
             "NAND_factory_ubi.img"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -42,11 +37,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/dd11.bin",
-          "../af-fw/AF60.v0.17.0-beta4.cdf54f2e.210325.1659.bin"
+          "../af-fw/2081-airmax-0.20.1-44b4f94ac6e1405198d6cefb08cb0c5d.bin"
         ],
         [
           "tftp/images/dd11-boot.bin",
-          "../af-fw/AF60_XG_SR5_V027_FULL_NOR_IMAGE.bin"
+          "../af-fw/AF60_CR1_V031_FULL_NOR_IMAGE.bin"
         ],
         [
           "tftp/images/dd11-mfg-nand.bin",
