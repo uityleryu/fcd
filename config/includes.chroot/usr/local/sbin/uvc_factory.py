@@ -56,7 +56,10 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-G4PRO":
             self.board_name = "UVC G4 Pro"
-            self.devregpart = "/dev/mtd10"
+            if self.bom_rev.split('-')[1] == "11":
+                self.devregpart = "/dev/mtd8"
+            else:
+                self.devregpart = "/dev/mtd10"
             self.ip = "192.168.1.20"
             self.flash_module = "m25p80_g4pro.ko"
             self.helperexe = "helper_S5L_g4pro"
