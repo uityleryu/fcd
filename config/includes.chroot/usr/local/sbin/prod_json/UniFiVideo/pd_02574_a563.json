@@ -11,36 +11,8 @@
       "QRCHECK": "False",
       "FCD_ID": "0009",
       "SW_ID": "0e03",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/fcd-image/uvc-fw",
-          "DST_PATH": "uvc-fw",
-          "FILES": [
-            "UVC.S5L.v4.6.14.67-fcddbg.f0ffca1.180806.1104.bin"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-64k-ee"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a563-fw.bin",
-          "../uvc-fw/UVC.S5L.v4.6.14.67-fcddbg.f0ffca1.180806.1104.bin"
-        ]
-      ]
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
   }
 }

@@ -3,7 +3,7 @@
 
 IMAGE-UVC-G4PRO= \
     images/a563* \
-    uvc-fw/UVC.S5L.*
+    uvc-fw/g4pro.*
 
 IMAGE-UVC-G3BATTERY= \
     images/a580* \
@@ -81,7 +81,8 @@ TOOLS-UVC+=$(TOOLS-CONFIG)
 TOOLS-UVC-G4PRO+=$(TOOLS-UVC)
 TOOLS-UVC-G4PRO+= \
     uvc/helper_S5L_g4pro \
-    uvc/m25p80_g4pro.ko
+    uvc/m25p80_g4pro.ko \
+    uvc/128k_ff.bin
 
 TOOLS-UVC-G3BATTERY+=$(TOOLS-UVC)
 TOOLS-UVC-G3BATTERY+= \
