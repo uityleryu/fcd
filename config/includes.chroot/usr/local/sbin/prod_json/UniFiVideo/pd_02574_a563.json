@@ -21,7 +21,7 @@
         },
         {
           "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
+          "DST_PATH": "tools",
           "FILES": []
         },
         {
