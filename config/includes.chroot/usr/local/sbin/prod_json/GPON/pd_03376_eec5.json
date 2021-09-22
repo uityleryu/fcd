@@ -10,7 +10,44 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0008",
-      "SW_ID": "0c01"
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uf-fw",
+          "DST_PATH": "uf-fw",
+          "FILES": [
+            "boot-UF-ONU.UF-WIFI6.v4.4.0-beta1.301-5e4.210917.0943.img",
+            "UF-ONU.UF-WIFI6.v4.4.0-beta1.301-5e4.210917.0943.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uf_wifi6",
+          "DST_PATH": "tools/uf_wifi6",
+          "FILES": [
+            "helper_ECNT7528_debug"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/eec5-fw.bin",
+          "../uf-fw/UF-ONU.UF-WIFI6.v4.4.0-alpha2.259-499.210812.1305.img"
+        ],
+        [
+          "tftp/images/eec5-uboot.bin",
+          "../uf-fw/boot-UF-ONU.UF-WIFI6.v4.4.0-alpha2.259-499.210812.1305.img"
+        ]
+      ] 
     }
   }
 }
