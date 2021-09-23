@@ -39,7 +39,7 @@ class UFPUBOOTFactory(ScriptBase):
         }
 
         self.bootloader = {
-            'dcb0': "dcb0-bootloader.bin"
+            'dcb0': "dcb0-preload.bin"
         }
 
         self.ubaddr = {
@@ -156,16 +156,21 @@ class UFPUBOOTFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
-        cmd = "sf probe;sf erase {0} {1};sf write 0x84000000 {0} {1}".format(self.uboot_address, self.uboot_size)
+        cmd = "sf probe"
         log_debug(cmd)
         
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(1)
-        self.pexp.expect_ubcmd(200, self.bootloader_prompt, "re")
+
+        cmd = "sf erase {0} {1};sf write 0x84000000 {0} {1}".format(self.uboot_address, self.uboot_size)
+        log_debug(cmd)
+        
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        time.sleep(1)
+
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, "re")
         #self.stop_uboot()
         
-        
-
     def lnx_netcheck(self, netifen=False):
         postexp = [
             "64 bytes from",

@@ -556,9 +556,9 @@ class AMAR9342Factory(ScriptBase):
         cmd = "sudo {0} {1}".format(clientbin, regparam)
         print("cmd: " + cmd)
         clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(10, "Ubiquiti Device Security Client")
-        clit.expect_only(10, "Hostname")
-        clit.expect_only(10, "field=result,format=u_int,value=1")
+        clit.expect_only(30, "Ubiquiti Device Security Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
         clit.close()
 
         self.pass_devreg_client = True

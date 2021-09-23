@@ -39,7 +39,7 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/dcb0-bootloader.bin",
+          "tftp/images/dcb0-preload.bin",
           "../up-fw/UP-Radar-v0.5.1-pre_20210907.bin"
         ]
       ]
