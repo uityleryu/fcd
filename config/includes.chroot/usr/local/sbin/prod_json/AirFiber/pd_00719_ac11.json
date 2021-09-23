@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "XR.ipq807x.v1.0.0-devel.5a2ca5d8.210318.1228.bin",
+            "XR.ipq807x.v1.0.0-alpha.b2f98dc4.210811.1234.bin",
             "u-boot.mbn",
             "af60-xr-spf10.0-nand-v7.bin"
           ]
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac11.bin",
-          "../af-fw/XR.ipq807x.v1.0.0-devel.5a2ca5d8.210318.1228.bin"
+          "../af-fw/XR.ipq807x.v1.0.0-alpha.b2f98dc4.210811.1234.bin"
         ],
         [
           "tftp/images/ac11-bootloader.bin",
