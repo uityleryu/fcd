@@ -235,7 +235,8 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         if self.INIT_RECOVERY_IMAGE is True:
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
-            self.init_recovery_image()
+            time.sleep(15)  # for stable eth
+            self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.PROVISION_ENABLE is True:
