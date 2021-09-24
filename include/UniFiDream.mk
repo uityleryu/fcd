@@ -112,7 +112,8 @@ TOOLS-UDMPRO-SE+= \
 
 TOOLS-UDW+=$(TOOLS-CONFIG)
 TOOLS-UDW+= \
-    udm/helper_AL324*
+    udm/helper_AL324* \
+    udw/nvr-lcm-tools*
 
 
 TOOLS-UDW-PRO+=$(TOOLS-CONFIG)
