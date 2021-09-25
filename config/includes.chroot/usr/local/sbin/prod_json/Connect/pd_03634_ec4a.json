@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "ULED-BULB",
       "BOARDID": "ec4a",
-      "BOMREV": "113-03600",
+      "BOMREV": "113-03634",
       "DESC": "",
       "FILE": "uled_esp32_factory.py",
       "T1FILE": "",
@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/0.0.71",
+          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/0.0.8",
           "DST_PATH": "images",
           "FILES": [
           ]
