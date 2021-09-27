@@ -8,7 +8,7 @@
       "DESC": "Amplifi 6 Instant",
       "FILE": "afi_mt7621_bspfactory.py",
       "T1FILE": "",
-      "QRCHECK": "True",
+      "QRCHECK": "False",
       "FCD_ID": "0004",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [

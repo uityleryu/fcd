@@ -126,6 +126,7 @@
       "FCD_ID"      : "0005",
       "SW_ID"       : "0701"
     },
+
     "UDW-PRO-PU": {
       "INDEX": 0,
       "NAME": "UDW-PRO-PU",
@@ -137,7 +138,21 @@
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701"
+    },
+
+    "UDW-PRO":{
+      "INDEX"       : 10,
+      "NAME"        : "UDW-PRO",
+      "BOARDID"     : "ea2b",
+      "BOMREV"      : "113-00845",
+      "DESC"        : "UniFi Dream Wall Pro",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
     }
+
   },
 
   "UniFiSwitch":

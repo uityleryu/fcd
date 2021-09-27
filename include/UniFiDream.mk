@@ -60,6 +60,10 @@ IMAGE-UDW= \
     images/ea2a* \
     udm-fw/udw/*
 
+IMAGE-UDW-PRO= \
+    images/ea2b* \
+    udm-fw/udw-pro/*
+
 IMAGE-UDW-PRO-PU+= \
     images/ea2e* \
     udm-fw/udw-pro-pu/*
@@ -108,6 +112,12 @@ TOOLS-UDMPRO-SE+= \
 
 TOOLS-UDW+=$(TOOLS-CONFIG)
 TOOLS-UDW+= \
+    udm/helper_AL324* \
+    udw/nvr-lcm-tools*
+
+
+TOOLS-UDW-PRO+=$(TOOLS-CONFIG)
+TOOLS-UDW-PRO+= \
     udm/helper_AL324*
 
 TOOLS-UDW-PRO-PU=$(TOOLS-UDM)
@@ -125,6 +135,7 @@ $(eval $(call ProductImage,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
@@ -138,6 +149,7 @@ $(eval $(call ProductCompress,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
@@ -153,3 +165,5 @@ $(eval $(call ProductCompress2,00622_ec25))
 $(eval $(call ProductCompress2,00786_eccc))
 $(eval $(call ProductCompress2,00633_ec28))
 $(eval $(call ProductCompress2,01075_ec2d))
+$(eval $(call ProductCompress2,00843_ea2a))
+$(eval $(call ProductCompress2,00845_ea2b))

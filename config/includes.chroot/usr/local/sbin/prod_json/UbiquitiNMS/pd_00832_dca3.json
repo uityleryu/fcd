@@ -16,14 +16,16 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "LL.qca956x.recovery.v0.9.3.e6ac2be.210204.1419.eu.bin",
+            "LL.qca956x.recovery.v0.10.4.fca31ef.210805.1630.eu.bin",
             "uisp-lte-initramfs-64MB.img"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/unms-lte/",
+          "DST_PATH": "tools/unms-lte/",
+          "FILES": [
+            "helper_ARxxxx_debug"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -39,7 +41,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dca3.bin",
-          "../unms-fw/LL.qca956x.recovery.v0.9.3.e6ac2be.210204.1419.eu.bin"
+          "../unms-fw/LL.qca956x.recovery.v0.10.4.fca31ef.210805.1630.eu.bin"
         ],
         [
           "tftp/images/dca3-bootloader.bin",

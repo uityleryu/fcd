@@ -69,6 +69,16 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a656': "#",
         }
+        
+        self.uboot_eth_port = {
+            'a650': "eth0",
+            'a651': "eth0",
+            'a652': "eth1",
+            'a653': "eth0",
+            'a654': "eth0",
+            'a655': "eth0",
+            'a656': "eth1",
+        }
 
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -80,7 +90,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a656" :
+        if self.board_id == "xxx" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
@@ -94,7 +104,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033")
-        self.set_ub_net(self.premac)
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
         self.is_network_alive_in_uboot()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
                                                            'mmc write 0x50000000 0x00000000 22'.format(self.gpt))

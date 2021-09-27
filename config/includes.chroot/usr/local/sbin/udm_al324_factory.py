@@ -30,6 +30,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         tool_name = {
             'ea2c': "udm_pro_se",
             'ea2a': "udw",
+            'ea2b': "udw"
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
@@ -38,37 +39,42 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.activeport = {
             'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
             'ea2a': "al_eth3",
+            'ea2b': "al_eth3",
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea2c': "11",
             'ea2a': "20",
+            'ea2b': "23",
         }
 
         # number of WiFi
         self.wifinum = {
             'ea2c': "0",
             'ea2a': "2",
+            'ea2b': "3",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1",
             'ea2a': "1",
+            'ea2b': "1",
         }
 
-        # FIXME: eth17 in future
         # ethernet interface
         self.netif = {
             'ea2c': "eth9",
             'ea2a': "br0",
+            'ea2b': "eth20",
         }
 
         # LCM update
         self.lcmupdate = {
             'ea2c': True,
-            'ea2a': False,
+            'ea2a': True,
+            'ea2b': False,
         }
 
         self.devnetmeta = {
@@ -229,7 +235,8 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         if self.INIT_RECOVERY_IMAGE is True:
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
-            self.init_recovery_image()
+            time.sleep(15)  # for stable eth
+            self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.PROVISION_ENABLE is True:
@@ -250,6 +257,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            time.sleep(15)  # for stable eth
             self.set_kernel_net()
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
