@@ -41,11 +41,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/eec5-fw.bin",
-          "../uf-fw/UF-ONU.UF-WIFI6.v4.4.0-alpha2.259-499.210812.1305.img"
+          "../uf-fw/UF-ONU.UF-WIFI6.v4.4.0-beta1.301-5e4.210917.0943.img"
         ],
         [
           "tftp/images/eec5-uboot.bin",
-          "../uf-fw/boot-UF-ONU.UF-WIFI6.v4.4.0-alpha2.259-499.210812.1305.img"
+          "../uf-fw/boot-UF-ONU.UF-WIFI6.v4.4.0-beta1.301-5e4.210917.0943.img"
         ]
       ] 
     }
