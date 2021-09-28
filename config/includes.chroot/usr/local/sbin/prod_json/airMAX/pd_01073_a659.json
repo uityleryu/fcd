@@ -14,14 +14,12 @@
       "FCD_ID": "000B",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/tools/am",
-          "DST_PATH": "tools/am",
+          "SRC_PATH": "images/fcd-image/am-fw",
+          "DST_PATH": "am-fw",
           "FILES": [
-            "cfg_part_ac_series.bin",
-            "fl_lock_11ac_re ",
-            "helper_ARxxxx_11ac_20210329",
-            "id_rsa",
-            "id_rsa.pub"
+            "u-boot.mbn",
+            "lbe-ax-v5.img",
+            "rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
           ]
         },
         {
@@ -35,7 +33,20 @@
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK":[
+        [
+          "tftp/images/a659-uboot.bin",
+          "../am-fw/u-boot.mbn"
+        ],
+        [
+          "tftp/images/a659-bsp.bin",
+          "../am-fw/lbe-ax-v5.img"
+        ],
+        [
+          "tftp/images/a659.bin",
+          "../am-fw/rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+        ]
+      ]
     }
   }
 }
