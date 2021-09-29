@@ -400,7 +400,13 @@ def copy_required_files():
         rmsg = "**** Model: {} ****".format(im)
         print(rmsg)
         if "CLIENT_FILE" not in pjson[pl][im].keys():
-            sclient_f = "client_rpi4_release"
+            '''
+                The default client binary to RPi4 or FCD ISO
+            '''
+            if args.ostype == "ISO":
+                sclient_f = "client_x86_release"
+            else:
+                sclient_f = "client_rpi4_release"
         else:
             sclient_f = pjson[pl][im]['CLIENT_FILE']
 
@@ -432,9 +438,14 @@ def copy_required_files():
         print("cmd: " + cmd)
         cn.xcmd(cmd)
 
-    cmd = "cd {}; ln -s {} client_rpi4".format(ostype_sbin_dir, sclient_f)
-    print("cmd: " + cmd)
-    cn.xcmd(cmd)
+    if sclient_f != "client_x86_release" or sclient_f != "client_rpi4_release":
+        if args.ostype == "ISO":
+            cmd = "cd {}; ln -s {} client_x86_release".format(ostype_sbin_dir, sclient_f)
+        else:
+            cmd = "cd {}; ln -s {} client_rpi4_release".format(ostype_sbin_dir, sclient_f)
+
+        print("cmd: " + cmd)
+        cn.xcmd(cmd)
 
 
 def create_fcd_tgz():
