@@ -57,7 +57,7 @@ class UVCFactoryGeneral(ScriptBase):
         elif self.product_name == "UVC-G4PRO":
             self.board_name = "UVC G4 Pro"
             if self.bom_rev.split('-')[1] == "11":
-                self.devregpart = "/dev/mtd8"
+                self.devregpart = "/dev/mtd10"
             else:
                 self.devregpart = "/dev/mtd10"
             self.ip = "192.168.1.20"
