@@ -113,7 +113,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'bootm')
+        # a656 = U6-Enterprise-IW
+        if self.board_id == "a656":
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'bootm $fileaddr#config@a656')
+        else:
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'bootm')
+        
         self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
         self.disable_udhcpc()
