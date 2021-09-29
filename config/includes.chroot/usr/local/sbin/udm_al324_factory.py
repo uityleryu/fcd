@@ -105,7 +105,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
 
     def set_fake_EEPROM(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
+        self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
