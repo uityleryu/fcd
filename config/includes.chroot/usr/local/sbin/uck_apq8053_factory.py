@@ -131,10 +131,11 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         '''
         postexp = [
             "Firmware version:",
+            "Launching interactive shell",
             "Welcome to CloudKey FCD"
         ]
         index = self.pexp.expect_get_index(200, postexp)
-        if index == 0 or index == 1:
+        if index == 0 or index == 1 or index == 2:
             self.pexp.expect_action(10, "", "\n")
             self.pexp.expect_only(10, self.linux_prompt)
         else:
@@ -149,7 +150,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         if CHANGE_MFG_EN is True:
             '''
                It can not use this self.tftp_get() at here.
-               Because it needs to add a "busybox" at the beginning of the command
+               Because it needs to add a "busybox" at the begining of the command
             '''
             cmd = "busybox tftp -b 4096 -g -r images/{0}-mfg.bin -l /tmp/{0}-mfg.bin {1}".format(self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
@@ -168,7 +169,19 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "reboot -f"
             self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
 
-            self.pexp.expect_only(200, "Welcome to CloudKey FCD")
+            postexp = [
+                "Firmware version:",
+                "Launching interactive shell",
+                "Welcome to CloudKey FCD"
+            ]
+            index = self.pexp.expect_get_index(200, postexp)
+            if index == 0 or index == 1 or index == 2:
+                self.pexp.expect_action(10, "", "\n")
+                self.pexp.expect_only(10, self.linux_prompt)
+            else:
+                self.pexp.expect_action(10, "", "\n")
+                self.login()
+
             self.set_lnx_net("eth0")
             self.is_network_alive_in_linux()
 

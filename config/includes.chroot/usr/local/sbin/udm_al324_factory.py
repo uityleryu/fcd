@@ -35,6 +35,10 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
+        self.wsysid = {
+            'ea2a': "77072aea",
+        }
+
         # active port
         self.activeport = {
             'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
@@ -99,6 +103,25 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
+
+    def set_fake_EEPROM(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
+        # reverse 77072aea to 2aea7707
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x220000 0x9000")
+        self.pexp.expect_only(60, "Erased: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x220000 0x20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x228000 0x20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def set_kernel_net(self):
         # FIXME: comment for tmp
@@ -225,6 +248,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_UBOOT is True:
+            self.set_fake_EEPROM()
             self.update_uboot()
             self.pexp.expect_action(10, self.bootloader_prompt, "reset")
             msg(10, "Finish boot updating")
