@@ -16,11 +16,11 @@
           "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
-            "u6-pro_1gb-v16-t1.img",
-            "BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin",
+            "u6-pro_1gb-v17.img",
+            "BZ.ipq50xx_5.77.0+13423.210923.2206-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "u6-enterprise-5.68.0-ramload.bin",
-            "u6-pro_1gb-v16_nor.bin"
+            "ramload-5.77.0.bin",
+            "u6-pro_1gb-v17_nor.bin"
           ]
         },
         {
@@ -37,11 +37,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/a651-emmc.img",
-          "../u6-fw/ipq5018/u6-pro_1gb-v16-t1.img"
+          "../u6-fw/ipq5018/u6-pro_1gb-v17.img"
         ],
         [
           "tftp/images/a651-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.68.0+13141.210611.1630-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_5.77.0+13423.210923.2206-uboot.bin"
         ],
         [
           "tftp/images/a651-gpt.bin",
@@ -49,11 +49,11 @@
         ],
         [
           "tftp/images/a651-initramfs.bin",
-          "../u6-fw/ipq5018/u6-enterprise-5.68.0-ramload.bin"
+          "../u6-fw/ipq5018/ramload-5.77.0.bin"
         ],
         [
           "tftp/images/a651-nor.bin",
-          "../u6-fw/ipq5018/u6-pro_1gb-v16_nor.bin"
+          "../u6-fw/ipq5018/u6-pro_1gb-v17_nor.bin"
         ]
       ]
     }
