@@ -9,6 +9,8 @@
       "FILE": "uck_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
+      "CLIENT_FILE": "client_x86_release_20210912",
+      "FCD_ID": "0008",
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
@@ -16,9 +18,9 @@
           "DST_PATH": "uck-fw",
           "FILES": [
             "RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img",
-            "CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg",
-            "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs",
-            "UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
+            "CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img",
+            "UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.rootfs",
+            "UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.boot"
           ]
         },
         {
@@ -46,7 +48,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e970-mfg.bin",
-          "../uck-fw/CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg"
+          "../uck-fw/CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img"
         ],
         [
           "tftp/images/e970-recovery.bin",
@@ -54,11 +56,11 @@
         ],
         [
           "tftp/images/e970-fw.bin",
-          "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs"
+          "../uck-fw/UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.rootfs"
         ],
         [
           "tftp/images/e970-uboot.img",
-          "../uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot"
+          "../uck-fw/UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.boot"
         ]
       ]
     }
