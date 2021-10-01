@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.44"
+    __version__ = "1.0.45"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -329,8 +329,12 @@ class ScriptBase(object):
                 '''
                     To give twice in order to make sure of that the username has been keyed in
                 '''
-                self.pexp.expect_action(10, "", username)
-                self.pexp.expect_action(30, "Password:", password)
+                if username != "":
+                    self.pexp.expect_action(10, "", username)
+
+                if password != "":
+                    self.pexp.expect_action(30, "Password:", password)
+
                 break
             else:
                 self.pexp.expect_action(timeout, "", "\003")
@@ -790,13 +794,14 @@ class ScriptBase(object):
             otmsg = "Flash editor filling out {0} files successfully".format(self.eegenbin_path)
             log_debug(otmsg)
 
-        cmd = "dd if={0} of=/tmp/{1} bs=1k count=64".format(self.devregpart, self.eeorg)
+        # Ex: dd if=/dev/mtdblock2 of=/tmp/e.org.0 bs=1k count=64
+        cmd = "dd if={0} of={1}/{2} bs=1k count=64".format(self.devregpart, self.dut_tmpdir, self.eeorg)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         time.sleep(0.1)
 
-        dstp = "/tmp/{0}".format(self.eeorg)
+        # Ex: /tmp/e.org.0
+        dstp = "{0}/{1}".format(self.dut_tmpdir, self.eeorg)
         self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
-
 
         log_debug("Writing the information from e.gen.{} to e.org.{}".format(self.row_id, self.row_id))
         '''
@@ -847,15 +852,25 @@ class ScriptBase(object):
         eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eeorg)
         self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
 
-        cmd = "dd if=/tmp/{0} of={1} bs=1k count=64".format(self.eeorg, self.devregpart)
+        # Ex: dd if=/tmp/e.org.0 of=/dev/mtdblock2 bs=1k count=64
+        cmd = "dd if={0}/{1} of={2} bs=1k count=64".format(self.dut_tmpdir, self.eeorg, self.devregpart)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
         time.sleep(0.1)
 
-    def prepare_server_need_files(self):
+    def prepare_server_need_files(self, method="tftp"):
         log_debug("Starting to do " + self.helperexe + "...")
+        # Ex: tools/uvp/helper_DVF99_release_ata_max
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
+
+        # Ex: /tmp/helper_DVF99_release_ata_max
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
-        self.tftp_get(remote=srcp, local=helperexe_path, timeout=30)
+
+        if method == "tftp":
+            self.tftp_get(remote=srcp, local=helperexe_path, timeout=60)
+        elif method == "wget":
+            self.dut_wget(srcp, helperexe_path, timeout=100)
+        else:
+            error_critical("Transferring interface not support !!!!")
 
         cmd = "chmod 777 {0}".format(helperexe_path)
         self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
@@ -879,13 +894,16 @@ class ScriptBase(object):
 
         files = [self.eetxt, self.eebin]
         for fh in files:
+            # Ex: /tftpboot/e.t.0
             srcp = os.path.join(self.tftpdir, fh)
-            dstp = "/tmp/{0}".format(fh)
+
+            # Ex: /tmp/e.t.0
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
 
         log_debug("Send helper output files from DUT to host ...")
 
-    def prepare_server_need_files_bspnode(self, nodes = None):
+    def prepare_server_need_files_bspnode(self, nodes=None):
         log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
         # The sequencial has to be cpu id -> flash jedecid -> flash uuid
         if nodes is None:
@@ -926,15 +944,19 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
                                 valid_chk=True)
         
-        # copy "e.org" as "e.b"
-        cmd = "cp -a /tmp/{} /tmp/{}".format(self.eeorg, self.eebin)
+        # copy "e.org" as "e.b", cp -a /tmp/e.org.0 /tmp/e.b.0
+        cmd = "cp -a {0}/{1} {0}/{2}".format(self.dut_tmpdir, self.eeorg, self.eebin)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
         files = [self.eetxt, self.eebin]
         for fh in files:
+            # Ex: /tftpboot/e.t.0
             srcp = os.path.join(self.tftpdir, fh)
-            dstp = "/tmp/{0}".format(fh)
+
+            # Ex: /tmp/e.t.0
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
         log_debug("Send bspnode output files from DUT to host ...")
 
 
@@ -1094,12 +1116,12 @@ class ScriptBase(object):
 
     def scp_get(self, dut_user, dut_pass, dut_ip, src_file, dst_file):
         cmd = [
-            'sshpass -p ' + dut_pass,
+            'sshpass -p {}'.format(dut_pass),
             'scp',
             '-o StrictHostKeyChecking=no',
             '-o UserKnownHostsFile=/dev/null',
             src_file,
-            dut_user + "@" + dut_ip + ":" + dst_file
+            "{}@{}:{}".format(dut_user, dut_ip, dst_file)
         ]
         cmdj = ' '.join(cmd)
         log_debug('Exec "{}"'.format(cmdj))
@@ -1108,6 +1130,18 @@ class ScriptBase(object):
             error_critical('Exec "{}" failed'.format(cmdj))
         else:
             log_debug('scp successfully')
+
+    '''
+        DUT view point, wget files from RPi4 server
+        The default url is "http://192.168.1.19" and default link to "tftpboot"
+        src_path: please give a whole path
+        dst_path: please give the directory where the file will be stored
+    '''
+    def dut_wget(self, src_path, dst_path, timeout=10):
+        url = "http://{}".format(self.tftp_server)
+        cmd = "wget -O {0} {1}/{2}".format(dst_path, url, src_path)
+        log_info("cmd: " + cmd)
+        self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
     def copy_file(self, source, dest):
         if os.path.isfile(dest) and filecmp.cmp(source, dest):

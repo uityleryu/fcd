@@ -116,15 +116,18 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{0} -b 115200".format(self.dev)
         log_debug(pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
         msg(5, "Boot to linux console ...")
-        self.pexp.expect_only(10, "U-Boot")
-        self.pexp.expect_action(60, "login:", self.user)
+        self.pexp.expect_action(60, "stop autoboot", "\033")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv dev_ubntconsole true")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
+        self.login(username="root", password="", retry=15, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
         cmd = "{0} {1}".format(self.netif[self.board_id], self.dutip)
