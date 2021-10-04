@@ -15,7 +15,7 @@ class UAQCA9531Factory(ScriptBase):
         self.fwimg = "images/" + self.board_id + "-fw.bin"
         self.initramfs = "images/" + self.board_id + "-initramfs.bin"
         self.gpt = "images/" + self.board_id + "-gpt.bin"
-        self.devregpart = "/dev/mtdblock9"
+        self.devregpart = "/dev/mtd6"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "IPQ5018#"
         self.linux_prompt = "root@OpenWrt:/#"

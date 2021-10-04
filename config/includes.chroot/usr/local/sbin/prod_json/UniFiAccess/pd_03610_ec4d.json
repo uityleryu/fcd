@@ -3,28 +3,15 @@
     "UA-READERLITE": {
       "INDEX": 1,
       "NAME": "UA-READERLITE",
-      "BOARDID": "ec4D",
+      "BOARDID": "ec4d",
       "BOMREV": "113-03610",
       "DESC": "UniFi Access Reader Lite",
-      "FILE": "",
+      "FILE": "ua_qca9531_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0012",
       "SW_ID": "1d01",
       "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/fcd-image/ua-fw",
-          "DST_PATH": "ua-fw",
-          "FILES": [
-            "GT.mt7621.v4.0.12.26.gb151e3f.210607.1715-uboot.bin",
-            "ua-gate-nor-v2.bin"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
