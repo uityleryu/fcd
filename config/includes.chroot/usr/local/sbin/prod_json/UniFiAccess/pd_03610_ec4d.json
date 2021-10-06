@@ -21,6 +21,14 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw/ua-readerlite/3.8.28.27",
+          "DST_PATH": "images",
+          "FILES": [
+            "ua-readerlite-uboot.bin",
+            "ua-readerlite-fcd.bin"
+          ]
         }
       ]
     }
