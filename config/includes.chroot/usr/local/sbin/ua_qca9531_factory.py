@@ -12,22 +12,19 @@ class UAQCA9531Factory(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.fwimg = "images/" + self.board_id + "-fw.bin"
-        self.initramfs = "images/" + self.board_id + "-initramfs.bin"
-        self.gpt = "images/" + self.board_id + "-gpt.bin"
-        self.devregpart = "/dev/mtdblock9"
+        self.ubimg = "images/" + "ua-readerlite-uboot.bin"
+        self.fwimg = "images/" + "ua-readerlite-fcd.bin"
+        self.devregpart = "/dev/mtd6"
         self.bomrev = "113-" + self.bom_rev
-        self.bootloader_prompt = "IPQ5018#"
+        self.bootloader_prompt = "ath>"
         self.linux_prompt = "root@OpenWrt:/#"
 
         self.ethnum = {
             'ec4d': "1"
-
         }
 
         self.wifinum = {
             'ec4d': "0",
-
         }
 
         self.btnum = {
@@ -52,6 +49,7 @@ class UAQCA9531Factory(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.row_dev_ip = "192.168.1." + str((int(self.row_id)))
         self.BOOT_BSP_IMAGE    = True 
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
@@ -64,51 +62,47 @@ class UAQCA9531Factory(ScriptBase):
             self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "\n\n")
+        self.pexp.expect_ubcmd(300, "Please press Enter to activate this console.", "\n\n")
         time.sleep(3)
         self.pexp.expect_ubcmd(5, self.linux_prompt, "\n", retry=10)
 
-    def _ramboot_uap_fwupdate(self):
-        self.pexp.expect_action(40, "to stop", "\033")
-        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+    def _bootloader_fwupdate(self):
+        self.pexp.expect_ubcmd(20, self.linux_prompt, "reboot",retry=3)
+        self.pexp.expect_ubcmd(20, "Hit any key to stop autoboot:", " ")
+        self.pexp.expect_ubcmd(1, self.bootloader_prompt, " ", retry=5)
+        self.set_ub_net()
         self.is_network_alive_in_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
-                                                           'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read {} 0x00000022 0x00020022;'.format(self.bootm_addr[self.board_id]) + \
-                                                           'bootm {}"'.format(self.bootm_addr[self.board_id]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
-        # a656 = U6-Enterprise-IW
-        if self.board_id == "a656":
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'bootm $fileaddr#config@a656')
-        else:
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'bootm')
-        
-        self.linux_prompt = self.linux_prompt_select[self.board_id]
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
-        self.disable_udhcpc()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
-        self.is_network_alive_in_linux()
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
-                     dst_file=self.dut_tmpdir + "/fwupdate.bin")
-        if self.board_id == 'a650' or self.board_id == 'a651':
-            time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'tftpboot 0x80060000 {}  && erase 0x9f000000 +0x60000 \
+        && cp.b 0x80060000 0x9f000000 0x532b6'.format(self.ubimg))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+        self.bootloader_prompt = "ar7240>"
+        self.pexp.expect_ubcmd(20, "Hit any key to stop autoboot:", " ")
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
-        self.linux_prompt = "#"
+    def _fcd_fwupdate(self):
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "\n", retry=10)
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "go 0x80200020  uappinit", retry=10)
+        self.set_ub_net()
+        self.is_network_alive_in_uboot()
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "setenv do_urescue TRUE;urescue -u -e", retry=10)
+        cmd = "atftp --option \"mode octet\" -p -l /tftpboot/{0} {1}".format(self.fwimg, self.dutip)
+        log_debug("Run cmd on host:" + cmd)
+        self.fcd.common.xcmd(cmd=cmd)
+        time.sleep(5)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "go 0x80200020  uwrite -f", retry=0)
 
     def fwupdate(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        self._ramboot_uap_fwupdate()
-        # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
-        # self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
+        log_debug('Upgrading bootloader')
+        self._bootloader_fwupdate()
+        log_debug('Upgrade bootloader done')
+        log_debug('Upgrading fcd fw')
+        self._fcd_fwupdate()
+        log_debug('Upgrading fcd fw done')
 
     def check_info(self):
+        self.linux_prompt = "#"
+        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
+        self.pexp.expect_ubcmd(10, "login:", "ubnt")
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
@@ -146,16 +140,17 @@ class UAQCA9531Factory(ScriptBase):
         if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        # if self.FWUPDATE_ENABLE is True:
-        #     self.fwupdate()
-        #     msg(70, "Succeeding in downloading the upgrade tar file ...")
-        #
-        # if self.DATAVERIFY_ENABLE is True:
-        #     self.check_info()
-        #     msg(80, "Succeeding in checking the devrenformation ...")
+        if self.FWUPDATE_ENABLE is True:
+            self.fwupdate()
+            msg(70, "Succeeding in downloading the upgrade tar file ...")
+
+        if self.DATAVERIFY_ENABLE is True:
+            self.check_info()
+            msg(80, "Succeeding in checking the devreg information ...")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
