@@ -6,12 +6,19 @@
         "BOARDID": "eed4",
         "BOMREV": "113-02932",
         "DESC": "UISP Managed 100Gbps Data Center Spine Switch",
-        "FILE": "uisp-alpine_factory.py",
+        "FILE": "uisp_alpine-100g_factory.py",
         "T1FILE": "",
         "QRCHECK": "True",
         "FCD_ID": "000f",
         "SW_ID": "1a01",
         "DOWNLOAD_FILE": [
+          {
+            "SRC_PATH": "images/fcd-image/unms-fw",
+            "DST_PATH": "unms-fw",
+            "FILES": [
+              "uisp-leaf-fcd.img"
+            ]
+          },
           {
             "SRC_PATH": "images/tools/eed5",
             "DST_PATH": "tools/eed5",
@@ -31,6 +38,10 @@
           }
         ],
         "CREATE_LINK": [
+          [
+            "tftp/images/eed4-mfg.bin",
+            "../unms-fw/uisp-leaf-fcd.img"
+          ]
         ]
       }
     }
