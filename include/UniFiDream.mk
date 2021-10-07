@@ -51,10 +51,10 @@ IMAGE-UDR= \
     images/eccc* \
     udm-fw/udr/* 
 
-IMAGE-UDMPRO-SE+=$(IMAGE-UDM-BASIC)
-IMAGE-UDMPRO-SE+= \
+IMAGE-UDM-SE+=$(IMAGE-UDM-BASIC)
+IMAGE-UDM-SE+= \
     images/ea2c* \
-    udm-fw/udmpro-se/*
+    udm-fw/udm-se/*
 
 IMAGE-UDW= \
     images/ea2a* \
@@ -104,11 +104,11 @@ TOOLS-UDMB+= udm_b/*
 TOOLS-UDMLITE+=$(TOOLS-CONFIG)
 TOOLS-UDMLITE+= udm/*
 
-TOOLS-UDMPRO-SE+=$(TOOLS-CONFIG)
-TOOLS-UDMPRO-SE+= \
+TOOLS-UDM-SE+=$(TOOLS-CONFIG)
+TOOLS-UDM-SE+= \
     udm/helper_AL324* \
-    udm_pro_se/nvr-lcm-tools* \
-    udm_pro_se/unas.pub
+    udm_se/nvr-lcm-tools* \
+    udm_se/unas.pub
 
 TOOLS-UDW+=$(TOOLS-CONFIG)
 TOOLS-UDW+= \
@@ -133,7 +133,7 @@ $(eval $(call ProductImage,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductImage,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDM-SE,FCD_$(PRD)_UDM-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
@@ -147,7 +147,7 @@ $(eval $(call ProductCompress,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductCompress,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMLITE,FCD_$(PRD)_UDMLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDR,FCD_$(PRD)_UDR_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UDMPRO-SE,FCD_$(PRD)_UDMPRO-SE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDM-SE,FCD_$(PRD)_UDM-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))

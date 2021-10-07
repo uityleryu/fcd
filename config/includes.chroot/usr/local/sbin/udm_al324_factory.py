@@ -28,36 +28,44 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         # Base path
         tool_name = {
-            'ea2c': "udm_pro_se",
-            'ea2a': "udw",
-            'ea2b': "udw"
+            'ea2a': "udw",  # udw
+            'ea2b': "udw",  # udw_pro, but tools same as udw
+            'ea2c': "udm_se",  # udm_se
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
+        self.eeprom_offset = {
+            'ea2a': "0x220000",
+            'ea2b': "0x220000",
+            'ea2c': "0x1f0000",
+        }
+
         self.wsysid = {
             'ea2a': "77072aea",
+            'ea2b': "77072bea",
+            'ea2c': "77072cea",
         }
 
         # active port
         self.activeport = {
-            'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
+            'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
         }
 
         # number of Ethernet
         self.ethnum = {
-            'ea2c': "11",
             'ea2a': "20",
             'ea2b': "23",
+            'ea2c': "11",
         }
 
         # number of WiFi
         self.wifinum = {
-            'ea2c': "0",
             'ea2a': "2",
             'ea2b': "3",
+            'ea2c': "0",
         }
 
         # number of Bluetooth
@@ -69,16 +77,16 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea2c': "eth9",
-            'ea2a': "br0",
-            'ea2b': "eth20",
+            'ea2a': "br0",  # udw
+            'ea2b': "eth20",  # udw_pro
+            'ea2c': "eth9",  # udm_se
         }
 
         # LCM update
         self.lcmupdate = {
-            'ea2c': True,
             'ea2a': True,
             'ea2b': False,
+            'ea2c': True,
         }
 
         self.devnetmeta = {
@@ -115,16 +123,15 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x220000 0x9000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x220000 0x20")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x228000 0x20")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def set_kernel_net(self):
-        # FIXME: comment for tmp
         if self.board_id == "ea2c":
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")

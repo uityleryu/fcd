@@ -101,11 +101,24 @@
       "SW_ID"       : "0701"
     },
 
-    "UDM-PRO-SE":{
+    "UDM-SE-00917":{
       "INDEX"       : 8,
-      "NAME"        : "UDM-PRO-SE",
+      "NAME"        : "UDM-SE-00917",
       "BOARDID"     : "ea2c",
       "BOMREV"      : "113-00917",
+      "DESC"        : "UniFi Dream Machine Pro SE",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-SE-01097":{
+      "INDEX"       : 8,
+      "NAME"        : "UDM-SE-01097",
+      "BOARDID"     : "ea2c",
+      "BOMREV"      : "113-01097",
       "DESC"        : "UniFi Dream Machine Pro SE",
       "FILE"        : "udm_al324_factory.py",
       "T1FILE"      : "",
