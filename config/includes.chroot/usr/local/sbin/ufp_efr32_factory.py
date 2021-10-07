@@ -34,6 +34,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         # script specific vars
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
+
         self.baudrate = 921600
         self._reseted_flag = False
 
@@ -49,6 +50,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': True,
             'a918': True,
             'a919': True,
+            'ee76': True
         }
 
         self.qrcode_dict = {
@@ -58,6 +60,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': False,
             'a918': False,
             'a919': True,
+            'ee76': True
         }
 
         self.sku_dict = {
@@ -67,6 +70,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': False,
             'a918': False,
             'a919': True,
+            'ee76': False
         }
 
         self.homekit_dict = {
@@ -76,6 +80,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': False,
             'a918': False,
             'a919': False,
+            'ee76': False
         }
 
         # number of Ethernet
@@ -86,6 +91,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': "0",
             'a918': "0",
             'a919': "0",
+            'ee76': "0"
         }
 
         # number of WiFi
@@ -96,6 +102,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': "0",
             'a918': "0",
             'a919': "0",
+            'ee76': "0"
         }
 
         # number of Bluetooth
@@ -106,6 +113,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a915': "1",
             'a918': "1",
             'a919': "1",
+            'ee76': "1"
         }
 
     def prepare_server_need_files(self):
@@ -113,6 +121,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.gen_rsa_key()
 
         flasheditor = os.path.join(self.fcd_commondir, self.eepmexe)
+
         sstr = [
             flasheditor,
             "-F",
@@ -151,6 +160,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
             self.uid = res.group(1)
 
+            
+
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
             res = re.search(r"CPUID:(.*)\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
@@ -163,6 +174,16 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             log_debug("Extract UID, CPUID and JEDEC failed")
             log_debug("{}".format(traceback.format_exc()))
             error_critical("{}\n{}".format(sys.exc_info()[0], e))
+
+        def trim_information_for_ee76():
+            """
+            Trim redundant error code output.
+            """
+            if self.board_id == 'ee76':
+                self.uid = self.uid[0:54]
+                self.cpuid = self.cpuid[0:8]
+                self.jedecid = self.jedecid[0:8]
+        trim_information_for_ee76()
 
         log_info('uid = {}'.format(self.uid))
         log_info('cpuid = {}'.format(self.cpuid))
@@ -325,7 +346,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-i field=flash_uid,format=hex,value=" + self.uid,
             "-i field=cpu_rev_id,format=hex,value=" + self.cpuid,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -372,14 +392,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918", "a919"]:
+        if self.board_id in ["a912", "a918", "a919", "ee76"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
         elif self.board_id in ["a911", "a941", "a915", "a920"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
         log_debug("Starting xmodem file transfer ...")
-        if self.board_id == "a919":
+        if self.board_id in ["a919", "ee76"]:
             modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc)
         else:
             modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')
@@ -389,6 +409,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
     def _read_version(self, msg):
         # only for LOCK-R(a911) and 60G-LAS(a918)
+        log_info('Version information = {}'.format(msg))
         msg_versw = msg.split("VER-SW:")[-1].split("\r")[0].split(";")
         msg_verhw = msg.split("VER-HW:")[-1].split("\r")[0].split(";")
         msg_verswhw = msg_versw + msg_verhw

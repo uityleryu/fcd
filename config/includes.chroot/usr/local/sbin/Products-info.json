@@ -2011,6 +2011,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USP-Battery":{
+      "INDEX"       : 8,
+      "NAME"        : "USP-Battery",
+      "BOARDID"     : "ee76",
+      "BOMREV"      : "113-03491",
+      "DESC"        : "UniFi Smart Battery",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
