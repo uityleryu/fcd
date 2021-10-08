@@ -101,11 +101,24 @@
       "SW_ID"       : "0701"
     },
 
-    "UDM-PRO-SE":{
+    "UDM-SE-00917":{
       "INDEX"       : 8,
-      "NAME"        : "UDM-PRO-SE",
+      "NAME"        : "UDM-SE-00917",
       "BOARDID"     : "ea2c",
       "BOMREV"      : "113-00917",
+      "DESC"        : "UniFi Dream Machine Pro SE",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-SE-01097":{
+      "INDEX"       : 8,
+      "NAME"        : "UDM-SE-01097",
+      "BOARDID"     : "ea2c",
+      "BOMREV"      : "113-01097",
       "DESC"        : "UniFi Dream Machine Pro SE",
       "FILE"        : "udm_al324_factory.py",
       "T1FILE"      : "",
@@ -2007,6 +2020,19 @@
       "BOMREV"      : "113-02781",
       "DESC"        : "UniFi SmartPower RPS PRO",
       "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USP-Battery":{
+      "INDEX"       : 8,
+      "NAME"        : "USP-Battery",
+      "BOARDID"     : "ee76",
+      "BOMREV"      : "113-03491",
+      "DESC"        : "UniFi Smart Battery",
+      "FILE"        : "ufp_efr32_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",

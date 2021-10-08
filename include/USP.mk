@@ -29,6 +29,10 @@ IMAGE-USP-RPS= \
     usp/rps/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
     usp/rps/US.mt7621*
 
+
+IMAGE-USP-RPS= \
+    images/ee76* \
+    
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -50,6 +54,7 @@ TOOLS-USP-STRIP +=$(TOOLS-CONFIG)
 TOOLS-USP-PDU-PRO +=$(TOOLS-CONFIG)
 TOOLS-USP-RPS-PRO +=$(TOOLS-CONFIG)
 TOOLS-USP-RPS +=$(TOOLS-CONFIG)
+TOOLS-USP-Battery +=$(TOOLS-CONFIG)
 
 TOOLS-USP-PLUG+= \
     usp/*
@@ -75,6 +80,7 @@ $(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-Battery,FCD_$(PRD)_USP-Battery_$(VER)_$(FWVER)))
 
 
 # Project compressed file for RPi FCD host
@@ -85,6 +91,7 @@ $(eval $(call ProductCompress,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USP-Battery,FCD_$(PRD)_USP-Battery_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -96,3 +103,4 @@ $(eval $(call ProductCompress2,00777_ee74))
 $(eval $(call ProductCompress2,00364_e643))
 $(eval $(call ProductCompress2,02781_ed11))
 $(eval $(call ProductCompress2,03086_ed13))
+$(eval $(call ProductCompress2,03491_ee76))
