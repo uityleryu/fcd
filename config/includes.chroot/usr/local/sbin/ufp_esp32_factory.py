@@ -77,7 +77,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
     ### To check if keys are exist and device is first programmed or not
     def check_device_stat(self):
-        cmd = "sudo espefuse.py -p /dev/ttyUSB1 summary"
+        cmd = "sudo espefuse.py -p /dev/ttyUSB{} summary".format(self.row_id)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
