@@ -145,6 +145,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         self._ramboot_uap_fwupdate()
         # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
+
+        #sometimes DUT will fail log to interrupt the login in process so add below try process for it
+        try:
+            self.login(self.user, self.password, timeout=5, log_level_emerg=True, press_enter=False, retry=2)
+        except:
+            pass
         # self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
 
     def check_info(self):
