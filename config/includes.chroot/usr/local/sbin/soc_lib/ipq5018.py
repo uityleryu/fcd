@@ -90,8 +90,8 @@ class IPQ5018BSPFactory(ScriptBase):
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
         elif self.board_id == "a662" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
         else:
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True

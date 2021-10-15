@@ -35,7 +35,7 @@ tmp_wget_dir = os.path.join(curdir, "output", "tmp_wget")
 reg_bs_dir = os.path.join(curdir, "config", "includes.chroot", "usr", "local", "sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
 ftp_server_url = "http://10.2.0.33:8088"
-devreg_server_url = "https://10.2.2.174:20000/api/v1/product_mapping"
+devreg_server_url = "https://ec2-18-166-47-160.ap-east-1.compute.amazonaws.com:20000/api/v1/product_mapping"
 
 print("Current DIR: " + curdir)
 print("Temp wget DIR: " + tmp_wget_dir)

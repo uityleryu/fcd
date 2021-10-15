@@ -26,58 +26,69 @@ class IPQ80XXFactory(ScriptBase):
         # U-boot prompt
         self.ubpmt = {
             '0000': "IPQ807x# ",
-            'ac11': "IPQ807x# "
+            'ac11': "IPQ807x# ",
+            'ac14': "IPQ807x# "
         }
 
         # linux console prompt
         self.lnxpmt = {
             '0000': "GBE#",
-            'ac11': "#"
+            'ac11': "#",
+            'ac14': "#"
         }
 
         self.bootloader = {
             '0000': "dc99-bootloader.bin",
-            'ac11': "ac11-bootloader.bin"
+            'ac11': "ac11-bootloader.bin",
+            'ac14': "ac14-bootloader.bin"
         }
 
         self.ubaddr = {
             '0000': "0xd80000",
-            'ac11': "0xd80000"
+            'ac11': "0xd80000",
+            'ac14': "0xd80000"
         }
 
         self.ubsz = {
             '0000': "0x100000",
-            'ac11': "0x100000"
+            'ac11': "0x100000",
+            'ac14': "0x100000"
         }
 
         self.cfgaddr = {
             '0000': "0xf000000",
-            'ac11': "0xf000000"
+            'ac11': "0xf000000",
+            'ac14': "0xf000000"
         }
 
         self.cfgsz = {
             '0000': "0x1000000",
-            'ac11': "0x1000000"
+            'ac11': "0x1000000",
+            'ac14': "0x1000000"
         }
 
         self.epromaddr = {
             '0000': "0x2a0000",
-            'ac11': "0x2a0000"
+            'ac11': "0x2a0000",
+            'ac14': "0x2a0000"
         }
 
         self.epromsz = {
             '0000': "0x40000",
-            'ac11': "0x40000"
+            'ac11': "0x40000",
+            'ac14': "0x40000"
         }
 
         self.product_class_table = {
             '0000': "radio",
-            'ac11': "basic"
+            'ac11': "basic",
+            'ac14': "basic"
         }
 
         self.pd_dir_table = {
             '0000': "am",
-            'ac11': "af_af60"
+            'ac11': "af_af60",
+            'ac14': "af_af60"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -124,14 +135,22 @@ class IPQ80XXFactory(ScriptBase):
         time.sleep(10)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
         self.pexp.expect_only(10, "is alive")
+
     def uboot_update(self):
         self.stop_uboot()
         time.sleep(1)
         self.set_uboot_network()
 
+        if self.board_id == "ac14":
+            log_debug("Starting Update CDT")
+            cmd = "tftpboot 0x44000000 images/ac14-cdt.bin"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            cmd ="nand erase 0xc00000 0x80000 && nand write 0x44000000 0xc00000 0x80000"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+
         log_debug("Starting doing U-Boot update")
         cmd = "tftpboot 44000000 images/{}".format(self.bootloader[self.board_id])
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
         cmd = "sf probe; nand erase {0} {1}; nand write 44000000 {0} {1}".format(self.uboot_address, self.uboot_size)
