@@ -17,9 +17,9 @@
           "SRC_PATH": "images/fcd-image/am-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot.mbn",
+            "u-boot_01099.mbn",
             "lbe-ax-v5.img",
-            "rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+            "rax.ipq5018.v0.2.0-devel+liteap-support.3b92ac2c.211012.1402-mp03.5-c2.bin"
           ]
         },
         {
@@ -36,7 +36,7 @@
       "CREATE_LINK":[
         [
           "tftp/images/a662-uboot.bin",
-          "../am-fw/u-boot.mbn"
+          "../am-fw/u-boot_01099.mbn"
         ],
         [
           "tftp/images/a662-bsp.bin",
@@ -44,7 +44,7 @@
         ],
         [
           "tftp/images/a662.bin",
-          "../am-fw/rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+          "../am-fw/rax.ipq5018.v0.2.0-devel+liteap-support.3b92ac2c.211012.1402-mp03.5-c2.bin"
         ]
       ]
     }
