@@ -152,7 +152,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size 16MB 0xfff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -170,27 +170,6 @@ class UFPESP32FactoryGeneral(ScriptBase):
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
-        ''' ( fw cchange format)
-        Model Name: UC-Plug-US
-        System ID: ec5a
-        Board Revision: 255
-        Bom Revision: 16777215
-        FW Version: PLUG.esp32app.v0.0.2.0.g0fa6.210826.1330
-        Hash ID: 48f97312-72d4-5faa-3aef-def1d0566f61
-        GUID: 450c69ab-c7c7-4f92-8deb-7ae1e6e3585a
-        Epoch Time: 164
-        Uptime: 164057
-        Mac Address: 94:b9:7e:b4:5f:9c
-        IP Address: 0.0.0.0
-        DEVREG check: FAIL
-        Cable State: 0 () 0
-        '''
-        
-        # value is our expected string
-        # devreg_data_dict = {'"system_id"'   : self.board_id              ,
-        #                     '"Bom Revision"': self.bom_rev.split('-')[0] ,
-        #                     '"Mac Address"' : self.mac                   ,
-        #                     '"DEVREG check"': 'PASS'                     }
         
         ''' Example info from DUT
         {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e601","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
