@@ -9,7 +9,6 @@
         "FILE": "uisp_alpine-100g_factory.py",
         "T1FILE": "",
         "QRCHECK": "True",
-        "FCD_ID": "000f",
         "SW_ID": "1a01",
         "DOWNLOAD_FILE": [
           {

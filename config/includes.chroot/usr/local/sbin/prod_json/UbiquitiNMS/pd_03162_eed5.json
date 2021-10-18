@@ -9,14 +9,14 @@
       "FILE": "uisp_alpine-100g_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "FCD_ID": "000f",
       "SW_ID": "1a01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "uisp-leaf-fcd.img"
+            "uisp-leaf-fcd-0.6.0.img",
+            "onie-installer-uisp-alpine-1014.bin"
           ]
         },
         {
@@ -40,7 +40,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/eed5-mfg.bin",
-          "../unms-fw/uisp-leaf-fcd.img"
+          "../unms-fw/uisp-leaf-fcd-0.6.0.img"
+        ],
+        [
+          "tftp/images/eed5-fw.bin",
+          "../unms-fw/onie-installer-uisp-alpine-1014.bin"
         ]
       ]
     }
