@@ -20,15 +20,17 @@ class IPQ5018BSPFactory(ScriptBase):
        
         self.uboot_address = {
             '0000': "0x00120000",
+            'a658': "0x00120000",    # Wave-Nano
             'a659': "0x00120000",    # LBE-AX
             'a660': "0x00120000",    # Prism-AX-OMT
             'a661': "0x00120000",    # Prism-AX
-            'a662': "0x00120000"     # LiteAP-AX-GPS
+            'a662': "0x00120000",    # LiteAP-AX-GPS
         }
         self.ubaddr = self.uboot_address[self.board_id]
 
         self.uboot_size = {
             '0000': "0x000a0000",
+            'a658': "0x000a0000",
             'a659': "0x000a0000",
             'a660': "0x000a0000",
             'a661': "0x000a0000",
@@ -41,6 +43,7 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.linux_prompt_select = {
             '0000': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
+            'a658': "#",
             'a659': "#",
             'a660': "#",
             'a661': "#",
@@ -51,6 +54,7 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.ethnum = {
             '0000': "1",
+            'a658': "1",
             'a659': "1",
             'a660': "1",
             'a661': "1",
@@ -59,6 +63,7 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.wifinum = {
             '0000': "2",
+            'a658': "1",
             'a659': "1",
             'a660': "1",
             'a661': "1",
@@ -67,6 +72,7 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.btnum = {
             '0000': "1",
+            'a658': "1",
             'a659': "1",
             'a660': "1",
             'a661': "1",
@@ -83,7 +89,13 @@ class IPQ5018BSPFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a660" :
+        if self.board_id == "a658" :
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a659" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+        elif self.board_id == "a660" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
         elif self.board_id == "a661" :
@@ -93,8 +105,8 @@ class IPQ5018BSPFactory(ScriptBase):
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
         else:
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
