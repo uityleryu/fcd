@@ -151,9 +151,9 @@ class IPQ80XXFactory(ScriptBase):
         log_debug("Starting doing U-Boot update")
         cmd = "tftpboot 44000000 images/{}".format(self.bootloader[self.board_id])
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
+        self.pexp.expect_ubcmd(30, "Bytes transferred", "sf probe")
 
-        cmd = "sf probe; nand erase {0} {1}; nand write 44000000 {0} {1}".format(self.uboot_address, self.uboot_size)
+        cmd = "nand erase {0} {1}; nand write 44000000 {0} {1}".format(self.uboot_address, self.uboot_size)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(1)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
@@ -187,6 +187,9 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
     def urescue(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "uclearcfg;\r")
+        self.pexp.expect_only(10, self.bootloader_prompt)
+
         retry_cnt = 3
         while retry_cnt > 0:
             if retry_cnt == 1:
@@ -251,23 +254,22 @@ class IPQ80XXFactory(ScriptBase):
     def write_sign(self):
         cmd = "tftpboot 44000000 {0}".format(self.eesign)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
+        self.pexp.expect_ubcmd(30, "Bytes transferred", "sf probe")
         log_debug("File sent. Writing eeprom")
-        cmd = "sf probe; sf erase {0} {1}; sf write 44000000 {0} {1}".format(self.eeprom_address, self.eeprom_size)
+        cmd = "sf erase {0} {1}; sf write 44000000 {0} {1};\r".format(self.eeprom_address, self.eeprom_size)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(5)
 
     def default_cfg(self):
-        log_debug("Erase tempoarary config")
-        cmd = "sf probe; sf erase {0} {1}".format(self.cfg_address, self.cfg_size)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        time.sleep(5)
-
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv NORESET")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip 192.168.1.254")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr 192.168.1.20")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs root=/dev/mtdblock5 init=/init")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
+        if self.board_id == "ac14":
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "uclearcfg;\r")
+            self.pexp.expect_only(10, self.bootloader_prompt)
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv NORESET")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip 192.168.1.254")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr 192.168.1.20")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs root=/dev/mtdblock5 init=/init")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         time.sleep(3)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ubntw dump")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")

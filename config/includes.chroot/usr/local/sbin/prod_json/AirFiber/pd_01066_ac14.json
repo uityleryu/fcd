@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "fwupdate_01066_20211012.bin",
+            "fwupdate_01066_20211019-2.bin",
             "u-boot_01066.mbn",
             "af60-xr-spf10.0-nand-v7.bin",
             "af60-xr-spf10.0-nand-v8-cdt.bin"
@@ -46,7 +46,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac14.bin",
-          "../af-fw/fwupdate_01066_20211012.bin"
+          "../af-fw/fwupdate_01066_20211019-2.bin"
         ],
         [
           "tftp/images/ac14-bootloader.bin",
