@@ -22,6 +22,7 @@ FWUPDATE_EN = False
     ef0d: UT-PHONE-FLEX
     ef0f: UT-ATA
     ef12: UT-ATA-MAX
+    ec0e: ULED-SWITCH
 '''
 
 
@@ -31,36 +32,30 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.ver_extract()
         self.devregpart = "/dev/mtdblock2"
         self.user = "root"
-        self.bootloader_prompt = "DVF99 #"
-        self.helper_path = "uvp"
         self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.13"
-
-        # linux prompt
-        lnxpt = {
-            'ef0d': "root@dvf9918:~#",
-            'ef0f': "root@dvf9918:~#",
-            'ef12': "root@dvf99"
-        }
 
         # number of Ethernet
         ethnum = {
             'ef0d': "1",
             'ef0f': "1",
-            'ef12': "1"
+            'ef12': "1",
+            'ec0e': "1"
         }
 
         # number of WiFi
         wifinum = {
             'ef0d': "0",
             'ef0f': "0",
-            'ef12': "1"
+            'ef12': "1",
+            'ec0e': "0"
         }
 
         # number of Bluetooth
         btnum = {
             'ef0d': "0",
             'ef0f': "0",
-            'ef12': "0"
+            'ef12': "0",
+            'ec0e': "1"
         }
 
         # helper
@@ -68,7 +63,16 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             '0000': "helper_DVF99_release",
             'ef0d': "helper_DVF99_release",
             'ef0f': "helper_DVF99_release_ata",
-            'ef12': "helper_DVF99_release_ata_max"
+            'ef12': "helper_DVF99_release_ata_max",
+            'ec0e': "helper_DVF101_release"
+        }
+
+        pd_dir = {
+            '0000': "uvp",
+            'ef0d': "uvp",
+            'ef0f': "uvp",
+            'ef12': "uvp",
+            'ec0e': "ec0e"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -82,11 +86,12 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.netif = {
             'ef0d': "ifconfig eth0 ",
             'ef0f': "ifconfig eth0 ",
-            'ef12': "ifconfig eth0 "
+            'ef12': "ifconfig eth0 ",
+            'ec0e': "ifconfig eth0 "
         }
 
         self.helperexe = hlp[self.board_id]
-        self.linux_prompt = lnxpt[self.board_id]
+        self.helper_path = pd_dir[self.board_id]
 
     def mac_colon_format(self, mac):
         mcf = [

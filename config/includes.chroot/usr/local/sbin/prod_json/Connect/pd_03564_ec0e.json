@@ -1,0 +1,35 @@
+{
+    "Connect": {
+      "ULED-SWITCH": {
+        "INDEX": 0,
+        "NAME": "ULED-SWITCH",
+        "BOARDID": "ec0e",
+        "BOMREV": "113-03564",
+        "DESC": "UniFi Connect Managed POE 5 inch Touch LED Switch",
+        "FILE": "ut_dvf9918_factory.py",
+        "T1FILE": "",
+        "QRCHECK": "True",
+        "SW_ID": "1ce2",
+        "DOWNLOAD_FILE": [
+          {
+            "SRC_PATH": "images/tools/ec0e",
+            "DST_PATH": "tools/ec0e",
+            "FILES": [
+              "helper_DVF101_release"
+            ]
+          },
+          {
+            "SRC_PATH": "images/tools/common",
+            "DST_PATH": "tools/common",
+            "FILES": [
+              "sshd_config",
+              "tmux.conf",
+              "x86-64k-ee",
+              "aarch64-rpi4-64k-ee"
+            ]
+          }
+        ],
+        "CREATE_LINK": []
+      }
+    }
+  }
