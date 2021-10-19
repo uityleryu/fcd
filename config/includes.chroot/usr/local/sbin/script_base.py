@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.43"
+    __version__ = "1.0.44"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -1110,6 +1110,10 @@ class ScriptBase(object):
             log_debug('scp successfully')
 
     def copy_file(self, source, dest):
+        if os.path.isfile(dest) and filecmp.cmp(source, dest):
+            log_debug("{} and {} are the same, skip copying".format(source, dest))
+            return
+
         sstr = [
             "cp",
             "-p",
@@ -1120,7 +1124,7 @@ class ScriptBase(object):
         [sto, rtc] = self.fcd.common.xcmd(sstrj)
         time.sleep(1)
         if int(rtc) > 0:
-            error_critical("Copying FW to tftp server failed")
+            error_critical("Copy file from {} to {} failed".format(source, dest))
         else:
             log_debug('Copy {} to {} successfully'.format(source, dest))
 
