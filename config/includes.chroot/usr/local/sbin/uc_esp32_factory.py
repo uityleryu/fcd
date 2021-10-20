@@ -124,7 +124,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                                      "0x1000"  , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
                                                      "0xd000"  , fw_ota_data  ,
-                                                     "0x90000" , fw_app       )
+                                                     "0x190000" , fw_app       )
             #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
             #                                          "0x1000"     , fw_bootloader,
             #                                          "0xb000"  , fw_ptn_table ,
@@ -170,6 +170,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
+        time.sleep(2)   #delay because no delay the devreg check will be fail
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
