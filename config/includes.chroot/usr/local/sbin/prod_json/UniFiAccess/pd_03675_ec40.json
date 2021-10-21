@@ -1,16 +1,16 @@
 {
-  "Connect": {
-    "ULED-BULB": {
+  "UniFiAccess": {
+    "UA-HOTEL": {
       "INDEX": 0,
-      "NAME": "ULED-BULB",
-      "BOARDID": "ec4a",
-      "BOMREV": "113-03634",
-      "DESC": "",
-      "FILE": "uled_esp32_factory.py",
+      "NAME": "UA-HOTEL",
+      "BOARDID": "ec40",
+      "BOMREV": "113-03675",
+      "DESC": "UA Hotel",
+      "FILE": "ua_psoc6_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "FCD_ID": "0011",
-      "SW_ID": "1c01",
+      "FCD_ID": "0001",
+      "SW_ID": "0001",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
@@ -19,13 +19,15 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
             "aarch64-rpi4-4k-ee"
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/0.0.14.3",
-          "DST_PATH": "images",
+          "SRC_PATH": "images/tools/ua_hotel",
+          "DST_PATH": "tools/ua_hotel",
           "FILES": [
+            "hash32-arm-rpi"
           ]
         }
       ],
