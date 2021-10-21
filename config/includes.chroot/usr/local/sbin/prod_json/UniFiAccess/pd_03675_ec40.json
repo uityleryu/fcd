@@ -1,0 +1,37 @@
+{
+  "UniFiAccess": {
+    "UA-HOTEL": {
+      "INDEX": 0,
+      "NAME": "UA-HOTEL",
+      "BOARDID": "ec40",
+      "BOMREV": "113-03675",
+      "DESC": "UA Hotel",
+      "FILE": "ua_psoc6_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0001",
+      "SW_ID": "0001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ua_hotel",
+          "DST_PATH": "tools/ua_hotel",
+          "FILES": [
+            "hash32-arm-rpi"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
