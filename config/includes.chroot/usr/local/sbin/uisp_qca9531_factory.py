@@ -110,9 +110,26 @@ class UISPQCA9531Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, 'ifconfig eth0 ' + self.dutip)
         self.is_network_alive_in_linux()
 
+
     def set_up_uboot(self):
         self.stop_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'ubnt all 68d79a1f4454 uisp-p-pro 822 1')
+        
+        parameters = {
+            'mac': self.mac.lower(),
+            'product_name': self.product_name.lower(),
+            'bom_rev': self.bom_rev[0 : 5],
+            'rev': self.bom_rev[6:8]
+        }
+        log_debug('uboot command parameters = {}'.format(parameters))
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, '')
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'ubnt all {} {} {} {}'.format(
+            parameters['mac'],
+            parameters['product_name'],
+            parameters['bom_rev'],
+            parameters['rev']
+        ))
+
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'run bootcmd')
 
     def run(self):
@@ -141,23 +158,30 @@ class UISPQCA9531Factory(ScriptBase):
         if UPDATE_UBOOT_EN is True:
             msg(5, "Set up U-Boot ...")
             self.set_up_uboot()
+
             msg(10, "Completed set up U-Boot...")
 
         self.set_up_kernel()
 
         if PROVISION_EN is True:    
             msg(20, "Sendtools to DUT and data provision ...")
+
             self.copy_and_unzipping_tools_to_dut(timeout=60)
             self.data_provision_64k(self.devnetmeta)
 
         if DOHELPER_EN is True:
             msg(40, "Do helper to get the output file to devreg server ...")
+
             self.erase_eefiles()
             self.prepare_server_need_files()
 
         if REGISTER_EN is True:
+            self.FCD_TLV_data = False # Prevent from TLV format errors
+            log_debug('Disable FCD_TLV_data feature')
+
             self.registration()
             msg(50, "Finish doing registration ...")
+
             self.check_devreg_data()
             msg(60, "Finish doing signed file and EEPROM checking ...")
 
