@@ -115,16 +115,18 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader{}.bin".format(self.board_id, encrypt_postfix))
         fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-ptn-table{}.bin".format(self.board_id, encrypt_postfix))
         fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota{}.bin".format(self.board_id, encrypt_postfix))
+        fw_mfg        = os.path.join(self.tftpdir, "images", "{}-mfg{}.bin".format(self.board_id, encrypt_postfix))
         fw_app        = os.path.join(self.tftpdir, "images", "{}-app{}.bin".format(self.board_id, encrypt_postfix))
         #fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs-key{}.bin".format(self.board_id, encrypt_postfix))
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
               "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
-            "{} {} {} {} {} {} {} {}".format(self.row_id,
+            "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
                                                      "0x1000"  , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
                                                      "0xd000"  , fw_ota_data  ,
-                                                     "0x190000" , fw_app       )
+                                                     "0x190000" , fw_mfg      ,
+                                                     "0x510000" , fw_app       )
             #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
             #                                          "0x1000"     , fw_bootloader,
             #                                          "0xb000"  , fw_ptn_table ,

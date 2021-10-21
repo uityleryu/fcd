@@ -13,34 +13,39 @@
       "SW_ID": "1c01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uc-fw",
-          "DST_PATH": "uc-fw",
-          "FILES": [
-            "plug_mfg.bin",
-            "bootloader.bin",
-            "ota_data_initial.bin",
-            "partition-table.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee"
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw",
+          "DST_PATH": "uc-fw",
+          "FILES": [
+            "plug_app.bin",
+            "bootloader.bin",
+            "plug_mfg.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ec5a-app.bin",
-          "../uc-fw/plug_mfg.bin"
+          "../uc-fw/plug_app.bin"
         ],
         [
           "tftp/images/ec5a-bootloader.bin",
           "../uc-fw/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec5a-mfg.bin",
+          "../uc-fw/plug_mfg.bin"
         ],
         [
           "tftp/images/ec5a-ota.bin",
