@@ -168,9 +168,7 @@ class UDMMT7622BspFactory(ScriptBase):
             msg(70, "Rebooting ...")
 
         if self.DATAVERIFY_ENABLE is True:
-            self.login(timeout=600, retry=0)
-            self.pexp.expect_only(180, "rai0: Set DVLAN")
-            self.pexp.expect_lnxcmd(10, "", "dmesg -n1")
+            self.login(timeout=600, retry=0,log_level_emerg=True)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/uptime")
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")

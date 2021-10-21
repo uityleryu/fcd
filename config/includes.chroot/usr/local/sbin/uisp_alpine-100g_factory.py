@@ -342,6 +342,35 @@ class UISPALPINE(ScriptBase):
             ============ Registration End ============
         '''
 
+        cmd = "reboot"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.pexp.expect_action(60, "Autobooting in 2 seconds, press", "\x1b\x1b")
+
+        cmd = "saveenv"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "setenv onie_boot_reason install"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "run bootcmd"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        self.pexp.expect_lnxcmd(10, pre_exp="", cmd="", post_exp=self.linux_prompt, retry=15)
+        self.set_lnx_net("eth0")
+        self.is_network_alive_in_linux()
+
+        '''
+            To stop continous requiring messages
+        '''
+        cmd = "onie-stop"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        cmd = "onie-nos-install http://{}/images/{}-fw.bin".format(self.tftp_server, self.board_id)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.pexp.expect_only(30, "Executing installer")
+        self.pexp.expect_only(30, "Updating U-Boot")
+        self.pexp.expect_only(30, "Updating Kernel")
+        self.pexp.expect_only(30, "NOS install successful")
+        self.pexp.expect_only(30, "Rebooting")
+
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
 

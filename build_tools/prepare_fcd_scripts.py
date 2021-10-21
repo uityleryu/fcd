@@ -69,8 +69,10 @@ else:
 
 if args.nickname_en == "y":
     nickname_en = True
+    print("Nick enable: true")
 else:
     nickname_en = False
+    print("Nick enable: false")
 
 if args.ostype == "ISO":
     ostype_dir = os.path.join(curdir, "output", "stage", "NewSquashfs")

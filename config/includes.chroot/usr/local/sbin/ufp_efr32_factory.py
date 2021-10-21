@@ -481,7 +481,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         # check SKU
         log_info("cmd_get_sku = {}".format(cmd_get_sku))
         rtv_get_sku = self.ser.execmd_getmsg(cmd_get_sku)
-        log_info("rsp = {}".format(rsp))
         log_info("rtv_get_sku = {}".format(rtv_get_sku))
 
         expected_rsp = expected_rsp.format(sku=sku_code)

@@ -1,0 +1,49 @@
+{
+  "AirFiber": {
+    "Wave-Nano": {
+      "INDEX": "0",
+      "NAME": "Wave-Nano",
+      "BOARDID": "a658",
+      "BOMREV": "113-01070",
+      "DESC": "Wave-Nano",
+      "FILE": "af_ipq5018_bspfactory.py",
+      "T1FILE": "af_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "norplusemmc-ipq5018-single_01070.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK":[
+        [
+          "tftp/images/a662-uboot.bin",
+          "../am-fw/u-boot_01099.mbn"
+        ],
+        [
+          "tftp/images/a658-bsp.bin",
+          "../af-fw/norplusemmc-ipq5018-single_01070.img"
+        ],
+        [
+          "tftp/images/a662.bin",
+          "../am-fw/rax.ipq5018.v0.2.0-devel+liteap-support.3b92ac2c.211012.1402-mp03.5-c2.bin"
+        ]
+      ]
+    }
+  }
+}

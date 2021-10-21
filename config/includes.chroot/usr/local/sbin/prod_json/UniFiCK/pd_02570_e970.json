@@ -9,8 +9,6 @@
       "FILE": "uck_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "CLIENT_FILE": "client_x86_release_20210912",
-      "FCD_ID": "0008",
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
