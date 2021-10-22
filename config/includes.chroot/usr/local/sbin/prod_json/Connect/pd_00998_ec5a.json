@@ -19,16 +19,16 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee"
+            "aarch64-rpi4-4k-ee"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/uc-fw",
           "DST_PATH": "uc-fw",
           "FILES": [
-            "plug_app.bin",
+            "CPP1.esp32app.0.1.0+181.211022.0621.bin",
             "bootloader.bin",
-            "plug_mfg.bin",
+            "CPP1.esp32mfg.0.1.0+181.211022.1440.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec5a-app.bin",
-          "../uc-fw/plug_app.bin"
+          "../uc-fw/CPP1.esp32app.0.1.0+181.211022.0621.bin"
         ],
         [
           "tftp/images/ec5a-bootloader.bin",
@@ -45,7 +45,7 @@
         ],
         [
           "tftp/images/ec5a-mfg.bin",
-          "../uc-fw/plug_mfg.bin"
+          "../uc-fw/CPP1.esp32mfg.0.1.0+181.211022.1440.bin"
         ],
         [
           "tftp/images/ec5a-ota.bin",

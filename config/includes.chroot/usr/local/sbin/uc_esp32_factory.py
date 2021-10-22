@@ -125,8 +125,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                                      "0x1000"  , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
                                                      "0xd000"  , fw_ota_data  ,
-                                                     "0x190000" , fw_mfg      ,
-                                                     "0x510000" , fw_app       )
+                                                     "0x190000" , fw_app      ,
+                                                     "0x510000" , fw_mfg       )
             #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
             #                                          "0x1000"     , fw_bootloader,
             #                                          "0xb000"  , fw_ptn_table ,
@@ -146,7 +146,20 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         # self.pexp.expect_lnxcmd(180, self.esp32_prompt, "",self.esp32_prompt)
         self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots well")
+        log_debug("Device boots OTA0(APP fw)(0x190000) well")
+        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+        log_debug(output)
+        log_debug("Change to boots on OTA1(0x510000)")
+        output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
+        log_debug(output)
+        log_debug("reboot Device")
+        output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
+
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.pexp.expect_only(180, self.esp32_prompt)
+        log_debug("Device boots OTA1(factory fw) well")
+        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+        log_debug(output)
 
     def fwupdate(self):
         self.check_device_stat()
@@ -172,7 +185,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        time.sleep(2)   #delay because no delay the devreg check will be fail
+        time.sleep(10)   #delay because no delay the devreg check will be fail
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
