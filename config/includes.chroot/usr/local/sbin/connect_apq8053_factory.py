@@ -46,7 +46,24 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.ver_extract()
 
         # defalut JEDEC ID for EMMC
-        self.df_jedecid = "0007f100"
+        "0007f100"
+        emmc_jedec = {
+            'e980': "0007f100",
+            'ef80': "0007f100",    # UI EMMC PN: 140-04199
+            'ef81': "0007f100",    # UI EMMC PN: 140-04199
+            'ef82': "0007f100",
+            'ef13': "0007f100",
+            'ef87': "0007f100",    # UI EMMC PN: 140-04199
+            'ef88': "0007f100",    # UI EMMC PN: 140-04199
+            'ef90': "0007f102",    # UI EMMC PN: 140-04869
+            'ef0e': "0007f100",
+            'ef83': "0007f100",    # UI EMMC PN: 140-04199
+            'ef84': "0007f100",    # UI EMMC PN: 140-04199
+            'ef85': "0007f100",
+            'ef86': "0007f100",
+            'ec60': "0007f100",
+            'ec62': "0007f100"
+        }
 
         # default product class: basic
         self.df_prod_class = "0014"
@@ -73,28 +90,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec62': "adr9",
             'ec61': "adr9"
         }
-
-        if self.ospl[self.board_id] == "adr9":
-            if self.board_id == "e980" or self.board_id == "ef90":
-                self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
-                self.cfg_file = ""
-                self.f_eth_mac = "/persist/eth_mac"
-                self.f_qr_id = "/persist/qr_id"
-            else:
-                self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
-                self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
-                self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
-                self.f_qr_id = "/mnt/vendor/persist/qr_id"
-        else:
-            self.persist_cfg_file = "/persist/WCNSS_qcom_cfg.ini"
-            self.cfg_file = "/data/misc/wifi/WCNSS_qcom_cfg.ini"
-            self.f_eth_mac = "/persist/eth_mac"
-            self.f_qr_id = "/persist/qr_id"
-
-        if self.region == "0000":
-            self.android_cc = "000"
-        elif self.region == "002a":
-            self.android_cc = "USI"
 
         self.lnxpmt = {
             'e980': "protectbox",
@@ -183,6 +178,29 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         self.cladb = None
         self.linux_prompt = self.lnxpmt[self.board_id]
+        self.df_jedecid = emmc_jedec[self.board_id]
+
+        if self.ospl[self.board_id] == "adr9":
+            if self.board_id == "e980" or self.board_id == "ef90":
+                self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
+                self.cfg_file = ""
+                self.f_eth_mac = "/metadata/ethmac.txt"
+                self.f_qr_id = ""
+            else:
+                self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
+                self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
+                self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
+                self.f_qr_id = "/mnt/vendor/persist/qr_id"
+        else:
+            self.persist_cfg_file = "/persist/WCNSS_qcom_cfg.ini"
+            self.cfg_file = "/data/misc/wifi/WCNSS_qcom_cfg.ini"
+            self.f_eth_mac = "/persist/eth_mac"
+            self.f_qr_id = "/persist/qr_id"
+
+        if self.region == "0000":
+            self.android_cc = "000"
+        elif self.region == "002a":
+            self.android_cc = "USI"
 
     def get_dut_ip(self):
         portn = int(self.row_id) + 1
@@ -266,13 +284,20 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         time.sleep(1)
 
     def access_chips_id(self):
-        cmd = "cat /sys/devices/soc0/soc_id"
-        tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
-        tmp = tmp.replace('\r', '')
-        cpuid = tmp.split("\n")
+        if self.board_id == "ef90":
+            cmd = "cat /sys/devices/system/cpu/cpu0/regs/identification/midr_el1"
+            tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            cpuid = tmp.replace('\r', '').split("\n")
 
-        # left zero padding
-        cpuid[1] = cpuid[1].zfill(8)
+            # extract the last 8 characters
+            cpuid_for_server = cpuid[1][-8:]
+        else:
+            cmd = "cat /sys/devices/soc0/soc_id"
+            tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            cpuid = tmp.replace('\r', '').split("\n")
+
+            # left zero padding
+            cpuid_for_server = cpuid[1].zfill(8)
 
         cmd = "cat /sys/class/block/mmcblk0/device/cid"
         tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
@@ -282,7 +307,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         # 07f100 is hard code by Mike
         optotal = [
             "-i field=product_class_id,format=hex,value={0}".format(self.df_prod_class),
-            "-i field=cpu_rev_id,format=hex,value={0}".format(str(cpuid[1])),
+            "-i field=cpu_rev_id,format=hex,value={0}".format(str(cpuid_for_server)),
             "-i field=flash_uid,format=hex,value={0}".format(uuid[1]),
             "-i field=flash_jedec_id,format=hex,value={0}".format(self.df_jedecid)
         ]
@@ -329,33 +354,19 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         regsubparams = self.access_chips_id()
 
         # The HEX of the QR code
-        if self.qrcode is None or not self.qrcode:
-            reg_qr_field = ""
-        else:
-            reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
-
-        cmd = "uname -a"
-        [sto, rtc] = self.cnapi.xcmd(cmd)
-        if int(rtc) > 0:
-            error_critical("Get linux information failed!!")
-        else:
-            log_debug("Get linux information successfully")
-            match = re.findall("armv7l", sto)
-            if match:
-                clientbin = "/usr/local/sbin/client_rpi4_release"
-            else:
-                clientbin = "/usr/local/sbin/client_x86_release_20190507"
+        reg_qr_field = "-i field=qr_code,format=hex,value={}".format(self.qrhex)
+        clientbin = "/usr/local/sbin/client_rpi4_release"
 
         regparam = [
             "-h prod.udrs.io",
-            "-k " + self.pass_phrase,
+            "-k {}".format(self.pass_phrase),
             regsubparams,
             reg_qr_field,
-            "-i field=flash_eeprom,format=binary,pathname=" + self.eegenbin_path,
-            "-i field=fcd_version,format=hex,value=" + self.sem_ver,
-            "-i field=sw_id,format=hex,value=" + self.sw_id,
-            "-i field=sw_version,format=hex,value=" + self.fw_ver,
-            "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eegenbin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
             "-o field=registration_id",
             "-o field=result",
             "-o field=device_id",
@@ -373,14 +384,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         print("cmd: " + cmd)
 
         clit = ExpttyProcess(self.row_id, cmd, "\n")
-        #Due update new client title named "Security Service Device Registration Client"
-        #clit.expect_only(30, "Ubiquiti Device Security Client")
+
+        # Due update new client, the title become "Security Service Device Registration Client"
+        clit.expect_only(30, "Security Service Device")
         clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         log_debug("Excuting client_x86 registration successfully")
 
-    def check_mac(self):
+    def check_mac_by_edsw(self):
         comac = self.mac_format_str2comma(self.mac)
         for ct in range(0, 60):
             portn = int(self.row_id) + 1
@@ -414,7 +426,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
         if self.board_id in self.usbadb_list:
-            self.INFOCHECK_ENABLE = False
             self.connect_adb_usb()
         else:
             self.get_dut_ip()
@@ -423,18 +434,27 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.PROVISION_ENABLE is True:
-            msg(20, "Sendtools to DUT and data provision ...")
+            msg(20, "Send tools to DUT and data provision ...")
             self.erase_eefiles()
             self.data_provision_64k(self.devnetmeta)
 
             # Write MAC
-            lmac = self.mac_format_str2list(self.mac)
-            bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
-            cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
+            if self.board_id == "ef90":
+                lmac = self.mac_format_str2comma(self.mac)
+                cmd = "fts -s macaddr {0}".format(lmac)
+            else:
+                lmac = self.mac_format_str2list(self.mac)
+                bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
+                cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
+
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
-            cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
+            if self.board_id == "ef90":
+                cmd = "fts -s qr_id {}".format(self.qrcode)
+            else:
+                cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
+
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write Country Code
@@ -444,13 +464,16 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                    /data/misc/wifi/WCNSS_qcom_cfg.ini   (Android7)
                 then, remove them
             '''
-            cmd = "rm {}".format(self.cfg_file)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            if self.board_id != "ef90":
+                cmd = "rm {}".format(self.cfg_file)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
             # Write persist cfg file
             if self.board_id == "e980":
                 cmd = "echo gStaCountryCode={} > {}".format(self.android_cc, self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+            elif self.board_id == "ef90":
+                pass
             else:
                 cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
@@ -459,13 +482,28 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
         if self.REGISTER_ENABLE is True:
-            msg(40, "Sendtools to DUT and data provision ...")
+            msg(40, "Send tools to DUT and data provision ...")
             self.registration()
 
         if self.INFOCHECK_ENABLE is True:
             msg(60, "Check the information ...")
-            self.pexp.expect_action(5, self.linux_prompt, "reboot")
-            self.check_mac()
+            if self.board_id == "ef90":
+                cmd = "fts -g macaddr"
+                getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                m_gmac = re.findall(r"macaddr=(.*)", getmac)
+                if m_gmac:
+                    log_debug("Get MAC address: " + m_gmac[0])
+                    if lmac not in m_gmac[0]:
+                        error_critical("Check MAC is not matched !!")
+
+                cmd = "fts -g qr_id"
+                getqrid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                log_debug("Get QRID: " + getqrid)
+                m_gqr = re.findall(r"qr_id=(.*)", getqrid)
+                if m_gqr:
+                    log_debug("Get QR_ID: " + m_gqr[0])
+                    if self.qrcode not in m_gqr[0]:
+                        error_critical("Check QRID is not matched !!")
 
         msg(100, "Complete FCD process ...")
         if not self.board_id in self.usbadb_list:
