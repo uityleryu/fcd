@@ -35,11 +35,12 @@ class USFLEXFactory(ScriptBase):
         self.helperexe = "helper_UNIFI_MT7621_release"
         self.bootloader_prompt = "MT7621 #"
         self.fcdimg = self.board_id + "-fcd.bin"
-        self.helper_path = "common"
 
-        # ed11 only support old helper so seperate it from common
-        if self.board_id == 'ed11':
-            self.helper_path = 'usp_rps'
+        helper_path = {
+            'ed11': 'usp_rps',  # ed11 only support old helper
+            'ed13': 'usp_rps_pro',
+        }
+        self.helper_path = helper_path[self.board_id]
 
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
