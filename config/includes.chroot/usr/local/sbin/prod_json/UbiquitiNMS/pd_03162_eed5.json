@@ -16,7 +16,7 @@
           "DST_PATH": "unms-fw",
           "FILES": [
             "uisp-leaf-fcd-0.6.0.img",
-            "onie-installer-uisp-alpine-1014.bin"
+            "onie-installer-uisp-alpine-0.6.0-24-g0b5c68c.bin"
           ]
         },
         {
@@ -44,7 +44,7 @@
         ],
         [
           "tftp/images/eed5-fw.bin",
-          "../unms-fw/onie-installer-uisp-alpine-1014.bin"
+          "../unms-fw/onie-installer-uisp-alpine-0.6.0-24-g0b5c68c.bin"
         ]
       ]
     }
