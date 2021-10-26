@@ -1,10 +1,10 @@
 {
   "UbiquitiNMS": {
-    "UISP-CONSOLE-00973": {
+    "UISP-CONSOLE-01129": {
       "INDEX": 0,
-      "NAME": "UISP-CONSOLE-00973",
+      "NAME": "UISP-CONSOLE-01129",
       "BOARDID": "ee6a",
-      "BOMREV": "113-00973",
+      "BOMREV": "113-01129",
       "DESC": "Ubiquiti Network Management System Router Console",
       "FILE": "unms_alpine_factory.py",
       "T1FILE": "",

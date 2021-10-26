@@ -78,7 +78,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         # ethernet interface
         self.netif = {
             'ea2a': "br0",  # udw
-            'ea2b': "eth20",  # udw_pro
+            'ea2b': "psu0",  # udw_pro
             'ea2c': "eth9",  # udm_se
         }
 
@@ -253,7 +253,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
-
+        '''
         if self.UPDATE_UBOOT is True:
             self.set_fake_EEPROM()
             self.update_uboot()
@@ -263,7 +263,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         if self.BOOT_RECOVERY_IMAGE is True:
             msg(15, "Updating FW")
             self.fwupdate()
-
+        '''
         if self.INIT_RECOVERY_IMAGE is True:
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
@@ -284,7 +284,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-
+        '''
         if self.DATAVERIFY_ENABLE is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
@@ -297,7 +297,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
-
+        '''
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
