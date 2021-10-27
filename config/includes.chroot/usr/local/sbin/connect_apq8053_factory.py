@@ -373,7 +373,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         print("cmd: " + cmd)
 
         clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
+        #Due update new client title named "Security Service Device Registration Client"
+        #clit.expect_only(30, "Ubiquiti Device Security Client")
         clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
