@@ -111,8 +111,8 @@ $(eval $(call ProductCompress,ULED-Instant,FCD_$(PRD)_ULED-Instant_$(VER)_$(FWVE
 $(eval $(call ProductCompress,ULED-Bulb,FCD_$(PRD)_ULED-Bulb_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,00998_ec5a))
-$(eval $(call ProductCompress2,01026_ec5b))
+$(eval $(call ProductCompress2,00997_ec5a))
+$(eval $(call ProductCompress2,01025_ec5b))
 $(eval $(call ProductCompress2,03168_ef80))
 $(eval $(call ProductCompress2,03182_ef81))
 $(eval $(call ProductCompress2,03287_ef83))
