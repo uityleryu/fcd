@@ -40,7 +40,7 @@ class USFLEXFactory(ScriptBase):
             'ed11': 'usp_rps',  # ed11 only support old helper
             'ed13': 'usp_rps_pro',
         }
-        self.helper_path = helper_path[self.board_id]
+        self.helper_path = helper_path.get(self.board_id, 'common')
 
         # customize variable for different products
         self.radio_check = {'ec25': ('0x8052', '/dev/mtd2', '0x02')}
