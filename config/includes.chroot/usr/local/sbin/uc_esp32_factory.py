@@ -191,7 +191,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         info = {}
         
         ''' Example info from DUT
-        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e601","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
+        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e501","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
 d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6e3585a","epoch_time":"3","mac_addr":"68D79A1F54D1","ip_address":"0.
 0.0.0","region":"EU","devreg_check":"PASS"}
         '''
@@ -203,7 +203,7 @@ d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6
         for key in devreg_data_dict:
             regex = re.compile(r'"{}":"(\w+)"'.format(key))
             data_list = regex.findall(output)
-            #"bom_rev":"0003e601" 0003e6=00998, 01=01 => 00998-01
+            #"bom_rev":"0003e601" 0003e5=00997, 01=01 => 00998-01
             if key == "bom_rev":
                 info[key] = str(int(data_list[0][0:6],16)).zfill(5)
             else:
