@@ -1,10 +1,10 @@
 {
   "UniFiAccess": {
-    "UA-Display-Gate(AC)": {
+    "UA-Display-Gate(AA)": {
       "INDEX": 0,
-      "NAME": "UA-Display-Gate(AC)",
+      "NAME": "UA-Display-Gate(AA)",
       "BOARDID": "ec61",
-      "BOMREV": "113-03587",
+      "BOMREV": "113-03628",
       "DESC": "Unifi Access Display Gate",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
