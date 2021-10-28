@@ -10,7 +10,41 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0002",
-      "SW_ID": "0201"
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usp/rps-pro/",
+          "DST_PATH": "usp/rps-pro",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/usp_rps_pro",
+          "DST_PATH": "tools/usp_rps_pro",
+          "FILES": [
+            "helper_UNIFI_MT7621_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed13-fcd.bin",
+          "../usp/rps-pro/lede-ramips-mt7621-USW-FLEX-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ed13-fw.bin",
+          "../usp/rps-pro/UM.mt7621_5.72.2+13308.211023.0722-uboot.bin"
+        ]
+      ]
     }
   }
 }

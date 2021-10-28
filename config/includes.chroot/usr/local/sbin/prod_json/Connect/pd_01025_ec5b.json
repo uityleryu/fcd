@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "UC-Plug-EU",
       "BOARDID": "ec5b",
-      "BOMREV": "113-01026",
+      "BOMREV": "113-01025",
       "DESC": "UniFi Connect Plug EU",
       "FILE": "uc_esp32_factory.py",
       "T1FILE": "",

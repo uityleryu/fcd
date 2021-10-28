@@ -115,16 +115,18 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_bootloader = os.path.join(self.tftpdir, "images", "{}-bootloader{}.bin".format(self.board_id, encrypt_postfix))
         fw_ptn_table  = os.path.join(self.tftpdir, "images", "{}-ptn-table{}.bin".format(self.board_id, encrypt_postfix))
         fw_ota_data   = os.path.join(self.tftpdir, "images", "{}-ota{}.bin".format(self.board_id, encrypt_postfix))
+        fw_mfg        = os.path.join(self.tftpdir, "images", "{}-mfg{}.bin".format(self.board_id, encrypt_postfix))
         fw_app        = os.path.join(self.tftpdir, "images", "{}-app{}.bin".format(self.board_id, encrypt_postfix))
         #fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs-key{}.bin".format(self.board_id, encrypt_postfix))
 
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
               "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
-            "{} {} {} {} {} {} {} {}".format(self.row_id,
+            "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
                                                      "0x1000"  , fw_bootloader,
                                                      "0xb000"  , fw_ptn_table ,
                                                      "0xd000"  , fw_ota_data  ,
-                                                     "0x190000" , fw_app       )
+                                                     "0x190000" , fw_app      ,
+                                                     "0x510000" , fw_mfg       )
             #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
             #                                          "0x1000"     , fw_bootloader,
             #                                          "0xb000"  , fw_ptn_table ,
@@ -144,7 +146,20 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         # self.pexp.expect_lnxcmd(180, self.esp32_prompt, "",self.esp32_prompt)
         self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots well")
+        log_debug("Device boots OTA0(APP fw)(0x190000) well")
+        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+        log_debug(output)
+        log_debug("Change to boots on OTA1(0x510000)")
+        output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
+        log_debug(output)
+        log_debug("reboot Device")
+        output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
+
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.pexp.expect_only(180, self.esp32_prompt)
+        log_debug("Device boots OTA1(factory fw) well")
+        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+        log_debug(output)
 
     def fwupdate(self):
         self.check_device_stat()
@@ -170,13 +185,13 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        time.sleep(2)   #delay because no delay the devreg check will be fail
+        time.sleep(10)   #delay because no delay the devreg check will be fail
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
         
         ''' Example info from DUT
-        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e601","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
+        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e501","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
 d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6e3585a","epoch_time":"3","mac_addr":"68D79A1F54D1","ip_address":"0.
 0.0.0","region":"EU","devreg_check":"PASS"}
         '''
@@ -188,7 +203,7 @@ d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6
         for key in devreg_data_dict:
             regex = re.compile(r'"{}":"(\w+)"'.format(key))
             data_list = regex.findall(output)
-            #"bom_rev":"0003e601" 0003e6=00998, 01=01 => 00998-01
+            #"bom_rev":"0003e601" 0003e5=00997, 01=01 => 00998-01
             if key == "bom_rev":
                 info[key] = str(int(data_list[0][0:6],16)).zfill(5)
             else:
