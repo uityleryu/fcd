@@ -29,6 +29,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ef86: UniFi Pay 13        (Android 9)
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
+    ec61: UA-Display-Gate     (Android 9)
 '''
 
 
@@ -51,7 +52,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.df_prod_class = "0014"
         self.usbadb_list = [
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
-            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13"
+            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61"
         ]
 
         self.ospl = {
@@ -69,7 +70,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "adr9",
             'ef86': "adr9",
             'ec60': "adr9",
-            'ec62': "adr9"
+            'ec62': "adr9",
+            'ec61': "adr9"
         }
 
         if self.ospl[self.board_id] == "adr9":
@@ -109,7 +111,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "",
             'ef90': "uc_cast",
             'ec60': "msm8953_uapro",
-            'ec62': ""
+            'ec62': "",
+            'ec61': "ud_gate",
         }
 
         # Number of Ethernet
@@ -128,7 +131,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "0",
             'ef90': "1",
             'ec60': "1",
-            'ec62': "1"
+            'ec62': "1",
+            'ec61': "1"
         }
 
         # Number of WiFi
@@ -147,7 +151,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ec60': "1",
-            'ec62': "0"
+            'ec62': "0",
+            'ec61': "0"
         }
 
         # Number of Bluetooth
@@ -166,7 +171,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ec60': "1",
-            'ec62': "1"
+            'ec62': "1",
+            'ec61': "1"
         }
 
         self.devnetmeta = {
@@ -367,7 +373,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         print("cmd: " + cmd)
 
         clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
+        #Due update new client title named "Security Service Device Registration Client"
+        #clit.expect_only(30, "Ubiquiti Device Security Client")
         clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
