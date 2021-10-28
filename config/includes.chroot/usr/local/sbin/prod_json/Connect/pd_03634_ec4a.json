@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/0.1.0.12/",
+          "SRC_PATH": "images/fcd-image/uled_fw/uled-bulb/testing_fw/0.1.0.14/",
           "DST_PATH": "images",
           "FILES": [
           ]
