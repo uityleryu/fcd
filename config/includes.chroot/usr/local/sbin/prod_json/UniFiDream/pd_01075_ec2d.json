@@ -1,8 +1,8 @@
 {
   "UniFiDream": {
-    "UDM-Lite": {
+    "UDM-LITE": {
       "INDEX": 0,
-      "NAME": "UDM-Lite",
+      "NAME": "UDM-LITE",
       "BOARDID": "ec2d",
       "BOMREV": "113-01075",
       "DESC": "UniFi Dream Machine Lite",
@@ -20,22 +20,31 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udm-lite",
-          "DST_PATH": "udm-fw/udm-lite",
-          "FILES": [
-            "udm-lite-mt7622-v1_emmc.bin",
-            "udm-lite-mt7622-v1_nor.bin"
-          ]
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-lite/",
+          "DST_PATH": "udm-fw/udm-lite/",
+          "FILES": []
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ec2d-fcd.bin",
-          "../udm-fw/udm-lite/udm-lite-mt7622-v1_emmc.bin"
+          "../udm-fw/udm-lite/udm-lite-mt7622-v2_emmc.bin"
         ],
         [
           "tftp/images/ec2d-mfg.bin",
-          "../udm-fw/udm-lite/udm-lite-mt7622-v1_nor.bin"
+          "../udm-fw/udm-lite/udm-lite-mt7622-v2_nor.bin"
+        ],
+        [
+          "tftp/images/ec2d-fw.bin",
+          "../udm-fw/udm-lite/UDMLITE.mt7622.v1.0.0.2f93d5d.211022.1729.bin"
+        ],
+        [
+          "tftp/images/ec2d-fw.uboot",
+          "../udm-fw/udm-lite/u-boot-mtk.bin"
+        ],
+        [
+          "tftp/images/ec2d-recovery",
+          "../udm-fw/udm-lite/uImage"
         ]
       ]
     }

@@ -47,10 +47,10 @@ class UDMMT7622BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        self.FWUPDATE_ENABLE   = False if self.board_id == "ec2d" else True
-        self.DATAVERIFY_ENABLE = False if self.board_id == "ec2d" else True 
-        self.DIAG_MODE_ENABLE  = False if self.board_id == "ec2d" else True 
-        self.SET_NTP_ENABLE    = False if self.board_id == "ec2d" else True 
+        self.FWUPDATE_ENABLE   = True
+        self.DATAVERIFY_ENABLE = True 
+        self.DIAG_MODE_ENABLE  = True 
+        self.SET_NTP_ENABLE    = True 
 
     def enter_uboot(self, timeout=60):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
