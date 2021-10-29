@@ -20,7 +20,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.bootloader_prompt = "UBNT"
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
-        self.helper_path = "uxg" if self.board_id == "ea19" else "udm"
+        self.helper_path = "udm"
         self.bomrev = "113-" + self.bom_rev
         self.username = "root"
         self.password = "ubnt"
