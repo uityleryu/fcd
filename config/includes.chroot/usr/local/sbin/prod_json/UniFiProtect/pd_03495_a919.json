@@ -7,7 +7,6 @@
       "BOMREV": "113-03495",
       "DESC": "UniFi BLE Location",
       "FILE": "ufp_efr32_factory.py",
-      "CLIENT_FILE": "client_rpi4_release_hk_20210412",
       "T1FILE": "",
       "QRCHECK": "True",
       "SW_ID": "1601",
