@@ -42,7 +42,7 @@ IMAGE-UDMB= \
     udm-fw/BZ.mt7621.*
 
 IMAGE-UDMLITE= \
-    images/ec28* \
+    images/ec2d* \
     udm-fw/udm-lite/* 
 
 IMAGE-UDR= \
