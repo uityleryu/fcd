@@ -89,6 +89,13 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2c': True,
         }
 
+        # Wifi cal data setting
+        self.wifical = {
+            'ea2a': True,
+            'ea2b': True,
+            'ea2c': False,
+        }
+
         self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
@@ -105,7 +112,6 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.FWUPDATE_ENABLE = False
         self.DATAVERIFY_ENABLE = True
         self.LCM_CHECK_ENABLE = True
-        self.WRITE_CAL_DATA = True
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -297,9 +303,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.check_refuse_data()
         self.unlock_eeprom_permission()
 
-        # FIXME: comment for dev
-        # self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i ra0 -c "sync eeprom all"')
-        # self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i rai0 -c "sync eeprom all"')
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i ra0 -c "sync eeprom all"')
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i rai0 -c "sync eeprom all"')
 
         self.check_flash_data()
 
@@ -364,7 +369,7 @@ class UDM_AL324_FACTORY(ScriptBase):
                 msg(85, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
 
-        if self.WRITE_CAL_DATA is True:
+        if self.wifical[self.board_id] is True:
             msg(95, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
