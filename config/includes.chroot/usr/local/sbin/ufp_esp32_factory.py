@@ -182,7 +182,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                 log_debug("{}: {}".format(key, info[key]))
 
     def check_littlefs_mount(self):
-        time.sleep(90)
+        time.sleep(120)
         self.pexp.expect_lnxcmd(timeout=3, pre_exp=self.esp32_prompt, action="littlefs_get_info", 
                                 post_exp="littlefs_cmd: mount", retry=80)
 
