@@ -1,8 +1,8 @@
 {
   "UniFiAP6": {
-    "U6-LR": {
+    "U6-LR-00742": {
       "INDEX": 0,
-      "NAME": "U6-LR",
+      "NAME": "U6-LR-00742",
       "BOARDID": "a614",
       "BOMREV": "113-00742",
       "DESC": "UniFi AP6 LR",
@@ -13,16 +13,6 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
-          "DST_PATH": "u6-fw/mt7621",
-          "FILES": [
-            "BZ.mt7621_5.60.14+13014.210914.0748-uboot.bin",
-            "uap6-fcd.bin",
-            "u6-mt7603-mt7915a-4x4-nor-v7.bin",
-            "uap6-uboot.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
@@ -32,12 +22,22 @@
             "aarch64-rpi4-64k-ee",
             "helper_UAP6_MT7621_release"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
+          "DST_PATH": "u6-fw/mt7621",
+          "FILES": [
+            "BZ.mt7621_5.60.18+13041.211030.0107-uboot.bin",
+            "uap6-fcd.bin",
+            "u6-mt7603-mt7915a-4x4-nor-v7.bin",
+            "uap6-uboot.bin"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a614.bin",
-          "../u6-fw/mt7621/BZ.mt7621_5.60.14+13014.210914.0748-uboot.bin"
+          "../u6-fw/mt7621/BZ.mt7621_5.60.18+13041.211030.0107-uboot.bin"
         ],
         [
           "tftp/images/a614-fcd.bin",
