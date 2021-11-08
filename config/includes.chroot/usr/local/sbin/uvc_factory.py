@@ -77,7 +77,7 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbell"
 
         elif self.product_name == "UVC-G4BULLET":
-            if int(self.bom_rev) > 6:
+            if int(self.bom_rev.split('-')[1]) > 6:
                 self.board_name = "UVC G4 BULLET"
                 self.ip = "192.168.2.20"
                 self.mtd_name = 'spi'
