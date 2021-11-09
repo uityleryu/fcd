@@ -31,6 +31,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24',
                                     'ed25', 'ed2c', 'ed2d'}
 
+        self.disable_powerd_list = ['ed2c']
         self.disable_battery = {'ed2c'}
 
 
@@ -192,6 +193,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
         self.is_network_alive_in_linux()
 
+    def disable_powerd(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i '/powerd/ s,^,#,g' /etc/inittab && init -q", post_exp=self.linux_prompt)
+        time.sleep(5)
+
     def clear_eeprom_in_uboot(self, timeout=30):
         # Ensure sysid is empty when FW is T1 img.
         # Some T1 image will boot so slow if get non-empty sysid
@@ -258,6 +263,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
+
+        if self.board_id in self.disable_powerd_list:
+            msg(85, "Disable powerd")
+            self.disable_powerd()
 
         if self.WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id in self.wait_LCM_upgrade_en:

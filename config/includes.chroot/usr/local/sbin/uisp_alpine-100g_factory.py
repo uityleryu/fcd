@@ -351,25 +351,45 @@ class UISPALPINE(ScriptBase):
         cmd = "setenv onie_boot_reason install"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         cmd = "run bootcmd"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(10, "", cmd)
 
-        self.pexp.expect_lnxcmd(10, pre_exp="", cmd="", post_exp=self.linux_prompt, retry=15)
-        self.set_lnx_net("eth0")
-        self.is_network_alive_in_linux()
-
+        self.pexp.expect_lnxcmd(100, pre_exp="Please press Enter to activate this console", action="\n", post_exp=self.linux_prompt, retry=3)
         '''
             To stop continous requiring messages
         '''
         cmd = "onie-stop"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
+        self.set_lnx_net("eth0")
+        self.is_network_alive_in_linux()
+
+        '''
+            To clean the EMMC
+        '''
+        cmd = "sgdisk -d 1 /dev/sda"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        cmd = "sgdisk -d 2 /dev/sda"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
         cmd = "onie-nos-install http://{}/images/{}-fw.bin".format(self.tftp_server, self.board_id)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.pexp.expect_only(30, "Executing installer")
         self.pexp.expect_only(30, "Updating U-Boot")
-        self.pexp.expect_only(30, "Updating Kernel")
+        self.pexp.expect_only(30, "Post-initialize the rest of partitions")
         self.pexp.expect_only(30, "NOS install successful")
         self.pexp.expect_only(30, "Rebooting")
+        self.pexp.expect_action(120, "Autobooting in 2 seconds, press", "\x1b\x1b")
+        msg(60, "Finish doing formal image installation ...")
+
+        cmd = "env default -a"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "setenv nos_bootcmd 'run bootemmcdual'"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "setenv onie_initargs 'setenv bootargs pci=pcie_bus_perf console=$consoledev,$baudrate DIAG'"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "saveenv"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        msg(70, "Finish configuring to run DIAG as default ...")
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

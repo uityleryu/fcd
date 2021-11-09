@@ -12,25 +12,14 @@
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uck-fw",
-          "DST_PATH": "uck-fw",
-          "FILES": [
-            "RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img",
-            "CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img",
-            "UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.rootfs",
-            "UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.boot"
-          ]
+          "SRC_PATH": "images/fcd-image/uck-fw/",
+          "DST_PATH": "uck-fw/",
+          "FILES": []
         },
         {
-          "SRC_PATH": "images/tools/uck",
-          "DST_PATH": "tools/uck",
-          "FILES": [
-            "ck-ee",
-            "DRA_ed0eb1b5_helper_APQ8053_release.strip",
-            "mmc-prep.sh",
-            "check-part.sh",
-            "check-part.txt"
-          ]
+          "SRC_PATH": "images/tools/uck/",
+          "DST_PATH": "tools/uck/",
+          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -50,15 +39,15 @@
         ],
         [
           "tftp/images/e970-recovery.bin",
-          "../uck-fw/RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img"
+          "../uck-fw/RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img"
         ],
         [
-          "tftp/images/e970-fw.bin",
-          "../uck-fw/UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.rootfs"
+          "tftp/images/e970-rootfs.bin",
+          "../uck-fw/UCKP.apq8053.v2.2.12.3f3aaf9.211016.0105.rootfs"
         ],
         [
-          "tftp/images/e970-uboot.img",
-          "../uck-fw/UCKP.apq8053.v2.3.1+root.5862.d81ee41.210830.1126.boot"
+          "tftp/images/e970-kernel.bin",
+          "../uck-fw/UCKP.apq8053.v2.2.12.3f3aaf9.211016.0105.boot"
         ]
       ]
     }

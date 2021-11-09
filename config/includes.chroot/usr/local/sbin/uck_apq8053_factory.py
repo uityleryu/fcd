@@ -57,6 +57,34 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             'e970': "ifconfig eth0 ",
         }
 
+    def login_kernel(self):
+        '''
+            For the postexp sets, they are for the case of that
+                "Firmware version", "Launching interactive shell", "Welcome to CloudKey FCD"
+                  - preload image is a certain version of the formal images before 0.8.12.
+                  - when FCD is failed after uploading the MFG image. Then, the initial image will be
+                  MFG image when redoing the FCD script.
+        '''
+        postexp = [
+            "Firmware version:",
+            "Launching interactive shell",
+            "Welcome to CloudKey FCD",
+            "UniFi-CloudKey-Gen2-Plus"
+        ]
+        index = self.pexp.expect_get_index(200, postexp)
+        if index == 0 or index == 1 or index == 2:
+            log_debug("kernel is MFG or preload image")
+            self.pexp.expect_action(10, "", "\n")
+            self.pexp.expect_only(10, self.linux_prompt)
+        elif index == 3:
+            log_debug("kerenl is normal FW")
+            self.login()
+        else:
+            error_critical(msg="Can't get expected string to login kernel")
+
+        self.set_lnx_net("eth0")
+        self.is_network_alive_in_linux()
+
     def prepare_server_need_files(self):
         log_debug("Starting to do " + self.helperexe + "...")
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
@@ -120,30 +148,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         time.sleep(1)
 
         msg(5, "Boot to linux console ...")
-        # self.pexp.expect_action(200, "login", "\n")
-        '''
-            For the postexp sets, they are for the case of that
-                "Firmware version:"
-                  - preload image is a certain version of the formal images before 0.8.12.
-                "Welcome to CloudKey FCD"
-                  - when FCD is failed after uploading the MFG image. Then, the initial image will be
-                  MFG image when redoing the FCD script.
-        '''
-        postexp = [
-            "Firmware version:",
-            "Launching interactive shell",
-            "Welcome to CloudKey FCD"
-        ]
-        index = self.pexp.expect_get_index(200, postexp)
-        if index == 0 or index == 1 or index == 2:
-            self.pexp.expect_action(10, "", "\n")
-            self.pexp.expect_only(10, self.linux_prompt)
-        else:
-            self.pexp.expect_action(10, "", "\n")
-            self.login()
-
-        self.set_lnx_net("eth0")
-        self.is_network_alive_in_linux()
+        self.login_kernel()
         colon_mac = self.mac_colon_format(self.mac)
         msg(10, "Boot up to linux console and network is good ...")
 
@@ -166,24 +171,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
               So, it doesn't have to change too much. All APIs are came from script_base.py
         '''
         if PROVISION_EN is True:
-            cmd = "reboot -f"
-            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
-
-            postexp = [
-                "Firmware version:",
-                "Launching interactive shell",
-                "Welcome to CloudKey FCD"
-            ]
-            index = self.pexp.expect_get_index(200, postexp)
-            if index == 0 or index == 1 or index == 2:
-                self.pexp.expect_action(10, "", "\n")
-                self.pexp.expect_only(10, self.linux_prompt)
-            else:
-                self.pexp.expect_action(10, "", "\n")
-                self.login()
-
-            self.set_lnx_net("eth0")
-            self.is_network_alive_in_linux()
+            self.pexp.expect_lnxcmd(20, self.linux_prompt, "reboot -f")
+            self.login_kernel()
 
             cmd = "ck-ee -F -r 113-{} -s 0x{} -m {} 2>/dev/null".format(self.bom_rev, self.board_id, self.mac)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
@@ -254,10 +243,10 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "tftp -b 4096 -g -r {0}/{1}-recovery.bin -l /tmp/{1}-recovery.bin {2}".format(self.image, self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
-            cmd = "tftp -b 4096 -g -r {0}/{1}-uboot.img -l /tmp/{1}-uboot.img {2}".format(self.image, self.board_id, self.tftp_server)
+            cmd = "tftp -b 4096 -g -r {0}/{1}-kernel.bin -l /tmp/{1}-kernel.bin {2}".format(self.image, self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
-            cmd = "tftp -b 16384 -g -r {0}/{1}-fw.bin -l /tmp/{1}-fw.bin {2}".format(self.image, self.board_id, self.tftp_server)
+            cmd = "tftp -b 16384 -g -r {0}/{1}-rootfs.bin -l /tmp/{1}-rootfs.bin {2}".format(self.image, self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(120, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
             src = "{}/{}/mmc-prep.sh".format(self.tools, self.helper_path)
@@ -271,19 +260,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(300, self.linux_prompt, cmd, "DONE")
 
             cmd = "reboot -f"
-            self.pexp.expect_lnxcmd(200, self.linux_prompt, cmd)
-            self.pexp.expect_action(200, "login", "\n")
-            postexp = [
-                self.linux_prompt
-            ]
-            index = self.pexp.expect_get_index(10, postexp)
-            if index == 0:
-                self.pexp.expect_only(10, self.linux_prompt)
-            else:
-                self.login()
-
-            self.set_lnx_net("eth0")
-            self.is_network_alive_in_linux()
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            self.login_kernel()
             msg(70, "Completing the image update")
 
         cmd = "grep -q 'App Startup Complete.' /srv/unifi-protect/logs/app.log"

@@ -42,10 +42,8 @@ IMAGE-UDMB= \
     udm-fw/BZ.mt7621.*
 
 IMAGE-UDMLITE= \
-    images/ec28* \
-    udm-fw/uImage-LoCo \
-	udm-fw/UDM.lite.uImage.recovery \
-	udm-fw/UDM.mt7622.v1.8.0-pre+ubnt.2718.a4c17ceM.200430.0902.bin
+    images/ec2d* \
+    udm-fw/udm-lite/* 
 
 IMAGE-UDR= \
     images/eccc* \
@@ -102,7 +100,7 @@ TOOLS-UDMB+=$(TOOLS-CONFIG)
 TOOLS-UDMB+= udm_b/*
 
 TOOLS-UDMLITE+=$(TOOLS-CONFIG)
-TOOLS-UDMLITE+= udm/*
+TOOLS-UDMLITE+= udm_lite/*
 
 TOOLS-UDM-SE+=$(TOOLS-CONFIG)
 TOOLS-UDM-SE+= \

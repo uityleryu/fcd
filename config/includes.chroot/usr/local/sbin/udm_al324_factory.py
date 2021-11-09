@@ -89,22 +89,29 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2c': True,
         }
 
-        self.devnetmeta = {
-            'ethnum'          : self.ethnum,
-            'wifinum'         : self.wifinum,
-            'btnum'           : self.btnum
+        # Wifi cal data setting
+        self.wifical = {
+            'ea2a': True,
+            'ea2b': True,
+            'ea2c': False,
         }
 
-        self.UPDATE_UBOOT          = True
-        self.BOOT_RECOVERY_IMAGE   = True
-        self.INIT_RECOVERY_IMAGE   = True
-        self.NEED_DROPBEAR         = True
-        self.PROVISION_ENABLE      = True
-        self.DOHELPER_ENABLE       = True
-        self.REGISTER_ENABLE       = True
-        self.FWUPDATE_ENABLE       = False
-        self.DATAVERIFY_ENABLE     = True
-        self.LCM_CHECK_ENABLE      = True
+        self.devnetmeta = {
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
+        }
+
+        self.UPDATE_UBOOT = True
+        self.BOOT_RECOVERY_IMAGE = True
+        self.INIT_RECOVERY_IMAGE = True
+        self.NEED_DROPBEAR = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        self.FWUPDATE_ENABLE = False
+        self.DATAVERIFY_ENABLE = True
+        self.LCM_CHECK_ENABLE = True
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -208,6 +215,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client to push firmware")
 
+        time.sleep(5)  # for stable
+
         nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.board_id + "-fw.bin"))
         log_debug(msg=nc_cmd)
 
@@ -237,6 +246,67 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
             raise e
+
+    def unlock_eeprom_permission(self):
+        log_debug(msg="Unlock eeprom permission")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf")
+
+    def check_refuse_data(self):
+        # expected efuse data provided by RF Julie lin
+        # reg_dict format is {reg: expected_val}
+
+        log_debug(msg="Check efuse register")
+        reg_dict = {
+            '49': '0x0020',
+            '4D': '0x0040',
+            'D7C': '0x3330',
+        }
+
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "ifconfig ra0 up")
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "ifconfig rai0 up")
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "iwpriv ra0 set bufferLoadFromEfuse=1")
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "iwpriv rai0 set bufferLoadFromEfuse=1")
+
+        try:
+            for reg, expect_val in reg_dict.items():
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, "iwpriv rai0 e2p {}".format(reg), expect_val, retry=1)
+        except Exception as e:
+            log_error("Efuse data is incorrect")
+            raise e
+
+    def check_flash_data(self):
+        # offset_dict format is {offset: expected_val}
+        k_part = "/dev/mtd3"
+
+        # 5G cal data
+        log_debug(msg="Checking 5G cal data in flash")
+
+        offset_dict = {
+            '0x20d7c': '30 33',  # little endian of D7C
+        }
+
+        try:
+            for offset, expect_val in offset_dict.items():
+                self.pexp.expect_lnxcmd(
+                    15,
+                    self.linux_prompt,
+                    "busybox hexdump -s {} -n 2 -C {} | head -n 1".format(offset, k_part),
+                    expect_val,
+                    retry=1
+                )
+        except Exception as e:
+            log_error("Calibration data in flash is incorrect")
+            raise e
+
+    def write_caldata_to_flash(self):
+        log_debug(msg="Writing efuse data to flash")
+        self.check_refuse_data()
+        self.unlock_eeprom_permission()
+
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i ra0 -c "sync eeprom all"')
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i rai0 -c "sync eeprom all"')
+
+        self.check_flash_data()
 
     def run(self):
         """
@@ -272,6 +342,7 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
+            self.unlock_eeprom_permission()
             self.data_provision_64k(self.devnetmeta)
 
         if self.DOHELPER_ENABLE is True:
@@ -297,6 +368,11 @@ class UDM_AL324_FACTORY(ScriptBase):
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
+
+        if self.wifical[self.board_id] is True:
+            msg(95, "Write and check calibration data")
+            self.check_refuse_data()
+            self.write_caldata_to_flash()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
