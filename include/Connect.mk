@@ -7,6 +7,9 @@ IMAGE-UC-Plug-US= \
 IMAGE-UC-Plug-EU= \
     images/ec5b*
 
+IMAGE-UC-UPS= \
+    images/ed14*
+
 IMAGE-UC-DISPLAY-7=
 
 IMAGE-UC-DISPLAY-13=
@@ -60,6 +63,7 @@ TOOLS-UC-Plug-US+=$(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
 TOOLS-UC-Plug-EU+=$(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
+TOOLS-UC-UPS+=$(TOOLS-CONFIG)
 TOOLS-UC-DISPLAY-7+=$(TOOLS-CONFIG)
 TOOLS-UC-DISPLAY-13+=$(TOOLS-CONFIG)
 TOOLS-UC-DISPLAY-21+=$(TOOLS-CONFIG)
@@ -85,6 +89,7 @@ TOOLS-UC-THERMOSTAT+= \
 
 $(eval $(call ProductImage,UC-Plug-US,FCD_$(PRD)_UC-Plug-US_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-Plug-EU,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UC-UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-DISPLAY-7,FCD_$(PRD)_UC-DISPLAY-7_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
@@ -99,6 +104,7 @@ $(eval $(call ProductImage,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER
 
 $(eval $(call ProductCompress,UC-Plug-US,FCD_$(PRD)_UC-Plug-US_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-Plug-EU,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UC-UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-DISPLAY-7,FCD_$(PRD)_UC-DISPLAY-7_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-DISPLAY-13,FCD_$(PRD)_UC-DISPLAY-13_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-DISPLAY-21,FCD_$(PRD)_UC-DISPLAY-21_$(VER)_$(FWVER)))
@@ -113,6 +119,7 @@ $(eval $(call ProductCompress,ULED-Bulb,FCD_$(PRD)_ULED-Bulb_$(VER)_$(FWVER)))
 
 $(eval $(call ProductCompress2,00997_ec5a))
 $(eval $(call ProductCompress2,01025_ec5b))
+$(eval $(call ProductCompress2,01033_ed14))
 $(eval $(call ProductCompress2,03168_ef80))
 $(eval $(call ProductCompress2,03182_ef81))
 $(eval $(call ProductCompress2,03287_ef83))

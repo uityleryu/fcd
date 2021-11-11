@@ -1716,7 +1716,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
-     }
+     },
+     "UC-UPS": {
+      "INDEX": 0,
+      "NAME": "UC-UPS",
+      "BOARDID": "ed14",
+      "BOMREV": "113-01033",
+      "DESC": "UniFi Connect UPS",
+      "FILE": "uc_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    }
   },
 
   "airMAX":

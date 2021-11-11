@@ -1,0 +1,58 @@
+{
+  "Connect": {
+    "UC-UPS": {
+      "INDEX": 0,
+      "NAME": "UC-UPS",
+      "BOARDID": "ed14",
+      "BOMREV": "113-01023",
+      "DESC": "UniFi Connect UPS",
+      "FILE": "uc_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uc_ups",
+          "DST_PATH": "tools/uc_ups",
+          "FILES": [
+            "helper_MT7628_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw/ups_mt7628",
+          "DST_PATH": "uc-fw/ups_mt7628",
+          "FILES": [
+            "US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin",
+            "lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin",
+            "ramips-mt76x8-usp-initramfs-32MB.uboot"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed14-fw.bin",
+          "../uc-fw/ups_mt7628/US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin"
+        ],
+        [
+          "tftp/images/ed14-initramfs.bin",
+          "../uc-fw/ups_mt7628/lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ed14-uboot.bin",
+          "../uc-fw/ups_mt7628/ramips-mt76x8-usp-initramfs-32MB.uboot"
+        ]
+      ]
+    }
+  }
+}
