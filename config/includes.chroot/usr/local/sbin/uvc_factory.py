@@ -77,9 +77,8 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbell"
 
         elif self.product_name == "UVC-G4BULLET":
-            second_falsh_en = True
-            if second_falsh_en is True:
-                self.board_name = "UVC-G4BULLET"
+            if int(self.bom_rev.split('-')[1]) > 6:
+                self.board_name = "UVC G4 BULLET"
                 self.ip = "192.168.2.20"
                 self.mtd_name = 'spi'
                 self.helper_rule = 1
@@ -94,7 +93,7 @@ class UVCFactoryGeneral(ScriptBase):
             second_falsh_en = True
             if second_falsh_en is True:
                 self.board_name = "UVC-G4DOME"
-                self.ip = "192.168.1.20"
+                self.ip = "192.168.2.20"
                 self.mtd_name = 'spi'
                 self.helper_rule = 1
             else:
@@ -279,6 +278,9 @@ class UVCFactoryGeneral(ScriptBase):
 
         self.fw_version = self.ezreadini(self.fwinfo_path, 'MAIN', 'fw_version')
         print("fw_version: " + self.fw_version)
+
+        self.predbg_version = self.ezreadini(self.fwinfo_path, 'MAIN', 'predbg_version')
+        print("predbg_version: " + self.predbg_version)
 
     def critical_error(self, msg):
         self.finalret = False
@@ -978,7 +980,7 @@ class UVCFactoryGeneral(ScriptBase):
         uptime = self.session.execmd_getmsg("uptime")
         print('uptime = {}'.format(uptime))
 
-        fw_version = self.session.execmd_getmsg("cat /usr/lib/version")
+        fw_version = self.session.execmd_getmsg("cat /usr/lib/version").replace('\n', '')
         print('cat /usr/lib/version = \n{}'.format(fw_version))
 
         board_info = self.session.execmd_getmsg("cat /etc/board.info")
@@ -988,6 +990,13 @@ class UVCFactoryGeneral(ScriptBase):
         print('urescue_fw = {}'.format(urescue_fw_version))
 
         time.sleep(1)
+
+        if self.predbg_version != "":
+            if fw_version != self.predbg_version:
+
+                self.critical_error('[Fail] preload version not match')
+            else:
+                log_debug("[Pass] preload version match.")
 
     def _log_duration(self, action, time_start):
         duration_msg = '\n\n ===> [Time Elapsed] {cap}: {time} sec'
@@ -1005,14 +1014,14 @@ class UVCFactoryGeneral(ScriptBase):
                                   polling_mins=self.polling_mins)
 
         self.set_sshclient_helper(ssh_client=sshclient_obj)
+
+        self.finalret = True
         self._get_init_dut_info()
 
         log_debug("Uploading flash module...")
-
         time_start = time.time()
         self.upload_flash_module()
         self.eerom_status = 0
-        self.finalret = True
         self._log_duration('upload_flash', time_start)
 
         '''

@@ -35,8 +35,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g4dome.UVC.S5L.v4.23.5.67-fcddbg.49e4dc6.200812.0235.bin",
-            "g4dome.UVC.S5L.v4.38.99.67-fcddbg.fe76bfd.210708.1457.bin"
+            "g4dome.UVC.S5L.v4.38.99.67-fcddbg.4f472c1.211021.0134.bin"
           ]
         }
       ],
