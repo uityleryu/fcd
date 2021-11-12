@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v2.3.4.378f837.211103.0124.bin"
+          "../udm-fw/udw/UDW.al324.v2.3.5.25aac2b.211111.2311.bin"
         ],
         [
           "tftp/images/ea2a-recovery",
