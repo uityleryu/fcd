@@ -1,10 +1,10 @@
 {
   "UniFiDream": {
-    "UDM-SE-00917": {
+    "UDM-SE-01097": {
       "INDEX": 0,
-      "NAME": "UDM-SE-00917",
+      "NAME": "UDM-SE-01097",
       "BOARDID": "ea2c",
-      "BOMREV": "113-00917",
+      "BOMREV": "113-01097",
       "DESC": "UniFi Dream Machine SE",
       "FILE": "udm_al324_factory.py",
       "T1FILE": "",

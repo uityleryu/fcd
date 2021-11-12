@@ -153,6 +153,7 @@ $(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00917_ea2c))
+$(eval $(call ProductCompress2,01097_ea2c))
 $(eval $(call ProductCompress2,01029_ea2e))
 $(eval $(call ProductCompress2,00623_ea11))
 $(eval $(call ProductCompress2,00740_ea19))
