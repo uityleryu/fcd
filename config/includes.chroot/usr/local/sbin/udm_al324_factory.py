@@ -259,7 +259,6 @@ class UDM_AL324_FACTORY(ScriptBase):
         reg_dict = {
             '49': '0x0020',
             '4D': '0x0040',
-            'D7C': '0x3330',
         }
 
         self.pexp.expect_lnxcmd(15, self.linux_prompt, "ifconfig ra0 up")
@@ -282,7 +281,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         log_debug(msg="Checking 5G cal data in flash")
 
         offset_dict = {
-            '0x20d7c': '30 33',  # little endian of D7C
+            '0x20049': '20 00',  # little endian of 49
+            '0x2004d': '40 00',  # little endian of 4D
         }
 
         try:
