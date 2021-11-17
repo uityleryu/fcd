@@ -111,8 +111,8 @@ class MT7628MFGGeneral(ScriptBase):
         msg(no=50, out='flash back to T1 kernel and u-boot ...')
         self.write_img()
 
-        # msg(no=80, out='Waiting for T1 booting ...')
-        # self.reset_uboot()
+        msg(no=80, out='Waiting for T1 booting ...')
+        self.reset_uboot()
 
         msg(no=100, out="Back to T1 has completed")
         self.close_fcd()
