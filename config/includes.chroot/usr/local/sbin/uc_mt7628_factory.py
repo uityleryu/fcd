@@ -69,8 +69,22 @@ class UCMT7628Factory(ScriptBase):
     def update_uboot_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
+        ## Uboot of BSP
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 393216 bytes @ 0x0 Erased: OK
+        # device 0 offset 0x0, size 0x2c3f0
+        # SF: 181232 bytes @ 0x0 Written: OK
+        # =>
+
+        ## Uboot of FW
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 16777216 bytes @ 0x0 Erased: OK
+        # uboot>
+        
         self.pexp.expect_only(120, "Erased: OK")
-        self.pexp.expect_only(120, "Written: OK")
+        # self.pexp.expect_only(120, "Written: OK")  #BSP uboot, have "Written", FW Uboot have no Written
+        # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def init_ramfs_image(self):
@@ -87,10 +101,13 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         
-        
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
                                                        "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        
+        ##  remove DEVREG data
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
@@ -119,7 +136,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")

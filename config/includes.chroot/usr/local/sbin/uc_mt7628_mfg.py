@@ -72,10 +72,22 @@ class MT7628MFGGeneral(ScriptBase):
         cmd = "tftpboot 0x80001000 {}".format(self.bspimg)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x1000000; sf write 0x80001000 0x0 0x1000000")
+        ## Uboot of BSP
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 393216 bytes @ 0x0 Erased: OK
+        # device 0 offset 0x0, size 0x2c3f0
+        # SF: 181232 bytes @ 0x0 Written: OK
+        # =>
+
+        ## Uboot of FW
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 16777216 bytes @ 0x0 Erased: OK
+        # uboot>
+        
         self.pexp.expect_only(120, "Erased: OK")
-        self.pexp.expect_only(120, "Written: OK")
+        # self.pexp.expect_only(120, "Written: OK")    #BSP uboot, have "Written", FW Uboot have no Written
         # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "^c")
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "^c")
 
     def is_mfg_uboot(self):
         ret = self.pexp.expect_get_output("version", self.bootloader_prompt)

@@ -5,6 +5,9 @@ IMAGE-6-Instant= \
     images/a616* \
     afi-fw/*
 
+IMAGE-UPS= \
+    images/ed14*
+
 IMAGE-ALN-R= \
     images/da11* \
     afi-fw/*
@@ -44,6 +47,7 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
+TOOLS-UC-UPS+=$(TOOLS-CONFIG)
 TOOLS-ALN+=$(TOOLS-CONFIG)
 TOOLS-ALN+= afi_aln/*
 
@@ -56,9 +60,11 @@ TOOLS-ALN-P-EU=$(TOOLS-ALN)
 
 # Project target
 $(eval $(call ProductImage,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
 
 ## Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -67,3 +73,4 @@ $(eval $(call ProductCompress2,01905_da13))
 $(eval $(call ProductCompress2,00657_da12))
 $(eval $(call ProductCompress2,00957_da14))
 $(eval $(call ProductCompress2,01605_da11))
+$(eval $(call ProductCompress2,01033_ed14))
