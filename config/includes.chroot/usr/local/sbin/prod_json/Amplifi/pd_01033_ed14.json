@@ -1,12 +1,12 @@
 {
-  "Connect": {
-    "UC-UPS": {
+  "Amplifi": {
+    "Amplifi-UPS": {
       "INDEX": 0,
       "NAME": "UC-UPS",
       "BOARDID": "ed14",
       "BOMREV": "113-01023",
-      "DESC": "UniFi Connect UPS",
-      "FILE": "uc_mt7628_factory.py",
+      "DESC": "Amplifi UPS",
+      "FILE": "afi_mt7628_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0011",
