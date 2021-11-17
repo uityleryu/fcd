@@ -61,16 +61,16 @@ class UCMT7628Factory(ScriptBase):
         self.set_boot_net()
         
     def set_boot_net(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv loadaddr 0x81000000")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.is_network_alive_in_uboot()
         
     def update_uboot_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
+        self.pexp.expect_only(120, "Erased: OK")
+        self.pexp.expect_only(120, "Written: OK")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def init_ramfs_image(self):
@@ -99,7 +99,6 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv do_urescue TRUE")
-        self.pexp.expect_action(30, self.bootloader_prompt, "^c")
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 

@@ -21,15 +21,6 @@ class MT7628MFGGeneral(ScriptBase):
         
         self.bspimg = "images/" + self.board_id + "-nor.bin"
 
-    # def write_img(self):
-    #     log_debug(msg="Initializing sf => nor init")
-        # self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action="nor init")
-
-        # cmd = "snor erase 0x0 0x4000000; snor write ${loadaddr} 0x0 0x3ff0000"
-        # log_debug(msg="run cmd " + cmd)
-        # self.pexp.expect_action(timeout=10, exptxt=self.bootloader_prompt, action=cmd)
-        # self.pexp.expect_only(timeout=300, exptxt=self.bootloader_prompt)
-        # self.pexp.expect_action(timeout=10, exptxt="", action=" ")
     def update_nor(self):
         # cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)
         # log_debug(cmd)
@@ -48,12 +39,12 @@ class MT7628MFGGeneral(ScriptBase):
 
         if self.erase_devreg == "True":
             log_debug("Will Delete DevReg data")
-        #     devreg_offset = "0x230000"
-        #     cmd = "sf erase 0x230000 0x010000"
-        #     log_debug("Erase devreg data ...")
-        #     log_debug(cmd)
-        #     self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        #     self.pexp.expect_only(60, "Erased: OK")
+            # devreg_offset = "0x80000"
+            # cmd = "sf erase 0x80000 0x010000"
+            # log_debug("Erase devreg data ...")
+            # log_debug(cmd)
+            # self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+            # self.pexp.expect_only(60, "Erased: OK")
 
     def stop_uboot(self, timeout=30):
         self.set_bootloader_prompt(">")
@@ -71,21 +62,19 @@ class MT7628MFGGeneral(ScriptBase):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
 
     def set_boot_netenv(self):
-        # self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethaddr " + self.premac)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
 
     def write_img(self):
         log_debug(msg="Write BSP image")
         
         cmd = "tftpboot 0x80001000 {}".format(self.bspimg)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x1000000; sf write 0x80001000 0x0 0x1000000;")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x1000000; sf write 0x80001000 0x0 0x1000000")
         self.pexp.expect_only(120, "Erased: OK")
         self.pexp.expect_only(120, "Written: OK")
+        # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "^c")
 
     def is_mfg_uboot(self):
