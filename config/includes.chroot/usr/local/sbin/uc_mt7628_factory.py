@@ -46,7 +46,7 @@ class UCMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
-        self.UPDATE_UBOOT_ENABLE    = False
+        self.UPDATE_UBOOT_ENABLE    = True
         self.BOOT_RAMFS_IMAGE       = True 
         self.PROVISION_ENABLE       = True 
         self.DOHELPER_ENABLE        = True 
@@ -65,14 +65,15 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv loadaddr 0x81000000")
-        # time.sleep(5)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-        
         self.is_network_alive_in_uboot()
+        
+    def update_uboot_image(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def init_ramfs_image(self):
-        self.enter_uboot()
-        
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         
@@ -98,6 +99,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv do_urescue TRUE")
+        self.pexp.expect_action(30, self.bootloader_prompt, "^c")
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
@@ -147,13 +149,12 @@ class UCMT7628Factory(ScriptBase):
         if self.UPDATE_UBOOT_ENABLE is True:
             # self.fwupdate(self.fwimg, reboot_en=False)
             self.enter_uboot()
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+            self.update_uboot_image()
             msg(10, "Update Uboot image successfully ...")
 
         if self.BOOT_RAMFS_IMAGE is True:
             msg(15, "Boot into initRamfs image for registration ...")
+            self.enter_uboot()
             self.init_ramfs_image()
 
         if self.PROVISION_ENABLE is True:
