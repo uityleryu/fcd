@@ -23,18 +23,19 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/uc_ups",
-          "DST_PATH": "tools/uc_ups",
+          "SRC_PATH": "images/tools/afi_ups",
+          "DST_PATH": "tools/afi_ups",
           "FILES": [
             "helper_MT7628_release"
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uc-fw/ups_mt7628",
-          "DST_PATH": "uc-fw/ups_mt7628",
+          "SRC_PATH": "images/fcd-image/afi-fw/ups_mt7628",
+          "DST_PATH": "afi-fw/ups_mt7628",
           "FILES": [
             "US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin",
             "lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin",
+            "usp-strip-battery_mt7628_cal_nor-v5.bin",
             "ramips-mt76x8-usp-initramfs-32MB.uboot"
           ]
         }
@@ -42,15 +43,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed14-fw.bin",
-          "../uc-fw/ups_mt7628/US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin"
+          "../afi-fw/ups_mt7628/US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin"
         ],
         [
           "tftp/images/ed14-initramfs.bin",
-          "../uc-fw/ups_mt7628/lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin"
+          "../afi-fw/ups_mt7628/lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ed14-nor.bin",
+          "../afi-fw/ups_mt7628/usp-strip-battery_mt7628_cal_nor-v5.bin"
         ],
         [
           "tftp/images/ed14-uboot.bin",
-          "../uc-fw/ups_mt7628/ramips-mt76x8-usp-initramfs-32MB.uboot"
+          "../afi-fw/ups_mt7628/ramips-mt76x8-usp-initramfs-32MB.uboot"
         ]
       ]
     }
