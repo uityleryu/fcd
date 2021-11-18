@@ -298,6 +298,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             log_error("Calibration data in flash is incorrect")
             raise e
 
+    def del_anonymous_file(self):
+        self.pexp.expect_lnxcmd(15, self.linux_prompt, "rm /persistent/system/anonymous_device_id")
+
     def write_caldata_to_flash(self):
         log_debug(msg="Writing efuse data to flash")
         self.check_refuse_data()
@@ -373,6 +376,8 @@ class UDM_AL324_FACTORY(ScriptBase):
             msg(95, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
+
+        self.del_anonymous_file()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
