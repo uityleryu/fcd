@@ -685,6 +685,9 @@ class ScriptBase(object):
 
     def disable_udhcpc(self):
         self.disable_inittab_process("udhcpc")
+        
+    def disable_wpa_supplicant(self):
+        self.disable_inittab_process("wpa_supplicant")
 
     def disable_hostapd(self):
         self.disable_inittab_process("hostapd")

@@ -27,7 +27,7 @@ class UCMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = ">"
-        self.helper_path = "uc_ups"
+        self.helper_path = "afi_ups"
 
         # number of mac
         self.macnum =  {'ed14': "0"}
@@ -94,6 +94,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(30, "Loading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
         self.disable_udhcpc()
+        self.disable_wpa_supplicant()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)

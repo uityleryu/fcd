@@ -1303,7 +1303,19 @@
       "FILE"        : "afi_ipq807x_factory.py",
       "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
-    }
+    },
+    "AFi-UPS": {
+     "INDEX": 0,
+     "NAME": "AFi-UPS",
+     "BOARDID": "ed14",
+     "BOMREV": "113-01033",
+     "DESC": "Amplifi UPS",
+     "FILE": "afi_mt7628_factory.py",
+     "T1FILE": "afi_mt7628_mfg.py",
+     "QRCHECK": "True",
+     "FCD_ID": "0011",
+     "SW_ID": "1c01"
+   }
 
   },
 
@@ -1716,19 +1728,7 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
-     },
-     "UC-UPS": {
-      "INDEX": 0,
-      "NAME": "UC-UPS",
-      "BOARDID": "ed14",
-      "BOMREV": "113-01033",
-      "DESC": "UniFi Connect UPS",
-      "FILE": "uc_mt7628_factory.py",
-      "T1FILE": "",
-      "QRCHECK": "True",
-      "FCD_ID": "0011",
-      "SW_ID": "1c01"
-    }
+     }
   },
 
   "airMAX":
