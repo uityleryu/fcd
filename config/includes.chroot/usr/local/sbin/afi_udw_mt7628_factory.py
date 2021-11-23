@@ -30,13 +30,25 @@ class UCMT7628Factory(ScriptBase):
         self.helper_path = "afi_ups"
 
         # number of mac
-        self.macnum =  {'ed14': "0"}
+        self.macnum =  {
+            'ed14': "0",
+            'ea2e': "1"
+        }
         # number of WiFi
-        self.wifinum = {'ed14': "1"}
+        self.wifinum = {
+            'ed14': "1",
+            'ea2e': "0"
+        }
         # number of Bluetooth
-        self.btnum =   {'ed14': "1"}
+        self.btnum =   {
+            'ed14': "1",
+            'ea2e': "0"
+        }
         # flash size map
-        self.flash_size = {'ed14':  "33554432"}
+        self.flash_size = {
+            'ed14':  "33554432",
+            'ea2e': "16777216"
+        }
         # firmware image
         self.fwimg = self.board_id + "-fw.bin"
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -69,14 +81,14 @@ class UCMT7628Factory(ScriptBase):
     def update_uboot_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
-        ## Uboot of BSP
+        ## Uboot of BSP, AFi-UPS
         # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
         # SF: 393216 bytes @ 0x0 Erased: OK
         # device 0 offset 0x0, size 0x2c3f0
         # SF: 181232 bytes @ 0x0 Written: OK
         # =>
 
-        ## Uboot of FW
+        ## Uboot of FW, AFi-UPS
         # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
         # SF: 16777216 bytes @ 0x0 Erased: OK
         # uboot>
@@ -93,8 +105,13 @@ class UCMT7628Factory(ScriptBase):
         
         self.pexp.expect_only(30, "Loading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
-        self.disable_udhcpc()
-        self.disable_wpa_supplicant()
+        
+        if self.board_id == "ed14":
+            self.disable_udhcpc()
+            self.disable_wpa_supplicant()
+        else:
+            pass
+        
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
@@ -120,6 +137,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
+        # to use Desktop atftp to transfer image to DUT
         cmd = ["atftp",
                "-p",
                "-l",
