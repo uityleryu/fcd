@@ -185,7 +185,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        time.sleep(10)   #delay because no delay the devreg check will be fail
+        time.sleep(15)   #delay because no delay the devreg check will be fail
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
@@ -208,7 +208,6 @@ d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6
                 info[key] = str(int(data_list[0][0:6],16)).zfill(5)
             else:
                 info[key] = data_list[0].lower()
-            # import pdb; pdb.set_trace()
 
         for key in devreg_data_dict:
             if devreg_data_dict[key] != info[key]:
