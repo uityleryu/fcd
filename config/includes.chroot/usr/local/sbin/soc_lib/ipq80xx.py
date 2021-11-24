@@ -141,13 +141,6 @@ class IPQ80XXFactory(ScriptBase):
         time.sleep(1)
         self.set_uboot_network()
 
-        if self.board_id == "ac14":
-            log_debug("Starting Update CDT")
-            cmd = "tftpboot 0x44000000 images/ac14-cdt.bin"
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-            cmd ="nand erase 0xc00000 0x80000 && nand write 0x44000000 0xc00000 0x80000"
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
         log_debug("Starting doing U-Boot update")
         cmd = "tftpboot 44000000 images/{}".format(self.bootloader[self.board_id])
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)

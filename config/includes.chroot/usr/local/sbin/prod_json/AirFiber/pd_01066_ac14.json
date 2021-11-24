@@ -18,8 +18,7 @@
           "FILES": [
             "fwupdate_01066_20211019-2.bin",
             "u-boot_01066.mbn",
-            "af60-xr-spf10.0-nand-v7.bin",
-            "af60-xr-spf10.0-nand-v8-cdt.bin"
+            "af60-xr-spf10.0-nand-v7.bin"
           ]
         },
         {
@@ -51,10 +50,6 @@
         [
           "tftp/images/ac14-bootloader.bin",
           "../af-fw/u-boot_01066.mbn"
-        ],
-        [
-          "tftp/images/ac14-cdt.bin",
-          "../af-fw/af60-xr-spf10.0-nand-v8-cdt.bin"
         ],
         [
           "tftp/images/ac11-mfg.bin",
