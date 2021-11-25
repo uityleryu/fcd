@@ -241,22 +241,16 @@ class IPQ5018MFGGeneral(ScriptBase):
     def __init__(self):
         super(IPQ5018MFGGeneral, self).__init__()
         self.mem_addr = "0x44000000"
-        self.bsp_bin = "{}-bsp.bin".format(self.board_id)
+        self.nor_bin = "{}-nor.bin".format(self.board_id)
+        self.emmc_bin = "{}-emmc.bin".format(self.board_id)
         self.set_bootloader_prompt("IPQ5018#")
 
-    def transfer_img(self, address, filename):
-        img = os.path.join(self.image, filename)
-        img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot {} {}".format(address, img))
-        self.pexp.expect_only(60, "Bytes transferred = {}".format(img_size))
-
-    def update_single(self):
-        cmd = "imgaddr=$fileaddr && source $imgaddr:script"
+    def update_nor(self):
+        cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        self.pexp.expect_only(60, "machid : Validation success")
-        self.pexp.expect_only(60, "Flashing rootfs:")
-        self.pexp.expect_only(60, "Flashing rootfs_data:")
+        self.pexp.expect_only(60, "Erased: OK")
+        self.pexp.expect_only(60, "Written: OK")
 
         if self.erasecal == "True":
             cal_offset = "0x1C0000"
@@ -276,9 +270,24 @@ class IPQ5018MFGGeneral(ScriptBase):
 
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
+    def update_emmc(self):
+        cmd = "mmc erase 0x0 0x2a422; mmc write {} 0x0 0x2a422".format(self.mem_addr)
+        log_debug(cmd)
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+        self.pexp.expect_only(60, "blocks erased: OK")
+        self.pexp.expect_only(60, "blocks written: OK")
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
+
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
                                 action= "\x1b\x1b")
+
+    def transfer_img(self, address, filename):
+        img = os.path.join(self.image, filename)
+        img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
+        self.pexp.expect_action(10, self.bootloader_prompt, "tftpb {} {}".format(address, img))
+        self.pexp.expect_only(60, "Bytes transferred = {}".format(img_size))
+
 
     def t1_image_check(self):
         self.pexp.expect_only(30, "Starting kernel")
@@ -297,18 +306,37 @@ class IPQ5018MFGGeneral(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        # Update BSP image
+        # Update NOR(uboot)
         self.stop_uboot()
         msg(10, 'Stop in uboot...')
-
-        self.set_ub_net(self.premac)
+        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
+        if self.board_id == "a656":
+            self.set_ub_net(self.premac, ethact="eth1")
+        else:
+            self.set_ub_net(self.premac)
 
         self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
-        self.transfer_img(address=self.mem_addr, filename=self.bsp_bin)
-        msg(30, 'Transfer BSP image done')
-        self.update_single()
-        msg(60, 'Update BSP image done ...')
+        self.transfer_img(address=self.mem_addr, filename=self.nor_bin)
+        msg(30, 'Transfer NOR done')
+        self.update_nor()
+        msg(40, 'Update NOR done ...')
+
+        # Update EMMC(kernel)
+        self.stop_uboot()
+        msg(50, 'Stop in uboot...')
+        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
+        if self.board_id == "a656":
+            self.set_ub_net(self.premac, ethact="eth1")
+        else:
+            self.set_ub_net(self.premac)
+
+        self.is_network_alive_in_uboot()
+        msg(60, 'Network in uboot works ...')
+        self.transfer_img(address=self.mem_addr, filename=self.emmc_bin)
+        msg(70, 'Transfer EMMC done')
+        self.update_emmc()
+        msg(80, 'Update EMMC done ...')
 
         # Check if we are in T1 image
         self.t1_image_check()
