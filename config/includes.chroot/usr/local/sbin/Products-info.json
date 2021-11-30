@@ -1653,6 +1653,18 @@
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
     },
+    "UC-Wall-Outlet-US": {
+      "INDEX": 0,
+      "NAME": "UC-Wall-Outlet-US",
+      "BOARDID": "ec5c",
+      "BOMREV": "113-01013",
+      "DESC": "UniFi Connect Wall Outlet US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
     "UC-Thermostat":{
       "INDEX"       : 0,
       "NAME"        : "UC-Thermostat",

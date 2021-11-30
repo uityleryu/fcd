@@ -1,0 +1,61 @@
+{
+  "Connect": {
+    "UC-Wall-Outlet-US": {
+      "INDEX": 0,
+      "NAME": "UC-Wall-Outlet-US",
+      "BOARDID": "ec5c",
+      "BOMREV": "113-01013",
+      "DESC": "UniFi Connect Wall Outlet US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw",
+          "DST_PATH": "uc-fw",
+          "FILES": [
+            "CPP1.esp32app.0.1.0+181.211022.0621.bin",
+            "bootloader.bin",
+            "CPP1.esp32mfg.0.1.0+181.211022.1440.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec5b-app.bin",
+          "../uc-fw/CPP1.esp32app.0.1.0+181.211022.0621.bin"
+        ],
+        [
+          "tftp/images/ec5b-bootloader.bin",
+          "../uc-fw/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec5b-mfg.bin",
+          "../uc-fw/CPP1.esp32mfg.0.1.0+181.211022.1440.bin"
+        ],
+        [
+          "tftp/images/ec5b-ota.bin",
+          "../uc-fw/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec5b-ptn-table.bin",
+          "../uc-fw/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}
