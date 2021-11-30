@@ -104,12 +104,8 @@ class UISPQCA9531Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
        
     def set_up_kernel(self):
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "\n\n")
-        time.sleep(3)
-        self.pexp.expect_ubcmd(5, self.linux_prompt, "\n", retry=10)
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, 'ifconfig eth0 ' + self.dutip)
         self.is_network_alive_in_linux()
-
 
     def set_up_uboot(self):
         self.stop_uboot()
@@ -160,6 +156,12 @@ class UISPQCA9531Factory(ScriptBase):
             self.set_up_uboot()
 
             msg(10, "Completed set up U-Boot...")
+
+        self.pexp.expect_lnxcmd(60, "UBNT_Diag", "exec sh\r", self.linux_prompt)
+        log_debug('From diag shell go back to linux shell')
+        '''
+        From diag shell back to linux shell.
+        ''' 
 
         self.set_up_kernel()
 
