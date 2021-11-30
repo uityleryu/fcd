@@ -23,12 +23,12 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uc-fw",
-          "DST_PATH": "uc-fw",
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-wall-us",
+          "DST_PATH": "uc-fw/uc-wall-us",
           "FILES": [
-            "CPP1.esp32app.0.1.0+181.211022.0621.bin",
+            "CPP2.esp32mfg.0.1.1+210.211125.1733.develop.dual_mfg.bin",
             "bootloader.bin",
-            "CPP1.esp32mfg.0.1.0+181.211022.1440.bin",
+            "dual_mfg.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -36,24 +36,24 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec5b-app.bin",
-          "../uc-fw/CPP1.esp32app.0.1.0+181.211022.0621.bin"
+          "tftp/images/ec5c-app.bin",
+          "../uc-fw/uc-wall-us/CPP2.esp32mfg.0.1.1+210.211125.1733.develop.dual_mfg.bin"
         ],
         [
-          "tftp/images/ec5b-bootloader.bin",
-          "../uc-fw/bootloader.bin"
+          "tftp/images/ec5c-bootloader.bin",
+          "../uc-fw/uc-wall-us/bootloader.bin"
         ],
         [
-          "tftp/images/ec5b-mfg.bin",
-          "../uc-fw/CPP1.esp32mfg.0.1.0+181.211022.1440.bin"
+          "tftp/images/ec5c-mfg.bin",
+          "../uc-fw/uc-wall-us/dual_mfg.bin"
         ],
         [
-          "tftp/images/ec5b-ota.bin",
-          "../uc-fw/ota_data_initial.bin"
+          "tftp/images/ec5c-ota.bin",
+          "../uc-fw/uc-wall-us/ota_data_initial.bin"
         ],
         [
-          "tftp/images/ec5b-ptn-table.bin",
-          "../uc-fw/partition-table.bin"
+          "tftp/images/ec5c-ptn-table.bin",
+          "../uc-fw/uc-wall-us/partition-table.bin"
         ]
       ]
     }
