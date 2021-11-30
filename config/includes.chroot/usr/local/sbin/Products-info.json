@@ -326,11 +326,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-Enterprise-24-PoE":{
+    "USW-Enterprise-24-PoE-03154":{
       "INDEX"       : 11,
       "NAME"        : "USW-Enterprise-24-PoE",
       "BOARDID"     : "eb38",
       "BOMREV"      : "113-03154",
+      "DESC"        : "UniFi Switch Enterprise 24 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-24-PoE-03967":{
+      "INDEX"       : 11,
+      "NAME"        : "USW-Enterprise-24-PoE",
+      "BOARDID"     : "eb38",
+      "BOMREV"      : "113-03967",
       "DESC"        : "UniFi Switch Enterprise 24 PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
@@ -781,11 +794,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-Enterprise-8-PoE":{
+    "USW-Enterprise-8-PoE-03188":{
       "INDEX"       : 33,
       "NAME"        : "USW-Enterprise-8-PoE",
       "BOARDID"     : "ed41",
       "BOMREV"      : "113-03188",
+      "DESC"        : "UniFi Switch Enterprise 8-port PoE",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-8-PoE-03969":{
+      "INDEX"       : 33,
+      "NAME"        : "USW-Enterprise-8-PoE",
+      "BOARDID"     : "ed41",
+      "BOMREV"      : "113-03969",
       "DESC"        : "UniFi Switch Enterprise 8-port PoE",
       "FILE"        : "us_mrvl_factory.py",
       "T1FILE"      : "",
