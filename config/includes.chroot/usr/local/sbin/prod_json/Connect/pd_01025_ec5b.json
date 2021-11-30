@@ -28,7 +28,7 @@
           "FILES": [
             "CPP1.esp32app.0.1.0+181.211022.0621.bin",
             "bootloader.bin",
-            "CPP1.esp32mfg.0.1.0+181.211022.1440.bin",
+            "plug_mfg.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -45,7 +45,7 @@
         ],
         [
           "tftp/images/ec5b-mfg.bin",
-          "../uc-fw/CPP1.esp32mfg.0.1.0+181.211022.1440.bin"
+          "../uc-fw/plug_mfg.bin"
         ],
         [
           "tftp/images/ec5b-ota.bin",
