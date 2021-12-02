@@ -126,7 +126,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'btnum'           : btnum,
         }
 
-        self.developed = ["eed1", "eed3"]
+        self.developed = ["eed3"]
 
     def stop_at_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit Esc key to stop autoboot", "\033\033")
