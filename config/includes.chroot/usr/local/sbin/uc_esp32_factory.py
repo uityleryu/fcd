@@ -45,6 +45,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             'ec5a': "0",
             'ec5b': "0",
             'ec5c': "0",
+            'ec5d': "0",
         }
 
         # number of WiFi
@@ -52,6 +53,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             'ec5a': "2",
             'ec5b': "2",
             'ec5c': "2",
+            'ec5d': "2",
         }
 
         # number of Bluetooth
@@ -59,6 +61,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             'ec5a': "1",
             'ec5b': "1",
             'ec5c': "1",
+            'ec5d': "1",
         }
 
         self.devnetmeta = {
