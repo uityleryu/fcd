@@ -17,8 +17,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "DIAG_UISP_S_Pro_1.3.8_Dev2.vmlinux.bix",
-            "u-boot-uisp-s-pro-ge93998a.bin"
+            "DIAG_UISP_S_Pro_1.3.8_Dev2.vmlinux.bix"
           ]
         },
         {
