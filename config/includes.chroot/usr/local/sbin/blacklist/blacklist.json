@@ -18,11 +18,6 @@
       "BOMREV"      : "113-00744",
       "FWVER"       : "5.60.1",
       "BLACK_LIST": {
-        "LED": {
-          "reg": "led_ht52241 0\\-0030\\: failed writing",
-          "level": "fail",
-          "assignee": "CM"
-        },
         "KERNEL_PANIC": {
           "reg": "Kernel panic",
           "level": "warning",
