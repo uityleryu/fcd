@@ -78,7 +78,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         # ethernet interface
         self.netif = {
             'ea2a': "br0",  # udw
-            'ea2b': "eth20",  # udw_pro
+            'ea2b': "psu0",  # udw_pro
             'ea2c': "eth9",  # udm_se
         }
 
