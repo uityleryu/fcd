@@ -1,0 +1,30 @@
+{
+  "UniFiAP": {
+    "Unifi-PoE-at": {
+      "INDEX": 0,
+      "NAME": "Unifi-PoE-at",
+      "BOARDID": "dcb5",
+      "BOMREV": "113-01068",
+      "DESC": "Unifi-PoE at",
+      "FILE": "upoe_ipq40xx_factory.py",
+      "T1FILE": "upoe_ipq40xx_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+      ]
+    }
+  }
+}
