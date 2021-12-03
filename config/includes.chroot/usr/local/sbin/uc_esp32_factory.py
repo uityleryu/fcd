@@ -149,23 +149,20 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        # self.pexp.expect_lnxcmd(180, self.esp32_prompt, "",self.esp32_prompt)
-        self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots OTA0(APP fw)(0x190000) well")
-        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
-        log_debug(output)
-        log_debug("Change to boots on OTA1(0x510000)")
-        output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
-        log_debug(output)
-        log_debug("reboot Device")
-        output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
-
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots OTA1(factory fw) well")
-        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
-        log_debug(output)
+        while True:
+            self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+            self.pexp.expect_only(180, self.esp32_prompt)
+            output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+            boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
+            log_debug(output)
+            log_debug("Need to boot on factory image @0x510000, now boot @{}".format(boot_address))
+            if boot_address == "0x510000":
+                log_debug("Boot to mfg image @0x510000")
+                break
+            output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
+            log_debug(output)
+            output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
+            # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
     def fwupdate(self):
         self.check_device_stat()
