@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "ULTE-PRO-EU": {
+    "ULTE-Backup-Pro-EU": {
       "INDEX": 0,
-      "NAME": "ULTE-PRO-EU",
+      "NAME": "U-LTE-Backup-Pro-EU",
       "BOARDID": "e612",
       "BOMREV": "113-00718",
-      "DESC": "UniFi LTE Pro EU",
+      "DESC": "UniFi LTE Backup Pro EU",
       "FILE": "uap_qca956x_factory.py",
       "T1FILE": "uap_qca956x_mfg.py",
       "QRCHECK": "True",

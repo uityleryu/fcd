@@ -333,7 +333,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             log_debug("Get linux information successfully")
             match = re.findall("armv7l", sto)
             if match:
-                clientbin = "/usr/local/sbin/client_rpi4_release_hk_20210412"
+                clientbin = "/usr/local/sbin/client_rpi4_release"
             else:
                 clientbin = "/usr/local/sbin/client_x86_release_20190507"
 
@@ -560,6 +560,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
             msg(80, "Finish checking MAC in DUT ...")
+
+        if self.board_id == "a919":
+            self.ser.execmd(cmd="BOOTFW:1")
+            self.ser.expect_only("erase", timeout=10)
+            self.ser.expect_only("write", timeout=20)
+            self.ser.expect_only("ULM_FTU_VER", timeout=30)
 
         msg(100, "Completing registration ...")
         self.close_fcd()

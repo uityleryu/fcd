@@ -16,10 +16,9 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "fwupdate_01066_20211019-2.bin",
+            "MGMP.ipq807x.v1.0.0-devel.d98e0934.211123.1329.bin",
             "u-boot_01066.mbn",
-            "af60-xr-spf10.0-nand-v7.bin",
-            "af60-xr-spf10.0-nand-v8-cdt.bin"
+            "nand-ipq807x-single.img"
           ]
         },
         {
@@ -46,19 +45,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac14.bin",
-          "../af-fw/fwupdate_01066_20211019-2.bin"
+          "../af-fw/MGMP.ipq807x.v1.0.0-devel.d98e0934.211123.1329.bin"
         ],
         [
           "tftp/images/ac14-bootloader.bin",
           "../af-fw/u-boot_01066.mbn"
         ],
         [
-          "tftp/images/ac14-cdt.bin",
-          "../af-fw/af60-xr-spf10.0-nand-v8-cdt.bin"
-        ],
-        [
-          "tftp/images/ac11-mfg.bin",
-          "../af-fw/af60-xr-spf10.0-nand-v7.bin"
+          "tftp/images/ac14-mfg.bin",
+          "../af-fw/nand-ipq807x-single.img"
         ]
       ]
     }

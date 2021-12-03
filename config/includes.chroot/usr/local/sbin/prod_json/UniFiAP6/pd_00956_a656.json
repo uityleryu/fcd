@@ -13,35 +13,36 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
-          "DST_PATH": "u6-fw/ipq5018",
-          "FILES": [
-            "u6-enterprise-iw-v6.img",
-            "BZ.ipq50xx_5.78.0+13457.211005.1241-uboot.bin",
-            "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "ramload-5.78.0.bin",
-            "u6-enterprise-iw-v6_nor.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-enterprise-iw-v7.img",
+            "BZ.ipq50xx_6.0.4+13542.211118.0311-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.0.4.bin",
+            "u6-enterprise-iw-v7_nor.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a656-emmc.img",
-          "../u6-fw/ipq5018/u6-enterprise-iw-v6.img"
+          "../u6-fw/ipq5018/u6-enterprise-iw-v7.img"
         ],
         [
           "tftp/images/a656-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.78.0+13457.211005.1241-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.0.4+13542.211118.0311-uboot.bin"
         ],
         [
           "tftp/images/a656-gpt.bin",
@@ -49,11 +50,11 @@
         ],
         [
           "tftp/images/a656-initramfs.bin",
-          "../u6-fw/ipq5018/ramload-5.78.0.bin"
+          "../u6-fw/ipq5018/ramload-6.0.4.bin"
         ],
         [
           "tftp/images/a656-nor.bin",
-          "../u6-fw/ipq5018/u6-enterprise-iw-v6_nor.bin"
+          "../u6-fw/ipq5018/u6-enterprise-iw-v7_nor.bin"
         ]
       ]
     }

@@ -1,11 +1,11 @@
 {
   "UniFiDream": {
-    "UDW": {
+    "UDM-SE-01097": {
       "INDEX": 0,
-      "NAME": "UDW",
-      "BOARDID": "ea2a",
-      "BOMREV": "113-00843",
-      "DESC": "UniFi Dream Wall",
+      "NAME": "UDM-SE-01097",
+      "BOARDID": "ea2c",
+      "BOMREV": "113-01097",
+      "DESC": "UniFi Dream Machine SE",
       "FILE": "udm_al324_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -13,13 +13,13 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udw/",
-          "DST_PATH": "udm-fw/udw",
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-se/",
+          "DST_PATH": "udm-fw/udm-se",
           "FILES": []
         },
         {
-          "SRC_PATH": "images/tools/udw",
-          "DST_PATH": "tools/udw",
+          "SRC_PATH": "images/tools/udm_se",
+          "DST_PATH": "tools/udm_se",
           "FILES": [
             "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
           ]
@@ -44,19 +44,18 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v2.3.5.25aac2b.211111.2311.bin"
+          "tftp/images/ea2c-fw.bin",
+          "../udm-fw/udm-se/UDMPROSE.al324.v2.2.12.df6c4f8.211021.1516.bin"
         ],
         [
-          "tftp/images/ea2a-recovery",
-          "../udm-fw/udw/uImage"
+          "tftp/images/ea2c-recovery",
+          "../udm-fw/udm-se/uImage"
         ],
         [
-          "tftp/images/ea2a-uboot.bin",
-          "../udm-fw/udw/boot.img"
+          "tftp/images/ea2c-uboot.bin",
+          "../udm-fw/udm-se/boot-86e3c20.img"
         ]
       ]
-
     }
   }
 }

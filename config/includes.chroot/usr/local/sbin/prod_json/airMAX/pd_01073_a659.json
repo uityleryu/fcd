@@ -14,12 +14,13 @@
       "FCD_ID": "000B",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/am-fw",
+          "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot.mbn",
-            "lbe-ax-v5.img",
-            "rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+            "u-boot_01073.mbn",
+            "lbe-ax-v5_nor.bin",
+            "lbe-ax-v5_emmc.bin",
+            "lbe.ipq5018.v0.4.0.0b413587.211118.2123-mp03.5-c2.bin"
           ]
         },
         {
@@ -36,15 +37,19 @@
       "CREATE_LINK":[
         [
           "tftp/images/a659-uboot.bin",
-          "../am-fw/u-boot.mbn"
+          "../am-fw/u-boot_01073.mbn"
         ],
         [
-          "tftp/images/a659-bsp.bin",
-          "../am-fw/lbe-ax-v5.img"
+          "tftp/images/a659-nor.bin",
+          "../am-fw/lbe-ax-v5_nor.bin"
+        ],
+        [
+          "tftp/images/a659-emmc.bin",
+          "../am-fw/lbe-ax-v5_emmc.bin"
         ],
         [
           "tftp/images/a659.bin",
-          "../am-fw/rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+          "../am-fw/lbe.ipq5018.v0.4.0.0b413587.211118.2123-mp03.5-c2.bin"
         ]
       ]
     }

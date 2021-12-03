@@ -44,18 +44,24 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.ethnum = {
             'ec5a': "0",
             'ec5b': "0",
+            'ec5c': "0",
+            'ec5d': "0",
         }
 
         # number of WiFi
         self.wifinum = {
             'ec5a': "2",
             'ec5b': "2",
+            'ec5c': "2",
+            'ec5d': "2",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec5a': "1",
             'ec5b': "1",
+            'ec5c': "1",
+            'ec5d': "1",
         }
 
         self.devnetmeta = {
@@ -143,23 +149,20 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        # self.pexp.expect_lnxcmd(180, self.esp32_prompt, "",self.esp32_prompt)
-        self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots OTA0(APP fw)(0x190000) well")
-        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
-        log_debug(output)
-        log_debug("Change to boots on OTA1(0x510000)")
-        output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
-        log_debug(output)
-        log_debug("reboot Device")
-        output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
-
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        self.pexp.expect_only(180, self.esp32_prompt)
-        log_debug("Device boots OTA1(factory fw) well")
-        output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
-        log_debug(output)
+        while True:
+            self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+            self.pexp.expect_only(180, self.esp32_prompt)
+            output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+            boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
+            log_debug(output)
+            log_debug("Need to boot on factory image @0x510000, now boot @{}".format(boot_address))
+            if boot_address == "0x510000":
+                log_debug("Boot to mfg image @0x510000")
+                break
+            output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
+            log_debug(output)
+            output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
+            # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
     def fwupdate(self):
         self.check_device_stat()
@@ -185,7 +188,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:") # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        time.sleep(10)   #delay because no delay the devreg check will be fail
+        time.sleep(15)   #delay because no delay the devreg check will be fail
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
@@ -208,7 +211,6 @@ d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6
                 info[key] = str(int(data_list[0][0:6],16)).zfill(5)
             else:
                 info[key] = data_list[0].lower()
-            # import pdb; pdb.set_trace()
 
         for key in devreg_data_dict:
             if devreg_data_dict[key] != info[key]:

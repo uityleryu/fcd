@@ -326,11 +326,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-Enterprise-24-PoE":{
+    "USW-Enterprise-24-PoE-03154":{
       "INDEX"       : 11,
       "NAME"        : "USW-Enterprise-24-PoE",
       "BOARDID"     : "eb38",
       "BOMREV"      : "113-03154",
+      "DESC"        : "UniFi Switch Enterprise 24 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-24-PoE-03967":{
+      "INDEX"       : 11,
+      "NAME"        : "USW-Enterprise-24-PoE",
+      "BOARDID"     : "eb38",
+      "BOMREV"      : "113-03967",
       "DESC"        : "UniFi Switch Enterprise 24 PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
@@ -781,11 +794,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-Enterprise-8-PoE":{
+    "USW-Enterprise-8-PoE-03188":{
       "INDEX"       : 33,
       "NAME"        : "USW-Enterprise-8-PoE",
       "BOARDID"     : "ed41",
       "BOMREV"      : "113-03188",
+      "DESC"        : "UniFi Switch Enterprise 8-port PoE",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-8-PoE-03969":{
+      "INDEX"       : 33,
+      "NAME"        : "USW-Enterprise-8-PoE",
+      "BOARDID"     : "ed41",
+      "BOMREV"      : "113-03969",
       "DESC"        : "UniFi Switch Enterprise 8-port PoE",
       "FILE"        : "us_mrvl_factory.py",
       "T1FILE"      : "",
@@ -1303,7 +1329,19 @@
       "FILE"        : "afi_ipq807x_factory.py",
       "T1FILE"      : "afi_ipq807x_mfg.py",
       "QRCHECK"     : "False"
-    }
+    },
+    "AFi-UPS": {
+     "INDEX": 0,
+     "NAME": "AFi-UPS",
+     "BOARDID": "ed14",
+     "BOMREV": "113-01033",
+     "DESC": "Amplifi UPS",
+     "FILE": "afi_mt7628_factory.py",
+     "T1FILE": "afi_mt7628_mfg.py",
+     "QRCHECK": "True",
+     "FCD_ID": "0011",
+     "SW_ID": "1c01"
+   }
 
   },
 
@@ -1615,6 +1653,30 @@
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
     },
+    "UC-Wall-Outlet-US": {
+      "INDEX": 0,
+      "NAME": "UC-Wall-Outlet-US",
+      "BOARDID": "ec5c",
+      "BOMREV": "113-01013",
+      "DESC": "UniFi Connect Wall Outlet US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
+    "UC-Plug-Dual-US": {
+      "INDEX": 0,
+      "NAME": "UC-Plug-Dual-US",
+      "BOARDID": "ec5d",
+      "BOMREV": "113-01020",
+      "DESC": "UniFi Connect Dual Plug US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
     "UC-Thermostat":{
       "INDEX"       : 0,
       "NAME"        : "UC-Thermostat",
@@ -1716,19 +1778,7 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0011",
       "SW_ID"       : "1c01"
-     },
-     "UC-UPS": {
-      "INDEX": 0,
-      "NAME": "UC-UPS",
-      "BOARDID": "ed14",
-      "BOMREV": "113-01033",
-      "DESC": "UniFi Connect UPS",
-      "FILE": "uc_mt7628_factory.py",
-      "T1FILE": "",
-      "QRCHECK": "True",
-      "FCD_ID": "0011",
-      "SW_ID": "1c01"
-    }
+     }
   },
 
   "airMAX":

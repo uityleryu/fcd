@@ -6,27 +6,12 @@
       "BOARDID": "ea2e",
       "BOMREV": "113-01029",
       "DESC": "UniFi Dream Wall Pro Power unit",
-      "FILE": "udw_mt7628_factory.py",
-      "T1FILE": "",
+      "FILE": "afi_udw_mt7628_factory.py",
+      "T1FILE": "afi_udw_mt7628_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/fcd-image/udm-fw/udw-pro-pu",
-          "DST_PATH": "udw-pro-pu",
-          "FILES": [
-            "lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/udw_pro_pu",
-          "DST_PATH": "tools/",
-          "FILES": [
-            "helper_MT7628_release",
-            "iperf3"
-          ]
-        },
         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
@@ -36,12 +21,29 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udw-pro-pu",
+          "DST_PATH": "udm-fw/udw-pro-pu",
+          "FILES": [
+            "US.mt7628_develop+13529.211122.1859-uboot.bin",
+            "lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin",
+            "ramips-mt76x8-usp-initramfs-16MB.uboot"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea2c-fw.bin",
-          "../udw-pro-pu/lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin"
+          "tftp/images/ea2e-fw.bin",
+          "../udm-fw/udw-pro-pu/US.mt7628_develop+13529.211122.1859-uboot.bin"
+        ],
+        [
+          "tftp/images/ea2e-initramfs.bin",
+          "../udm-fw/udw-pro-pu/lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ea2e-uboot.bin",
+          "../udm-fw/udw-pro-pu/ramips-mt76x8-usp-initramfs-16MB.uboot"
         ]
       ]
     }

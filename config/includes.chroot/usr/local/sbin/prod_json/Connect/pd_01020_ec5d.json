@@ -1,0 +1,61 @@
+{
+  "Connect": {
+    "UC-Plug-Dual-US": {
+      "INDEX": 0,
+      "NAME": "UC-Plug-Dual-US",
+      "BOARDID": "ec5d",
+      "BOMREV": "113-01020",
+      "DESC": "UniFi Connect Plug Dual US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-wall-us",
+          "DST_PATH": "uc-fw/uc-wall-us",
+          "FILES": [
+            "dual_mfg.bin",
+            "bootloader.bin",
+            "dual_mfg.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec5d-app.bin",
+          "../uc-fw/uc-wall-us/dual_mfg.bin"
+        ],
+        [
+          "tftp/images/ec5d-bootloader.bin",
+          "../uc-fw/uc-wall-us/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec5d-mfg.bin",
+          "../uc-fw/uc-wall-us/dual_mfg.bin"
+        ],
+        [
+          "tftp/images/ec5d-ota.bin",
+          "../uc-fw/uc-wall-us/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec5d-ptn-table.bin",
+          "../uc-fw/uc-wall-us/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}

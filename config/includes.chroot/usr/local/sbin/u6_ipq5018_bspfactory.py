@@ -60,11 +60,12 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "0x50000000"
         }
         
+        # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
         self.bootm_cmd = {
             'a650': "bootm",
             'a651': "bootm $fileaddr#config@a651",
-            'a652': "bootm",
-            'a653': "bootm",
+            'a652': "bootm $fileaddr#config@a652",
+            'a653': "bootm $fileaddr#config@a653",
             'a654': "bootm",
             'a655': "bootm",
             'a656': 'bootm $fileaddr#config@a656',
@@ -125,7 +126,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, self.bootm_cmd[self.board_id])
         self.linux_prompt = self.linux_prompt_select[self.board_id]
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
         self.disable_udhcpc()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
@@ -144,14 +145,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
         self._ramboot_uap_fwupdate()
         # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True)
-
         #sometimes DUT will fail log to interrupt the login in process so add below try process for it
-        try:
-            self.login(self.user, self.password, timeout=5, log_level_emerg=True, press_enter=False, retry=2)
-        except:
-            pass
-        # self.login(self.user, self.password, timeout=150, log_level_emerg=True, press_enter=True)
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)

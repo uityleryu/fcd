@@ -16,17 +16,18 @@
           "SRC_PATH": "images/fcd-image/uap-fw",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "UBBXG.v0.9.20.d25106ef.210420.0730.bin",
-            "UBB_XG_SR3_V027_FULL_NOR_IMAGE.bin",
-            "af60-xg_ls1046_2g_nand_v9.bin",
-            "af60-xg_ls1046_2g_nor_v9.bin",
-            "NAND_factory_ubi.img"
+            "UBBXG.v0.9.24.bin",
+            "UBB_XG_SR3_V027_FULL_NOR_IMAGE.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "af60-xg_ls1046_2g_nand_v10.bin",
+            "af60-xg_ls1046_2g_nor_v10.bin",
+            "NAND_factory_ubi.img"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -42,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dd12.bin",
-          "../uap-fw/UBBXG.v0.9.20.d25106ef.210420.0730.bin"
+          "../uap-fw/UBBXG.v0.9.24.bin"
         ],
         [
           "tftp/images/dd12-boot.bin",
@@ -50,11 +51,11 @@
         ],
         [
           "tftp/images/dd12-mfg-nand.bin",
-          "../uap-fw/af60-xg_ls1046_2g_nand_v9.bin"
+          "../uap-fw/af60-xg_ls1046_2g_nand_v10.bin"
         ],
         [
           "tftp/images/dd12-mfg-nor.bin",
-          "../uap-fw/af60-xg_ls1046_2g_nor_v9.bin"
+          "../uap-fw/af60-xg_ls1046_2g_nor_v10.bin"
         ],
         [
           "tftp/images/dd12-nand.bin",

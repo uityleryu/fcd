@@ -141,13 +141,6 @@ class IPQ80XXFactory(ScriptBase):
         time.sleep(1)
         self.set_uboot_network()
 
-        if self.board_id == "ac14":
-            log_debug("Starting Update CDT")
-            cmd = "tftpboot 0x44000000 images/ac14-cdt.bin"
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-            cmd ="nand erase 0xc00000 0x80000 && nand write 0x44000000 0xc00000 0x80000"
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
         log_debug("Starting doing U-Boot update")
         cmd = "tftpboot 44000000 images/{}".format(self.bootloader[self.board_id])
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
@@ -396,23 +389,27 @@ class IPQ80XXMFG(ScriptBase):
         # U-boot prompt
         self.ubpmt = {
             '0000': "IPQ807x# ",
-            'ac11': "IPQ807x# "
+            'ac11': "IPQ807x# ",
+            'ac14': "IPQ807x# "
         }
 
         # linux console prompt
         self.lnxpmt = {
             '0000': "root@OpenWrt",
-            'ac11': "root@OpenWrt"
+            'ac11': "root@OpenWrt",
+            'ac14': "root@OpenWrt"
         }
 
         self.artimg = {
             '0000': "dc99-mfg.bin",
-            'ac11': "ac11-mfg.bin"
+            'ac11': "ac11-mfg.bin",
+            'ac14': "ac14-mfg.bin"
         }
 
         self.addr = {
             '0000': "0x0",
-            'ac11': "0x0"
+            'ac11': "0x0",
+            'ac14': "0x0"
         }
 
         self.linux_prompt = self.lnxpmt[self.board_id]
@@ -446,21 +443,35 @@ class IPQ80XXMFG(ScriptBase):
         self.stop_uboot()
         time.sleep(10)
         self.set_uboot_network()
+     
 
-        msg(10, "Get ART Image")
-        cmd = "tftpboot 0x42000000 images/{}".format(self.artimg[self.board_id])
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(120, "Bytes transferred")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "usetprotect spm off")
+        if self.board_id == "ac11":
+            msg(10, "Get ART Image")
+            cmd = "tftpboot 0x42000000 images/{}".format(self.artimg[self.board_id])
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_only(120, "Bytes transferred")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "usetprotect spm off")
+            
+            msg(30, "Starting erasing NAND")
+            cmd = "nand erase.chip"
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-        msg(30, "Starting erasing NAND")
-        cmd = "nand erase.chip"
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            msg(40, "Starting writing Image")
+            cmd = "nand write 0x42000000 {0} $filesize".format(self.addr[self.board_id])
+            self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
+            time.sleep(5)
+        elif self.board_id == "ac14":
 
-        msg(40, "Starting writing Image")
-        cmd = "nand write 0x42000000 {0} $filesize".format(self.addr[self.board_id])
-        self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
-        time.sleep(5)
+            msg(10, "Get ART Image")
+            cmd = "tftpboot 0x44000000 images/{}".format(self.artimg[self.board_id])
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+            self.pexp.expect_only(120, "Bytes transferred")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv machid 801000f")
+
+            msg(40, "Starting writing Image")
+            cmd = "imgaddr=0x44000000 && source $imgaddr:script"
+            self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
+            time.sleep(5)
 
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
         time.sleep(60)

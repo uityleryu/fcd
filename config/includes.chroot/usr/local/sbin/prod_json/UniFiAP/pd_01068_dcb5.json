@@ -1,15 +1,16 @@
 {
-  "UniFiProtect": {
-    "ULM": {
+  "UniFiAP": {
+    "Unifi-PoE-at": {
       "INDEX": 0,
-      "NAME": "ULM",
-      "BOARDID": "a919",
-      "BOMREV": "113-03495",
-      "DESC": "UniFi BLE Location",
-      "FILE": "ufp_efr32_factory.py",
-      "T1FILE": "",
+      "NAME": "Unifi-PoE-at",
+      "BOARDID": "dcb5",
+      "BOMREV": "113-01068",
+      "DESC": "Unifi-PoE at",
+      "FILE": "upoe_ipq40xx_factory.py",
+      "T1FILE": "upoe_ipq40xx_mfg.py",
       "QRCHECK": "True",
-      "SW_ID": "1601",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
@@ -22,7 +23,8 @@
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK": [
+      ]
     }
   }
 }

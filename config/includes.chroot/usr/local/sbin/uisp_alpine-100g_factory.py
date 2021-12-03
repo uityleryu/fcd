@@ -313,7 +313,7 @@ class UISPALPINE(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         cmd = "setenv bootargs $rootargs pci=pcie_bus_perf console=ttyS0,115200 $bootargsextra"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        cmd = "bootm ${{loadaddr}}#config@{}".format(self.board_id)
+        cmd = "bootm ${loadaddr}"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.login(retry=100)
         self.set_lnx_net("eth0")

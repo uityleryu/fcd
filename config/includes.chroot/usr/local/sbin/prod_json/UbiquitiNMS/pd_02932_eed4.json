@@ -15,12 +15,13 @@
             "SRC_PATH": "images/fcd-image/unms-fw",
             "DST_PATH": "unms-fw",
             "FILES": [
-              "uisp-leaf-fcd.img"
+              "uisp-leaf-fcd-0.6.0.img",
+              "onie-installer-uisp-alpine_g8b105db.bin"
             ]
           },
           {
             "SRC_PATH": "images/tools/eed5",
-            "DST_PATH": "tools/eed5",
+            "DST_PATH": "tools/eed4",
             "FILES": [
               "helper_AL324_release"
             ]
@@ -39,7 +40,11 @@
         "CREATE_LINK": [
           [
             "tftp/images/eed4-mfg.bin",
-            "../unms-fw/uisp-leaf-fcd.img"
+            "../unms-fw/uisp-leaf-fcd-0.6.0.img"
+          ],
+          [
+            "tftp/images/eed4-fw.bin",
+            "../unms-fw/onie-installer-uisp-alpine_g8b105db.bin"
           ]
         ]
       }

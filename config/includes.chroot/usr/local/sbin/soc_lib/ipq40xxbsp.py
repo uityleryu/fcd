@@ -5,9 +5,9 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
-class IPQ5018BSPFactory(ScriptBase):
+class IPQ40XXBSPFactory(ScriptBase):
     def __init__(self):
-        super(IPQ5018BSPFactory, self).__init__()
+        super(IPQ40XXBSPFactory, self).__init__()
         self.init_vars()
 
     def init_vars(self):
@@ -15,74 +15,50 @@ class IPQ5018BSPFactory(ScriptBase):
         self.ubimg = "images/" + self.board_id + "-uboot.bin"
         self.fwimg = "images/" + self.board_id + ".bin"
         
-        self.devregpart = "/dev/mtdblock9"
+        self.devregpart = "/dev/mtdblock8"
         self.bomrev = "113-" + self.bom_rev
        
         self.uboot_address = {
             '0000': "0x00120000",
-            'a658': "0x00120000",    # Wave-Nano
-            'a659': "0x00120000",    # LBE-AX
-            'a660': "0x00120000",    # Prism-AX-OMT
-            'a661': "0x00120000",    # Prism-AX
-            'a662': "0x00120000",    # LiteAP-AX-GPS
-            'a664': "0x00120000"     # Wave-LR
+            'dcb4': "0x00120000",    # Unifi-PoE af
+            'dcb5': "0x00120000"     # Unifi-PoE at
+
         }
         self.ubaddr = self.uboot_address[self.board_id]
 
         self.uboot_size = {
             '0000': "0x000a0000",
-            'a658': "0x000a0000",
-            'a659': "0x000a0000",
-            'a660': "0x000a0000",
-            'a661': "0x000a0000",
-            'a662': "0x000a0000",
-            'a664': "0x000a0000"
-
+            'dcb4': "0x000a0000",
+            'dcb5': "0x000a0000"
         }
         self.ubsize = self.uboot_size[self.board_id]
 
-        self.bootloader_prompt = "IPQ5018#"
+        self.bootloader_prompt = "IPQ40xx#"
 
         self.linux_prompt_select = {
             '0000': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
-            'a658': "#",
-            'a659': "#",
-            'a660': "#",
-            'a661': "#",
-            'a662': "#",
-            'a664': "#"
+            'dcb4': "#",
+            'dcb5': "#"
         }
         self.linux_prompt = "root@OpenWrt:/#"
         self.prod_prompt = "ubnt@OpenWrt:~#"
 
         self.ethnum = {
             '0000': "1",
-            'a658': "1",
-            'a659': "1",
-            'a660': "1",
-            'a661': "1",
-            'a662': "1",
-            'a664': "1"
+            'dcb4': "1",
+            'dcb5': "1"
         }
 
         self.wifinum = {
             '0000': "2",
-            'a658': "1",
-            'a659': "1",
-            'a660': "1",
-            'a661': "1",
-            'a662': "1",
-            'a664': "1"
+            'dcb4': "2",
+            'dcb5': "2"
         }
 
         self.btnum = {
             '0000': "1",
-            'a658': "1",
-            'a659': "1",
-            'a660': "1",
-            'a661': "1",
-            'a662': "1",
-            'a664': "1"
+            'dcb4': "1",
+            'dcb5': "1"
         }
 
         self.devnetmeta = {
@@ -96,21 +72,6 @@ class IPQ5018BSPFactory(ScriptBase):
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a658" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
-        elif self.board_id == "a659" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a660" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
-        elif self.board_id == "a661" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
-        elif self.board_id == "a662" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a664" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
         else:
@@ -226,7 +187,7 @@ class IPQ5018BSPFactory(ScriptBase):
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
-class IPQ5018MFGGeneral(ScriptBase):
+class IPQ40XXMFGGeneral(ScriptBase):
     """
     command parameter description for BackToT1
     command: python3
@@ -239,11 +200,11 @@ class IPQ5018MFGGeneral(ScriptBase):
     ex: [script, 1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
     """
     def __init__(self):
-        super(IPQ5018MFGGeneral, self).__init__()
+        super(IPQ40XXMFGGeneral, self).__init__()
         self.mem_addr = "0x44000000"
         self.nor_bin = "{}-nor.bin".format(self.board_id)
         self.emmc_bin = "{}-emmc.bin".format(self.board_id)
-        self.set_bootloader_prompt("IPQ5018#")
+        self.set_bootloader_prompt("IPQ40xx#")
 
     def update_nor(self):
         cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)

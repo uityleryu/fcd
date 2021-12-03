@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "ULTE-PRO-US": {
+    "ULTE-Backup-Pro-US": {
       "INDEX": 0,
-      "NAME": "ULTE-PRO-US",
+      "NAME": "U-LTE-Backup-Pro-US",
       "BOARDID": "e613",
       "BOMREV": "113-00788",
-      "DESC": "UniFi LTE Pro US",
+      "DESC": "UniFi LTE Backup Pro US",
       "FILE": "uap_qca956x_factory.py",
       "T1FILE": "uap_qca956x_mfg.py",
       "QRCHECK": "True",
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/e613.bin",
-          "../uap-fw/ulte-pro/IL.qca956x_5.78.1+13458.211013.2109-uboot.bin"
+          "../uap-fw/ulte-pro/IL.qca956x_6.2.0+13569.211130.0948-uboot.bin"
         ]
       ]
     }

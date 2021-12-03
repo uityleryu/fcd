@@ -27,16 +27,28 @@ class UCMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = ">"
-        self.helper_path = "uc_ups"
+        self.helper_path = "afi_ups"
 
         # number of mac
-        self.macnum =  {'ed14': "0"}
+        self.macnum =  {
+            'ed14': "0",
+            'ea2e': "1"
+        }
         # number of WiFi
-        self.wifinum = {'ed14': "1"}
+        self.wifinum = {
+            'ed14': "1",
+            'ea2e': "0"
+        }
         # number of Bluetooth
-        self.btnum =   {'ed14': "1"}
+        self.btnum =   {
+            'ed14': "1",
+            'ea2e': "0"
+        }
         # flash size map
-        self.flash_size = {'ed14':  "33554432"}
+        self.flash_size = {
+            'ed14':  "33554432",
+            'ea2e': "16777216"
+        }
         # firmware image
         self.fwimg = self.board_id + "-fw.bin"
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -46,7 +58,7 @@ class UCMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
-        self.UPDATE_UBOOT_ENABLE    = False
+        self.UPDATE_UBOOT_ENABLE    = True
         self.BOOT_RAMFS_IMAGE       = True 
         self.PROVISION_ENABLE       = True 
         self.DOHELPER_ENABLE        = True 
@@ -61,24 +73,45 @@ class UCMT7628Factory(ScriptBase):
         self.set_boot_net()
         
     def set_boot_net(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv loadaddr 0x81000000")
-        # time.sleep(5)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-        
         self.is_network_alive_in_uboot()
+        
+    def update_uboot_image(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
+        ## Uboot of BSP, AFi-UPS
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 393216 bytes @ 0x0 Erased: OK
+        # device 0 offset 0x0, size 0x2c3f0
+        # SF: 181232 bytes @ 0x0 Written: OK
+        # =>
+
+        ## Uboot of FW, AFi-UPS
+        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
+        # SF: 16777216 bytes @ 0x0 Erased: OK
+        # uboot>
+        
+        self.pexp.expect_only(120, "Erased: OK")
+        # self.pexp.expect_only(120, "Written: OK")  #BSP uboot, have "Written", FW Uboot have no Written
+        # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def init_ramfs_image(self):
-        self.enter_uboot()
-        
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         
         self.pexp.expect_only(30, "Loading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
-        self.disable_udhcpc()
+        
+        if self.board_id == "ed14":
+            self.disable_udhcpc()
+            self.disable_wpa_supplicant()
+        else:
+            pass
+        
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
@@ -86,10 +119,13 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         
-        
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
                                                        "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        
+        ##  remove DEVREG data
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
@@ -101,6 +137,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
+        # to use Desktop atftp to transfer image to DUT
         cmd = ["atftp",
                "-p",
                "-l",
@@ -118,7 +155,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
         self.pexp.expect_only(60, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -147,13 +184,12 @@ class UCMT7628Factory(ScriptBase):
         if self.UPDATE_UBOOT_ENABLE is True:
             # self.fwupdate(self.fwimg, reboot_en=False)
             self.enter_uboot()
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+            self.update_uboot_image()
             msg(10, "Update Uboot image successfully ...")
 
         if self.BOOT_RAMFS_IMAGE is True:
             msg(15, "Boot into initRamfs image for registration ...")
+            self.enter_uboot()
             self.init_ramfs_image()
 
         if self.PROVISION_ENABLE is True:
