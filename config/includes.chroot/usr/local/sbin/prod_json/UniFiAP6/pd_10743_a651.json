@@ -13,24 +13,25 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
-          "DST_PATH": "u6-fw/ipq5018",
-          "FILES": [
-            "u6-pro_1gb-v17.img",
-            "BZ.ipq50xx_5.77.0+13423.210923.2206-uboot.bin",
-            "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "ramload-5.77.0.bin",
-            "u6-pro_1gb-v17_nor.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_1gb-v17.img",
+            "BZ.ipq50xx_6.0.4+13542.211118.0311-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.0.4.bin",
+            "u6-pro_1gb-v17_nor.bin"
           ]
         }
       ],
@@ -41,7 +42,7 @@
         ],
         [
           "tftp/images/a651-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_5.77.0+13423.210923.2206-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.0.4+13542.211118.0311-uboot.bin"
         ],
         [
           "tftp/images/a651-gpt.bin",
@@ -49,7 +50,7 @@
         ],
         [
           "tftp/images/a651-initramfs.bin",
-          "../u6-fw/ipq5018/ramload-5.77.0.bin"
+          "../u6-fw/ipq5018/ramload-6.0.4.bin"
         ],
         [
           "tftp/images/a651-nor.bin",
