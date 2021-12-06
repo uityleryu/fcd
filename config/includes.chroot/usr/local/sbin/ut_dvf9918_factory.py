@@ -32,6 +32,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.ver_extract()
         self.devregpart = "/dev/mtdblock2"
         self.user = "root"
+        self.bootloader_prompt = "#"
         self.fwversion = r"IMAGE_VER: UVP-FLEX_IMAGE_1.0.13"
 
         # number of Ethernet
