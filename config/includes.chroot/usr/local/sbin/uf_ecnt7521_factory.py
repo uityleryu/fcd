@@ -156,6 +156,8 @@ class UFECNT7521Factory(ScriptBase):
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue --tc")
+        if self.fcd.common.ip_is_alive("{}".format(self.dutip), retry=120) is False:
+            error_critical("Can't ping to DUT {}".format(self.dutip))
         cmd = "atftp -p -l {0}/{1} -r {3} {2}".format(self.fwdir, "{}-fw.bin".format(self.board_id), self.dutip, image_name[where])
 
         log_debug("host cmd: " + cmd)
