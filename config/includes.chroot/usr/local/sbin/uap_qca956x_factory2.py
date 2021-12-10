@@ -31,7 +31,9 @@ class UAPQCA956xFactory2(ScriptBase):
         # helper path
         helppth = {
             'e614': "ulte_flex",
-            'e615': "ulte_flex"
+            'e615': "ulte_flex",
+            'e618': "ulte_flex",
+            'e619': "ulte_flex"
         }
 
         self.helperexe = "helper_ARxxxx_release"
@@ -211,6 +213,57 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(10, "flashSize=")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+
+    def registration(self, regsubparams = None):
+        log_debug("Starting to do registration ...")
+        if regsubparams is None:
+            regsubparams = self.access_chips_id()
+
+        code_type = "01"
+
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=code,format=hex,value={}".format(self.qrhex)
+
+        clientbin = "/usr/local/sbin/client_rpi4_release"
+        regparam = [
+            "-h stage.udrs.io",
+            "-k {}".format(self.pass_phrase),
+            regsubparams,
+            "-i field=code_type,format=hex,value={}".format(code_type),
+            reg_qr_field,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x {}ca.pem".format(self.key_dir),
+            "-y {}key.pem".format(self.key_dir),
+            "-z {}crt.pem".format(self.key_dir)
+        ]
+
+        regparam = ' '.join(regparam)
+
+        cmd = "sudo {0} {1}".format(clientbin, regparam)
+        print("cmd: " + cmd)
+        clit = ExpttyProcess(self.row_id, cmd, "\n")
+        clit.expect_only(30, "Security Service Device Registration Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
+
+        log_debug("Excuting client registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
 
     def run(self):
         """Main procedure of factory

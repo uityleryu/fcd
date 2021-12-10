@@ -23,9 +23,11 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/ulte_flex",
+          "DST_PATH": "tools/ulte_flex",
+          "FILES": [
+            "helper_ARxxxx_release"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",

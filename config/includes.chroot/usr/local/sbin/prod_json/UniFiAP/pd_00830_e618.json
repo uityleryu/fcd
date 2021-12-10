@@ -3,12 +3,12 @@
     "ULTE-FLEX-EU": {
       "INDEX": 0,
       "NAME": "ULTE-FLEX-EU",
-      "BOARDID": "e614",
+      "BOARDID": "e618",
       "BOMREV": "113-00830",
       "DESC": "UniFi LTE FLEX EU",
       "FILE": "uap_qca956x_factory2.py",
       "T1FILE": "uap_qca956x_mfg.py",
-      "QRCHECK": "True",
+      "QRCHECK": "activate_code",
       "FCD_ID": "0004",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
@@ -16,9 +16,9 @@
           "SRC_PATH": "images/fcd-image/uap-fw/ulte-flex",
           "DST_PATH": "uap-fw/ulte-flex",
           "FILES": [
-            "ULTE-Flex.qca956x.v0.0.7.0-g133ee9c3-recovery.bin",
+            "ULTE-Flex.qca956x.v0.0.9.0-ge39dba92-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V6.img",
-            "recovery-0.0.7-0-g133ee9c3.bin",
+            "ee-0.0.9-0-ge39dba92-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
             "qca956x-ulte-flex-u-boot.bin"
           ]
         },
@@ -42,19 +42,19 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e614.bin",
-          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v0.0.7.0-g133ee9c3-recovery.bin"
+          "tftp/images/e618.bin",
+          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v0.0.9.0-ge39dba92-recovery.bin"
         ],
         [
-          "tftp/images/e614-mfg.bin",
+          "tftp/images/e618-mfg.bin",
           "../uap-fw/ulte-flex/XD.qca956x-LSDK-ART-ULTE-FLEX-V6.img"
         ],
         [
-          "tftp/images/e614-recovery.bin",
-          "../uap-fw/ulte-flex/recovery-0.0.7-0-g133ee9c3.bin"
+          "tftp/images/e618-recovery.bin",
+          "../uap-fw/ulte-flex/ee-0.0.9-0-ge39dba92-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
         ],
         [
-          "tftp/images/e614-uboot.bin",
+          "tftp/images/e618-uboot.bin",
           "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot.bin"
         ]
       ]
