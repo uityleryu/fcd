@@ -16,8 +16,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix",
-            "u-boot-1.3.0-c174.bin"
+            "DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix"
           ]
         },
         {
@@ -45,10 +44,6 @@
         [
           "tftp/images/ee6f-fw.bin",
           "../unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix"
-        ],
-        [
-          "tftp/images/ee6f-uboot.img",
-          "../unms-fw/u-boot-1.3.0-c174.bin"
         ]
       ]
     }
