@@ -165,6 +165,15 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
+        
+        retry_time = 15
+        while retry_time >= 0:
+            output = self.pexp.expect_get_output(action="info", prompt= "" ,timeout=3)
+            if output.find("Version") >= 0:
+                break
+            retry_time -= 1
+            time.sleep(1)
+            
 
     def lcm_fw_check(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
