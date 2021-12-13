@@ -2074,6 +2074,19 @@
       "SW_ID"       : "1801"
     },
 
+    "USP-PRO-PDU-HD":{
+      "INDEX": 0,
+      "NAME": "USP-PRO-PDU-HD",
+      "BOARDID": "ed15",
+      "BOMREV": "113-01036",
+      "DESC": "UniFi Smart Power PRO PDU HD",
+      "FILE": "usp_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801"
+    },
+
     "USP-RPS-PRO":{
       "INDEX"       : 6,
       "NAME"        : "USP-RPS-PRO",

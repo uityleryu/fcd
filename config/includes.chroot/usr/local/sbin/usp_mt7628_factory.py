@@ -22,15 +22,24 @@ class USPMT7628Factory(ScriptBase):
         self.ver_extract()
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
-        self.bootloader_prompt = "uboot>"
+        self.bootloader_prompt = ">"
         self.helper_path = "pdu_pro"
 
         # number of mac
-        self.macnum =  {'ed12': "2"}
+        self.macnum =  {
+            'ed12': "2",
+            'ed15': "2",
+            }
         # number of WiFi
-        self.wifinum = {'ed12': "0"}
+        self.wifinum = {
+            'ed12': "0",
+            'ed15': "0",
+            }
         # number of Bluetooth
-        self.btnum =   {'ed12': "0"}
+        self.btnum =   {
+            'ed12': "0",
+            'ed15': "0",
+            }
         # flash size map
         self.flash_size = {'ed12': "16777216"}
         # firmware image
