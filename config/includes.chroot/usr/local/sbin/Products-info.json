@@ -768,11 +768,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-Enterprise-48-PoE":{
+    "USW-Enterprise-48-PoE-03213":{
       "INDEX"       : 32,
       "NAME"        : "USW-Enterprise-48-PoE",
       "BOARDID"     : "eb28",
       "BOMREV"      : "113-03213",
+      "DESC"        : "UniFi Switch Enterprise 48 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-48-PoE-03968":{
+      "INDEX"       : 32,
+      "NAME"        : "USW-Enterprise-48-PoE",
+      "BOARDID"     : "eb28",
+      "BOMREV"      : "113-03968",
       "DESC"        : "UniFi Switch Enterprise 48 PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
