@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/up-fw",
           "DST_PATH": "up-fw",
           "FILES": [
-            "UP-Radar-v0.5.7-pre_20211028.bin"
+            "UP-Radar-v0.6.0-pre_20211129.bin"
           ]
         },
         {
@@ -40,7 +40,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dcb0-preload.bin",
-          "../up-fw/UP-Radar-v0.5.7-pre_20211028.bin"
+          "../up-fw/UP-Radar-v0.6.0-pre_20211129.bin"
         ]
       ]
     }

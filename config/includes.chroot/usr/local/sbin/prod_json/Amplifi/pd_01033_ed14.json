@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "Amplifi-UPS",
       "BOARDID": "ed14",
-      "BOMREV": "113-01023",
+      "BOMREV": "113-01033",
       "DESC": "Amplifi UPS",
       "FILE": "afi_udw_mt7628_factory.py",
       "T1FILE": "afi_udw_mt7628_mfg.py",
@@ -33,17 +33,17 @@
           "SRC_PATH": "images/fcd-image/afi-fw/ups_mt7628",
           "DST_PATH": "afi-fw/ups_mt7628",
           "FILES": [
-            "US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin",
+            "US.mt7628_0.1.0+12989.211210.1806-uboot.bin",
             "lede-ramips-mt76x8-UC-UPS-initramfs-kernel.bin",
             "usp-strip-battery_mt7628_cal_nor-v5.bin",
-            "unifi-rc-fix-reset-block.26-g28c94b93_am-mt7628-32MB_u-boot.bin"
+            "ramips-mt76x8-usp-initramfs-32MB.uboot"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ed14-fw.bin",
-          "../afi-fw/ups_mt7628/US.mt7628_rc-uc-ups+12991.211108.1814-uboot.bin"
+          "../afi-fw/ups_mt7628/US.mt7628_0.1.0+12989.211210.1806-uboot.bin"
         ],
         [
           "tftp/images/ed14-initramfs.bin",
@@ -55,7 +55,7 @@
         ],
         [
           "tftp/images/ed14-uboot.bin",
-          "../afi-fw/ups_mt7628/unifi-rc-fix-reset-block.26-g28c94b93_am-mt7628-32MB_u-boot.bin"
+          "../afi-fw/ups_mt7628/ramips-mt76x8-usp-initramfs-32MB.uboot"
         ]
       ]
     }

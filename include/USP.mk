@@ -13,6 +13,10 @@ IMAGE-USP-PDU-PRO= \
     images/ed12* \
     usp/pdu-pro/*
 
+IMAGE-USP-PRO-PDU-HD= \
+    images/ed15* \
+    usp/pdu-pro-hd/*
+
 IMAGE-USP-3-8= \
     images/e643* \
     images/e648* \
@@ -52,6 +56,7 @@ TOOLS-USP-PLUG +=$(TOOLS-CONFIG)
 TOOLS-USP-3-8 +=$(TOOLS-CONFIG)
 TOOLS-USP-STRIP +=$(TOOLS-CONFIG)
 TOOLS-USP-PDU-PRO +=$(TOOLS-CONFIG)
+TOOLS-USP-PRO-PDU-HD +=$(TOOLS-CONFIG)
 TOOLS-USP-RPS-PRO +=$(TOOLS-CONFIG)
 TOOLS-USP-RPS +=$(TOOLS-CONFIG)
 TOOLS-USP-Battery +=$(TOOLS-CONFIG)
@@ -78,6 +83,7 @@ $(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USP-PDU-PRO,FCD_$(PRD)_USP-PRO-PDU-HD_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USP-Battery,FCD_$(PRD)_USP-Battery_$(VER)_$(FWVER)))
@@ -89,6 +95,7 @@ $(eval $(call ProductCompress,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-3-8,FCD_$(PRD)_USP-3-8_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-STRIP,FCD_$(PRD)_USP-STRIP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PDU-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USP-PDU-PRO,FCD_$(PRD)_USP-PRO-PDU-HD_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS-PRO,FCD_$(PRD)_USP-RPS-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-RPS,FCD_$(PRD)_USP-RPS_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USP-Battery,FCD_$(PRD)_USP-Battery_$(VER)_$(FWVER)))
@@ -99,6 +106,7 @@ $(eval $(call ProductCompress2,00731_ee73))
 $(eval $(call ProductCompress2,00896_ee74))
 $(eval $(call ProductCompress2,00365_e648))
 $(eval $(call ProductCompress2,00986_ed12))
+$(eval $(call ProductCompress2,01036_ed15))
 $(eval $(call ProductCompress2,00777_ee74))
 $(eval $(call ProductCompress2,00364_e643))
 $(eval $(call ProductCompress2,02781_ed11))

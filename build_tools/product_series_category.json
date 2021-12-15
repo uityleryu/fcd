@@ -15,5 +15,8 @@
   ],
   "UniFiDream_UDMSE-SERIES" : [
     "00917_ea2c", "01097_ea2c"
+  ],
+  "UISP_100G-SERIES" : [
+    "02932_eed4", "03162_eed5"
   ]
 }
