@@ -25,6 +25,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "0x00120000",    # Prism-AX-OMT
             'a661': "0x00120000",    # Prism-AX
             'a662': "0x00120000",    # LiteAP-AX-GPS
+            'a663': "0x00120000",    # NBE-AX
             'a664': "0x00120000"     # Wave-LR
         }
         self.ubaddr = self.uboot_address[self.board_id]
@@ -36,6 +37,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "0x000a0000",
             'a661': "0x000a0000",
             'a662': "0x000a0000",
+            'a663': "0x000a0000",
             'a664': "0x000a0000"
 
         }
@@ -50,6 +52,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "#",
             'a661': "#",
             'a662': "#",
+            'a663': "#",
             'a664': "#"
         }
         self.linux_prompt = "root@OpenWrt:/#"
@@ -62,6 +65,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "1",
             'a661': "1",
             'a662': "1",
+            'a663': "1",
             'a664': "1"
         }
 
@@ -72,6 +76,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "1",
             'a661': "1",
             'a662': "1",
+            'a663': "1",
             'a664': "1"
         }
 
@@ -82,6 +87,7 @@ class IPQ5018BSPFactory(ScriptBase):
             'a660': "1",
             'a661': "1",
             'a662': "1",
+            'a663': "1",
             'a664': "1"
         }
 
@@ -110,6 +116,9 @@ class IPQ5018BSPFactory(ScriptBase):
         elif self.board_id == "a662" :
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
+        elif self.board_id == "a663" :
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False
         elif self.board_id == "a664" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False

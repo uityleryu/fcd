@@ -14,11 +14,12 @@
       "FCD_ID": "000B",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/am-fw",
+          "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
             "u-boot.mbn",
-            "lbe-ax-v5.img",
+            "prism-ax-v6_emmc.bin",
+            "prism-ax-v6_nor.bin",
             "rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
           ]
         },
@@ -39,8 +40,12 @@
           "../am-fw/u-boot.mbn"
         ],
         [
-          "tftp/images/a660-bsp.bin",
-          "../am-fw/lbe-ax-v5.img"
+          "tftp/images/a660-nor.bin",
+          "../am-fw/prism-ax-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a660-emmc.bin",
+          "../am-fw/prism-ax-v6_emmc.bin"
         ],
         [
           "tftp/images/a660.bin",
