@@ -1,11 +1,11 @@
 {
   "UniFiVideo": {
-    "UVC-G4DSLR": {
+    "UVC-DSLR-Bullet": {
       "INDEX": 0,
-      "NAME": "UVC-G4DSLR",
+      "NAME": "UVC-DSLR-Bullet",
       "BOARDID": "a5b0",
       "BOMREV": "113-03377",
-      "DESC": "UVC G4 DSLR",
+      "DESC": "UVC DSLR Bullet",
       "FILE": "uvc_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/images",
           "DST_PATH": "images",
           "FILES": [
-            "a5a3-fw.ini"
+            "a5b0-fw.ini"
           ]
         },
         {

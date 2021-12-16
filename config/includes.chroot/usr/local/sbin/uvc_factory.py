@@ -26,14 +26,14 @@ import configparser
 # ec70 = Thermal Scan
 
 
-PROVISION_EN  = True
-DOHELPER_EN   = True
-REGISTER_EN   = True
-FWUPDATE_EN   = True
+PROVISION_EN = True
+DOHELPER_EN = True
+REGISTER_EN = True
+FWUPDATE_EN = True
 DATAVERIFY_EN = True
-# REGISTER_EN   = False
-# FWUPDATE_EN   = False
-# DATAVERIFY_EN = False
+#REGISTER_EN   = False
+#FWUPDATE_EN   = False
+#DATAVERIFY_EN = False
 
 
 class UVCFactoryGeneral(ScriptBase):
@@ -162,7 +162,7 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
-        elif self.product_name == "UVC-G4DSLR":
+        elif self.product_name == "UVC-DSLR-Bullet":
             self.board_name = "UVC G4 DSLR"
             self.ip = "192.168.1.20"
             self.mtd_name = 'amba_nor'
