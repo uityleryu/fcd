@@ -150,25 +150,26 @@ class UFECNT7521Factory(ScriptBase):
         self.set_uboot_network()
 
         image_name = {
-            'uboot': 'tcboot.bin',
-            'kernel': 'tclinux.bin'
+            'uboot':  ['--tc'  , 'tcboot.bin' , '{}-uboot.bin'.format(self.board_id)],
+            'kernel': ['--boot', 'tclinux.bin', '{}-fw.bin'.format(self.board_id)]
         }
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue --tc")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue {}".format(image_name[where][0]))
         if self.fcd.common.ip_is_alive("{}".format(self.dutip), retry=120) is False:
             error_critical("Can't ping to DUT {}".format(self.dutip))
-        cmd = "atftp -p -l {0}/{1} -r {3} {2}".format(self.fwdir, "{}-fw.bin".format(self.board_id), self.dutip, image_name[where])
+        cmd = "atftp -p -l {0}/{1} -r {3} {2}".format(self.fwdir, image_name[where][2], self.dutip, image_name[where][1])
 
         log_debug("host cmd: " + cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if (int(rtc) > 0):
-            error_critical("Failed to upload firmware image")
+            error_critical("Failed to upload image")
         else:
-            log_debug("Uploading firmware image successfully")
+            log_debug("Uploading image successfully")
 
         self.pexp.expect_only(120, "ubnt_process_image")
-        self.pexp.expect_only(120, "Upgrade image check ok.")
+        if image_name[where][0] == '--boot':
+            self.pexp.expect_only(120, "Upgrade image check ok.")
         self.pexp.expect_only(120, "done")
         self.pexp.expect_only(120, "resetting")
     
