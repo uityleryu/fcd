@@ -26,14 +26,14 @@ import configparser
 # ec70 = Thermal Scan
 
 
-PROVISION_EN  = True
-DOHELPER_EN   = True
-REGISTER_EN   = True
-FWUPDATE_EN   = True
+PROVISION_EN = True
+DOHELPER_EN = True
+REGISTER_EN = True
+FWUPDATE_EN = True
 DATAVERIFY_EN = True
-# REGISTER_EN   = False
-# FWUPDATE_EN   = False
-# DATAVERIFY_EN = False
+#REGISTER_EN   = False
+#FWUPDATE_EN   = False
+#DATAVERIFY_EN = False
 
 
 class UVCFactoryGeneral(ScriptBase):
@@ -162,6 +162,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UVC-DSLR-Bullet":
+            self.board_name = "UVC G4 DSLR"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -190,7 +196,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a0': "1",
             'a5a2': '1',
             'ec70': '1',
-            'a5a3': '1'
+            'a5a3': '1',
+            'a5b0': '1'
         }
 
         # number of WiFi
@@ -207,7 +214,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a0': "0",
             'a5a2': '0',
             'ec70': '0',
-            'a5a3': '0'
+            'a5a3': '0',
+            'a5b0': '0'
         }
 
         # number of Bluetooth
@@ -224,7 +232,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a0': "0",
             'a5a2': '0',
             'ec70': '0',
-            'a5a3': '0'
+            'a5a3': '0',
+            'a5b0': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -247,7 +256,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a595': "ifconfig eth0 ",
             'a5a0': "ifconfig eth0 ",
             'a5a2': "ifconfig eth0 ",
-            'ec70': "ifconfig eth0 "
+            'ec70': "ifconfig eth0 ",
+            'a5a3': "ifconfig eth0 ",
+            'a5b0': "ifconfig eth0 "
 
         }
 
