@@ -316,6 +316,10 @@ class UISPALPINE(ScriptBase):
         cmd = "bootm ${loadaddr}"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.login(retry=100)
+
+        cmd = "ifconfig eth0 down"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        time.sleep(3)
         self.set_lnx_net("eth1")
         self.is_network_alive_in_linux()
 
@@ -360,7 +364,10 @@ class UISPALPINE(ScriptBase):
         cmd = "onie-stop"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
-        self.set_lnx_net("eth0")
+        cmd = "ifconfig eth0 down"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        time.sleep(3)
+        self.set_lnx_net("eth1")
         self.is_network_alive_in_linux()
 
         '''
