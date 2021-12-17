@@ -14,11 +14,12 @@
       "FCD_ID": "000B",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/am-fw",
+          "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
             "u-boot_01099.mbn",
-            "lbe-ax-v5.img",
+            "lbe-ax-v6_emmc.bin",
+            "lbe-ax-v6_nor.bin",
             "rax.ipq5018.v0.2.0-devel+liteap-support.3b92ac2c.211012.1402-mp03.5-c2.bin"
           ]
         },
@@ -39,8 +40,12 @@
           "../am-fw/u-boot_01099.mbn"
         ],
         [
-          "tftp/images/a662-bsp.bin",
-          "../am-fw/lbe-ax-v5.img"
+          "tftp/images/a662-nor.bin",
+          "../am-fw/lbe-ax-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a662-emmc.bin",
+          "../am-fw/lbe-ax-v6_emmc.bin"
         ],
         [
           "tftp/images/a662.bin",

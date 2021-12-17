@@ -316,7 +316,7 @@ class UISPALPINE(ScriptBase):
         cmd = "bootm ${loadaddr}"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.login(retry=100)
-        self.set_lnx_net("eth0")
+        self.set_lnx_net("eth1")
         self.is_network_alive_in_linux()
 
         '''

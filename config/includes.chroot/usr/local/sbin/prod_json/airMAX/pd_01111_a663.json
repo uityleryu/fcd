@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "LBE-AX": {
+    "NBE-AX": {
       "INDEX": "0",
-      "NAME": "LBE-AX",
-      "BOARDID": "a659",
-      "BOMREV": "113-01073",
-      "DESC": "LiteBeam AX",
+      "NAME": "NBE-AX",
+      "BOARDID": "a663",
+      "BOMREV": "113-01111",
+      "DESC": "NBE-AX",
       "FILE": "am_ipq5018_bspfactory.py",
       "T1FILE": "am_ipq5018_mfg.py",
       "QRCHECK": "False",
@@ -17,9 +17,9 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_01073.mbn",
-            "lbe-ax-v6_nor.bin",
-            "lbe-ax-v6_emmc.bin",
+            "u-boot_01099.mbn",
+            "nbe-ax-v2_emmc.bin",
+            "nbe-ax-v2_nor.bin",
             "lbe.ipq5018.v0.4.0.0b413587.211118.2123-mp03.5-c2.bin"
           ]
         },
@@ -36,19 +36,19 @@
       ],
       "CREATE_LINK":[
         [
-          "tftp/images/a659-uboot.bin",
+          "tftp/images/a663-uboot.bin",
           "../am-fw/u-boot_01073.mbn"
         ],
         [
-          "tftp/images/a659-nor.bin",
-          "../am-fw/lbe-ax-v6_nor.bin"
+          "tftp/images/a663-nor.bin",
+          "../am-fw/nbe-ax-v2_nor.bin"
         ],
         [
-          "tftp/images/a659-emmc.bin",
-          "../am-fw/lbe-ax-v6_emmc.bin"
+          "tftp/images/a663-emmc.bin",
+          "../am-fw/nbe-ax-v2_emmc.bin"
         ],
         [
-          "tftp/images/a659.bin",
+          "tftp/images/a663.bin",
           "../am-fw/lbe.ipq5018.v0.4.0.0b413587.211118.2123-mp03.5-c2.bin"
         ]
       ]
