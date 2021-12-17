@@ -300,11 +300,24 @@
       "SW_ID"       : "0201"
     },
 
-    "USW-24-PRO-POE":{
+    "USW-24-PRO-POE-02779":{
       "INDEX"       : 10,
       "NAME"        : "USW-24-PRO-POE",
       "BOARDID"     : "eb36",
       "BOMREV"      : "113-02779",
+      "DESC"        : "UBNT UniFiSwitch 24-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-PRO-POE-03965":{
+      "INDEX"       : 10,
+      "NAME"        : "USW-24-PRO-POE",
+      "BOARDID"     : "eb36",
+      "BOMREV"      : "113-03965",
       "DESC"        : "UBNT UniFiSwitch 24-Port Pro PoE",
       "FILE"        : "us_bcm5616_factory.py",
       "T1FILE"      : "us_bcm5616_mfg.py",
