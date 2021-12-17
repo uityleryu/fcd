@@ -29,7 +29,7 @@
             "CPP1.esp32app.0.2.4+262.211216.1058-unsigned.bin",
             "bootloader.bin",
             "plug_factory.bin",
-            "CPP1.esp32mfg.0.2.4+262.211216.1059-unsigned.bin",
+            "plug_mfg.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -50,7 +50,7 @@
         ],
         [
           "tftp/images/ec5a-mfg.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.0.2.4+262.211216.1059-unsigned.bin"
+          "../uc-fw/uc-plug-xx/plug_mfg.bin"
         ],
         [
           "tftp/images/ec5a-ota.bin",
