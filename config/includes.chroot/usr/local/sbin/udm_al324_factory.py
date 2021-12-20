@@ -397,8 +397,12 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.write_caldata_to_flash()
 
         self.del_anonymous_file()
+
+        if self.board_id == "ea2b":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
+
         self.show_info()
-        
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
