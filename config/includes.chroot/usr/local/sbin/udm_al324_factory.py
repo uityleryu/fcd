@@ -40,6 +40,12 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2b': "0x220000",
             'ea2c': "0x1f0000",
         }
+        
+        self.eeprom_offset_2 = {
+            'ea2a': "0x228000",
+            'ea2b': "0x228000",
+            'ea2c': "0x1f0000",
+        }
 
         self.wsysid = {
             'ea2a': "77072aea",
@@ -114,6 +120,10 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.LCM_CHECK_ENABLE = True
 
     def set_boot_net(self):
+        # import pdb; pdb.set_trace()
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv sysid")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv model")
+        
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
@@ -134,7 +144,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_only(60, "Erased: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
@@ -310,6 +320,15 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i rai0 -c "sync eeprom all"')
 
         self.check_flash_data()
+        
+    def show_info(self):
+        retry_time = 15
+        while retry_time >= 0:
+            output = self.pexp.expect_get_output(action="info", prompt= "" ,timeout=3)
+            if output.find("Version") >= 0:
+                break
+            retry_time -= 1
+            time.sleep(1)
 
     def run(self):
         """
@@ -378,7 +397,8 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.write_caldata_to_flash()
 
         self.del_anonymous_file()
-
+        self.show_info()
+        
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 

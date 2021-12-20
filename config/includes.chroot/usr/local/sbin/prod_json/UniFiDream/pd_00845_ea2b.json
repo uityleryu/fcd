@@ -18,13 +18,6 @@
           "FILES": []
         },
         {
-          "SRC_PATH": "images/tools/udw",
-          "DST_PATH": "tools/udw",
-          "FILES": [
-            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/udm",
           "DST_PATH": "tools/udm",
           "FILES": [
@@ -40,23 +33,31 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udw-pro",
+          "DST_PATH": "udm-fw/udw-pro",
+          "FILES": [
+            "UDWPRO.al324.v2.0.2+root.6727.b286952.211214.0557.bin",
+            "uImage",
+            "boot.img"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea2b-fw.bin",
-          ""
+          "../udm-fw/udw-pro/UDWPRO.al324.v2.0.2+root.6727.b286952.211214.0557.bin"
         ],
         [
           "tftp/images/ea2b-recovery",
-          ""
+          "../udm-fw/udw-pro/uImage"
         ],
         [
           "tftp/images/ea2b-uboot.bin",
-          ""
+          "../udm-fw/udw-pro/boot.img"
         ]
       ]
-
     }
   }
 }
