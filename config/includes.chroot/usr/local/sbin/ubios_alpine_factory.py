@@ -21,7 +21,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
-        self.bomrev = "113-" + self.bom_rev
+        self.bom_number = "113-" + self.bom_rev.rsplit('-', 1)[0]
         self.username = "root"
         self.password = "ubnt"
         self.linux_prompt = "#"
@@ -45,10 +45,11 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
         # BOM and revision
         self.wbom = {
-            'ea11': "0x016f0200",
-            'ea13': "0x016a0200",
-            'ea15': "0x01d30200",
-            'ea19': "0x01e40200"
+            '113-00623': "0x016f0200",
+            '113-00618': "0x016a0200",
+            '113-00723': "0x01d30200",
+            '113-01133': "0x016d0400",
+            '113-00740': "0x01e40200"
         }
       
         # number of Ethernet
@@ -126,12 +127,30 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         # set sub-system ID
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id]) 
         # set BOM and revision
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wbom[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wbom[self.bom_number])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-       
+
+    def set_fake_EEPROM2(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+        self.pexp.expect_only(30, "Erased: OK")
+
+        # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+        # set sub-system ID
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id]) 
+        # set BOM and revision
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "0x01d30200")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def update_uboot(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
@@ -218,6 +237,9 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.SET_FAKE_EEPROM is True:
+            if self.board_id == "ea15":
+                self.set_fake_EEPROM2()
+                self.update_uboot()
             self.set_fake_EEPROM()
 
         if self.UPDATE_UBOOT is True:

@@ -16,10 +16,15 @@ IMAGE-UDMSE+= \
     udm-fw/uImage-udmse.r \
     udm-fw/UDM.alpinev2.v1.0.30+builder.1762.cfb07db.190916.1318.bin
 
-IMAGE-UDMPRO+=$(IMAGE-UDM-BASIC)
-IMAGE-UDMPRO+= \
+IMAGE-UDMPRO-00723+=$(IMAGE-UDM-BASIC)
+IMAGE-UDMPRO-00723+= \
     images/ea15* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
+    udm-fw/udmp/* 
+
+IMAGE-UDMPRO-01133+=$(IMAGE-UDM-BASIC)
+IMAGE-UDMPRO-01133+= \
+    images/ea15* \
     udm-fw/udmp/* 
 
 IMAGE-UXGPRO+=$(IMAGE-UDM-BASIC)
@@ -88,7 +93,8 @@ TOOLS-UDM+=$(TOOLS-CONFIG)
 TOOLS-UDM+= udm/*
 
 TOOLS-UDMSE=$(TOOLS-UDM)
-TOOLS-UDMPRO=$(TOOLS-UDM)
+TOOLS-UDMPRO-00723=$(TOOLS-UDM)
+TOOLS-UDMPRO-01133=$(TOOLS-UDM)
 
 TOOLS-UXGPRO=$(TOOLS-UDM)
 TOOLS-UDR=$(TOOLS-UDM)
@@ -125,7 +131,8 @@ TOOLS-UDW-PRO-PU+= \
 # Project target
 $(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
-$(eval $(call ProductImage,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDMPRO-00723,FCD_$(PRD)_UDMPRO-00723_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDMPRO-01133,FCD_$(PRD)_UDMPRO-01133_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMXG,FCD_$(PRD)_UDMXG_$(VER)))
 $(eval $(call ProductImage,UDMB,FCD_$(PRD)_UDMB_$(VER)_$(FWVER)))
