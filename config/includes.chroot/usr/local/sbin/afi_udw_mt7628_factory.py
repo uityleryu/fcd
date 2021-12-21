@@ -158,11 +158,11 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(240, "done")
 
     def check_info(self):
-        self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
-        self.pexp.expect_only(30, "systemid="+self.board_id)
-        self.pexp.expect_only(30, "serialno="+self.mac.lower())
-        self.pexp.expect_only(30, "qrid="+self.qrcode)
+        # self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
+        # self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
+        # self.pexp.expect_only(30, "systemid="+self.board_id)
+        # self.pexp.expect_only(30, "serialno="+self.mac.lower())
+        # self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
         
