@@ -8,7 +8,7 @@
       "DESC": "Amplifi UPS",
       "FILE": "afi_udw_mt7628_factory.py",
       "T1FILE": "afi_udw_mt7628_mfg.py",
-      "QRCHECK": "True",
+      "QRCHECK": "False",
       "FCD_ID": "0011",
       "SW_ID": "1c01",
       "DOWNLOAD_FILE": [

@@ -108,7 +108,7 @@ class UCMT7628Factory(ScriptBase):
         
         if self.board_id == "ed14":
             self.disable_udhcpc()
-            self.disable_wpa_supplicant()
+            # self.disable_wpa_supplicant() #will need in my device but factory donot
         else:
             pass
         
