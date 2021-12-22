@@ -1,0 +1,8 @@
+'', ""
+5, '-re', "$u_boot_prompt", "sf probe\n"
+5, '-re', "$u_boot_prompt", "tftpboot 0x44000000 $u_boot_file\n"
+30, 'Bytes transferred ', ''
+10, '-re', "$u_boot_prompt", "sf probe; sf erase 0x000F0000 +0x000C0000\n"
+10, '-re', "$u_boot_prompt", "sf write 0x44000000 0x000F0000 \$filesize\n"
+10, '-re', "$u_boot_prompt", "\n"
+10, '-re', "$u_boot_prompt", "reset\n"

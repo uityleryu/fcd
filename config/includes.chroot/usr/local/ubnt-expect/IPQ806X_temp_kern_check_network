@@ -1,6 +1,6 @@
 '', "\n"
-20, "$temp_kern_prompt", "[ \$(ifconfig | grep -c eth0) -gt 0 ] || ifconfig eth0 up \n"
-20, "$temp_kern_prompt", "ifconfig eth0 $prod_dev_ip\n"
+20, "$temp_kern_prompt", "[ \$(ifconfig | grep -c br0) -gt 0 ] || ifconfig br0 up \n"
+20, "$temp_kern_prompt", "ifconfig br0 $prod_dev_ip\n"
 20, "$temp_kern_prompt", "ping -c 1 $prod_server_ip\n"
 10, '1 packets received', ''
 5, "$temp_kern_prompt", ''

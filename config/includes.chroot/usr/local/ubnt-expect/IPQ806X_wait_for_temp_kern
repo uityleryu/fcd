@@ -1,4 +1,4 @@
-90, 'Please press Enter to activate this console', ''
+150, 'Please press Enter to activate this console', ''
 @sleep 5
 '', "\n"
 10, 'UBNT login: ', "ubnt\n"

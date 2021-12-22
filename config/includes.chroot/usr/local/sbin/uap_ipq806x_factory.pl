@@ -129,6 +129,16 @@ my %wificnt_hash = (
 );
 my $wificnt = ${wificnt_hash{$boardid}};
 
+my %boot_arg_hash = (
+    'e530' => '$fileaddr',
+    'e540' => '$fileaddr',
+    'e560' => '$fileaddr#config@5117_2',
+    'e570' => '$fileaddr#config@5117_2',
+    'e580' => '$fileaddr#config@5123_2',
+    'e585' => '$fileaddr#config@5123_2'
+);
+my $boot_arg = ${boot_arg_hash{$boardid}}; 
+
 my $exp_env = {
     'u_boot_prompt' => '\(IPQ\) #',
     'prod_dev_mac' => lc($mac),
@@ -148,13 +158,16 @@ my $exp_env = {
 #    'board_serial' => $serial_num,
     'passphrase' => $passphrase,
     'u_boot_parts_file' => "${boardid}.parts",
+    'u_boot_file' => "${boardid}-uboot.mbn",
     'u_boot_tftp_file' => "${boardid}-fcd.kernel",
+    'u_boot_tftp_file_new' => "${boardid}-fcd-new.kernel",
 #    'u_boot_linux_cmdline' => 'mtdparts=$(mtdparts) rw',
 #    'flash_base' => $flash_base,
     'reg_ffile' => $ffile,
     'reg_pfile' => $pfile,
     'reg_cfile' => $cfile,
     'reg_sfile' => $sfile,
+    'helper_file' => "helper_IPQ806x_release",
     'linux_mmc_dev' => 'mmcblk0',
     'temp_kern_prompt' => '# ',
     'os_prompt' => '# ',
@@ -162,7 +175,8 @@ my $exp_env = {
 #    'systemid' => $system_id,
     'prod_btaddr' => $local_admin_mac0,
     'prod_dev_regdmn' => $regdmn . '001f',
-    'qr_code' => $qrcode
+    'qr_code' => $qrcode,
+    'ramboot_arg' => $boot_arg
 };
 
 my $has_bdaddr=0;
@@ -223,6 +237,7 @@ msg(12, 'Checking network connection to tftp server in u-boot, 2nd time...');
 $max_try = 5;
 $cnt = 0;
 $ready = run_ubnt_expect($exp_h, 'IPQ806X_u_boot_check_network', $exp_env);
+
 while ( ($cnt < $max_try) && (!$ready) ) {
     $ready = run_ubnt_expect($exp_h, 'IPQ806X_u_boot_check_network', $exp_env);
     if (!$ready) {
@@ -287,7 +302,6 @@ msg(21, 'Setting up IP address in u-boot, 3rd time...');
 if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_set_ip', $exp_env)) {
     error_critical('FAILED to set up IP address in u-boot');
 }
-
 msg(22, 'Checking network connection to tftp server in u-boot, 3rd time...');
 $max_try = 5;
 $cnt = 0;
@@ -303,12 +317,42 @@ if (!$ready) {
     error_critical('FAILED to ping tftp server in u-boot');
 }
 
-msg(23, 'Booting manufacturing kernel, 2nd time...');
-if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_linux_tftp', $exp_env)) {
+msg(23, 'Updating uboot to higher version...');
+if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_update', $exp_env)) {
+    error_critical('FAILED to update uboot');
+}
+
+msg(24, 'Waiting for device, 4th time...');
+if (!run_ubnt_expect($exp_h, 'IPQ806X_wait_for_u_boot', $exp_env)) {
+    error_critical('FAILED to update uboot');
+}
+
+msg(25, 'Setting up IP address in u-boot, 4th time...');
+if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_set_ip', $exp_env)) {
+    error_critical('FAILED to set up IP address in u-boot');
+}
+
+msg(26, 'Checking network connection to tftp server in u-boot, 4th time...');
+$max_try = 5;
+$cnt = 0;
+$ready = run_ubnt_expect($exp_h, 'IPQ806X_u_boot_check_network', $exp_env);
+while ( ($cnt < $max_try) && (!$ready) ) {
+    $ready = run_ubnt_expect($exp_h, 'IPQ806X_u_boot_check_network', $exp_env);
+    if (!$ready) {
+        $cnt = $cnt + 1;
+        sleep(1);
+    }
+}
+if (!$ready) {
+    error_critical('FAILED to ping tftp server in u-boot');
+}
+
+msg(27, 'Booting new manufacturing kernel, 1nd time...');
+if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_linux_new_tftp', $exp_env)) {
     error_critical('FAILED to boot manufacturing kernel');
 }
 
-msg(24, 'Waiting for manufacturing kernel ready, 2nd time...');
+msg(28, 'Waiting for new manufacturing kernel ready, 1nd time...');
 if (!run_ubnt_expect($exp_h, 'IPQ806X_wait_for_temp_kern', $exp_env)) {
     error_critical('FAILED to boot manufacturing kernel');
 }
@@ -330,11 +374,6 @@ if ($has_bdaddr == 1) {
     }
 }
 
-msg(26, 'Checking hardware ID in EEPROM...');
-if (!run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_check_eeprom', $exp_env)) {
-    error_critical('FAILED to check hardware ID in EEPROM');
-}
-
 if ($has_bdaddr == 1) {
     msg(18, 'Checking bdaddr...');
     if (!run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_check_bdaddr', $exp_env)) {
@@ -346,7 +385,7 @@ if ($has_eth_switch == 1) {
     run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_config_ethernet_switch', $exp_env);
 }
 
-msg(30, 'Checking network connection to tftp server in manufacturing kernel...');
+msg(29, 'Checking network connection to tftp server in new manufacturing kernel...');
 $max_try = 5;
 $cnt = 0;
 $ready = run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_check_network', $exp_env);
@@ -358,8 +397,18 @@ while ( ($cnt < $max_try) && (!$ready) ) {
     }
 }
 if (!$ready) {
-    error_critical('FAILED to ping tftp server in manufacturing kernel');
+    error_critical('FAILED to ping tftp server in new manufacturing kernel');
 }
+
+msg(30, 'tftp get helper_IPQ806x_release');
+if (!run_ubnt_expect($exp_h, 'IPQ806X_tftp_get_helper', $exp_env)) {
+    error_critical('FAILED to tftp get helper_IPQ806x_release');
+}
+#
+#msg(31, 'Checking hardware ID in EEPROM...');
+#if (!run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_check_eeprom', $exp_env)) {
+#    error_critical('FAILED to check hardware ID in EEPROM');
+#}
 
 my $tdir = '/tftpboot';
 my ($fpath, $ppath, $spath) = ("$tdir/$ffile", "$tdir/$pfile", "$tdir/$sfile");
@@ -451,17 +500,17 @@ system("rm -f ${fpath}* ${ppath}* ${cpath}*");
     run_ubnt_expect($exp_h, 'IPQ806X_temp_kern_reboot', $exp_env);
 }
 
-msg(40, 'Waiting for device, 4th time...');
+msg(40, 'Waiting for device, 5th time...');
 if (!run_ubnt_expect($exp_h, 'IPQ806X_wait_for_u_boot', $exp_env)) {
     error_critical('FAILED to detect device');
 }
 
-msg(42, 'Setting up IP address in u-boot, 4th time...');
+msg(42, 'Setting up IP address in u-boot, 5th time...');
 if (!run_ubnt_expect($exp_h, 'IPQ806X_u_boot_set_ip', $exp_env)) {
     error_critical('FAILED to set up IP address in u-boot');
 }
 
-msg(44, 'Checking network connection to tftp server in u-boot, 4th time...');
+msg(44, 'Checking network connection to tftp server in u-boot, 5th time...');
 $max_try = 5;
 $cnt = 0;
 $ready = run_ubnt_expect($exp_h, 'IPQ806X_u_boot_check_network', $exp_env);
