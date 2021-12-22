@@ -213,12 +213,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
     def lcm_fw_ver_check(self):
-        if self.board_id == "ea15":
+        if self.board_id == "ea15" or self.board_id == "ea19":
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ulcmd --command dump --sender fcd_team', '"lcm.fw.version":"v', retry=48)
-        elif self.board_id == "ea19":
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'grep "LCM FW up to date" /tmp/ulcmd.log', 
-                                    'LCM FW up to date', retry=48)
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'cat /tmp/ulcmd.log', self.linux_prompt)
 
     def run(self):
         """
