@@ -77,6 +77,10 @@ TOOLS-USP-PDU-PRO+= \
 TOOLS-USP-RPS+= \
     usp_rps/helper_UNIFI_MT7621_release
 
+TOOLS-USP-RPS-PRO+= \
+    usp_rps_pro/helper_UNIFI_MT7621_release
+
+
 # Project target
 
 $(eval $(call ProductImage,USP-PLUG,FCD_$(PRD)_USP-PLUG_$(VER)_$(FWVER)))
