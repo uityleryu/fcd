@@ -403,8 +403,10 @@ class UDM_AL324_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
             log_debug(output)
         elif self.board_id == "ea2b":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
-            self.show_info()
+            # below one of two function will cause the data of flash(MTD3) was removed so do not use it
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
+            # self.show_info()
+            pass
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
