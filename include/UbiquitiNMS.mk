@@ -100,11 +100,8 @@ TOOLS-UISP-P-LITE+= uisp-p-lite/*
 
 TOOLS-UISP-P=$(TOOLS-UNMS)
 TOOLS-UISP-P+= uisp_p/*
-TOOLS-UISP-P+= uisp_p_pro/*
-
 
 TOOLS-UISP-P-PRO=$(TOOLS-UNMS)
-TOOLS-UISP-P-PRO+= uisp_p/*
 TOOLS-UISP-P-PRO+= uisp_p_pro/*
 
 # Project target
