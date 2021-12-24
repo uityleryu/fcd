@@ -398,10 +398,13 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         self.del_anonymous_file()
 
-        if self.board_id == "ea2b":
+        if self.board_id == "ea2a":
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
+            log_debug(output)
+        elif self.board_id == "ea2b":
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
-
-        self.show_info()
+            self.show_info()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
