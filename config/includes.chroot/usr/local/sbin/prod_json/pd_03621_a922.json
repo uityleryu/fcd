@@ -1,0 +1,28 @@
+{
+  "UniFiAP": {
+    "WiFiMan-Scanner": {
+      "INDEX": 0,
+      "NAME": "",
+      "BOARDID": "a922",
+      "BOMREV": "113-03621",
+      "DESC": "Bluetooth Paired WiFi Spectrum Analyzer ",
+      "FILE": "ufp_efr32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "1601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
