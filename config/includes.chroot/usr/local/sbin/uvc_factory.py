@@ -332,10 +332,6 @@ class UVCFactoryGeneral(ScriptBase):
         mtd = self.session.execmd_getmsg('cat /proc/mtd | grep {}'.format(self.mtd_name))
         print('mtd = {}'.format(mtd))
         mtd = '/dev/{}'.format(mtd.split(':')[0])
-
-        if self.board_name is "UVC G4 Pro":
-            mtd = '/dev/mtd10'
-            log_debug('UVC-G4Pro need change to mtd = {}'.format(mtd))
         return mtd
 
     def get_cpu_id(self):
