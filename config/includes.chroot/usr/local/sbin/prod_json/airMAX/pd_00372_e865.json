@@ -1,0 +1,62 @@
+{
+  "airMAX": {
+    "LBE-M5-23": {
+      "INDEX": "0",
+      "NAME": "LBE-M5-23",
+      "BOARDID": "e865",
+      "BOMREV": "113-00372",
+      "DESC": "LiteBeam M5 23",
+      "FILE": "am_ar9342_factory2.py",
+      "T1FILE": "am_ar9342_mfg2.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/amm-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "AR9342_AR8032_V7.bin",
+            "XW.v6.3.8.33363.211203.1612.bin",
+            "ubntwasp-u-boot.rom"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/am-m",
+          "DST_PATH": "tools/am",
+          "FILES": [
+            "helper_ARxxxx_wasp",
+            "cfg_part_m_series.bin",
+            "id_rsa",
+            "id_rsa.pub",
+            "fl_lock63"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e865-art.bin",
+          "../am-fw/AR9342_AR8032_V7.bin"
+        ],
+        [
+          "tftp/images/e865.bin",
+          "../am-fw/XW.v6.3.8.33363.211203.1612.bin"
+        ],
+        [
+          "tftp/images/e865-uboot.bin",
+          "../am-fw/ubntwasp-u-boot.rom"
+        ]
+      ]
+    }
+  }
+}

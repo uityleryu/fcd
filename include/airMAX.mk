@@ -67,6 +67,10 @@ IMAGE-AC-SERIES= \
     am-fw/LSDK-10.1.389-AR9342-QCA988X-AR8035-16M_V3.bin \
     am-fw/openwrt-ath79-lbe-5ac-xr-initramfs-kernel-v2.bin
 
+IMAGE-M-SERIES= \
+    images/e865* \
+    amm-fw/*
+
 IMAGE-AIRMAX+=$(IMAGE-GBE)
 IMAGE-AIRMAX+=$(IMAGE-PRISMAP)
 
@@ -117,6 +121,10 @@ TOOLS-ACB-SERIES= \
     am/helper_ARxxxx_aircube \
     am/aic_cred_gen.sh
 
+TOOLS-M-SERIES+=$(TOOLS-CONFIG)
+TOOLS-M-SERIES+= \
+    am_m/*
+
 # Assign common tool for every model
 TOOLS-GBE+=$(TOOLS-CONFIG)
 TOOLS-PRISMAP+=$(TOOLS-CONFIG)
@@ -135,6 +143,7 @@ $(eval $(call ProductImage,PRISMAP,FCD_$(PRD)_PRISMAP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,60G-LAS,FCD_$(PRD)_60G-LAS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,AC-SERIES,FCD_$(PRD)_AC-SERIES_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ACB-SERIES,FCD_$(PRD)_ACB-SERIES_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,M-SERIES,FCD_$(PRD)_M-SERIES_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 # Single product definition

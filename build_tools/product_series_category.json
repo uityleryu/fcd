@@ -18,5 +18,8 @@
   ],
   "UISP_100G-SERIES" : [
     "02932_eed4", "03162_eed5"
+  ],
+  "AIRMAX_M-SERIES" : [
+    "00372_e865"
   ]
 }
