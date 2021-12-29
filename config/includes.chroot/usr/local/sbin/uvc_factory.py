@@ -56,13 +56,16 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-G4PRO":
             self.board_name = "UVC G4 Pro"
-            if self.bom_rev.split('-')[1] == "11":
+            if int(self.bom_rev.split('-')[1]) >= 11:
                 self.devregpart = "/dev/mtd10"
+                self.ip = "192.168.1.20"
+                self.mtd_name = 'spi'
+                self.helper_rule = 1
             else:
                 self.devregpart = "/dev/mtd10"
-            self.ip = "192.168.1.20"
-            self.flash_module = "m25p80_g4pro.ko"
-            self.helperexe = "helper_S5L_g4pro"
+                self.ip = "192.168.1.20"
+                self.flash_module = "m25p80_g4pro.ko"
+                self.helperexe = "helper_S5L_g4pro"
 
         elif self.product_name == "UVC-G4PTZ":
             self.board_name = "UVC G4 PTZ"
@@ -329,6 +332,10 @@ class UVCFactoryGeneral(ScriptBase):
         mtd = self.session.execmd_getmsg('cat /proc/mtd | grep {}'.format(self.mtd_name))
         print('mtd = {}'.format(mtd))
         mtd = '/dev/{}'.format(mtd.split(':')[0])
+
+        if self.board_name is "UVC G4 Pro":
+            mtd = '/dev/mtd10'
+            log_debug('UVC-G4Pro need change to mtd = {}'.format(mtd))
         return mtd
 
     def get_cpu_id(self):
@@ -401,7 +408,7 @@ class UVCFactoryGeneral(ScriptBase):
             host_path = flash_fillff_path
             dut_path = "/tmp/{}".format(self.fillff)
             self.session.put_file(host_path, dut_path)
-
+            
             if self.flash_module != "":  # need to upload and install module
                 flash_module_path = os.path.join(self.host_toolsdir_dedicated, self.flash_module)
                 mod_name_inDUT = self.flash_module.split(".")[0].split("_")[0]
