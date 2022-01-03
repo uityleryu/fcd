@@ -156,6 +156,8 @@ class IPQ5018BSPFactory(ScriptBase):
         self.set_ub_net(self.premac)
         self.is_network_alive_in_uboot()
 
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "saveenv")
+
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue")
 
         cmd = "atftp --option \"mode octet\" -p -l /tftpboot/{0} {1}".format(self.fwimg, self.dutip)
