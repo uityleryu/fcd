@@ -132,6 +132,7 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.pexp.expect_action(60, "stop autoboot", "\033")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "setenv dev_ubntconsole true")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_only(15, "Writing to NAND... OK")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
         self.login(username="root", password="", retry=15, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
