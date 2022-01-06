@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uc-fw/uc-thermostat/testing_fw/0.20.1/",
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-thermostat/testing_fw/0.22.2/",
           "DST_PATH": "images",
           "FILES": [
           ]
