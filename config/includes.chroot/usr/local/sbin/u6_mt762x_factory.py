@@ -39,7 +39,8 @@ class U6MT762xFactory(ScriptBase):
         self.devregpart_select = {
             "a612": "/dev/mtdblock3",
             "a614": "/dev/mtdblock3",
-            "a620": "/dev/mtdblock5"
+            "a620": "/dev/mtdblock5",
+            "a640": "/dev/mtdblock3"
         }
         self.devregpart = self.devregpart_select[self.board_id]
 
@@ -47,7 +48,8 @@ class U6MT762xFactory(ScriptBase):
         self.helperexe_select = {
             "a612": "helper_UAP6_MT7621_release",
             "a614": "helper_UAP6_MT7621_release",
-            "a620": "helper_UAP6_MT7622_release"
+            "a620": "helper_UAP6_MT7622_release",
+            "a640": "helper_UAP6_MT7621_release"
         }
         self.helperexe = self.helperexe_select[self.board_id]
 
@@ -55,7 +57,8 @@ class U6MT762xFactory(ScriptBase):
         self.bootloader_prompt_select = {
             "a612": "MT7621 #",     # uboot of BSP is "=>"
             "a614": "MT7621 #",     # uboot of BSP is "=>"
-            "a620": "MT7622>"
+            "a620": "MT7622>",
+            "a640": "MT7621 #"     # uboot of BSP is "=>"
         }
         self.bootloader_prompt = self.bootloader_prompt_select[self.board_id]
 
@@ -64,13 +67,15 @@ class U6MT762xFactory(ScriptBase):
             'a612': "1",
             'a614': "1",
             'a620': "1",
+            'a640': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'a612': "2",
             'a614': "2",
-            'a620': "2"
+            'a620': "2",
+            'a640': "2",
         }
 
         # number of Bluetooth
@@ -78,6 +83,7 @@ class U6MT762xFactory(ScriptBase):
             'a612': "1",
             'a614': "1",
             'a620': "1",
+            'a640': "1",
         }
 
         # vlan port mapping
@@ -85,6 +91,7 @@ class U6MT762xFactory(ScriptBase):
             'a612': "'6 0'",
             'a614': "'6 0'",
             'a620': "'6 0'",
+            'a640': "'6 0'",
         }
 
         # flash size map
@@ -92,12 +99,14 @@ class U6MT762xFactory(ScriptBase):
             'a612': "33554432",
             'a614': "33554432",
             'a620': "67108864",
+            'a640': "33554432",
         }
 
         self.recovery_addr = {
             "a612": "0x84000000",
             "a614": "0x84000000",
             "a620": "0x5007ff28",
+            "a640": "0x84000000",
         }
 
         # firmware image
@@ -105,6 +114,7 @@ class U6MT762xFactory(ScriptBase):
             'a612': self.board_id + ".bin",
             'a614': self.board_id + ".bin",
             'a620': self.board_id + ".bin",
+            'a640': self.board_id + ".bin",
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -127,7 +137,7 @@ class U6MT762xFactory(ScriptBase):
     def boot_recovery_image(self, Img):
         cmd = "tftpboot {} images/{}".format(self.recovery_addr[self.board_id], Img)
 
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             pass
         elif self.board_id == "a620":
             self.pexp.expect_action(15, self.bootloader_prompt, "nor init")
@@ -140,7 +150,7 @@ class U6MT762xFactory(ScriptBase):
     def init_recovery_image(self):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dmesg -n 1", valid_chk=True)
 
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             cmd = "swconfig dev switch0 set enable_vlan 1"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
             cmd = "swconfig dev switch0 vlan 1 set vid 1"
@@ -163,7 +173,7 @@ class U6MT762xFactory(ScriptBase):
 
     def update_uboot(self):
 
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             log_debug("uboot_img: " + self.uboot_img)
             cmd = "tftpboot {} {}".format(self.recovery_addr[self.board_id], self.uboot_img)
             exp = "Bytes transferred = {}".format(self.uboot_size)
@@ -191,11 +201,11 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
-    def enter_uboot(self):
+    def enter_uboot(self, stp_enable=False):
 
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press", "\x1b\x1b")
-            self.bootloader_prompt = "MT7621 #"  # here will need this because prompt could be changed with "=>" befoe on 1st uboot
+            self.bootloader_prompt = "MT7621 #"  # here will need this because prompt could be changed with "=>" before on 1st uboot
             retry = 2
             while retry > 0:
                 if rt != 0:
@@ -207,6 +217,9 @@ class U6MT762xFactory(ScriptBase):
                     self.bootloader_prompt = "=>"
                     log_debug("Change prompt to {}".format(self.bootloader_prompt))
                     retry -= 1
+                    
+            if stp_enable is True:
+                self.set_stp_env()
 
         elif self.board_id == "a620":
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -222,9 +235,12 @@ class U6MT762xFactory(ScriptBase):
                     log_debug("Change prompt to {}".format(self.bootloader_prompt))
                     retry -= 1
 
-            self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.mac)
-            self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
+            if stp_enable is True:
+                self.set_stp_env()
 
+            self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.mac)
+
+    def set_uboot_network(self):
         self.set_ub_net(premac=self.premac)
         self.is_network_alive_in_uboot()
 
@@ -233,6 +249,7 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_action(30, "", "")
         self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
         self.enter_uboot()
+        self.set_uboot_network()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv do_urescue TRUE")
@@ -256,14 +273,18 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_only(240, "done")
 
     def set_stp_env(self):
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true;saveenv", "OK")
         elif self.board_id == "a620":
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
 
+    def check_info(self):
+
+        self.enter_uboot()
+        log_debug("check DUT ip of Uboot, ipaddr=192.168.1.20(default) or not ?")
+        self.pexp.expect_ubcmd(15, self.bootloader_prompt, 'print', 'ipaddr=192.168.1.20')
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
-    def check_info(self):
         #Check BT FW is included or not
         bom = self.bom_rev.split("-")[0]
         rev_of_bomrev = int(self.bom_rev.split("-")[1])
@@ -277,7 +298,7 @@ class U6MT762xFactory(ScriptBase):
 
         self.login(timeout=240,press_enter=True)
         cmd = "dmesg -n 1"
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
         elif self.board_id == "a620":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
@@ -338,12 +359,13 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
         self.pexp.expect_action(10, self.linux_prompt, "reboot")
+
         if bom == "00773" and rev_of_bomrev < 15:
             pass
         else:   #for new bom U6-lIte and U6-LR
             self.pexp.expect_only(120, "\[BT Power On Result\] Success")
 
-        if self.board_id == "a612" or self.board_id == "a614":
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             #to skip login action because fw update BT fw will take time , there is no this action in previous fw. 
             # factory said it take too much time
             # self.login(timeout=240,press_enter=True)
@@ -368,11 +390,13 @@ class U6MT762xFactory(ScriptBase):
 
         if self.UPDATE_UBOOT_ENABLE is True:
             self.enter_uboot()
+            self.set_uboot_network()
             self.update_uboot()
             msg(10, "Update uboot successfully ...")
 
         if self.BOOT_RECOVERY_IMAGE is True:
             self.enter_uboot()
+            self.set_uboot_network()
             self.boot_recovery_image(self.fcdimg)
             msg(15, "Boot into recovery image for registration ...")
             self.init_recovery_image()
@@ -417,8 +441,11 @@ class U6MT762xFactory(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             msg(80, "Save STP_ENV...")
-            self.enter_uboot()
-            self.set_stp_env()
+            self.enter_uboot(stp_enable=True)
+            # self.set_stp_env() will enable BLE and save other parameters in uboot
+            # if changing parambeter before set_stp_enable, can save stp only, others can't save
+            # self.set_stp_env()
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
             msg(85, "Save STP_ENV done...")
             self.check_info()
             msg(90, "Succeeding in checking the devreg information ...")

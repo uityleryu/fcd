@@ -21,7 +21,7 @@ class MT762xMFGGeneral(ScriptBase):
 
     def write_img(self):
         
-        if self.board_id == "a612" or self.board_id == "a614" :
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             log_debug(msg="write_img")
             cmd = "sf probe; sf erase 0x0 0x2000000; sf update 0x80010000 0x0 0x2000000; "
             log_debug(msg="run cmd " + cmd)
@@ -39,7 +39,7 @@ class MT762xMFGGeneral(ScriptBase):
             self.pexp.expect_action(timeout=10, exptxt="", action=" ")
 
     def stop_uboot(self, timeout=30):
-        if self.board_id == "a612" or self.board_id == "a614" :
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             self.set_bootloader_prompt("MT7621> |MT7621 #|==>")
             if self.pexp is None:
                 error_critical(msg="No pexpect obj exists!")
@@ -68,7 +68,7 @@ class MT762xMFGGeneral(ScriptBase):
                     self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
 
     def set_boot_netenv(self):
-        if self.board_id == "a612" or self.board_id == "a614" :
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             self.pexp.expect_action(10, self.bootloader_prompt, "mtk network on")
         elif self.board_id == "a620":
             self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethcard AQR112C")
@@ -92,7 +92,7 @@ class MT762xMFGGeneral(ScriptBase):
 
     def reset_uboot(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "reset")
-        if self.board_id == "a612" or self.board_id == "a614" :
+        if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             self.pexp.expect_only(120, "Write EEPROM buffer back to eFuse")
         elif self.board_id == "a620":
             self.pexp.expect_only(120, "BusyBox")
