@@ -107,65 +107,67 @@ def download_images():
         rmsg = "**** WGET FTP files for Model: {} ****".format(im)
         print(rmsg)
 
-        if "DOWNLOAD_FILE" in pjson[pl][im].keys():
-            download_list = pjson[pl][im]["DOWNLOAD_FILE"]
-            for item in download_list:
-                if len(item["FILES"]) > 0:
-                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
-                    # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    local_dir = os.path.join(ostype_tftp_dir, item["DST_PATH"])
-                    if os.path.isdir(local_dir) is False:
-                        os.makedirs(local_dir)
+        DOWNLOAD_LIST = ['DOWNLOAD_FILE', 'DOWNLOAD_FILE_FCD', 'DOWNLOAD_FILE_COMMON']
+        for DOWNLOAD_FLAG in DOWNLOAD_LIST:
+            if DOWNLOAD_FLAG in pjson[pl][im].keys():
+                download_list = pjson[pl][im][DOWNLOAD_FLAG]
+                for item in download_list:
+                    if len(item["FILES"]) > 0:
+                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                        url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
+                        # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                        local_dir = os.path.join(ostype_tftp_dir, item["DST_PATH"])
+                        if os.path.isdir(local_dir) is False:
+                            os.makedirs(local_dir)
 
-                    for i in item["FILES"]:
-                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
-                        src_file_path = os.path.join(url_dir, i)
-                        src_file_path = src_file_path.replace("\\", "/")
-                        cmd = "wget -P {} {}".format(local_dir, src_file_path)
+                        for i in item["FILES"]:
+                            # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
+                            src_file_path = os.path.join(url_dir, i)
+                            src_file_path = src_file_path.replace("\\", "/")
+                            cmd = "wget -P {} {}".format(local_dir, src_file_path)
+                            if cmd not in download_wget_list:
+                                download_wget_list.append(cmd)
+                                print("WGET: " + cmd)
+                                rtc = os.system(cmd)
+                                if rtc != 0:
+                                    print("WGET failed: " + cmd)
+                                    exit(1)
+                    else:
+                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                        url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
+                        '''
+                            wget -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
+                            It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
+                            under the folder "am-fw", or it will copy all files under "fcd-image"
+                        '''
+                        # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
+                        # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
+                        url_dir = url_dir.replace("\\", "/")
+                        src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
+                        match_url = re.findall(src_pattern, url_dir)
+                        if match_url:
+                            print("!!!!!!!!! Fatal Error, you are going to copy all images from the FTP server !!!!!!!!!!!!")
+                            print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
+                            exit(1)
+
+                        cmd = "wget -r -np -nH -R \"index.html*\" {}".format(url_dir)
+                        print("copy whole folder: " + cmd)
                         if cmd not in download_wget_list:
                             download_wget_list.append(cmd)
                             print("WGET: " + cmd)
+                            os.chdir(tmp_wget_dir)
                             rtc = os.system(cmd)
                             if rtc != 0:
                                 print("WGET failed: " + cmd)
                                 exit(1)
-                else:
-                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
-                    '''
-                        wget -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
-                        It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
-                        under the folder "am-fw", or it will copy all files under "fcd-image"
-                    '''
-                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    url_dir = url_dir.replace("\\", "/")
-                    src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
-                    match_url = re.findall(src_pattern, url_dir)
-                    if match_url:
-                        print("!!!!!!!!! Fatal Error, you are going to copy all images from the FTP server !!!!!!!!!!!!")
-                        print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
-                        exit(1)
 
-                    cmd = "wget -r -np -nH -R \"index.html*\" {}".format(url_dir)
-                    print("copy whole folder: " + cmd)
-                    if cmd not in download_wget_list:
-                        download_wget_list.append(cmd)
-                        print("WGET: " + cmd)
-                        os.chdir(tmp_wget_dir)
-                        rtc = os.system(cmd)
-                        if rtc != 0:
-                            print("WGET failed: " + cmd)
-                            exit(1)
+                            os.chdir(curdir)
 
-                        os.chdir(curdir)
-
-                        src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
-                        dst_path = os.path.join(ostype_tftp_dir, item["DST_PATH"])
-                        shutil.copytree(src_path, dst_path)
-        else:
-            print("Can't find the DOWNLOAD_FILE the projects")
+                            src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
+                            dst_path = os.path.join(ostype_tftp_dir, item["DST_PATH"])
+                            shutil.copytree(src_path, dst_path)
+            else:
+                print("Can't find the DOWNLOAD_FILE the projects")
 
     print(download_wget_list)
 
@@ -278,7 +280,7 @@ def gen_prod_json():
         fcdname = "FCD_{}_{}_{}".format(pn, args.fcdver, args.fwver)
     elif build_type == "single":
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/prod_json/airMAX/pd_00526_e7e7.json
-        src = "{}/{}/pd_{}.json".format(prod_json_dir, pl, pn)
+        src = "{}/{}/prodprop/pd_{}.json".format(prod_json_dir, pl, pn)
         # Ex: /home/vjc/malon/uifcd1/config/includes.chroot/usr/local/sbin/Products-info.json
         dst = os.path.join(reg_bs_dir, "Products-info.json")
         if os.path.isfile(src):
