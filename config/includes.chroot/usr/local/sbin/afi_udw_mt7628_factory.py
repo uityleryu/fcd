@@ -107,8 +107,16 @@ class UCMT7628Factory(ScriptBase):
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
         
         if self.board_id == "ed14":
-            self.disable_udhcpc()
-            # self.disable_wpa_supplicant() #will need in my device but factory donot
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "hexdump -C -n 512 /dev/mtdblock3", self.linux_prompt)
+            try:
+                self.disable_udhcpc()
+            except Exception as e:
+                log_debug("ERROR:{}".format(e))
+            
+            try:
+                self.disable_wpa_supplicant()
+            except Exception as e:
+                log_debug("ERROR:{}".format(e))
         else:
             pass
         
