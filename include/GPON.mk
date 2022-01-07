@@ -2,9 +2,7 @@
 # Images
 IMAGE-UF-WiFi6= \
     images/eec5* \
-    uf-fw/gpon-uf-wifi6* \
-    uf-fw/boot* \
-    uf-fw/UF* \
+    uf-fw/* 
 
 IMAGE-GPON+=$(IMAGE-UF-WiFi6)
 
