@@ -62,12 +62,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
         self.bootm_cmd = {
-            'a650': "bootm",
+            'a650': "bootm $fileaddr#config@a650",
             'a651': "bootm $fileaddr#config@a651",
             'a652': "bootm $fileaddr#config@a652",
             'a653': "bootm $fileaddr#config@a653",
-            'a654': "bootm",
-            'a655': "bootm",
+            'a654': "bootm $fileaddr#config@a654",
+            'a655': "bootm $fileaddr#config@a655",
             'a656': 'bootm $fileaddr#config@a656',
         }
         
