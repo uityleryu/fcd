@@ -118,7 +118,7 @@ class MT762xMFGGeneral(ScriptBase):
         self.is_network_alive_in_uboot(retry=8)
 
         msg(no=50, out='flash back to T1 kernel and u-boot ...')
-        if self.board_id in 'a612' or self.board_id == "a614" :
+        if self.board_id in 'a612' or self.board_id == "a614" or self.board_id == "a640":
             self.transfer_img(address="0x80010000", filename= self.board_id + "-mfg.kernel.uboot")
         elif self.board_id in 'a620':
             self.transfer_img(address="0x4007FF28", filename= self.board_id + "-mfg.kernel.uboot")
