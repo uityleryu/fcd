@@ -3,6 +3,7 @@ import os
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+import time
 
 class MT7628MFGGeneral(ScriptBase):
     """
@@ -71,7 +72,9 @@ class MT7628MFGGeneral(ScriptBase):
         
         cmd = "tftpboot 0x80001000 {}".format(self.bspimg)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw 0x10000060 0x44050414; mw 0x10000600 0x40; mw 0x10000620 0xfc032c71;")
+
+        # let LCM stop work
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw 0x10000060 0x44050414; mw 0x10000600 0x40; mw 0x10000620 0xfc032c71;")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x2000000; sf write 0x80001000 0x0 0x2000000")
         ## Uboot of BSP
         # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
@@ -99,7 +102,7 @@ class MT7628MFGGeneral(ScriptBase):
 
     def reset_uboot(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-        self.pexp.expect_only(120, "BusyBox")
+        # self.pexp.expect_only(120, "BusyBox")
 
     def run(self):
         """
@@ -110,7 +113,7 @@ class MT7628MFGGeneral(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-
+        
         msg(no=10, out="Waiting - PULG in the device...")
         self.stop_uboot()
         self.update_nor()
@@ -126,6 +129,8 @@ class MT7628MFGGeneral(ScriptBase):
 
         msg(no=80, out='Waiting for T1 booting ...')
         self.reset_uboot()
+        
+        self.pexp.expect_only(60, "Booting kernel from Legacy Image at")
 
         msg(no=100, out="Back to T1 has completed")
         self.close_fcd()
