@@ -13,15 +13,24 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udr/",
-          "DST_PATH": "udm-fw/",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udr",
+          "DST_PATH": "udm-fw/udr",
+          "FILES": [
+            "udr-mt7622-mt7915a-v11_emmc.bin",
+            "UDR.mt7622.v2.2.12.3f3aaf9.211016.0108.bin",
+            "u-boot-mtk-5c477ee02c.bin",
+            "udr-mt7622-mt7915a-v11_nor.bin",
+            "uImage_v2.3.11"
           ]
         }
       ],
@@ -44,7 +53,7 @@
         ],
         [
           "tftp/images/eccc-recovery",
-          "../udm-fw/udr/uImage_v2.2.12"
+          "../udm-fw/udr/uImage_v2.3.11"
         ]
       ]
     }
