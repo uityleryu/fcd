@@ -152,6 +152,20 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
         self.stop_uboot()
 
+    def check_calibration(self):
+        cmd = "nand read.raw 0x44000000 0xf80000 0x100"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "md 0x44001080 0x2"
+        self.pexp.expect_action(10, self.bootloader_prompt, cmd)
+
+        exp_list = ["44001080: 04040001 00000000"]
+        index = self.pexp.expect_get_index(5, exp_list)
+        if index == self.pexp.TIMEOUT:
+            error_critical("Unable to check the calibrated data ... ")
+        elif not index == 0:
+            error_critical("No calibrated data, Board is not callibrated")
+
     def lnx_netcheck(self, netifen=False):
         postexp = [
             "64 bytes from",
@@ -280,6 +294,7 @@ class IPQ80XXFactory(ScriptBase):
         WR_DUMMY_EN = False
         UBNTW_EN = True
         FLASH_TEMP_CFG = False
+        CHK_CAL_EN = True
         URESCUE_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
@@ -305,6 +320,10 @@ class IPQ80XXFactory(ScriptBase):
         if UPDATE_BOOTIMG_EN:
             self.uboot_update()
             msg(10, "Finishing update U-Boot")
+
+        if CHK_CAL_EN:
+            self.check_calibration()
+            msg(15, "Got Calibration data")
 
         if (WR_DUMMY_EN is True) and (self.board_id == "dc9e" or self.board_id == "dca0" ):
             self.set_uboot_network()
