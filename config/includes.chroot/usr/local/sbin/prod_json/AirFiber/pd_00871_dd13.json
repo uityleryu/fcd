@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "6270-airmax-0.21.0-924d7316b9334dc2b9e53b78feb32597.bin",
+            "AF60.v0.22.0.b22eb57f.211223.1111.bin",
             "AF60_CR1_V031_FULL_NOR_IMAGE.bin",
             "af60-xg_ls1046_2g_nand_v10.bin",
             "af60-xg_ls1046_2g_nor_v10.bin",
@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dd13.bin",
-          "../af-fw/6270-airmax-0.21.0-924d7316b9334dc2b9e53b78feb32597.bin"
+          "../af-fw/AF60.v0.22.0.b22eb57f.211223.1111.bin"
         ],
         [
           "tftp/images/dd13-boot.bin",
