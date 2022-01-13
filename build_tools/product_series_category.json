@@ -21,5 +21,8 @@
   ],
   "AIRMAX_M-SERIES" : [
     "00372_e865"
+  ],
+  "UC_THERMOSTAT-SERIES" : [
+    "03232_ec47", "03777_ec47"
   ]
 }

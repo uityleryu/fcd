@@ -1,10 +1,10 @@
 {
   "Connect": {
-    "UC-THERMOSTAT": {
+    "UC-THERMOSTAT-newant": {
       "INDEX": 0,
-      "NAME": "UC-THERMOSTAT",
+      "NAME": "UC-THERMOSTAT-newant",
       "BOARDID": "ec47",
-      "BOMREV": "113-03232",
+      "BOMREV": "113-03777",
       "DESC": "",
       "FILE": "ufc_esp32_factory.py",
       "T1FILE": "",
