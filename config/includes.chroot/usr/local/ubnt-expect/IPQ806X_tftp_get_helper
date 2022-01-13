@@ -1,6 +1,5 @@
 '', "\n"
 10, "$temp_kern_prompt", "cd /tmp\n"
-10, "$temp_kern_prompt", "tftp -g -r $helper_file $prod_server_ip -l /usr/bin/$helper_file >/dev/null 2>&1 ; echo /usr/bin/${helper_file}:\$?\n"
-20, "${helper_file}:0", ''
+10, "$temp_kern_prompt", "for i in 1 2 3; do echo \"Try \$i for tftp transfer\"; tftp -g -r $helper_file $prod_server_ip -l /usr/bin/$helper_file >/dev/null 2>&1 && break || sleep 5; done\n"
 10, "$temp_kern_prompt", "chmod 777 /usr/bin/${helper_file}\n"
 10, "$temp_kern_prompt", ''
