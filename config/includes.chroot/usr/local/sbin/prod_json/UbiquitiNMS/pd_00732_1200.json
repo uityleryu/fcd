@@ -1,0 +1,51 @@
+{
+  "UbiquitiNMS": {
+    "UISP-SERVER": {
+      "INDEX": 0,
+      "NAME": "UISP-SERVER",
+      "BOARDID": "1200",
+      "BOMREV": "113-00732",
+      "DESC": "Ubiquiti Server",
+      "FILE": "unifi_ast2500_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0010",
+      "SW_ID": "1b01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unms-fw",
+          "DST_PATH": "usrv",
+          "FILES": [
+            "stm32h750-dfu-bl.dfu",
+            "unvr-pro-lcm-fw.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usrv",
+          "DST_PATH": "tools/usrv",
+          "FILES": [
+            "ui-getuuid",
+            "helper_AST2500_release"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/1200-dfu.bin",
+          "../usrv/stm32h750-dfu-bl.dfu"
+        ],
+        [
+          "tftp/images/1200-lcmfw.bin",
+          "../usrv/unvr-pro-lcm-fw.bin"
+        ]
+      ]
+    }
+  }
+}
