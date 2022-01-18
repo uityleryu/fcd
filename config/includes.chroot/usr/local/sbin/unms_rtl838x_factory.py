@@ -150,16 +150,20 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             "setenv boardmodel {0}".format(self.bdmd[self.board_id]),
             "setenv burnNum 0",
             "setenv telnet 0",
-            "saveenv",
-            "reset"
+            "setenv ethaddr 00:E0:4C:00:00:0{}".format(self.row_id)
         ]
         for idx in range(len(cmdset)):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
+            time.sleep(0.3)
 
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "saveenv")
+        time.sleep(2)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
         self.stop_at_uboot()
 
         cmd = "rtk network on".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        postexp = "Please wait for PHY init-time"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
 
         cmd = "ping {0}".format(self.tftp_server)
         postexp = "host {0} is alive".format(self.tftp_server)
@@ -174,7 +178,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
 
         cmd = "rtk network on".format(self.tftp_server)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        postexp = "Please wait for PHY init-time"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd, post_exp=postexp)
 
         cmd = "ping {0}".format(self.tftp_server)
         postexp = "host {0} is alive".format(self.tftp_server)
@@ -199,12 +204,12 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.stop_at_uboot()
         self.uboot_config()
 
-        # msg(5, "Upgrading U-Boot ...")
         '''
-        To remove the U-Boot upgrade temporarily
-        20201224
+            To remove the U-Boot upgrade temporarily
+            20201224
         '''
         if self.board_id in self.developed:
+            msg(5, "Upgrading U-Boot ...")
             self.uboot_upgrade()
 
         self.set_ub_net()
@@ -227,10 +232,6 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         self.pexp.expect_only(30, "Bytes transferred = 1048576")
         cmd = "flwrite name JFFS2_LOG 0x81000000"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-
-        cmd = "setenv ethaddr 00:E0:4C:00:00:0{}; saveenv".format(self.row_id)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        time.sleep(1)
 
         cmd = "boota"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -283,7 +284,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         '''
 
         if SECCHK_EN is True:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "diag ubnt\r")
             self.pexp.expect_lnxcmd(30, "UBNT_Diag", "sectest\r", "security test pass")
 
         if BDINFO_EN is True:
@@ -346,16 +347,14 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
                 else:
                     error_critical("Can't get BOM revision from EEPROM")
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
-        self.stop_at_uboot()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "diag ubnt\r")
 
         if self.board_id != "ee50":
-            cmdset = [
-                "setenv telnet 1",
-                "saveenv",
-            ]
-            for idx in range(len(cmdset)):
-                self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmdset[idx])
+            cmd = "setenv telnet 1\r"
+            self.pexp.expect_lnxcmd(30, "UBNT_Diag", cmd)
+
+            cmd = "getenv telnet\r"
+            self.pexp.expect_lnxcmd(30, "UBNT_Diag", cmd, "env = 1")
 
         msg(100, "Completing ...")
         self.close_fcd()
