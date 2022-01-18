@@ -13,11 +13,6 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udw/",
-          "DST_PATH": "udm-fw/udw",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/udw",
           "DST_PATH": "tools/udw",
           "FILES": [
@@ -38,7 +33,6 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -46,7 +40,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw",
           "DST_PATH": "udm-fw/udw",
           "FILES": [
-            "UDW.al324.v2.3.5.25aac2b.211111.2311.bin",
+            "UDW.al324.v2.3.10.7180f93.211219.1502.bin",
             "uImage",
             "boot.img"
           ]
@@ -55,7 +49,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v2.3.5.25aac2b.211111.2311.bin"
+          "../udm-fw/udw/UDW.al324.v2.3.10.7180f93.211219.1502.bin"
         ],
         [
           "tftp/images/ea2a-recovery",
