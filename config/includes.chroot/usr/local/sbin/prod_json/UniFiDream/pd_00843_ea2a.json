@@ -38,7 +38,17 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udw",
+          "DST_PATH": "udm-fw/udw",
+          "FILES": [
+            "UDW.al324.v2.3.5.25aac2b.211111.2311.bin",
+            "uImage",
+            "boot.img"
           ]
         }
       ],
@@ -56,7 +66,6 @@
           "../udm-fw/udw/boot.img"
         ]
       ]
-
     }
   }
 }
