@@ -78,7 +78,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         self.homekit_dict = {
             'a911': False,
-            'a941': False,
+            'a941': True,
             'a912': False,
             'a915': False,
             'a918': False,
