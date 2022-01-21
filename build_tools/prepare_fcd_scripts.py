@@ -226,7 +226,7 @@ def gen_prod_json():
         fh.close()
 
         if pn not in pjson.keys():
-            print("Can't find the product series in product_series_glossory.json")
+            print("Can't find the product series in product_series_category.json")
             exit(1)
 
         if pjson[pn][0] == "all":

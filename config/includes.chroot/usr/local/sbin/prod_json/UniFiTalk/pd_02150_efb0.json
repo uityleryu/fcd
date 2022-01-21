@@ -1,0 +1,18 @@
+{
+  "UniFiTalk": {
+    "TOUCH-L": {
+      "INDEX": 0,
+      "NAME": "TOUCH-L",
+      "BOARDID": "efb0",
+      "BOMREV": "113-02150",
+      "DESC": "UniFi Touch (Lock)",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}

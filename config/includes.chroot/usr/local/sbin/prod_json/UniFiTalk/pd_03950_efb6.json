@@ -1,0 +1,18 @@
+{
+  "UniFiTalk": {
+    "TouchMax-W-L": {
+      "INDEX": 0,
+      "NAME": "TouchMax-W-L",
+      "BOARDID": "efb6",
+      "BOMREV": "113-03950",
+      "DESC": "UniFi TouchMax White (Lock)",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0007",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}
