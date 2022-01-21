@@ -247,7 +247,7 @@ class UNIFIBMCFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
 
         expect_msg = "UI LCM bootloader and firmware downloaded successfully"
-        self.pexp.expect_only(30, expect_msg)
+        self.pexp.expect_only(120, expect_msg)
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
