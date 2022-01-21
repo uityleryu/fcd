@@ -442,6 +442,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self._reseted_flag = True
         time.sleep(3)
 
+        if self.board_id == "a919":
+            self.ser.execmd("FCDSTOP")
+            time.sleep(1)
+            self.ser.execmd_expect_retry("FCDSTART", "Hold", pre_n=True)
+
     def set_sku(self):
         if self.sku_dict[self.board_id] is False:
             log_debug("Skip setting SKU ...")
@@ -542,6 +547,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
         time.sleep(1)
         self.ser.execmd("")
+        if self.board_id == "a919":
+            self.ser.execmd("FCDSTOP")
+            time.sleep(1)
+            self.ser.execmd_expect_retry("FCDSTART", "Hold", pre_n=True)
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
@@ -572,7 +581,12 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.ser.execmd(cmd="BOOTFW:1")
             self.ser.expect_only("erase", timeout=10)
             self.ser.expect_only("write", timeout=20)
-            self.ser.expect_only("ULM_FTU_VER", timeout=30)
+            self.ser.expect_only("Hello Mediatek", timeout=60)
+            self.ser.execmd("")
+            self.ser.execmd("")
+            rsp = self.ser.execmd_getmsg("ver")
+            if "SDK Ver" not in rsp:
+                error_critical("Can't find SDK version, maybe not in the FTU image ... !!!")
 
         msg(100, "Completing registration ...")
         self.close_fcd()

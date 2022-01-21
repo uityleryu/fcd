@@ -29,6 +29,9 @@ class UNIFIBMCFactory(ScriptBase):
         self.helperexe = "helper_AST2500_release"
         self.helper_path = "usrv"
         self.devregpart = "/tmp/eeprom0"
+        self.cpuid = ""
+        self.flash_jedecid = ""
+        self.flash_uuid = ""
 
         # number of mac
         self.macnum = {
@@ -54,6 +57,118 @@ class UNIFIBMCFactory(ScriptBase):
         self.PROVISION_EN       = True
         self.DOHELPER_EN        = True
         self.REGISTER_EN        = True
+
+    def prepare_server_need_files(self):
+        # Ex: tools/uvp/helper_DVF99_release_ata_max
+        srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
+
+        # Ex: /tmp/helper_DVF99_release_ata_max
+        helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
+        self.tftp_get(remote=srcp, local=helperexe_path, timeout=60)
+
+        cmd = "chmod 777 {0}".format(helperexe_path)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
+
+        eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+        sstr = [
+            helperexe_path,
+            "-q",
+            "-c product_class=" + self.product_class,
+            "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
+            ">",
+            eetxt_dut_path
+        ]
+        sstr = ' '.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+        time.sleep(1)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            # Ex: /tftpboot/e.t.0
+            srcp = os.path.join(self.tftpdir, fh)
+
+            # Ex: /tmp/e.t.0
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
+        # Ex: tools/uvp/helper_DVF99_release_ata_max
+        srcp = os.path.join(self.tools, "usrv", "ui-getuuid")
+        # Ex: /tmp/helper_DVF99_release_ata_max
+        dstp = os.path.join(self.dut_tmpdir, "ui-getuuid")
+        self.tftp_get(remote=srcp, local=dstp, timeout=60)
+
+        cmd = "chmod 777 {0}".format(dstp)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
+
+        cmd = "cat /proc/cpumidr"
+        rtb = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        self.cpuid = rtb.split("\n")[1].strip()
+        log_debug("cpuid: " + self.cpuid)
+
+        cmd = "cat /sys/class/mtd/mtd0/jedec_id"
+        rtb = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        self.flash_jedecid = rtb.split("\n")[1].strip().zfill(8)
+        log_debug("jedecid: " + self.flash_jedecid)
+
+        cmd = "/tmp/ui-getuuid"
+        rtb = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        self.flash_uuid = rtb.split("\n")[1].strip()
+        log_debug("uuid: " + self.flash_uuid)
+
+        log_debug("Send helper output files from DUT to host ...")
+
+    def registration(self, regsubparams = None):
+        log_debug("Starting to do registration ...")
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
+
+        clientbin = "/usr/local/sbin/client_rpi4_release"
+        regparam = [
+            "-h prod.udrs.io",
+            "-k {}".format(self.pass_phrase),
+            "-i field=product_class_id,format=hex,value=0014",
+            "-i field=cpu_rev_id,format=hex,value={}".format(self.cpuid),
+            "-i field=flash_jedec_id,format=hex,value={}".format(self.flash_jedecid),
+            "-i field=flash_uid,format=hex,value={}".format(self.flash_uuid),
+            reg_qr_field,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x {}ca.pem".format(self.key_dir),
+            "-y {}key.pem".format(self.key_dir),
+            "-z {}crt.pem".format(self.key_dir)
+        ]
+
+        regparam = ' '.join(regparam)
+
+        cmd = "sudo {0} {1}".format(clientbin, regparam)
+        print("cmd: " + cmd)
+        clit = ExpttyProcess(self.row_id, cmd, "\n")
+        clit.expect_only(30, "Security Service Device Registration Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
+
+        log_debug("Excuting client registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
 
     def run(self):
         """
@@ -119,6 +234,20 @@ class UNIFIBMCFactory(ScriptBase):
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "rm -rf /run/initramfs/rw/cow/etc/systemd/network",
                                 self.linux_prompt)
+
+        remote_path = "{}/{}-dfu.bin".format(self.fwdir, self.board_id)
+        local_path = "{}/{}-dfu.bin".format(self.dut_tmpdir, self.board_id)
+        self.tftp_get(remote=remote_path, local=local_path, timeout=30)
+
+        remote_path = "{}/{}-lcmfw.bin".format(self.fwdir, self.board_id)
+        local_path = "{}/{}-lcmfw.bin".format(self.dut_tmpdir, self.board_id)
+        self.tftp_get(remote=remote_path, local=local_path, timeout=30)
+
+        cmd = "cd {0}; update_lcm {1}-dfu.bin {1}-lcmfw.bin".format(self.dut_tmpdir, self.board_id)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+
+        expect_msg = "UI LCM bootloader and firmware downloaded successfully"
+        self.pexp.expect_only(120, expect_msg)
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
