@@ -1,12 +1,12 @@
 {
   "Connect": {
-    "ULED-INSTANT": {
+    "UC-THERMOSTAT-newant": {
       "INDEX": 0,
-      "NAME": "ULED-INSTANT",
-      "BOARDID": "ec4c",
-      "BOMREV": "113-03548",
+      "NAME": "UC-THERMOSTAT-newant",
+      "BOARDID": "ec47",
+      "BOMREV": "113-03777",
       "DESC": "",
-      "FILE": "uled_esp32_factory.py",
+      "FILE": "ufc_esp32_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0011",
@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uled_fw/uled-instant/testing_fw/1.0.5.16",
+          "SRC_PATH": "images/fcd-image/uc-fw/uc-thermostat/testing_fw/0.23.1/",
           "DST_PATH": "images",
           "FILES": [
           ]
