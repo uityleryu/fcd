@@ -102,8 +102,8 @@ class IPQ5018BSPFactory(ScriptBase):
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a658" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
         elif self.board_id == "a659" :
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
@@ -120,8 +120,8 @@ class IPQ5018BSPFactory(ScriptBase):
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
         elif self.board_id == "a664" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
         else:
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
@@ -158,7 +158,7 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "saveenv")
 
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue -e")
 
         cmd = "atftp --option \"mode octet\" -p -l /tftpboot/{0} {1}".format(self.fwimg, self.dutip)
         log_debug("Run cmd on host:" + cmd)
@@ -167,27 +167,47 @@ class IPQ5018BSPFactory(ScriptBase):
         self.pexp.expect_only(30, "Version:")
         log_debug("urescue: FW loaded")
 
-        self.pexp.expect_only(180, "Updating 0:HLOS partition")
-        log_debug("urescue: HLOS partitio updated")
+        if self.board_id == "a658" or self.board_id == "a664":
+            self.pexp.expect_only(180, "Flashing system0")
+            log_debug("urescue: Flashing system0")
 
-        self.pexp.expect_only(180, "Updating rootfs partition")
-        log_debug("urescue rootfs updated")
+            self.pexp.expect_only(180, "Flashing system1")
+            log_debug("urescue: Flashing system1")
 
-        self.pexp.expect_only(180, "Updating bs partition")
-        log_debug("urescue bs updated")
+            self.pexp.expect_only(180, "Firmware update complete.")
+            log_debug("urescue: Firmware update complete.")
+
+        else:
+            self.pexp.expect_only(180, "Updating 0:HLOS partition")
+            log_debug("urescue: HLOS partitio updated")
+
+            self.pexp.expect_only(180, "Updating rootfs partition")
+            log_debug("urescue rootfs updated")
+
+            self.pexp.expect_only(180, "Updating bs partition")
+            log_debug("urescue bs updated")
 
     def check_info(self):
 
-        self.pexp.expect_action(300, "entered forwarding state", "")
+        if self.board_id == "a658" or self.board_id == "a664":
+            self.pexp.expect_ubcmd(600, "running real init", "")
+            self.pexp.expect_ubcmd(10, "login:", "ubnt")
+            self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+            self.linux_prompt = "/var/home/ubnt #"
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, "cat /usr/lib/version")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "jq  .identification /etc/board.json")
 
-        time.sleep (3)
+        else:
+            self.pexp.expect_action(300, "entered forwarding state", "")
 
-        self.linux_prompt = "ubnt@OpenWrt:~#"
+            time.sleep (3)
 
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=False)
+            self.linux_prompt = "ubnt@OpenWrt:~#"
 
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "cat /etc/version")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "grep board /proc/ubnthal/board.info")
+            self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=False)
+
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, "cat /etc/version")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "grep board /proc/ubnthal/board.info")
 
         self.pexp.expect_only(10, self.linux_prompt)
 
