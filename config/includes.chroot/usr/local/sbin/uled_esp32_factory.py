@@ -182,7 +182,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         mac_format = self.mac.upper()
         # value is our expected string
         devreg_data_dict = {'"system_id"'   : self.board_id,
-                            '"bom_rev"': "{}{}".format((hex(int(self.bom_rev.split('-')[0])).replace('0x','')).zfill(6), hex(int(self.bom_rev.split('-')[1]))).zfill(2),
+                            '"bom_rev"': "{}{}".format((hex(int(self.bom_rev.split('-')[0])).replace('0x','')).zfill(6), hex(int(self.bom_rev.split('-')[1])).replace('0x', '').zfill(2)),
                             '"mac_addr"' : mac_format,
                             '"devreg_check"': 'PASS'}
 
