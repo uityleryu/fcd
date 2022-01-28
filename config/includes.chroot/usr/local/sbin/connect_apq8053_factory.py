@@ -30,6 +30,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
     ec61: UA-Display-Gate     (Android 9)
+    efa0: EV-Charger          (Android 9)
 '''
 
 
@@ -62,14 +63,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "0007f100",
             'ef86': "0007f100",
             'ec60': "0007f100",
-            'ec62': "0007f100"
+            'ec62': "0007f100",
+            'efa0': "0007f100"
         }
 
         # default product class: basic
         self.df_prod_class = "0014"
         self.usbadb_list = [
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
-            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61"
+            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61", "efa0"
         ]
 
         self.ospl = {
@@ -88,7 +90,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "adr9",
             'ec60': "adr9",
             'ec62': "adr9",
-            'ec61': "adr9"
+            'ec61': "adr9",
+            'efa0': "adr9"
         }
 
         self.lnxpmt = {
@@ -108,6 +111,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "msm8953_uapro",
             'ec62': "",
             'ec61': "ud_gate",
+            'efa0': "ev_charger"
         }
 
         # Number of Ethernet
@@ -127,7 +131,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef90': "1",
             'ec60': "1",
             'ec62': "1",
-            'ec61': "1"
+            'ec61': "1",
+            'efa0': "1"
         }
 
         # Number of WiFi
@@ -147,7 +152,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef90': "1",
             'ec60': "1",
             'ec62': "0",
-            'ec61': "0"
+            'ec61': "0",
+            'efa0': "1"
         }
 
         # Number of Bluetooth
@@ -167,7 +173,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef90': "1",
             'ec60': "1",
             'ec62': "1",
-            'ec61': "1"
+            'ec61': "1",
+            'efa0': "1"
         }
 
         self.devnetmeta = {
