@@ -13,10 +13,13 @@
       "SW_ID": "1001",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/af-fw",
+          "SRC_PATH": "images/fcd-image/af-fw/wave-ipq5018",
           "DST_PATH": "af-fw",
           "FILES": [
-            "norplusemmc-ipq5018-single_01070.img"
+            "u-boot_01070.mbn",
+            "GMC.ipq5018.v3.0.7-alpha.570f2975.220120.1356.bin",
+            "wave-nano-v3_emmc.bin",
+            "wave-nano-v3_nor.bin"
           ]
         },
         {
@@ -32,16 +35,20 @@
       ],
       "CREATE_LINK":[
         [
-          "tftp/images/a662-uboot.bin",
-          "../am-fw/u-boot_01099.mbn"
+          "tftp/images/a658-uboot.bin",
+          "../af-fw/u-boot_01070.mbn"
         ],
         [
-          "tftp/images/a658-bsp.bin",
-          "../af-fw/norplusemmc-ipq5018-single_01070.img"
+          "tftp/images/a658-nor.bin",
+          "../af-fw/wave-nano-v3_nor.bin"
         ],
         [
-          "tftp/images/a662.bin",
-          "../am-fw/rax.ipq5018.v0.2.0-devel+liteap-support.3b92ac2c.211012.1402-mp03.5-c2.bin"
+          "tftp/images/a658-emmc.bin",
+          "../af-fw/wave-nano-v3_emmc.bin"
+        ],
+        [
+          "tftp/images/a658.bin",
+          "../af-fw/GMC.ipq5018.v3.0.7-alpha.570f2975.220120.1356.bin"
         ]
       ]
     }

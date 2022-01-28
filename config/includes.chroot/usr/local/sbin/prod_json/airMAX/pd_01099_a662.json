@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "LiteAP-AX-GPS": {
+    "LAP-AX": {
       "INDEX": "0",
-      "NAME": "LiteAP-AX-GPS",
+      "NAME": "LAP-AX",
       "BOARDID": "a662",
       "BOMREV": "113-01099",
-      "DESC": "LiteAP-AX-GPS",
+      "DESC": "LAP-AX",
       "FILE": "am_ipq5018_bspfactory.py",
       "T1FILE": "am_ipq5018_mfg.py",
       "QRCHECK": "False",

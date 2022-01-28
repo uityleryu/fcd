@@ -158,25 +158,25 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         # get uid
         try:
-            uid_rtv = self.ser.execmd_getmsg("GETUID", ignore=True)
+            uid_rtv = self.ser.execmd_getmsg("GETUID", waitperiod=3, ignore=True)
             log_info('uid_rtv = {}'.format([uid_rtv]))
-            if self.board_id == "a919":
-                res = re.search(r"UNIQUEID:8-(.*)\n", uid_rtv, re.S)
+            if uid_rtv == "":
+                error_critical("Can't read the UID message")
+
+            if self.board_id == "a919" or self.board_id == "a922":
+                res = re.search(r"UNIQUEID:8-([a-fA-Z0-9]{16})\n", uid_rtv, re.S)
             else:
                 res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
 
             self.uid = res.group(1)
 
-            
-
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            res = re.search(r"CPUID:(.*)\n", cpuid_rtv, re.S)
+            res = re.search(r"CPUID:([0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
-            res = re.search(r"JEDECID:(.*)\n", jedecid_rtv, re.S)
+            res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
             self.jedecid = res.group(1)
-
         except Exception as e:
             log_debug("Extract UID, CPUID and JEDEC failed")
             log_debug("{}".format(traceback.format_exc()))
@@ -399,14 +399,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918", "a919", "ee76"]:
+        if self.board_id in ["a912", "a918", "a919", "ee76", "a922"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
         elif self.board_id in ["a911", "a941", "a915", "a920"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
         log_debug("Starting xmodem file transfer ...")
-        if self.board_id in ["a919", "ee76"]:
+        if self.board_id in ["a919", "ee76", "a922"]:
             modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc)
         else:
             modem = XMODEM(self.ser.xmodem_getc, self.ser.xmodem_putc, mode='xmodem1k')

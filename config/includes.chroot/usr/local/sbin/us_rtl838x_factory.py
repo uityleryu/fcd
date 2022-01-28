@@ -207,6 +207,23 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def disable_li_battery(self):
         self.pexp.expect_action(10, self.linux_prompt, "syswrapper.sh shutdown")
 
+    def check_rtk_network(self):
+        self.pexp.expect_action(30, "Hit Esc key to stop autoboot", "")
+        expects = [
+            'Starting kernel ...',
+            "Hit Esc key to stop autoboot",
+        ]
+        ans = self.pexp.expect_get_index(300, expects)
+        if ans == 1:
+            self.pexp.expect_ubcmd(5, '', '\x1b')
+            print_env = 'printenv'
+            res = self.pexp.expect_get_output(print_env, self.boot_prompt)
+            key = 'UBNT_USL48_8218D'
+            if key in res:
+                rtk_network_on = 'rtk network on'
+                self.pexp.expect_ubcmd(5, self.boot_prompt, rtk_network_on)
+            self.pexp.expect_ubcmd(5, self.boot_prompt, 'bootubnt')
+
     def run(self):
         """
         Main procedure of factory
@@ -229,6 +246,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         self.clear_eeprom_in_uboot()
         msg(10, "Clear EEPROM in uboot")
+
+        msg(13, "Check RTK Network")
+        self.check_rtk_network()
 
         self.login_kernel()
         self.SetNetEnv()
