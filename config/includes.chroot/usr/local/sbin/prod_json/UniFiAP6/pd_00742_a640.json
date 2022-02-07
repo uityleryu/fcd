@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
           "DST_PATH": "u6-fw/mt7621",
           "FILES": [
-            "BZ.mt7621_u6-lr-7621+13658.220106.0313-uboot.bin",
+            "BZ.mt7621_6.0.12+13612.220129.0303-uboot.bin",
             "uap6-fcd.bin",
             "u6-mt7603-mt7915a-4x4-nor-v7.bin",
             "uap6-uboot.bin"
@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a640.bin",
-          "../u6-fw/mt7621/BZ.mt7621_u6-lr-7621+13658.220106.0313-uboot.bin"
+          "../u6-fw/mt7621/BZ.mt7621_6.0.12+13612.220129.0303-uboot.bin"
         ],
         [
           "tftp/images/a640-fcd.bin",
