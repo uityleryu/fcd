@@ -20,9 +20,15 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/unas",
+          "DST_PATH": "tools/unas",
+          "FILES": [
+            "al324-ee",
+            "config_gu.sh",
+            "enp0s1.network",
+            "enp0s2.network",
+            "helper_UNVR-AL324"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
