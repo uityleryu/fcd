@@ -171,6 +171,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UVC-G3FLEX":
+            self.board_name = "UVC G3 FLEX"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'spi0.0'
+            self.helper_rule = 1
+
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -200,7 +206,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a2': '1',
             'ec70': '1',
             'a5a3': '1',
-            'a5b0': '1'
+            'a5b0': '1',
+            'a534': '1'
         }
 
         # number of WiFi
@@ -218,7 +225,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a2': '0',
             'ec70': '0',
             'a5a3': '0',
-            'a5b0': '0'
+            'a5b0': '0',
+            'a534': '0'
         }
 
         # number of Bluetooth
@@ -236,7 +244,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a2': '0',
             'ec70': '0',
             'a5a3': '0',
-            'a5b0': '0'
+            'a5b0': '0',
+            'a534': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -261,7 +270,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a2': "ifconfig eth0 ",
             'ec70': "ifconfig eth0 ",
             'a5a3': "ifconfig eth0 ",
-            'a5b0': "ifconfig eth0 "
+            'a5b0': "ifconfig eth0 ",
+            'a534': "ifconfig eth0 "
 
         }
 
