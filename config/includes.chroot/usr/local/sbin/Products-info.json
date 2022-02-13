@@ -25,9 +25,9 @@
       "QRCHECK"     : "True"
     },
 
-    "UDM-PRO_00723":{
+    "UDM-PRO-00723":{
       "INDEX"       : 2,
-      "NAME"        : "UDM-PRO_00723",
+      "NAME"        : "UDM-PRO-00723",
       "BOARDID"     : "ea15",
       "BOMREV"      : "113-00723",
       "DESC"        : "UniFi Dream Machine Pro",
@@ -38,9 +38,9 @@
       "SW_ID"       : "0701"
     },
 
-    "UDM-PRO_01133":{
+    "UDM-PRO-01133":{
       "INDEX"       : 3,
-      "NAME"        : "UDM-PRO_01133",
+      "NAME"        : "UDM-PRO-01133",
       "BOARDID"     : "ea15",
       "BOMREV"      : "113-01133",
       "DESC"        : "UniFi Dream Machine Pro",

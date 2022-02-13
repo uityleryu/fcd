@@ -1,10 +1,10 @@
 {
   "UniFiDream": {
-    "UDM-PRO-00723": {
+    "UDM-PRO-01133": {
       "INDEX": 0,
-      "NAME": "UDM-PRO-00723",
+      "NAME": "UDM-PRO-01133",
       "BOARDID": "ea15",
-      "BOMREV": "113-00723",
+      "BOMREV": "113-01133",
       "DESC": "UniFi Dream Machine Pro",
       "FILE": "ubios_alpine_factory.py",
       "T1FILE": "",
