@@ -189,20 +189,20 @@ class UCMT7628Factory(ScriptBase):
     def mcu_fw_check(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu info', 'version', retry=48)
 
-    def move_wifi_data(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf read 0x80000000 0x40000 0x10000; sf erase 0x70000 0x10000; sf write 0x80000000 0x70000 0x10000")
+    # def move_wifi_data(self):
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf read 0x80000000 0x40000 0x10000; sf erase 0x70000 0x10000; sf write 0x80000000 0x70000 0x10000")
         
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf read 0x80010000 0x70000 0x10000")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80000000 0x10000")
-        # log_debug("aaaaaa{}".format(a))
-        time.sleep(3)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80010000 0x10000")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-        # log_debug('bbbbbb{}'.format(b))
-        time.sleep(2)
-        # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf read 0x80010000 0x70000 0x10000")
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80000000 0x10000")
+    #     # log_debug("aaaaaa{}".format(a))
+    #     time.sleep(3)
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80010000 0x10000")
+    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
+    #     # log_debug('bbbbbb{}'.format(b))
+    #     time.sleep(2)
+    #     # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
 
     def run(self):
         self.fcd.common.config_stty(self.dev)
@@ -217,8 +217,8 @@ class UCMT7628Factory(ScriptBase):
             # self.fwupdate(self.fwimg, reboot_en=False)
             self.enter_uboot()
             
-            if self.board_id == "ed14":
-                self.move_wifi_data()
+            # if self.board_id == "ed14":
+            #     self.move_wifi_data()
                 
             self.update_uboot_image()
             msg(10, "Update Uboot image successfully ...")
