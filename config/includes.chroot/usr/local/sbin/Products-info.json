@@ -1741,12 +1741,12 @@
       "FCD_ID": "0011",
       "SW_ID": "1c01"
     },
-    "UC-Plug-Dual-US": {
+    "UC-Outlet-US": {
       "INDEX": 0,
-      "NAME": "UC-Plug-Dual-US",
+      "NAME": "UC-Outlet-US",
       "BOARDID": "ec5d",
       "BOMREV": "113-01020",
-      "DESC": "UniFi Connect Dual Plug US",
+      "DESC": "UniFi Connect Outlet US",
       "FILE": "uc_esp32_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
