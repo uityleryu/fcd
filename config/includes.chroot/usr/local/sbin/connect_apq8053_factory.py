@@ -30,9 +30,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
     ec61: UA-Display-Gate     (Android 9)
-<<<<<<< HEAD
     efa0: EV-Charger          (Android 9)
-=======
     efb0: UniFi Touch (Lock)  (Android 7)
     efb1: UniFi Touch (unLock)(Android 7)
     efb2: UniFi Touch White (Lock)(Android 7)
@@ -41,7 +39,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     efb5: UniFi TouchMax (unLock)(Android 9)
     efb6: UniFi TouchMax White (Lock)(Android 9)
     efb7: UniFi TouchMax White (unLock)(Android 9)
->>>>>>> develop
+
 '''
 
 
