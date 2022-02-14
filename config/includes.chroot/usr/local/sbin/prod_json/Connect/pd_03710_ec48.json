@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "LVDU-1",
       "BOARDID": "ec48",
-      "BOMREV": "113-03435",
+      "BOMREV": "113-03710",
       "DESC": "Low Voltage Distribution Unit 1 Port",
       "FILE": "connect_esp32_factory.py",
       "T1FILE": "",

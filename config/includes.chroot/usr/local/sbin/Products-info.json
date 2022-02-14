@@ -2347,6 +2347,19 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3FLEX": {
+      "INDEX"       : 11,
+      "NAME"        : "UVC-G3FLEX",
+      "BOARDID"     : "a534",
+      "BOMREV"      : "113-02591",
+      "DESC"        : "UVC G3 Flex",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
     }
 
   },

@@ -30,6 +30,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
     ec61: UA-Display-Gate     (Android 9)
+    efa0: EV-Charger          (Android 9)
     efb0: UniFi Touch (Lock)  (Android 7)
     efb1: UniFi Touch (unLock)(Android 7)
     efb2: UniFi Touch White (Lock)(Android 7)
@@ -38,6 +39,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     efb5: UniFi TouchMax (unLock)(Android 9)
     efb6: UniFi TouchMax White (Lock)(Android 9)
     efb7: UniFi TouchMax White (unLock)(Android 9)
+
 '''
 
 
@@ -70,6 +72,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "0007f100",
             'ec60': "0007f100",
             'ec62': "0007f100",
+            'efa0': "0007f100",
             'efb0': "0007f100",
             'efb1': "0007f100",
             'efb2': "0007f100",
@@ -86,7 +89,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7"
+            "efb7","efa0"
         ]
 
         self.ospl = {
@@ -106,6 +109,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "adr9",
             'ec62': "adr9",
             'ec61': "adr9",
+            'efa0': "adr9",
             'efb0': "adr7",
             'efb1': "adr7",
             'efb2': "adr7",
@@ -133,6 +137,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "msm8953_uapro",
             'ec62': "",
             'ec61': "ud_gate",
+            'efa0': "ev_charger",
             'efb0': "msm8953_uvp",
             'efb1': "msm8953_uvp",
             'efb2': "msm8953_uvp",
@@ -161,6 +166,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",
+            'efa0': "1",
             'efb0': "1",
             'efb1': "1",
             'efb2': "1",
@@ -189,6 +195,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1",
             'ec62': "0",
             'ec61': "0",
+            'efa0': "1",
             'efb0': "1",
             'efb1': "1",
             'efb2': "1",
@@ -217,6 +224,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",
+            'efa0': "1",
             'efb0': "1",
             'efb1': "1",
             'efb2': "1",
