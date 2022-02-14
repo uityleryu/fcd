@@ -1,0 +1,59 @@
+{
+  "Connect": {
+    "LVDU-1": {
+      "INDEX": 0,
+      "NAME": "LVDU-1",
+      "BOARDID": "ec48",
+      "BOMREV": "113-03710",
+      "DESC": "Low Voltage Distribution Unit 1 Port",
+      "FILE": "connect_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/lvdu-fw/lvdu-1/",
+          "DST_PATH": "lvdu-fw/lvdu-1",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec48-bootloader.bin",
+          "../lvdu-fw/lvdu-1/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec48-bootloader-digest.bin",
+          " ../lvdu-fw/lvdu-1/bootloader-reflash-digest.bin"
+        ],
+        [
+          "tftp/images/ec48-mfg.bin",
+          "../lvdu-fw/lvdu-1/LVDU.esp32mfg.v1.0.8.1.g84ff.220126.1737.bin"
+        ],
+        [
+          "tftp/images/ec48-ota.bin",
+          "../lvdu-fw/lvdu-1/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec48-ptn-table.bin",
+          "../lvdu-fw/lvdu-1/partition-table.bin"
+        ],
+        [
+          "tftp/images/ec48-secure_boot_key.bin",
+          "../lvdu-fw/lvdu-1/secure-bootloader-key-256.bin"
+        ]
+      ]
+    }
+  }
+}
