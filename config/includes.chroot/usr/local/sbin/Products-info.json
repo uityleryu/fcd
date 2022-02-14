@@ -25,9 +25,9 @@
       "QRCHECK"     : "True"
     },
 
-    "UDM-PRO_00723":{
+    "UDM-PRO-00723":{
       "INDEX"       : 2,
-      "NAME"        : "UDM-PRO_00723",
+      "NAME"        : "UDM-PRO-00723",
       "BOARDID"     : "ea15",
       "BOMREV"      : "113-00723",
       "DESC"        : "UniFi Dream Machine Pro",
@@ -38,9 +38,9 @@
       "SW_ID"       : "0701"
     },
 
-    "UDM-PRO_01133":{
+    "UDM-PRO-01133":{
       "INDEX"       : 3,
-      "NAME"        : "UDM-PRO_01133",
+      "NAME"        : "UDM-PRO-01133",
       "BOARDID"     : "ea15",
       "BOMREV"      : "113-01133",
       "DESC"        : "UniFi Dream Machine Pro",
@@ -1317,7 +1317,30 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-
+    "AFi-6-Kits": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Kits",
+      "BOARDID": "a641",
+      "BOMREV": "113-01135",
+      "DESC": "Amplifi 6 Kits",
+      "FILE": "afi_mt7621_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-6-Mesh": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Mesh",
+      "BOARDID": "a639",
+      "BOMREV": "113-01136",
+      "DESC": "Amplifi 6 Mesh",
+      "FILE": "afi_mt7621_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
     "AFi-ALN-R":{
       "INDEX"       : 0,
       "NAME"        : "AFi-ALN-R",
@@ -1718,12 +1741,12 @@
       "FCD_ID": "0011",
       "SW_ID": "1c01"
     },
-    "UC-Plug-Dual-US": {
+    "UC-Outlet-US": {
       "INDEX": 0,
-      "NAME": "UC-Plug-Dual-US",
+      "NAME": "UC-Outlet-US",
       "BOARDID": "ec5d",
       "BOMREV": "113-01020",
-      "DESC": "UniFi Connect Dual Plug US",
+      "DESC": "UniFi Connect Outlet US",
       "FILE": "uc_esp32_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

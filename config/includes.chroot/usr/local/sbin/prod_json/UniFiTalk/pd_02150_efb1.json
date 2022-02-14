@@ -1,12 +1,12 @@
 {
   "UniFiTalk": {
-    "UT-CONFERENCE": {
+    "TOUCH-UL": {
       "INDEX": 0,
-      "NAME": "UT-CONFERENCE",
-      "BOARDID": "ef11",
-      "BOMREV": "113-03038",
-      "DESC": "UniFi Talk conference",
-      "FILE": "uvp_qcs403_factory.py",
+      "NAME": "TOUCH-UL",
+      "BOARDID": "efb1",
+      "BOMREV": "113-02150",
+      "DESC": "UniFi Touch (Unlock)",
+      "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "SW_ID": "0a01",

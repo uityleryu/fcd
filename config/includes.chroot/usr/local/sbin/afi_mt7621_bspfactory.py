@@ -33,14 +33,20 @@ class AFIMT7621BspFactory(ScriptBase):
         self.linux_prompt = "#"
 
         self.ethnum = {
+            'a641': "2",
+            'a639': "2",# check MAC number , this is not to be checked
             'a616': "2"
         }
 
         self.wifinum = {
+            'a641': "2",
+            'a639': "2",# check MAC number , this is not to be checked
             'a616': "2"
         }
 
         self.btnum = {
+            'a641': "1",
+            'a639': "1",# check MAC number , this is not to be checked
             'a616': "1"
         }
 

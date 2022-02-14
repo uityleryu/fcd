@@ -30,7 +30,18 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
     ec61: UA-Display-Gate     (Android 9)
+<<<<<<< HEAD
     efa0: EV-Charger          (Android 9)
+=======
+    efb0: UniFi Touch (Lock)  (Android 7)
+    efb1: UniFi Touch (unLock)(Android 7)
+    efb2: UniFi Touch White (Lock)(Android 7)
+    efb3: UniFi Touch White (unLock)(Android 7)
+    efb4: UniFi TouchMax (Lock)(Android 9)
+    efb5: UniFi TouchMax (unLock)(Android 9)
+    efb6: UniFi TouchMax White (Lock)(Android 9)
+    efb7: UniFi TouchMax White (unLock)(Android 9)
+>>>>>>> develop
 '''
 
 
@@ -47,7 +58,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.ver_extract()
 
         # defalut JEDEC ID for EMMC
-        "0007f100"
         emmc_jedec = {
             'e980': "0007f100",
             'ef80': "0007f100",    # UI EMMC PN: 140-04199
@@ -64,14 +74,24 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "0007f100",
             'ec60': "0007f100",
             'ec62': "0007f100",
-            'efa0': "0007f100"
+            'efa0': "0007f100",
+            'efb0': "0007f100",
+            'efb1': "0007f100",
+            'efb2': "0007f100",
+            'efb3': "0007f100",
+            'efb4': "0007f100",
+            'efb5': "0007f100",
+            'efb6': "0007f100",
+            'efb7': "0007f100"
         }
 
         # default product class: basic
         self.df_prod_class = "0014"
         self.usbadb_list = [
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
-            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61", "efa0"
+            "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
+            "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
+            "efb7","efa0"
         ]
 
         self.ospl = {
@@ -91,7 +111,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "adr9",
             'ec62': "adr9",
             'ec61': "adr9",
-            'efa0': "adr9"
+            'efa0': "adr9",
+            'efb0': "adr7",
+            'efb1': "adr7",
+            'efb2': "adr7",
+            'efb3': "adr7",
+            'efb4': "adr9",
+            'efb5': "adr9",
+            'efb6': "adr9",
+            'efb7': "adr9"
         }
 
         self.lnxpmt = {
@@ -111,7 +139,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "msm8953_uapro",
             'ec62': "",
             'ec61': "ud_gate",
-            'efa0': "ev_charger"
+            'efa0': "ev_charger",
+            'efb0': "msm8953_uvp",
+            'efb1': "msm8953_uvp",
+            'efb2': "msm8953_uvp",
+            'efb3': "msm8953_uvp",
+            'efb4': "uvp_touchmax",
+            'efb5': "uvp_touchmax",
+            'efb6': "uvp_touchmax",
+            'efb7': "uvp_touchmax"
         }
 
         # Number of Ethernet
@@ -132,7 +168,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",
-            'efa0': "1"
+            'efa0': "1",
+            'efb0': "1",
+            'efb1': "1",
+            'efb2': "1",
+            'efb3': "1",
+            'efb4': "1",
+            'efb5': "1",
+            'efb6': "1",
+            'efb7': "1"
         }
 
         # Number of WiFi
@@ -146,14 +190,22 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef13': "1",
             'ef0e': "1",
             'ef83': "1",
-            'ef84': "1",
+            'ef84': "0",
             'ef85': "1",
             'ef86': "1",
             'ef90': "1",
             'ec60': "1",
             'ec62': "0",
             'ec61': "0",
-            'efa0': "1"
+            'efa0': "1",
+            'efb0': "1",
+            'efb1': "1",
+            'efb2': "1",
+            'efb3': "1",
+            'efb4': "1",
+            'efb5': "1",
+            'efb6': "1",
+            'efb7': "1"
         }
 
         # Number of Bluetooth
@@ -167,14 +219,22 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef13': "1",
             'ef0e': "1",
             'ef83': "1",
-            'ef84': "1",
+            'ef84': "0",
             'ef85': "1",
             'ef86': "1",
             'ef90': "1",
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",
-            'efa0': "1"
+            'efa0': "1",
+            'efb0': "1",
+            'efb1': "1",
+            'efb2': "1",
+            'efb3': "1",
+            'efb4': "1",
+            'efb5': "1",
+            'efb6': "1",
+            'efb7': "1"
         }
 
         self.devnetmeta = {
@@ -193,6 +253,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.cfg_file = ""
                 self.f_eth_mac = "/metadata/ethmac.txt"
                 self.f_qr_id = ""
+            elif self.board_id == "ef84":
+                self.persist_cfg_file = ""
+                self.cfg_file = ""
+                self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
+                self.f_qr_id = "/mnt/vendor/persist/qr_id"
             else:
                 self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
                 self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
@@ -479,7 +544,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             if self.board_id == "e980":
                 cmd = "echo gStaCountryCode={} > {}".format(self.android_cc, self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            elif self.board_id == "ef90":
+            elif self.board_id == "ef90" or self.board_id == "ef84":
+                # No WiFi, No need to write teh country code
                 pass
             else:
                 cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)

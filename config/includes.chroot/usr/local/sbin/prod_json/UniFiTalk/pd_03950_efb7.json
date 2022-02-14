@@ -1,12 +1,12 @@
 {
   "UniFiTalk": {
-    "UT-CONFERENCE": {
+    "TouchMax-W-UL": {
       "INDEX": 0,
-      "NAME": "UT-CONFERENCE",
-      "BOARDID": "ef11",
-      "BOMREV": "113-03038",
-      "DESC": "UniFi Talk conference",
-      "FILE": "uvp_qcs403_factory.py",
+      "NAME": "TouchMax-W-UL",
+      "BOARDID": "efb7",
+      "BOMREV": "113-03950",
+      "DESC": "UniFi TouchMax White (UnLock)",
+      "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "SW_ID": "0a01",
