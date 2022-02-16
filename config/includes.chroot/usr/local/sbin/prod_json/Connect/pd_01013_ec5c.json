@@ -29,7 +29,7 @@
             "CPP2.esp32app.1.0.2+325.220128.0038-unsigned.bin",
             "bootloader.bin",
             "dual_factory.bin",
-            "CPP2.esp32mfg.1.0.2+325.220128.0039-unsigned.bin",
+            "CPP2.esp32mfg.1.0.2+341.220216.1022.develop.dual_mfg-unsigned.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -50,7 +50,7 @@
         ],
         [
           "tftp/images/ec5c-mfg.bin",
-          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.2+325.220128.0039-unsigned.bin"
+          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.2+341.220216.1022.develop.dual_mfg-unsigned.bin"
         ],
         [
           "tftp/images/ec5c-ota.bin",
