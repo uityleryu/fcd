@@ -17,7 +17,7 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "QCA955X_ART_UB.bin",
-            "XC.v8.7.4.45112.210415.1103.bin",
+            "XC.v8.7.8.46705.220201.1816.bin",
             "XC.qca955x--V2---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img",
             "QCA955X_UB.bin"
           ]
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/e3d5.bin",
-          "../am-fw/XC.v8.7.4.45112.210415.1103.bin"
+          "../am-fw/XC.v8.7.8.46705.220201.1816.bin"
         ],
         [
           "tftp/images/e3d5-mfg.bin",

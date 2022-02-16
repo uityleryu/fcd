@@ -17,7 +17,7 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "QCA955X_ART_UB.bin",
-            "2XC.v8.7.4.45112.210415.1102.bin",
+            "2XC.v8.7.8.46705.220201.1820.bin",
             "XC.qca955x-LSDK-ART-Rocket-2AC-HSR-G2-16M-V4.img",
             "QCA955X_UB.bin"
           ]
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/e2f3.bin",
-          "../am-fw/2XC.v8.7.4.45112.210415.1102.bin"
+          "../am-fw/2XC.v8.7.8.46705.220201.1820.bin"
         ],
         [
           "tftp/images/e2f3-mfg.bin",

@@ -17,7 +17,7 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "AR934X_ART_UB.bin",
-            "2WA.v8.7.4.45112.210415.1103.bin",
+            "2WA.v8.7.8.46705.220201.1816.bin",
             "WA.ar934x-LSDK-ART-NBE-2AC-13-16M-V1.img",
             "AR934X_UB.bin"
           ]
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/e4f3.bin",
-          "../am-fw/2WA.v8.7.4.45112.210415.1103.bin"
+          "../am-fw/2WA.v8.7.8.46705.220201.1816.bin"
         ],
         [
           "tftp/images/e4f3-mfg.bin",

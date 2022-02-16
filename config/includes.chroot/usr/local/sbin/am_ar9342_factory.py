@@ -535,7 +535,7 @@ class AMAR9342Factory(ScriptBase):
             regsubparams,
             reg_qr_field,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
+            #"-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
