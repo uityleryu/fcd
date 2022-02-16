@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/uled_fw/uled-instant/testing_fw/1.0.5.16",
+          "SRC_PATH": "images/fcd-image/uled_fw/uled-instant/testing_fw/1.0.9.2",
           "DST_PATH": "images",
           "FILES": [
           ]
