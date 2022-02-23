@@ -142,7 +142,6 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
         self.stop_at_uboot()
 
-
     def uboot_config(self):
         comma_mac = self.mac_format_str2comma(self.mac.upper())
         cmdset = [
@@ -243,7 +242,15 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             And it only could accept the "\r" as an Enter key in this shell.
         '''
         self.pexp.expect_lnxcmd(60, "UBNT_Diag", "exit\r", self.linux_prompt)
+
+        cmd = "ifconfig eth0 down"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
         self.set_lnx_net("eth0")
+
+        cmd = "ifconfig eth0 up"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
         self.is_network_alive_in_linux()
 
         if self.board_id == "eed1" or self.board_id == "eed3":
