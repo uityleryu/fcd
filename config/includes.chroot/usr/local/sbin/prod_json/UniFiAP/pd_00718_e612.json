@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/e611.bin",
-          "../uap-fw/ulte-pro/b864-ULTESWI-9.820.202110140-c084387020e9415c811dbd322253ef64.bin"
+          "../uap-fw/ulte-pro/IL.qca956x_5.43.36+12724.210416.1558-uboot.bin"
         ],
         [
           "tftp/images/e611-uboot.bin",
@@ -56,7 +56,7 @@
         ],
         [
           "tftp/images/e612.bin",
-          "../uap-fw/ulte-pro/IL.qca956x_5.43.36+12724.210416.1558-uboot.bin"
+          "../uap-fw/ulte-pro/IL.qca956x_6.0.13+13625.220211.0251-uboot.bin"
         ],
         [
           "tftp/images/e612-uboot.bin",
