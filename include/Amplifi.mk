@@ -5,7 +5,7 @@ IMAGE-6-ISP= \
     images/a616* \
     afi-fw/*
 
-IMAGE-6-Kits= \
+IMAGE-6-Instant= \
     images/a641* \
     afi-fw/*
 
@@ -33,7 +33,7 @@ IMAGE-ALN-P-EU= \
     afi-fw/*
 
 IMAGE-ALN+=$(IMAGE-6-ISP)
-IMAGE-ALN+=$(IMAGE-6-Kits)
+IMAGE-ALN+=$(IMAGE-6-Instant)
 IMAGE-ALN+=$(IMAGE-6-Mesh)
 IMAGE-ALN+=$(IMAGE-ALN-R)
 IMAGE-ALN+=$(IMAGE-ALN-P)
@@ -62,7 +62,7 @@ TOOLS-ALN+=$(TOOLS-CONFIG)
 TOOLS-ALN+= afi_aln/*
 
 TOOLS-6-ISP=$(TOOLS-ALN)
-TOOLS-6-Kits=$(TOOLS-ALN)
+TOOLS-6-Instant=$(TOOLS-ALN)
 TOOLS-6-Mesh=$(TOOLS-ALN)
 TOOLS-ALN-R=$(TOOLS-ALN)
 TOOLS-ALN-P=$(TOOLS-ALN)
@@ -73,13 +73,13 @@ TOOLS-ALN-P-EU=$(TOOLS-ALN)
 # Project target
 $(eval $(call ProductImage,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,6-Kits,FCD_$(PRD)_6-Kits_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,6-Instant,FCD_$(PRD)_6-Instant$(VER)_$(FWVER)))
 $(eval $(call ProductImage,6-Mesh,FCD_$(PRD)_6-Mesh_$(VER)_$(FWVER)))
 
 ## Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UPS,FCD_$(PRD)_UC-UPS_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,6-Kits,FCD_$(PRD)_6-Kits_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,6-Instant,FCD_$(PRD)_6-Instant$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,6-Mesh,FCD_$(PRD)_6-Mesh_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host

@@ -13,20 +13,6 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw",
-          "DST_PATH": "udm-fw",
-          "FILES": [
-            "UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin",
-            "uImage-udm-udmp.r",
-            "ubnt_udm_all_rev1_boot.img"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
@@ -35,20 +21,36 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udmp",
+          "DST_PATH": "udm-fw/udmp",
+          "FILES": [
+            "UDMPRO.alpinev2.v1.11.1.88c26f4.220120.1457.bin",
+            "uImage.r.test_bom_01133",
+            "boot.v1.11.0.img"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/UDMPRO.alpinev2.v1.8.6.6a09c7c.210125.1544.bin"
+          "../udm-fw/udmp/UDMPRO.alpinev2.v1.11.1.88c26f4.220120.1457.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/uImage-udm-udmp.r"
+          "../udm-fw/udmp/uImage.r.test_bom_01133"
         ],
         [
           "tftp/images/ea15_signed_boot.img",
-          "../udm-fw/ubnt_udm_all_rev1_boot.img"
+          "../udm-fw/udmp/boot.v1.11.0.img"
         ]
       ]
     }

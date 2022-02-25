@@ -132,6 +132,7 @@ $(eval $(call ProductCompress,U6-Lite,FCD_$(PRD)_U6-Lite_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00773_a612))
+$(eval $(call ProductCompress2,01141_a612))
 $(eval $(call ProductCompress2,01076_a612))
 $(eval $(call ProductCompress2,00742_a614))
 $(eval $(call ProductCompress2,00742_a640))

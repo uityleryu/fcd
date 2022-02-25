@@ -1317,12 +1317,12 @@
       "FCD_ID"      : "0004",
       "SW_ID"       : "0601"
     },
-    "AFi-6-Kits": {
+    "AFi-6-Instant": {
       "INDEX": 0,
-      "NAME": "AFi-6-Kits",
+      "NAME": "AFi-6-Instant",
       "BOARDID": "a641",
       "BOMREV": "113-01135",
-      "DESC": "Amplifi 6 Kits",
+      "DESC": "Amplifi 6 Instant",
       "FILE": "afi_mt7621_bspfactory.py",
       "T1FILE": "",
       "QRCHECK": "False",

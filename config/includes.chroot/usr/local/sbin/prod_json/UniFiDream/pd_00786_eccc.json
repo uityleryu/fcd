@@ -27,7 +27,7 @@
           "DST_PATH": "udm-fw/udr",
           "FILES": [
             "udr-mt7622-mt7915a-v11_emmc.bin",
-            "UDR.mt7622.v2.3.14.a388101.220128.2024.bin",
+            "UDR.mt7622.v2.3.15.473c2bc.220209.1142.bin",
             "u-boot-mtk.bin",
             "udr-mt7622-mt7915a-v11_nor.bin",
             "uImage"
@@ -41,7 +41,7 @@
         ],
         [
           "tftp/images/eccc-fw.bin",
-          "../udm-fw/udr/UDR.mt7622.v2.3.14.a388101.220128.2024.bin"
+          "../udm-fw/udr/UDR.mt7622.v2.3.15.473c2bc.220209.1142.bin"
         ],
         [
           "tftp/images/eccc-fw.uboot",
