@@ -246,7 +246,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.df_jedecid = emmc_jedec[self.board_id]
 
         if self.ospl[self.board_id] == "adr9":
-            if self.board_id == "e980" or self.board_id == "ef90":
+            if self.board_id == "e980":
                 self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
                 self.cfg_file = ""
                 self.f_eth_mac = "/metadata/ethmac.txt"
@@ -256,6 +256,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.cfg_file = ""
                 self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
                 self.f_qr_id = "/mnt/vendor/persist/qr_id"
+            elif self.board_id == "ef90":
+                self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
+                self.f_eth_mac = "/vendor/factory/MAC_ADDR"
+                self.f_qr_id = "/vendor/factory/qr_id"
+                self.cfg_file = ""
             else:
                 self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
                 self.cfg_file = "/data/vendor/wifi/WCNSS_qcom_cfg.ini"
@@ -511,7 +516,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             # Write MAC
             if self.board_id == "ef90":
                 lmac = self.mac_format_str2comma(self.mac)
-                cmd = "fts -s macaddr {0}".format(lmac)
+                moount = 'mount -o rw,remount /vendor/factory'
+                cmd = "echo {0} > {1}".format(lmac, self.f_eth_mac)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, moount, valid_chk=True)
             else:
                 lmac = self.mac_format_str2list(self.mac)
                 bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
@@ -520,10 +527,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
-            if self.board_id == "ef90":
-                cmd = "fts -s qr_id {}".format(self.qrcode)
-            else:
-                cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
+            cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
 
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
@@ -559,7 +563,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         if self.INFOCHECK_ENABLE is True:
             msg(60, "Check the information ...")
             if self.board_id == "ef90":
-                cmd = "fts -g macaddr"
+                cmd = "cat /vendor/factory/MAC_ADDR"
                 getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
                 m_gmac = re.findall(r"macaddr=(.*)", getmac)
                 if m_gmac:
@@ -567,7 +571,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     if lmac not in m_gmac[0]:
                         error_critical("Check MAC is not matched !!")
 
-                cmd = "fts -g qr_id"
+                cmd = "cat /vendor/factory/qr_id"
                 getqrid = self.pexp.expect_get_output(cmd, self.linux_prompt)
                 log_debug("Get QRID: " + getqrid)
                 m_gqr = re.findall(r"qr_id=(.*)", getqrid)
