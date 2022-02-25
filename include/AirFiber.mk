@@ -80,6 +80,7 @@ $(eval $(call ProductImage,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,WAVE-BRIDGE,FCD_$(PRD)_WAVE-BRIDGE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,AirFiber_WAVE-SERIES,FCD_$(PRD)_WAVE-SERIES_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -90,6 +91,7 @@ $(eval $(call ProductCompress,AF60-XG,FCD_$(PRD)_AF60-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,WAVE-BRIDGE,FCD_$(PRD)_WAVE-BRIDGE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,WAVE-AP,FCD_$(PRD)_WAVE-AP_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,LTU,FCD_$(PRD)_LTU_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AirFiber_WAVE-SERIES,FCD_$(PRD)_WAVE-SERIES_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -107,3 +109,4 @@ $(eval $(call ProductCompress2,00727_ae0b))
 $(eval $(call ProductCompress2,01066_ac14))
 $(eval $(call ProductCompress2,01070_a658))
 $(eval $(call ProductCompress2,00979_a664))
+$(eval $(call ProductCompress2,AirFiber_WAVE-SERIES,FCD_$(PRD)_WAVE-SERIES_$(VER)_$(FWVER)))
