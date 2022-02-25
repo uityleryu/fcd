@@ -23,6 +23,13 @@
           ]
         },
         {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
           "DST_PATH": "udm-fw/udmp",
           "FILES": [
