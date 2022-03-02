@@ -50,6 +50,10 @@ IMAGE-UVC-G3FLEX= \
     images/a534* \
     uvc-fw/g3flex.*
 
+IMAGE-UVC-G4FLOODLIGHTBETTARY= \
+    images/a596* \
+    uvc-fw/g4flb.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -62,6 +66,7 @@ IMAGE-UVC+=$(IMAGE-UVC-AIBULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
 IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 IMAGE-UVC+=$(IMAGE-UVC-G3FLEX)
+IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBETTARY)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
