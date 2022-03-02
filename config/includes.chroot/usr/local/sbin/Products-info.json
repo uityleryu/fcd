@@ -1111,9 +1111,9 @@
       "SW_ID"       : "0601"
     },
 
-    "ULTE-PRO-EU":{
+    "ULTE-Backup-Pro-EU":{
       "INDEX"       : 13,
-      "NAME"        : "ULTE-PRO-EU",
+      "NAME"        : "ULTE-Backup-Pro-EU",
       "BOARDID"     : "e612",
       "BOMREV"      : "113-00718",
       "DESC"        : "UniFi LTE Pro EU",
@@ -1124,9 +1124,9 @@
       "SW_ID"       : "0601"
     },
 
-    "ULTE-PRO-US":{
+    "ULTE-Backup-Pro-US":{
       "INDEX"       : 14,
-      "NAME"        : "ULTE-PRO-US",
+      "NAME"        : "ULTE-Backup-Pro-US",
       "BOARDID"     : "e613",
       "BOMREV"      : "113-00788",
       "DESC"        : "UniFi LTE Pro US",

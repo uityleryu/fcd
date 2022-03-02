@@ -40,12 +40,21 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-se",
+          "DST_PATH": "udm-fw/udm-se",
+          "FILES": [
+            "UDMPROSE.al324.v2.3.14.a388101.220128.2024.bin",
+            "uImage",
+            "boot.img"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea2c-fw.bin",
-          "../udm-fw/udm-se/UDMPROSE.al324.v2.2.12.df6c4f8.211021.1516.bin"
+          "../udm-fw/udm-se/UDMPROSE.al324.v2.3.14.a388101.220128.2024.bin"
         ],
         [
           "tftp/images/ea2c-recovery",
@@ -53,7 +62,7 @@
         ],
         [
           "tftp/images/ea2c-uboot.bin",
-          "../udm-fw/udm-se/boot-86e3c20.img"
+          "../udm-fw/udm-se/boot.img"
         ]
       ]
     }
