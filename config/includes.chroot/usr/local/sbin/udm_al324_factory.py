@@ -44,7 +44,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.eeprom_offset_2 = {
             'ea2a': "0x228000",
             'ea2b': "0x228000",
-            'ea2c': "0x1f0000",
+            'ea2c': "0x1f8000",
         }
 
         self.wsysid = {
@@ -398,15 +398,17 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         self.del_anonymous_file()
 
-        if self.board_id == "ea2a":
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
-            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
-            log_debug(output)
-        elif self.board_id == "ea2b":
+        if self.board_id == "ea2b":
             # below one of two function will cause the data of flash(MTD3) was removed so do not use it
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
             # self.show_info()
-            pass
+            
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
+            log_debug(output)
+        else:
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
+            log_debug(output)
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
