@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.45"
+    __version__ = "1.0.46"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -400,7 +400,8 @@ class ScriptBase(object):
         fh.close()
 
         # SW_ID (this name is called by Mike) like product model
-        self.sw_id = self.fsiw[self.product_line][self.product_name]['SW_ID']
+        if self.product_line is not None:
+            self.sw_id = self.fsiw[self.product_line][self.product_name]['SW_ID']
 
         # Semantic version (this name is called by Mike) like FCD version
         spt = self.sem_dotver.split(".")

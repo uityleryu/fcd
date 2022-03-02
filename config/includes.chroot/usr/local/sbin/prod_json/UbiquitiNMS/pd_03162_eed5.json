@@ -7,7 +7,7 @@
       "BOMREV": "113-03162",
       "DESC": "UISP Managed 100Gbps Data Center Leaf Switch",
       "FILE": "uisp_alpine-100g_factory.py",
-      "T1FILE": "",
+      "T1FILE": "uisp_alpine-100g_mfg.py",
       "QRCHECK": "True",
       "SW_ID": "1a01",
       "DOWNLOAD_FILE": [
