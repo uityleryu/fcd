@@ -50,7 +50,7 @@ IMAGE-UVC-G3FLEX= \
     images/a534* \
     uvc-fw/g3flex.*
 
-IMAGE-UVC-G4FLOODLIGHTBETTARY= \
+IMAGE-UVC-G4FLOODLIGHTBATTERY= \
     images/a596* \
     uvc-fw/g4flb.*
 
@@ -66,7 +66,7 @@ IMAGE-UVC+=$(IMAGE-UVC-AIBULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
 IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 IMAGE-UVC+=$(IMAGE-UVC-G3FLEX)
-IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBETTARY)
+IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBATTERY)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -177,7 +177,7 @@ $(eval $(call ProductImage,UVC-AIBULLET,FCD_$(PRD)_AIBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UVC-G4FLOODLIGHTBETTARY,FCD_$(PRD)_G4FLOODLIGHTBETTARY_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
@@ -194,7 +194,7 @@ $(eval $(call ProductCompress,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-AITHETA,FCD_$(PRD)_AITHETA_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-DSLRBULLET,FCD_$(PRD)_DSLRBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UVC-G4FLOODLIGHTBETTARY,FCD_$(PRD)G4FLOODLIGHTBETTARY$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,03268_a5a0))
