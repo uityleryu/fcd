@@ -57,7 +57,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.activeport = {
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
-            'ea2c': "al_eth0",  # set sfp 0 or 2 for SPF+
+            'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
         }
 
         # number of Ethernet
@@ -85,7 +85,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.netif = {
             'ea2a': "br0",  # udw
             'ea2b': "psu0",  # udw_pro
-            'ea2c': "eth9",  # udm_se
+            'ea2c': "eth10",  # udm_se
         }
 
         # LCM update
