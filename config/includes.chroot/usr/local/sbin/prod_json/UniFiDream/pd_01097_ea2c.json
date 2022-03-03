@@ -13,11 +13,6 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udm-se/",
-          "DST_PATH": "udm-fw/udm-se",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/udm_se",
           "DST_PATH": "tools/udm_se",
           "FILES": [
