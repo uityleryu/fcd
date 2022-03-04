@@ -40,7 +40,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw",
           "DST_PATH": "udm-fw/udw",
           "FILES": [
-            "UDW.al324.v2.3.10.7180f93.211219.1502.bin",
+            "UDW.al324.v2.3.16.981a8ae.220225.1141.bin",
             "uImage",
             "boot.img"
           ]
@@ -49,7 +49,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v2.3.10.7180f93.211219.1502.bin"
+          "../udm-fw/udw/UDW.al324.v2.3.16.981a8ae.220225.1141.bin"
         ],
         [
           "tftp/images/ea2a-recovery",
