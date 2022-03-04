@@ -4,6 +4,7 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.pserial import SerialExpect
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
+from pprint import pformat
 
 import sys
 import time
@@ -66,8 +67,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
         }
 
         self.homekit_dict = {
-            'ec4a': False,
-            'ec4b': False
+            'ec4c': False,
+            'ec4a': False
         }
 
     def prepare_server_need_files(self):
@@ -217,7 +218,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         res = re.search(r"\"tokenid\":\"(.*)\"", rsp, re.S)
         self.tokenid_dut = res.group(1).upper()
         log_info('tokenid = {}'.format(self.tokenid_dut))
-        if tokenid_dut == "":
+        if self.tokenid_dut == "":
             self.is_homekit_done_before = False
         else:
             self.is_homekit_done_before = True
@@ -273,7 +274,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                     clientbin = "/usr/local/sbin/client_x86_release"
 
             regparam = [
-                "-h prod.udrs.io",
+                "-h stage.udrs.io",
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
@@ -298,11 +299,20 @@ class UFPESP32FactoryGeneral(ScriptBase):
         regparam = ' '.join(regparam)
 
         cmd = "sudo {0} {1}".format(clientbin, regparam)
-        print("cmd: " + cmd)
-        clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Security Service Device Registration Client")
-        clit.expect_only(30, "Hostname")
-        clit.expect_only(30, "field=result,format=u_int,value=1")
+        log_debug('cmd = \n{}'.format(cmd))
+
+        # clit = ExpttyProcess(self.row_id, cmd, "\n")
+        # clit.expect_only(30, "Security Service Device Registration Client")
+        # clit.expect_only(30, "Hostname")
+        # clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        [self.client_x86_rsp, rtc] = self.cnapi.xcmd(cmd)
+        log_debug('client_x86 return code = \n{}'.format(rtc))
+
+        if (int(rtc) > 0):
+            error_critical("client_x86 registration failed!!")
+        else:
+            log_debug("Excuting client_x86 registration successfully")
 
         self.pass_devreg_client = True
 
@@ -313,6 +323,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
     def homekit_setup_after_registration(self):
         if self.is_homekit_done_before is False:
             self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
+
         else:
             self.__check_tokenid_match(self.client_x86_rsp)
 
@@ -384,7 +395,25 @@ class UFPESP32FactoryGeneral(ScriptBase):
         log_info('csv_path = {}'.format(csv_path))
         log_info('txt_path = {}'.format(txt_path))
         log_info('Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
-
+        if is_file:
+            log_info('Write Homekit token_id/token/plan_id/uuid in Device...')
+            rsp = self.pexp.expect_get_output("hk -k tokenid -v {}".format(info_dict['tokenid']), self.esp32_prompt,
+                                              timeout=5)
+            rsp = self.pexp.expect_get_output("hk -k token -v {}".format(info_dict['token']), self.esp32_prompt,
+                                              timeout=5)
+            rsp = self.pexp.expect_get_output("hk -k plainid -v {}".format(info_dict['product_plan_id']),
+                                              self.esp32_prompt, timeout=5)
+            rsp = self.pexp.expect_get_output("hk -k uuid -v {}".format(info_dict['uuid']), self.esp32_prompt,
+                                              timeout=5)
+            log_info('Check Homekit token_id/token/plan_id/uuid in Device...')
+            rsp = self.pexp.expect_get_output("hk -l", self.esp32_prompt, timeout=5)
+            for idx in info_dict:
+                if info_dict[idx] in rsp:
+                    log_info('{} check PASS'.format(idx))
+                else:
+                    log_info('{} check FAIL'.format(idx))
+                    is_file = False
+                    break
         return is_file
 
     def __check_tokenid_match(self, client_x86_rsp):
@@ -423,7 +452,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             msg(30, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
-            self.registration(regsubparams = self.regsubparams)
+            self.registration(regsubparams=self.regsubparams)
             msg(40, "Finish doing registration ...")
 
             if self.homekit_dict[self.board_id] is True:
