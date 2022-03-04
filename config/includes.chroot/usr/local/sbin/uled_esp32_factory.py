@@ -68,7 +68,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         self.homekit_dict = {
             'ec4c': False,
-            'ec4a': True
+            'ec4a': False
         }
 
     def prepare_server_need_files(self):
