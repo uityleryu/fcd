@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "Unifi-PoE-af": {
+    "UACC-M-PoE-af": {
       "INDEX": 0,
-      "NAME": "Unifi-PoE-af",
+      "NAME": "UACC-M-PoE-af",
       "BOARDID": "dcb4",
       "BOMREV": "113-01068",
-      "DESC": "Unifi-PoE af",
+      "DESC": "UACC M PoE af",
       "FILE": "upoe_ipq40xx_factory.py",
       "T1FILE": "upoe_ipq40xx_mfg.py",
       "QRCHECK": "True",
