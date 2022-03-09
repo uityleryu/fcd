@@ -5,7 +5,9 @@ from PAlib.Framework.fcd.pserial import SerialExpect
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
 from pprint import pformat
-
+from collections import OrderedDict
+import base64
+import zlib
 import sys
 import time
 import os
@@ -46,18 +48,21 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.ethnum = {
             'ec4c': "0",
             "ec4a": "0",
+            "ec4b": "0",
         }
 
         # number of WiFi
         self.wifinum = {
             'ec4c': "1",
             "ec4a": "1",
+            "ec4b": "1"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec4c': "1",
             'ec4a': "1",
+            "ec4b": "1"
         }
 
         self.devnetmeta = {                                                                                                  
@@ -68,7 +73,8 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         self.homekit_dict = {
             'ec4c': False,
-            'ec4a': False
+            'ec4a': False,
+            "ec4b": True
         }
 
     def prepare_server_need_files(self):
@@ -124,7 +130,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_ota_data   = os.path.join(self.tftpdir, "images", "ota_data_initial.bin")
         if self.product_name == 'ULED-INSTANT':
             fw_app        = os.path.join(self.tftpdir, "images", "uled-inst_mfg.bin")
-        elif self.product_name == 'ULED-BULB':
+        elif self.product_name == 'ULED-BULB' or self.product_name == 'ULED-BULB-Color':
             fw_app        = os.path.join(self.tftpdir, "images", "wifibulb_mfg.bin")
 
         fw_nvs_key    = os.path.join(self.tftpdir, "images", "bootloader-reflash-digest.bin")
@@ -275,6 +281,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
             regparam = [
                 "-h stage.udrs.io",
+                #"-h prod.udrs.io",
                 "-k " + self.pass_phrase,
                 regsubparams,
                 reg_qr_field,
@@ -308,7 +315,6 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         [self.client_x86_rsp, rtc] = self.cnapi.xcmd(cmd)
         log_debug('client_x86 return code = \n{}'.format(rtc))
-
         if (int(rtc) > 0):
             error_critical("client_x86 registration failed!!")
         else:
@@ -376,7 +382,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         log_info('info_dict = \n{}'.format(pformat(info_dict, indent=4)))
 
         # gen file
-        file_dir = os.path.join('/home/ubnt/usbdisk', 'LOCK-R_hk_output')
+        file_dir = os.path.join('/home/ubnt/usbdisk', 'ULED-Bulb_hk_output')
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
@@ -397,7 +403,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         log_info('Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
         if is_file:
             log_info('Write Homekit token_id/token/plan_id/uuid in Device...')
-            rsp = self.pexp.expect_get_output("hk -k tokenid -v {}".format(info_dict['tokenid']), self.esp32_prompt,
+            rsp = self.pexp.expect_get_output("hk -k tokenid -v {}".format(info_dict['token_id']), self.esp32_prompt,
                                               timeout=5)
             rsp = self.pexp.expect_get_output("hk -k token -v {}".format(info_dict['token']), self.esp32_prompt,
                                               timeout=5)
@@ -407,11 +413,13 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                               timeout=5)
             log_info('Check Homekit token_id/token/plan_id/uuid in Device...')
             rsp = self.pexp.expect_get_output("hk -l", self.esp32_prompt, timeout=5)
-            for idx in info_dict:
-                if info_dict[idx] in rsp:
-                    log_info('{} check PASS'.format(idx))
+
+            check_item = ['token_id', 'token', 'uuid', 'product_plan_id']
+            for key in check_item:
+                if '{}'.format((info_dict[key])) in rsp:
+                    log_info('{} check PASS'.format(key))
                 else:
-                    log_info('{} check FAIL'.format(idx))
+                    log_info('{} check FAIL'.format(key))
                     is_file = False
                     break
         return is_file
