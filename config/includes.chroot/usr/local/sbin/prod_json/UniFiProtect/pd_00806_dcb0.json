@@ -1,8 +1,8 @@
 {
   "UniFiProtect": {
-    "UFP-RADAR": {
+    "UP-RADAR": {
       "INDEX": 0,
-      "NAME": "UFP-RADAR",
+      "NAME": "UP-RADAR",
       "BOARDID": "dcb0",
       "BOMREV": "113-00806",
       "DESC": "UniFi Protect Radar",
@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/up-fw",
           "DST_PATH": "up-fw",
           "FILES": [
-            "UP-Radar-v0.6.0-pre_20211129.bin"
+            "UP-Radar-v0.8.1_pre_20220304.bin"
           ]
         },
         {
@@ -40,7 +40,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dcb0-preload.bin",
-          "../up-fw/UP-Radar-v0.6.0-pre_20211129.bin"
+          "../up-fw/UP-Radar-v0.8.1_pre_20220304.bin"
         ]
       ]
     }

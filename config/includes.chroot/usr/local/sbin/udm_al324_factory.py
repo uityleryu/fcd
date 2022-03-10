@@ -90,9 +90,9 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         # LCM update
         self.lcmupdate = {
-            'ea2a': True,
+            'ea2a': False,
             'ea2b': False,
-            'ea2c': True,
+            'ea2c': False,
         }
 
         # Wifi cal data setting

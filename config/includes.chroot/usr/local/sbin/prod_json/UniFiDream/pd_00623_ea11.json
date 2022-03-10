@@ -13,17 +13,8 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/udm-fw",
-          "DST_PATH": "udm-fw",
-          "FILES": [
-            "UDM.alpinev2.v1.8.6.6a09c7c.210125.1544.bin",
-            "uImage-udm-udmp.r",
-            "ubnt_udm_all_rev1_boot.img"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
           "FILES": []
         },
         {
@@ -35,20 +26,29 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udm",
+          "DST_PATH": "udm-fw/udm",
+          "FILES": [
+            "UDM.alpinev2.v1.11.4.e66d85f.220218.1428.bin",
+            "uImage.v1.11.4.r",
+            "boot.v1.11.4.img"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea11-fw.bin",
-          "../udm-fw/UDM.alpinev2.v1.8.6.6a09c7c.210125.1544.bin"
+          "../udm-fw/udm/UDM.alpinev2.v1.11.4.e66d85f.220218.1428.bin"
         ],
         [
           "tftp/images/ea11-recovery",
-          "../udm-fw/uImage-udm-udmp.r"
+          "../udm-fw/udm/uImage.v1.11.4.r"
         ],
         [
           "tftp/images/ea11_signed_boot.img",
-          "../udm-fw/ubnt_udm_all_rev1_boot.img"
+          "../udm-fw/udm/boot.v1.11.4.img"
         ]
       ]
     }
