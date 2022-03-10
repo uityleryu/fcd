@@ -414,6 +414,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             log_info('Check Homekit token_id/token/plan_id/uuid in Device...')
             rsp = self.pexp.expect_get_output("hk -l", self.esp32_prompt, timeout=5)
 
+            log_info('')
             check_item = ['token_id', 'token', 'uuid', 'product_plan_id']
             for key in check_item:
                 if '{}'.format((info_dict[key])) in rsp:
