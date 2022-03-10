@@ -307,6 +307,8 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_only(60, "blocks erased: OK")
         self.pexp.expect_only(60, "blocks written: OK")
+        cmd = "mmc erase 0x48422 0x40000"
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def stop_uboot(self, timeout=60):
