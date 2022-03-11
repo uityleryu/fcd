@@ -19,17 +19,18 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee"
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/uc-fw/uc-plug-xx",
           "DST_PATH": "uc-fw/uc-plug-xx",
           "FILES": [
-            "CPP1.esp32app.1.0.0+293.220114.1445-unsigned.bin",
+            "CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin",
             "bootloader.bin",
             "plug_factory.bin",
-            "CPP1.esp32mfg.1.0.0+293.220114.1446-unsigned.bin",
+            "CPP1.esp32mfg.1.0.4+350.220304.1524-unsigned.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -38,7 +39,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec5b-app.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.0+293.220114.1445-unsigned.bin"
+          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin"
         ],
         [
           "tftp/images/ec5b-bootloader.bin",
@@ -50,7 +51,7 @@
         ],
         [
           "tftp/images/ec5b-mfg.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.0+293.220114.1446-unsigned.bin"
+          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.4+350.220304.1524-unsigned.bin"
         ],
         [
           "tftp/images/ec5b-ota.bin",
