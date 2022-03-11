@@ -8,7 +8,7 @@
       "DESC": "UniFi Protect Radar",
       "FILE": "ufp_uboot_factory.py",
       "T1FILE": "",
-      "QRCHECK": "True",
+      "QRCHECK": "False",
       "FCD_ID": "000d",
       "SW_ID": "1604",
       "DOWNLOAD_FILE": [
