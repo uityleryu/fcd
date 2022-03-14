@@ -14,7 +14,12 @@
         {
           "SRC_PATH": "images/fcd-image/uck-fw/",
           "DST_PATH": "uck-fw/",
-          "FILES": []
+          "FILES": [
+            "CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img",
+            "RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img",
+            "UCKP.apq8053.v2.3.15.473c2bc.220209.1142.boot",
+            "UCKP.apq8053.v2.3.15.473c2bc.220209.1142.rootfs"
+          ]
         },
         {
           "SRC_PATH": "images/tools/uck/",
@@ -43,11 +48,11 @@
         ],
         [
           "tftp/images/e970-rootfs.bin",
-          "../uck-fw/UCKP.apq8053.v2.2.12.3f3aaf9.211016.0105.rootfs"
+          "../uck-fw/UCKP.apq8053.v2.3.15.473c2bc.220209.1142.rootfs"
         ],
         [
           "tftp/images/e970-kernel.bin",
-          "../uck-fw/UCKP.apq8053.v2.2.12.3f3aaf9.211016.0105.boot"
+          "../uck-fw/UCKP.apq8053.v2.3.15.473c2bc.220209.1142.boot"
         ]
       ]
     }
