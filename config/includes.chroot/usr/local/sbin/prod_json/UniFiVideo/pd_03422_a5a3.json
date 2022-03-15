@@ -34,7 +34,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "aitheta.UVC.CV2X.v4.49.7.67-fcddbg.dbc8b21.220209.0641.bin"
+            "aitheta.UVC.CV2X.v4.51.0.67.M_02a8a01.220315.0338.bin"
           ]
         }
       ],
