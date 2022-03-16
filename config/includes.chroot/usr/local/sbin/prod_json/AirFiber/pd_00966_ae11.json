@@ -11,7 +11,15 @@
       "QRCHECK": "False",
       "FCD_ID": "000a",
       "SW_ID": "1001",
-      "DOWNLOAD_FILE": [],
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/af_ltu5/",
+          "DST_PATH": "tools/af_ltu5",
+          "FILES": [
+            "helper_UBNTAME"
+          ]
+        }
+      ],
       "CREATE_LINK": []
     }
   }
