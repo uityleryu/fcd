@@ -34,5 +34,8 @@
   ],
   "AirFiber_LTU-SERIES" : [
     "00680_ae06", "00708_ae08", "00727_ae0b", "00927_ae10", "00966_ae11"
+  ],
+  "UniFiAP_UACCMPOE-SERIES" : [
+    "01068_dcb4", "01068_dcb5"
   ]
 }

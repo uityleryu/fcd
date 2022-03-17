@@ -21,9 +21,40 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw/uacc-m-poe",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "BZ.ipq40xx_6.2.9+13788.220226.0043.bin",
+            "unifi-poe-v7_nor.bin",
+            "unifi-v1.0.0.119-g0f71186e_ipq40xx_u-boot.elf",
+            "uacc-m-poe-partition.bin",
+            "unifi-poe-v7-single.img"
+          ]
         }
       ],
       "CREATE_LINK": [
+        [
+          "tftp/images/dcb4.bin",
+          "../uap-fw/BZ.ipq40xx_6.2.9+13788.220226.0043.bin"
+        ],
+        [
+          "tftp/images/dcb4-boot.bin",
+          "../uap-fw/unifi-v1.0.0.119-g0f71186e_ipq40xx_u-boot.elf"
+        ],
+        [
+          "tftp/images/dcb4-mfg.img",
+          "../uap-fw/unifi-poe-v7-single.img"
+        ],
+        [
+          "tftp/images/dcb4-mfg-nor.bin",
+          "../uap-fw/unifi-poe-v7_nor.bin"
+        ],
+        [
+          "tftp/images/dcb4-partition.bin",
+          "../uap-fw/uacc-m-poe-partition.bin"
+        ]
       ]
     }
   }

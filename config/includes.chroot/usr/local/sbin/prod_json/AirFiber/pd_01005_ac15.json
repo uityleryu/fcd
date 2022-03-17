@@ -1,0 +1,61 @@
+{
+  "AirFiber": {
+    "Wave-Mesh": {
+      "INDEX": 0,
+      "NAME": "Wave-Mesh",
+      "BOARDID": "ac15",
+      "BOMREV": "113-01005",
+      "DESC": "Wave-Mesh",
+      "FILE": "af_ipq80xx_factory.py",
+      "T1FILE": "af_ipq80xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "MEX.ipq807x.v3.2.0-devel-GMP-434.8b9d03c5.220303.0837.bin",
+            "u-boot_01005.mbn",
+            "nand-ipq807x-single.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/af_af60/",
+          "DST_PATH": "tools/af_af60",
+          "FILES": [
+            "cfg_part.bin",
+            "helper_IPQ807x",
+            "id_rsa",
+            "id_rsa.pub"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ac15.bin",
+          "../af-fw/MEX.ipq807x.v3.2.0-devel-GMP-434.8b9d03c5.220303.0837.bin"
+        ],
+        [
+          "tftp/images/ac15-bootloader.bin",
+          "../af-fw/u-boot_01005.mbn"
+        ],
+        [
+          "tftp/images/ac15-mfg.bin",
+          "../af-fw/nand-ipq807x-single.img"
+        ]
+      ]
+    }
+  }
+}
