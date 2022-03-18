@@ -382,7 +382,6 @@ class UISPALPINE(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.pexp.expect_only(30, "Executing installer")
         self.pexp.expect_only(30, "Updating U-Boot")
-        self.pexp.expect_only(30, "Post-initialize the rest of partitions")
         self.pexp.expect_only(30, "NOS install successful")
         self.pexp.expect_only(30, "Rebooting")
         self.pexp.expect_action(120, "Autobooting in 2 seconds, press", "\x1b\x1b")

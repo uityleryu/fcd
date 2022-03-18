@@ -15,8 +15,9 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "uisp-leaf-fcd-0.6.0.img",
-            "onie-installer-uisp-alpine-0.9.0.bin"
+            "onie-installer-uisp-alpine-0.12.0.bin",
+            "uisp-alpine-0.12.0.itb",
+            "MFG.uisp-leaf_v2.BL_g2d1e51d.ONIE_3fcc38f.image"
           ]
         },
         {
@@ -40,11 +41,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/eed5-mfg.bin",
-          "../unms-fw/uisp-leaf-fcd-0.6.0.img"
+          "../unms-fw/uisp-alpine-0.12.0.itb"
         ],
         [
           "tftp/images/eed5-fw.bin",
-          "../unms-fw/onie-installer-uisp-alpine-0.9.0.bin"
+          "../unms-fw/onie-installer-uisp-alpine-0.12.0.bin"
+        ],
+        [
+          "tftp/images/boot.img",
+          "../unms-fw/MFG.uisp-leaf_v2.BL_g2d1e51d.ONIE_3fcc38f.image"
         ]
       ]
     }
