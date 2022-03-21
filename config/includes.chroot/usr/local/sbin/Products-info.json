@@ -1595,6 +1595,7 @@
       "SW_ID"       : "0801"
     },
 
+    
     "UNVR-AI":{
       "INDEX"       : 3,
       "NAME"        : "UNVR-PRO",
@@ -2693,6 +2694,22 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0008",
       "SW_ID"       : "0c01"
+    }
+  }, 
+
+  "UniFiDrive":
+  {
+    "UNAS-Pro":{
+      "INDEX"       : 0,
+      "NAME"        : "UNAS-Pro",
+      "BOARDID"     : "ea51",
+      "BOMREV"      : "113-03751",
+      "DESC"        : "UNAS-Pro",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "2101"
     }
   }
 }
