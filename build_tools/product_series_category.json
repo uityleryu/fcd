@@ -37,5 +37,8 @@
   ],
   "UniFiAP_UACCMPOE-SERIES" : [
     "01068_dcb4", "01068_dcb5"
+  ],
+  "AirFiber_XG-SERIES" : [
+    "00809_dd11", "00871_dd13"
   ]
 }
