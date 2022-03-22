@@ -125,7 +125,14 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
+        
+        
+        if self.board_id == "ea2e":
+            # UDM-Pro-PU will set eth port as 169.254.x.x as default
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip=192.168.1.20/g' /tmp/system.cfg", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config", self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
