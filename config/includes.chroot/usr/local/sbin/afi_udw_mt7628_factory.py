@@ -132,7 +132,7 @@ class UCMT7628Factory(ScriptBase):
         
         if self.board_id == "ea2e":
             # UDM-Pro-PU will set eth port as 169.254.x.x as default
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip=192.168.1.20/g' /tmp/system.cfg", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
             time.sleep(10)
         else:
