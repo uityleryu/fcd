@@ -46,7 +46,7 @@ class UCMT7628Factory(ScriptBase):
         }
         # flash size map
         self.flash_size = {
-            'ed14':  "33554432",
+            'ed14': "33554432",
             'ea2e': "16777216"
         }
         # firmware image
@@ -146,6 +146,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
         # to use Desktop atftp to transfer image to DUT
+        # atftp -p -l /tftpboot/images/ea2e-fw.bin 192.168.1.20
         cmd = ["atftp",
                "-p",
                "-l",
