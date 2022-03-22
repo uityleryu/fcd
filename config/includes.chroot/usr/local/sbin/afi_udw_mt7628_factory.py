@@ -27,7 +27,11 @@ class UCMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = ">"
-        self.helper_path = "afi_ups"
+        
+        if self.board_id == "ea2e":
+            self.helper_path = "udm_pro_pu"
+        else:
+            self.helper_path = "afi_ups"
 
         # number of mac
         self.macnum =  {
