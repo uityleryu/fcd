@@ -363,12 +363,15 @@ class UFPESP32FactoryGeneral(ScriptBase):
         '''
 
         # prepare data
+        region_name_dict = {"World": 'US',
+                            "USA/Canada": 'US',
+                            'EU': 'EU'}
+
         info_dict = OrderedDict()
         info_dict['token_id'] = None
         info_dict['token'] = None
         info_dict['uuid'] = None
         info_dict['product_plan_id'] = None
-
         log_info('{}'.format([client_x86_rsp]))
 
         re_tmp = r"{},format=string,value=(.*)\n"
@@ -411,6 +414,14 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                               self.esp32_prompt, timeout=5)
             rsp = self.pexp.expect_get_output("hk -k uuid -v {}".format(info_dict['uuid']), self.esp32_prompt,
                                               timeout=5)
+            egion_name_dict = {"World": 'US',
+                               "USA/Canada": 'US',
+                               'EU': 'EU',
+                               "Scandi": 'SCANDI'}
+            log_info('self.region_name = {}'.format(self.region_name))
+            sku_code = region_name_dict[self.region_name]
+            rsp = self.pexp.expect_get_output("hk -k sku -v {}".format(sku_code), self.esp32_prompt,
+                                              timeout=5)
             log_info('Check Homekit token_id/token/plan_id/uuid in Device...')
             rsp = self.pexp.expect_get_output("hk -l", self.esp32_prompt, timeout=5)
 
@@ -423,6 +434,12 @@ class UFPESP32FactoryGeneral(ScriptBase):
                     log_info('{} check FAIL'.format(key))
                     is_file = False
                     break
+            if '\"sku\":\"{}\"'.format(sku_code) in rsp:
+                log_info('{} check PASS'.format(key))
+            else:
+                log_info('{} check FAIL'.format(key))
+                is_file = False
+
         return is_file
 
     def __check_tokenid_match(self, client_x86_rsp):
