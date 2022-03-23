@@ -27,18 +27,15 @@ class USPMT7628Factory(ScriptBase):
 
         # number of mac
         self.macnum =  {
-            'ed12': "2",
-            'ed15': "2",
+            'ed12': "2"
             }
         # number of WiFi
         self.wifinum = {
             'ed12': "0",
-            'ed15': "0",
             }
         # number of Bluetooth
         self.btnum =   {
             'ed12': "0",
-            'ed15': "0",
             }
         # flash size map
         self.flash_size = {'ed12': "16777216"}

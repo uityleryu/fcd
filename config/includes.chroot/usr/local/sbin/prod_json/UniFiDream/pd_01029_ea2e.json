@@ -24,8 +24,8 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/udm_pro_pu",
-          "DST_PATH": "tools/udm_pro_pu",
+          "SRC_PATH": "images/tools/udw_pro_pu",
+          "DST_PATH": "tools/udw_pro_pu",
           "FILES": [
             "helper_MT7628_release"
           ]
