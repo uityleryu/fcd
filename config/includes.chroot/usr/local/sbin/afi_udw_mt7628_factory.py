@@ -27,27 +27,37 @@ class UCMT7628Factory(ScriptBase):
         self.devregpart = "/dev/mtdblock3"
         self.helperexe = "helper_MT7628_release"
         self.bootloader_prompt = ">"
-        self.helper_path = "afi_ups"
+        
+        if self.board_id == "ea2e":
+            self.helper_path = "udw_pro_pu"
+        elif self.board_id == "ed15":
+            self.helper_path = "usp_pro_pdu_hd"
+        else:
+            self.helper_path = "afi_ups"
 
         # number of mac
         self.macnum =  {
             'ed14': "0",
-            'ea2e': "1"
+            'ea2e': "1",
+            'ed15': "1"
         }
         # number of WiFi
         self.wifinum = {
             'ed14': "1",
-            'ea2e': "0"
+            'ea2e': "0",
+            'ed15': "0"
         }
         # number of Bluetooth
         self.btnum =   {
             'ed14': "1",
-            'ea2e': "0"
+            'ea2e': "0",
+            'ed15': "0",
         }
         # flash size map
         self.flash_size = {
-            'ed14':  "33554432",
-            'ea2e': "16777216"
+            'ed14': "33554432",
+            'ea2e': "16777216",
+            'ed15': "16777216"
         }
         # firmware image
         self.fwimg = self.board_id + "-fw.bin"
@@ -59,14 +69,19 @@ class UCMT7628Factory(ScriptBase):
         }
 
         self.UPDATE_UBOOT_ENABLE    = True
-        self.BOOT_RAMFS_IMAGE       = True 
-        self.PROVISION_ENABLE       = True 
-        self.DOHELPER_ENABLE        = True 
-        self.REGISTER_ENABLE        = True 
-        self.FWUPDATE_ENABLE        = True
-        self.DATAVERIFY_ENABLE      = True 
-        self.LCM_FW_CHECK_ENABLE    = False 
-        self.MCU_FW_CHECK_ENABLE    = False 
+        self.BOOT_RAMFS_IMAGE       = True
+        self.PROVISION_ENABLE       = True
+        self.DOHELPER_ENABLE        = True
+        self.REGISTER_ENABLE        = True
+        if self.board_id == "ed15":
+            self.FWUPDATE_ENABLE        = False
+            self.DATAVERIFY_ENABLE      = False
+        else:
+            self.FWUPDATE_ENABLE        = True
+            self.DATAVERIFY_ENABLE      = True
+            
+        self.LCM_FW_CHECK_ENABLE    = False
+        self.MCU_FW_CHECK_ENABLE    = False
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -123,9 +138,21 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+        
+        if self.board_id == "ed15":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset 1", self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+        
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
+        
+        if self.board_id == "ea2e":
+            # UDM-Pro-PU will set eth port as 169.254.x.x as default
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
+            time.sleep(10)
+        else:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
@@ -146,6 +173,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
         # to use Desktop atftp to transfer image to DUT
+        # atftp -p -l /tftpboot/images/ea2e-fw.bin 192.168.1.20
         cmd = ["atftp",
                "-p",
                "-l",

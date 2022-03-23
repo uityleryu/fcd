@@ -6,7 +6,7 @@
       "BOARDID": "ed15",
       "BOMREV": "113-01036",
       "DESC": "UniFi Smart Power PRO PDU HD",
-      "FILE": "usp_mt7628_factory.py",
+      "FILE": "afi_udw_mt7628_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "000e",

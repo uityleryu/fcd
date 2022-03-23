@@ -18,7 +18,22 @@ FWUPDATE_ENABLE = False
 DATAVERIFY_ENABLE = True
 WAIT_LCMUPGRADE_ENABLE = True
 
-
+class Retry():
+    def __init__(self, _function, max_retry_count=0, delay_time=0):
+        self.retry(_function,max_retry_count, delay_time)
+    
+    def retry(self, _function, max_retry_count, delay_time):
+        for i in range(max_retry_count + 1):
+            try:
+                _function()
+                return 
+            except Exception as e:
+                log_debug('Catch expection "{}" at {}'.format(e, _function.__name__))
+            log_debug('Sleep {} seconds'.format(delay_time))
+            time.sleep(delay_time)
+            log_debug('Retry {}, {} time(s)'.format(_function.__name__, i + 1))
+        log_error('Exceed max retry count {}'.format(max_retry_count))
+        error_critical('Failed at {}'.format(_function.__name__))
 class UNASALPINEFactory(ScriptBase):
     def __init__(self):
         super(UNASALPINEFactory, self).__init__()
@@ -31,12 +46,12 @@ class UNASALPINEFactory(ScriptBase):
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
         self.wait_LCM_upgrade_en = {'ea20', 'ea21'}
-
         # script specific vars
         self.devregparts = {
             '0000': "/dev/mtdblock9",
             'ea1a': "/dev/mtdblock4",
             'ea20': "/dev/mtdblock4",
+            'ea51': "/dev/mtdblock4",
             'ea21': "/dev/mtdblock4",
             'ea30': "/dev/mtdblock4"
         }
@@ -60,6 +75,7 @@ class UNASALPINEFactory(ScriptBase):
         self.ethnum = {
             'ea1a': "2",
             'ea20': "2",
+            'ea51': "2",
             'ea21': "3",
             'ea30': "2",
         }
@@ -68,6 +84,7 @@ class UNASALPINEFactory(ScriptBase):
         self.wifinum = {
             'ea1a': "0",
             'ea20': "0",
+            'ea51': "0",
             'ea21': "0",
             'ea30': "0",
         }
@@ -76,6 +93,7 @@ class UNASALPINEFactory(ScriptBase):
         self.btnum = {
             'ea1a': "1",
             'ea20': "1",
+            'ea51': "1",
             'ea21': "1",
             'ea30': "1",
         }
@@ -83,6 +101,7 @@ class UNASALPINEFactory(ScriptBase):
         self.netif = {
             'ea1a': "ifconfig enp0s1 ",
             'ea20': "ifconfig enp0s1 ",
+            'ea51': "ifconfig enp0s1 ",
             'ea21': "ifconfig enp0s1 ",
             'ea30': "ifconfig enp0s1 ",
         }
@@ -262,6 +281,89 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "")
 
+    def copy_rename_uImage_to_tftpboot(self):
+        uImage = 'uImage'
+        fcd_spifwpath = os.path.join(self.tftpdir, "unas", uImage)
+        spi_fw_path = os.path.join(self.tftpdir, uImage)
+        if not os.path.isfile(spi_fw_path):
+            sstr = [
+                "cp",
+                "-p",
+                fcd_spifwpath,
+                spi_fw_path
+            ]
+            sstrj = ' '.join(sstr)
+            [sto, rtc] = self.fcd.common.xcmd(sstrj)
+            time.sleep(1)
+            if int(rtc) > 0:
+                error_critical("Copying {} to tftp server failed".format(uImage))
+            else:
+                time.sleep(5)
+                log_debug("Copying {} to tftp server successfully".format(uImage))
+        else:
+            log_debug("{} is already existed under /tftpboot".format(uImage))
+
+    def set_tftp_at_uboot(self):
+        self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
+        self.is_network_alive_in_uboot(retry=9)
+    
+    def pull_uImage_from_fcd_server(self, dut_nc_ip):
+        cmd = 'setenv ipaddr {}; setenv serverip {}; setenv bootargsextra \'client={} server={} factory nc_transfer\'; run bootcmdtftp'.format(self.dutip, self.tftp_server, self.dutip, self.tftp_server)
+        self.pexp.expect_action(30, self.ubpmt, cmd)
+        self.pexp.expect_only(300, "Bytes transferred =", err_msg="Failed get uImage from tftp server")
+
+    def fcd_host_shell(self, cmd):
+        log_debug('FCD host shell: "{}"'.format(cmd))
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        time.sleep(1)
+        if int(rtc) > 0:
+            error_critical("{} failed".format(cmd))
+        else:
+            time.sleep(5)
+            log_debug("{} successfully".format(cmd))
+
+    def fcd_server_send_firmware_by_nc(self, cmd):
+        self.fcd_host_shell(cmd)
+    
+    def pull_firmware_by_nc(self, firmware_file_name, dut_nc_ip, dut_nc_port='5566'):
+        cmd = 'nc -N {} {} < {}'.format(dut_nc_ip, dut_nc_port, firmware_file_name)
+        nc_ready_message = 'Wait for nc client to push firmware to {}:{} ...'.format(dut_nc_ip, dut_nc_port)
+        self.pexp.expect_only(300, nc_ready_message, err_msg="Failed at {}".format(nc_ready_message))
+        self.fcd_server_send_firmware_by_nc(cmd)
+
+    def install_firmware_on_emmc(self):
+        self.copy_rename_uImage_to_tftpboot()
+        self.set_tftp_at_uboot()
+        self.pull_uImage_from_fcd_server(dut_nc_ip=self.dutip)
+        fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
+        self.pull_firmware_by_nc(firmware_file_name=fcd_fwpath, dut_nc_ip=self.dutip)
+
+    def clear_shell(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
+
+    def reboot(self):
+        self.clear_shell()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+    
+    def sleep_with_message(self, sleep_time, message=None):
+        if message: log_debug('Sleep {} seconds for {}'.format(message))
+        time.sleep(sleep_time)
+
+    def set_fake_sysid(self):
+        self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "sf probe")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000000 544e4255")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770751ea")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 51ea7707")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "sf erase 0x1f0000 0x9000")
+        self.pexp.expect_only(30, "Erased: OK")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "sf write 0x08000000 0x1f0000 0x20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "sf write 0x08000000 0x1f8000 0x20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.ubpmt, "reset")
+
     def run(self):
         """main procedure of factory
         """
@@ -274,6 +376,10 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
+        if self.board_id == 'ea51':
+            msg(3, 'Set fake sysid in uboot')
+            self.set_fake_sysid()
+        
         if INSTALL_SPI_FLASH is True:
             msg(5, "Boot to u-boot console and install spi flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
@@ -282,10 +388,16 @@ class UNASALPINEFactory(ScriptBase):
         if INSTALL_NAND_FW_ENABLE is True:
             msg(10, "Boot to u-boot console and install nand flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
-            self.install_nand_fw()  # will be rebooting after installation
+            if self.board_id == 'ea51':
+                self.install_firmware_on_emmc()
+            else:
+                self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        self.pexp.expect_only(300, "Welcome to UniFi NVR!")
+        if self.board_id == 'ea51':
+            self.login(timeout=300)
+        else:
+            self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
@@ -318,10 +430,14 @@ class UNASALPINEFactory(ScriptBase):
         else:
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
-            self.pexp.expect_only(300, "Welcome to UniFi NVR!")
+            if self.board_id == 'ea51':
+                self.login(timeout=300)
+            else:
+                self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         if DATAVERIFY_ENABLE is True:
-            self.check_info()
+            if self.board_id == 'ea51': self.clear_shell()
+            Retry(self.check_info, max_retry_count=3, delay_time=1)
             msg(90, "Succeeding in checking the devreg information ...")
 
         if WAIT_LCMUPGRADE_ENABLE is True:
@@ -331,7 +447,6 @@ class UNASALPINEFactory(ScriptBase):
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
-
 
 def main():
     unas_alpine_factory = UNASALPINEFactory()
