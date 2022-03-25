@@ -24,8 +24,8 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/pdu_pro",
-          "DST_PATH": "tools/pdu_pro",
+          "SRC_PATH": "images/tools/usp_pro_pdu_hd",
+          "DST_PATH": "tools/usp_pro_pdu_hd",
           "FILES": [
             "helper_MT7628_release"
           ]
