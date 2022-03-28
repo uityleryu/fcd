@@ -37,5 +37,8 @@
   ],
   "UniFiAP_UACCMPOE-SERIES" : [
     "01068_dcb4", "01068_dcb5"
+  ],
+  "UISP_Console-SERIES" : [
+    "00973_ee6a", "01129_ee6a"
   ]
 }

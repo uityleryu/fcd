@@ -156,3 +156,5 @@ $(eval $(call ProductCompress2,02932_eed4))
 $(eval $(call ProductCompress2,03162_eed5))
 $(eval $(call ProductCompress2,00732_1200))
 $(eval $(call ProductCompress2,UISP_100G-SERIES))
+$(eval $(call ProductCompress2,UISP_Console-SERIES))
+
