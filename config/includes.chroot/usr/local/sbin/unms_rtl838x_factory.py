@@ -144,13 +144,14 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
 
 
     def uboot_config(self):
+        comma_mac = self.mac_format_str2comma(self.mac.upper())
         cmdset = [
             "setenv ipaddr {0}".format(self.dutip),
             "setenv serverip {0}".format(self.tftp_server),
             "setenv boardmodel {0}".format(self.bdmd[self.board_id]),
             "setenv burnNum 0",
             "setenv telnet 0",
-            "setenv ethaddr 00:E0:4C:00:00:0{}".format(self.row_id)
+            "setenv ethaddr {}".format(comma_mac)
         ]
         for idx in range(len(cmdset)):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmdset[idx])
@@ -233,7 +234,7 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
         cmd = "flwrite name JFFS2_LOG 0x81000000"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-        cmd = "boota"
+        cmd = "reset"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         '''
