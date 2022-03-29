@@ -73,13 +73,9 @@ class UCMT7628Factory(ScriptBase):
         self.PROVISION_ENABLE       = True
         self.DOHELPER_ENABLE        = True
         self.REGISTER_ENABLE        = True
-        if self.board_id == "ed15":
-            self.FWUPDATE_ENABLE        = False
-            self.DATAVERIFY_ENABLE      = False
-        else:
-            self.FWUPDATE_ENABLE        = True
-            self.DATAVERIFY_ENABLE      = True
-            
+        self.FWUPDATE_ENABLE        = True
+        self.DATAVERIFY_ENABLE      = True
+
         self.LCM_FW_CHECK_ENABLE    = False
         self.MCU_FW_CHECK_ENABLE    = False
 
@@ -138,14 +134,11 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
-        
-        if self.board_id == "ed15":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset 1", self.linux_prompt)
-        else:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
-        
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
-        
+
         if self.board_id == "ea2e":
             # UDM-Pro-PU will set eth port as 169.254.x.x as default
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
