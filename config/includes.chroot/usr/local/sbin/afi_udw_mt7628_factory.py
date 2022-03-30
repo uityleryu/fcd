@@ -91,6 +91,7 @@ class UCMT7628Factory(ScriptBase):
         
     def update_uboot_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.ubootimg))
+        self.pexp.expect_only(20, "done")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x60000; sf write ${loadaddr} 0x0 ${filesize}")
         ## Uboot of BSP, AFi-UPS
         # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
@@ -112,6 +113,7 @@ class UCMT7628Factory(ScriptBase):
 
     def init_ramfs_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
+        self.pexp.expect_only(20, "done")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         
         self.pexp.expect_only(30, "Loading kernel")
@@ -144,6 +146,7 @@ class UCMT7628Factory(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
             time.sleep(10)
+
         else:
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         
