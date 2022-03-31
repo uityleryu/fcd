@@ -17,10 +17,8 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot.mbn",
             "prism-ax-v6_emmc.bin",
-            "prism-ax-v6_nor.bin",
-            "rax.ipq5018.v0.2.0.d2564cc0.210916.1517-mp03.5-c2.bin"
+            "prism-ax-v6_nor.bin"
           ]
         },
         {

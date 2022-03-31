@@ -17,10 +17,8 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_01099.mbn",
             "nbe-ax-v2_emmc.bin",
-            "nbe-ax-v2_nor.bin",
-            "lbe.ipq5018.v0.4.0.0b413587.211118.2123-mp03.5-c2.bin"
+            "nbe-ax-v2_nor.bin"
           ]
         },
         {
