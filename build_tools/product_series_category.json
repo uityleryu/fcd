@@ -38,6 +38,9 @@
   "UniFiAP_UACCMPOE-SERIES" : [
     "01068_dcb4", "01068_dcb5"
   ],
+  "UISP_Console-SERIES" : [
+    "00973_ee6a", "01129_ee6a"
+  ],
   "AIRMAX_AX-SERIES" : [
     "01073_a659", "00991_a660", "01079_a661", "01099_a662", "01111_a663"
   ]
