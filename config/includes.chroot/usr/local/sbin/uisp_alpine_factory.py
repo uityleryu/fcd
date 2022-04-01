@@ -26,8 +26,8 @@ class UISPALPINEFactoryGeneral(ScriptBase):
         self.bomrev = "113-" + self.bom_rev
         self.username = "ubnt"
         self.password = "ubnt"
-        self.diag_prompt = "RTK.0>"
-        self.linux_prompt = "#"
+        self.diag_prompt = "UBNT_Diag>"
+        self.linux_prompt = "/ #"
 
         # Base path
         self.tftpdir = self.tftpdir + "/"
@@ -129,10 +129,10 @@ class UISPALPINEFactoryGeneral(ScriptBase):
 
         self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x18000004 {}".format(image))
         self.pexp.expect_only(90, "Bytes transferred")
-        self.pexp.expect_action(11, self.bootloader_prompt, "bootm 0x18000004")
+        self.pexp.expect_action(11, self.bootloader_prompt, "bootm 0x18000004#uisprproxg@3")
 
     def init_diag_image(self):
-        self.pexp.expect_lnxcmd(120, self.diag_prompt, "exit", self.linux_prompt)
+        self.pexp.expect_lnxcmd(120, self.diag_prompt, "exec sh\r", self.linux_prompt)
 
         self.set_lnx_net(intf=self.netif[self.board_id])
         time.sleep(2)
@@ -160,7 +160,7 @@ class UISPALPINEFactoryGeneral(ScriptBase):
 
         self.pexp.expect_only(180, "Firmware version:")
 
-    def xxfwupdate(self):
+    def fwupdate_diag(self):
         sstr = [
             "tftp",
             "-g",
@@ -178,7 +178,9 @@ class UISPALPINEFactoryGeneral(ScriptBase):
             "sh",
             "/usr/bin/ubnt-upgrade",
             "-d",
-            self.dut_tmpdir + "/upgrade.bin"
+            self.dut_tmpdir + "/upgrade.bin",
+    	    ";reboot",
+	        "-f"
         ]
         sstr = ' '.join(sstr)
 
@@ -190,7 +192,6 @@ class UISPALPINEFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/board")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
@@ -246,19 +247,23 @@ class UISPALPINEFactoryGeneral(ScriptBase):
 
         msg(50, "Checking registration ...")
         self.check_devreg_data()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'reboot')
 
-        msg(55, "Upgrading FW by rescue ...")
-        self.fwupdate()
+        msg(55, "Upgrading FW by ubnt-upgrade ...")
+        self.fwupdate_diag()
+        self.reset_uboot_env()
 
         msg(75, "Login kernel ...")
-        self.login(timeout=120, press_enter=False)
+        self.pexp.expect_lnxcmd(120, self.diag_prompt, "exec sh\r", self.linux_prompt)
 
         msg(85, "Checking info ...")
         self.check_info()
 
-        msg(90, "Enable SSH connection ...")
+        msg(90, "Completed checking info ...")
+
+        '''
         self.ssh_enable()
+        For legacy process.
+        '''
 
         msg(100, "Completed FCD process ...")
         self.close_fcd()
