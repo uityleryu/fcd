@@ -71,6 +71,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "0007f100",
             'ef86': "0007f100",
             'ec60': "0007f100",
+            'ec61': "0007f100",
             'ec62': "0007f100",
             'efa0': "0007f100",
             'efb0': "0007f100",
@@ -89,7 +90,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7","efa0"
+            "efb7", "efa0"
         ]
 
         self.ospl = {

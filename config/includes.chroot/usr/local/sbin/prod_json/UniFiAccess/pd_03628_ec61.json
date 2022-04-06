@@ -1,8 +1,8 @@
 {
   "UniFiAccess": {
-    "UA-Display-Gate_AA": {
+    "UA-Display-GateAA": {
       "INDEX": 0,
-      "NAME": "UA-Display-Gate_AA",
+      "NAME": "UA-Display-GateAA",
       "BOARDID": "ec61",
       "BOMREV": "113-03628",
       "DESC": "Unifi Access Display Gate",
