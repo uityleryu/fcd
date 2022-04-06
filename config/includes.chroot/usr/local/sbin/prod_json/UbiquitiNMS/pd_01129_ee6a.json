@@ -38,15 +38,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ee6a-fw.bin",
-          "../unms-fw/uisp-console/UISPR.alpinev2.v1.13.0-rc.4.30cc82a.211103.1249.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.v2.0.0.6ea55b3.220404.1626.bin"
         ],
         [
           "tftp/images/ee6a-recovery",
-          "../unms-fw/uisp-console/UISPR.alpinev2.recovery.v1.13.0-rc.4.30cc82a.211103.1320.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.recovery.v2.0.0.6ea55b3.220404.1639.bin"
         ],
         [
           "tftp/images/ee6a_signed_boot.img",
-          "../unms-fw/uisp-console/ubnt_uispr_alpinev2_rev1_boot_v1.5.0.img"
+          "../unms-fw/uisp-console/ubnt_uispr_alpinev2_rev1_boot_v1.7.0.img"
         ]
       ]
     }
