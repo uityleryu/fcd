@@ -114,7 +114,7 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbellpro"
 
         elif self.product_name == "UVC-AI360":
-            if int(self.bom_rev.split('-')[1]) >= 6:
+            if int(self.bom_rev.split('-')[1]) > 6:
                 second_falsh_en = True
             else:
                 second_falsh_en = False
