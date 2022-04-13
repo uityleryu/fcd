@@ -45,7 +45,7 @@ class UNASALPINEFactory(ScriptBase):
         self.user = "root"
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
-        self.wait_LCM_upgrade_en = {'ea20', 'ea21'}
+        self.wait_LCM_upgrade_en = {'ea20', 'ea21', 'ea51'}
         # script specific vars
         self.devregparts = {
             '0000': "/dev/mtdblock9",
@@ -364,6 +364,24 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.ubpmt, "reset")
 
+    def set_network_in_kernel(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
+        time.sleep(2)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, ["64 bytes from"])
+
+    def lcm_fw_ver_check(self, tools_folder):
+        self.set_network_in_kernel()
+        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+                     src_file=os.path.join(self.fcd_toolsdir, tools_folder, "nvr-lcm-tools*"),
+                     dst_file=self.dut_tmpdir)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
+        try:
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
+        except Exception as e:
+            self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
+            raise e
+
     def run(self):
         """main procedure of factory
         """
@@ -443,7 +461,10 @@ class UNASALPINEFactory(ScriptBase):
         if WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(95, "Waiting LCM upgrading ...")
-                self.wait_lcm_upgrade()
+                if self.board_id == 'ea51':
+                    self.lcm_fw_ver_check(tools_folder='unas')
+                else:
+                    self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

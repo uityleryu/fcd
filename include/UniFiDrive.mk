@@ -2,7 +2,8 @@
 IMAGE-UNAS-Pro= \
     images/ea51* \
     unas/unas-pro* \
-    unas/uImage
+    unas/uImage \
+	unas/UNAS*
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -24,7 +25,8 @@ TOOLS-UNAS+= \
     unas/helper_UNVR-AL324 \
     unas/config_gu.sh \
     unas/enp0s1.network \
-    unas/enp0s2.network
+    unas/enp0s2.network \
+    unas/nvr-lcm-tools* 
 
 TOOLS-UNAS-Pro+=$(TOOLS-UNAS)
 TOOLS-UNAS-Pro+=$(TOOLS-CONFIG)
