@@ -170,22 +170,18 @@ class UISPALPINEFactoryGeneral(ScriptBase):
         ]
         sstr = ' '.join(sstr)
         self.pexp.expect_lnxcmd(180, self.linux_prompt, sstr, self.linux_prompt, valid_chk=True)
-
         msg(60, "Succeeding in downloading the upgrade tar file ...")
-
         log_debug("Starting to do fwupdate ... ")
         sstr = [
             "sh",
             "/usr/bin/ubnt-upgrade",
             "-d",
-            self.dut_tmpdir + "/upgrade.bin",
-    	    ";reboot",
-	        "-f"
+            self.dut_tmpdir + "/upgrade.bin"
         ]
         sstr = ' '.join(sstr)
-
+        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr)
         postexp = ["U-Boot"]
-        self.pexp.expect_lnxcmd(300, self.linux_prompt, sstr, postexp)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "reboot -f", postexp)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/version")
@@ -259,11 +255,6 @@ class UISPALPINEFactoryGeneral(ScriptBase):
         self.check_info()
 
         msg(90, "Completed checking info ...")
-
-        '''
-        self.ssh_enable()
-        For legacy process.
-        '''
 
         msg(100, "Completed FCD process ...")
         self.close_fcd()
