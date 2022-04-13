@@ -86,7 +86,7 @@ TOOLS-KEYPAD=$(TOOLS-UFP)
 TOOLS-UP-Chime=$(TOOLS-UFP)
 
 TOOLS-UP-MHS+=$(TOOLS-UFP)
-TOOLS-UP=MHS+= \
+TOOLS-UP-MHS+= \
     uvc/128k_ff.bin
 # Project target
 
