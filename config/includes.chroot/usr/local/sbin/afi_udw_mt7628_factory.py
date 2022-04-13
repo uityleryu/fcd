@@ -78,6 +78,11 @@ class UCMT7628Factory(ScriptBase):
 
         self.LCM_FW_CHECK_ENABLE    = False
         self.MCU_FW_CHECK_ENABLE    = False
+        self.OFF_POWER_UNIT_ENABLE  = {
+            'ed14': False,
+            'ea2e': True,
+            'ed15': False,
+        }
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -229,6 +234,12 @@ class UCMT7628Factory(ScriptBase):
     #     # log_debug('bbbbbb{}'.format(b))
     #     time.sleep(2)
     #     # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+    
+    def off_power_unit_power(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "i2ctransfer -y 4 w4@0xb 0x00 0x10 0x00 0x44", self.linux_prompt)
+        time.sleep(1)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "i2ctransfer -y 4 w4@0xb 0x00 0x10 0x00 0x44", self.linux_prompt)
+        time.sleep(1)
 
     def run(self):
         self.fcd.common.config_stty(self.dev)
@@ -289,6 +300,9 @@ class UCMT7628Factory(ScriptBase):
         if self.MCU_FW_CHECK_ENABLE is True:
             self.mcu_fw_check()
             msg(90, "Succeeding in checking the MCU FW information ...")
+
+        if self.OFF_POWER_UNIT_ENABLE[self.board_id] is True:
+            self.off_power_unit_power()
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
