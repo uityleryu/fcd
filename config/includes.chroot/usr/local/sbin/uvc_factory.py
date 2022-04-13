@@ -166,6 +166,12 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1
 
+        elif self.product_name == "UP-MHS":
+            self.board_name = "UniFi Protect Managed Health Scanner"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
         elif self.product_name == "UVC-AITHETA":
             self.board_name = "UVC AI THETA"
             self.ip = "192.168.1.20"
