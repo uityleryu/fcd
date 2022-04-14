@@ -67,6 +67,7 @@ class AMAR9342Factory(ScriptBase):
     def init_vars(self):
         # common variable
         self.ver_extract()
+        self.fcd_id = "0x000b"
         self.product_class = "radio"
         self.devregpart = "/dev/mtdblock5"
         self.helperexe = "helper_ARxxxx_11ac_20210329"
@@ -171,7 +172,7 @@ class AMAR9342Factory(ScriptBase):
         self.stop_uboot()
         self.set_mac()
         time.sleep(1)
-        self.set_ub_net()
+        self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
         self.is_network_alive_in_uboot()
 
     def update_firmware(self):
@@ -190,7 +191,7 @@ class AMAR9342Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "urescue -f -e", "Waiting for connection")
 
         fw_path = "{}/{}.bin".format(self.fwdir, self.board_id)
-        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.dutip)
+        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.zero_ip)
         log_debug("host cmd:" + cmd)
         self.fcd.common.xcmd(cmd)
         self.pexp.expect_only(60, "Firmware Version:")
@@ -668,7 +669,7 @@ class AMAR9342Factory(ScriptBase):
         self.stop_uboot()
         self.set_mac()
         time.sleep(1)
-        self.set_ub_net()
+        self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
         self.is_network_alive_in_uboot()
 
         if self.UPDATE_UBOOT_EN is True:
