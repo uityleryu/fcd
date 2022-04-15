@@ -114,8 +114,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.helperexe = "helper_uvcg4doorbellpro"
 
         elif self.product_name == "UVC-AI360":
-            # second_falsh_en = False
-            second_falsh_en = True
+            if int(self.bom_rev.split('-')[1]) > 6:
+                second_falsh_en = True
+            else:
+                second_falsh_en = False
             if second_falsh_en is True:
                 self.board_name = "UVC AI 360"
                 self.ip = "192.168.1.20"
@@ -160,6 +162,12 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UA-Thermal-Scan":
             self.board_name = "UniFi Thermal Scan"
+            self.ip = "192.168.1.20"
+            self.mtd_name = 'amba_nor'
+            self.helper_rule = 1
+
+        elif self.product_name == "UP-MHS":
+            self.board_name = "UniFi Protect Managed Health Scanner"
             self.ip = "192.168.1.20"
             self.mtd_name = 'amba_nor'
             self.helper_rule = 1

@@ -34,7 +34,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "dslrbullet.UVC.gen4v.v4.51.10.67-fcddbg.5b9c434.220331.0350.bin"
+            "dslrbullet.UVC.gen4v.v4.51.19.67-fcddbg.f22b0c0.220407.1012.bin"
           ]
         }
       ],

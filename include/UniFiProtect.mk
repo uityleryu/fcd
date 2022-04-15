@@ -11,6 +11,10 @@ TOOLS-TAG-COMBO=
 
 TOOLS-CARD-COMBO=
 
+IMAGE-UP-MHS= \
+    images/ec70* \
+    up-fw/mhs.*
+
 IMAGE-GARAGE=
 
 IMAGE-RADAR= \
@@ -23,6 +27,7 @@ IMAGE-UP-Chime= \
     images/ab12* \
     up-fw/up-chime/*
 
+IMAGE-UFP+=$(IMAGE-UP-MHS)
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
 IMAGE-UFP+=$(IMAGE-TAG-COMBO)
@@ -80,6 +85,9 @@ TOOLS-KEYPAD=$(TOOLS-UFP)
 
 TOOLS-UP-Chime=$(TOOLS-UFP)
 
+TOOLS-UP-MHS+=$(TOOLS-UFP)
+TOOLS-UP-MHS+= \
+    uvc/128k_ff.bin
 # Project target
 
 $(eval $(call ProductImage,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
@@ -91,7 +99,7 @@ $(eval $(call ProductImage,up-garage,FCD_$(PRD)_UP-GARAGE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UP-Chime,FCD_$(PRD)_UP-Chime_$(VER)_$(FWVER)))
-
+$(eval $(call ProductImage,UP-MHS,FCD_$(PRD)_UP-MHS_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,SENSE,FCD_$(PRD)_SENSE_$(VER)_$(FWVER)))
@@ -103,7 +111,7 @@ $(eval $(call ProductCompress,up-garage,FCD_$(PRD)_up-garage_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UP-Chime,FCD_$(PRD)_UP-Chime_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UP-MHS,FCD_$(PRD)_UP-MHS_$(VER)_$(FWVER)))
 # ==================================================================================================
 IMAGE-a920=
 

@@ -2068,6 +2068,18 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000d",
       "SW_ID"       : "1604"
+    },
+    "UP-MHS": {
+      "INDEX": 8,
+      "NAME": "UP-MHS",
+      "BOARDID": "ec70",
+      "BOMREV": "113-03274",
+      "DESC": "UniFi Protect Managed Health Scanner",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
     }
   },
 
