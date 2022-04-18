@@ -16,10 +16,10 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "AF60.v0.22.0.b22eb57f.211223.1111.bin",
-            "AF60_CR1_V031_FULL_NOR_IMAGE.bin",
-            "af60-xg_ls1046_2g_nand_v10.bin",
-            "af60-xg_ls1046_2g_nor_v10.bin",
+            "AF60.v0.23.0.7d52433e.220303.1416.bin",
+            "AF60_HD_V032_FULL_NOR_IMAGE.bin",
+            "af60-xg_ls1046_2g_nand_v11.bin",
+            "af60-xg_ls1046_2g_nor_v11.bin",
             "NAND_factory_ubi.img"
           ]
         },
@@ -37,19 +37,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/dd13.bin",
-          "../af-fw/AF60.v0.22.0.b22eb57f.211223.1111.bin"
+          "../af-fw/AF60.v0.23.0.7d52433e.220303.1416.bin"
         ],
         [
           "tftp/images/dd13-boot.bin",
-          "../af-fw/AF60_CR1_V031_FULL_NOR_IMAGE.bin"
+          "../af-fw/AF60_HD_V032_FULL_NOR_IMAGE.bin"
         ],
         [
           "tftp/images/dd13-mfg-nand.bin",
-          "../af-fw/af60-xg_ls1046_2g_nand_v10.bin"
+          "../af-fw/af60-xg_ls1046_2g_nand_v11.bin"
         ],
         [
           "tftp/images/dd13-mfg-nor.bin",
-          "../af-fw/af60-xg_ls1046_2g_nor_v10.bin"
+          "../af-fw/af60-xg_ls1046_2g_nor_v11.bin"
         ],
         [
           "tftp/images/dd13-nand.bin",
