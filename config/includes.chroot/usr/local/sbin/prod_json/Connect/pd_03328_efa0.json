@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "EV-CHARGER",
       "BOARDID": "efa0",
-      "BOMREV": "113-03291",
+      "BOMREV": "113-03328",
       "DESC": "UniFi EV Charger",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
