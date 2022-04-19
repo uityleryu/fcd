@@ -135,7 +135,7 @@ class AMAR9342MFG(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, "reset")
         self.stop_uboot()
-        self.set_ub_net()
+        self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
         self.is_network_alive_in_uboot()
 
     def update_image(self):
@@ -149,7 +149,7 @@ class AMAR9342MFG(ScriptBase):
             self.pexp.expect_only(30, "Starting TFTP server...")
             time.sleep(1)
             fw_path = os.path.join(self.fwdir, self.fwimg_mfg)
-            cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.dutip)
+            cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.zero_ip)
             log_debug("host cmd:" + cmd)
             self.fcd.common.xcmd(cmd)
             self.pexp.expect_only(60, "Firmware Version:")
