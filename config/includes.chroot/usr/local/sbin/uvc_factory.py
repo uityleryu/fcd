@@ -115,10 +115,6 @@ class UVCFactoryGeneral(ScriptBase):
 
         elif self.product_name == "UVC-AI360":
             if int(self.bom_rev.split('-')[1]) > 6:
-                second_falsh_en = True
-            else:
-                second_falsh_en = False
-            if second_falsh_en is True:
                 self.board_name = "UVC AI 360"
                 self.ip = "192.168.1.20"
                 self.mtd_name = 'amba_nor'
