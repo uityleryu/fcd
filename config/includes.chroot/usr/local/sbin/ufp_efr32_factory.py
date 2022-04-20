@@ -52,6 +52,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': True,
             'ee76': True,
             'a922': True,
+            'ec51': True,
         }
 
         self.qrcode_dict = {
@@ -63,6 +64,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': True,
             'ee76': True,
             'a922': True,
+            'ec51': False,
         }
 
         self.sku_dict = {
@@ -74,6 +76,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': True,
             'ee76': False,
             'a922': True,
+            'ec51': False,
         }
 
         self.homekit_dict = {
@@ -85,6 +88,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': False,
             'ee76': False,
             'a922': False,
+            'ec51': False,
         }
 
         # number of Ethernet
@@ -97,6 +101,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': "0",
             'ee76': "0",
             'a922': "0",
+            'ec51': "0",
         }
 
         # number of WiFi
@@ -109,6 +114,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': "0",
             'ee76': "0",
             'a922': "1",
+            'ec51': "0",
         }
 
         # number of Bluetooth
@@ -121,6 +127,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': "1",
             'ee76': "1",
             'a922': "1",
+            'ec51': "1",
         }
 
     def prepare_server_need_files(self):
@@ -171,7 +178,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            res = re.search(r"CPUID:([0-9]{8})\n", cpuid_rtv, re.S)
+            res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
