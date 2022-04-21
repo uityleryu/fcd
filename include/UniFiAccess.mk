@@ -41,7 +41,9 @@ TOOLS-CONFIG= \
 TOOLS-UA-HOTEL=\
     ua_hotel/hash32-arm-rpi
 
-
+TOOLS-UA-Fob=$(TOOLS-UA)
+TOOLS-UA-Fob+= \
+    ufp/nxp-nfc-nci
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
