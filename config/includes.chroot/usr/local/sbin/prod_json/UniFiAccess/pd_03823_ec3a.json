@@ -1,0 +1,18 @@
+{
+  "UniFiAccess": {
+    "UA-Fob": {
+      "INDEX": 0,
+      "NAME": "UniFi Access Fob",
+      "BOARDID": "ec3a",
+      "BOMREV": "113-03823",
+      "DESC": "UniFi Access Fob",
+      "FILE": "ufp_tag_combo_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}

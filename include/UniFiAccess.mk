@@ -57,6 +57,7 @@ $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
@@ -65,7 +66,7 @@ $(eval $(call ProductCompress,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)
 $(eval $(call ProductCompress,UA-ReaderLite,FCD_$(PRD)_UA-READERLITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-Display-Gate,FCD_$(PRD)_UA-DISPLAY-GATE$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-SENSE-GATE,FCD_$(PRD)_UA-SENSE-GATE$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
@@ -79,4 +80,5 @@ $(eval $(call ProductCompress2,03675_ec40))
 $(eval $(call ProductCompress2,03587_ec61))
 $(eval $(call ProductCompress2,03628_ec61))
 $(eval $(call ProductCompress2,03624_ec51))
+$(eval $(call ProductCompress2,03823_ec3a))
 $(eval $(call ProductCompress2,UA_DISPLAY-SERIES))

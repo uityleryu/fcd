@@ -85,6 +85,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a918': True,
             'a913': True,
             'a914': True,
+            'ec3a': True,
         }
 
         # number of Ethernet
@@ -93,7 +94,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a912': "0",
             'a918': "0",
             'a913': "0",
-            'a914': "0"
+            'a914': "0",
+            'ec3a': "0",
         }
 
         # number of WiFi
@@ -102,7 +104,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a912': "0",
             'a918': "0",
             'a913': "0",
-            'a914': "0"
+            'a914': "0",
+            'ec3a': "0",
         }
 
         # number of Bluetooth
@@ -112,6 +115,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a918': "1",
             'a913': "1",
             'a914': "1",
+            'ec3a': "1",
         }
 
     def prepare_server_need_files(self):
