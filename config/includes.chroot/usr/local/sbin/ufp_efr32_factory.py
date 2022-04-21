@@ -408,7 +408,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         if self.board_id in ["a912", "a918", "a919", "ee76", "a922"]:
             self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a911", "a941", "a915", "a920"]:
+        elif self.board_id in ["a911", "a941", "a915", "a920", "ec51"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
 
