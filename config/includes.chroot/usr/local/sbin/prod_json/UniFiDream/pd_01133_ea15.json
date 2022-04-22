@@ -19,6 +19,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -33,24 +34,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
           "DST_PATH": "udm-fw/udmp",
           "FILES": [
-            "UDMPRO.alpinev2.v1.11.4.e66d85f.220218.1429.bin",
-            "uImage.v1.11.4.r",
-            "boot.v1.11.4.img"
+            "UDM.alpinev2.v1.12.19.a153f32.220421.1630.bin",
+            "uImage.v1.12.19.r",
+            "boot.v1.12.19.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/udmp/UDMPRO.alpinev2.v1.11.4.e66d85f.220218.1429.bin"
+          "../udm-fw/udmp/UDM.alpinev2.v1.12.19.a153f32.220421.1630.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/udmp/uImage.v1.11.4.r"
+          "../udm-fw/udmp/uImage.v1.12.19.r"
         ],
         [
           "tftp/images/ea15_signed_boot.img",
-          "../udm-fw/udmp/boot.v1.11.4.img"
+          "../udm-fw/udmp/boot.v1.12.19.img"
         ]
       ]
     }
