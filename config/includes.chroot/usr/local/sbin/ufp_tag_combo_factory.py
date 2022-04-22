@@ -214,7 +214,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if QRCODE_ENABLE:
             cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
         else:
-            if self.board_id in ['a913', 'a914']:
+            if self.board_id in ['a913', 'a914', 'ec3a']:
                 cmd.append("-i field=qr_code,format=hex,value=" + self.qrhex)
 
 
@@ -346,7 +346,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.username = "ubnt"
         self.password = "ubnt"
         self.polling_mins = 5
-        self.client_name = 'client_x86_release_20200414'
+        if self.board_id == 'ec3a':
+            self.client_name = 'client_rpi4_release'
+        else:
+            self.client_name = 'client_x86_release_20200414'
         self.host_toolsdir_dedicated = os.path.join(self.fcd_toolsdir, "ufp")
         
         self.helperexe = 'nxp-nfc-nci'
@@ -529,7 +532,6 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         log_info(cmdj)
         try:
             clit = ExpttyProcess(self.row_id, cmdj, "\n")
-            clit.expect_only(30, "Ubiquiti Device Security Client")
             clit.expect_only(30, "Hostname")
             clit.expect_only(30, "field=result,format=u_int,value=1")
         except Exception as e:
@@ -675,11 +677,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         serial_obj = SerialExpect(port=serialcomport, baudrate=self.baudrate)
         self.set_serial_helper(serial_obj=serial_obj)
         time.sleep(1)
-
-        msg(5, "Open serial port successfully ...")
-        self.ser.execmd("")
-        self.check_connect()
-        msg(10, "Connect with DUT success")
+        if self.board_id != 'ec3a':
+            msg(5, "Open serial port successfully ...")
+            self.ser.execmd("")
+            self.check_connect()
+            msg(10, "Connect with DUT success")
 
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
@@ -688,16 +690,19 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             msg(30, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
-            self.registration()
-            msg(40, "Finish doing registration ...")
-            self.put_devreg_data_in_dut()
-            msg(50, "Finish doing signed file and EEPROM checking ...")
+            if self.board_id != 'ec3a':
+                self.registration()
+                msg(40, "Finish doing registration ...")
+                self.put_devreg_data_in_dut()
+                msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if CHECK_MAC_ENABLE is True:
-            self.check_mac()
-            msg(60, "Finish checking MAC in DUT ...")
+            if self.board_id != 'ec3a':
+                self.check_mac()
+                msg(60, "Finish checking MAC in DUT ...")
 
         self.NFC_run()
+        msg(70, "Finish write devreg file in NFC ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
