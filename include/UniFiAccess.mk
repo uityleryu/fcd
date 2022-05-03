@@ -17,7 +17,8 @@ IMAGE-UA-ELEVATOR= \
     images/ec3b* \
     ua-fw/ua-elevator* \
     ua-fw/ua-gate-nor-v2.bin \
-    ua-fw/EL.mt7621*
+    ua-fw/EL.mt7621* \
+    ua-fw/e9a5-openwrt-4.0.12-88* 
 
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
 

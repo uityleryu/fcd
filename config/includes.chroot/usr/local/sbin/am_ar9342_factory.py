@@ -157,9 +157,21 @@ class AMAR9342Factory(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "go ${ubntaddr} usetprotect spm off")
 
         cmd = "tftp 81000000 {}".format(self.uboot_img)
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(5, self.uboot_img)
-        self.pexp.expect_only(5, "Bytes transferred =")
+
+        retry = 3
+        for i in range(0, retry):
+            time.sleep(3)
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd)
+            try:
+                self.pexp.expect_only(5, self.uboot_img)
+                self.pexp.expect_only(5, "Bytes transferred =")
+            except Exception as e:
+                print("uboot transfer fail..." + str(i))
+                continue
+            break
+        else:
+            print("uboot transfer retry fail")
+            raise NameError('uboot transfer retry fail')
 
         if self.board_id in self.is_wasp:
             cmd = "erase 9f000000 +0x50000; cp.b 0x81000000 0x9f000000 0x40000"
@@ -169,19 +181,53 @@ class AMAR9342Factory(ScriptBase):
         self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd)
         time.sleep(2)
         self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
-        self.stop_uboot()
-        self.set_mac()
-        time.sleep(1)
-        self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
-        self.is_network_alive_in_uboot()
+
+        retry = 3
+        for i in range(0, retry):
+            self.stop_uboot()
+            self.set_mac()
+            time.sleep(5)
+            self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+            try:
+                self.is_network_alive_in_uboot(timeout=5, retry=3, arp_logging_en=True)
+            except Exception as e:
+                self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+                print("uboot ping fcd host fail..." + str(i))
+                continue
+            break
+        else:
+            print("uboot 2nd init network fail")
+            raise NameError('DUT network setup retry fail')
 
     def update_firmware(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv NORESET 1")
         log_debug("Uploading configuration...")
         cmd = "tftp 0x83000000 {}".format(self.cfg_part)
-        self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(20, os.path.basename(self.cfg_part))
-        self.pexp.expect_only(20, "Bytes transferred")
+
+        retry = 3
+        for j in range(0, retry):
+            for i in range(0, retry):
+                time.sleep(3)
+                self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+                try:
+                    self.pexp.expect_only(20, os.path.basename(self.cfg_part))
+                    self.pexp.expect_only(20, "Bytes transferred")
+                except Exception as e:
+                    print("tftp cfg_part fail..." + str(i))
+                    continue
+                break
+            else:
+                print("tftp cfg_part fail, try reset")
+                self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+                self.stop_uboot()
+                self.set_mac()
+                time.sleep(5)
+                self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+                continue
+            break
+        else:
+            print("tftp cfg_part + reset fail")
+            raise NameError('tftp cfg_part + reset retry fail')
 
         cmd = "go ${ubntaddr} uclearcfg 0x83000000 0x40000"
         self.pexp.expect_ubcmd(5, self.bootloader_prompt, cmd, "Writing EEPROM")
@@ -193,8 +239,21 @@ class AMAR9342Factory(ScriptBase):
         fw_path = "{}/{}.bin".format(self.fwdir, self.board_id)
         cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.zero_ip)
         log_debug("host cmd:" + cmd)
-        self.fcd.common.xcmd(cmd)
-        self.pexp.expect_only(60, "Firmware Version:")
+
+        retry = 3
+        for i in range(0, retry):
+            time.sleep(3)
+            self.fcd.common.xcmd(cmd)
+            try:
+                self.pexp.expect_only(60, "Firmware Version:")
+            except Exception as e:
+                print("atftp put image fail..." + str(i))
+                continue
+            break
+        else:
+            print("atftp put image fail")
+            raise NameError('atftp put image fail')
+        
         msg(30, "Firmware loaded")
         self.pexp.expect_only(60, "Copying partition 'u-boot' to flash memory:")
         msg(35, "Flashing u-boot ...")
@@ -666,11 +725,22 @@ class AMAR9342Factory(ScriptBase):
 
         self.fix_idrsa_permission()
 
-        self.stop_uboot()
-        self.set_mac()
-        time.sleep(1)
-        self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
-        self.is_network_alive_in_uboot()
+        retry = 3
+        for i in range(0, retry):
+            self.stop_uboot()
+            self.set_mac()
+            time.sleep(5)
+            self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+            try:
+                self.is_network_alive_in_uboot(timeout=5, retry=3, arp_logging_en=True)
+            except Exception as e:
+                self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+                print("uboot ping fcd host fail..." + str(i))
+                continue
+            break
+        else:
+            print("uboot 1st init network fail")
+            raise NameError('DUT network setup retry fail')
 
         if self.UPDATE_UBOOT_EN is True:
             msg(10, "Update U-boot ...")
