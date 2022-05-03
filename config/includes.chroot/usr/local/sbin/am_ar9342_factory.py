@@ -187,7 +187,7 @@ class AMAR9342Factory(ScriptBase):
             self.stop_uboot()
             self.set_mac()
             time.sleep(5)
-            self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+            self.set_ub_net()
             try:
                 self.is_network_alive_in_uboot(timeout=5, retry=3, arp_logging_en=True)
             except Exception as e:
@@ -222,7 +222,7 @@ class AMAR9342Factory(ScriptBase):
                 self.stop_uboot()
                 self.set_mac()
                 time.sleep(5)
-                self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+                self.set_ub_net()
                 continue
             break
         else:
@@ -237,7 +237,7 @@ class AMAR9342Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "urescue -f -e", "Waiting for connection")
 
         fw_path = "{}/{}.bin".format(self.fwdir, self.board_id)
-        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.zero_ip)
+        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.dutip)
         log_debug("host cmd:" + cmd)
 
         retry = 3
@@ -730,7 +730,7 @@ class AMAR9342Factory(ScriptBase):
             self.stop_uboot()
             self.set_mac()
             time.sleep(5)
-            self.set_ub_net(dutaddr=self.zero_ip, srvaddr="169.254.1.19")
+            self.set_ub_net()
             try:
                 self.is_network_alive_in_uboot(timeout=5, retry=3, arp_logging_en=True)
             except Exception as e:
