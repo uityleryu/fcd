@@ -363,7 +363,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         elif self.board_id == 'a914':
             self.board_id = 'a917'
 
-        self.mac = self.mac_addr_increase(self.mac, 1)
+        if self.board_id == 'ec3a':
+            self.mac = self.mac_addr_increase(self.mac, 0)
+        else:
+            self.mac = self.mac_addr_increase(self.mac, 1)
 
         #for debug if have no non-devreg board on hand
         '''
