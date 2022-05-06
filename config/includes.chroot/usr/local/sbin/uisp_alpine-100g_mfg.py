@@ -39,6 +39,30 @@ class UISPALPINEMFG(ScriptBase):
         self.helper_path = self.board_id
         self.bootloader_prompt = "UBNT_UISP_ALL>"
 
+        # number of Ethernet
+        ethnum = {
+            'eed4': "130",
+            'eed5': "65",
+        }
+
+        # number of WiFi
+        wifinum = {
+            'eed4': "0",
+            'eed5': "0",
+        }
+
+        # number of Bluetooth
+        btnum = {
+            'eed4': "1",
+            'eed5': "1",
+        }
+
+        self.devnetmeta = {
+            'ethnum'          : ethnum,
+            'wifinum'         : wifinum,
+            'btnum'           : btnum,
+        }
+
     def run(self):
         """
         Main procedure of factory
@@ -68,10 +92,10 @@ class UISPALPINEMFG(ScriptBase):
         ]
         self.pexp.expect_ubcmd(480, self.bootloader_prompt, cmd, post_exp=post_exp_list)
 
-        cmd = "run delenv"
+        cmd = "delenv"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-        cmd = "saveenv"
+        cmd = "savenv"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         msg(100, "Completing firmware upgrading ...")
