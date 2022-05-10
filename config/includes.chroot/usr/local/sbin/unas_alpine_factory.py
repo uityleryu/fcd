@@ -34,6 +34,8 @@ class Retry():
             log_debug('Retry {}, {} time(s)'.format(_function.__name__, i + 1))
         log_error('Exceed max retry count {}'.format(max_retry_count))
         error_critical('Failed at {}'.format(_function.__name__))
+
+
 class UNASALPINEFactory(ScriptBase):
     def __init__(self):
         super(UNASALPINEFactory, self).__init__()
@@ -131,6 +133,7 @@ class UNASALPINEFactory(ScriptBase):
                 log_debug("Copying spi flash to tftp server successfully")
         else:
             log_debug("spi.image is already existed under /tftpboot")
+
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
@@ -148,14 +151,8 @@ class UNASALPINEFactory(ScriptBase):
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         nand_path_for_dut = os.path.join(self.tftpdir, "fw-image.bin")
-        sstr = [
-            "cp",
-            "-p",
-            fcd_fwpath,
-            nand_path_for_dut
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        cmd = "cp -p {} {}".format(fcd_fwpath, nand_path_for_dut)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(1)
         if int(rtc) > 0:
             error_critical("Copying nand flash to tftp server failed")
@@ -372,7 +369,7 @@ class UNASALPINEFactory(ScriptBase):
     def lcm_fw_ver_check(self, tools_folder):
         self.set_network_in_kernel()
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.fcd_toolsdir, tools_folder, "nvr-lcm-tools*"),
+                     src_file=os.path.join(self.tftpdir, tools_folder, "nvr-lcm-tools*"),
                      dst_file=self.dut_tmpdir)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
         try:

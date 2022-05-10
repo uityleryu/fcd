@@ -1,0 +1,54 @@
+{
+  "UniFiDrive": {
+    "UNAS-Pro": {
+      "INDEX": 0,
+      "NAME": "UNAS-Pro",
+      "BOARDID": "ea51",
+      "BOMREV": "113-03751",
+      "DESC": "UniFi NAS PRO",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "2101",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/ea51/",
+          "DST_PATH": "unas",
+          "FILES": [
+            "UNASPRO.al324.v0.4.23.b409065.220505.1720.bin",
+            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb",
+            "uImage"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/unas",
+          "DST_PATH": "tools/unas",
+          "FILES": [
+            "al324-ee",
+            "config_gu.sh",
+            "enp0s1.network",
+            "enp0s2.network",
+            "helper_UNVR-AL324"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea51-fw.bin",
+          "../unas/UNASPRO.al324.v0.4.23.b409065.220505.1720.bin"
+        ]
+      ]
+    }
+  }
+}
