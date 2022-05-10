@@ -92,8 +92,15 @@ class UAPQCA956xFactory2(ScriptBase):
                      src_file=fw_path, dst_file=self.dut_tmpdir)
 
         self.pexp.expect_action(30, "", "md5sum /tmp/{}.bin".format(self.board_id))
-        self.pexp.expect_action(30, self.linux_prompt, "afiupgrade /tmp/{}.bin".format(self.board_id))
-        self.pexp.expect_only(540, 'Starting kernel')
+        # self.pexp.expect_action(30, self.linux_prompt, "afiupgrade /tmp/{}.bin".format(self.board_id))
+        self.pexp.expect_action(240, self.linux_prompt, "uh-fw-tool -f /tmp/{}.bin".format(self.board_id))
+        self.pexp.expect_only(30, 'Message Digest successfully verfied')
+        self.pexp.expect_only(180, 'fw_inactive')
+        self.pexp.expect_only(180, 'ltefw')
+        self.pexp.expect_only(180, 'recovery')
+        self.pexp.expect_only(180, 'Updating boot select partitions')
+        self.pexp.expect_action(180, self.linux_prompt, "reboot")
+        # self.pexp.expect_only(540, 'Starting kernel')
 
     def _fwupdate(self):
         # TFTP bin from TestServer
@@ -150,7 +157,9 @@ class UAPQCA956xFactory2(ScriptBase):
 
     def login_kernel(self):
         log_debug(msg="Login kernel")
-        self.pexp.expect_action(120, "Please press Enter to activate this console", "")
+        # self.pexp.expect_action(120, "Please press Enter to activate this console", "")
+        time.sleep(60)
+        self.pexp.expect_action(30, "", "\n")
 
         time.sleep(15)  # for stable system
 
@@ -272,7 +281,7 @@ class UAPQCA956xFactory2(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)

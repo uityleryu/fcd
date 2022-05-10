@@ -1,11 +1,23 @@
 {
   "UniFiDream":
   {
-    "UDM":{
+    "UDM-00623":{
       "INDEX"       : 0,
-      "NAME"        : "UDM",
+      "NAME"        : "UDM-00623",
       "BOARDID"     : "ea11",
       "BOMREV"      : "113-00623",
+      "DESC"        : "UniFi Dream Machine",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+    "UDM-01134":{
+      "INDEX"       : 0,
+      "NAME"        : "UDM-01134",
+      "BOARDID"     : "ea11",
+      "BOMREV"      : "113-01134",
       "DESC"        : "UniFi Dream Machine",
       "FILE"        : "ubios_alpine_factory.py",
       "T1FILE"      : "",

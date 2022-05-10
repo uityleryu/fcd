@@ -278,8 +278,11 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         self.pexp.expect_only(5, "board.uuid=........-....-5...-....-............")
         self.pexp.expect_only(5, "board.bom=".format(self.bom_rev))
 
+        cmd = "touch /boot/reset2defaults; sync; sync"
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
+
         cmd = "ubnt-tools qrid"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "{}".format(self.qrcode))
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, "{}".format(self.qrcode))
 
         cmd = "busybox tftp -b 4096 -g -r {}/{}/ck-ee -l /tmp/ck-ee {}".format(self.tools, self.helper_path, self.tftp_server)
         self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)

@@ -13,31 +13,31 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
-          "DST_PATH": "u6-fw/mt7621",
-          "FILES": [
-            "BZ.mt7621_5.60.13+13007.210823.0807-uboot.bin",
-            "uap6-fcd.bin",
-            "u6-mt7603-mt7915a-2x2-nor-v8.bin",
-            "uap6-uboot.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee",
-            "helper_UAP6_MT7621_release"
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7621",
+          "DST_PATH": "u6-fw/mt7621",
+          "FILES": [
+            "BZ.mt7621_6.0.15+13647.220312.1909-uboot.bin",
+            "uap6-fcd.bin",
+            "u6-mt7603-mt7915a-2x2-nor-v8.bin",
+            "uap6-uboot.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a612.bin",
-          "../u6-fw/mt7621/BZ.mt7621_5.60.13+13007.210823.0807-uboot.bin"
+          "../u6-fw/mt7621/BZ.mt7621_6.0.15+13647.220312.1909-uboot.bin"
         ],
         [
           "tftp/images/a612-fcd.bin",

@@ -3,8 +3,14 @@
 IMAGE-UDM-BASIC= \
     udm-fw/ubnt-upgrade-compat.tgz
 
-IMAGE-UDM+=$(IMAGE-UDM-BASIC)
-IMAGE-UDM+= \
+IMAGE-UDM-00623+=$(IMAGE-UDM-BASIC)
+IMAGE-UDM-00623+= \
+    images/ea11* \
+    udm-fw/ubnt_udm_all_rev1_boot.img \
+    udm-fw/udm/*
+
+IMAGE-UDM-01134+=$(IMAGE-UDM-BASIC)
+IMAGE-UDM-01134+= \
     images/ea11* \
     udm-fw/ubnt_udm_all_rev1_boot.img \
     udm-fw/udm/*
@@ -89,8 +95,10 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
-TOOLS-UDM+=$(TOOLS-CONFIG)
-TOOLS-UDM+= udm/*
+TOOLS-UDM-00623+=$(TOOLS-CONFIG)
+TOOLS-UDM-00623+= udm/*
+TOOLS-UDM-01134+=$(TOOLS-CONFIG)
+TOOLS-UDM-01134+= udm/*
 
 TOOLS-UDMSE=$(TOOLS-UDM)
 TOOLS-UDMPRO-00723=$(TOOLS-UDM)
@@ -129,7 +137,8 @@ TOOLS-UDW-PRO-PU+= \
     pdu_pro/helper_MT7628_release
 
 # Project target
-$(eval $(call ProductImage,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDM-00623,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UDM-01134,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
 $(eval $(call ProductImage,UDMPRO-00723,FCD_$(PRD)_UDMPRO-00723_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDMPRO-01133,FCD_$(PRD)_UDMPRO-01133_$(VER)_$(FWVER)))
@@ -144,7 +153,8 @@ $(eval $(call ProductImage,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
-$(eval $(call ProductCompress,UDM,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDM-00623,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDM-01134,FCD_$(PRD)_UDM_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDMSE,FCD_$(PRD)_UDMSE_$(VER)))
 $(eval $(call ProductCompress,UDMPRO,FCD_$(PRD)_UDMPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UXGPRO,FCD_$(PRD)_UXGPRO_$(VER)_$(FWVER)))
@@ -163,6 +173,7 @@ $(eval $(call ProductCompress2,00917_ea2c))
 $(eval $(call ProductCompress2,01097_ea2c))
 $(eval $(call ProductCompress2,01029_ea2e))
 $(eval $(call ProductCompress2,00623_ea11))
+$(eval $(call ProductCompress2,01134_ea11))
 $(eval $(call ProductCompress2,00740_ea19))
 $(eval $(call ProductCompress2,02719_ea17))
 $(eval $(call ProductCompress2,00618_ea13))
