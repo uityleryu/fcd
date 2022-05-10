@@ -54,6 +54,10 @@ IMAGE-UVC-G4FLOODLIGHTBATTERY= \
     images/a596* \
     uvc-fw/g4flb.*
 
+IMAGE-UVC-G4DOORBELLBATTERY= \
+    images/a597* \
+    uvc-fw/g4dbb.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -67,6 +71,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G3MINI)
 IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 IMAGE-UVC+=$(IMAGE-UVC-G3FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBATTERY)
+IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLBATTERY)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -158,6 +163,10 @@ TOOLS-UVC-G4FLOODLIGHTBATTERY+=$(TOOLS-UVC)
 TOOLS-UVC-G4FLOODLIGHTBATTERY+= \
     uvc/128k_ff.bin
 
+TOOLS-UVC-G4DOORBELLBATTERY+=$(TOOLS-UVC)
+TOOLS-UVC-G4DOORBELLBATTERY+= \
+    uvc/128k_ff.bin
+
 TOOLS-UVC-G3FLEX+=$(TOOLS-UVC)
 TOOLS-UVC-G3FLEX+= \
     uvc/128k_ff.bin
@@ -178,6 +187,7 @@ $(eval $(call ProductImage,UVC-G3MINI,FCD_$(PRD)_G3MINI_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4INS,FCD_$(PRD)_G4INS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G4DOORBELLBATTERY,FCD_$(PRD)_G4DOORBELLBATTERY_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
@@ -195,6 +205,7 @@ $(eval $(call ProductCompress,UVC-AITHETA,FCD_$(PRD)_AITHETA_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-DSLRBULLET,FCD_$(PRD)_DSLRBULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G4DOORBELLBATTERY,FCD_$(PRD)_G4DOORBELLBATTERY_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,03268_a5a0))
@@ -211,3 +222,4 @@ $(eval $(call ProductCompress2,03422_a5a3))
 $(eval $(call ProductCompress2,03377_a5b0))
 $(eval $(call ProductCompress2,02591_a534))
 $(eval $(call ProductCompress2,03455_a596))
+$(eval $(call ProductCompress2,03465_a597))
