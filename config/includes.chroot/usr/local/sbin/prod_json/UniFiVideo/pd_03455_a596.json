@@ -1,8 +1,8 @@
 {
   "UniFiVideo": {
-    "UVC-G4FLOODLIGHTBETTARY": {
+    "UVC-G4FLOODLIGHTBATTERY": {
       "INDEX": 0,
-      "NAME": "UVC-G4FLOODLIGHTBETTARY",
+      "NAME": "UVC-G4FLOODLIGHTBATTERY",
       "BOARDID": "a596",
       "BOMREV": "113-03455",
       "DESC": "UVC G4 FloodLight Battery",
