@@ -2376,11 +2376,26 @@
     },
     
     "UVC-G4FLOODLIGHTBETTARY": {
-      "INDEX": 0,
+      "INDEX": 12,
       "NAME": "UVC-G4FLOODLIGHTBETTARY",
       "BOARDID": "a596",
       "BOMREV": "113-03455",
       "DESC": "UVC G4 FloodLight Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+
+    "UVC-G4DOORBELLBATTERY": {
+      "INDEX": 13,
+      "NAME": "UVC-G4DOORBELLBATTERY",
+      "BOARDID": "a597",
+      "BOMREV": "113-03465",
+      "DESC": "UVC G4 Doorbell Battery",
       "FILE": "uvc_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
