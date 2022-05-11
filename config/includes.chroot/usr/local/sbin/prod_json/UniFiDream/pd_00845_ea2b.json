@@ -34,7 +34,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw-pro",
           "DST_PATH": "udm-fw/udw-pro",
           "FILES": [
-            "UDWPRO.al324.v2.5.0+root.7578.d84b301.220507.2040.bin",
+            "UDWPRO.al324.v2.5.1.dc52a2c.220510.1428.bin",
             "uImage",
             "boot.img"
           ]
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2b-fw.bin",
-          "../udm-fw/udw-pro/UDWPRO.al324.v2.5.0+root.7578.d84b301.220507.2040.bin"
+          "../udm-fw/udw-pro/UDWPRO.al324.v2.5.1.dc52a2c.220510.1428.bin"
         ],
         [
           "tftp/images/ea2b-recovery",
