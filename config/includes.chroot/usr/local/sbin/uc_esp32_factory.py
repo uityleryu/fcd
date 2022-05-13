@@ -239,7 +239,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             for key in devreg_data_dict:
                 ret_msg = re.findall(f"{key}: (\w+)", output)[0]
                 if key == "Board Revision":
-                    info[f"{key}"] = str(int(ret_msg,16)).zfill(2)
+                    info[f"{key}"] = ret_msg.zfill(2)
                 else:
                     info[f"{key}"] = ret_msg
 
