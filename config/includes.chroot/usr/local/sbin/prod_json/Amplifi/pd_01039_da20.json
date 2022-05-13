@@ -1,0 +1,67 @@
+{
+  "Amplifi": {
+    "AFi-100W-USB-C": {
+      "INDEX": 0,
+      "NAME": "AFi-100W-USB-C",
+      "BOARDID": "da20",
+      "BOMREV": "113-01039",
+      "DESC": "Amplifi 100W USB-C",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/afi-fw/afi-100w-usb-c",
+          "DST_PATH": "uc-fw/afi-fw/afi-100w-usb-c",
+          "FILES": [
+            "CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin",
+            "bootloader.bin",
+            "plug_factory.bin",
+            "CPP1.esp32mfg.1.0.6+366.220429.1738-unsigned.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec5a-app.bin",
+          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin"
+        ],
+        [
+          "tftp/images/ec5a-bootloader.bin",
+          "../uc-fw/uc-plug-xx/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec5a-factory.bin",
+          "../uc-fw/uc-plug-xx/plug_factory.bin"
+        ],
+        [
+          "tftp/images/ec5a-mfg.bin",
+          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.6+366.220429.1738-unsigned.bin"
+        ],
+        [
+          "tftp/images/ec5a-ota.bin",
+          "../uc-fw/uc-plug-xx/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec5a-ptn-table.bin",
+          "../uc-fw/uc-plug-xx/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}

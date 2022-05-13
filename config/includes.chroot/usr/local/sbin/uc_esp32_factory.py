@@ -42,6 +42,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                               [True, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
         self.ethnum = {
+            'da20': "0",
             'ec5a': "0",
             'ec5b': "0",
             'ec5c': "0",
@@ -50,6 +51,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         # number of WiFi
         self.wifinum = {
+            'da20': "1",
             'ec5a': "2",
             'ec5b': "2",
             'ec5c': "2",
@@ -58,6 +60,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
 
         # number of Bluetooth
         self.btnum = {
+            'da20': "1",
             'ec5a': "1",
             'ec5b': "1",
             'ec5c': "1",
@@ -126,21 +129,33 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_factory    = os.path.join(self.tftpdir, "images", "{}-factory{}.bin".format(self.board_id, encrypt_postfix))
         #fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs-key{}.bin".format(self.board_id, encrypt_postfix))
 
-        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
-            "{} {} {} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-                                                     "0x1000"  , fw_bootloader,
-                                                     "0xb000"  , fw_ptn_table ,
-                                                     "0xd000"  , fw_ota_data  ,
-                                                     "0x190000" , fw_app      ,
-                                                     "0x510000" , fw_mfg       ,
-                                                     "0x90000"  , fw_factory)
-            #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-            #                                          "0x1000"     , fw_bootloader,
-            #                                          "0xb000"  , fw_ptn_table ,
-            #                                          "0xd000"  , fw_ota_data  ,
-            #                                          "0x90000" , fw_app       ,
-            #                                          "0x3fc000", fw_nvs_key   )
+        if self.board_id == "da20":
+            cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
+                "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
+                "{} {} {} {} {} {} {} {}".format(self.row_id,
+                                                        "0x1000"  , fw_bootloader,
+                                                        "0xe000"  , fw_ptn_table ,
+                                                        "0x10000"  , fw_ota_data  ,
+                                                        # "0x190000" , fw_app      ,
+                                                        "0x190000" , fw_mfg       ,
+                                                        # "0x90000"  , fw_factory
+                                                        )
+        else:
+            cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
+                "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
+                "{} {} {} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+                                                        "0x1000"  , fw_bootloader,
+                                                        "0xb000"  , fw_ptn_table ,
+                                                        "0xd000"  , fw_ota_data  ,
+                                                        "0x190000" , fw_app      ,
+                                                        "0x510000" , fw_mfg       ,
+                                                        "0x90000"  , fw_factory)
+                #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+                #                                          "0x1000"     , fw_bootloader,
+                #                                          "0xb000"  , fw_ptn_table ,
+                #                                          "0xd000"  , fw_ota_data  ,
+                #                                          "0x90000" , fw_app       ,
+                #                                          "0x3fc000", fw_nvs_key   )
 
         log_debug(cmd)
 
@@ -148,23 +163,27 @@ class UFPESP32FactoryGeneral(ScriptBase):
         if int(rv) > 0:
             otmsg = "Flash FW into DUT failed"
             error_critical(otmsg)
-
+        # import pdb; pdb.set_trace()
         # The waiting time
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-        while True:
+        
+        if self.board_id == "da20":
             self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-            self.pexp.expect_only(180, self.esp32_prompt)
-            output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
-            boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
-            log_debug(output)
-            log_debug("Need to boot on factory image @0x510000, now boot @{}".format(boot_address))
-            if boot_address == "0x510000":
-                log_debug("Boot to mfg image @0x510000")
-                break
-            output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
-            log_debug(output)
-            output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
-            # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        else:
+            while True:
+                self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+                self.pexp.expect_only(180, self.esp32_prompt)
+                output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
+                boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
+                log_debug(output)
+                log_debug("Need to boot on factory image @0x510000, now boot @{}".format(boot_address))
+                if boot_address == "0x510000":
+                    log_debug("Boot to mfg image @0x510000")
+                    break
+                output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
+                log_debug(output)
+                output = self.pexp.expect_get_output("restart", self.esp32_prompt, timeout=10)
+                # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
     def fwupdate(self):
         self.check_device_stat()
