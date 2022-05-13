@@ -25,12 +25,12 @@
         },
         {
           "SRC_PATH": "images/fcd-image/afi-fw/afi-100w-usb-c",
-          "DST_PATH": "uc-fw/afi-fw/afi-100w-usb-c",
+          "DST_PATH": "afi-fw/afi-100w-usb-c",
           "FILES": [
-            "CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin",
+            "afi-iot-esp.bin",
             "bootloader.bin",
-            "plug_factory.bin",
-            "CPP1.esp32mfg.1.0.6+366.220429.1738-unsigned.bin",
+            "ota_data_initial.bin",
+            "afi-iot-esp.bin",
             "ota_data_initial.bin",
             "partition-table.bin"
           ]
@@ -38,28 +38,28 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec5a-app.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin"
+          "tftp/images/da20-app.bin",
+          "../afi-fw/afi-100w-usb-c/afi-iot-esp.bin"
         ],
         [
-          "tftp/images/ec5a-bootloader.bin",
-          "../uc-fw/uc-plug-xx/bootloader.bin"
+          "tftp/images/da20-bootloader.bin",
+          "../afi-fw/afi-100w-usb-c/bootloader.bin"
         ],
         [
-          "tftp/images/ec5a-factory.bin",
-          "../uc-fw/uc-plug-xx/plug_factory.bin"
+          "tftp/images/da20-factory.bin",
+          "../afi-fw/afi-100w-usb-c/ota_data_initial.bin"
         ],
         [
-          "tftp/images/ec5a-mfg.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.6+366.220429.1738-unsigned.bin"
+          "tftp/images/da20-mfg.bin",
+          "../afi-fw/afi-100w-usb-c/afi-iot-esp.bin"
         ],
         [
-          "tftp/images/ec5a-ota.bin",
-          "../uc-fw/uc-plug-xx/ota_data_initial.bin"
+          "tftp/images/da20-ota.bin",
+          "../afi-fw/afi-100w-usb-c/ota_data_initial.bin"
         ],
         [
-          "tftp/images/ec5a-ptn-table.bin",
-          "../uc-fw/uc-plug-xx/partition-table.bin"
+          "tftp/images/da20-ptn-table.bin",
+          "../afi-fw/afi-100w-usb-c/partition-table.bin"
         ]
       ]
     }
