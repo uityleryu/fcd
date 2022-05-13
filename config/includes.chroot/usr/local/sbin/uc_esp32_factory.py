@@ -213,31 +213,68 @@ class UFPESP32FactoryGeneral(ScriptBase):
         output = self.pexp.expect_get_output("info", self.esp32_prompt, timeout=10)
         log_debug("output:".format(output))
         info = {}
-        
-        ''' Example info from DUT
-        {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e501","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
-d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6e3585a","epoch_time":"3","mac_addr":"68D79A1F54D1","ip_address":"0.
-0.0.0","region":"EU","devreg_check":"PASS"}
-        '''
-        devreg_data_dict = {'system_id'     : self.board_id              ,
-                            'bom_rev'       : self.bom_rev.split('-')[0] ,
-                            'mac_addr'      : self.mac                   ,
-                            'devreg_check'  : 'pass'                     }
 
-        for key in devreg_data_dict:
-            regex = re.compile(r'"{}":"(\w+)"'.format(key))
-            data_list = regex.findall(output)
-            #"bom_rev":"0003e601" 0003e5=00997, 01=01 => 00998-01
-            if key == "bom_rev":
-                info[key] = str(int(data_list[0][0:6],16)).zfill(5)
-            else:
-                info[key] = data_list[0].lower()
+        if self.board_id == "da20":
+            devreg_data_dict = {'System ID'         : self.board_id              ,
+                                'Bom Revision'      : self.bom_rev.split('-')[0] ,
+                                'Board Revision'    : self.bom_rev.split('-')[1] ,
+                                'Mac Address'       : self.mac                   ,
+                                'DEVREG check'      : 'PASS'                     }
+            '''
+            I (20086) PLATFORM: === Dump Platform Info ===
+                Model Name: AFi-ADP
+                System ID: da20
+                Board Revision: 1
+                Bom Revision: 01039
+                FW Version: 0.0.1
+                Region: US
+            I (20096) PLATFORM: Epoch Time: 19 s
+                Epoch Time: 19
+                Mac Address: 68d79a050e35
+                Chip Info:
+                    Type: 1
+                    Core: 2
+		        Revision: 3
+            '''
+            for key in devreg_data_dict:
+                ret_msg = re.findall(f"{key}: (\w+)", output)[0]
+                if key == "Board Revision":
+                    info[f"{key}"] = str(int(ret_msg,16)).zfill(2)
+                else:
+                    info[f"{key}"] = ret_msg
 
-        for key in devreg_data_dict:
-            if devreg_data_dict[key] != info[key]:
-                error_critical("{}: {}, not {}".format(key, info[key], devreg_data_dict[key]))
-            else:
-                log_debug("{}: {}".format(key, info[key]))
+            for key in devreg_data_dict:
+                if devreg_data_dict[key] != info[key]:
+                    error_critical("{}: {}, not {}".format(key, info[key], devreg_data_dict[key]))
+                else:
+                    log_debug("{}: {}".format(key, info[key]))
+            
+        else:
+            
+            ''' Example info from DUT
+            {"model_name":"UC-Plug-US","system_id":"ec5a","board_rev":"01","bom_rev":"0003e501","fw_version":"PLUG.esp32app.v0.0.2.0.g0fa6.210827.1052","hash_i
+    d":"48f97312-72d4-5faa-3aef-def1d0566f61","guid":"450c69ab-c7c7-4f92-8deb-7ae1e6e3585a","epoch_time":"3","mac_addr":"68D79A1F54D1","ip_address":"0.
+    0.0.0","region":"EU","devreg_check":"PASS"}
+            '''
+            devreg_data_dict = {'system_id'     : self.board_id              ,
+                                'bom_rev'       : self.bom_rev.split('-')[0] ,
+                                'mac_addr'      : self.mac                   ,
+                                'devreg_check'  : 'pass'                     }
+
+            for key in devreg_data_dict:
+                regex = re.compile(r'"{}":"(\w+)"'.format(key))
+                data_list = regex.findall(output)
+                #"bom_rev":"0003e601" 0003e5=00997, 01=01 => 00998-01
+                if key == "bom_rev":
+                    info[key] = str(int(data_list[0][0:6],16)).zfill(5)
+                else:
+                    info[key] = data_list[0].lower()
+
+            for key in devreg_data_dict:
+                if devreg_data_dict[key] != info[key]:
+                    error_critical("{}: {}, not {}".format(key, info[key], devreg_data_dict[key]))
+                else:
+                    log_debug("{}: {}".format(key, info[key]))
 
     def check_littlefs_mount(self):
         time.sleep(90)
