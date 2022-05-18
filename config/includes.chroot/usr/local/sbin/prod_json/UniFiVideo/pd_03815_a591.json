@@ -1,0 +1,44 @@
+{
+  "UniFiVideo": {
+    "UVC-G5BULLET": {
+      "INDEX": 0,
+      "NAME": "UVC-G5GBULLET",
+      "BOARDID": "a591",
+      "BOMREV": "113-03815",
+      "DESC": "UVC G5 Bullet",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a591-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "aitheta.UVC.CV2X.v4.51.19.67-fcddbg.ab6233c.220406.1015.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

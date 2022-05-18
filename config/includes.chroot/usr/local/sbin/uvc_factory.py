@@ -155,6 +155,11 @@ class UVCFactoryGeneral(ScriptBase):
             self.ip = "169.254.2.20"
             self.helper_rule = 1
 
+        elif self.product_name == "UVC-G5BULLET":
+            self.board_name = "UVC G5 BULLET"
+            self.ip = "169.254.2.20"
+            self.helper_rule = 1
+
         elif self.product_name == "UVC-AIBULLET":
             self.board_name = "UVC AI Bullet"
             self.ip = "192.168.1.20"
@@ -222,6 +227,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a3': '1',
             'a5b0': '1',
             'a534': '1',
+            'a591': '1',
             'a596': '0',
             'a597': '0',
         }
@@ -243,6 +249,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a3': '0',
             'a5b0': '0',
             'a534': '0',
+            'a591': '0',
             'a596': '1',
             'a597': '1',
         }
@@ -264,6 +271,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a3': '0',
             'a5b0': '0',
             'a534': '0',
+            'a591': '0',
             'a596': '1',
             'a597': '1',
         }
@@ -292,9 +300,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a5a3': "ifconfig eth0 ",
             'a5b0': "ifconfig eth0 ",
             'a534': "ifconfig eth0 ",
+            'a591': "ifconfig eth0 ",
             'a596': "ifconfig eth0 ",
             'a597': "ifconfig eth0 ",
-
         }
 
     def ezreadini(self, path, section, item):

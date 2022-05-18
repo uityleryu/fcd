@@ -2415,6 +2415,20 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
+    },
+      "UVC-G5BULLET": {
+      "INDEX": 15,
+      "NAME": "UVC-G5GBULLET",
+      "BOARDID": "a591",
+      "BOMREV": "113-03815",
+      "DESC": "UVC G5 Bullet",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
 
   },
