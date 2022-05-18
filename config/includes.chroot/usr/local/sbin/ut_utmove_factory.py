@@ -40,17 +40,20 @@ class UTMOVEFactoryGeneral(ScriptBase):
 
         # number of Ethernet
         self.ethnum = {
-            'ec1f': "0"
+            'ec1f': "0",
+            'ec1e': "0"
         }
 
         # number of WiFi
         self.wifinum = {
-            'ec1f': "1"
+            'ec1f': "1",
+            'ec1e': "1"
         }
 
         # number of Bluetooth
         self.btnum = {
-            'ec1f': "1"
+            'ec1f': "1",
+            'ec1e': "1"
         }
 
         self.devnetmeta = {
