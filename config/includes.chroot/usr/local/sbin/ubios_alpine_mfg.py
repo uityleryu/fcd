@@ -75,6 +75,8 @@ class UbiosAlpineFactoryMFG(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(5, "Open serial port successfully ...")
 
+        os.system("rm /tftpboot/boot.img")
+        time.sleep(1)
         os.system(f"ln -sf /tftpboot/images/{self.fwimg} /tftpboot/boot.img")
         
         msg(10, 'Stop in uboot ...')
