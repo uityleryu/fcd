@@ -13,20 +13,6 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
-          "DST_PATH": "uxg-fw/alpine",
-          "FILES": [
-            "UXG.alpinev2.v0.5.0-2.3238f5d.210203.0317.bin",
-            "uImage.r",
-            "boot-uxg.img"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
