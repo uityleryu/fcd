@@ -33,22 +33,32 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
+          "DST_PATH": "uxg-fw/alpine",
+          "FILES": [
+            "UXG.alpinev2.v1.12.test.2e4aeb3.220520.0348.bin",
+            "uImage_v1.12.test.r.1",
+            "boot.v1.12.test.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea19-fw.bin",
-          "../uxg-fw/alpine/UXG.alpinev2.v0.5.0-2.3238f5d.210203.0317.bin"
+          "../uxg-fw/alpine/UXG.alpinev2.v1.12.test.2e4aeb3.220520.0348.bin"
         ],
         [
           "tftp/images/ea19-recovery",
-          "../uxg-fw/alpine/uImage.r"
+          "../uxg-fw/alpine/uImage_v1.12.test.r.1"
         ],
         [
           "tftp/images/ea19_signed_boot.img",
-          "../uxg-fw/alpine/boot-uxg.img"
+          "../uxg-fw/alpine/boot.v1.12.test.img"
         ]
       ]
     }
