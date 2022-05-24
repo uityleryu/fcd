@@ -13,6 +13,32 @@
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
         {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+          "al324-ee",
+          "dfu-util",
+          "dreammachine-pro-lcm-fw.dfu",
+          "dreammachine-se-lcm-fw.dfu",
+          "dropbear_arm64",
+          "dropbearkey_arm64",
+          "evtest",
+          "fping_x64.exe",
+          "fping_x86.exe",
+          "ftu_system_udm.cfg",
+          "ftu-tool-common.sh",
+          "ftu-tool-platform.sh",
+          "ftu-tool.sh",
+          "helper_AL324_release",
+          "helper_MT7622_release",
+          "iperf3",
+          "rtl8370mb_rw",
+          "spidev_test",
+          "ubios-udapi-server.default",
+          "ubios-udm-fcd-network_sh.sh"
+          ]
+        },
+        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
