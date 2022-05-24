@@ -27,7 +27,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a653': "0",
             'a654': "1",
             'a655': "1",
-            'a656': "1"
+            'a656': "1",
+            'a666': "0"
         }
 
         self.wifinum = {
@@ -37,7 +38,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a653': "2",
             'a654': "3",
             'a655': "3",
-            'a656': "3"
+            'a656': "3",
+            'a666': "2"
         }
 
         self.btnum = {
@@ -47,7 +49,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a653': "1",
             'a654': "1",
             'a655': "1",
-            'a656': "1"
+            'a656': "1",
+            'a666': "1"
         }
         
         self.bootm_addr = {
@@ -57,7 +60,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a653': "0x50000000",
             'a654': "0x50000000",
             'a655': "0x50000000",
-            'a656': "0x50000000"
+            'a656': "0x50000000",
+            'a666': "1"
         }
         
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -69,6 +73,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "bootm $fileaddr#config@a654",
             'a655': "bootm $fileaddr#config@a655",
             'a656': 'bootm $fileaddr#config@a656',
+            'a666': "1"
         }
         
         self.linux_prompt_select = {
@@ -79,6 +84,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a656': "#",
+            'a666': "#"
         }
         
         self.uboot_eth_port = {
@@ -89,6 +95,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "eth0",
             'a655': "eth0",
             'a656': "eth1",
+            'a666': "eth0"
         }
 
         self.devnetmeta = {
