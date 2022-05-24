@@ -141,9 +141,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
         # time.sleep(45)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
-
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
-
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
 
         if self.board_id == "ea2e":
@@ -154,8 +152,16 @@ class UCMT7628Factory(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up", self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"ifconfig eth0 {} netmask 255.255.255.0".format(self.dutip), self.linux_prompt)
 
-        else:
+        elif self.board_id == "ed12":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/dhcpc.status=enabled/dhcpc.status=disabled/g' /tmp/system.cfg", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=192.168.1.20/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
+            time.sleep(10)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up", self.linux_prompt)
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, r"ifconfig eth0 {} netmask 255.255.255.0".format(self.dutip), self.linux_prompt)
         
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
@@ -197,6 +203,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(240, "done")
 
     def check_info(self):
+        self.pexp.expect_action(30, self.linux_prompt, "set-default; sync;sync;sync")
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
         # self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
         # self.pexp.expect_only(30, "systemid="+self.board_id)
