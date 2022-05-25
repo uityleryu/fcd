@@ -4,6 +4,7 @@ import time
 import os
 import stat
 import filecmp
+
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
@@ -34,6 +35,8 @@ class Retry():
             log_debug('Retry {}, {} time(s)'.format(_function.__name__, i + 1))
         log_error('Exceed max retry count {}'.format(max_retry_count))
         error_critical('Failed at {}'.format(_function.__name__))
+
+
 class UNASALPINEFactory(ScriptBase):
     def __init__(self):
         super(UNASALPINEFactory, self).__init__()
@@ -131,6 +134,7 @@ class UNASALPINEFactory(ScriptBase):
                 log_debug("Copying spi flash to tftp server successfully")
         else:
             log_debug("spi.image is already existed under /tftpboot")
+
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, "ping  " + self.tftp_server)
@@ -148,14 +152,8 @@ class UNASALPINEFactory(ScriptBase):
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         nand_path_for_dut = os.path.join(self.tftpdir, "fw-image.bin")
-        sstr = [
-            "cp",
-            "-p",
-            fcd_fwpath,
-            nand_path_for_dut
-        ]
-        sstrj = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstrj)
+        cmd = "cp -p {} {}".format(fcd_fwpath, nand_path_for_dut)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(1)
         if int(rtc) > 0:
             error_critical("Copying nand flash to tftp server failed")
@@ -278,12 +276,12 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
 
     def copy_rename_uImage_to_tftpboot(self):
         uImage = 'uImage'
-        fcd_spifwpath = os.path.join(self.tftpdir, "unas", uImage)
+        fcd_spifwpath = os.path.join(self.tftpdir, self.board_id, uImage)
         spi_fw_path = os.path.join(self.tftpdir, uImage)
         if not os.path.isfile(spi_fw_path):
             sstr = [
@@ -367,20 +365,16 @@ class UNASALPINEFactory(ScriptBase):
     def set_network_in_kernel(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
         time.sleep(2)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, ["64 bytes from"])
 
-    def lcm_fw_ver_check(self, tools_folder):
+        cmd = "ping -c 5 {}".format(self.tftp_server)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, ["64 bytes from"])
+
+    def load_pkg_tool(self):
         self.set_network_in_kernel()
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.fcd_toolsdir, tools_folder, "nvr-lcm-tools*"),
+                     src_file=os.path.join(self.tftpdir, self.board_id, "factory-test-tools*"),
                      dst_file=self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
-        try:
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
-        except Exception as e:
-            self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
-            raise e
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/factory-test-tools*")
 
     def run(self):
         """main procedure of factory
@@ -412,10 +406,7 @@ class UNASALPINEFactory(ScriptBase):
                 self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        if self.board_id == 'ea51':
-            self.login(timeout=300)
-        else:
-            self.pexp.expect_only(300, "Welcome to UniFi NVR!")
+        self.login(timeout=300)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
@@ -448,23 +439,20 @@ class UNASALPINEFactory(ScriptBase):
         else:
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
-            if self.board_id == 'ea51':
-                self.login(timeout=300)
-            else:
-                self.pexp.expect_only(300, "Welcome to UniFi NVR!")
+            self.login(timeout=300)
 
         if DATAVERIFY_ENABLE is True:
-            if self.board_id == 'ea51': self.clear_shell()
+            if self.board_id == 'ea51':
+                self.clear_shell()
+
             Retry(self.check_info, max_retry_count=3, delay_time=1)
             msg(90, "Succeeding in checking the devreg information ...")
 
         if WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(95, "Waiting LCM upgrading ...")
-                if self.board_id == 'ea51':
-                    self.lcm_fw_ver_check(tools_folder='unas')
-                else:
-                    self.wait_lcm_upgrade()
+                self.load_pkg_tool()
+                self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

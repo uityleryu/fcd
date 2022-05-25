@@ -1317,6 +1317,30 @@
 
   "Amplifi":
   {
+    "AFi-6-Extender": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Extender",
+      "BOARDID": "a666",
+      "BOMREV": "113-01136",
+      "DESC": "Amplifi 6 Extender",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-100W-USB-C": {
+      "INDEX": 0,
+      "NAME": "AFi-100W-USB-C",
+      "BOARDID": "da20",
+      "BOMREV": "113-01039",
+      "DESC": "Amplifi 100W USB-C",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
     "AFi-6-Instant":{
       "INDEX"       : 0,
       "NAME"        : "AFi-6-Instant",

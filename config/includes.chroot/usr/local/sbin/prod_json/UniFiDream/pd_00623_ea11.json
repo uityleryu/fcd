@@ -7,7 +7,7 @@
       "BOMREV": "113-00623",
       "DESC": "UniFi Dream Machine",
       "FILE": "ubios_alpine_factory.py",
-      "T1FILE": "",
+      "T1FILE": "ubios_alpine_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
@@ -15,7 +15,28 @@
         {
           "SRC_PATH": "images/tools/udm",
           "DST_PATH": "tools/udm",
-          "FILES": []
+          "FILES": [
+            "al324-ee",
+            "dfu-util",
+            "dreammachine-pro-lcm-fw.dfu",
+            "dreammachine-se-lcm-fw.dfu",
+            "dropbear_arm64",
+            "dropbearkey_arm64",
+            "evtest",
+            "fping_x64.exe",
+            "fping_x86.exe",
+            "ftu_system_udm.cfg",
+            "ftu-tool-common.sh",
+            "ftu-tool-platform.sh",
+            "ftu-tool.sh",
+            "helper_AL324_release",
+            "helper_MT7622_release",
+            "iperf3",
+            "rtl8370mb_rw",
+            "spidev_test",
+            "ubios-udapi-server.default",
+            "ubios-udm-fcd-network_sh.sh"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -24,6 +45,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -31,6 +53,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm",
           "DST_PATH": "udm-fw/udm",
           "FILES": [
+            "ubnt_udm_all_v1_boot.img",
             "UDM.alpinev2.v1.11.4.e66d85f.220218.1428.bin",
             "uImage.v1.11.4.r",
             "boot.v1.11.4.img"
@@ -38,6 +61,10 @@
         }
       ],
       "CREATE_LINK": [
+        [
+          "tftp/images/ea11-bsp.bin",
+          "../udm-fw/udm/ubnt_udm_all_v1_boot.img"
+        ],
         [
           "tftp/images/ea11-fw.bin",
           "../udm-fw/udm/UDM.alpinev2.v1.11.4.e66d85f.220218.1428.bin"

@@ -33,6 +33,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -40,7 +41,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw",
           "DST_PATH": "udm-fw/udw",
           "FILES": [
-            "UDW.al324.v2.3.16.981a8ae.220225.1141.bin",
+            "UDW.al324.v2.4.10.0fef8f2.220506.2058.bin",
             "uImage",
             "boot.img"
           ]
@@ -49,7 +50,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v2.3.16.981a8ae.220225.1141.bin"
+          "../udm-fw/udw/UDW.al324.v2.4.10.0fef8f2.220506.2058.bin"
         ],
         [
           "tftp/images/ea2a-recovery",

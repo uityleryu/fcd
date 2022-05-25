@@ -85,7 +85,7 @@ class UCMT7628Factory(ScriptBase):
         }
 
     def enter_uboot(self):
-        self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+        self.pexp.expect_action(60, "Hit any key to stop autoboot", "")
         self.set_boot_net()
         
     def set_boot_net(self):
@@ -115,7 +115,24 @@ class UCMT7628Factory(ScriptBase):
         # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
-
+        
+    def init_ramfs_and_erease_devreg(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
+        self.pexp.expect_only(20, "done")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
+        
+        self.pexp.expect_only(30, "Loading kernel")
+        self.login(press_enter=True, log_level_emerg=True, timeout=60)
+        
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
+                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        
+        ##  remove DEVREG data
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+    
     def init_ramfs_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
         self.pexp.expect_only(20, "done")
@@ -138,32 +155,40 @@ class UCMT7628Factory(ScriptBase):
         else:
             pass
         
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
-        # time.sleep(45)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
+        if self.board_id == "ed14":
+            # AFi-UPS
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
+            # time.sleep(45)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig wlan0 down", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
-
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
-
-        if self.board_id == "ea2e":
+        elif self.board_id == "ea2e":
             # UDM-Pro-PU will set eth port as 169.254.x.x as default
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config 2>&1 &", self.linux_prompt)
             time.sleep(10)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up", self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"ifconfig eth0 {} netmask 255.255.255.0".format(self.dutip), self.linux_prompt)
 
-        else:
+        elif self.board_id == "ed12":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
+        else:
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/dhcpc.status=enabled/dhcpc.status=disabled/g' /tmp/system.cfg", self.linux_prompt)
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=192.168.1.20/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
+            # time.sleep(10)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, r"ifconfig eth0 {} netmask 255.255.255.0".format(self.dutip), self.linux_prompt)
         
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
                                                        "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
         
-        ##  remove DEVREG data
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
+        # ##  remove DEVREG data
+        # self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
@@ -262,6 +287,9 @@ class UCMT7628Factory(ScriptBase):
 
         if self.BOOT_RAMFS_IMAGE is True:
             msg(15, "Boot into initRamfs image for registration ...")
+            self.enter_uboot()
+            self.init_ramfs_and_erease_devreg()
+
             self.enter_uboot()
             self.init_ramfs_image()
 

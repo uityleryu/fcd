@@ -13,10 +13,10 @@
       "SW_ID": "0801",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/unas",
-          "DST_PATH": "unas",
+          "SRC_PATH": "images/fcd-image/ea20",
+          "DST_PATH": "ea20",
           "FILES": [
-            "unifinvr-pro-fw.bin"
+            "fw-image_rel.bin"
           ]
         },
         {
@@ -44,7 +44,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea20-fw.bin",
-          "../unas/unifinvr-pro-fw.bin"
+          "../ea20/fw-image_rel.bin"
         ]
       ]
     }

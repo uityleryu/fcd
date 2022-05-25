@@ -1,0 +1,67 @@
+{
+  "Amplifi": {
+    "AFi-100W-USB-C": {
+      "INDEX": 0,
+      "NAME": "AFi-100W-USB-C",
+      "BOARDID": "da20",
+      "BOMREV": "113-01039",
+      "DESC": "Amplifi 100W USB-C",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/afi-fw/afi-100w-usb-c",
+          "DST_PATH": "afi-fw/afi-100w-usb-c",
+          "FILES": [
+            "afi-iot-esp.bin",
+            "bootloader.bin",
+            "ota_data_initial.bin",
+            "afi-iot-esp.bin",
+            "ota_data_initial.bin",
+            "partition-table.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/da20-app.bin",
+          "../afi-fw/afi-100w-usb-c/afi-iot-esp.bin"
+        ],
+        [
+          "tftp/images/da20-bootloader.bin",
+          "../afi-fw/afi-100w-usb-c/bootloader.bin"
+        ],
+        [
+          "tftp/images/da20-factory.bin",
+          "../afi-fw/afi-100w-usb-c/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/da20-mfg.bin",
+          "../afi-fw/afi-100w-usb-c/afi-iot-esp.bin"
+        ],
+        [
+          "tftp/images/da20-ota.bin",
+          "../afi-fw/afi-100w-usb-c/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/da20-ptn-table.bin",
+          "../afi-fw/afi-100w-usb-c/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}
