@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "LBE-5AC-Gen2": {
+    "PBE-2AC-400": {
       "INDEX": "0",
-      "NAME": "LBE-5AC-Gen2",
-      "BOARDID": "e7f9",
-      "BOMREV": "113-00497",
-      "DESC": "LBE-5AC-G2",
+      "NAME": "PBE-2AC-400",
+      "BOARDID": "e3f3",
+      "BOMREV": "113-00568",
+      "DESC": "PowerBeam 2AC 400 Gen2",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
@@ -17,8 +17,8 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "AR934X_ART_UB.bin",
-            "WA.v8.7.4.45112.210415.1103.bin",
-            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img",
+            "2WA.v8.7.4.45112.210415.1103.bin",
+            "WA.ar934x-LSDK-ART-NBE-2AC-13-16M-V1.img",
             "AR934X_UB.bin"
           ]
         },
@@ -46,19 +46,19 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e7f9-art-uboot.bin",
+          "tftp/images/e3f3-art-uboot.bin",
           "../am-fw/AR934X_ART_UB.bin"
         ],
         [
-          "tftp/images/e7f9.bin",
-          "../am-fw/WA.v8.7.4.45112.210415.1103.bin"
+          "tftp/images/e3f3.bin",
+          "../am-fw/2WA.v8.7.4.45112.210415.1103.bin"
         ],
         [
-          "tftp/images/e7f9-mfg.bin",
-          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img"
+          "tftp/images/e3f3-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART-NBE-2AC-13-16M-V1.img"
         ],
         [
-          "tftp/images/e7f9-uboot.bin",
+          "tftp/images/e3f3-uboot.bin",
           "../am-fw/AR934X_UB.bin"
         ]
       ]

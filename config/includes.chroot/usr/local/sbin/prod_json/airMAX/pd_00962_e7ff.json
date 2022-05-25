@@ -5,7 +5,7 @@
       "NAME": "LBE-5AC-XR",
       "BOARDID": "e7ff",
       "BOMREV": "113-00962",
-      "DESC": "LiteBeam 5AC US",
+      "DESC": "LiteBeam AC XR",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",

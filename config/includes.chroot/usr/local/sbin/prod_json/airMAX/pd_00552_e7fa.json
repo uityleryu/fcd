@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "LOCO5AC": {
+    "Loco5AC": {
       "INDEX": "0",
-      "NAME": "LOCO5AC",
+      "NAME": "Loco5AC",
       "BOARDID": "e7fa",
       "BOMREV": "113-00552",
-      "DESC": "Loco5AC",
+      "DESC": "Loco 5AC",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",

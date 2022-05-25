@@ -1,8 +1,8 @@
 {
   "airMAX": {
-    "BULLETAC-IP67": {
+    "BulletAC-IP67": {
       "INDEX": "0",
-      "NAME": "BULLETAC-IP67",
+      "NAME": "BulletAC-IP67",
       "BOARDID": "e2c7",
       "BOMREV": "113-00592",
       "DESC": "BulletAC IP67",

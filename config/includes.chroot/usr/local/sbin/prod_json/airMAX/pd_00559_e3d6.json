@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "PBE-5AC-ISO": {
+    "PBE-5AC-ISO-Gen2": {
       "INDEX": "0",
-      "NAME": "PBE-5AC-ISO",
+      "NAME": "PBE-5AC-ISO-Gen2",
       "BOARDID": "e3d6",
       "BOMREV": "113-00559",
-      "DESC": "PowerBeam 5AC ISO",
+      "DESC": "PowerBeam 5AC ISO G2",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",

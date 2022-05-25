@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "R5AC-LITE": {
+    "R5AC-Lite": {
       "INDEX": "0",
-      "NAME": "R5AC-LITE",
+      "NAME": "R5AC-Lite",
       "BOARDID": "e1f5",
       "BOMREV": "113-00348",
-      "DESC": "Rocket 5AC Lite",
+      "DESC": "Rocket M5 AC Lite",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",

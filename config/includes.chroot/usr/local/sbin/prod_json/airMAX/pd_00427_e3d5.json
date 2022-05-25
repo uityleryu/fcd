@@ -1,8 +1,8 @@
 {
   "airMAX": {
-    "PBE-5AC-500": {
+    "PBE-5AC-500-ISO": {
       "INDEX": "0",
-      "NAME": "PBE-5AC-500",
+      "NAME": "PBE-5AC-500-ISO",
       "BOARDID": "e3d5",
       "BOMREV": "113-00427",
       "DESC": "PowerBeam 5AC 500",

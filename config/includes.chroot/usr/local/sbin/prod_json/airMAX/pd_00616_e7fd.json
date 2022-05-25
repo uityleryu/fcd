@@ -1,11 +1,11 @@
 {
   "airMAX": {
-    "LBE-5AC-Gen2": {
+    "LAP-GPS": {
       "INDEX": "0",
-      "NAME": "LBE-5AC-Gen2",
-      "BOARDID": "e7f9",
-      "BOMREV": "113-00497",
-      "DESC": "LBE-5AC-G2",
+      "NAME": "LAP-GPS",
+      "BOARDID": "e7fd",
+      "BOMREV": "113-00616",
+      "DESC": "LAP GPS",
       "FILE": "am_ar9342_factory.py",
       "T1FILE": "am_ar9342_mfg.py",
       "QRCHECK": "False",
@@ -17,8 +17,8 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "AR934X_ART_UB.bin",
-            "WA.v8.7.4.45112.210415.1103.bin",
-            "WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img",
+            "UBNT_WA.bin",
+            "WA.ar934x-LSDK-ART2_815-NBE-5AC-G2-Wasp-16M-V4.img",
             "AR934X_UB.bin"
           ]
         },
@@ -46,19 +46,19 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e7f9-art-uboot.bin",
+          "tftp/images/e7fd-art-uboot.bin",
           "../am-fw/AR934X_ART_UB.bin"
         ],
         [
-          "tftp/images/e7f9.bin",
-          "../am-fw/WA.v8.7.4.45112.210415.1103.bin"
+          "tftp/images/e7fd.bin",
+          "../am-fw/UBNT_WA.bin"
         ],
         [
-          "tftp/images/e7f9-mfg.bin",
-          "../am-fw/WA.ar934x-LSDK-ART-ISO-STATION-5AC-16M-V1.img"
+          "tftp/images/e7fd-mfg.bin",
+          "../am-fw/WA.ar934x-LSDK-ART2_815-NBE-5AC-G2-Wasp-16M-V4.img"
         ],
         [
-          "tftp/images/e7f9-uboot.bin",
+          "tftp/images/e7fd-uboot.bin",
           "../am-fw/AR934X_UB.bin"
         ]
       ]
