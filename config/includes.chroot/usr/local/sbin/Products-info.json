@@ -2411,12 +2411,41 @@
       "SW_ID"       : "0e03"
     },
     
-    "UVC-G4FLOODLIGHTBETTARY": {
-      "INDEX": 0,
-      "NAME": "UVC-G4FLOODLIGHTBETTARY",
+    "UVC-G4FLOODLIGHTBATTERY": {
+      "INDEX": 12,
+      "NAME": "UVC-G4FLOODLIGHTBATTERY",
       "BOARDID": "a596",
       "BOMREV": "113-03455",
       "DESC": "UVC G4 FloodLight Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+
+    "UVC-G4DOORBELLBATTERY": {
+      "INDEX": 13,
+      "NAME": "UVC-G4DOORBELLBATTERY",
+      "BOARDID": "a597",
+      "BOMREV": "113-03465",
+      "DESC": "UVC G4 Doorbell Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+      "UVC-G5BULLET": {
+      "INDEX": 15,
+      "NAME": "UVC-G5GBULLET",
+      "BOARDID": "a591",
+      "BOMREV": "113-03815",
+      "DESC": "UVC G5 Bullet",
       "FILE": "uvc_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",

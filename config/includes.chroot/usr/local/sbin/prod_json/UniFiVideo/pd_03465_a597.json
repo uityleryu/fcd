@@ -1,11 +1,11 @@
 {
   "UniFiVideo": {
-    "UVC-G4DOME": {
+    "UVC-G4DOORBELLBATTERY": {
       "INDEX": 0,
-      "NAME": "UVC-G4DOME",
-      "BOARDID": "a573",
-      "BOMREV": "113-02998",
-      "DESC": "UVC G4 Dome",
+      "NAME": "UVC-G4DOORBELLBATTERY",
+      "BOARDID": "a597",
+      "BOMREV": "113-03465",
+      "DESC": "UVC G4 Doorbell Battery",
       "FILE": "uvc_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -27,19 +27,17 @@
           "SRC_PATH": "images/fcd-image/images",
           "DST_PATH": "images",
           "FILES": [
-            "a573-fw.bin",
-            "a573-fw.ini"
+            "a597-fw.ini"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g4dome.UVC.S5L.v4.38.99.67-fcddbg.1bcab50.220509.0405.bin"
+            "aitheta.UVC.CV2X.v4.51.19.67-fcddbg.ab6233c.220406.1015.bin"
           ]
         }
       ],
-
       "CREATE_LINK": []
     }
   }
