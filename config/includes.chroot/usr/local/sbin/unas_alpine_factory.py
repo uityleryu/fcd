@@ -371,10 +371,10 @@ class UNASALPINEFactory(ScriptBase):
 
     def load_pkg_tool(self):
         self.set_network_in_kernel()
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.tftpdir, self.board_id, "factory-test-tools*"),
-                     dst_file=self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/factory-test-tools*")
+        src_file = os.path.join(self.fcd_toolsdir, self.board_id, "factory-test-tools*")
+        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src_file, dst_file=self.dut_tmpdir)
+        cmd = "dpkg -i /tmp/factory-test-tools*"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
     def run(self):
         """main procedure of factory
@@ -406,7 +406,10 @@ class UNASALPINEFactory(ScriptBase):
                 self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        self.login(timeout=300)
+        if self.board_id == 'ea51':
+            self.login(timeout=300)
+        else:
+            self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip)
@@ -439,7 +442,10 @@ class UNASALPINEFactory(ScriptBase):
         else:
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
-            self.login(timeout=300)
+            if self.board_id == 'ea51':
+                self.login(timeout=300)
+            else:
+                self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         if DATAVERIFY_ENABLE is True:
             if self.board_id == 'ea51':
@@ -449,9 +455,9 @@ class UNASALPINEFactory(ScriptBase):
             msg(90, "Succeeding in checking the devreg information ...")
 
         if WAIT_LCMUPGRADE_ENABLE is True:
+            self.load_pkg_tool()
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(95, "Waiting LCM upgrading ...")
-                self.load_pkg_tool()
                 self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
