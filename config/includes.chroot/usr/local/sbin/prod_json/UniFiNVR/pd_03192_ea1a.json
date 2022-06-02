@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ea1a",
           "DST_PATH": "ea1a",
           "FILES": [
-            "fw-image_rel.bin"
+            "fcd-image_rel.bin"
           ]
         },
         {
@@ -28,6 +28,13 @@
             "enp0s1.network",
             "enp0s2.network",
             "helper_UNVR-AL324"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ea1a",
+          "DST_PATH": "tools/ea1a",
+          "FILES": [
+            "factory-test-tools_2.0-137+gad8263c_arm64.deb"
           ]
         },
         {
@@ -44,7 +51,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea1a-fw.bin",
-          "../ea1a/fw-image_rel.bin"
+          "../ea1a/fcd-image_rel.bin"
         ]
       ]
     }

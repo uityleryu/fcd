@@ -28,6 +28,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "1",
             'a655': "1",
             'a656': "1",
+            'a665': "2",
             'a666': "0"
         }
 
@@ -39,6 +40,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "3",
             'a655': "3",
             'a656': "3",
+            'a665': "2",
             'a666': "2"
         }
 
@@ -50,6 +52,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "1",
             'a655': "1",
             'a656': "1",
+            'a665': "1",
             'a666': "1"
         }
         
@@ -61,6 +64,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "0x50000000",
             'a655': "0x50000000",
             'a656': "0x50000000",
+            'a665': "1",
             'a666': "1"
         }
         
@@ -73,6 +77,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "bootm $fileaddr#config@a654",
             'a655': "bootm $fileaddr#config@a655",
             'a656': 'bootm $fileaddr#config@a656',
+            'a665': "1",
             'a666': "1"
         }
         
@@ -84,6 +89,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a656': "#",
+            'a665': "#",
             'a666': "#"
         }
         
@@ -95,6 +101,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a654': "eth0",
             'a655': "eth0",
             'a656': "eth1",
+            'a665': "eth0",
             'a666': "eth0"
         }
 
@@ -108,7 +115,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "xxx" :
+        if self.board_id == "a666" or self.board_id == "a665":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:

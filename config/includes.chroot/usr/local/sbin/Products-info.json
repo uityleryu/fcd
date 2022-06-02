@@ -1329,6 +1329,18 @@
       "FCD_ID": "0004",
       "SW_ID": "0601"
     },
+    "AFi-6-Router": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Router",
+      "BOARDID": "a665",
+      "BOMREV": "113-01135",
+      "DESC": "Amplifi 6 Router",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
     "AFi-100W-USB-C": {
       "INDEX": 0,
       "NAME": "AFi-100W-USB-C",

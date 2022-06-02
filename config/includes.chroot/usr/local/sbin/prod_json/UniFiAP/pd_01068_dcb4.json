@@ -26,7 +26,7 @@
           "SRC_PATH": "images/fcd-image/uap-fw/uacc-m-poe",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "BZ.ipq40xx_6.2.9+13788.220226.0043.bin",
+            "BZ.ipq40xx_6.3.1+13946.220512.1920.bin",
             "unifi-poe-v7_nor.bin",
             "unifi-v1.0.0.119-g0f71186e_ipq40xx_u-boot.elf",
             "uacc-m-poe-partition.bin",
@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dcb4.bin",
-          "../uap-fw/BZ.ipq40xx_6.2.9+13788.220226.0043.bin"
+          "../uap-fw/BZ.ipq40xx_6.3.1+13946.220512.1920.bin"
         ],
         [
           "tftp/images/dcb4-boot.bin",

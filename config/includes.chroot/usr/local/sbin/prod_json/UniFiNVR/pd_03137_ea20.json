@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ea20",
           "DST_PATH": "ea20",
           "FILES": [
-            "fw-image_rel.bin"
+            "fcd-image_rel.bin"
           ]
         },
         {
@@ -28,6 +28,13 @@
             "enp0s1.network",
             "enp0s2.network",
             "helper_UNVR-AL324"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ea20",
+          "DST_PATH": "tools/ea20",
+          "FILES": [
+            "factory-test-tools_2.0-137+gad8263c_arm64.deb"
           ]
         },
         {
@@ -44,7 +51,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea20-fw.bin",
-          "../ea20/fw-image_rel.bin"
+          "../ea20/fcd-image_rel.bin"
         ]
       ]
     }
