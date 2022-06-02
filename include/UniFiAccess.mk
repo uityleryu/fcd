@@ -73,10 +73,11 @@ $(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
-$(eval $(call ProductCompress2,02966-ec60))
-$(eval $(call ProductCompress2,03329-ec46))
-$(eval $(call ProductCompress2,03329-ec3b))
-$(eval $(call ProductCompress2,03291-ec43))
+$(eval $(call ProductCompress2,02668_ec5f))
+$(eval $(call ProductCompress2,02966_ec60))
+$(eval $(call ProductCompress2,03329_ec46))
+$(eval $(call ProductCompress2,03329_ec3b))
+$(eval $(call ProductCompress2,03291_ec43))
 $(eval $(call ProductCompress2,02940_ec40))
 $(eval $(call ProductCompress2,03610_ec4d))
 $(eval $(call ProductCompress2,03675_ec40))
