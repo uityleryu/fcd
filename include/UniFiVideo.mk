@@ -58,6 +58,10 @@ IMAGE-UVC-G4DOORBELLBATTERY= \
     images/a597* \
     uvc-fw/g4dbb.*
 
+IMAGE-UVC-G5BULLET= \
+    images/a591* \
+    uvc-fw/g5bullet.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -72,7 +76,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G4INS)
 IMAGE-UVC+=$(IMAGE-UVC-G3FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLBATTERY)
-
+IMAGE-UVC+=$(IMAGE-UVC-G5BULLET)
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
