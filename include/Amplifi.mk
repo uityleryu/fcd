@@ -40,6 +40,10 @@ IMAGE-ALN-P-EU= \
     images/da14* \
     afi-fw/*
 
+IMAGE-ALN-E= \
+    images/da15* \
+    afi-fw/*
+
 IMAGE-100W-USB-C= \
     images/da20* \
     afi-fw/afi-100w-usb-usb-c/*
@@ -51,6 +55,7 @@ IMAGE-ALN+=$(IMAGE-ALN-R)
 IMAGE-ALN+=$(IMAGE-ALN-P)
 IMAGE-ALN+=$(IMAGE-ALN-R-EU)
 IMAGE-ALN+=$(IMAGE-ALN-P-EU)
+IMAGE-ALN+=$(IMAGE-ALN-E)
 IMAGE-ALN+=$(IMAGE-100W-USB-C)
 IMAGE-ALN+=$(IMAGE-6-Extender)
 IMAGE-ALN+=$(IMAGE-6-Router)
@@ -83,6 +88,7 @@ TOOLS-ALN-R=$(TOOLS-ALN)
 TOOLS-ALN-P=$(TOOLS-ALN)
 TOOLS-ALN-R-EU=$(TOOLS-ALN)
 TOOLS-ALN-P-EU=$(TOOLS-ALN)
+TOOLS-ALN-E=$(TOOLS-ALN)
 TOOLS-100W-USB-C=$(TOOLS-ALN)
 TOOLS-6-Extender=$(TOOLS-ALN)
 TOOLS-6-Router=$(TOOLS-ALN)
@@ -95,6 +101,7 @@ $(eval $(call ProductImage,6-Mesh,FCD_$(PRD)_6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,100W-USB-C,FCD_$(PRD)_100W-USB-C_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,6-Extender,FCD_$(PRD)_6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,6-Router,FCD_$(PRD)_6-Router$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ALN-E,FCD_$(PRD)_AFi-ALN-E$(VER)_$(FWVER)))
 
 ## Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,ALN,FCD_$(PRD)_ALN_$(VER)_$(FWVER)))
@@ -104,6 +111,7 @@ $(eval $(call ProductCompress,6-Mesh,FCD_$(PRD)_6-Mesh_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,100W-USB-C,FCD_$(PRD)_100W-USB-C_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,6-Extender,FCD_$(PRD)_6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,6-Router,FCD_$(PRD)_6-Router$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ALN-E,FCD_$(PRD)_AFi-ALN-E$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 
@@ -115,6 +123,7 @@ $(eval $(call ProductCompress2,01135_a665))
 $(eval $(call ProductCompress2,01905_da13))
 $(eval $(call ProductCompress2,00657_da12))
 $(eval $(call ProductCompress2,00957_da14))
+$(eval $(call ProductCompress2,01150_da15))
 $(eval $(call ProductCompress2,01605_da11))
 $(eval $(call ProductCompress2,01039_da20))
 $(eval $(call ProductCompress2,01033_ed14))
