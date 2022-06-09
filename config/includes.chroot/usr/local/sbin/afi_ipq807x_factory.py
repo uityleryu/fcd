@@ -32,7 +32,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "IPQ807x",
             'da12': "IPQ807x",
             'da13': "IPQ807x",
-            'da14': "IPQ807x"
+            'da14': "IPQ807x",
+            'da15': "IPQ807x"
         }
 
         # linux console prompt
@@ -40,7 +41,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "ubnt@",
             'da12': "ubnt@",
             'da13': "ubnt@",
-            'da14': "ubnt@"
+            'da14': "ubnt@",
+            'da15': "ubnt@"
         }
 
         # number of Ethernet
@@ -48,7 +50,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "5",
             'da12': "1",
             'da13': "5",
-            'da14': "1"
+            'da14': "1",
+            'da15': "5"
         }
 
         # number of WiFi
@@ -56,7 +59,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "3",
             'da12': "3",
             'da13': "2",
-            'da14': "2"
+            'da14': "2",
+            'da15': "3"
         }
 
         # number of Bluetooth
@@ -64,7 +68,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "1",
             'da12': "1",
             'da13': "1",
-            'da14': "1"
+            'da14': "1",
+            'da15': "1"
         }
 
         # communicating Ethernet interface
@@ -72,7 +77,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "br-lan",
             'da12': "br-lan",
             'da13': "br-lan",
-            'da14': "br-lan"
+            'da14': "br-lan",
+            'da15': "br-lan"
         }
 
         # temporary eeprom binary file
@@ -80,7 +86,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "da11-eeprom.bin",
             'da12': "da12-eeprom.bin",
             'da13': "da13-eeprom.bin",
-            'da14': "da14-eeprom.bin"
+            'da14': "da14-eeprom.bin",
+            'da15': "da15-eeprom.bin"
         }
 
         # booting up the last message
@@ -91,7 +98,8 @@ class AFIIPQ807XFactory(ScriptBase):
             'da11': "da11-bootloader.bin",
             'da12': "da12-bootloader.bin",
             'da13': "da13-bootloader.bin",
-            'da14': "da14-bootloader.bin"
+            'da14': "da14-bootloader.bin",
+            'da15': "da15-bootloader.bin"
         }
 
         baseip = 31
