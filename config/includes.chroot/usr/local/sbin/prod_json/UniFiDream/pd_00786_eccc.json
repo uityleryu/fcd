@@ -19,6 +19,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -26,34 +27,14 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udr",
           "DST_PATH": "udm-fw/udr",
           "FILES": [
-            "udr-mt7622-mt7915a-v11_emmc.bin",
-            "UDR.mt7622.v2.3.15.473c2bc.220209.1142.bin",
-            "u-boot-mtk.bin",
-            "udr-mt7622-mt7915a-v11_nor.bin",
-            "uImage"
+            "preloader_evb7622_64_forspinor.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/eccc-fcd.bin",
-          "../udm-fw/udr/udr-mt7622-mt7915a-v11_emmc.bin"
-        ],
-        [
-          "tftp/images/eccc-fw.bin",
-          "../udm-fw/udr/UDR.mt7622.v2.3.15.473c2bc.220209.1142.bin"
-        ],
-        [
-          "tftp/images/eccc-fw.uboot",
-          "../udm-fw/udr/u-boot-mtk.bin"
-        ],
-        [
-          "tftp/images/eccc-mfg.bin",
-          "../udm-fw/udr/udr-mt7622-mt7915a-v11_nor.bin"
-        ],
-        [
-          "tftp/images/eccc-recovery",
-          "../udm-fw/udr/uImage"
+          "tftp/images/eccc-ddr-config.bin",
+          "../udm-fw/udr/preloader_evb7622_64_forspinor.bin"
         ]
       ]
     }

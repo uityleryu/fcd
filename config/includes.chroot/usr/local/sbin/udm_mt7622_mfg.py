@@ -92,27 +92,43 @@ class UDMMT7622MFG(ScriptBase):
         self.enter_uboot()
         msg(10, "Finish network setting in uboot ...")
 
-        self.transfer_img(self.mfg_uboot_cal)
-        msg(15, "Finish uboot with cal default data image transferring ...")
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22aa22")
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: aa22aa22")
+        msg(20, "check default DDR config in uboot ...")
 
-        self.update_uboot(self.erasecal)
-        msg(30, "Finish uboot updating...")
+        log_debug("Transfer image ...")
+        self.ddr_config_img = os.path.join(self.image, self.board_id + "-ddr-config.bin")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, f"tftpb ${{loadaddr}} {self.ddr_config_img}", "Bytes transferred")
+        
+        
+        log_debug("Erase flash from 0x00000 to 0x40000...")
+        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
+        self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase 0x00000 0x40000; snor write ${loadaddr} 0x00000 0x40000", self.bootloader_prompt)
+        msg(40, "Finish DDR Config updating...")
 
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
 
         self.enter_uboot()
-        msg(40, "Finish network setting in uboot ...")
+        msg(60, "Finish network setting in uboot ...")
 
-        self.transfer_img(self.mfg_img)
-        msg(50, "Finish kernel image transferring ...")
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22ff22")
+        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: ff22ff22")
+        msg(80, "check modified DDR config in uboot ...")
 
-        self.update_kernel()
-        msg(60, "Finish kernel updating...")
 
-        self.init_bsp_image()
-        msg(70, "Finish kernel login...")
+        # self.transfer_img(self.mfg_img)
+        # msg(50, "Finish kernel image transferring ...")
 
-        msg(100, "Completed back to T1 process ...")
+        # self.update_kernel()
+        # msg(60, "Finish kernel updating...")
+
+        # self.init_bsp_image()
+        # msg(70, "Finish kernel login...")
+
+        # msg(100, "Completed back to T1 process ...")
+        msg(100, "Completed modified DDR config process ...")
         self.close_fcd()
 
 
