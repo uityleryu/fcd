@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/uc-fw/uc-plug-xx",
           "DST_PATH": "uc-fw/uc-plug-xx",
           "FILES": [
-            "CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin",
+            "CPP1.esp32app.1.0.6+366.220429.1737-unsigned.bin",
             "bootloader.bin",
             "plug_factory.bin",
             "CPP1.esp32mfg.1.0.6+366.220429.1738-unsigned.bin",
@@ -39,7 +39,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec5a-app.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.4+350.220304.1523-unsigned.bin"
+          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.6+366.220429.1737-unsigned.bin"
         ],
         [
           "tftp/images/ec5a-bootloader.bin",
