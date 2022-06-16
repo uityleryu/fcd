@@ -29,12 +29,6 @@
           "FILES": [
             "a591-fw.ini"
           ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/uvc-fw",
-          "DST_PATH": "uvc-fw",
-          "FILES": [
-          ]
         }
       ],
       "CREATE_LINK": []
