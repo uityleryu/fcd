@@ -62,6 +62,10 @@ IMAGE-UVC-G5BULLET= \
     images/a591* \
     uvc-fw/g5bullet.*
 
+IMAGE-UVC-G5DOME= \
+    images/a592* \
+    uvc-fw/g5dome.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -77,6 +81,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G3FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4FLOODLIGHTBATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLBATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G5BULLET)
+IMAGE-UVC+=$(IMAGE-UVC-G5DOME)
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -179,6 +184,9 @@ TOOLS-UVC-G3FLEX+=$(TOOLS-UVC)
 TOOLS-UVC-G3FLEX+= \
     uvc/128k_ff.bin
 
+TOOLS-UVC-G5DOME+=$(TOOLS-UVC)
+TOOLS-UVC-G5DOME+= \
+    uvc/128k_ff.bin
 
 # Project target
 
@@ -197,6 +205,7 @@ $(eval $(call ProductImage,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLBATTERY,FCD_$(PRD)_G4DOORBELLBATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
@@ -216,6 +225,7 @@ $(eval $(call ProductCompress,UVC-G3FLEX,FCD_$(PRD)_G3FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4FLOODLIGHTBATTERY,FCD_$(PRD)_G4FLOODLIGHTBATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLBATTERY,FCD_$(PRD)_G4DOORBELLBATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,03268_a5a0))
