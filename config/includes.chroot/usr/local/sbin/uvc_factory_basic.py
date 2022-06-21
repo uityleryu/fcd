@@ -184,7 +184,7 @@ class UVCFactoryGeneral(ScriptBase):
         flash_uid = self.get_flash_uid()
 
         sstr = [
-            'field=product_class_id,format=hex,value=000a',
+            'field=product_class_id,format=hex,value=0014',
             'field=flash_jedec_id,format=hex,value={}'.format(jedec_id),
             'field=flash_uid,format=hex,value={}'.format(flash_uid),
             'field=cpu_rev_id,format=hex,value={}'.format(cpu_id),
