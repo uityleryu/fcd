@@ -460,7 +460,7 @@ class UVCFactoryGeneral(ScriptBase):
             sstr = [
                 helperexe_path,
                 "-q",
-                "-c product_class=camera2",
+                "-c product_class=basic",
                 "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
                 ">",
                 eetxt_dut_path
