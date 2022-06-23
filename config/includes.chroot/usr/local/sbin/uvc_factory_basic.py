@@ -162,9 +162,9 @@ class UVCFactoryGeneral(ScriptBase):
         return mtd
 
     def get_cpu_id(self):
-        res = self.session.execmd_getmsg('cat /tmp/bsp_helper/cpuid').strip('\n')
-        cpu_id = res
-        return cpu_id
+        ssi_ident_id = self.session.execmd_getmsg('cat /tmp/bsp_helper/ssi_ident_id').strip('\n')
+        ssi_version_id = self.session.execmd_getmsg('cat /tmp/bsp_helper/ssi_version_id').strip('\n')
+        return ssi_ident_id, ssi_version_id
 
     def get_jedec_id(self):
         res = self.session.execmd_getmsg('cat /tmp/bsp_helper/jedec_id').strip('\n')
@@ -178,16 +178,16 @@ class UVCFactoryGeneral(ScriptBase):
 
     def helper_generate_e_t(self, output_path='/tmp/e.t'):
         log_debug('helper_generate_e_t to {}'.format(output_path))
-
-        cpu_id = self.get_cpu_id()
+        ssi_ident_id, ssi_version_id = self.get_cpu_id()
         jedec_id = self.get_jedec_id()
         flash_uid = self.get_flash_uid()
 
         sstr = [
-            'field=product_class_id,format=hex,value=0014',
+            'field=product_class_id,format=hex,value=000a',
             'field=flash_jedec_id,format=hex,value={}'.format(jedec_id),
             'field=flash_uid,format=hex,value={}'.format(flash_uid),
-            'field=cpu_rev_id,format=hex,value={}'.format(cpu_id),
+            'field=AMBA_ssi_ident_id,format=hex,value={}'.format(ssi_ident_id),
+            'field=AMBA_ssi_version_id,format=hex,value={}'.format(ssi_version_id)
         ]
         sstr = '\n'.join(sstr)
         log_debug(sstr)
