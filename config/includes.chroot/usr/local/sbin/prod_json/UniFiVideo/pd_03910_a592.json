@@ -6,7 +6,7 @@
       "BOARDID": "a592",
       "BOMREV": "113-03910",
       "DESC": "UVC G5 Dome",
-      "FILE": "uvc_factory_basic.py",
+      "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0009",
