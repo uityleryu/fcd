@@ -2465,6 +2465,20 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
+    },
+    "UVC-G5DOME": {
+      "INDEX": 16,
+      "NAME": "UVC-G5DOME",
+      "BOARDID": "a592",
+      "BOMREV": "113-03910",
+      "DESC": "UVC G5 Dome",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
 
   },

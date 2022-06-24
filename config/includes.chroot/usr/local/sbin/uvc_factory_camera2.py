@@ -47,160 +47,10 @@ class UVCFactoryGeneral(ScriptBase):
         Please set "self.helper_rule = 1" in each product if it follows new rule that
         doesn't need m25p80 and helper, refer to "UVC-G4PTZ"
         '''
-        if self.product_name == "UVC-G3BATTERY":
-            self.board_name = "UVC G3 Battery"
-            self.devregpart = "/dev/mtd15"
-            self.ip = "192.168.2.20"
-            self.flash_module = "m25p80_g3battery.ko"
-            self.helperexe = "helper_S2LM_g3battery"
-
-        elif self.product_name == "UVC-G4PRO":
-            self.board_name = "UVC G4 Pro"
-            if int(self.bom_rev.split('-')[1]) >= 11:
-                self.devregpart = "/dev/mtd10"
-                self.ip = "192.168.1.20"
-                self.mtd_name = 'spi'
-                self.helper_rule = 1
-            else:
-                self.devregpart = "/dev/mtd10"
-                self.ip = "192.168.1.20"
-                self.flash_module = "m25p80_g4pro.ko"
-                self.helperexe = "helper_S5L_g4pro"
-
-        elif self.product_name == "UVC-G4PTZ":
-            self.board_name = "UVC G4 PTZ"
-            self.ip = "192.168.1.20"
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G4DOORBELL":
-            self.board_name = "UVC G4 Doorbell"
-            self.devregpart = "/dev/mtd10"
-            self.ip = "192.168.2.20"
-            self.flash_module = "m25p80_uvcg4doorbell.ko"
-            self.helperexe = "helper_uvcg4doorbell"
-
-        elif self.product_name == "UVC-G4BULLET":
-            if int(self.bom_rev.split('-')[1]) > 6:
-                self.board_name = "UVC G4 BULLET"
-                self.ip = "192.168.2.20"
-                self.mtd_name = 'spi'
-                self.helper_rule = 1
-            else:
-                self.board_name = "UVC G4 Bullet"
-                self.devregpart = "/dev/mtd8"
-                self.ip = "192.168.2.20"
-                self.flash_module = "m25p80_uvcg4bullet.ko"
-                self.helperexe = "helper_uvcg4bullet"
-
-        elif self.product_name == "UVC-G4DOME":
-            second_falsh_en = True
-            if second_falsh_en is True:
-                self.board_name = "UVC-G4DOME"
-                self.ip = "192.168.2.20"
-                self.mtd_name = 'spi'
-                self.helper_rule = 1
-            else:
-                self.board_name = "UVC G4 Dome"
-                self.devregpart = "/dev/mtd8"
-                self.ip = "192.168.2.20"
-                self.flash_module = "m25p80_uvcg4dome.ko"
-                self.helperexe = "helper_uvcg4dome"
-
-        elif self.product_name == "UVC-G4DOORBELLPRO":
-            self.board_name = "UVC G4 Doorbell Pro"
-            self.devregpart = "/dev/mtd8"
-            self.ip = "169.254.2.20"
-            self.flash_module = "m25p80_uvcg4doorbellpro.ko"
-            self.helperexe = "helper_uvcg4doorbellpro"
-
-        elif self.product_name == "UVC-AI360":
-            if int(self.bom_rev.split('-')[1]) > 6:
-                self.board_name = "UVC AI 360"
-                self.ip = "192.168.1.20"
-                self.mtd_name = 'amba_nor'
-                self.helper_rule = 1
-            else:
-                self.board_name = "UVC AI 360"
-                self.devregpart = "/dev/mtd0"
-                self.ip = "192.168.1.20"
-                self.flash_module = ""
-                self.helperexe = "helper_uvcai360"
-
-        elif self.product_name == "UVC-G3MINI":
-            second_falsh_en = True
-            if second_falsh_en is True:
-                self.board_name = "UVC G3 Mini"
-                self.ip = "192.168.2.20"
-                self.mtd_name = 'spi'
-                self.helper_rule = 1
-            else:
-                self.board_name = "UVC G3 Mini"
-                self.devregpart = "/dev/mtd11"
-                self.ip = "192.168.2.20"
-                self.flash_module = "m25p80_uvcg3flexmini.ko"
-                self.helperexe = "helper_uvcg3flexmini"
-
-        elif self.product_name == "UVC-G4INS":
-            self.board_name = "UVC G4 Instant"
-            self.ip = "169.254.2.20"
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G4FLOODLIGHTBATTERY":
-            self.board_name = "UVC G4 G4FLOODLight_Battery"
-            self.ip = "169.254.2.20"
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G4DOORBELLBATTERY":
-            self.board_name = "UVC G4 G4DOORBELLBATTERY"
-            self.ip = "169.254.2.20"
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G5BULLET":
-            self.board_name = "UVC G5 BULLET"
-            self.ip = "169.254.2.20"
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G5DOME":
+        if  self.product_name == "UVC-G5DOME":
             self.board_name = "UVC G5 DOME"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-
-        elif self.product_name == "UVC-AIBULLET":
-            self.board_name = "UVC AI Bullet"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'amba_nor'
-            self.helper_rule = 1
-
-        elif self.product_name == "UA-Thermal-Scan":
-            self.board_name = "UniFi Thermal Scan"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'amba_nor'
-            self.helper_rule = 1
-
-        elif self.product_name == "UP-MHS":
-            self.board_name = "UniFi Protect Managed Health Scanner"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'amba_nor'
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-AITHETA":
-            self.board_name = "UVC AI THETA"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'amba_nor'
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-DSLR-Bullet":
-            self.board_name = "UVC G4 DSLR"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'amba_nor'
-            self.helper_rule = 1
-
-        elif self.product_name == "UVC-G3FLEX":
-            self.board_name = "UVC G3 FLEX"
-            self.ip = "192.168.1.20"
-            self.mtd_name = 'spi0.0'
-            self.helper_rule = 1
-
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -217,71 +67,17 @@ class UVCFactoryGeneral(ScriptBase):
 
         # number of Ethernet
         ethnum = {
-            'a580': "0",
-            'a563': "1",
-            'a564': "1",
-            'a571': "0",
-            'a572': "1",
-            'a573': "1",
-            'a574': "0",
-            'a590': "0",
-            'a595': "0",
-            'a5a0': "1",
-            'a5a2': '1',
-            'ec70': '1',
-            'a5a3': '1',
-            'a5b0': '1',
-            'a534': '1',
-            'a591': '1',
             'a592': '1',
-            'a596': '0',
-            'a597': '0',
         }
 
         # number of WiFi
         wifinum = {
-            'a580': "1",
-            'a563': "0",
-            'a564': "0",
-            'a571': "1",
-            'a572': "0",
-            'a573': "0",
-            'a574': "1",
-            'a590': "1",
-            'a595': "1",
-            'a5a0': "0",
-            'a5a2': '0',
-            'ec70': '0',
-            'a5a3': '0',
-            'a5b0': '0',
-            'a534': '0',
-            'a591': '0',
             'a592': '0',
-            'a596': '1',
-            'a597': '1',
         }
 
         # number of Bluetooth
         btnum = {
-            'a580': "1",
-            'a563': "0",
-            'a564': "0",
-            'a571': "1",
-            'a572': "0",
-            'a573': "0",
-            'a574': "1",
-            'a590': "1",
-            'a595': "1",
-            'a5a0': "0",
-            'a5a2': '0',
-            'ec70': '0',
-            'a5a3': '0',
-            'a5b0': '0',
-            'a534': '0',
-            'a591': '0',
             'a592': '0',
-            'a596': '1',
-            'a597': '1',
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -293,25 +89,7 @@ class UVCFactoryGeneral(ScriptBase):
         }
 
         self.netif = {
-            'a580': "ifconfig eth0 ",
-            'a563': "ifconfig eth0 ",
-            'a564': "ifconfig eth0 ",
-            'a571': "ifconfig eth0 ",
-            'a572': "ifconfig eth0 ",
-            'a573': "ifconfig eth0 ",
-            'a574': "ifconfig eth0 ",
-            'a590': "ifconfig eth0 ",
-            'a595': "ifconfig eth0 ",
-            'a5a0': "ifconfig eth0 ",
-            'a5a2': "ifconfig eth0 ",
-            'ec70': "ifconfig eth0 ",
-            'a5a3': "ifconfig eth0 ",
-            'a5b0': "ifconfig eth0 ",
-            'a534': "ifconfig eth0 ",
-            'a591': "ifconfig eth0 ",
             'a592': "ifconfig eth0 ",
-            'a596': "ifconfig eth0 ",
-            'a597': "ifconfig eth0 ",
         }
 
     def ezreadini(self, path, section, item):
@@ -384,16 +162,8 @@ class UVCFactoryGeneral(ScriptBase):
         return mtd
 
     def get_cpu_id(self):
-        res = self.session.execmd_getmsg('cat /tmp/bsp_helper/cpuid').strip('\n')
-        if res == 'AMBA':
-            ssi_ident_id = '414d4241'
-            ssi_version_id = '312e3030'
-        elif res == 'SStar':
-            ssi_ident_id = '53537461'
-            ssi_version_id = '53537461'
-        else:
-            ssi_ident_id = '00000000'
-            ssi_version_id = '00000000'
+        ssi_ident_id = self.session.execmd_getmsg('cat /tmp/bsp_helper/ssi_ident_id').strip('\n')
+        ssi_version_id = self.session.execmd_getmsg('cat /tmp/bsp_helper/ssi_version_id').strip('\n')
         return ssi_ident_id, ssi_version_id
 
     def get_jedec_id(self):
@@ -690,7 +460,7 @@ class UVCFactoryGeneral(ScriptBase):
             sstr = [
                 helperexe_path,
                 "-q",
-                "-c product_class=camera2",
+                "-c product_class=basic",
                 "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
                 ">",
                 eetxt_dut_path

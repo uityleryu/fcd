@@ -1,12 +1,12 @@
 {
   "UniFiVideo": {
-    "UVC-G5BULLET": {
+    "UVC-G5DOME": {
       "INDEX": 0,
-      "NAME": "UVC-G5GBULLET",
-      "BOARDID": "a591",
-      "BOMREV": "113-03815",
-      "DESC": "UVC G5 Bullet",
-      "FILE": "uvc_factory.py",
+      "NAME": "UVC-G5DOME",
+      "BOARDID": "a592",
+      "BOMREV": "113-03910",
+      "DESC": "UVC G5 Dome",
+      "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0009",
@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/images",
           "DST_PATH": "images",
           "FILES": [
-            "a591-fw.ini"
+            "a592-fw.ini"
           ]
         }
       ],
