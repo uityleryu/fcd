@@ -33,6 +33,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         },
@@ -40,7 +41,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-se",
           "DST_PATH": "udm-fw/udm-se",
           "FILES": [
-            "UDMPROSE.al324.v2.3.15.473c2bc.220209.1142.bin",
+            "UUDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin",
             "uImage",
             "boot.img"
           ]
@@ -49,7 +50,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2c-fw.bin",
-          "../udm-fw/udm-se/UDMPROSE.al324.v2.3.15.473c2bc.220209.1142.bin"
+          "../udm-fw/udm-se/UUDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin"
         ],
         [
           "tftp/images/ea2c-recovery",
