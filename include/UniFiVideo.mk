@@ -107,6 +107,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPROPOE)
 IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVECAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -278,6 +279,7 @@ $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNIFI-WAVEROVECAMERA,FCD_$(PRD)_WAVEROVECAMERA_$(VER)_$(FWVER)))
+
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
@@ -295,3 +297,5 @@ $(eval $(call ProductCompress2,02591_a534))
 $(eval $(call ProductCompress2,03815_a591))
 $(eval $(call ProductCompress2,03455_a596))
 $(eval $(call ProductCompress2,03465_a597))
+$(eval $(call ProductCompress2,03759_a5c0))
+$(eval $(call ProductCompress2,03783_a5c1))
