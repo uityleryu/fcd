@@ -41,7 +41,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-se",
           "DST_PATH": "udm-fw/udm-se",
           "FILES": [
-            "UUDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin",
+            "UDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin",
             "uImage",
             "boot.img"
           ]
@@ -50,7 +50,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2c-fw.bin",
-          "../udm-fw/udm-se/UUDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin"
+          "../udm-fw/udm-se/UDMPROSE.al324.v2.4.12.cedb35e.220617.1117.bin"
         ],
         [
           "tftp/images/ea2c-recovery",
