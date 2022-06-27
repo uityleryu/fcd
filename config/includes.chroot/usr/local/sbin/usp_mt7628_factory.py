@@ -120,7 +120,7 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
 
     def mcu_fw_check(self):
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu info', 'version', retry=48)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu.1 info', 'version', retry=48)
 
     def run(self):
         self.fcd.common.config_stty(self.dev)
