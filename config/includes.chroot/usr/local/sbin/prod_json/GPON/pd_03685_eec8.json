@@ -1,11 +1,11 @@
 {
   "GPON": {
-    "UF-WiFi6": {
+    "UISP-FIBER-LOCO-XG": {
       "INDEX": 0,
-      "NAME": "UF-WiFi6",
-      "BOARDID": "eec5",
-      "BOMREV": "113-03376",
-      "DESC": "UF-WiFi6",
+      "NAME": "UISP-FIBER-LOCO-XG",
+      "BOARDID": "eec8",
+      "BOMREV": "113-03685",
+      "DESC": "UISP FIBER LOCO XG",
       "FILE": "uf_ecnt7521_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -13,7 +13,7 @@
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uf-fw/eec5",
+          "SRC_PATH": "images/fcd-image/uf-fw/eec8",
           "DST_PATH": "uf-fw/",
           "FILES": []
         },
@@ -35,12 +35,12 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/eec5-fw.bin",
-          "../uf-fw/UF-ONU.UF-WIFI6.v4.4.1.413-8e3.211221.1024.img"
+          "tftp/images/eec8-fw.bin",
+          "../uf-fw/UF-ONU.UF-LOCO-XG.v4.5.x.64-b15.220627.2314.img"
         ],
         [
-          "tftp/images/eec5-uboot.bin",
-          "../uf-fw/boot-UF-ONU.UF-WIFI6.v4.4.0.352-b21.211102.0822.img"
+          "tftp/images/eec8-uboot.bin",
+          "../uf-fw/boot-UF-ONU.UF-LOCO-XG.4.5.0-alpha1.22-c86.220519.1125.img"
         ]
       ] 
     }
