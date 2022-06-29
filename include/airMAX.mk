@@ -43,10 +43,10 @@ IMAGE-AC-SERIES= \
     am-fw/XC.qca955x-LSDK-ART-BASESTATION-G2-16M-V2.img \
     am-fw/XC.qca955x-LSDK-ART-Rocket-2AC-HSR-G2-16M-V4.img \
     am-fw/XC.qca955x--V2---LSDK-10.1.389__ubnt-scorpion-peregrine-5G-std-16M.img \
-    am-fw/2WA.v8.7.9.46843.220329.1722.bin \
-    am-fw/2XC.v8.7.9.46843.220329.1735.bin \
-    am-fw/WA.v8.7.9.46843.220329.1728.bin \
-    am-fw/XC.v8.7.9.46843.220329.1735.bin \
+    am-fw/2WA.v8.7.11.46972.220614.0419.bin \
+    am-fw/2XC.v8.7.11.46972.220614.0427.bin \
+    am-fw/WA.v8.7.11.46972.220614.0420.bin \
+    am-fw/XC.v8.7.11.46972.220614.0419.bin \
     am-fw/WA.v8.7.5-alpha.45137.210419.1121.bin \
     am-fw/UBNT_WA.bin \
     am-fw/UBNT_2WA.bin \
