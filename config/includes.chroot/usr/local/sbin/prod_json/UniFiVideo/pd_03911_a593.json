@@ -1,0 +1,37 @@
+{
+  "UniFiVideo": {
+    "UVC-G5FLEX": {
+      "INDEX": 0,
+      "NAME": "UVC-G5FLEX",
+      "BOARDID": "a593",
+      "BOMREV": "113-03911",
+      "DESC": "UVC G5 Flex",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a593-fw.ini"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
