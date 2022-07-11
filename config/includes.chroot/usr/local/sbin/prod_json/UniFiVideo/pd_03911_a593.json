@@ -1,12 +1,12 @@
 {
   "UniFiVideo": {
-    "UVC-DSLR-Bullet": {
+    "UVC-G5FLEX": {
       "INDEX": 0,
-      "NAME": "UVC-DSLR-Bullet",
-      "BOARDID": "a5b0",
-      "BOMREV": "113-03377",
-      "DESC": "UVC DSLR Bullet",
-      "FILE": "uvc_factory.py",
+      "NAME": "UVC-G5FLEX",
+      "BOARDID": "a593",
+      "BOMREV": "113-03911",
+      "DESC": "UVC G5 Flex",
+      "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0009",
@@ -27,14 +27,7 @@
           "SRC_PATH": "images/fcd-image/images",
           "DST_PATH": "images",
           "FILES": [
-            "a5b0-fw.ini"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/uvc-fw",
-          "DST_PATH": "uvc-fw",
-          "FILES": [
-            "dslrbullet.UVC.gen4v.v4.54.8.67-fcddbg.b869099.220627.1037.bin"
+            "a593-fw.ini"
           ]
         }
       ],

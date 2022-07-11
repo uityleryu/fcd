@@ -12,19 +12,8 @@ import filecmp
 import configparser
 
 
-# a580 = G3BATTERY
-# a563 = G4PRO
-# a564 = G4PTZ
-# a571 = G4DOORBELL
-# a572 = G4BULLET
-# a573 = G4DOME
-# a574 = G4DOORBELLPRO
-# a5a0 = AI360
-# a590 = G3MINI
-# a595 = G4INS
-# a5a2 = AIBullet
-# ec70 = Thermal Scan
-# a597 = G4DOORBELL BATTERY
+# a592 = G5Dome
+# a593 = G5Flex
 
 PROVISION_EN = True
 DOHELPER_EN = True
@@ -51,6 +40,11 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 DOME"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+
+        elif  self.product_name == "UVC-G5FLEX":
+            self.board_name = "UVC G5 FLEX"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -68,16 +62,19 @@ class UVCFactoryGeneral(ScriptBase):
         # number of Ethernet
         ethnum = {
             'a592': '1',
+            'a593': '1',
         }
 
         # number of WiFi
         wifinum = {
             'a592': '0',
+            'a593': '0',
         }
 
         # number of Bluetooth
         btnum = {
             'a592': '0',
+            'a593': '0',
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -90,6 +87,7 @@ class UVCFactoryGeneral(ScriptBase):
 
         self.netif = {
             'a592': "ifconfig eth0 ",
+            'a593': "ifconfig eth0 ",
         }
 
     def ezreadini(self, path, section, item):
