@@ -22,47 +22,58 @@ class UFECNT7521Factory(ScriptBase):
 
     def init_vars(self):
         self.ubpmt = {
-            'eec5': ""
+            'eec5': "",
+            'eec8': ""
         }
 
         self.lnxpmt = {
-            'eec5': "#"
+            'eec5': "#",
+            'eec8': "#"
         }
 
         self.lnxpmt_fcdfw = {
-            'eec5': "#"
+            'eec5': "#",
+            'eec8': "#"
         }
 
         self.bootloader = {
-            'eec5': "eec5-uboot.bin"
+            'eec5': "eec5-uboot.bin",
+            'eec8': "eec8-uboot.bin"
         }
 
         self.product_class_table = {
             'eec5': "basic",
+            'eec8': "basic"
         }
 
         self.devregmtd = {
             'eec5': "/dev/mtdblock9",
+            'eec8': "/dev/mtdblock9"
         }
 
         self.helpername = {
             'eec5': "helper_ECNT7528_debug",
+            'eec8': "helper_ECNT7528_debug"
         }
 
         self.pd_dir_table = {
             'eec5': "uf_wifi6",
+            'eec8': "uf_wifi6"
         }
 
         self.ethnum = {
             'eec5': "1",
+            'eec8': "1",
         }
 
         self.wifinum = {
             'eec5': "1",
+            'eec8': "0"
         }
 
         self.btnum = {
             'eec5': "1",
+            'eec8': "0"
         }
 
         self.devnetmeta = {
@@ -156,8 +167,9 @@ class UFECNT7521Factory(ScriptBase):
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue {}".format(image_name[where][0]))
-        if self.fcd.common.ip_is_alive("{}".format(self.dutip), retry=120) is False:
+        if self.cnapi.ip_is_alive("{}".format(self.dutip), retry=120) is False:
             error_critical("Can't ping to DUT {}".format(self.dutip))
+
         cmd = "atftp -p -l {0}/{1} -r {3} {2}".format(self.fwdir, image_name[where][2], self.dutip, image_name[where][1])
 
         log_debug("host cmd: " + cmd)
@@ -170,6 +182,7 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_only(120, "ubnt_process_image")
         if image_name[where][0] == '--boot':
             self.pexp.expect_only(120, "Upgrade image check ok.")
+
         self.pexp.expect_only(120, "done")
         self.pexp.expect_only(120, "resetting")
     
@@ -313,7 +326,7 @@ class UFECNT7521Factory(ScriptBase):
             self.update_fw('kernel')
             msg(40, "Upgrade fw... done")
 
-        self.login(retry=5)
+        self.login(timeout=30, retry=5)
 
         if PROVISION_EN is True:    
             msg(50, "Sendtools to DUT and data provision ...")

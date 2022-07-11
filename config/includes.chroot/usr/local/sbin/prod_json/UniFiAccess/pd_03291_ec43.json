@@ -15,9 +15,9 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "LK.mt7621_5.35.0+26.210616.1207-uboot.bin",
-            "unifi-v1.1.49.6-g70e763d2_uap6-mt7621-45MB_nodebug_u-boot.bin",
-            "eot-ua-locker-v3.bin"
+            "LK.mt7621.v5.35.0.124.gfcf7c7e.220704.1014-uboot.bin",
+            "unifi-v1.1.49.10-g312f75c3_uap6-mt7621-45MB_u-boot.bin",
+            "eot-ua-locker-v4.bin"
           ]
         },
         {
@@ -35,15 +35,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec43.bin",
-          "../ua-fw/LK.mt7621_5.35.0+26.210616.1207-uboot.bin"
+          "../ua-fw/LK.mt7621.v5.35.0.124.gfcf7c7e.220704.1014-uboot.bin"
         ],
         [
           "tftp/images/ec43-fwuboot.bin",
-          "../ua-fw/unifi-v1.1.49.6-g70e763d2_uap6-mt7621-45MB_nodebug_u-boot.bin"
+          "../ua-fw/unifi-v1.1.49.10-g312f75c3_uap6-mt7621-45MB_u-boot.bin"
         ],
         [
           "tftp/images/ec43-mfg.bin",
-          "../ua-fw/eot-ua-locker-v3.bin"
+          "../ua-fw/eot-ua-locker-v4.bin"
         ]
       ]
     }

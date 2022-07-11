@@ -14,7 +14,7 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    a980: Viewport            (Android 9)
+    e980: Viewport            (Android 9)
     ef80: UC-Display-7  (BLE)       (Android 9)
     ef81: UC-Display-13 (BLE)       (Android 9)
     ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
@@ -28,6 +28,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     ef85: UniFi Pay 7         (Android 9)
     ef86: UniFi Pay 13        (Android 9)
     ec5e: UA-G2-Reader-Pro    (Android 9)
+    ec5f: UA-PRO              (Android 9)
     ec60: UA-BL-PRO           (Android 9)
     ec62: UA-Display-Elevator (Android 9)
     ec61: UA-Display-Gate     (Android 9)
@@ -72,6 +73,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "0007f100",
             'ef86': "0007f100",
             'ec5e': "0007f100",
+            'ec5f': "0007f100",
             'ec60': "0007f100",
             'ec61': "0007f100",
             'ec62': "0007f100",
@@ -92,7 +94,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0","ec5e"
+            "efb7", "efa0", "ec5e", "ec5f"
         ]
 
         self.ospl = {
@@ -139,6 +141,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "",
             'ef90': "uc_cast",
             'ec5e': "uapro_g2",
+            'ec5f': "msm8953_uapro",
             'ec60': "msm8953_uapro",
             'ec62': "",
             'ec61': "ud_gate",
@@ -169,6 +172,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "0",
             'ef90': "1",
             'ec5e': "1",
+            'ec5f': "1",
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",
@@ -199,6 +203,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ec5e': "1",
+            'ec5f': "1",
             'ec60': "1",
             'ec62': "0",
             'ec61': "0",
@@ -229,6 +234,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ec5e': "1",
+            'ec5f': "1",
             'ec60': "1",
             'ec62': "1",
             'ec61': "1",

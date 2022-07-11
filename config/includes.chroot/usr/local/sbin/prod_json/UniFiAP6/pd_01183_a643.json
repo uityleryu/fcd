@@ -1,0 +1,30 @@
+{
+  "UniFiAP6": {
+    "U6-LRPLUS": {
+      "INDEX": 0,
+      "NAME": "U6-LRPLUS",
+      "BOARDID": "a643",
+      "BOMREV": "113-01183",
+      "DESC": "UniFi AP6 Long Range Plus",
+      "FILE": "u6_mt7981_bspfactory.py",
+      "T1FILE": "u6_mt7981_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+      ]
+    }
+  }
+}
