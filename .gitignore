@@ -27,3 +27,4 @@ config/includes.chroot/usr/local/sbin/PAlib
 .idea/vcs.xml
 .idea/workspace.xml
 .idea/inspectionProfiles/profiles_settings.xml
+.vscode/*
