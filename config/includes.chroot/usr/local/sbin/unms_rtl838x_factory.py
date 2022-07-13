@@ -38,7 +38,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "UISP_S_PRO",
             'ee50': "UISP_S_LITE",
             'eed3': "UISP_O_PRO",
-            'ee6f': "UISP_S"
+            'ee6f': "UISP_S",
+            'eed6': "UISP_P_UPS"
         }
 
         # number of Ethernet
@@ -47,7 +48,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "3",
             'ee50': "3",
             'eed3': "3",
-            'ee6f': "3"
+            'ee6f': "3",
+            'eed6': "3"
         }
 
         # number of WiFi
@@ -56,7 +58,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "0",
             'ee50': "0",
             'eed3': "0",
-            'ee6f': "0"
+            'ee6f': "0",
+            'eed6': "0"
         }
 
         # number of Bluetooth
@@ -65,7 +68,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "1",
             'ee50': "0",
             'eed3': "1",
-            'ee6f': "1"
+            'ee6f': "1",
+            'eed6': "1"
         }
 
         btprmt = {
@@ -74,7 +78,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "RTL9300#",
             'ee50': "RTL838x#",
             'eed3': "RTL9300#",
-            'ee6f': "RTL838x#"
+            'ee6f': "RTL838x#",
+            'eed6': "RTL838x#"
         }
 
         # helper path
@@ -84,7 +89,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "eed1",
             'ee50': "unms-slite",
             'eed3': "unms-spro",
-            'ee6f': "ee6f"
+            'ee6f': "ee6f",
+            'eed6': "eed6"
         }
 
         # helper executable file
@@ -94,7 +100,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "helper_RTL930x_release",
             'ee50': "helper_RTL838x_release",
             'eed3': "helper_RTL930x_release",
-            'ee6f': "helper_RTL838x_release"
+            'ee6f': "helper_RTL838x_release",
+            'eed6': "helper_RTL838x_release"
         }
 
         # EEPROM device
@@ -104,7 +111,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "/dev/mtdchar12",
             'ee50': "/dev/mtdblock6",
             'eed3': "/dev/mtdchar12",
-            'ee6f': "/dev/mtdblock6"
+            'ee6f': "/dev/mtdblock6",
+            'eed6': "/dev/mtdblock6"
         }
 
         self.netif = {
@@ -112,7 +120,8 @@ class UNMSRTL838XFactoryGeneral(ScriptBase):
             'eed1': "ifconfig eth0 ",
             'ee50': "ifconfig eth0 ",
             'eed3': "ifconfig eth0 ",
-            'ee6f': "ifconfig eth0 "
+            'ee6f': "ifconfig eth0 ",
+            'eed6': "ifconfig eth0 "
         }
 
         self.bootloader_prompt = btprmt[self.board_id]

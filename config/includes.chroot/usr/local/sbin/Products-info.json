@@ -2679,6 +2679,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-UPS":{
+      "INDEX"       : 16,
+      "NAME"        : "UISP-P-UPS",
+      "BOARDID"     : "eed6",
+      "BOMREV"      : "113-01123",
+      "DESC"        : "UISP Power UPS",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 
