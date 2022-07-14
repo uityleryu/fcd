@@ -147,36 +147,94 @@ class UDMMT7622BspFactory(ScriptBase):
         
         # ===== Marvin said the bsp image already do not changed for year so he afraid he will build the wrong bsp image for factory
         # so we add this part to modify DDR setting for temp
-        self.enter_uboot()
-        msg(10, "Finish network setting in uboot ...")
-
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22aa22")
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: aa22aa22")
-        msg(11, "check default DDR config in uboot ...")
-
-        log_debug("Transfer image ...")
-        self.ddr_config_img = os.path.join(self.image, self.board_id + "-ddr-config.bin")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, f"tftpb ${{loadaddr}} {self.ddr_config_img}", "Bytes transferred")
+        self.increase_ddr_current = False
+        self.lower_ddr_frequency = True
+        self.restore_ddr_setting = False
         
-        log_debug("Erase flash from 0x00000 to 0x40000...")
-        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
-        self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase 0x00000 0x40000; snor write ${loadaddr} 0x00000 0x40000", self.bootloader_prompt)
-        msg(12, "Finish DDR Config updating...")
+        if self.increase_ddr_current:
+            self.enter_uboot()
+            msg(10, "Finish network setting in uboot ...")
 
-        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22aa22")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: aa22aa22")
+            msg(11, "check default DDR config in uboot ...")
 
-        self.enter_uboot()
-        msg(13, "Finish network setting in uboot ...")
+            log_debug("Transfer image ...")
+            self.ddr_config_img = os.path.join(self.image, self.board_id + "-ddr-increase-current-config.bin")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, f"tftpb ${{loadaddr}} {self.ddr_config_img}", "Bytes transferred")
+            
+            log_debug("Erase flash from 0x00000 to 0x40000...")
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
+            self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase 0x00000 0x40000; snor write ${loadaddr} 0x00000 0x40000", self.bootloader_prompt)
+            msg(12, "Finish DDR Config updating...")
 
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22ff22")
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: ff22ff22")
-        msg(14, "check modified DDR config in uboot ...")
-        self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+
+            self.enter_uboot()
+            msg(13, "Finish network setting in uboot ...")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140bc 0x1", "102140bc: ae22ff22")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "md 0x102140b8 0x1", "102140b8: ff22ff22")
+            msg(14, "check modified DDR config in uboot ...")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+        
         # ===================================================================================================================
+        # Lower DDR Freq
+        elif self.lower_ddr_frequency:
+            self.enter_uboot()
+            msg(10, "Finish network setting in uboot ...")
+
+            log_debug("Transfer image ...")
+            self.ddr_config_img = os.path.join(self.image, self.board_id + "-ddr-lower-ddr-freq-config.bin")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, f"tftpb ${{loadaddr}} {self.ddr_config_img}", "Bytes transferred")
+            
+            log_debug("Erase flash from 0x00000 to 0x40000...")
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
+            self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase 0x00000 0x40000; snor write ${loadaddr} 0x00000 0x40000", self.bootloader_prompt)
+            msg(12, "Finish DDR Config updating...")
+
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+
+            self.enter_uboot()
+            msg(13, "Finish network setting in uboot ...")
+
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "nor init")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "snor read ${loadaddr} 0x0 0x40000")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "crc32 ${loadaddr} 0x1e32c", "c6466223")
+            msg(14, "check CRC DDR config in uboot Correct...")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
         
-        
+        # ===================================================================================================================
+        # Restore Normal DDR setting
+        elif self.restore_ddr_setting:
+            self.enter_uboot()
+            msg(10, "Finish network setting in uboot ...")
+
+            log_debug("Transfer image ...")
+            self.ddr_config_img = os.path.join(self.image, self.board_id + "-ddr-restore-normal-config.bin")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, f"tftpb ${{loadaddr}} {self.ddr_config_img}", "Bytes transferred")
+            
+            log_debug("Erase flash from 0x00000 to 0x40000...")
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
+            self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase 0x00000 0x40000; snor write ${loadaddr} 0x00000 0x40000", self.bootloader_prompt)
+            msg(12, "Finish DDR Config updating...")
+
+            self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+
+            self.enter_uboot()
+            msg(13, "Finish network setting in uboot ...")
+
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "nor init")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "snor read ${loadaddr} 0x0 0x40000")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "crc32 ${loadaddr} 0x1e334", "8854c409")
+            msg(14, "check CRC DDR config in uboot Correct...")
+            self.pexp.expect_ubcmd(5, self.bootloader_prompt, "reset")
+            
 
         if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
