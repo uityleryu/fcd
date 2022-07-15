@@ -22,13 +22,17 @@ class IPQ80XXFactory(ScriptBase):
         '''
         AirFiber:
             ac11: AF60-XR
+            ac14: Wave-AP
+            ac15: Wave-Mesh
+            ac16: Wave-AP-Micro
         '''
         # U-boot prompt
         self.ubpmt = {
             '0000': "IPQ807x# ",
             'ac11': "IPQ807x# ",
             'ac14': "IPQ807x# ",
-            'ac15': "IPQ807x# "
+            'ac15': "IPQ807x# ",
+            'ac16': "IPQ807x# "
         }
 
         # linux console prompt
@@ -36,70 +40,80 @@ class IPQ80XXFactory(ScriptBase):
             '0000': "GBE#",
             'ac11': "#",
             'ac14': "#",
-            'ac15': "#"
+            'ac15': "#",
+            'ac16': "#"
         }
 
         self.bootloader = {
             '0000': "dc99-bootloader.bin",
             'ac11': "ac11-bootloader.bin",
             'ac14': "ac14-bootloader.bin",
-            'ac15': "ac15-bootloader.bin"
+            'ac15': "ac15-bootloader.bin",
+            'ac16': "ac16-bootloader.bin"
         }
 
         self.ubaddr = {
             '0000': "0xd80000",
             'ac11': "0xd80000",
             'ac14': "0xd80000",
-            'ac15': "0xd80000"
+            'ac15': "0xd80000",
+            'ac16': "0xd80000"
         }
 
         self.ubsz = {
             '0000': "0x100000",
             'ac11': "0x100000",
             'ac14': "0x100000",
-            'ac15': "0x100000"
+            'ac15': "0x100000",
+            'ac16': "0x100000"
         }
 
         self.cfgaddr = {
             '0000': "0xf000000",
             'ac11': "0xf000000",
             'ac14': "0xf000000",
-            'ac15': "0xf000000"
+            'ac15': "0xf000000",
+            'ac16': "0xf000000"
         }
 
         self.cfgsz = {
             '0000': "0x1000000",
             'ac11': "0x1000000",
             'ac14': "0x1000000",
-            'ac15': "0x1000000"
+            'ac15': "0x1000000",
+            'ac16': "0x1000000"
         }
 
         self.epromaddr = {
             '0000': "0x2a0000",
             'ac11': "0x2a0000",
             'ac14': "0x2a0000",
-            'ac15': "0x2a0000"
+            'ac15': "0x2a0000",
+            'ac16': "0x2a0000"
         }
 
         self.epromsz = {
             '0000': "0x40000",
             'ac11': "0x40000",
             'ac14': "0x40000",
-            'ac15': "0x40000"
+            'ac15': "0x40000",
+            'ac16': "0x40000"
         }
 
         self.product_class_table = {
             '0000': "radio",
             'ac11': "basic",
             'ac14': "basic",
-            'ac15': "basic"
+            'ac15': "basic",
+            'ac16': "basic"
         }
 
         self.pd_dir_table = {
             '0000': "am",
             'ac11': "af_af60",
             'ac14': "af_af60",
-            'ac15': "af_af60"
+            'ac15': "af_af60",
+            'ac16': "af_af60"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -424,7 +438,8 @@ class IPQ80XXMFG(ScriptBase):
             '0000': "IPQ807x# ",
             'ac11': "IPQ807x# ",
             'ac14': "IPQ807x# ",
-            'ac15': "IPQ807x# "
+            'ac15': "IPQ807x# ",
+            'ac16': "IPQ807x# "
         }
 
         # linux console prompt
@@ -432,21 +447,24 @@ class IPQ80XXMFG(ScriptBase):
             '0000': "root@OpenWrt",
             'ac11': "root@OpenWrt",
             'ac14': "root@OpenWrt",
-            'ac15': "root@OpenWrt"
+            'ac15': "root@OpenWrt",
+            'ac16': "root@OpenWrt"
         }
 
         self.artimg = {
             '0000': "dc99-mfg.bin",
             'ac11': "ac11-mfg.bin",
             'ac14': "ac14-mfg.bin",
-            'ac15': "ac15-mfg.bin"
+            'ac15': "ac15-mfg.bin",
+            'ac16': "ac16-mfg.bin"
         }
 
         self.addr = {
             '0000': "0x0",
             'ac11': "0x0",
             'ac14': "0x0",
-            'ac15': "0x0"
+            'ac15': "0x0",
+            'ac16': "0x0"
         }
 
         self.linux_prompt = self.lnxpmt[self.board_id]
