@@ -5,6 +5,20 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
+'''
+    a650: U6-PRO
+    a651: U6-Mesh
+    a652: U6-IW
+    a653: U6-Extender
+    a654: U6-Enterprise
+    a655: U6-Infinity
+    a656: U6-Exterprise-IW
+    a665: AFi-6-R
+    a666: AFi-6-Ext
+    a667: UniFi-Express
+'''
+
+
 class U6IPQ5018BspFactory(ScriptBase):
     def __init__(self):
         super(U6IPQ5018BspFactory, self).__init__()
@@ -29,7 +43,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "1",
             'a656': "1",
             'a665': "2",
-            'a666': "0"
+            'a666': "0",
+            'a667': "2"
         }
 
         self.wifinum = {
@@ -41,7 +56,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "3",
             'a656': "3",
             'a665': "2",
-            'a666': "2"
+            'a666': "2",
+            'a667': "2"
         }
 
         self.btnum = {
@@ -53,7 +69,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "1",
             'a656': "1",
             'a665': "1",
-            'a666': "1"
+            'a666': "1",
+            'a667': "1"
         }
         
         self.bootm_addr = {
@@ -65,7 +82,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "0x50000000",
             'a656': "0x50000000",
             'a665': "1",
-            'a666': "1"
+            'a666': "1",
+            'a667': ""
         }
         
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -78,7 +96,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "bootm $fileaddr#config@a655",
             'a656': 'bootm $fileaddr#config@a656',
             'a665': "1",
-            'a666': "1"
+            'a666': "1",
+            'a667': ""
         }
         
         self.linux_prompt_select = {
@@ -90,9 +109,10 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a656': "#",
             'a665': "#",
-            'a666': "#"
+            'a666': "#",
+            'a667': "#"
         }
-        
+
         self.uboot_eth_port = {
             'a650': "eth0",
             'a651': "eth0",
@@ -102,7 +122,21 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a655': "eth0",
             'a656': "eth1",
             'a665': "eth0",
-            'a666': "eth0"
+            'a666': "eth0",
+            'a667': "eth0"
+        }
+
+        self.lnx_eth_port = {
+            'a650': "br-lan",
+            'a651': "br-lan",
+            'a652': "br-lan",
+            'a653': "br-lan",
+            'a654': "br-lan",
+            'a655': "br-lan",
+            'a656': "br-lan",
+            'a665': "br-lan",
+            'a666': "br-lan",
+            'a667': "br-lan"
         }
 
         self.devnetmeta = {
@@ -115,7 +149,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a666" or self.board_id == "a665":
+        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a667":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
@@ -125,6 +159,7 @@ class U6IPQ5018BspFactory(ScriptBase):
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
+        self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
     def _ramboot_uap_fwupdate(self):
@@ -177,7 +212,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
