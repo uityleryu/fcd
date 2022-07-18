@@ -16,10 +16,10 @@
           "SRC_PATH": "images/fcd-image/uap-fw/ulte-flex",
           "DST_PATH": "uap-fw/ulte-flex",
           "FILES": [
-            "ULTE-Flex.qca956x.v0.10.6.0-gd58e7e8e-recovery.bin",
+            "ULTE-Flex.qca956x.v0.11.0.0-g3c5d6f7c-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V10.img",
-            "ee-0.10.6-0-gd58e7e8e-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
-            "qca956x-ulte-flex-u-boot-20220701.bin"
+            "ee-0.11.0-0-g3c5d6f7c-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
+            "qca956x-ulte-flex-u-boot-20220718.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e619.bin",
-          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v0.10.6.0-gd58e7e8e-recovery.bin"
+          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v0.11.0.0-g3c5d6f7c-recovery.bin"
         ],
         [
           "tftp/images/e619-mfg.bin",
@@ -51,11 +51,11 @@
         ],
         [
           "tftp/images/e619-recovery.bin",
-          "../uap-fw/ulte-flex/ee-0.10.6-0-gd58e7e8e-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
+          "../uap-fw/ulte-flex/ee-0.11.0-0-g3c5d6f7c-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
         ],
         [
           "tftp/images/e619-uboot.bin",
-          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-20220701.bin"
+          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-20220718.bin"
         ]
       ]
     }
