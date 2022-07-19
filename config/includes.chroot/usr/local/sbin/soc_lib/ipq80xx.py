@@ -321,6 +321,8 @@ class IPQ80XXFactory(ScriptBase):
         FLASH_TEMP_CFG = False
         if self.board_id == "ac15":
             CHK_CAL_EN = False
+        elif self.board_id == "ac11":
+            CHK_CAL_EN = False
         else:
             CHK_CAL_EN = True
         URESCUE_EN = True
