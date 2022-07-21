@@ -1,11 +1,11 @@
 {
   "AirFiber": {
-    "Wave-AP-01066": {
+    "Wave-AP-HD": {
       "INDEX": 0,
-      "NAME": "Wave-AP",
-      "BOARDID": "ac14",
+      "NAME": "Wave-AP-HD",
+      "BOARDID": "ac17",
       "BOMREV": "113-01066",
-      "DESC": "Wave-AP",
+      "DESC": "Wave-AP-HD",
       "FILE": "af_ipq80xx_factory.py",
       "T1FILE": "af_ipq80xx_mfg.py",
       "QRCHECK": "False",
@@ -44,15 +44,15 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ac14.bin",
+          "tftp/images/ac17.bin",
           "../af-fw/MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin"
         ],
         [
-          "tftp/images/ac14-bootloader.bin",
+          "tftp/images/ac17-bootloader.bin",
           "../af-fw/u-boot_01066.mbn"
         ],
         [
-          "tftp/images/ac14-mfg.bin",
+          "tftp/images/ac17-mfg.bin",
           "../af-fw/nand-ipq807x-single.img"
         ]
       ]

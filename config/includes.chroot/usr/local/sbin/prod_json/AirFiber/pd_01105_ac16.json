@@ -16,8 +16,8 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "MGMP.ipq807x.v3.0.10.6546609c.220708.0743.bin",
-            "u-boot_01066.mbn",
+            "MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin",
+            "u-boot_01105.mbn",
             "nand-ipq807x-single.img"
           ]
         },
@@ -45,11 +45,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac16.bin",
-          "../af-fw/MGMP.ipq807x.v3.0.10.6546609c.220708.0743.bin"
+          "../af-fw/MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin"
         ],
         [
           "tftp/images/ac16-bootloader.bin",
-          "../af-fw/u-boot_01066.mbn"
+          "../af-fw/u-boot_01105.mbn"
         ],
         [
           "tftp/images/ac16-mfg.bin",
