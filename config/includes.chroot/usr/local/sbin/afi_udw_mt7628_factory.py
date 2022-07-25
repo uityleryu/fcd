@@ -124,15 +124,24 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_only(30, "Loading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
         
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
-                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
         
-        ##  remove DEVREG data
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
-    
+        
+        #  remove DEVREG data
+        if self.board_id == 'ea2e':
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo EEPROM,388caeadd99840d391301bec20531fcef05400f4 > " +
+                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfgmtd -no Factory -c", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
+                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+
+        
     def init_ramfs_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
         self.pexp.expect_only(20, "done")
@@ -164,7 +173,24 @@ class UCMT7628Factory(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
 
         elif self.board_id == "ea2e":
-            # UDM-Pro-PU will set eth port as 169.254.x.x as default
+            
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0", self.linux_prompt)
+            print("Wait 2mins for DUT setup up IP(169.254.1.2) for eth0 then FCD will change the IP 192.168.1.x instead")
+            time.sleep(120)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0", self.linux_prompt)
+            #UDM-Pro-PU will set eth port as 169.254.x.x as default
+            retry_time = 20
+            while retry_time >=0:
+                ret_msg = self.pexp.expect_get_output("ifconfig eth0",self.linux_prompt)
+                if ret_msg.find("169.254.1.2") >= 0:
+                    print("IP of Interface is set up done")
+                    break
+                time.sleep(1)
+            else:
+                print("IP of Interface is not sey up done")
+                self.pexp.expect_action(3, "169.254.1.2", "ifconfig eth0")
+
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=169.254.1.2/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config 2>&1 &", self.linux_prompt)
             time.sleep(10)
@@ -174,10 +200,6 @@ class UCMT7628Factory(ScriptBase):
         elif self.board_id == "ed12":
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         else:
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/dhcpc.status=enabled/dhcpc.status=disabled/g' /tmp/system.cfg", self.linux_prompt)
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, r"sed -i 's/netconf.1.ip=192.168.1.20/netconf.1.ip={}/g' /tmp/system.cfg".format(self.dutip), self.linux_prompt)
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh apply-config &", self.linux_prompt)
-            # time.sleep(10)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset", self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up", self.linux_prompt)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, r"ifconfig eth0 {} netmask 255.255.255.0".format(self.dutip), self.linux_prompt)
@@ -185,10 +207,6 @@ class UCMT7628Factory(ScriptBase):
         self.is_network_alive_in_linux()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
                                                        "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
-        
-        # ##  remove DEVREG data
-        # self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
-        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
@@ -223,10 +241,10 @@ class UCMT7628Factory(ScriptBase):
 
     def check_info(self):
         self.pexp.expect_action(30, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        # self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
-        # self.pexp.expect_only(30, "systemid="+self.board_id)
-        # self.pexp.expect_only(30, "serialno="+self.mac.lower())
-        # self.pexp.expect_only(30, "qrid="+self.qrcode)
+        self.pexp.expect_only(30, "flashSize="+self.flash_size[self.board_id])
+        self.pexp.expect_only(30, "systemid="+self.board_id)
+        self.pexp.expect_only(30, "serialno="+self.mac.lower())
+        self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
         
@@ -245,21 +263,6 @@ class UCMT7628Factory(ScriptBase):
     def mcu_fw_check(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu info', 'version', retry=48)
 
-    # def move_wifi_data(self):
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf read 0x80000000 0x40000 0x10000; sf erase 0x70000 0x10000; sf write 0x80000000 0x70000 0x10000")
-        
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf read 0x80010000 0x70000 0x10000")
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80000000 0x10000")
-    #     # log_debug("aaaaaa{}".format(a))
-    #     time.sleep(3)
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "crc 0x80010000 0x10000")
-    #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "^c")
-    #     # log_debug('bbbbbb{}'.format(b))
-    #     time.sleep(2)
-    #     # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
-    
     def off_power_unit_power(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "i2ctransfer -y 4 w4@0xb 0x00 0x10 0x00 0x44", self.linux_prompt)
         time.sleep(1)
@@ -278,10 +281,6 @@ class UCMT7628Factory(ScriptBase):
         if self.UPDATE_UBOOT_ENABLE is True:
             # self.fwupdate(self.fwimg, reboot_en=False)
             self.enter_uboot()
-            
-            # if self.board_id == "ed14":
-            #     self.move_wifi_data()
-                
             self.update_uboot_image()
             msg(10, "Update Uboot image successfully ...")
 
@@ -307,7 +306,6 @@ class UCMT7628Factory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            # import pdb; pdb.set_trace()
 
         if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
@@ -334,7 +332,6 @@ class UCMT7628Factory(ScriptBase):
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
-
 
 def main():
     uc_mt7628_factory = UCMT7628Factory()
