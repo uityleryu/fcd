@@ -1,8 +1,8 @@
 {
   "UniFiDream": {
-    "UDR": {
+    "UDR-00786": {
       "INDEX": 0,
-      "NAME": "UDR",
+      "NAME": "UDR-00786",
       "BOARDID": "eccc",
       "BOMREV": "113-00786",
       "DESC": "UniFi Dream Router",
