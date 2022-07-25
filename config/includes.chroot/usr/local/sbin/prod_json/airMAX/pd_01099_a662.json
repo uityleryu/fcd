@@ -17,10 +17,10 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_01099.mbn",
+            "u-boot_1.0.0.mbn",
             "lbe-ax-v6_emmc.bin",
             "lbe-ax-v6_nor.bin",
-            "rax.ipq5018.v0.3.0.2e7853af.211109.2150-mp03.5-c2.bin"
+            "rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
           ]
         },
         {
@@ -37,7 +37,7 @@
       "CREATE_LINK":[
         [
           "tftp/images/a662-uboot.bin",
-          "../am-fw/u-boot_01099.mbn"
+          "../am-fw/u-boot_1.0.0.mbn"
         ],
         [
           "tftp/images/a662-nor.bin",
@@ -49,7 +49,7 @@
         ],
         [
           "tftp/images/a662.bin",
-          "../am-fw/rax.ipq5018.v0.3.0.2e7853af.211109.2150-mp03.5-c2.bin"
+          "../am-fw/rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
         ]
       ]
     }
