@@ -18,7 +18,7 @@
           "FILES": [
             "MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin",
             "u-boot_01066.mbn",
-            "nand-ipq807x-single.img"
+            "wave-ap-acorn-spf11.3-csu1-nand-v5-single.img"
           ]
         },
         {
@@ -53,7 +53,7 @@
         ],
         [
           "tftp/images/ac14-mfg.bin",
-          "../af-fw/nand-ipq807x-single.img"
+          "../af-fw/wave-ap-acorn-spf11.3-csu1-nand-v5-single.img"
         ]
       ]
     }

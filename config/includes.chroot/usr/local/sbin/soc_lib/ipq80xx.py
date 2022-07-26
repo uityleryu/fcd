@@ -168,10 +168,20 @@ class IPQ80XXFactory(ScriptBase):
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        time.sleep(10)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "is alive")
+
+        retry = 10
+        for i in range(0, retry):
+            time.sleep(3)
+            try:
+                self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+                self.pexp.expect_only(15, "is alive")
+            except Exception as e:
+                print("ping fail..." + str(i))
+                continue
+            break
+        else:
+            print("ping retry fail")
+            raise NameError('ping retry fail')
 
     def uboot_update(self):
         self.stop_uboot()
@@ -446,6 +456,10 @@ class IPQ80XXMFG(ScriptBase):
         '''
         AirFiber:
             ac11: AF60-XR
+            ac14: Wave-AP
+            ac15: Wave-Mesh
+            ac16: Wave-AP-Micro
+            ac17: Wave-AP-HD
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -485,6 +499,15 @@ class IPQ80XXMFG(ScriptBase):
             'ac17': "0x0"
         }
 
+        self.machid ={
+            '0000': "0x0",
+            'ac11': "0x0",
+            'ac14': "801000f",
+            'ac15': "8010010",
+            'ac16': "8010010",
+            'ac17': "801000f"
+        }
+
         self.linux_prompt = self.lnxpmt[self.board_id]
         self.bootloader_prompt = self.ubpmt[self.board_id]
 
@@ -495,8 +518,20 @@ class IPQ80XXMFG(ScriptBase):
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "is alive")
+
+        retry = 10
+        for i in range(0, retry):
+            time.sleep(3)
+            try:
+                self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+                self.pexp.expect_only(15, "is alive")
+            except Exception as e:
+                print("ping fail..." + str(i))
+                continue
+            break
+        else:
+            print("ping retry fail")
+            raise NameError('ping retry fail')
 
     def run(self):
         """
@@ -517,7 +552,6 @@ class IPQ80XXMFG(ScriptBase):
         time.sleep(10)
         self.set_uboot_network()
      
-
         if self.board_id == "ac11":
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x42000000 images/{}".format(self.artimg[self.board_id])
@@ -539,12 +573,13 @@ class IPQ80XXMFG(ScriptBase):
             cmd = "tftpboot 0x44000000 images/{}".format(self.artimg[self.board_id])
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(120, "Bytes transferred")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv machid 801000f")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv machid {}".format(self.machid[self.board_id]))
 
             msg(40, "Starting writing Image")
             cmd = "imgaddr=0x44000000 && source $imgaddr:script"
             self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
             time.sleep(5)
+            self.pexp.expect_ubcmd(120, self.bootloader_prompt, "env default -a ; save")
 
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
         time.sleep(60)
