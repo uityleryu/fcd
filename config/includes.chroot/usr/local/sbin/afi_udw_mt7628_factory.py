@@ -126,20 +126,27 @@ class UCMT7628Factory(ScriptBase):
         
         
         
-        #  remove DEVREG data
-        if self.board_id == 'ea2e':
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo EEPROM,388caeadd99840d391301bec20531fcef05400f4 > " +
+        # #  remove DEVREG data
+        # if self.board_id == 'ea2e':
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo EEPROM,388caeadd99840d391301bec20531fcef05400f4 > " +
+        #                                                "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfgmtd -no Factory -c", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+        # else:
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
+        #                                                "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+            
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
                                                        "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfgmtd -no Factory -c", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
-        else:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
-                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
 
         
     def init_ramfs_image(self):
