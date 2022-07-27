@@ -20,7 +20,7 @@
             "u-boot_1.0.0.mbn",
             "prism-ax-v6_emmc.bin",
             "prism-ax-v7_nor.bin",
-            "rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
+            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
           ]
         },
         {
@@ -49,7 +49,7 @@
         ],
         [
           "tftp/images/a661.bin",
-          "../am-fw/rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
+          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
         ]
       ]
     }

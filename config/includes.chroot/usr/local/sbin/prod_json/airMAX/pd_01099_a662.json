@@ -18,9 +18,9 @@
           "DST_PATH": "am-fw",
           "FILES": [
             "u-boot_1.0.0.mbn",
-            "lbe-ax-v6_emmc.bin",
-            "lbe-ax-v6_nor.bin",
-            "rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
+            "lap-ax-v1_emmc.bin",
+            "lap-ax-v1_nor.bin",
+            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
           ]
         },
         {
@@ -41,15 +41,15 @@
         ],
         [
           "tftp/images/a662-nor.bin",
-          "../am-fw/lbe-ax-v6_nor.bin"
+          "../am-fw/lap-ax-v1_nor.bin"
         ],
         [
           "tftp/images/a662-emmc.bin",
-          "../am-fw/lbe-ax-v6_emmc.bin"
+          "../am-fw/lap-ax-v1_emmc.bin"
         ],
         [
           "tftp/images/a662.bin",
-          "../am-fw/rax.ipq5018.v1.0.0.798d15b2.220719.1532-mp03.5-c2.bin"
+          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
         ]
       ]
     }
