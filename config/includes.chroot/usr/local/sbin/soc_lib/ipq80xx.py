@@ -579,9 +579,15 @@ class IPQ80XXMFG(ScriptBase):
             cmd = "imgaddr=0x44000000 && source $imgaddr:script"
             self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
             time.sleep(5)
-            self.pexp.expect_ubcmd(120, self.bootloader_prompt, "env default -a ; save")
 
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
+
+        self.stop_uboot()
+
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "env default -a ; save")
+
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
+
         time.sleep(60)
 
         msg(90, "Reboot")
