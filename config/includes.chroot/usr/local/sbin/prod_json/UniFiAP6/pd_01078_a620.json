@@ -28,22 +28,22 @@
           "SRC_PATH": "images/fcd-image/u6-fw/mt7622",
           "DST_PATH": "u6-fw/mt7622",
           "FILES": [
-            "BZ.MT7622_5.60.18+13041.211030.0107-uboot.bin",
-            "fake_eeprom_u6-lr-bom19.bin",
+            "BZ.MT7622_6.0.23+13676.220729.0208-uboot.bin",
+            "fake_eeprom_u6-lr-bom23.bin",
             "lede-mtk-mt7622-UAP6-initramfs-kernel.bin",
             "u6-lr-mt7622-mt7915a-v15.bin",
-            "unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+            "unifi-v1.1.61.56-g24845112_uap6-mt7622-64MB_u-boot.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a620.bin",
-          "../u6-fw/mt7622/BZ.MT7622_5.60.18+13041.211030.0107-uboot.bin"
+          "../u6-fw/mt7622/BZ.MT7622_6.0.23+13676.220729.0208-uboot.bin"
         ],
         [
           "tftp/images/a620-fake_EEPROM.bin",
-          "../u6-fw/mt7622/fake_eeprom_u6-lr-bom19.bin"
+          "../u6-fw/mt7622/fake_eeprom_u6-lr-bom23.bin"
         ],
         [
           "tftp/images/a620-fcd.bin",
@@ -55,7 +55,7 @@
         ],
         [
           "tftp/images/a620-uboot.bin",
-          "../u6-fw/mt7622/unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+          "../u6-fw/mt7622/unifi-v1.1.61.56-g24845112_uap6-mt7622-64MB_u-boot.bin"
         ]
       ]
     }
