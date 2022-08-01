@@ -1,11 +1,11 @@
 {
   "AirFiber": {
-    "Wave-AP-01066": {
+    "Wave-AP-Micro": {
       "INDEX": 0,
-      "NAME": "Wave-AP",
-      "BOARDID": "ac14",
-      "BOMREV": "113-01066",
-      "DESC": "Wave-AP",
+      "NAME": "Wave-AP-Micro",
+      "BOARDID": "ac16",
+      "BOMREV": "113-01105",
+      "DESC": "Wave-AP-Micro",
       "FILE": "af_ipq80xx_factory.py",
       "T1FILE": "af_ipq80xx_mfg.py",
       "QRCHECK": "False",
@@ -17,8 +17,8 @@
           "DST_PATH": "af-fw",
           "FILES": [
             "MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin",
-            "u-boot_01066.mbn",
-            "wave-ap-acorn-spf11.3-csu1-nand-v5-single.img"
+            "u-boot_01105.mbn",
+            "wave-micro-acorn-spf11.3-csu1-nand-v4-single.img"
           ]
         },
         {
@@ -44,16 +44,16 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ac14.bin",
+          "tftp/images/ac16.bin",
           "../af-fw/MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin"
         ],
         [
-          "tftp/images/ac14-bootloader.bin",
-          "../af-fw/u-boot_01066.mbn"
+          "tftp/images/ac16-bootloader.bin",
+          "../af-fw/u-boot_01105.mbn"
         ],
         [
-          "tftp/images/ac14-mfg.bin",
-          "../af-fw/wave-ap-acorn-spf11.3-csu1-nand-v5-single.img"
+          "tftp/images/ac16-mfg.bin",
+          "../af-fw/wave-micro-acorn-spf11.3-csu1-nand-v4-single.img"
         ]
       ]
     }

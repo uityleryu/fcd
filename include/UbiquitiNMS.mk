@@ -40,6 +40,10 @@ IMAGE-UISP-P= \
 IMAGE-UISP-P-PRO= \
     # images/ee5b* \
 
+IMAGE-UISP-P-UPS= \
+		unms-fw/uisp-p-ups/UISP-P-UPS* \
+		images/eed6*
+
 IMAGE-UNMS+=$(IMAGE-UISP-CONSOLE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
@@ -50,6 +54,7 @@ IMAGE-UNMS+=$(IMAGE-UISP-R-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-P-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-P)
 IMAGE-UNMS+=$(IMAGE-UISP-P-PRO)
+IMAGE-UNMS+=$(IMAGE-UISP-P-UPS)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -104,6 +109,9 @@ TOOLS-UISP-P+= uisp_p/*
 TOOLS-UISP-P-PRO=$(TOOLS-UNMS)
 TOOLS-UISP-P-PRO+= uisp_p_pro/*
 
+TOOLS-UISP-P-UPS=$(TOOLS-UNMS)
+TOOLS-UISP-P-UPS+= eed6/*
+
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-CONSOLE,FCD_$(PRD)_UISP-CONSOLE_$(VER)_$(FWVER)))
@@ -118,6 +126,7 @@ $(eval $(call ProductImage,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-P-UPS,FCD_$(PRD)_UISP-P-UPS_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -133,6 +142,7 @@ $(eval $(call ProductCompress,UISP-R-PRO,FCD_$(PRD)_UISP-R-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-LITE,FCD_$(PRD)_UISP-P-LITE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-P-UPS,FCD_$(PRD)_UISP-P-UPS_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
@@ -146,6 +156,7 @@ $(eval $(call ProductCompress2,00832_dca3))
 $(eval $(call ProductCompress2,00973_ee6a))
 $(eval $(call ProductCompress2,01129_ee6a))
 $(eval $(call ProductCompress2,01168_ee6a))
+$(eval $(call ProductCompress2,01201_ee6a))
 $(eval $(call ProductCompress2,00819_ee6c))
 $(eval $(call ProductCompress2,00820_eed3))
 $(eval $(call ProductCompress2,00821_eefa))
@@ -158,4 +169,5 @@ $(eval $(call ProductCompress2,03162_eed5))
 $(eval $(call ProductCompress2,00732_1200))
 $(eval $(call ProductCompress2,UISP_100G-SERIES))
 $(eval $(call ProductCompress2,UISP_Console-SERIES))
+$(eval $(call ProductCompress2,01123_eed6))
 

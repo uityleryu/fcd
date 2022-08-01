@@ -19,6 +19,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee",
             "helper_UAP6_MT7622_release"
           ]
@@ -27,22 +28,22 @@
           "SRC_PATH": "images/fcd-image/u6-fw/mt7622",
           "DST_PATH": "u6-fw/mt7622",
           "FILES": [
-            "BZ.MT7622_5.60.18+13041.211030.0107-uboot.bin",
-            "fake_eeprom_u6-lr-bom19.bin",
+            "BZ.MT7622_led-hf-6.0_gavin.liao@uap-hsinchu+13676.220729.1634-uboot.bin",
+            "fake_eeprom_u6-lr-bom23.bin",
             "lede-mtk-mt7622-UAP6-initramfs-kernel.bin",
-            "u6-lr-mt7622-mt7915a-v9.bin",
-            "unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+            "u6-lr-mt7622-mt7915a-v15.bin",
+            "unifi-v2020.01-ubnt-mt7622.56-g24845112-dirty_uap6-mt7622-64MB_u-boot.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a620.bin",
-          "../u6-fw/mt7622/BZ.MT7622_5.60.18+13041.211030.0107-uboot.bin"
+          "../u6-fw/mt7622/BZ.MT7622_led-hf-6.0_gavin.liao@uap-hsinchu+13676.220729.1634-uboot.bin"
         ],
         [
           "tftp/images/a620-fake_EEPROM.bin",
-          "../u6-fw/mt7622/fake_eeprom_u6-lr-bom19.bin"
+          "../u6-fw/mt7622/fake_eeprom_u6-lr-bom23.bin"
         ],
         [
           "tftp/images/a620-fcd.bin",
@@ -50,11 +51,11 @@
         ],
         [
           "tftp/images/a620-mfg.kernel.uboot",
-          "../u6-fw/mt7622/u6-lr-mt7622-mt7915a-v9.bin"
+          "../u6-fw/mt7622/u6-lr-mt7622-mt7915a-v15.bin"
         ],
         [
           "tftp/images/a620-uboot.bin",
-          "../u6-fw/mt7622/unifi-v1.1.52.52-g6dcccd9e_uap6-mt7622-64MB_u-boot.bin"
+          "../u6-fw/mt7622/unifi-v2020.01-ubnt-mt7622.56-g24845112-dirty_uap6-mt7622-64MB_u-boot.bin"
         ]
       ]
     }

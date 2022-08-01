@@ -1,0 +1,30 @@
+{
+  "UniFiAP6": {
+    "UEX": {
+      "INDEX": 0,
+      "NAME": "UEX",
+      "BOARDID": "a667",
+      "BOMREV": "113-01184",
+      "DESC": "UniFi Express",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+      ]
+    }
+  }
+}

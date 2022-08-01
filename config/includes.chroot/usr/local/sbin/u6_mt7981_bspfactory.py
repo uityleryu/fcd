@@ -5,6 +5,13 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
+'''
+    a642: U6-PLUS
+    a643: U6-LRPLUS
+    a667: UniFi-Express
+'''
+
+
 class U6MT7981BspFactory(ScriptBase):
     def __init__(self):
         super(U6MT7981BspFactory, self).__init__()
@@ -17,7 +24,6 @@ class U6MT7981BspFactory(ScriptBase):
         self.gpt = "images/{}-gpt.bin".format(self.board_id)
         self.devregpart = "/dev/mtd0"
         self.bomrev = "113-{}".format(self.bom_rev)
-        self.bootloader_prompt = "IPQ5018#"
         self.linux_prompt = "root@OpenWrt:/#"
 
         self.ethnum = {
@@ -51,7 +57,7 @@ class U6MT7981BspFactory(ScriptBase):
             'a643': "#"
         }
 
-        self.uboot_eth_port = {
+        self.lnx_eth_port = {
             'a642': "br-lan",
             'a643': "br-lan"
         }
@@ -68,11 +74,12 @@ class U6MT7981BspFactory(ScriptBase):
         self.REGISTER_ENABLE   = True
         self.FWUPDATE_ENABLE   = False
         self.DATAVERIFY_ENABLE = False
+        self.FCD_TLV_data = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
-        self.set_lnx_net(self.uboot_eth_port[self.board_id])
+        self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
     def _ramboot_uap_fwupdate(self):
@@ -146,6 +153,8 @@ class U6MT7981BspFactory(ScriptBase):
         if self.REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
+            cmd = "mtd erase {}".format(self.devregpart)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 

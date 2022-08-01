@@ -22,13 +22,19 @@ class IPQ80XXFactory(ScriptBase):
         '''
         AirFiber:
             ac11: AF60-XR
+            ac14: Wave-AP
+            ac15: Wave-Mesh
+            ac16: Wave-AP-Micro
+            ac17: Wave-AP-HD
         '''
         # U-boot prompt
         self.ubpmt = {
             '0000': "IPQ807x# ",
             'ac11': "IPQ807x# ",
             'ac14': "IPQ807x# ",
-            'ac15': "IPQ807x# "
+            'ac15': "IPQ807x# ",
+            'ac16': "IPQ807x# ",
+            'ac17': "IPQ807x# "
         }
 
         # linux console prompt
@@ -36,70 +42,90 @@ class IPQ80XXFactory(ScriptBase):
             '0000': "GBE#",
             'ac11': "#",
             'ac14': "#",
-            'ac15': "#"
+            'ac15': "#",
+            'ac16': "#",
+            'ac17': "#"
         }
 
         self.bootloader = {
             '0000': "dc99-bootloader.bin",
             'ac11': "ac11-bootloader.bin",
             'ac14': "ac14-bootloader.bin",
-            'ac15': "ac15-bootloader.bin"
+            'ac15': "ac15-bootloader.bin",
+            'ac16': "ac16-bootloader.bin",
+            'ac17': "ac17-bootloader.bin"
         }
 
         self.ubaddr = {
             '0000': "0xd80000",
             'ac11': "0xd80000",
             'ac14': "0xd80000",
-            'ac15': "0xd80000"
+            'ac15': "0xd80000",
+            'ac16': "0xd80000",
+            'ac17': "0xd80000"
         }
 
         self.ubsz = {
             '0000': "0x100000",
             'ac11': "0x100000",
             'ac14': "0x100000",
-            'ac15': "0x100000"
+            'ac15': "0x100000",
+            'ac16': "0x100000",
+            'ac17': "0x100000"
         }
 
         self.cfgaddr = {
             '0000': "0xf000000",
             'ac11': "0xf000000",
             'ac14': "0xf000000",
-            'ac15': "0xf000000"
+            'ac15': "0xf000000",
+            'ac16': "0xf000000",
+            'ac17': "0xf000000"
         }
 
         self.cfgsz = {
             '0000': "0x1000000",
             'ac11': "0x1000000",
             'ac14': "0x1000000",
-            'ac15': "0x1000000"
+            'ac15': "0x1000000",
+            'ac16': "0x1000000",
+            'ac17': "0x1000000"
         }
 
         self.epromaddr = {
             '0000': "0x2a0000",
             'ac11': "0x2a0000",
             'ac14': "0x2a0000",
-            'ac15': "0x2a0000"
+            'ac15': "0x2a0000",
+            'ac16': "0x2a0000",
+            'ac17': "0x2a0000"
         }
 
         self.epromsz = {
             '0000': "0x40000",
             'ac11': "0x40000",
             'ac14': "0x40000",
-            'ac15': "0x40000"
+            'ac15': "0x40000",
+            'ac16': "0x40000",
+            'ac17': "0x40000"
         }
 
         self.product_class_table = {
             '0000': "radio",
             'ac11': "basic",
             'ac14': "basic",
-            'ac15': "basic"
+            'ac15': "basic",
+            'ac16': "basic",
+            'ac17': "basic"
         }
 
         self.pd_dir_table = {
             '0000': "am",
             'ac11': "af_af60",
             'ac14': "af_af60",
-            'ac15': "af_af60"
+            'ac15': "af_af60",
+            'ac16': "af_af60",
+            'ac17': "af_af60"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -142,10 +168,20 @@ class IPQ80XXFactory(ScriptBase):
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        time.sleep(10)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "is alive")
+
+        retry = 10
+        for i in range(0, retry):
+            time.sleep(3)
+            try:
+                self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+                self.pexp.expect_only(15, "is alive")
+            except Exception as e:
+                print("ping fail..." + str(i))
+                continue
+            break
+        else:
+            print("ping retry fail")
+            raise NameError('ping retry fail')
 
     def uboot_update(self):
         self.stop_uboot()
@@ -307,6 +343,8 @@ class IPQ80XXFactory(ScriptBase):
         FLASH_TEMP_CFG = False
         if self.board_id == "ac15":
             CHK_CAL_EN = False
+        elif self.board_id == "ac11":
+            CHK_CAL_EN = False
         else:
             CHK_CAL_EN = True
         URESCUE_EN = True
@@ -418,13 +456,19 @@ class IPQ80XXMFG(ScriptBase):
         '''
         AirFiber:
             ac11: AF60-XR
+            ac14: Wave-AP
+            ac15: Wave-Mesh
+            ac16: Wave-AP-Micro
+            ac17: Wave-AP-HD
         '''
         # U-boot prompt
         self.ubpmt = {
             '0000': "IPQ807x# ",
             'ac11': "IPQ807x# ",
             'ac14': "IPQ807x# ",
-            'ac15': "IPQ807x# "
+            'ac15': "IPQ807x# ",
+            'ac16': "IPQ807x# ",
+            'ac17': "IPQ807x# "
         }
 
         # linux console prompt
@@ -432,21 +476,36 @@ class IPQ80XXMFG(ScriptBase):
             '0000': "root@OpenWrt",
             'ac11': "root@OpenWrt",
             'ac14': "root@OpenWrt",
-            'ac15': "root@OpenWrt"
+            'ac15': "root@OpenWrt",
+            'ac16': "root@OpenWrt",
+            'ac17': "root@OpenWrt"
         }
 
         self.artimg = {
             '0000': "dc99-mfg.bin",
             'ac11': "ac11-mfg.bin",
             'ac14': "ac14-mfg.bin",
-            'ac15': "ac15-mfg.bin"
+            'ac15': "ac15-mfg.bin",
+            'ac16': "ac16-mfg.bin",
+            'ac17': "ac17-mfg.bin"
         }
 
         self.addr = {
             '0000': "0x0",
             'ac11': "0x0",
             'ac14': "0x0",
-            'ac15': "0x0"
+            'ac15': "0x0",
+            'ac16': "0x0",
+            'ac17': "0x0"
+        }
+
+        self.machid ={
+            '0000': "0x0",
+            'ac11': "0x0",
+            'ac14': "801000f",
+            'ac15': "8010010",
+            'ac16': "8010010",
+            'ac17': "801000f"
         }
 
         self.linux_prompt = self.lnxpmt[self.board_id]
@@ -459,8 +518,20 @@ class IPQ80XXMFG(ScriptBase):
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "is alive")
+
+        retry = 10
+        for i in range(0, retry):
+            time.sleep(3)
+            try:
+                self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
+                self.pexp.expect_only(15, "is alive")
+            except Exception as e:
+                print("ping fail..." + str(i))
+                continue
+            break
+        else:
+            print("ping retry fail")
+            raise NameError('ping retry fail')
 
     def run(self):
         """
@@ -481,7 +552,6 @@ class IPQ80XXMFG(ScriptBase):
         time.sleep(10)
         self.set_uboot_network()
      
-
         if self.board_id == "ac11":
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x42000000 images/{}".format(self.artimg[self.board_id])
@@ -497,13 +567,13 @@ class IPQ80XXMFG(ScriptBase):
             cmd = "nand write 0x42000000 {0} $filesize".format(self.addr[self.board_id])
             self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
             time.sleep(5)
-        elif self.board_id == "ac14":
+        elif self.board_id == "ac14" or self.board_id == "ac16" or self.board_id == "ac17":
 
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x44000000 images/{}".format(self.artimg[self.board_id])
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
             self.pexp.expect_only(120, "Bytes transferred")
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv machid 801000f")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv machid {}".format(self.machid[self.board_id]))
 
             msg(40, "Starting writing Image")
             cmd = "imgaddr=0x44000000 && source $imgaddr:script"
@@ -511,6 +581,13 @@ class IPQ80XXMFG(ScriptBase):
             time.sleep(5)
 
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
+
+        self.stop_uboot()
+
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "env default -a ; save")
+
+        self.pexp.expect_ubcmd(120, self.bootloader_prompt, "re")
+
         time.sleep(60)
 
         msg(90, "Reboot")

@@ -34,7 +34,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw-pro-pu",
           "DST_PATH": "udm-fw/udw-pro-pu",
           "FILES": [
-            "US.mt7628_6.2.11+13822.220321.1543-uboot.bin",
+            "UP.mt7628_6.4.2+14103.220719.1539-uboot.bin",
             "lede-ramips-mt76x8-UDWPRO-PU-initramfs-kernel.bin",
             "ramips-mt76x8-usp-initramfs-16MB.uboot"
           ]
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea2e-fw.bin",
-          "../udm-fw/udw-pro-pu/US.mt7628_6.2.11+13822.220321.1543-uboot.bin"
+          "../udm-fw/udw-pro-pu/UP.mt7628_6.4.2+14103.220719.1539-uboot.bin"
         ],
         [
           "tftp/images/ea2e-initramfs.bin",

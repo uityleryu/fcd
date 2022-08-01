@@ -28,3 +28,4 @@ config/includes.chroot/usr/local/sbin/PAlib
 .idea/workspace.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .vscode/*
+Products-info.json

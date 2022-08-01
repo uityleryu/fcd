@@ -117,10 +117,10 @@ class UFECNT7521Factory(ScriptBase):
     def stop_uboot(self):
         print('stop_uboot')
         self.pexp.expect_ubcmd(30, "Press any key to enter boot command mode.", "\n")
-       
+
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ipaddr " + self.dutip)
-        
+
     def lnx_netcheck(self, netifen=False):
         postexp = [
             "64 bytes from",
@@ -150,7 +150,7 @@ class UFECNT7521Factory(ScriptBase):
             if i & 1 and i != len(self.mac) - 1:
                 ans += ':'
         return ans.strip()
-        
+
     def set_show_mac(self):
         mac_with_colon = self.get_mac_with_colon()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "macaddr {}".format(mac_with_colon))
@@ -167,13 +167,14 @@ class UFECNT7521Factory(ScriptBase):
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue {}".format(image_name[where][0]))
-        if self.cnapi.ip_is_alive("{}".format(self.dutip), retry=120) is False:
+
+        rt = self.cnapi.ip_is_alive("{}".format(self.dutip), retry=120)
+        if rt is False:
             error_critical("Can't ping to DUT {}".format(self.dutip))
 
         cmd = "atftp -p -l {0}/{1} -r {3} {2}".format(self.fwdir, image_name[where][2], self.dutip, image_name[where][1])
-
         log_debug("host cmd: " + cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        [sto, rtc] = self.cnapi.xcmd(cmd)
         if (int(rtc) > 0):
             error_critical("Failed to upload image")
         else:
@@ -185,17 +186,17 @@ class UFECNT7521Factory(ScriptBase):
 
         self.pexp.expect_only(120, "done")
         self.pexp.expect_only(120, "resetting")
-    
+
     def eth1_mac_new_rule(self, mac_list):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac_list[0]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000007 {}'.format(mac_list[1]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000008 {}'.format(mac_list[2]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000009 {}'.format(mac_list[3]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000a {}'.format(mac_list[4]))
-        
+
         eth1_mac_last_two = (hex(int(mac_list[5], 16) + 1))[2:]
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(eth1_mac_last_two))
-        
+
     def write_hw_info(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'erase 01f60000 10000')
 
@@ -258,7 +259,8 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'reset')
 
     def set_board_gpon_mode(self):
-        cmds = ['echo set_flash_register 0x07050701 0x94 > /proc/pon_phy/debug',
+        cmds = [
+            'echo set_flash_register 0x07050701 0x94 > /proc/pon_phy/debug',
             'echo save_flash_matrix > /proc/pon_phy/debug',
             'mtd bob save']
         for cmd in cmds:
@@ -266,7 +268,6 @@ class UFECNT7521Factory(ScriptBase):
             self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, post_exp=self.linux_prompt)
 
     def eth1_mac_old_rule(self, mac_list, op):
-        
         mac0_or_02 = hex(int(mac_list[0], 16) | op)[2:]
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac0_or_02))
 
@@ -287,13 +288,12 @@ class UFECNT7521Factory(ScriptBase):
         """
         Main procedure of factory
         """
-        
         msg(1, "Start Procedure")
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
-        self.fcd.common.config_stty(self.dev)
-        self.fcd.common.print_current_fcd_version()
+        self.cnapi.config_stty(self.dev)
+        self.cnapi.print_current_fcd_version()
 
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\r")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
@@ -357,11 +357,13 @@ class UFECNT7521Factory(ScriptBase):
 
 
         msg(95, "Set DUT to GPON mode ...")
-        self.set_board_gpon_mode()
+        if self.board_id == "eec5":
+            self.set_board_gpon_mode()
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
-        
+
+
 def main():
     uf_ecnt7521_factory = UFECNT7521Factory()
     uf_ecnt7521_factory.run()
