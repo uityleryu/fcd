@@ -72,8 +72,8 @@ class U6MT7981BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True
         self.DOHELPER_ENABLE   = True
         self.REGISTER_ENABLE   = True
-        self.FWUPDATE_ENABLE   = False
-        self.DATAVERIFY_ENABLE = False
+        self.FWUPDATE_ENABLE   = True
+        self.DATAVERIFY_ENABLE = True
         self.FCD_TLV_data = False
 
     def init_bsp_image(self):
