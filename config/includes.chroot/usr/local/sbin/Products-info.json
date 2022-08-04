@@ -2592,11 +2592,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-S-PRO":{
+    "UISP-S-PRO-00818":{
       "INDEX"       : 5,
       "NAME"        : "UISP-S-PRO",
       "BOARDID"     : "eed1",
       "BOMREV"      : "113-00818",
+      "DESC"        : "Ubiquiti Network Management System Switch PRO",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-PRO-01209":{
+      "INDEX"       : 5,
+      "NAME"        : "UISP-S-PRO",
+      "BOARDID"     : "eed1",
+      "BOMREV"      : "113-01209",
       "DESC"        : "Ubiquiti Network Management System Switch PRO",
       "FILE"        : "unms_rtl838x_factory.py",
       "T1FILE"      : "",
