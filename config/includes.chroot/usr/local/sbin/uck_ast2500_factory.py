@@ -89,7 +89,7 @@ class UNIFIBMCFactory(ScriptBase):
             raise NameError('set network retry fail')
 
     def set_bmc_network(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 " + self.bmcip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.bmcip)
 
         retry = 10
         for i in range(0, retry):
@@ -203,7 +203,7 @@ class UNIFIBMCFactory(ScriptBase):
             "-i field=flash_jedec_id,format=hex,value={}".format(self.flash_jedecid),
             "-i field=flash_uid,format=hex,value={}".format(self.flash_uuid),
             reg_qr_field,
-            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eegenbin_path),
             "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
             "-i field=sw_id,format=hex,value={}".format(self.sw_id),
             "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
