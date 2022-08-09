@@ -411,6 +411,7 @@ class U6MT762xFactory(ScriptBase):
             if self.DOHELPER_ENABLE is True:
                 self.erase_eefiles()
                 msg(30, "Do helper to get the output file to devreg server ...")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 7 > /proc/sys/kernel/printk")
                 self.prepare_server_need_files()
 
                 eetxt_dut_path = os.path.join(self.tftpdir, self.eetxt)
