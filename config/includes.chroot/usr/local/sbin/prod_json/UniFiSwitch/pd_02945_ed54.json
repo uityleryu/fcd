@@ -1,13 +1,13 @@
 {
   "UniFiSwitch": {
-    "USW-XG-48-POE": {
+    "USW-LITE-16-POE": {
       "INDEX": 0,
-      "NAME": "USW-XG-48-POE",
-      "BOARDID": "eb26",
-      "BOMREV": "113-02792",
-      "DESC": "UBNT UniFiSwitch XG 48-Port PoE",
-      "FILE": "us_bcm5616_factory.py",
-      "T1FILE": "us_bcm5616_mfg.py",
+      "NAME": "USW-LITE-16-POE",
+      "BOARDID": "ed54",
+      "BOMREV": "113-0",
+      "DESC": "UBNT UniFiSwitch Lite 16 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
       "SW_ID": "0201",
@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-xg48poe-fw.bin.16MB"
+            "unifiswitch-lite-16poe-fw.bin.32MB"
           ]
         },
         {
@@ -37,12 +37,12 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/eb26.bin",
-          "../usw-fw/unifiswitch-xg48poe-fw.bin.16MB"
+          "tftp/images/ed54-fw.bin",
+          "../usw-fw/unifiswitch-lite-16poe-fw.bin.32MB"
         ],
         [
-          "tftp/images/eb26-mfg.bin",
-          "../usw-fw/unifiswitch-xg48poe-mfg.bin.16MB"
+          "tftp/images/ed54-t1.bin",
+          "../usw-fw/unifiswitch-lite-16poe-fw.bin.32MB"
         ]
       ]
     }

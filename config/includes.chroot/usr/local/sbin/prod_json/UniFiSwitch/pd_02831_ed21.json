@@ -1,6 +1,6 @@
 {
   "UniFiSwitch": {
-    "USW-24-POE": {
+    "USW-24-POE-02831": {
       "INDEX": 0,
       "NAME": "USW-24-POE",
       "BOARDID": "ed21",
@@ -16,14 +16,15 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-24poe-fw.bin",
-            "unifiswitch-24poe-fw.bin"
+            "unifiswitch-24poe-fw.bin.16MB"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -39,11 +40,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed21-fw.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin"
+          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
         ],
         [
           "tftp/images/ed21-t1.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin"
+          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
         ]
       ]
     }

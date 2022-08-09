@@ -355,7 +355,6 @@ class UFECNT7521Factory(ScriptBase):
             self.check_onu()
             msg(90, "Succeeding in checking the MAC information ...")
 
-
         msg(95, "Set DUT to GPON mode ...")
         if self.board_id == "eec5":
             self.set_board_gpon_mode()

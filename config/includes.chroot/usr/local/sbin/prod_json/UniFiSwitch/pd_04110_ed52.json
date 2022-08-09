@@ -1,13 +1,13 @@
 {
   "UniFiSwitch": {
-    "USW-XG-48-POE": {
+    "USW-48-POE-04110": {
       "INDEX": 0,
-      "NAME": "USW-XG-48-POE",
-      "BOARDID": "eb26",
-      "BOMREV": "113-02792",
-      "DESC": "UBNT UniFiSwitch XG 48-Port PoE",
-      "FILE": "us_bcm5616_factory.py",
-      "T1FILE": "us_bcm5616_mfg.py",
+      "NAME": "USW-48-POE-04110",
+      "BOARDID": "ed52",
+      "BOMREV": "113-04110",
+      "DESC": "UBNT UniFiSwitch 48 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0002",
       "SW_ID": "0201",
@@ -16,13 +16,15 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-xg48poe-fw.bin.16MB"
+            "unifiswitch-48poe-fw.bin.32MB"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -37,12 +39,12 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/eb26.bin",
-          "../usw-fw/unifiswitch-xg48poe-fw.bin.16MB"
+          "tftp/images/ed52-fw.bin",
+          "../usw-fw/unifiswitch-48poe-fw.bin.32MB"
         ],
         [
-          "tftp/images/eb26-mfg.bin",
-          "../usw-fw/unifiswitch-xg48poe-mfg.bin.16MB"
+          "tftp/images/ed52-t1.bin",
+          "../usw-fw/unifiswitch-48poe-fw.bin.32MB"
         ]
       ]
     }
