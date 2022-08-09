@@ -1,0 +1,63 @@
+{
+  "UniFiDrive": {
+    "UNAS": {
+      "INDEX": 0,
+      "NAME": "UNAS",
+      "BOARDID": "ea50",
+      "BOMREV": "113-03756",
+      "DESC": "UniFi NAS ",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "2101",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unas/",
+          "DST_PATH": "unas",
+          "FILES": [
+            "unas.ea50.srt1.fw.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/unas/",
+          "DST_PATH": "ea50",
+          "FILES": [
+            "uImage_ea50_srt"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/unas",
+          "DST_PATH": "tools/unas",
+          "FILES": [
+            "al324-ee",
+            "config_gu.sh",
+            "enp0s1.network",
+            "enp0s2.network",
+            "helper_UNVR-AL324"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea50-fw.bin",
+          "../unas/unas.ea50.srt1.fw.bin"
+        ],
+        [
+          "tftp/ea50/uImage",
+          "../ea50/uImage_ea50_srt"
+        ]
+      ]
+    }
+  }
+}
