@@ -86,6 +86,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a913': True,
             'a914': True,
             'ec3a': True,
+            'ec38': True,
         }
 
         # number of Ethernet
@@ -96,6 +97,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a913': "0",
             'a914': "0",
             'ec3a': "0",
+            'ec38': "0",
         }
 
         # number of WiFi
@@ -106,6 +108,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a913': "0",
             'a914': "0",
             'ec3a': "0",
+            'ec38': "0",
         }
 
         # number of Bluetooth
@@ -116,6 +119,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a913': "1",
             'a914': "1",
             'ec3a': "1",
+            'ec38': "1",
         }
 
     def prepare_server_need_files(self):
@@ -346,7 +350,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.username = "ubnt"
         self.password = "ubnt"
         self.polling_mins = 5
-        if self.board_id == 'ec3a':
+        if self.board_id == 'ec3a' or self.board_id == 'ec38':
             self.client_name = 'client_rpi4_release'
         else:
             self.client_name = 'client_x86_release_20200414'
@@ -363,7 +367,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         elif self.board_id == 'a914':
             self.board_id = 'a917'
 
-        if self.board_id == 'ec3a':
+        if self.board_id == 'ec3a' or self.board_id == 'ec38':
             self.mac = self.mac_addr_increase(self.mac, 0)
         else:
             self.mac = self.mac_addr_increase(self.mac, 1)
@@ -554,7 +558,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def nfc_write(self, paras, waittime):
         self.session.execmd('killall {}'.format(self.helperexe))
         self.session.execmd('rm /tmp/info.txt')
-        cmd_write = '{}/{} -fcdcreate {} &> /tmp/info.txt &'.format(self.dut_tmpdir, self.helperexe, paras)
+        cmd_write = '{}/{} -d 2 -fcdcreate {} &> /tmp/info.txt &'.format(self.dut_tmpdir, self.helperexe, paras)
         print('cmd_write: ' + cmd_write)
         self.session.execmd(cmd_write)
 
@@ -672,15 +676,16 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         """
         Main procedure of factory
         """
-        self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
+        if self.board_id != 'ec3a' and self.board_id != 'ec38':
+            self.fcd.common.config_stty(self.dev)
 
-        # Connect into DU and set pexpect helper for class using picocom
-        serialcomport = "/dev/{0}".format(self.dev)
-        serial_obj = SerialExpect(port=serialcomport, baudrate=self.baudrate)
-        self.set_serial_helper(serial_obj=serial_obj)
-        time.sleep(1)
-        if self.board_id != 'ec3a':
+            # Connect into DU and set pexpect helper for class using picocom
+            serialcomport = "/dev/{0}".format(self.dev)
+            serial_obj = SerialExpect(port=serialcomport, baudrate=self.baudrate)
+            self.set_serial_helper(serial_obj=serial_obj)
+            time.sleep(1)
+
             msg(5, "Open serial port successfully ...")
             self.ser.execmd("")
             self.check_connect()
@@ -693,14 +698,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             msg(30, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
-            if self.board_id != 'ec3a':
+            if self.board_id != 'ec3a' and self.board_id != 'ec38':
                 self.registration()
                 msg(40, "Finish doing registration ...")
                 self.put_devreg_data_in_dut()
                 msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if CHECK_MAC_ENABLE is True:
-            if self.board_id != 'ec3a':
+            if self.board_id != 'ec3a' and self.board_id != 'ec38':
                 self.check_mac()
                 msg(60, "Finish checking MAC in DUT ...")
 

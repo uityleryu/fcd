@@ -45,6 +45,11 @@ TOOLS-UA-HOTEL=\
 TOOLS-UA-Fob=$(TOOLS-UA)
 TOOLS-UA-Fob+= \
     ufp/nxp-nfc-nci
+
+TOOLS-UA-Card=$(TOOLS-UA)
+TOOLS-UA-Card+= \
+    ufp/nxp-nfc-nci
+
 # Project specific tools
 TOOLS-UA+=$(TOOLS-CONFIG)
 TOOLS-UA-GATE+=$(TOOLS-UA)
@@ -71,6 +76,7 @@ $(eval $(call ProductCompress,UA-ReaderLite,FCD_$(PRD)_UA-READERLITE_$(VER)_$(FW
 $(eval $(call ProductCompress,UA-Display-Gate,FCD_$(PRD)_UA-DISPLAY-GATE$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-SENSE-GATE,FCD_$(PRD)_UA-SENSE-GATE$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-Card,FCD_$(PRD)_UA-Card$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
@@ -87,6 +93,7 @@ $(eval $(call ProductCompress2,03587_ec61))
 $(eval $(call ProductCompress2,03628_ec61))
 $(eval $(call ProductCompress2,03624_ec51))
 $(eval $(call ProductCompress2,03823_ec3a))
+$(eval $(call ProductCompress2,03224_ec38))
 $(eval $(call ProductCompress2,03172_ec42))
 $(eval $(call ProductCompress2,03919_ec42))
 $(eval $(call ProductCompress2,UA_DISPLAY-SERIES))
