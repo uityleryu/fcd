@@ -1,0 +1,28 @@
+{
+  "Connect": {
+    "UC-AUDIENCE": {
+      "INDEX": 0,
+      "NAME": "UC-AUDIENCE",
+      "BOARDID": "ec80",
+      "BOMREV": "113-03523",
+      "DESC": "UniFi Connect Audience",
+      "FILE": "uc_qcs403_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
