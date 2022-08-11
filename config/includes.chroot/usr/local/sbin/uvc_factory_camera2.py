@@ -45,6 +45,11 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 FLEX"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+
+        elif  self.product_name == "UVC-G4DOORBELLPROPOE":
+            self.board_name = "UVC G4 Doorbell Pro POE"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -63,18 +68,21 @@ class UVCFactoryGeneral(ScriptBase):
         ethnum = {
             'a592': '1',
             'a593': '1',
+            'a575': '1',
         }
 
         # number of WiFi
         wifinum = {
             'a592': '0',
             'a593': '0',
+            'a575': '0',
         }
 
         # number of Bluetooth
         btnum = {
             'a592': '0',
             'a593': '0',
+            'a575': '0',
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -88,6 +96,7 @@ class UVCFactoryGeneral(ScriptBase):
         self.netif = {
             'a592': "ifconfig eth0 ",
             'a593': "ifconfig eth0 ",
+            'a575': "ifconfig eth0 ",
         }
 
     def ezreadini(self, path, section, item):

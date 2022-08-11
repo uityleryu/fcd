@@ -1,0 +1,30 @@
+{
+  "UniFiVideo": {
+    "UVC-G4DOORBELLPROPOE": {
+      "INDEX": 0,
+      "NAME": "UVC-G4DOORBELLPROPOE",
+      "BOARDID": "a575",
+      "BOMREV": "113-03849",
+      "DESC": "UVC G4 Doorbell Pro POE",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
