@@ -2498,7 +2498,7 @@
       "INDEX"       : 18,
       "NAME"        : "UVC-G4DOORBELLPROPOE",
       "BOARDID"     : "a575",
-      "BOMREV"      : "113-03848",
+      "BOMREV"      : "113-03849",
       "DESC"        : "UVC G4 Doorbell Pro POE",
       "FILE"        : "uvc_factory_camera2.py",
       "T1FILE"      : "",
