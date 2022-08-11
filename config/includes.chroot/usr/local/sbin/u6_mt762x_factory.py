@@ -416,9 +416,11 @@ class U6MT762xFactory(ScriptBase):
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, f"ifconfig br0 hw ether 18:E8:29:00:0C:2{self.row_id}")
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0")
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, f"ifconfig eth0 hw ether 18:E8:29:00:0C:3{self.row_id}")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up")
+                time.sleep(10)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0")
-                time.sleep(1)
                 self.prepare_server_need_files()
 
                 eetxt_dut_path = os.path.join(self.tftpdir, self.eetxt)
