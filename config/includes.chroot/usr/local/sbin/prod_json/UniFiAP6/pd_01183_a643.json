@@ -28,7 +28,7 @@
           "FILES": [
             "BZ.MT7981_tmp-merge-u6++14241.220729.0834-uboot.bin",
             "mtk-initramfs-mt7981-emmc.uboot",
-            "u6-plus-emmc-single-image-V3-20220707.bin",
+            "u6-LR-plus-emmc-single-image-V3-20220707.bin",
             "u6-plus-fip.bin"
           ]
         }
@@ -44,7 +44,7 @@
         ],
         [
           "tftp/images/a643-bspfw.bin",
-          "../u6-fw/mt7981/u6-plus-emmc-single-image-V3-20220707.bin"
+          "../u6-fw/mt7981/u6-LR-plus-emmc-single-image-V3-20220707.bin"
         ],
         [
           "tftp/images/a643-bspub.bin",

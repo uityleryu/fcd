@@ -41,7 +41,7 @@ class U6MT7981MFGGeneral(ScriptBase):
         cmd = "tftpboot 0x46000000 images/{}-bspfw.bin".format(self.board_id)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         cmd = "mmc erase 0x0 0x23ff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         cmd = "mmc write 0x46000000 0x0 0x23ff"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         md = "mmc erase 0x3400 0xfff"
