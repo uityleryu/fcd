@@ -74,6 +74,9 @@ IMAGE-UVC-G4DOORBELLPROPOE= \
     images/a575* \
     uvc-fw/g4dbpropoe.*
 
+IMAGE-UNIFI-WAVEROVECAMERA= \
+    images/a594* \
+    uvc-fw/waverovecam.*
 
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
@@ -206,8 +209,11 @@ TOOLS-UVC-G5FLEX+= \
 TOOLS-UVC-G4DOORBELLPROPOE+=$(TOOLS-UVC)
 TOOLS-UVC-G4DOORBELLPROPOE+= \
     uvc/128k_ff.bin
-# Project target
 
+TOOLS-UniFi-WaveRoveCamera+=$(TOOLS-UVC)
+TOOLS-UniFi-WaveRoveCamera= \
+    uvc/128k_ff.bin
+# Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4PTZ,FCD_$(PRD)_G4PTZ_$(VER)_$(FWVER)))
@@ -226,8 +232,9 @@ $(eval $(call ProductImage,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
-# Project compressed file for RPi FCD host
+$(eval $(call ProductImage,UNIFI-WAVEROVECAMERA,FCD_$(PRD)_WAVEROVECAMERA_$(VER)_$(FWVER)))
 
+# Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4PTZ,FCD_$(PRD)_G4PTZ_$(VER)_$(FWVER)))
@@ -248,8 +255,8 @@ $(eval $(call ProductCompress,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UNIFI-WAVEROVECAMERA,FCD_$(PRD)_WAVEROVECAMERA_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
-
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
 $(eval $(call ProductCompress2,03194_a574))

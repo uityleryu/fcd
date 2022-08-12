@@ -50,6 +50,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G4 Doorbell Pro POE"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif  self.product_name == "UNIFI-WAVEROVECAMERA":
+            self.board_name = "UniFi Wave Rover Camera"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -69,6 +73,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a592': '1',
             'a593': '1',
             'a575': '1',
+            'a594': '1',
         }
 
         # number of WiFi
@@ -76,6 +81,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a592': '0',
             'a593': '0',
             'a575': '0',
+            'a594': '0',
         }
 
         # number of Bluetooth
@@ -83,6 +89,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a592': '0',
             'a593': '0',
             'a575': '0',
+            'a594': '0',
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -97,6 +104,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a592': "ifconfig eth0 ",
             'a593': "ifconfig eth0 ",
             'a575': "ifconfig eth0 ",
+            'a594': "ifconfig eth0 ",
         }
 
     def ezreadini(self, path, section, item):
