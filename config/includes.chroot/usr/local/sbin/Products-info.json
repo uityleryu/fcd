@@ -2508,7 +2508,7 @@
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
     },
-    "UniFi-WaveRoveCamera":{
+    "UNIFI-WAVEROVECAMERA":{
       "INDEX"       : 19,
       "NAME"        : "UNIFI-WAVEROVECAMERA",
       "BOARDID"     : "a594",
