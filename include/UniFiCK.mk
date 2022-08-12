@@ -2,12 +2,10 @@
 
 IMAGE-UCKP= \
     images/e970* \
-    uck-fw/RCK2.apq8053.v0.5.1.af6ba0a.210520.1440-boot.img \
-    uck-fw/CK2FCD.apq8053.v0.3.1.5f2f353.180205.1651.bootimg \
-    uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.boot \
-    uck-fw/UCKP.apq8053.v0.8.12.f260dd3.190118.1203.rootfs
-    # uck-fw/UCKP-2.1.11-cd332a59cf054d5fbf22837350fc84ac.rootfs \
-    # uck-fw/UCKP-2.1.11-cd332a59cf054d5fbf22837350fc84ac.boot
+    uck-fw/CK2FCD.apq8053.v0.6.0.8f96a48.220617.1815-boot.img \
+    uck-fw/RCK2.apq8053.v0.6.0.8f96a48.220617.1815-boot.img \
+    uck-fw/UCKP.apq8053.v2.5.11.b2ebfc7.220801.1419.boot \
+    uck-fw/UCKP.apq8053.v2.5.11.b2ebfc7.220801.1419.rootfs
 
 PRD_MODEL=UniFiCK
 BACKT1_PRDSRL=$(PRD_MODEL)
