@@ -210,8 +210,8 @@ TOOLS-UVC-G4DOORBELLPROPOE+=$(TOOLS-UVC)
 TOOLS-UVC-G4DOORBELLPROPOE+= \
     uvc/128k_ff.bin
 
-TOOLS-UniFi-WaveRoveCamera+=$(TOOLS-UVC)
-TOOLS-UniFi-WaveRoveCamera= \
+TOOLS-UNIFI-WAVEROVECAMERA+=$(TOOLS-UVC)
+TOOLS-UNIFI-WAVEROVECAMERA= \
     uvc/128k_ff.bin
 # Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
