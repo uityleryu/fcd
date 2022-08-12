@@ -96,6 +96,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G5BULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G5DOME)
 IMAGE-UVC+=$(IMAGE-UVC-G5FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPROPOE)
+IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVECAMERA)
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
