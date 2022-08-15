@@ -1,5 +1,5 @@
 {
-  "GPON": {
+  "UniFiISP": {
     "UISP-FIBER-LOCO-XG": {
       "INDEX": 0,
       "NAME": "UISP-FIBER-LOCO-XG",
@@ -45,7 +45,7 @@
           "tftp/images/eec8-uboot.bin",
           "../uf-fw/boot-UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.109-179.220809.1116.img"
         ]
-      ] 
+      ]
     }
   }
 }

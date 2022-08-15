@@ -1,0 +1,48 @@
+{
+  "UniFiISP": {
+    "UISP-FIBER-OLT-XGS": {
+      "INDEX": 0,
+      "NAME": "UISP-FIBER-OLT-XGS",
+      "BOARDID": "eec7",
+      "BOMREV": "113-03647",
+      "DESC": "UISP-FIBER-OLT-XGS",
+      "FILE": "uf_bcm5616_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0008",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uf-fw/eec7",
+          "DST_PATH": "uf-fw",
+          "FILES": [
+            "OLT.xgs.recovery.v4.5.0-beta1.afe3f44.220816.1707.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/eec7",
+          "DST_PATH": "tools",
+          "FILES": [
+            "helper_BCM5617x_release"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/eec7-recovery.bin",
+          "../uf-fw/OLT.xgs.recovery.v4.5.0-beta1.afe3f44.220816.1707.bin"
+        ]
+      ]
+    }
+  }
+}
