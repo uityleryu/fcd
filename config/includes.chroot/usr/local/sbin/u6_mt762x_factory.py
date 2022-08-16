@@ -168,6 +168,12 @@ class U6MT762xFactory(ScriptBase):
         elif self.board_id == "a620":
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig", "br0", retry=10)
             # To enable ethernet in 1G unit
+            cmd = "sed -i '/udhcpc/d' /etc/inittab"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, retry=10)
+            cmd = "init -q"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, retry=10)
+            cmd = "ifconfig br0 {}".format(self.dutip)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, retry=10)
 
         self.is_network_alive_in_linux(retry=10)
 
