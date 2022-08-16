@@ -8,6 +8,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 '''
     a642: U6-PLUS
     a643: U6-LRPLUS
+        Although the U6-LRPLUS is IPQ5018, it use the same process of U6-PLUS
     a667: UniFi-Express
 '''
 
@@ -19,12 +20,11 @@ class U6MT7981BspFactory(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.fwimg = "images/{}-fw.bin".format(self.board_id)
-        self.initramfs = "images/{}-initramfs.bin".format(self.board_id)
-        self.gpt = "images/{}-gpt.bin".format(self.board_id)
         self.devregpart = "/dev/mtd0"
         self.bomrev = "113-{}".format(self.bom_rev)
+        self.bootloader_prompt = "MT7981"
         self.linux_prompt = "root@OpenWrt:/#"
+        self.linux_prompt_fw = "#"
 
         self.ethnum = {
             'a642': "1",
@@ -72,8 +72,8 @@ class U6MT7981BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True
         self.DOHELPER_ENABLE   = True
         self.REGISTER_ENABLE   = True
-        self.FWUPDATE_ENABLE   = False
-        self.DATAVERIFY_ENABLE = False
+        self.FWUPDATE_ENABLE   = True
+        self.DATAVERIFY_ENABLE = True
         self.FCD_TLV_data = False
 
     def init_bsp_image(self):
@@ -82,37 +82,45 @@ class U6MT7981BspFactory(ScriptBase):
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
-    def _ramboot_uap_fwupdate(self):
-        self.pexp.expect_action(40, "to stop", "\033")
-        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+    def uboot_update(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net()
         self.is_network_alive_in_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
-                                                           'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read {} 0x00000022 0x00020022;'.format(self.bootm_addr[self.board_id]) + \
-                                                           'bootm {}"'.format(self.bootm_addr[self.board_id]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, self.bootm_cmd[self.board_id])
-        self.linux_prompt = self.linux_prompt_select[self.board_id]
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
-        self.disable_udhcpc()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
-        self.is_network_alive_in_linux()
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
-                     dst_file=self.dut_tmpdir + "/fwupdate.bin")
-
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
-        self.linux_prompt = "#"
+        cmd = "sf probe"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "sf erase 0x10000 0x80000"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        cmd = "tftpboot 0x46000000 images/{}-uboot.bin".format(self.board_id)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "mmc erase 0x3400 0xfff"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "mmc write 0x46000000 0x3400 0xfff"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net()
+        self.is_network_alive_in_uboot()
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        self._ramboot_uap_fwupdate()
-        # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
-        #sometimes DUT will fail log to interrupt the login in process so add below try process for it
+        self.uboot_update()
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv do_urescue TRUE")
+        self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
+        self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
+
+        cmd = "atftp -p -l {0}/{1}-fw.bin {2}".format(self.fwdir, self.board_id, self.dutip)
+        log_debug("host cmd: " + cmd)
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if (int(rtc) > 0):
+            error_critical("Failed to upload firmware image")
+        else:
+            log_debug("Uploading firmware image successfully")
+
+        self.pexp.expect_only(10, "")
+
+        self.linux_prompt = "#"
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
 
     def check_info(self):

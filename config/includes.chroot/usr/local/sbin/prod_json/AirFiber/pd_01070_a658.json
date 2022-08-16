@@ -18,8 +18,8 @@
           "FILES": [
             "u-boot_01070.mbn",
             "GMC.ipq5018.v3.0.10.6546609c.220708.0806.bin",
-            "wave-nano-v3_emmc.bin",
-            "wave-nano-v3_nor.bin"
+            "wave-nano-v4_emmc.bin",
+            "wave-nano-v4_nor.bin"
           ]
         },
         {
@@ -40,11 +40,11 @@
         ],
         [
           "tftp/images/a658-nor.bin",
-          "../af-fw/wave-nano-v3_nor.bin"
+          "../af-fw/wave-nano-v4_nor.bin"
         ],
         [
           "tftp/images/a658-emmc.bin",
-          "../af-fw/wave-nano-v3_emmc.bin"
+          "../af-fw/wave-nano-v4_emmc.bin"
         ],
         [
           "tftp/images/a658.bin",

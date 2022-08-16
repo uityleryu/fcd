@@ -93,6 +93,7 @@ IMAGE-USW-Enterprise-24-PoE= \
 IMAGE-USW-Enterprise-48-PoE= \
     images/eb28* \
     usw-fw/unifiswitch-enterprise-48-poe* \
+    usw-fw/unifiswitch-enterprise-xg24-fw.bin \
     usw-fw/US.bcm5617x*
 
 IMAGE-USW-Aggregation= \
@@ -103,6 +104,7 @@ IMAGE-USW-Aggregation= \
 IMAGE-USW-Aggregation-Pro= \
     images/eb27* \
     usw-fw/unifiswitch-aggpro* \
+    usw-fw/unifiswitch-enterprise-xg24-fw.bin \
     usw-fw/US.bcm5617x*
 
 IMAGE-US-GEN1= \

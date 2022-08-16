@@ -21,9 +21,35 @@
             "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
+          "DST_PATH": "u6-fw/mt7981",
+          "FILES": [
+            "BZ.MT7981_tmp-merge-u6++14241.220729.0834-uboot.bin",
+            "mtk-initramfs-mt7981-emmc.uboot",
+            "u6-LR-plus-emmc-single-image-V3-20220707.bin",
+            "u6-plus-fip.bin"
+          ]
         }
       ],
       "CREATE_LINK": [
+        [
+          "tftp/images/a643-fw.bin",
+          "../u6-fw/mt7981/BZ.MT7981_tmp-merge-u6++14241.220729.0834-uboot.bin"
+        ],
+        [
+          "tftp/images/a643-uboot.bin",
+          "../u6-fw/mt7981/mtk-initramfs-mt7981-emmc.uboot"
+        ],
+        [
+          "tftp/images/a643-bspfw.bin",
+          "../u6-fw/mt7981/u6-LR-plus-emmc-single-image-V3-20220707.bin"
+        ],
+        [
+          "tftp/images/a643-bspub.bin",
+          "../u6-fw/mt7981/u6-plus-fip.bin"
+        ]
       ]
     }
   }

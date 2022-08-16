@@ -9,16 +9,6 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
-
-INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
-INSTALL_NAND_FW_ENABLE = True
-PROVISION_ENABLE = True
-DOHELPER_ENABLE = True
-REGISTER_ENABLE = True
-FWUPDATE_ENABLE = False
-DATAVERIFY_ENABLE = True
-WAIT_LCMUPGRADE_ENABLE = True
-
 class Retry():
     def __init__(self, _function, max_retry_count=0, delay_time=0):
         self.retry(_function,max_retry_count, delay_time)
@@ -56,7 +46,8 @@ class UNASALPINEFactory(ScriptBase):
             'ea20': "/dev/mtdblock4",
             'ea51': "/dev/mtdblock4",
             'ea21': "/dev/mtdblock4",
-            'ea30': "/dev/mtdblock4"
+            'ea30': "/dev/mtdblock4",
+            'ea50': "/dev/mtdblock4",
         }
         self.devregpart = self.devregparts[self.board_id]
         self.bomrev = "113-" + self.bom_rev
@@ -81,6 +72,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "2",
             'ea21': "3",
             'ea30': "2",
+            'ea50': "2",
         }
 
         # number of WiFi
@@ -90,6 +82,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "0",
             'ea21': "0",
             'ea30': "0",
+            'ea50': "0",
         }
 
         # number of Bluetooth
@@ -99,6 +92,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "1",
             'ea21': "1",
             'ea30': "1",
+            'ea50': "1",
         }
 
         self.netif = {
@@ -107,6 +101,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "ifconfig enp0s1 ",
             'ea21': "ifconfig enp0s1 ",
             'ea30': "ifconfig enp0s1 ",
+            'ea50': "ifconfig enp0s1 ",
         }
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -160,7 +155,7 @@ class UNASALPINEFactory(ScriptBase):
 
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
-        self.is_network_alive_in_uboot(retry=9)
+        self.is_network_alive_in_uboot(retry=9, timeout=5)
 
         # clean up config block
         self.pexp.expect_action(30, self.ubpmt, "sf probe; sf erase 0x01200000 0x1000")
@@ -304,7 +299,7 @@ class UNASALPINEFactory(ScriptBase):
     def set_tftp_at_uboot(self):
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
-        self.is_network_alive_in_uboot(retry=9)
+        self.is_network_alive_in_uboot(retry=9, timeout=5)
     
     def pull_uImage_from_fcd_server(self, dut_nc_ip):
         cmd = 'setenv ipaddr {}; setenv serverip {}; setenv bootargsextra \'client={} server={} factory nc_transfer\'; run bootcmdtftp'.format(self.dutip, self.tftp_server, self.dutip, self.tftp_server)
@@ -352,8 +347,13 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")
         self.pexp.expect_ubcmd(10, self.ubpmt, "sf probe")
         self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000000 544e4255")
-        self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770751ea")
-        self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 51ea7707")
+
+        if self.board_id == "ea50":
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770750ea")
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 50ea7707")
+        else:
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770751ea")
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 51ea7707")
         self.pexp.expect_ubcmd(10, self.ubpmt, "sf erase 0x1f0000 0x9000")
         self.pexp.expect_only(30, "Erased: OK")
         self.pexp.expect_ubcmd(10, self.ubpmt, "sf write 0x08000000 0x1f0000 0x20")
@@ -388,7 +388,19 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        if self.board_id == 'ea51':
+        INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
+        INSTALL_NAND_FW_ENABLE = True
+        PROVISION_ENABLE = True
+        DOHELPER_ENABLE = True
+        REGISTER_ENABLE = True
+        FWUPDATE_ENABLE = False
+        DATAVERIFY_ENABLE = True
+        if self.board_id == 'ea50':
+            WAIT_LCMUPGRADE_ENABLE = False
+        else:    
+            WAIT_LCMUPGRADE_ENABLE = True
+
+        if self.board_id == 'ea51' or self.board_id == 'ea50':
             msg(3, 'Set fake sysid in uboot')
             self.set_fake_sysid()
         
@@ -400,13 +412,13 @@ class UNASALPINEFactory(ScriptBase):
         if INSTALL_NAND_FW_ENABLE is True:
             msg(10, "Boot to u-boot console and install nand flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
-            if self.board_id == 'ea51':
+            if self.board_id == 'ea51'or self.board_id == 'ea50':
                 self.install_firmware_on_emmc()
             else:
                 self.install_nand_fw()  # will be rebooting after installation
 
         msg(30, "Waiting boot to linux console...")
-        if self.board_id == 'ea51':
+        if self.board_id == 'ea51' or self.board_id == 'ea50':
             self.login(timeout=300)
         else:
             self.pexp.expect_only(300, "Welcome to UniFi NVR!")
@@ -442,13 +454,13 @@ class UNASALPINEFactory(ScriptBase):
         else:
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
-            if self.board_id == 'ea51':
+            if self.board_id == 'ea51' or self.board_id == 'ea50':
                 self.login(timeout=300)
             else:
                 self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
         if DATAVERIFY_ENABLE is True:
-            if self.board_id == 'ea51':
+            if self.board_id == 'ea51' or self.board_id == 'ea50':
                 self.clear_shell()
 
             Retry(self.check_info, max_retry_count=3, delay_time=1)
