@@ -2493,8 +2493,35 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
+    },
+    "UVC-G4DOORBELLPROPOE":{
+      "INDEX"       : 18,
+      "NAME"        : "UVC-G4DOORBELLPROPOE",
+      "BOARDID"     : "a575",
+      "BOMREV"      : "113-03849",
+      "DESC"        : "UVC G4 Doorbell Pro POE",
+      "FILE"        : "uvc_factory_camera2.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UNIFI-WAVEROVECAMERA":{
+      "INDEX"       : 19,
+      "NAME"        : "UNIFI-WAVEROVECAMERA",
+      "BOARDID"     : "a594",
+      "BOMREV"      : "113-04000",
+      "DESC"        : "UniFi Wave Rover Camera",
+      "FILE"        : "uvc_factory_camera2.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
-
   },
 
   "UbiquitiNMS":
