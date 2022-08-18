@@ -1,8 +1,8 @@
 {
   "UniFiSwitch": {
-    "US-FLEX": {
+    "USW-FLEX": {
       "INDEX": 0,
-      "NAME": "US-FLEX",
+      "NAME": "USW-FLEX",
       "BOARDID": "ed10",
       "BOMREV": "113-02767",
       "DESC": "UniFi Switch Flex",

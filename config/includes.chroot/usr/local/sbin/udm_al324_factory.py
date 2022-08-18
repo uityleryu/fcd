@@ -7,6 +7,12 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 import time
 import os
 
+'''
+    ea2a: UDW
+    ea2b: UDW-PRO
+    ea2c: UDM-SE
+'''
+
 
 class UDM_AL324_FACTORY(ScriptBase):
     def __init__(self):
@@ -57,49 +63,49 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.activeport = {
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
-            'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
+            'ea2c': "al_eth2"  # set sfp 0 or 2 for SPF+
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea2a': "20",
             'ea2b': "23",
-            'ea2c': "11",
+            'ea2c': "11"
         }
 
         # number of WiFi
         self.wifinum = {
             'ea2a': "2",
             'ea2b': "3",
-            'ea2c': "0",
+            'ea2c': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1",
             'ea2a': "1",
-            'ea2b': "1",
+            'ea2b': "1"
         }
 
         # ethernet interface
         self.netif = {
-            'ea2a': "br0",  # udw
-            'ea2b': "psu0",  # udw_pro
-            'ea2c': "eth10",  # udm_se
+            'ea2a': "br0",
+            'ea2b': "psu0",
+            'ea2c': "eth10"
         }
 
         # LCM update
         self.lcmupdate = {
-            'ea2a': False,
+            'ea2a': True,
             'ea2b': False,
-            'ea2c': False,
+            'ea2c': False
         }
 
         # Wifi cal data setting
         self.wifical = {
             'ea2a': True,
             'ea2b': True,
-            'ea2c': False,
+            'ea2c': False
         }
 
         self.devnetmeta = {
@@ -247,9 +253,11 @@ class UDM_AL324_FACTORY(ScriptBase):
 
     def lcm_fw_ver_check(self):
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.tool_folder, "nvr-lcm-tools*"),
-                     dst_file=self.dut_tmpdir)
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/nvr-lcm-tools*")
+                     src_file=os.path.join(self.tool_folder, "factory-test-tools*"),
+                     dst_file=self.dut_tmpdir),
+
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/bc_*")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/factory-test-tools*")
         try:
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
         except Exception as e:
