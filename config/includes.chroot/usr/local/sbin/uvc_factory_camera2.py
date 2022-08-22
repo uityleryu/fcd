@@ -18,8 +18,8 @@ import configparser
 PROVISION_EN = True
 DOHELPER_EN = True
 REGISTER_EN = True
-FWUPDATE_EN = True
-DATAVERIFY_EN = True
+FWUPDATE_EN = False
+DATAVERIFY_EN = False
 #REGISTER_EN   = False
 #FWUPDATE_EN   = False
 #DATAVERIFY_EN = False
@@ -54,6 +54,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UniFi Wave Rover Camera"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif  self.product_name == "UVC-AIPRO":
+            self.board_name = "UVC-AIPRO"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -74,6 +78,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a593': '1',
             'a575': '1',
             'a594': '1',
+            'a5a4': '1',
         }
 
         # number of WiFi
@@ -82,6 +87,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a593': '0',
             'a575': '0',
             'a594': '0',
+            'a5a4': '0',
         }
 
         # number of Bluetooth
@@ -90,6 +96,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a593': '0',
             'a575': '0',
             'a594': '0',
+            'a5a4': '0',
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -105,6 +112,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a593': "ifconfig eth0 ",
             'a575': "ifconfig eth0 ",
             'a594': "ifconfig eth0 ",
+            'a5a4': "ifconfig eth0 ",
         }
 
     def ezreadini(self, path, section, item):
