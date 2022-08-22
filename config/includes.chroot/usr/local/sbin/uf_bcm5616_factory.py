@@ -29,7 +29,9 @@ class UFBCM5616FactoryGeneral(ScriptBase):
 
     def stop_uboot(self, timeout=30):
         log_debug("Stopping U-boot")
-        self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "  ")
+        self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "  ")
+
+    def init_ub_network(self):
         self.set_ub_net()
         self.is_network_alive_in_uboot()
 
@@ -43,6 +45,7 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "re")
 
         self.stop_uboot()
+        self.init_ub_network()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv")
         msg(20, "Environment Variables set")
 
@@ -55,7 +58,7 @@ class UFBCM5616FactoryGeneral(ScriptBase):
 
     def spi_clean_in_uboot(self):
         cmd = "bootubnt init"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "UBNT application initialized")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
         cmd = "sf probe"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
@@ -63,12 +66,9 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         cmd = "go $ubntaddr uclearcfg"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
 
-    def set_data_in_uboot(self):
-        cmd = "go $ubntaddr usetbid {}".format(self.board_id)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
-
-        cmd = "go $ubntaddr usetbrev {}".format(self.bom_rev)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
+    def set_mac_in_uboot(self):
+        cmd = "bootubnt init"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
         cmd = "go $ubntaddr usetmac {}".format(self.mac)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
@@ -77,8 +77,12 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         output = self.pexp.expect_get_output(cmd, self.bootloader_prompt, 1.5)
         pattern = r"MAC0: ((?:[0-9a-fA-F]:?){12})"
         m_mac0 = re.findall(pattern, output)
-        if self.mac == m_mac0[0].replace(":", ""):
-            log_debug("The MAC0 comparision is correct")
+        if m_mac0:
+            if self.mac == m_mac0[0].replace(":", ""):
+                log_debug("The MAC0 comparision is correct")
+            else:
+                error_critical("The MAC0 comparision is incorrect")
+
         else:
             error_critical("Found no mac info by regular expression. Please checkout output")
 
@@ -87,6 +91,13 @@ class UFBCM5616FactoryGeneral(ScriptBase):
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         log_debug("MAC setting succeded")
+
+    def set_data_in_uboot(self):
+        cmd = "go $ubntaddr usetbid {}".format(self.board_id)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
+
+        cmd = "go $ubntaddr usetbrev {}".format(self.bom_rev)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd, "Done")
 
     def check_info_in_uboot(self):
         '''
@@ -189,9 +200,9 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         match = re.search(r'qrid=(.*)', output)
         if match:
             if match.group(1).strip() != self.qrcode:
-                error_critical(msg="QR code doesn't match!")
+                error_critical("QR code doesn't match!")
         else:
-            error_critical(msg="Unable to get qrid!, please checkout output by grep")
+            error_critical("Unable to get qrid!, please checkout output by grep")
 
     def run(self):
         '''
@@ -213,6 +224,8 @@ class UFBCM5616FactoryGeneral(ScriptBase):
 
         if PROVISION_ENABLE is True:
             self.stop_uboot()
+            self.set_mac_in_uboot()
+            self.init_ub_network()
             self.data_provision()
             self.recovery_program_firmware()
 
