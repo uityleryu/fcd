@@ -30,7 +30,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # customize variable for different products
         self.wait_LCM_upgrade_en = {
             'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e','ed50', 'ed51', 'ed52', 'ed53', 'ed54', 'ed55'
+            'ed2e','ed50', 'ed51', 'ed52', 'ed53'
         }
 
         self.disable_powerd_list = ['ed2c']
