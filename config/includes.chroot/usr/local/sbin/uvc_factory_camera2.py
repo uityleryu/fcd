@@ -58,6 +58,7 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC-AIPRO"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+            self.mtd_name = 'amba_nor'
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
