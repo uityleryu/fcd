@@ -175,25 +175,44 @@ class U6MT762xFactory(ScriptBase):
             cmd = "ifconfig br0 {}".format(self.dutip)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, retry=10)
 
-        self.is_network_alive_in_linux(retry=10)
+            comma_mac = self.mac_format_str2comma(self.mac)
+            cmdset = [
+                "ifconfig br0",
+                "ifconfig br0 hw ether {}".format(comma_mac),
+                "ifconfig br0",
+                "ifconfig eth0",
+                "ifconfig eth0 down",
+                "ifconfig eth0 hw ether {}".format(comma_mac),
+                "ifconfig eth0 up",
+                "ifconfig eth0"
+            ]
+            for cmd in cmdset:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+            time.sleep(10)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0")
+
+        self.is_network_alive_in_linux(arp_logging_en=True, del_dutip_en=True, retry=10)
 
     def update_uboot(self):
-
         if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             log_debug("uboot_img: " + self.uboot_img)
             cmd = "tftpboot {} {}".format(self.recovery_addr[self.board_id], self.uboot_img)
             exp = "Bytes transferred = {}".format(self.uboot_size)
             self.pexp.expect_ubcmd(15, self.bootloader_prompt, cmd, exp)
             cmd = "sf probe; sf erase 0x0 0x60000; sf write {} 0x0 ${{filesize}}".format(self.recovery_addr[self.board_id])
-
         elif self.board_id == "a620":
             self.pexp.expect_action(10, self.bootloader_prompt, "nor init")
             time.sleep(2)
-            fake_EEPROM_img = os.path.join(self.image, self.board_id+"-fake_EEPROM.bin")
+            fake_eeprom_filename = "{}-fake_EEPROM.bin".format(self.board_id)
+            fake_EEPROM_img = os.path.join(self.image, fake_eeprom_filename)
             log_debug("fake_EEPROM_img: " + fake_EEPROM_img)
-            self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x4007ff28 {}".format(fake_EEPROM_img))
+            cmd = "tftpboot 0x4007ff28 {}".format(fake_EEPROM_img)
+            self.pexp.expect_action(10, self.bootloader_prompt, cmd)
             time.sleep(1)
-            self.pexp.expect_action(10, self.bootloader_prompt, "snor erase 0x110000 0x10000; snor write 0x4007ff28 0x110000 0x10000")
+
+            cmd = "snor erase 0x110000 0x10000; snor write 0x4007ff28 0x110000 0x10000"
+            self.pexp.expect_action(10, self.bootloader_prompt, cmd)
             time.sleep(2)
             self.pexp.expect_action(10, self.bootloader_prompt, "")
             time.sleep(2)
@@ -208,7 +227,6 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "reset")
 
     def enter_uboot(self, stp_enable=False):
-
         if self.board_id == "a612" or self.board_id == "a614" or self.board_id == "a640":
             rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press", "\x1b\x1b")
             self.bootloader_prompt = "MT7621 #"  # here will need this because prompt could be changed with "=>" before on 1st uboot
@@ -248,7 +266,7 @@ class U6MT762xFactory(ScriptBase):
 
     def set_uboot_network(self):
         self.set_ub_net(premac=self.premac)
-        self.is_network_alive_in_uboot()
+        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
 
     def fwupdate(self):
         log_debug("Change to product firware...")
@@ -259,18 +277,43 @@ class U6MT762xFactory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv do_urescue TRUE")
+
         self.pexp.expect_action(30, self.bootloader_prompt, "bootubnt -f")
         self.pexp.expect_action(30, "Listening for TFTP transfer on", "")
 
-        cmd = "atftp -p -l {0}/{1} {2}".format(self.fwdir, self.fwimg[self.board_id], self.dutip)
-        log_debug("host cmd: " + cmd)
-        [sto, rtc] = self.fcd.common.xcmd(cmd)
-        if (int(rtc) > 0):
-            error_critical("Failed to upload firmware image")
-        else:
-            log_debug("Uploading firmware image successfully")
+        ct = 0
+        retry = 5
+        while ct < retry:
+            ct += 1
+            cmd = "atftp -p -l {0}/{1} {2}".format(self.fwdir, self.fwimg[self.board_id], self.dutip)
+            log_debug("host cmd: " + cmd)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if (int(rtc) > 0):
+                rmsg = "Failed to upload firmware image.., retry: {}".format(ct)
+                log_debug(rmsg)
+                cmd = "sudo killall atftp"
+                self.fcd.common.xcmd(cmd)
+                time.sleep(2)
+                cmd = "ping -c 3 {}".format(self.dutip)
+                self.fcd.common.xcmd(cmd)
+                time.sleep(1)
+                continue
+            else:
+                log_debug("Uploading firmware image successfully")
 
-        self.pexp.expect_only(30, "Bytes transferred = ")
+            try:
+                self.pexp.expect_only(30, "Bytes transferred = ")
+                log_debug("DUT receives image successfully")
+                break
+            except self.pexp.ExceptionPexpect:
+                rmsg = "Retry TFTP download ... retry: {}".format(ct)
+                log_debug(rmsg)
+                cmd = "ping -c 3 {}".format(self.dutip)
+                self.fcd.common.xcmd(cmd)
+                time.sleep(1)
+        else:
+            error_critical("FTFTP download, FAILED")
+
         self.pexp.expect_only(30, "Firmware Version:")
         self.pexp.expect_only(30, "Firmware Signature Verfied, Success.")
         self.pexp.expect_only(60, "Updating u-boot partition \(and skip identical blocks\)")
@@ -285,7 +328,6 @@ class U6MT762xFactory(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
 
     def check_info(self):
-
         self.enter_uboot()
         log_debug("check DUT ip of Uboot, ipaddr=192.168.1.20(default) or not ?")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, 'print', 'ipaddr=192.168.1.20')
@@ -418,15 +460,6 @@ class U6MT762xFactory(ScriptBase):
                 self.erase_eefiles()
                 msg(30, "Do helper to get the output file to devreg server ...")
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 7 > /proc/sys/kernel/printk")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, f"ifconfig br0 hw ether 18:E8:29:00:0C:2{self.row_id}")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, f"ifconfig eth0 hw ether 18:E8:29:00:0C:3{self.row_id}")
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 up")
-                time.sleep(10)
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0")
                 self.prepare_server_need_files()
 
                 eetxt_dut_path = os.path.join(self.tftpdir, self.eetxt)
@@ -434,7 +467,7 @@ class U6MT762xFactory(ScriptBase):
                 log_debug("host cmd: " + cmd)
                 [uid_long, rtc] = self.fcd.common.xcmd(cmd)
                 uid = re.search(r'value=(.*)', uid_long, re.S).group(1).strip()
-                log_debug("Flash UID="+str(uid))
+                log_debug("Flash UID=" + str(uid))
                 if uid is not '':
                     break
                 else:
