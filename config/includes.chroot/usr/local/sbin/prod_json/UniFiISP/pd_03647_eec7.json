@@ -8,7 +8,7 @@
       "DESC": "UISP-FIBER-OLT-XGS",
       "FILE": "uf_bcm5616_factory.py",
       "T1FILE": "",
-      "QRCHECK": "True",
+      "QRCHECK": "False",
       "FCD_ID": "0008",
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
