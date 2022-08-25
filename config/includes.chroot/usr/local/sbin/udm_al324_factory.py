@@ -252,14 +252,34 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_only(10, self.linux_prompt)
 
     def lcm_fw_ver_check(self):
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=os.path.join(self.tool_folder, "factory-test-tools*"),
-                     dst_file=self.dut_tmpdir),
+        self.scp_get(
+            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            src_file=os.path.join(self.tool_folder, "factory-test-tools*"),
+            dst_file=self.dut_tmpdir
+        )
+        self.scp_get(
+            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            src_file=os.path.join(self.tool_folder, "bc_*"),
+            dst_file=self.dut_tmpdir
+        )
+        self.scp_get(
+            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            src_file=os.path.join(self.tool_folder, "memtester_*"),
+            dst_file=self.dut_tmpdir
+        )
+        self.scp_get(
+            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            src_file=os.path.join(self.tool_folder, "mt-wifi-ated_*"),
+            dst_file=self.dut_tmpdir
+        )
 
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/bc_*")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/memtester_*")
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/factory-test-tools*")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/mt-wifi-ated_*")
+
         try:
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=3)
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=20)
         except Exception as e:
             self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
@@ -347,7 +367,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DUT and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
