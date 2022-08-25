@@ -1,0 +1,57 @@
+{
+  "airMAX": {
+    "LBE-AX-01210": {
+      "INDEX": "0",
+      "NAME": "LBE-AX",
+      "BOARDID": "a669",
+      "BOMREV": "113-01210",
+      "DESC": "LiteBeam AX",
+      "FILE": "am_ipq5018_bspfactory.py",
+      "T1FILE": "am_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "FCD_ID": "000B",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/amax-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "u-boot_1.0.0.mbn",
+            "lbe-ax-v6_nor.bin",
+            "lbe-ax-v6_emmc.bin",
+            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK":[
+        [
+          "tftp/images/a669-uboot.bin",
+          "../am-fw/u-boot_1.0.0.mbn"
+        ],
+        [
+          "tftp/images/a669-nor.bin",
+          "../am-fw/lbe-ax-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a669-emmc.bin",
+          "../am-fw/lbe-ax-v6_emmc.bin"
+        ],
+        [
+          "tftp/images/a669.bin",
+          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "airMAX": {
+    "Prism-AX-01225": {
+      "INDEX": "0",
+      "NAME": "Prism-AX",
+      "BOARDID": "a671",
+      "BOMREV": "113-01225",
+      "DESC": "Prism-AX",
+      "FILE": "am_ipq5018_bspfactory.py",
+      "T1FILE": "am_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/amax-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "u-boot_1.0.0.mbn",
+            "prism-ax-v8-nand_nor.bin",
+            "prism-ax-v8-nand.img",
+            "RAX.ipq5018.v1.0.2.c9c21436.220812.1149-mp03.5-c2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK":[
+        [
+          "tftp/images/a671-uboot.bin",
+          "../am-fw/u-boot_1.0.0.mbn"
+        ],
+        [
+          "tftp/images/a671-nor.bin",
+          "../am-fw/prism-ax-v8-nand_nor.bin"
+        ],
+        [
+          "tftp/images/a671-nand.bin",
+          "../am-fw/prism-ax-v8-nand.img"
+        ],
+        [
+          "tftp/images/a671.bin",
+          "../am-fw/RAX.ipq5018.v1.0.2.c9c21436.220812.1149-mp03.5-c2.bin"
+        ]
+      ]
+    }
+  }
+}

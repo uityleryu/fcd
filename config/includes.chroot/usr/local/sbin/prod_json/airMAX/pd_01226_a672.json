@@ -1,0 +1,56 @@
+{
+  "airMAX": {
+    "Prism-AX-OMT-01226": {
+      "INDEX": "0",
+      "NAME": "Prism-AX-OMT",
+      "BOARDID": "a672",
+      "BOMREV": "113-01226",
+      "DESC": "Prism-AX-OMT",
+      "FILE": "am_ipq5018_bspfactory.py",
+      "T1FILE": "am_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/amax-fw",
+          "DST_PATH": "am-fw",
+          "FILES": [
+            "u-boot_1.0.0.mbn",
+            "prism-ax-v7_emmc.bin",
+            "prism-ax-v7_nor.bin",
+            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK":[
+        [
+          "tftp/images/a672-uboot.bin",
+          "../am-fw/u-boot_1.0.0.mbn"
+        ],
+        [
+          "tftp/images/a672-nor.bin",
+          "../am-fw/prism-ax-v7_nor.bin"
+        ],
+        [
+          "tftp/images/a672-emmc.bin",
+          "../am-fw/prism-ax-v7_emmc.bin"
+        ],
+        [
+          "tftp/images/a672.bin",
+          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+        ]
+      ]
+    }
+  }
+}
