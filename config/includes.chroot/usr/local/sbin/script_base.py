@@ -631,6 +631,7 @@ class ScriptBase(object):
 
         if dutaddr is None:
             dutaddr = self.dutip
+
         cmd = "setenv ipaddr {0}".format(dutaddr)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 

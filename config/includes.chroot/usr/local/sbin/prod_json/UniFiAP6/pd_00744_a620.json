@@ -31,7 +31,7 @@
             "BZ.MT7622_6.0.25+13682.220815.0605-uboot.bin",
             "fake_eeprom_u6-lr-bom23.bin",
             "lede-mtk-mt7622-UAP6-initramfs-kernel.bin",
-            "u6-lr-mt7622-mt7915a-v15.bin",
+            "u6-lr-mt7622-mt7915a-v14.bin",
             "unifi-v2020.01-ubnt-mt7622.56-g24845112-dirty_uap6-mt7622-64MB_u-boot.bin"
           ]
         }
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/a620-mfg.kernel.uboot",
-          "../u6-fw/mt7622/u6-lr-mt7622-mt7915a-v15.bin"
+          "../u6-fw/mt7622/u6-lr-mt7622-mt7915a-v14.bin"
         ],
         [
           "tftp/images/a620-uboot.bin",

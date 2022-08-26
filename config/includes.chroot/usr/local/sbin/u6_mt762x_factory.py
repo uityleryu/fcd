@@ -262,10 +262,8 @@ class U6MT762xFactory(ScriptBase):
             if stp_enable is True:
                 self.set_stp_env()
 
-            self.pexp.expect_action(10, self.bootloader_prompt, "setenv ethaddr " + self.mac)
-
     def set_uboot_network(self):
-        self.set_ub_net(premac=self.premac)
+        self.set_ub_net(premac=self.mac)
         self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
 
     def fwupdate(self):
