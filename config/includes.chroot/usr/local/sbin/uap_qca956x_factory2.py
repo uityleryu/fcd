@@ -163,7 +163,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
         time.sleep(15)  # for stable system
 
-        self.is_network_alive_in_linux(retry=30)
+        self.is_network_alive_in_linux(retry=60)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
         time.sleep(3)  # for stable eth
         self.is_network_alive_in_linux(retry=10)
