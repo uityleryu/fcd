@@ -43,16 +43,19 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ab12': "0",
+            'ab14': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'ab12': "1",
+            'ab14': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ab12': "1",
+            'ab14': "1",
         }
 
         self.devnetmeta = {                                                                                                  
