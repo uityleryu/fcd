@@ -37,28 +37,41 @@ class UFPESP32FactoryGeneral(ScriptBase):
         #       1: key name
         #       2: burn_key option
         #       3: key binary
-        self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin], 
+        self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin],
                               [True, "Secure boot key"              , "secure_boot"     , self.secure_boot_key_bin  ],
                               [True, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
         self.ethnum = {
             'ab12': "0",
+            'ab14': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'ab12': "1",
+            'ab14': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ab12': "1",
+            'ab14': "1",
         }
 
         self.devnetmeta = {                                                                                                  
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
+        }
+
+        self.devregaddr = {
+            'ab12': "0x3ff000",
+            'ab14': "0xfff000",
+        }
+
+        self.devregsize = {
+            'ab12': "4MB",
+            'ab14': "16MB",
         }
 
     def prepare_server_need_files(self):
@@ -146,7 +159,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size {} {} /tftpboot/e.s.{}".format(self.row_id, self.devregsize[self.board_id], self.devregaddr[self.board_id], self.row_id)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)

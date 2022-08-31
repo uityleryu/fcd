@@ -1,0 +1,78 @@
+{
+  "UniFiProtect": {
+    "UP-Chime-PoE": {
+      "INDEX": 0,
+      "NAME": "UP-Chime-PoE",
+      "BOARDID": "ab14",
+      "BOMREV": "113-03837",
+      "DESC": "UniFi Protect Chime PoE",
+      "FILE": "ufp_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000d",
+      "SW_ID": "1604",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/up-fw/up-chime-poe/",
+          "DST_PATH": "up-fw/up-chime-poe",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common/",
+          "DST_PATH": "tools/common",
+          "FILES": []
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ab14-app.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/up_chime_poe_fw.bin"
+        ],
+        [
+          "tftp/images/ab14-app-encrypt.bin",
+          "../up-fw/up-chime-poe/testing_fw/encypt/up_chime_poe_fw-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab14-bootloader.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/bootloader-reflash-digest.bin"
+        ],
+        [
+          "tftp/images/ab14-bootloader-encrypt.bin",
+          "../up-fw/up-chime-poe/testing_fw/encypt/bootloader-reflash-digest-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab14-flash_encrypt_key.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/flash_encryption_key.bin"
+        ],
+        [
+          "tftp/images/ab14-nvs-key.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/nvs-key.bin"
+        ],
+        [
+          "tftp/images/ab14-nvs-key-encrypt.bin",
+          "../up-fw/up-chime-poe/testing_fw/encypt/nvs-key-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab14-ota.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ab14-ota-encrypt.bin",
+          "../up-fw/up-chime-poe/testing_fw/encypt/ota_data_initial-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab14-ptn-table.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/partition-table.bin"
+        ],
+        [
+          "tftp/images/ab14-ptn-table-encrypt.bin",
+          "../up-fw/up-chime-poe/testing_fw/encypt/partition-table-encrypt.bin"
+        ],
+        [
+          "tftp/images/ab14-secure_boot_key.bin",
+          "../up-fw/up-chime-poe/testing_fw/non_encrypt/secure-bootloader-key-256.bin"
+        ]
+      ]
+    }
+  }
+}

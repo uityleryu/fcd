@@ -27,6 +27,10 @@ IMAGE-UP-Chime= \
     images/ab12* \
     up-fw/up-chime/*
 
+IMAGE-UP-Chime-PoE= \
+    images/ab14* \
+    up-fw/up-chime-poe/*
+
 IMAGE-UFP+=$(IMAGE-UP-MHS)
 IMAGE-UFP+=$(IMAGE-SENSE)
 IMAGE-UFP+=$(IMAGE-LOCK-R)
@@ -36,6 +40,7 @@ IMAGE-UFP+=$(IMAGE-CARD-COMBO)
 IMAGE-UFP+=$(IMAGE-RADAR)
 IMAGE-UFP+=$(IMAGE-KEYPAD)
 IMAGE-UFP+=$(IMAGE-UP-Chime)
+IMAGE-UFP+=$(IMAGE-UP-Chime-PoE)
 IMAGE-UFP+=$(IMAGE-GARAGE)
 
 
@@ -85,6 +90,8 @@ TOOLS-KEYPAD=$(TOOLS-UFP)
 
 TOOLS-UP-Chime=$(TOOLS-UFP)
 
+TOOLS-UP-Chime-PoE=$(TOOLS-UFP)
+
 TOOLS-UP-MHS+=$(TOOLS-UFP)
 TOOLS-UP-MHS+= \
     uvc/128k_ff.bin
@@ -99,6 +106,7 @@ $(eval $(call ProductImage,up-garage,FCD_$(PRD)_UP-GARAGE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UP-Chime,FCD_$(PRD)_UP-Chime_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UP-Chime-PoE,FCD_$(PRD)_UP-Chime-PoE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UP-MHS,FCD_$(PRD)_UP-MHS_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 
@@ -111,6 +119,7 @@ $(eval $(call ProductCompress,up-garage,FCD_$(PRD)_up-garage_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,RADAR,FCD_$(PRD)_UFP-RADAR_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,KEYPAD,FCD_$(PRD)_UFP-KEYPAD_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UP-Chime,FCD_$(PRD)_UP-Chime_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UP-Chime-PoE,FCD_$(PRD)_UP-Chime-PoE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UP-MHS,FCD_$(PRD)_UP-MHS_$(VER)_$(FWVER)))
 # ==================================================================================================
 IMAGE-a920=
@@ -133,3 +142,4 @@ $(eval $(call ProductCompress2,03325_a920))
 $(eval $(call ProductCompress2,00806_dcb0))
 $(eval $(call ProductCompress2,03089_a914))
 $(eval $(call ProductCompress2,02900_e980))
+$(eval $(call ProductCompress2,03837_ab14))
