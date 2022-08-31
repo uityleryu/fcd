@@ -1,6 +1,6 @@
 {
   "UniFiSwitch": {
-    "USW-48-POE": {
+    "USW-48-POE-02865": {
       "INDEX": 0,
       "NAME": "USW-48-POE",
       "BOARDID": "ed22",
@@ -16,13 +16,15 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-48poe-fw.bin"
+            "unifiswitch-48poe-fw.bin.16MB"
           ]
         },
         {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -38,7 +40,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed22-fw.bin",
-          "../usw-fw/unifiswitch-48poe-fw.bin"
+          "../usw-fw/unifiswitch-48poe-fw.bin.16MB"
+        ],
+        [
+          "tftp/images/ed22-t1.bin",
+          "../usw-fw/unifiswitch-48poe-fw.bin.16MB"
         ]
       ]
     }

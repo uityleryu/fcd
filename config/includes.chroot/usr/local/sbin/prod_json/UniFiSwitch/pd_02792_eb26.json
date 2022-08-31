@@ -16,8 +16,7 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-xg48poe-fw.bin",
-            "unifiswitch-xg48poe-mfg.bin"
+            "unifiswitch-xg48poe-fw.bin.16MB"
           ]
         },
         {
@@ -39,11 +38,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/eb26.bin",
-          "../usw-fw/unifiswitch-xg48poe-fw.bin"
+          "../usw-fw/unifiswitch-xg48poe-fw.bin.16MB"
         ],
         [
           "tftp/images/eb26-mfg.bin",
-          "../usw-fw/unifiswitch-xg48poe-mfg.bin"
+          "../usw-fw/unifiswitch-xg48poe-mfg.bin.16MB"
         ]
       ]
     }

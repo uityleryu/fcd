@@ -1,0 +1,52 @@
+{
+  "UniFiSwitch": {
+    "USW-24-04113": {
+      "INDEX": 0,
+      "NAME": "USW-24-04113",
+      "BOARDID": "ed51",
+      "BOMREV": "113-04113",
+      "DESC": "UBNT UniFiSwitch 24",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-24-fw.bin.32MB"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed51-fw.bin",
+          "../usw-fw/unifiswitch-24-fw.bin.32MB"
+        ],
+        [
+          "tftp/images/ed51-t1.bin",
+          "../usw-fw/unifiswitch-24-fw.bin.32MB"
+        ]
+      ]
+    }
+  }
+}

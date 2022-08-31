@@ -28,8 +28,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
-        self.wait_LCM_upgrade_en = {'ed20','ed21', 'ed22', 'ed23', 'ed24',
-                                    'ed25', 'ed2c', 'ed2d'}
+        self.wait_LCM_upgrade_en = {
+            'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
+            'ed2e','ed50', 'ed51', 'ed52', 'ed53'
+        }
 
         self.disable_powerd_list = ['ed2c']
         self.disable_battery = {'ed2c'}
@@ -46,7 +48,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3",  # usw-lite-8-poe
             'ed2c': "2",  # usw-missioon-critical. Total 3 (eth:2 + bt:1). Mike taylor could not increse so workaround it
-            'ed2d': "3"   # usw-aggregation
+            'ed2d': "3",  # usw-aggregation
+            'ed2e': "3",  # usw-16-poe 32MB
+            'ed50': "3",  # usw-24-poe 32MB
+            'ed51': "3",  # usw-24 32MB
+            'ed52': "3",  # usw-48-pe 32MB
+            'ed53': "3",  # usw-48 32MB
+            'ed54': "3",  # usw-lite-16-poe 32MB
+            'ed55': "3",  # usw-lite-8-poe 32MB
         }
 
         # number of WiFi
@@ -60,7 +69,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed26': "0",
             'ed2a': "0",
             'ed2c': "0",
-            'ed2d': "0"
+            'ed2d': "0",
+            'ed2e': "0",  # usw-16-poe 32MB
+            'ed50': "0",  # usw-24-poe 32MB
+            'ed51': "0",  # usw-24 32MB
+            'ed52': "0",  # usw-48-pe 32MB
+            'ed53': "0",  # usw-48 32MB
+            'ed54': "0",  # usw-lite-16-poe 32MB
+            'ed55': "0",  # usw-lite-8-poe 32MB
         }
 
         # number of Bluetooth
@@ -74,7 +90,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed26': "0",
             'ed2a': "0",
             'ed2c': "1",
-            'ed2d': "0"
+            'ed2d': "0",
+            'ed2e': "0",  # usw-16-poe 32MB
+            'ed50': "0",  # usw-24-poe 32MB
+            'ed51': "0",  # usw-24 32MB
+            'ed52': "0",  # usw-48-pe 32MB
+            'ed53': "0",  # usw-48 32MB
+            'ed54': "0",  # usw-lite-16-poe 32MB
+            'ed55': "0",  # usw-lite-8-poe 32MB
         }
 
         self.netif = {
@@ -87,7 +110,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed26': "ifconfig eth0 ",
             'ed2a': "ifconfig eth0 ",
             'ed2c': "ifconfig eth0 ",
-            'ed2d': "ifconfig eth0 "
+            'ed2d': "ifconfig eth0 ",
+            'ed2e': "ifconfig eth0 ",  # usw-16-poe 32MB
+            'ed50': "ifconfig eth0 ",  # usw-24-poe 32MB
+            'ed51': "ifconfig eth0 ",  # usw-24 32MB
+            'ed52': "ifconfig eth0 ",  # usw-48-pe 32MB
+            'ed53': "ifconfig eth0 ",  # usw-48 32MB
+            'ed54': "ifconfig eth0 ",  # usw-lite-16-poe 32MB
+            'ed55': "ifconfig eth0 ",  # usw-lite-8-poe 32MB
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")

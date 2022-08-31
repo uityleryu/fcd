@@ -40,6 +40,15 @@ class UNASALPINEFactory(ScriptBase):
         self.linux_prompt = ["#"]
         self.wait_LCM_upgrade_en = {'ea20', 'ea21', 'ea51'}
         # script specific vars
+
+        '''
+        ea1a: UNVR
+        ea20: UNVR-Pro
+        ea51: UNAS-Pro
+        ea21: UNVR-AI
+        ea30: UNVR-HD
+        ea50: UNAS
+        '''
         self.devregparts = {
             '0000': "/dev/mtdblock9",
             'ea1a': "/dev/mtdblock4",
@@ -72,7 +81,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "2",
             'ea21': "3",
             'ea30': "2",
-            'ea50': "2",
+            'ea50': "1",
         }
 
         # number of WiFi
@@ -101,7 +110,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "ifconfig enp0s1 ",
             'ea21': "ifconfig enp0s1 ",
             'ea30': "ifconfig enp0s1 ",
-            'ea50': "ifconfig enp0s1 ",
+            'ea50': "ifconfig enp0s2 ",
         }
         self.devnetmeta = {
             'ethnum': self.ethnum,
@@ -395,9 +404,9 @@ class UNASALPINEFactory(ScriptBase):
         REGISTER_ENABLE = True
         FWUPDATE_ENABLE = False
         DATAVERIFY_ENABLE = True
-        if self.board_id == 'ea50':
+        if self.board_id == 'ea1a' or self.board_id == 'ea50':
             WAIT_LCMUPGRADE_ENABLE = False
-        else:    
+        else:
             WAIT_LCMUPGRADE_ENABLE = True
 
         if self.board_id == 'ea51' or self.board_id == 'ea50':
@@ -467,7 +476,8 @@ class UNASALPINEFactory(ScriptBase):
             msg(90, "Succeeding in checking the devreg information ...")
 
         if WAIT_LCMUPGRADE_ENABLE is True:
-            self.load_pkg_tool()
+            if self.board_id == 'ea50':
+                self.load_pkg_tool()
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(95, "Waiting LCM upgrading ...")
                 self.wait_lcm_upgrade()

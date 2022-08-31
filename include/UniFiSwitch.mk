@@ -31,28 +31,45 @@ IMAGE-ULS-RPS= \
     usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
     usw-fw/US.mt7621.*
     
-IMAGE-USW-16-24-48= \
+IMAGE-USW-16-24-48-16MB= \
     images/ed20* \
     images/ed21* \
     images/ed22* \
-    images/ed23* \
     images/ed24* \
     images/ed25* \
-    usw-fw/unifiswitch-16-* \
-    usw-fw/unifiswitch-24-* \
-    usw-fw/unifiswitch-48-* \
-    usw-fw/unifiswitch-16poe-* \
-    usw-fw/unifiswitch-24poe-* \
-    usw-fw/unifiswitch-48poe-* \
-    usw-fw/US.rtl838x*
+    usw-fw/unifiswitch-24-fw.bin.16MB \
+    usw-fw/unifiswitch-48-fw.bin.16MB \
+    usw-fw/unifiswitch-16poe-fw.bin.16MB \
+    usw-fw/unifiswitch-24poe-fw.bin.16MB \
+    usw-fw/unifiswitch-48poe-fw.bin.16MB \
+    usw-fw/US.rtl838x_6.3.8+14060.220722.1431-uboot.bin
+
+IMAGE-USW-16-24-48-32MB= \
+    images/ed2e* \
+    images/ed50* \
+    images/ed51* \
+    images/ed52* \
+    images/ed53* \
+    usw-fw/unifiswitch-24-fw.bin.32MB \
+    usw-fw/unifiswitch-48-fw.bin.32MB \
+    usw-fw/unifiswitch-16poe-fw.bin.32MB \
+    usw-fw/unifiswitch-24poe-fw.bin.32MB \
+    usw-fw/unifiswitch-48poe-fw.bin.32MB \
+    usw-fw/UM.rtl838x_6.3.8+14060.220722.1432-uboot.bin
 
 IMAGE-USW-LITE= \
     images/ed26* \
     images/ed2a* \
-    usw-fw/unifiswitch-lite-16poe-* \
-    usw-fw/unifiswitch-lite-8poe-* \
-    usw-fw/unifiswitch-16poe-* \
-    usw-fw/US.rtl838x*
+    usw-fw/unifiswitch-lite-8poe-fw.bin.16MB \
+    usw-fw/unifiswitch-lite-16poe-fw.bin.16MB \
+    usw-fw/US.rtl838x_6.3.4+14039.220624.0730-uboot.bin
+
+IMAGE-USW-LITE-32MB= \
+    images/ed54* \
+    images/ed55* \
+    usw-fw/unifiswitch-lite-16poe-fw.bin.32MB \
+    usw-fw/unifiswitch-lite-8poe-fw.bin.32MB \
+    usw-fw/UM.rtl838x_6.3.10+14072.220805.0447-uboot.bin
 
 IMAGE-USW-LEAF= \
     images/f060* \
@@ -141,7 +158,8 @@ IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
 IMAGE-USW+=$(IMAGE-ULS-RPS)
-IMAGE-USW+=$(IMAGE-USW-16-24-48)
+IMAGE-USW+=$(IMAGE-USW-16-24-48-16MB)
+IMAGE-USW+=$(IMAGE-USW-16-24-48-32MB)
 IMAGE-USW+=$(IMAGE-USW-LITE)
 IMAGE-USW+=$(IMAGE-USW-LEAF)
 IMAGE-USW+=$(IMAGE-USW-SPINE)
@@ -177,12 +195,20 @@ TOOLS-CONFIG= \
 
 # Project specific tools
 
-TOOLS-USW-16-24-48+=$(TOOLS-USW)
-TOOLS-USW-16-24-48+= \
+TOOLS-USW-16-24-48-16MB+=$(TOOLS-USW)
+TOOLS-USW-16-24-48-16MB+= \
+    usw_rtl838x/helper_RTL838x
+
+TOOLS-USW-16-24-48-32MB+=$(TOOLS-USW)
+TOOLS-USW-16-24-48-32MB+= \
     usw_rtl838x/helper_RTL838x
 
 TOOLS-USW-LITE+=$(TOOLS-USW)
 TOOLS-USW-LITE+= \
+    usw_rtl838x/helper_RTL838x
+
+TOOLS-USW-LITE-32MB+=$(TOOLS-USW)
+TOOLS-USW-LITE-32MB+= \
     usw_rtl838x/helper_RTL838x
 
 TOOLS-USW-LEAF=$(TOOLS-USW)
@@ -259,8 +285,10 @@ $(eval $(call ProductImage,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-16-24-48-16MB,FCD_$(PRD)_USW-16-24-48-16MB_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-16-24-48-32MB,FCD_$(PRD)_USW-16-24-48-32MB_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-LITE-16MB,FCD_$(PRD)_USW-LITE-16MB_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USW-LITE-32MB,FCD_$(PRD)_USW-LITE-32MB_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-LEAF-PRO,FCD_$(PRD)_USW-LEAF-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
@@ -274,6 +302,9 @@ $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(
 $(eval $(call ProductImage,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_$(VER)_$(FWVER)))
 
+# Project target black panther
+
+$(eval $(call ProductImage2,USW_POE32MB-SERIES,FCD_$(PRD)_USW_POE32MB-SERIES_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 
@@ -284,8 +315,10 @@ $(eval $(call ProductCompress,USW-6XG,FCD_$(PRD)_USW-6XG_$(VER)))
 $(eval $(call ProductCompress,USW-PRO,FCD_$(PRD)_USW-PRO-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX,FCD_$(PRD)_USW-FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULS-RPS,FCD_$(PRD)_ULS-RPS_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,USW-16-24-48,FCD_$(PRD)_USW-16-24-48_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,USW-LITE,FCD_$(PRD)_USW-LITE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-16-24-48-16MB,FCD_$(PRD)_USW-16-24-48-16MB_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-16-24-48-32MB,FCD_$(PRD)_USW-16-24-48-32MB_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-LITE-16MB,FCD_$(PRD)_USW-LITE-16MB_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USW-LITE-32MB,FCD_$(PRD)_USW-LITE-32MB_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-LEAF,FCD_$(PRD)_USW-LEAF_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-SPINE,FCD_$(PRD)_USW-SPINE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX-MINI,FCD_$(PRD)_USW-FLEX-MINI_$(VER)_$(FWVER)))
@@ -339,3 +372,6 @@ $(eval $(call ProductCompress2,03162_f063))
 $(eval $(call ProductCompress2,02341_eb18))
 $(eval $(call ProductCompress2,02604_eb23))
 $(eval $(call ProductCompress2,02865_ed22))
+$(eval $(call ProductCompress2,USW_POE16MB-SERIES))
+$(eval $(call ProductCompress2,USW_LITEPOE32MB-SERIES))
+$(eval $(call ProductCompress2,USW_POE32MB-SERIES))

@@ -1,0 +1,52 @@
+{
+  "UniFiSwitch": {
+    "USW-48-POE-03964": {
+      "INDEX": 0,
+      "NAME": "USW-48-POE",
+      "BOARDID": "ed22",
+      "BOMREV": "113-03964",
+      "DESC": "UBNT UniFiSwitch 48 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-48poe-fw.bin.16MB"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed22-fw.bin",
+          "../usw-fw/unifiswitch-48poe-fw.bin.16MB"
+        ],
+        [
+          "tftp/images/ed22-t1.bin",
+          "../usw-fw/unifiswitch-48poe-fw.bin.16MB"
+        ]
+      ]
+    }
+  }
+}

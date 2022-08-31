@@ -149,26 +149,33 @@ class UAMT7621Factory(ScriptBase):
         cmd = "tftpboot {0} images/{1}".format(self.cache_address, self.bootloader[self.board_id])
         log_debug(cmd)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
+        # self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
         cmd = "sf probe;sf erase {0} {1};sf write {2} {0} {1}".format(self.uboot_address, self.uboot_size, self.cache_address)
         log_debug(cmd)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         time.sleep(1)
-        self.pexp.expect_ubcmd(200, self.bootloader_prompt, "re")
+        self.pexp.expect_ubcmd(200, self.bootloader_prompt, "reset")
 
         self.stop_uboot()
         time.sleep(1)
+
+        self.pexp.expect_ubcmd(200, self.bootloader_prompt, "reset")
+        self.stop_uboot()
+        time.sleep(1)
+
         self.set_ub_net()
+        time.sleep(1)
 
     def update_fcdfw(self):
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "set do_urescue TRUE")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootubnt")
+        # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "set do_urescue TRUE")
+        # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootubnt")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue")
         self.pexp.expect_ubcmd(30, "Listening for TFTP transfer on", "")
         cmd = "atftp -p -l {0}/{1}.bin {2}".format(self.fwdir, self.board_id, self.dutip)
         log_debug("host cmd: " + cmd)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
-        if (int(rtc) > 0):
+        if int(rtc) > 0:
             error_critical("Failed to upload firmware image")
         else:
             log_debug("Uploading firmware image successfully")
@@ -179,9 +186,9 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd)
 
     def check_info2(self):
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+        self.pexp.expect_ubcmd(300, "Please press Enter to activate this console.", "")
+        self.pexp.expect_ubcmd(15, "login:", "ubnt")
+        self.pexp.expect_ubcmd(15, "Password:", "ubnt")
 
         cmd = "cat /etc/board.info | grep sysid"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)

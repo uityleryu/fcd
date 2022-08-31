@@ -15,7 +15,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "onie-installer-udc-alpine_1.0.3+288.220712.1936.bin",
+            "onie-installer-udc-alpine_1.0.6+328.220812.1852.bin",
             "uisp-alpine-0.12.0.itb",
             "MFG.uisp-leaf_v2.BL_g2d1e51d.ONIE_3fcc38f.image"
           ]
@@ -45,7 +45,7 @@
         ],
         [
           "tftp/images/eed5-fw.bin",
-          "../unms-fw/onie-installer-udc-alpine_1.0.3+288.220712.1936.bin"
+          "../unms-fw/onie-installer-udc-alpine_1.0.6+328.220812.1852.bin"
         ],
         [
           "tftp/images/boot.img",

@@ -280,8 +280,10 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_only(180, "Firmware update complete.")
         msg(35, "urescue: complete")
 
-        #self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(240, "running real init", "")
+        if self.board_id == "ac15":
+            self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
+        else:
+            self.pexp.expect_ubcmd(240, "running real init", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
         cmd = "ifconfig br0 {0} up".format(self.dutip)
@@ -329,7 +331,10 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def check_info(self):
-        self.pexp.expect_ubcmd(240, "running real init", "")
+        if self.board_id == "ac15":
+            self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
+        else:
+            self.pexp.expect_ubcmd(240, "running real init", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
@@ -567,7 +572,7 @@ class IPQ80XXMFG(ScriptBase):
             cmd = "nand write 0x42000000 {0} $filesize".format(self.addr[self.board_id])
             self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
             time.sleep(5)
-        elif self.board_id == "ac14" or self.board_id == "ac16" or self.board_id == "ac17":
+        elif self.board_id == "ac14" or self.board_id == "ac15" or self.board_id == "ac16" or self.board_id == "ac17":
 
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x44000000 images/{}".format(self.artimg[self.board_id])
