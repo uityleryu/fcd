@@ -26,7 +26,7 @@
           "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
           "DST_PATH": "u6-fw/mt7981",
           "FILES": [
-            "BZ.MT7981_tmp-merge-u6++14241.220729.0834-uboot.bin",
+            "BZ.MT7981_6.4.5+14201.220830.1252-uboot.bin",
             "mtk-initramfs-mt7981-emmc.uboot",
             "u6-plus-emmc-single-image-V3-20220707.bin",
             "u6-plus-fip.bin"
@@ -36,7 +36,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a642-fw.bin",
-          "../u6-fw/mt7981/BZ.MT7981_tmp-merge-u6++14241.220729.0834-uboot.bin"
+          "../u6-fw/mt7981/BZ.MT7981_6.4.5+14201.220830.1252-uboot.bin"
         ],
         [
           "tftp/images/a642-uboot.bin",
