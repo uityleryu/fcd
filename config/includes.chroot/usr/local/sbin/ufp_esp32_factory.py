@@ -64,6 +64,16 @@ class UFPESP32FactoryGeneral(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.devregaddr = {
+            'ab12': "0x3ff000",
+            'ab14': "0xfff000",
+        }
+
+        self.devregsize = {
+            'ab12': "4MB",
+            'ab14': "16MB",
+        }
+
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("uniqueid", self.esp32_prompt, timeout=10)
         log_debug(output)
@@ -149,7 +159,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         self.pexp.close()
         cmd = "esptool.py -p /dev/ttyUSB{} --chip esp32 -b 460800 --before default_reset "\
               "--after hard_reset write_flash --flash_mode dio --flash_freq 40m "         \
-              "--flash_size 4MB 0x3ff000 /tftpboot/e.s.{}".format(self.row_id, self.row_id)
+              "--flash_size {} {} /tftpboot/e.s.{}".format(self.row_id, self.devregsize[self.board_id], self.devregaddr[self.board_id], self.row_id)
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
