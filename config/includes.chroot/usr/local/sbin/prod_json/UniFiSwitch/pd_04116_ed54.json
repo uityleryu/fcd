@@ -1,0 +1,52 @@
+{
+  "UniFiSwitch": {
+    "USW-LITE-16-POE-04116": {
+      "INDEX": 0,
+      "NAME": "USW-LITE-16-POE",
+      "BOARDID": "ed54",
+      "BOMREV": "113-04116",
+      "DESC": "UBNT UniFiSwitch Lite 16 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "unifiswitch-lite-16poe-fw.bin.32MB"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed54-fw.bin",
+          "../usw-fw/unifiswitch-lite-16poe-fw.bin.32MB"
+        ],
+        [
+          "tftp/images/ed54-t1.bin",
+          "../usw-fw/unifiswitch-lite-16poe-fw.bin.32MB"
+        ]
+      ]
+    }
+  }
+}
