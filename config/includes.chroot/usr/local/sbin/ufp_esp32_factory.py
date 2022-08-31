@@ -37,7 +37,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         #       1: key name
         #       2: burn_key option
         #       3: key binary
-        self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin], 
+        self.dev_flash_cfg = [[True, "Flash encryption key"         , "flash_encryption", self.flash_encrypt_key_bin],
                               [True, "Secure boot key"              , "secure_boot"     , self.secure_boot_key_bin  ],
                               [True, "Flash encryption mode counter", None              , None                      ]]
         # number of Ethernet
