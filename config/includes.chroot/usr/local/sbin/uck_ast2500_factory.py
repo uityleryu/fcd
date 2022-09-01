@@ -294,7 +294,12 @@ class UNIFIBMCFactory(ScriptBase):
         out = self.session.execmd_getmsg(cmd)
 
     def halt_host(self):
-        out = self.session.execmd("sync;sync;sync;poweroff", get_exit_val=False, e_except=False)
+
+        cmd = "systemctl enable systemd-networkd-fallbacker@eth0.service;"
+
+        self.session.execmd(cmd, get_exit_val=False, e_except=False)
+
+        self.session.execmd("sync;sync;sync;poweroff", get_exit_val=False, e_except=False)
         self.session.close()
 
     def write_bmc_mac(self):
