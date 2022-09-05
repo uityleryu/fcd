@@ -22,7 +22,8 @@ IMAGE-USW-FLEX= \
     usw-fw/unifiswitch-mt7621-* \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     usw-fw/MFG.us-flex.BL_gd9df1cea.UAP_4be38fd.image \
-    usw-fw/US.mt7621.*
+    usw-fw/US.mt7621.* \
+    usw-fw/US.mt7621_* 
 
 IMAGE-ULS-RPS= \
     images/ed11* \
