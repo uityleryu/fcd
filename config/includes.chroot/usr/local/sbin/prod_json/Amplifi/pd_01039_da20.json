@@ -27,6 +27,7 @@
           "SRC_PATH": "images/fcd-image/afi-fw/afi-100w-usb-c",
           "DST_PATH": "afi-fw/afi-100w-usb-c",
           "FILES": [
+            "AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-production.bin",
             "AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-factory.bin",
             "bootloader-20220823.bin",
             "ota_data_initial-20220823.bin",
@@ -37,7 +38,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/da20-app.bin",
-          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-factory.bin"
+          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-production.bin"
         ],
         [
           "tftp/images/da20-bootloader.bin",
