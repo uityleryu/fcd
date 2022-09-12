@@ -17,7 +17,7 @@
           "DST_PATH": "uap-fw/ulte-pro",
           "FILES": [
             "XD.qca956x-LSDK-ART-INSTANT-LTE-32M-V7.img",
-            "IL.qca956x_6.2.17+13914.220520.0332-uboot.bin",
+            "IL.qca956x_6.2.36+14059.220819.2159.bin",
             "ar71xx-initramfs-32MB.uboot"
           ]
         },
@@ -47,7 +47,7 @@
         ],
         [
           "tftp/images/e613.bin",
-          "../uap-fw/ulte-pro/IL.qca956x_6.2.17+13914.220520.0332-uboot.bin"
+          "../uap-fw/ulte-pro/IL.qca956x_6.2.36+14059.220819.2159.bin"
         ],
         [
           "tftp/images/e613-uboot.bin",
