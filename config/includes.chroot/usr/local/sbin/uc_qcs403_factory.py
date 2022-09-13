@@ -99,8 +99,8 @@ class UCQCS403FactoryGeneral(ScriptBase):
         if W_MAC_EN is True:
             # Write MAC
             int_mac = int(self.mac, 16)
-            hex_wifi_mac = hex(int_mac + 1).replace("0x", "")
-            hex_bt_mac = hex(int_mac + 2).replace("0x", "")
+            hex_wifi_mac = hex(int_mac + 1).replace("0x", "").zfill(12)
+            hex_bt_mac = hex(int_mac + 2).replace("0x", "").zfill(12)
             comma_mac = self.mac_format_str2comma(self.mac)
             cmd = "echo {} > /persist/emac_config.ini".format(comma_mac)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
