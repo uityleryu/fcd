@@ -4,6 +4,7 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
+
 class U6IPQ5018MFGGeneral(ScriptBase):
     """
     command parameter description for BackToT1
@@ -70,13 +71,14 @@ class U6IPQ5018MFGGeneral(ScriptBase):
     def t1_image_check(self):
         self.pexp.expect_only(30, "Starting kernel")
         self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", "#", retry=0)
+
     def run(self):
         """
         Main procedure of back to T1
         """
 
         # Connect into DUT using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
@@ -89,6 +91,9 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
+        elif  self.board_id == "a667":
+            comma_mac = self.mac_format_str2comma(self.mac)
+            self.set_ub_net(comma_mac, ethact="eth1")
         else:
             self.set_ub_net(self.premac)
 
@@ -105,6 +110,9 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
+        elif  self.board_id == "a667":
+            comma_mac = self.mac_format_str2comma(self.mac)
+            self.set_ub_net(comma_mac, ethact="eth1")
         else:
             self.set_ub_net(self.premac)
 
