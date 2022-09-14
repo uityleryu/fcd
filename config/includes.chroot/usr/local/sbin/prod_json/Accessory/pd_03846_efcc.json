@@ -1,0 +1,30 @@
+{
+  "Accessory": {
+    "UACC-ADAPTER-POE-USB": {
+      "INDEX": 0,
+      "NAME": "UACC-ADAPTER-POE-USB",
+      "BOARDID": "efcc",
+      "BOMREV": "113-03846",
+      "DESC": "UACC-ADAPTER-POE-USB",
+      "FILE": "uf_ecnt7521_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0008",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+      ] 
+    }
+  }
+}
