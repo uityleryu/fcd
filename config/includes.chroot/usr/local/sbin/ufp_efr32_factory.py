@@ -172,17 +172,25 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
             if self.board_id == "a919" or self.board_id == "a922":
                 res = re.search(r"UNIQUEID:8-([a-fA-Z0-9]{16})\n", uid_rtv, re.S)
+            elif self.board_id == "ec51":
+                res = re.search(r"UNIQUEID:27-(.*)\r\n", uid_rtv, re.S)
             else:
                 res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
 
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
+            if self.board_id == "ec51":
+                res = re.search(r"CPUID:([a-zA-Z0-9]{8})\r", cpuid_rtv, re.S)
+            else:
+                res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
-            res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
+            if self.board_id == "ec51":
+                res = re.search(r"JEDECID:([a-fA-F0-9]{8})\r", jedecid_rtv, re.S)
+            else:
+                res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
             self.jedecid = res.group(1)
         except Exception as e:
             log_debug("Extract UID, CPUID and JEDEC failed")
