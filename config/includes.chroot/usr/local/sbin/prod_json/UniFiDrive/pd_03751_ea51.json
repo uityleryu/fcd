@@ -16,11 +16,24 @@
           "SRC_PATH": "images/tools/ea51/",
           "DST_PATH": "unas",
           "FILES": [
-            "UNASPRO.al324.v0.4.23.b409065.220505.1720.bin",
-            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb",
+            "UNASPRO.al324.v0.8.6.0c32df3M.220912.1610.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ea51/",
+          "DST_PATH": "ea51",
+          "FILES": [
             "uImage"
           ]
         },
+        {
+          "SRC_PATH": "images/tools/ea51/",
+          "DST_PATH": "tools/ea51",
+          "FILES": [
+            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
+          ]
+        },
+
         {
           "SRC_PATH": "images/tools/unas",
           "DST_PATH": "tools/unas",
@@ -46,7 +59,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea51-fw.bin",
-          "../unas/UNASPRO.al324.v0.4.23.b409065.220505.1720.bin"
+          "../unas/UNASPRO.al324.v0.8.6.0c32df3M.220912.1610.bin"
         ]
       ]
     }
