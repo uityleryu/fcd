@@ -346,7 +346,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
     def NFC_init(self):
 
-        self.ip = '192.168.1.20'
+        self.ip = '192.168.1.2{}'.format(self.row_id)
         self.username = "ubnt"
         self.password = "ubnt"
         self.polling_mins = 5
