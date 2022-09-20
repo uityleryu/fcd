@@ -316,9 +316,8 @@ class IPQ5018MFGGeneral(ScriptBase):
 
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
-    '''
     def update_emmc(self):
-        cmd = "mmc erase 0x0 0x2a422; mmc write {} 0x0 0x2a422".format(self.mem_addr)
+        cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_only(60, "blocks erased: OK")
@@ -326,7 +325,7 @@ class IPQ5018MFGGeneral(ScriptBase):
         cmd = "mmc erase 0x48422 0x40000"
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
-    '''
+
     def update_nand(self):
         cmd = "imgaddr=$fileaddr && source $imgaddr:script"
         log_debug(cmd)
@@ -382,7 +381,10 @@ class IPQ5018MFGGeneral(ScriptBase):
         msg(60, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.nand_bin)
         msg(70, 'Transfer NAND done')
-        self.update_nand()
+        if self.board_id == 'a659':
+            self.update_emmc()
+        else:
+            self.update_nand()
         msg(80, 'Update nand done ...')
 
         # Check if we are in T1 image

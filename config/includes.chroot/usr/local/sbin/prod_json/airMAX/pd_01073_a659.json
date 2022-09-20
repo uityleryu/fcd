@@ -20,7 +20,7 @@
             "u-boot_1.0.0.mbn",
             "lbe-ax-v6_nor.bin",
             "lbe-ax-v6_emmc.bin",
-            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+            "RAX.ipq5018.v1.1.0.3fef3a78.220915.1414-mp03.5-c2.bin"
           ]
         },
         {
@@ -44,12 +44,12 @@
           "../am-fw/lbe-ax-v6_nor.bin"
         ],
         [
-          "tftp/images/a659-emmc.bin",
+          "tftp/images/a659-nand.bin",
           "../am-fw/lbe-ax-v6_emmc.bin"
         ],
         [
           "tftp/images/a659.bin",
-          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.1.0.3fef3a78.220915.1414-mp03.5-c2.bin"
         ]
       ]
     }
