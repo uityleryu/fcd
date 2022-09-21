@@ -76,7 +76,7 @@ IMAGE-UVC-G4DOORBELLPROPOE= \
 
 IMAGE-UNIFI-WAVEROVECAMERA= \
     images/a594* \
-    uvc-fw/waverovecam.*
+    uvc-fw/uwr.*
 
 IMAGE-UVC-AIPRO= \
     images/a5a4* \
