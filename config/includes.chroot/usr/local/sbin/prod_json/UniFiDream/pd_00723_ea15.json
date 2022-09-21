@@ -34,24 +34,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
           "DST_PATH": "udm-fw/udmp",
           "FILES": [
-            "UDMPRO.alpinev2.v1.12.22.4105ace.220519.0824.bin",
-            "uImage.v1.12.22.r",
-            "boot.v1.12.22.img"
+            "UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin",
+            "uImage.v1.12.30.r",
+            "boot.v1.12.30.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/udmp/UDMPRO.alpinev2.v1.12.22.4105ace.220519.0824.bin"
+          "../udm-fw/udmp/UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/udmp/uImage.v1.12.22.r"
+          "../udm-fw/udmp/uImage.v1.12.30.r"
         ],
         [
           "tftp/images/ea15_signed_boot.img",
-          "../udm-fw/udmp/boot.v1.12.22.img"
+          "../udm-fw/udmp/boot.v1.12.30.img"
         ]
       ]
     }

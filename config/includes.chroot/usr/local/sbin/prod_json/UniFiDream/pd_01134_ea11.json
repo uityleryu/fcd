@@ -54,9 +54,9 @@
           "DST_PATH": "udm-fw/udm",
           "FILES": [
             "ubnt_udm_all_v1_boot.img",
-            "UDM.alpinev2.v1.12.22.4105ace.220519.0820.bin",
-            "uImage.v1.12.22.r",
-            "boot.v1.12.22.img"
+            "UDM.alpinev2.v1.12.30.060f0fe.220909.0030.bin",
+            "uImage.v1.12.30.r",
+            "boot.v1.12.30.img"
           ]
         }
       ],
@@ -67,15 +67,15 @@
         ],
         [
           "tftp/images/ea11-fw.bin",
-          "../udm-fw/udm/UDM.alpinev2.v1.12.22.4105ace.220519.0820.bin"
+          "../udm-fw/udm/UDM.alpinev2.v1.12.30.060f0fe.220909.0030.bin"
         ],
         [
           "tftp/images/ea11-recovery",
-          "../udm-fw/udm/uImage.v1.12.22.r"
+          "../udm-fw/udm/uImage.v1.12.30.r"
         ],
         [
           "tftp/images/ea11_signed_boot.img",
-          "../udm-fw/udm/boot.v1.12.22.img"
+          "../udm-fw/udm/boot.v1.12.30.img"
         ]
       ]
     }
