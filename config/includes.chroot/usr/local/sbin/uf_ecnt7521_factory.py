@@ -12,6 +12,13 @@ import os
 import stat
 import shutil
 
+'''
+    eec5: UF-WIFI6
+    eec8: UISP-FIBER-XG
+    eec9: UISP-FIBER-XGS
+'''
+
+
 class UFECNT7521Factory(ScriptBase):
     def __init__(self):
         super(UFECNT7521Factory, self).__init__()
@@ -23,57 +30,68 @@ class UFECNT7521Factory(ScriptBase):
     def init_vars(self):
         self.ubpmt = {
             'eec5': "",
-            'eec8': ""
+            'eec8': "",
+            'eec9': ""
         }
 
         self.lnxpmt = {
             'eec5': "#",
-            'eec8': "#"
+            'eec8': "#",
+            'eec9': "#"
         }
 
         self.lnxpmt_fcdfw = {
             'eec5': "#",
-            'eec8': "#"
+            'eec8': "#",
+            'eec9': "#"
         }
 
         self.bootloader = {
             'eec5': "eec5-uboot.bin",
-            'eec8': "eec8-uboot.bin"
+            'eec8': "eec8-uboot.bin",
+            'eec9': "eec8-uboot.bin"
         }
 
         self.product_class_table = {
             'eec5': "basic",
-            'eec8': "basic"
+            'eec8': "basic",
+            'eec9': "basic"
         }
 
         self.devregmtd = {
             'eec5': "/dev/mtdblock9",
-            'eec8': "/dev/mtdblock9"
+            'eec8': "/dev/mtdblock9",
+            'eec9': "/dev/mtdblock9",
         }
 
         self.helpername = {
             'eec5': "helper_ECNT7528_debug",
-            'eec8': "helper_ECNT7528_debug"
+            'eec8': "helper_ECNT7528_debug",
+            'eec9': "helper_ECNT7528_debug",
         }
 
         self.pd_dir_table = {
             'eec5': "uf_wifi6",
-            'eec8': "uf_wifi6"
+            'eec8': "uf_wifi6",
+            'eec9': "uf_wifi6"
         }
 
         self.ethnum = {
             'eec5': "1",
             'eec8': "1",
+            'eec9': "1"
         }
 
         self.wifinum = {
             'eec5': "1",
-            'eec8': "0"
+            'eec8': "0",
+            'eec9': "0"
         }
 
         self.btnum = {
             'eec5': "1",
-            'eec8': "0"
+            'eec8': "0",
+            'eec9': "0"
         }
 
         self.devnetmeta = {
@@ -355,9 +373,17 @@ class UFECNT7521Factory(ScriptBase):
             self.check_onu()
             msg(90, "Succeeding in checking the MAC information ...")
 
-        msg(95, "Set DUT to GPON mode ...")
         if self.board_id == "eec5":
+            msg(95, "Set DUT to GPON mode ...")
             self.set_board_gpon_mode()
+        elif self.board_id == "eec8" or self.board_id == "eec9":
+            cmdset = [
+                "echo clr_cal_data > /proc/lddla/debug",
+                "echo save_bob > /proc/lddla/debug",
+                "mtd bob save"
+            ]
+            for cmd in cmdset:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

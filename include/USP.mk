@@ -34,7 +34,7 @@ IMAGE-USP-RPS= \
     usp/rps/US.mt7621*
 
 
-IMAGE-USP-RPS= \
+IMAGE-USP-Battery= \
     images/ee76* \
     
 # Model

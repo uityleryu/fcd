@@ -26,11 +26,11 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.fwimg = "images/" + self.board_id + "-fw.bin"
-        self.initramfs = "images/" + self.board_id + "-initramfs.bin"
-        self.gpt = "images/" + self.board_id + "-gpt.bin"
+        self.fwimg = "images/{}-fw.bin".format(self.board_id)
+        self.initramfs = "images/{}-initramfs.bin".format(self.board_id)
+        self.gpt = "images/{}-gpt.bin".format(self.board_id)
         self.devregpart = "/dev/mtdblock9"
-        self.bomrev = "113-" + self.bom_rev
+        self.bomrev = "113-{}".format(self.bom_rev)
         self.bootloader_prompt = "IPQ5018#"
         self.linux_prompt = "root@OpenWrt:/#"
 
@@ -149,7 +149,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a667":
+        if self.board_id == "a666" or self.board_id == "a665":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
@@ -197,6 +197,58 @@ class U6IPQ5018BspFactory(ScriptBase):
         #sometimes DUT will fail log to interrupt the login in process so add below try process for it
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
 
+    def fwupdate_uex(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.del_arp_table(self.dutip)
+        comma_mac = self.mac_format_str2comma(self.mac)
+        self.set_ub_net(comma_mac)
+        self.is_network_alive_in_uboot()
+        self.display_aro_table()
+
+        cmdset = [
+            "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id),
+            "sf probe",
+            "sf erase 0x110000 0xb0000",
+            "sf write 0x50000000 0x120000 $filesize",
+            "reset"
+        ]
+        for cmd in cmdset:
+            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.del_arp_table(self.dutip)
+        comma_mac = self.mac_format_str2comma(self.mac)
+        self.set_ub_net(comma_mac)
+        self.is_network_alive_in_uboot()
+        self.display_aro_table()
+
+        cmdset = [
+            "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
+            self.tftp_server, self.dutip),
+            "tftpb 0x50000000 images/{}-loader.img".format(self.board_id),
+            "bootm"
+        ]
+        for cmd in cmdset:
+            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+
+        self.pexp.expect_only(120, "enter factory install mode")
+        log_debug(msg="Enter factory install mode ...")
+        self.pexp.expect_only(120, "Wait for nc client")
+        log_debug(msg="nc ready ...")
+        nc_cmd = "nc -N {} 5566 < {}/{}-fw.bin".format(self.dutip, self.fwdir, self.board_id)
+        [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
+        if (int(rtc) > 0):
+            error_critical("cmd: \"{}\" fails, return value: {}".format(nc_cmd, rtc))
+
+        log_debug(msg="Upgrading FW ...")
+        self.pexp.expect_only(120, "Reboot system safely")
+        log_debug(msg="FW update done ...")
+
+        # the linux prompt is different to other products
+        self.linux_prompt = "root@UEX"
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=False, retry=3)
+
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -239,7 +291,11 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
-            self.fwupdate()
+            if self.board_id == "a667":
+                self.fwupdate_uex()
+            else:
+                self.fwupdate()
+
             msg(70, "Succeeding in downloading the upgrade tar file ...")
 
         if self.DATAVERIFY_ENABLE is True:

@@ -112,6 +112,18 @@ class UNASALPINEFactory(ScriptBase):
             'ea30': "ifconfig enp0s1 ",
             'ea50': "ifconfig enp0s2 ",
         }
+
+        self.pkg_name = {
+            'ea1a': "",
+            'ea20': "factory-test-tools*",
+            'ea51': "nvr-lcm-tools*",
+            'ea21': "",
+            'ea30': "",
+            'ea50': "nvr-lcm-tools*",
+        }
+
+
+
         self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
@@ -380,9 +392,9 @@ class UNASALPINEFactory(ScriptBase):
 
     def load_pkg_tool(self):
         self.set_network_in_kernel()
-        src_file = os.path.join(self.fcd_toolsdir, self.board_id, "factory-test-tools*")
+        src_file = os.path.join(self.fcd_toolsdir, self.board_id, self.pkg_name[self.board_id])
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src_file, dst_file=self.dut_tmpdir)
-        cmd = "dpkg -i /tmp/factory-test-tools*"
+        cmd = "dpkg -i /tmp/"+ self.pkg_name[self.board_id]
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
     def run(self):
@@ -476,7 +488,7 @@ class UNASALPINEFactory(ScriptBase):
             msg(90, "Succeeding in checking the devreg information ...")
 
         if WAIT_LCMUPGRADE_ENABLE is True:
-            if self.board_id == 'ea50':
+            if self.board_id == 'ea50' or self.board_id == 'ea51':
                 self.load_pkg_tool()
             if self.board_id in self.wait_LCM_upgrade_en:
                 msg(95, "Waiting LCM upgrading ...")

@@ -82,6 +82,14 @@ IMAGE-UVC-AIPRO= \
     images/a5a4* \
     uvc-fw/aipro.*
 
+IMAGE-UVC-AIPRO= \
+    images/a5a4* \
+    uvc-fw/aipro.*
+
+IMAGE-UVC-G5PRO= \
+    images/a598* \
+    uvc-fw/g5pro.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -102,6 +110,8 @@ IMAGE-UVC+=$(IMAGE-UVC-G5FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPROPOE)
 IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVERCAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
+IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -223,6 +233,15 @@ TOOLS-UNIFI-WAVEROVERCAMERA+= \
 TOOLS-UVC-AIPRO+=$(TOOLS-UVC)
 TOOLS-UVC-AIPRO+= \
     uvc/128k_ff.bin
+
+TOOLS-UVC-AIPRO+=$(TOOLS-UVC)
+TOOLS-UVC-AIPRO+= \
+    uvc/128k_ff.bin
+
+TOOLS-UVC-G5PRO+=$(TOOLS-UVC)
+TOOLS-UVC-G5PRO+= \
+    uvc/128k_ff.bin
+
 # Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -244,6 +263,7 @@ $(eval $(call ProductImage,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -283,3 +303,5 @@ $(eval $(call ProductCompress2,02591_a534))
 $(eval $(call ProductCompress2,03815_a591))
 $(eval $(call ProductCompress2,03455_a596))
 $(eval $(call ProductCompress2,03465_a597))
+$(eval $(call ProductCompress2,03759_a5c0))
+$(eval $(call ProductCompress2,03783_a5c1))

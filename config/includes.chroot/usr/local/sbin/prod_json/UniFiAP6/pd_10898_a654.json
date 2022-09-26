@@ -1,6 +1,6 @@
 {
   "UniFiAP6": {
-    "U6-Enterprise": {
+    "U6-Enterprise-10898": {
       "INDEX": 0,
       "NAME": "U6-Enterprise",
       "BOARDID": "a654",
@@ -28,7 +28,7 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-infinity_1gb-v6.img",
-            "BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin",
+            "BZ.ipq50xx_6.2.38+14070.220902.1549-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
             "ramload-6.0.17.bin",
             "u6-infinity_1gb-v6_nor.bin"
@@ -42,7 +42,7 @@
         ],
         [
           "tftp/images/a654-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.38+14070.220902.1549-uboot.bin"
         ],
         [
           "tftp/images/a654-gpt.bin",

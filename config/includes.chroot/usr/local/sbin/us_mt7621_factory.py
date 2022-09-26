@@ -94,7 +94,7 @@ class USFLEXFactory(ScriptBase):
         }
         # flash size map
         self.flash_size = {
-            'ed10': "33554432",
+            'ed10': "",
             'ec20': "33554432",
             'ec22': "33554432",
             'ec25': "33554432",
@@ -228,6 +228,9 @@ class USFLEXFactory(ScriptBase):
         self.SetBootNet()
         self.is_network_alive_in_uboot()
 
+    def reboot_f(self):
+        self.pexp.expect_action(30, "", "reboot -f")
+
     def fwupdate(self):
         log_debug("Change to product firware...")
         self.pexp.expect_action(30, "", "")
@@ -282,6 +285,40 @@ class USFLEXFactory(ScriptBase):
         self.pexp.expect_only(30, "qrid="+self.qrcode)
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/build.properties")
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
+    
+    def prepare_server_need_files_ed10(self, method="tftp"):
+        log_debug("Starting to do " + self.helperexe + "...")
+        helperexe_path = os.path.join('/sbin/', self.helperexe)
+        md5sum_helper = 'md5sum {}'.format(helperexe_path)
+        self.pexp.expect_lnxcmd(30, pre_exp=self.linux_prompt, action=md5sum_helper)
+
+        cmd = "chmod 777 {0}".format(helperexe_path)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                valid_chk=True)
+
+        eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+        sstr = [
+            helperexe_path,
+            "-q",
+            "-c product_class=" + self.product_class,
+            "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
+            ">",
+            eetxt_dut_path
+        ]
+        sstr = ' '.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+        time.sleep(1)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            srcp = os.path.join(self.tftpdir, fh)
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
+        log_debug("Send helper output files from DUT to host ...")
 
     def run(self):
         """
@@ -317,7 +354,10 @@ class USFLEXFactory(ScriptBase):
         if self.DOHELPER_ENABLE is True:
             msg(30, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
-            self.prepare_server_need_files()
+            if self.board_id == 'ed10':
+                self.prepare_server_need_files_ed10()
+            else:
+                self.prepare_server_need_files()
 
         if self.REGISTER_ENABLE is True:
             self.registration()

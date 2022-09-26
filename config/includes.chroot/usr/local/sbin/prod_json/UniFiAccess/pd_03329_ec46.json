@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-GATE": {
+    "UA-HUB-GATE": {
       "INDEX": 1,
-      "NAME": "UA-GATE",
+      "NAME": "UA-HUB-GATE",
       "BOARDID": "ec46",
       "BOMREV": "113-03329",
-      "DESC": "UniFi Access Gate",
+      "DESC": "UniFi Access Hub Gate",
       "FILE": "ua_mt7621_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -16,14 +16,9 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "GT.mt7621.v4.0.12.26.gb151e3f.210607.1715-uboot.bin",
+            "GT.mt7621.v4.0.14.3.gfa00743.220905.0308-uboot.bin",
             "ua-gate-nor-v2.bin"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -51,7 +46,7 @@
         ],
         [
           "tftp/ua-fw/ua-gate-fw.bin",
-          "../ua-fw/GT.mt7621.v4.0.12.26.gb151e3f.210607.1715-uboot.bin"
+          "../ua-fw/GT.mt7621.v4.0.14.3.gfa00743.220905.0308-uboot.bin"
         ]
       ]
     }

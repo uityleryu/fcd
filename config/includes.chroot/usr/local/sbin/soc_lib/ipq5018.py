@@ -26,7 +26,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "0x00120000",    # Prism-AX
             'a662': "0x00120000",    # LiteAP-AX-GPS
             'a663': "0x00120000",    # NBE-AX
-            'a664': "0x00120000"     # Wave-LR
+            'a664': "0x00120000",    # Wave-LR
+            'a669': "0x00120000",    # LBE-AX(NAND)
+            'a671': "0x00120000",    # Prism-AX(NAND)
+            'a672': "0x00120000",    # Prism-AX-OMT(NAND)
+            'a670': "0x00120000",    # LAP-AX(NAND)
+            'a673': "0x00120000"     # NBE-AX(NAND)
         }
         self.ubaddr = self.uboot_address[self.board_id]
 
@@ -38,7 +43,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "0x000a0000",
             'a662': "0x000a0000",
             'a663': "0x000a0000",
-            'a664': "0x000a0000"
+            'a664': "0x000a0000",
+            'a669': "0x000a0000",
+            'a671': "0x000a0000",
+            'a672': "0x000a0000",
+            'a670': "0x000a0000",
+            'a673': "0x000a0000"
 
         }
         self.ubsize = self.uboot_size[self.board_id]
@@ -53,7 +63,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "#",
             'a662': "#",
             'a663': "#",
-            'a664': "#"
+            'a664': "#",
+            'a669': "#",
+            'a671': "#",
+            'a672': "#",
+            'a670': "#",
+            'a673': "#"
         }
         self.linux_prompt = "root@OpenWrt:/#"
         self.prod_prompt = "ubnt@OpenWrt:~#"
@@ -66,7 +81,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "1",
             'a662': "1",
             'a663': "1",
-            'a664': "1"
+            'a664': "1",
+            'a669': "1",
+            'a671': "1",
+            'a672': "1",
+            'a670': "1",
+            'a673': "1"
         }
 
         self.wifinum = {
@@ -77,7 +97,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "1",
             'a662': "1",
             'a663': "1",
-            'a664': "1"
+            'a664': "1",
+            'a669': "1",
+            'a671': "1",
+            'a672': "1",
+            'a670': "1",
+            'a673': "1"
         }
 
         self.btnum = {
@@ -88,7 +113,12 @@ class IPQ5018BSPFactory(ScriptBase):
             'a661': "1",
             'a662': "1",
             'a663': "1",
-            'a664': "1"
+            'a664': "1",
+            'a669': "1",
+            'a671': "1",
+            'a672': "1",
+            'a670': "1",
+            'a673': "1"
         }
 
         self.devnetmeta = {
@@ -101,30 +131,15 @@ class IPQ5018BSPFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a658" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a659" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a660" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a661" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a662" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a663" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        elif self.board_id == "a664" :
-            self.FWUPDATE_ENABLE   = True
-            self.DATAVERIFY_ENABLE = True
-        else:
+        if self.board_id == "a671" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a670" :
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False
+        else:
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -273,7 +288,7 @@ class IPQ5018MFGGeneral(ScriptBase):
         super(IPQ5018MFGGeneral, self).__init__()
         self.mem_addr = "0x44000000"
         self.nor_bin = "{}-nor.bin".format(self.board_id)
-        self.emmc_bin = "{}-emmc.bin".format(self.board_id)
+        self.nand_bin = "{}-nand.bin".format(self.board_id)
         self.set_bootloader_prompt("IPQ5018#")
 
     def update_nor(self):
@@ -302,7 +317,7 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def update_emmc(self):
-        cmd = "mmc erase 0x0 0x2a422; mmc write {} 0x0 0x2a422".format(self.mem_addr)
+        cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_only(60, "blocks erased: OK")
@@ -310,6 +325,12 @@ class IPQ5018MFGGeneral(ScriptBase):
         cmd = "mmc erase 0x48422 0x40000"
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
+
+    def update_nand(self):
+        cmd = "imgaddr=$fileaddr && source $imgaddr:script"
+        log_debug(cmd)
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+
 
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
@@ -320,7 +341,6 @@ class IPQ5018MFGGeneral(ScriptBase):
         img_size = str(os.stat(os.path.join(self.tftpdir, img)).st_size)
         self.pexp.expect_action(10, self.bootloader_prompt, "tftpb {} {}".format(address, img))
         self.pexp.expect_only(60, "Bytes transferred = {}".format(img_size))
-
 
     def t1_image_check(self):
         self.pexp.expect_only(30, "Starting kernel")
@@ -342,11 +362,8 @@ class IPQ5018MFGGeneral(ScriptBase):
         # Update NOR(uboot)
         self.stop_uboot()
         msg(10, 'Stop in uboot...')
-        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
-        if self.board_id == "a656":
-            self.set_ub_net(self.premac, ethact="eth1")
-        else:
-            self.set_ub_net(self.premac)
+        
+        self.set_ub_net(self.premac)
 
         self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
@@ -355,21 +372,20 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.update_nor()
         msg(40, 'Update NOR done ...')
 
-        # Update EMMC(kernel)
         self.stop_uboot()
         msg(50, 'Stop in uboot...')
-        # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
-        if self.board_id == "a656":
-            self.set_ub_net(self.premac, ethact="eth1")
-        else:
-            self.set_ub_net(self.premac)
+        
+        self.set_ub_net(self.premac)
 
         self.is_network_alive_in_uboot()
         msg(60, 'Network in uboot works ...')
-        self.transfer_img(address=self.mem_addr, filename=self.emmc_bin)
-        msg(70, 'Transfer EMMC done')
-        self.update_emmc()
-        msg(80, 'Update EMMC done ...')
+        self.transfer_img(address=self.mem_addr, filename=self.nand_bin)
+        msg(70, 'Transfer NAND done')
+        if self.board_id == 'a659':
+            self.update_emmc()
+        else:
+            self.update_nand()
+        msg(80, 'Update nand done ...')
 
         # Check if we are in T1 image
         self.t1_image_check()

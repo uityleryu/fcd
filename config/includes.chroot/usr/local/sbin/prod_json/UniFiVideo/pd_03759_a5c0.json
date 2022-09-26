@@ -1,0 +1,29 @@
+{
+  "UniFiVideo": {
+    "UVC-G3INFANTRY-CAMERA": {
+      "INDEX": 0,
+      "NAME": "UVC-G3INFANTRY-CAMERA",
+      "BOARDID": "a5c0",
+      "BOMREV": "113-03759",
+      "DESC": "AmpliFi InstaCam",
+      "FILE": "uvc_snxx_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

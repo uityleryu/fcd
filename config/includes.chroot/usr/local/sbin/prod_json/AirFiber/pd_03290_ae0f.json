@@ -1,0 +1,26 @@
+{
+  "AirFiber": {
+    "AF-6XHD": {
+      "INDEX": 0,
+      "NAME": "AF-6XHD",
+      "BOARDID": "ae0f",
+      "BOMREV": "113-03290",
+      "DESC": "airFiber6XHD",
+      "FILE": "af_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/af_ltu5/",
+          "DST_PATH": "tools/af_ltu5",
+          "FILES": [
+            "helper_UBNTAME"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

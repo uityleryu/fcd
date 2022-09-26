@@ -26,39 +26,39 @@
           "SRC_PATH": "images/fcd-image/uc-fw/uc-wall-outlet-us",
           "DST_PATH": "uc-fw/uc-wall-outlet-us",
           "FILES": [
-            "CPP2.esp32app.1.0.2+325.220128.0038-unsigned.bin",
-            "bootloader.bin",
-            "dual_factory.bin",
-            "CPP2.esp32mfg.1.0.2+341.220216.1022.develop.dual_mfg-unsigned.bin",
-            "ota_data_initial.bin",
-            "partition-table.bin"
+            "CPP2.esp32app.1.0.10+397.220815.1400-unsigned.bin",
+            "bootloader-20220815.bin",
+            "dual_factory-20220815.bin",
+            "CPP2.esp32mfg.1.0.10+397.220815.1401-unsigned.bin",
+            "ota_data_initial-20220815.bin",
+            "partition-table-20220815.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ec5c-app.bin",
-          "../uc-fw/uc-wall-outlet-us/CPP2.esp32app.1.0.2+325.220128.0038-unsigned.bin"
+          "../uc-fw/uc-wall-outlet-us/CPP2.esp32app.1.0.10+397.220815.1400-unsigned.bin"
         ],
         [
           "tftp/images/ec5c-bootloader.bin",
-          "../uc-fw/uc-wall-outlet-us/bootloader.bin"
+          "../uc-fw/uc-wall-outlet-us/bootloader-20220815.bin"
         ],
         [
           "tftp/images/ec5c-factory.bin",
-          "../uc-fw/uc-wall-outlet-us/dual_factory.bin"
+          "../uc-fw/uc-wall-outlet-us/dual_factory-20220815.bin"
         ],
         [
           "tftp/images/ec5c-mfg.bin",
-          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.2+341.220216.1022.develop.dual_mfg-unsigned.bin"
+          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.10+397.220815.1401-unsigned.bin"
         ],
         [
           "tftp/images/ec5c-ota.bin",
-          "../uc-fw/uc-wall-outlet-us/ota_data_initial.bin"
+          "../uc-fw/uc-wall-outlet-us/ota_data_initial-20220815.bin"
         ],
         [
           "tftp/images/ec5c-ptn-table.bin",
-          "../uc-fw/uc-wall-outlet-us/partition-table.bin"
+          "../uc-fw/uc-wall-outlet-us/partition-table-20220815.bin"
         ]
       ]
     }

@@ -25,7 +25,9 @@ class AFAMEFactroy(ScriptBase):
             'ae08': 'AME',
             'ae0b': 'AME',
             'ae10': 'AME',
-            'ae11': 'AME'
+            'ae11': 'AME',
+            'ae0f': 'AME',
+            'ae13': 'AME'
         }
 
         self.product = soctype[self.board_id]

@@ -128,6 +128,9 @@ class MT7621MFGGeneral(ScriptBase):
             return False
         return True
 
+    def reboot_f(self):
+        self.pexp.expect_action(30, "", "reboot -f")
+
     def run(self):
         """
         Main procedure of back to ART

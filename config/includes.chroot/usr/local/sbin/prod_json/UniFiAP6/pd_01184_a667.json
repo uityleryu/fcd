@@ -21,9 +21,40 @@
             "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/a667",
+          "DST_PATH": "a667",
+          "FILES": [
+            "UEX.ipq5018.v0.0.1+root.8635.17562b1.220907.1047.bin",
+            "uImage-v0.0.1",
+            "unifi-uex-0.0.1.129-gc746286d_ipq5018_uex_u-boot.mbn",
+            "u6-express-v2.img",
+            "u6-express-v2_nor.bin"
+          ]
         }
       ],
       "CREATE_LINK": [
+        [
+          "tftp/images/a667-nor.bin",
+          "../a667/u6-express-v2_nor.bin"
+        ],
+        [
+          "tftp/images/a667-emmc.img",
+          "../a667/u6-express-v2.img"
+        ],
+        [
+          "tftp/images/a667-fw.bin",
+          "../a667/UEX.ipq5018.v0.0.1+root.8635.17562b1.220907.1047.bin"
+        ],
+        [
+          "tftp/images/a667-uboot.mbn",
+          "../a667/unifi-uex-0.0.1.129-gc746286d_ipq5018_uex_u-boot.mbn"
+        ],
+        [
+          "tftp/images/a667-loader.img",
+          "../a667/uImage-v0.0.1"
+        ]
       ]
     }
   }

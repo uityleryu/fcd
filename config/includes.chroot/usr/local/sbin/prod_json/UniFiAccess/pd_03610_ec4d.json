@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-READERLITE": {
+    "UA-G2-READER-MINI": {
       "INDEX": 1,
-      "NAME": "UA-READERLITE",
+      "NAME": "UA-G2-READER-MINI",
       "BOARDID": "ec4d",
       "BOMREV": "113-03610",
-      "DESC": "UniFi Access Reader Lite",
+      "DESC": "UniFi Access G2 Reader Mini",
       "FILE": "ua_qca9531_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/ua-fw/ua-readerlite/3.8.28.27",
+          "SRC_PATH": "images/fcd-image/ua-fw/ua-readerlite/3.8.33.53",
           "DST_PATH": "images",
           "FILES": [
             "ua-readerlite-uboot.bin",

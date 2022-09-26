@@ -61,7 +61,30 @@ class UNIFIBMCFactory(ScriptBase):
         self.HALTHOST_EN        = True
         self.WRITE_MAC2_EN      = True
 
+    def set_bmc_network(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.bmcip + " up")
+
+        retry = 10
+        for i in range(0, retry):
+            time.sleep(3)
+            try:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, "64 bytes from")
+
+                return
+            except Exception as e:
+                print("set network fail..." + str(i))
+                continue
+            break
+        else:
+            print("set network retry fail")
+            raise NameError('set network retry fail')
+
     def set_host_network(self):
+
+        cmd = "systemctl disable --now systemd-networkd-fallbacker@eth0.service; systemctl disable --now systemd-networkd-fallbacker@eth1.service"
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.dutip)
 
         retry = 10
@@ -88,23 +111,13 @@ class UNIFIBMCFactory(ScriptBase):
             print("set network retry fail")
             raise NameError('set network retry fail')
 
-    def set_bmc_network(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 " + self.bmcip)
+    def set_host_fan(self):
+        cmd = "systemctl stop uhwd"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
-        retry = 10
-        for i in range(0, retry):
+        for i in ['1','2','3','6']:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo {} > /sys/class/hwmon/hwmon0/pwm{} ".format(70, i))
             time.sleep(3)
-            try:
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, "64 bytes from")
-
-                return
-            except Exception as e:
-                print("set network fail..." + str(i))
-                continue
-            break
-        else:
-            print("set network retry fail")
-            raise NameError('set network retry fail')
 
     '''
         Host call to scp file from DUT to Host
@@ -281,7 +294,12 @@ class UNIFIBMCFactory(ScriptBase):
         out = self.session.execmd_getmsg(cmd)
 
     def halt_host(self):
-        out = self.session.execmd("sync;sync;sync;poweroff", get_exit_val=False, e_except=False)
+
+        cmd = "systemctl enable systemd-networkd-fallbacker@eth0.service;"
+
+        self.session.execmd(cmd, get_exit_val=False, e_except=False)
+
+        self.session.execmd("sync;sync;sync;poweroff", get_exit_val=False, e_except=False)
         self.session.close()
 
     def write_bmc_mac(self):
@@ -294,8 +312,20 @@ class UNIFIBMCFactory(ScriptBase):
 
         self.set_sshclient_helper(ssh_client=sshclient_obj)
 
-        cmd = "ifconfig; kiall -9 obmc-console-client"
+        cmd = "ifconfig; killall -9 obmc-console-client"
         out = self.session.execmd_getmsg(cmd)
+        self.session.close()
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig")
+
+        mac_3  = self.mac[0:6]+str(hex(int(self.mac[6:12], 16)+2))[2:8].upper()
+
+        cmd = "write_eeprom_mac.sh " + mac_3
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig")
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg")
 
         return
 
@@ -329,6 +359,8 @@ class UNIFIBMCFactory(ScriptBase):
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n1" )
         msg(20, "Host login success")
+
+        self.set_host_fan()
 
         self.set_host_network()
         msg(30, "Host network config success")
