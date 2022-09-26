@@ -1,8 +1,8 @@
 {
   "UniFiVideo": {
-    "UNIFI-WAVEROVECAMERA": {
+    "UNIFI-WAVEROVERCAMERA": {
       "INDEX": 0,
-      "NAME": "UNIFI-WAVEROVECAMERA",
+      "NAME": "UNIFI-WAVEROVERCAMERA",
       "BOARDID": "a594",
       "BOMREV": "113-04000",
       "DESC": "UniFi Wave Rover Camera",

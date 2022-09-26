@@ -2521,9 +2521,9 @@
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
     },
-    "UNIFI-WAVEROVECAMERA":{
+    "UNIFI-WAVEROVERCAMERA":{
       "INDEX"       : 19,
-      "NAME"        : "UNIFI-WAVEROVECAMERA",
+      "NAME"        : "UNIFI-WAVEROVERCAMERA",
       "BOARDID"     : "a594",
       "BOMREV"      : "113-04000",
       "DESC"        : "UniFi Wave Rover Camera",

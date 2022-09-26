@@ -74,9 +74,13 @@ IMAGE-UVC-G4DOORBELLPROPOE= \
     images/a575* \
     uvc-fw/g4dbpropoe.*
 
-IMAGE-UNIFI-WAVEROVECAMERA= \
+IMAGE-UNIFI-WAVEROVERCAMERA= \
     images/a594* \
-    uvc-fw/waverovecam.*
+    uvc-fw/uwr.*
+
+IMAGE-UVC-AIPRO= \
+    images/a5a4* \
+    uvc-fw/aipro.*
 
 IMAGE-UVC-AIPRO= \
     images/a5a4* \
@@ -104,7 +108,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G5BULLET)
 IMAGE-UVC+=$(IMAGE-UVC-G5DOME)
 IMAGE-UVC+=$(IMAGE-UVC-G5FLEX)
 IMAGE-UVC+=$(IMAGE-UVC-G4DOORBELLPROPOE)
-IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVECAMERA)
+IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVERCAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
 
@@ -222,8 +226,12 @@ TOOLS-UVC-G4DOORBELLPROPOE+=$(TOOLS-UVC)
 TOOLS-UVC-G4DOORBELLPROPOE+= \
     uvc/128k_ff.bin
 
-TOOLS-UNIFI-WAVEROVECAMERA+=$(TOOLS-UVC)
-TOOLS-UNIFI-WAVEROVECAMERA+= \
+TOOLS-UNIFI-WAVEROVERCAMERA+=$(TOOLS-UVC)
+TOOLS-UNIFI-WAVEROVERCAMERA+= \
+    uvc/128k_ff.bin
+
+TOOLS-UVC-AIPRO+=$(TOOLS-UVC)
+TOOLS-UVC-AIPRO+= \
     uvc/128k_ff.bin
 
 TOOLS-UVC-AIPRO+=$(TOOLS-UVC)
@@ -253,10 +261,9 @@ $(eval $(call ProductImage,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UNIFI-WAVEROVECAMERA,FCD_$(PRD)_WAVEROVECAMERA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
-
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -278,8 +285,7 @@ $(eval $(call ProductCompress,UVC-G5BULLET,FCD_$(PRD)_G5BULLET_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UNIFI-WAVEROVECAMERA,FCD_$(PRD)_WAVEROVECAMERA_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
