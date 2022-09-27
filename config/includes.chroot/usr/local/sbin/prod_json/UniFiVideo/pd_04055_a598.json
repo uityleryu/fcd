@@ -1,0 +1,18 @@
+{
+  "UniFiVideo": {
+    "UVC-G5PRO-MP": {
+      "INDEX": 0,
+      "NAME": "UVC-G5PRO-MP",
+      "BOARDID": "a598",
+      "BOMREV": "113-04055",
+      "DESC": "UVC G5 Pro (MP ver.)",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  }
+}
