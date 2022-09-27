@@ -63,6 +63,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 Pro"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif self.product_name == "UVC-G5PRO-MP":
+            self.board_name = "UVC G5 Pro (MP ver.)"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
