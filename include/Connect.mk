@@ -118,6 +118,7 @@ $(eval $(call ProductImage,LVDU-4,FCD_$(PRD)_LVDU-4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-24,FCD_$(PRD)_LVDU-24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UC-AUDIENCE,FCD_$(PRD)_UC-AUDIENCE_$(VER)_$(FWVER)))
 
 
 # Project compressed file for RPi FCD host
@@ -138,6 +139,7 @@ $(eval $(call ProductCompress,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULED-Instant,FCD_$(PRD)_ULED-Instant_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULED-Bulb,FCD_$(PRD)_ULED-Bulb_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UC-AUDIENCE,FCD_$(PRD)_UC-AUDIENCE_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00997_ec5a))
