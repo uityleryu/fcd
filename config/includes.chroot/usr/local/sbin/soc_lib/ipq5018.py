@@ -287,8 +287,25 @@ class IPQ5018MFGGeneral(ScriptBase):
     def __init__(self):
         super(IPQ5018MFGGeneral, self).__init__()
         self.mem_addr = "0x44000000"
-        self.nor_bin = "{}-nor.bin".format(self.board_id)
-        self.nand_bin = "{}-nand.bin".format(self.board_id)
+        self.bsp_nor_bin = "{}-bsp-nor.bin".format(self.board_id)
+        self.bsp_2nd_bin = "{}-bsp-2nd.bin".format(self.board_id)
+        
+        self.bsp_2nd_type = {
+            '0000': "emmc",
+            'a658': "emmc",
+            'a659': "emmc",
+            'a660': "emmc",
+            'a661': "emmc",
+            'a662': "emmc",
+            'a663': "emmc",
+            'a664': "emmc",
+            'a669': "nand",
+            'a671': "nand",
+            'a672': "nand",
+            'a670': "nand",
+            'a673': "nand"
+        }
+
         self.set_bootloader_prompt("IPQ5018#")
 
     def update_nor(self):
@@ -367,7 +384,7 @@ class IPQ5018MFGGeneral(ScriptBase):
 
         self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
-        self.transfer_img(address=self.mem_addr, filename=self.nor_bin)
+        self.transfer_img(address=self.mem_addr, filename=self.bsp_nor_bin)
         msg(30, 'Transfer NOR done')
         self.update_nor()
         msg(40, 'Update NOR done ...')
@@ -379,9 +396,9 @@ class IPQ5018MFGGeneral(ScriptBase):
 
         self.is_network_alive_in_uboot()
         msg(60, 'Network in uboot works ...')
-        self.transfer_img(address=self.mem_addr, filename=self.nand_bin)
-        msg(70, 'Transfer NAND done')
-        if self.board_id == 'a659':
+        self.transfer_img(address=self.mem_addr, filename=self.bsp_2nd_bin)
+        msg(70, 'Transfer 2nd image done')
+        if self.bsp_2nd_type[self.board_id] == 'emmc':
             self.update_emmc()
         else:
             self.update_nand()
