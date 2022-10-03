@@ -163,6 +163,19 @@ class UAPQCA956xFactory2(ScriptBase):
 
         time.sleep(15)  # for stable system
 
+        if self.board_id == 'e618' or self.board_id == 'e619':
+            log_debug(msg="Add IP Addr")
+            cmd = "ifconfig"
+            exp = "br-lan"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=60)
+            time.sleep(15)
+            self.pexp.expect_action(30, "", "\n")
+            self.pexp.expect_action(5, self.linux_prompt, "ip addr add {}/24 dev br-lan".format(self.dutip))
+            time.sleep(3)
+            cmd = "ip addr"
+            exp = self.dutip
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=5)
+
         self.is_network_alive_in_linux(retry=60)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
         time.sleep(3)  # for stable eth
@@ -313,6 +326,7 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(50, "Booting into recovery images...")
             self.enter_uboot()
             self.boot_recovery()
+
             self.login_kernel()
             self.enable_ssh()
 
