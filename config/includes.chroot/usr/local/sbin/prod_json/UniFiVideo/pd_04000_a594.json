@@ -22,6 +22,20 @@
             "aarch64-rpi4-64k-ee",
             "aarch64-rpi4-4k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a594-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "uwr.UVC.SAV530q.v4.57.99.67-fcddbg.M_0a43828.221003.0310.bin"
+          ]
         }
       ],
       "CREATE_LINK": []
