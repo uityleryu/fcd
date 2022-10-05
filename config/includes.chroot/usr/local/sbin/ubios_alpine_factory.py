@@ -20,13 +20,10 @@ class UbiOSLib(object):
 
         log_debug("Starting to do fwupdate ... ")
         sstr = [
-            "sh",
-            "/usr/bin/ubnt-upgrade",
-            "-d",
-            self.ubios_obj.dut_tmpdir + "/upgrade.bin"
+            "sh /usr/bin/ubnt-upgrade",
+            "-d {}/upgrade.bin".format(self.ubios_obj.dut_tmpdir)
         ]
         sstr = ' '.join(sstr)
-
         postexp = [ "Starting kernel" ]
 
         self.ubios_obj.pexp.expect_lnxcmd(300, self.ubios_obj.linux_prompt, sstr, postexp, retry=0)
@@ -38,7 +35,9 @@ class UbiOSLib(object):
         self.ubios_obj.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.ubios_obj.pexp.expect_only(10, "systemid=" + self.ubios_obj.board_id)
         self.ubios_obj.pexp.expect_only(10, "serialno=" + self.ubios_obj.mac.lower())
-        self.ubios_obj.pexp.expect_only(10, self.ubios_obj.linux_prompt)  
+        self.ubios_obj.pexp.expect_only(10, self.ubios_obj.linux_prompt)
+
+
 class UbiosAlpineFactoryGeneral(ScriptBase):
     def __init__(self):
         super(UbiosAlpineFactoryGeneral, self).__init__()
@@ -205,8 +204,13 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         time.sleep(2)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
         self.pexp.expect_only(20, "host " + self.tftp_server + " is alive")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200")
-        self.pexp.expect_action(10, self.bootloader_prompt, "tftpboot 0x08000004 images/" + self.board_id + "-recovery")
+
+        cmd = "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        cmd = "tftpboot 0x08000004 images/{}-recovery".format(self.board_id)
+        self.pexp.expect_action(10, self.bootloader_prompt, cmd)
+
         self.pexp.expect_only(30, "Bytes transferred")
         self.pexp.expect_action(11, self.bootloader_prompt, "bootm $fitbootconf")
 
@@ -217,6 +221,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
         postexp = [
@@ -239,15 +244,18 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt,retry=20)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Connected", retry=40)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "curl -s http://localhost:8081/status | jq .meta.udm_connected", 
-                                                      "true", retry=12)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "podman exec -it unifi-os mongo --quiet localhost:27117/ace "\
-                                                      "--eval=\"db.device.count()\"", "1", retry=12)
+
+        cmd = "curl -s http://localhost:8081/status | jq .meta.udm_connected"
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, "true", retry=12)
+
+        cmd = "podman exec -it unifi-os mongo --quiet localhost:27117/ace --eval=\"db.device.count()\""
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, "1", retry=12)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "poweroff", "Power down")
 
     def lcm_fw_ver_check(self):
         if self.board_id == "ea15" or self.board_id == "ea19":
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ulcmd --command dump --sender fcd_team', '"lcm.fw.version":"v', retry=48)
+            cmd = "ulcmd --command dump --sender fcd_team"
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, '"lcm.fw.version":"v', retry=48)
 
     def run(self):
         """
@@ -258,7 +266,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.fcd.common.print_current_fcd_version()
 
         # Connect into DUT and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
@@ -269,6 +277,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             if self.board_id == "ea15":
                 self.set_fake_EEPROM2()
                 self.update_uboot()
+
             self.set_fake_EEPROM()
 
         if self.UPDATE_UBOOT is True:

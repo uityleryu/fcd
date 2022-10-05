@@ -1,0 +1,60 @@
+{
+  "UniFiDC": {
+    "UDC-CONSOLE": {
+      "INDEX": "0",
+      "NAME": "UDC-CONSOLE",
+      "BOARDID": "e961",
+      "BOMREV": "113-02618",
+      "DESC": "UniFi Data Center Console",
+      "FILE": "uck_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/e961/",
+          "DST_PATH": "e961/",
+          "FILES": [
+            "CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img",
+            "RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img",
+            "apq8053-boot.img",
+            "rootfs.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uck/",
+          "DST_PATH": "tools/uck/",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e961-mfg.bin",
+          "../e961/CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img"
+        ],
+        [
+          "tftp/images/e961-recovery.bin",
+          "../e961/RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img"
+        ],
+        [
+          "tftp/images/e961-rootfs.bin",
+          "../e961/rootfs.img"
+        ],
+        [
+          "tftp/images/e961-kernel.bin",
+          "../e961/apq8053-boot.img"
+        ]
+      ]
+    }
+  }
+}

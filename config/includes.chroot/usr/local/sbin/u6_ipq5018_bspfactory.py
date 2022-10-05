@@ -16,6 +16,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a665: AFi-6-R
     a666: AFi-6-Ext
     a667: UniFi-Express
+    a674: UniFi-Express Mesh
 '''
 
 
@@ -44,7 +45,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "1",
             'a665': "2",
             'a666': "0",
-            'a667': "2"
+            'a667': "2",
+            'a674': "2"
         }
 
         self.wifinum = {
@@ -57,7 +59,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "3",
             'a665': "2",
             'a666': "2",
-            'a667': "2"
+            'a667': "2",
+            'a674': "2"
         }
 
         self.btnum = {
@@ -70,7 +73,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "1",
             'a665': "1",
             'a666': "1",
-            'a667': "1"
+            'a667': "1",
+            'a674': "1"
         }
         
         self.bootm_addr = {
@@ -83,7 +87,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "0x50000000",
             'a665': "1",
             'a666': "1",
-            'a667': ""
+            'a667': "",
+            'a674': ""
         }
         
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -97,7 +102,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': 'bootm $fileaddr#config@a656',
             'a665': "1",
             'a666': "1",
-            'a667': ""
+            'a667': "",
+            'a674': ""
         }
         
         self.linux_prompt_select = {
@@ -110,7 +116,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "#",
             'a665': "#",
             'a666': "#",
-            'a667': "#"
+            'a667': "#",
+            'a674': "#"
         }
 
         self.uboot_eth_port = {
@@ -123,7 +130,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "eth1",
             'a665': "eth0",
             'a666': "eth0",
-            'a667': "eth0"
+            'a667': "eth0",
+            'a674': "eth0"
         }
 
         self.lnx_eth_port = {
@@ -136,7 +144,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "br-lan",
             'a665': "br-lan",
             'a666': "br-lan",
-            'a667': "br-lan"
+            'a667': "br-lan",
+            'a674': "br-lan"
         }
 
         self.devnetmeta = {
@@ -149,7 +158,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE  = True 
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
-        if self.board_id == "a666" or self.board_id == "a665":
+        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674":
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False 
         else:
