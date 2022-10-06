@@ -37,4 +37,4 @@ $(eval $(call ProductCompress,UF-WiFi6,FCD_$(PRD)_UF-WiFi6_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03376_eec5))
-$(eval $(call ProductCompress2,03685_eec8))
+$(eval $(call ProductCompress2,04037_eec5))
