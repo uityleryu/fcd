@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uap-fw",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "UBBXG-1.0.7-d2c294cda54d4278b40d8b26f796e78f.bin",
+            "UBBXG-1.0.10-668f42d53f86402a89d96e724891da7a.bin",
             "UBB_XG_V032_FULL_NOR_IMAGE_W_PAIR.bin"
           ]
         },
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dd12.bin",
-          "../uap-fw/UBBXG-1.0.7-d2c294cda54d4278b40d8b26f796e78f.bin"
+          "../uap-fw/UBBXG-1.0.10-668f42d53f86402a89d96e724891da7a.bin"
         ],
         [
           "tftp/images/dd12-boot.bin",

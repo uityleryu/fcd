@@ -374,8 +374,8 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
-        cmd = "cat /proc/ubnthal/board.info"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "cat /usr/lib/version")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "jq .identification /etc/board.json")
 
     def airos_run(self):
         UPDATE_BOOTIMG_EN = True
