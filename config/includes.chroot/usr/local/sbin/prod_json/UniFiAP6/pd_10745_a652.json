@@ -31,7 +31,8 @@
             "BZ.ipq50xx_6.2.39+14077.220916.2051-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
             "ramboot-6.0.15.bin",
-            "u6-pro_1gb-v17_nor.bin"
+            "u6-pro_1gb-v17_nor.bin",
+            "ipq50xx.itb"
           ]
         }
       ],
@@ -55,6 +56,10 @@
         [
           "tftp/images/a652-nor.bin",
           "../u6-fw/ipq5018/u6-pro_1gb-v17_nor.bin"
+        ],
+        [
+          "tftp/images/a652.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
     }
