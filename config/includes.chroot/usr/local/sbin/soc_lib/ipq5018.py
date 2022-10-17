@@ -205,7 +205,7 @@ class IPQ5018BSPFactory(ScriptBase):
     def check_info(self):
 
         if self.board_id == "a658" or self.board_id == "a664":
-            self.pexp.expect_ubcmd(600, "running real init", "")
+            self.pexp.expect_ubcmd(600, "Please press Enter to activate this console.", "")
             self.pexp.expect_ubcmd(10, "login:", "ubnt")
             self.pexp.expect_ubcmd(10, "Password:", "ubnt")
             self.linux_prompt = "/var/home/ubnt #"

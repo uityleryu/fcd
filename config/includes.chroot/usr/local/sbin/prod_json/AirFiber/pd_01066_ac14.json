@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin",
+            "MGMP.ipq807x.v3.1.0.df54af5a.221012.1607.bin",
             "u-boot_01066.mbn",
             "wave-ap-acorn-spf11.3-csu1-nand-v5-single.img"
           ]
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac14.bin",
-          "../af-fw/MGMP.ipq807x.v3.0.11.ab75dabb.220719.1523.bin"
+          "../af-fw/MGMP.ipq807x.v3.1.0.df54af5a.221012.1607.bin"
         ],
         [
           "tftp/images/ac14-bootloader.bin",

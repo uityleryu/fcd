@@ -17,7 +17,7 @@
           "DST_PATH": "af-fw",
           "FILES": [
             "u-boot_01070.mbn",
-            "GMC.ipq5018.v3.0.13.9adff500.220907.1608.bin",
+            "GMC.ipq5018.v3.1.0.df54af5a.221012.1608.bin",
             "wave-nano-v4_emmc.bin",
             "wave-nano-v4_nor.bin"
           ]
@@ -48,7 +48,7 @@
         ],
         [
           "tftp/images/a658.bin",
-          "../af-fw/GMC.ipq5018.v3.0.13.9adff500.220907.1608.bin"
+          "../af-fw/GMC.ipq5018.v3.1.0.df54af5a.221012.1608.bin"
         ]
       ]
     }
