@@ -177,7 +177,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
         cmd = "tftpboot 0x50000000 images/{}.itb".format(self.board_id)
         self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
-        cmd = "tftpboot {} {}".format(self.bootm_addr[self.board_id] ,self.initramfs)
+        cmd = self.bootm_cmd[self.board_id]
         self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
 
         self.linux_prompt = "#"
