@@ -1,0 +1,54 @@
+{
+  "UniFiAccess": {
+    "UA-ELEVATOR": {
+      "INDEX": 2,
+      "NAME": "UA-ELEVATOR",
+      "BOARDID": "ec3b",
+      "BOMREV": "113-03920",
+      "DESC": "UniFi Access Elevator",
+      "FILE": "ua_mt7621_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw",
+          "DST_PATH": "ua-fw",
+          "FILES": [
+            "e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin",
+            "ua-gate-nor-v2.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec3b-t1.bin",
+          "../ua-fw/ua-elevator-t1.bin"
+        ],
+        [
+          "tftp/ua-fw/ua-elevator-t1.bin",
+          "../ua-fw/ua-gate-nor-v2.bin"
+        ],
+        [
+          "tftp/images/ec3b-fw.bin",
+          "../ua-fw/ua-elevator-fw.bin"
+        ],
+        [
+          "tftp/ua-fw/ua-elevator-fw.bin",
+          "../ua-fw/e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin"
+        ]
+      ]
+    }
+  }
+}
