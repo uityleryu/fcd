@@ -1,6 +1,6 @@
 {
   "UniFiAccess": {
-    "UA-ELEVATOR": {
+    "UA-ELEVATOR(03003)": {
       "INDEX": 2,
       "NAME": "UA-ELEVATOR",
       "BOARDID": "ec3b",
@@ -16,14 +16,9 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "EL.mt7621.v4.0.12.26.gb151e3f.210607.1703-uboot.bin",
+            "e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin",
             "ua-gate-nor-v2.bin"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/",
-          "DST_PATH": "tools/",
-          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -51,7 +46,7 @@
         ],
         [
           "tftp/ua-fw/ua-elevator-fw.bin",
-          "../ua-fw/EL.mt7621.v4.0.12.26.gb151e3f.210607.1703-uboot.bin"
+          "../ua-fw/e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin"
         ]
       ]
     }
