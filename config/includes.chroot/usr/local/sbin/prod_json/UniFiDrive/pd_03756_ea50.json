@@ -1,11 +1,11 @@
 {
   "UniFiDrive": {
-    "UNAS": {
+    "UNAS-Studio": {
       "INDEX": 0,
-      "NAME": "UNAS",
+      "NAME": "UNAS-Studio",
       "BOARDID": "ea50",
-      "BOMREV": "113-03756",
-      "DESC": "UniFi NAS ",
+      "BOMREV": "113-03576",
+      "DESC": "UniFi Studio",
       "FILE": "unas_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
