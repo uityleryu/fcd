@@ -16,7 +16,8 @@
           "SRC_PATH": "images/fcd-image/uf-fw/eec7",
           "DST_PATH": "uf-fw",
           "FILES": [
-            "OLT.xgs.recovery.v4.5.0-beta3.2ce00e9.220922.1036.bin"
+            "OLT.xgs.recovery.v4.5.0-beta4.4c8a8f5.221017.1228.bin",
+            "OLT.xgs.v4.5.0-beta4.4c8a8f5.221017.1150.bin"
           ]
         },
         {
@@ -40,7 +41,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/eec7-recovery.bin",
-          "../uf-fw/OLT.xgs.recovery.v4.5.0-beta3.2ce00e9.220922.1036.bin"
+          "../uf-fw/OLT.xgs.recovery.v4.5.0-beta4.4c8a8f5.221017.1228.bin"
+        ],
+        [
+          "tftp/images/eec7-fw.bin",
+          "../uf-fw/OLT.xgs.v4.5.0-beta4.4c8a8f5.221017.1150.bin"
         ]
       ]
     }
