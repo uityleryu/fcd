@@ -2857,8 +2857,20 @@
       "QRCHECK"     : "False",
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
-    }
-  },
+    },
+
+    "UA-Elevator-Extender-TX": {
+      "INDEX": 11,
+      "NAME": "UA-Elevator-Extender-TX",
+      "BOARDID": "ec44",
+      "BOMREV": "113-03272",
+      "DESC": "UA-Elevator-Extender-TX",
+      "FILE": "ua_homeplug_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01"
+    },
 
   "UniFiXG":
   {
