@@ -46,7 +46,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "2",
             'a666': "0",
             'a667': "2",
-            'a674': "2"
+            'a674': "2",
+            'a675': "4"
         }
 
         self.wifinum = {
@@ -60,7 +61,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "2",
             'a666': "2",
             'a667': "2",
-            'a674': "2"
+            'a674': "2",
+            'a675': "0"
         }
 
         self.btnum = {
@@ -74,7 +76,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "1",
-            'a674': "1"
+            'a674': "1",
+            'a675': "1"
         }
 
         self.bootm_addr = {
@@ -88,7 +91,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "",
-            'a674': ""
+            'a674': "",
+            'a675': "0x50000000"
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -103,7 +107,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "",
-            'a674': ""
+            'a674': "",
+            'a675': "bootm $fileaddr#config@a675"
         }
 
         self.linux_prompt_select = {
@@ -117,7 +122,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "#",
             'a666': "#",
             'a667': "#",
-            'a674': "#"
+            'a674': "#",
+            'a675': "#"
         }
 
         self.uboot_eth_port = {
@@ -131,7 +137,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "eth0",
             'a666': "eth0",
             'a667': "eth0",
-            'a674': "eth0"
+            'a674': "eth0",
+            'a675': "eth0"
         }
 
         self.lnx_eth_port = {
@@ -145,7 +152,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "br-lan",
             'a666': "br-lan",
             'a667': "br-lan",
-            'a674': "br-lan"
+            'a674': "br-lan",
+            'a675': "br-lan"
         }
 
         self.devnetmeta = {
@@ -160,7 +168,13 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674":
             self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False 
+            self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a650":
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = True
+        elif self.board_id == "a675":
+            self.FWUPDATE_ENABLE   = False
+            self.DATAVERIFY_ENABLE = False
         else:
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
@@ -307,7 +321,11 @@ class U6IPQ5018BspFactory(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.BOOT_INITRAM_IMAGE is True:
-            self.run_initram_bootup()
+            if self.board_id == "a675":
+                self.init_bsp_image()
+            else:
+                self.run_initram_bootup()
+
             msg(10, "Boot up to linux console by initram and network is good ...")
 
         if self.PROVISION_ENABLE is True:

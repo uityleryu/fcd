@@ -1,0 +1,66 @@
+{
+  "UniFiAP6": {
+    "U6-PRO-OUTDOOR": {
+      "INDEX": 0,
+      "NAME": "U6-PRO-OUTDOOR",
+      "BOARDID": "a675",
+      "BOMREV": "113-01208",
+      "DESC": "UniFi AP6 PRO",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_1gb-v17.img",
+            "BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "u6-extender-5.71.1-ramload.bin",
+            "u6-pro_1gb-v17_nor.bin",
+            "ipq50xx.itb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a675-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_1gb-v17.img"
+        ],
+        [
+          "tftp/images/a675-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin"
+        ],
+        [
+          "tftp/images/a675-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a675-initramfs.bin",
+          "../u6-fw/ipq5018/u6-extender-5.71.1-ramload.bin"
+        ],
+        [
+          "tftp/images/a675-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_1gb-v17_nor.bin"
+        ],
+        [
+          "tftp/images/a675.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    }
+  }
+}
