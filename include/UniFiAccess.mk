@@ -62,6 +62,7 @@ TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
 TOOLS-UA-Elevator-Extender-TX+= \
     ua_extender/plctool
+    ua_extender/plcinit
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))

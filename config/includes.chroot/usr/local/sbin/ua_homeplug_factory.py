@@ -36,6 +36,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         # Base path
         self.toolsdir = "tools/"
+        self.plctool = os.path.join(self.tftpdir, "tools", "ua_extender")
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -182,7 +183,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         log_debug('check connecting...')
         time_end = time.time() + 10
         while time.time() < time_end:
-            [sto, rtc] = self.fcd.common.xcmd("plctool -i eth0 -I > /tmp/temp.log")
+            [sto, rtc] = self.fcd.common.xcmd(self.plctool + " -i eth1 -I > /tmp/temp.log")
             [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp.log")
             if sto == "1":
                 log_info("connect with DUT success")
