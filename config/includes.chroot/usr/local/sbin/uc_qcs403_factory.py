@@ -122,6 +122,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
             # Check WiFi MAC
             cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            time.sleep(5)
             cmd = "ifconfig wlan0 up"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
