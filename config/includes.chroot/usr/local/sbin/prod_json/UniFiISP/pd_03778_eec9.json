@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uf-fw/eec8",
           "DST_PATH": "uf-fw/",
           "FILES": [
-            "UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.110-1ad.220809.1130.img",
+            "UF-ONU.UISP-FIBER-XG.v4.5.0-beta4.202-9c0.221017.1112.img",
             "boot-UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.109-179.220809.1116.img"
           ]
         },
@@ -39,7 +39,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/eec9-fw.bin",
-          "../uf-fw/UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.110-1ad.220809.1130.img"
+          "../uf-fw/UF-ONU.UISP-FIBER-XG.v4.5.0-beta4.202-9c0.221017.1112.img"
         ],
         [
           "tftp/images/eec9-uboot.bin",
