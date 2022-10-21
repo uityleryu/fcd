@@ -123,7 +123,7 @@ class UVPQCS403FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # Check WiFi MAC
-            cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
+            cmd = "insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
             cmd = "ifconfig wlan0 up"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
