@@ -5,7 +5,7 @@
       "NAME": "U6-PRO-OUTDOOR",
       "BOARDID": "a675",
       "BOMREV": "113-01208",
-      "DESC": "UniFi AP6 PRO",
+      "DESC": "UniFi AP6 PRO Outdoor",
       "FILE": "u6_ipq5018_bspfactory.py",
       "T1FILE": "u6_ipq5018_mfg.py",
       "QRCHECK": "True",
@@ -17,7 +17,7 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-pro_1gb-v17.img",
-            "BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin",
+            "BZ.ipq50xx_6.2.39+14077.220916.2051-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
             "u6-extender-5.71.1-ramload.bin",
             "u6-pro_1gb-v17_nor.bin",
@@ -42,7 +42,7 @@
         ],
         [
           "tftp/images/a675-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.27+13977.220701.2202-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.39+14077.220916.2051-uboot.bin"
         ],
         [
           "tftp/images/a675-gpt.bin",

@@ -17,6 +17,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a666: AFi-6-Ext
     a667: UniFi-Express
     a674: UniFi-Express Mesh
+    a675: UniFi6 Pro outdoor
 '''
 
 
