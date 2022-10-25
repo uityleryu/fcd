@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "MGMP.ipq807x.v3.1.0-Micro-alpha.c72e5756.221006.1548.bin",
+            "MGMP.ipq807x.v3.1.0-Micro-alpha.aa624fdf.221020.1433.bin",
             "u-boot_01105.mbn",
             "wave-micro-acorn-spf11.3-csu1-nand-v4-single.img"
           ]
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac16.bin",
-          "../af-fw/MGMP.ipq807x.v3.1.0-Micro-alpha.c72e5756.221006.1548.bin"
+          "../af-fw/MGMP.ipq807x.v3.1.0-Micro-alpha.aa624fdf.221020.1433.bin"
         ],
         [
           "tftp/images/ac16-bootloader.bin",
