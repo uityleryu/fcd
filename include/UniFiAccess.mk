@@ -61,7 +61,7 @@ TOOLS-UA-ThermalScan+= \
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
 TOOLS-UA-Elevator-Extender-TX+= \
-    ua_extender/plctool
+    ua_extender/plctool \
     ua_extender/plcinit
 
 # Project target

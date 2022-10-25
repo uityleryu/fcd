@@ -123,7 +123,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "adr9",
             'efb5': "adr9",
             'efb6': "adr9",
-            'efb7': "adr9"
+            'efb7': "adr9",
+            'ec5f': "adr9"
         }
 
         self.lnxpmt = {
@@ -141,7 +142,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "",
             'ef90': "uc_cast",
             'ec5e': "uapro_g2",
-            'ec5f': "msm8953_uapro",
+            'ec5f': "frontrow_da",
             'ec60': "msm8953_uapro",
             'ec62': "",
             'ec61': "ud_gate",
@@ -249,6 +250,36 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "1"
         }
 
+        self.qrcode_dict = {
+            'e980': True,
+            'ef80': True,
+            'ef81': True,
+            'ef87': True,
+            'ef88': True,
+            'ef82': True,
+            'ef13': True,
+            'ef0e': True,
+            'ef83': True,
+            'ef84': True,
+            'ef85': True,
+            'ef86': True,
+            'ef90': True,
+            'ec5e': True,
+            'ec5f': False,
+            'ec60': True,
+            'ec62': True,
+            'ec61': True,
+            'efa0': True,
+            'efb0': True,
+            'efb1': True,
+            'efb2': True,
+            'efb3': True,
+            'efb4': True,
+            'efb5': True,
+            'efb6': True,
+            'efb7': True
+        }
+
         self.devnetmeta = {
             'ethnum'    : self.macnum,
             'wifinum'   : self.wifinum,
@@ -274,6 +305,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
                 self.f_eth_mac = "/vendor/factory/MAC_ADDR"
                 self.f_qr_id = "/vendor/factory/qr_id"
+                self.cfg_file = ""
+            elif self.board_id == "ec5f":
+                self.persist_cfg_file = ""
+                self.f_eth_mac = "/persist/eth/.macadd"
+                self.f_qr_id = ""
                 self.cfg_file = ""
             else:
                 self.persist_cfg_file = "/mnt/vendor/persist/WCNSS_qcom_cfg.ini"
@@ -442,15 +478,12 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         log_debug("Starting to do registration ...")
         regsubparams = self.access_chips_id()
 
-        # The HEX of the QR code
-        reg_qr_field = "-i field=qr_code,format=hex,value={}".format(self.qrhex)
         clientbin = "/usr/local/sbin/client_rpi4_release"
 
         regparam = [
             "-h prod.udrs.io",
             "-k {}".format(self.pass_phrase),
             regsubparams,
-            reg_qr_field,
             "-i field=flash_eeprom,format=binary,pathname={}".format(self.eegenbin_path),
             "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
             "-i field=sw_id,format=hex,value={}".format(self.sw_id),
@@ -466,6 +499,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "-y " + self.key_dir + "key.pem",
             "-z " + self.key_dir + "crt.pem"
         ]
+
+        # The HEX of the QR code
+        if self.qrcode_dict[self.board_id]:
+            regparam.append("-i field=qr_code,format=hex,value={}".format(self.qrhex))
 
         regparam = ' '.join(regparam)
 
@@ -533,6 +570,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 moount = 'mount -o rw,remount /vendor/factory'
                 cmd = "echo {0} > {1}".format(lmac, self.f_eth_mac)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, moount, valid_chk=True)
+            elif self.board_id == "ec5f":
+                lmac = self.mac_format_str2comma(self.mac)
+                cmd = "mkdir /persist/eth; echo {0} > {1}".format(lmac, self.f_eth_mac)
+
             else:
                 lmac = self.mac_format_str2list(self.mac)
                 bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
@@ -541,9 +582,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
-            cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
-
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+            if self.board_id == 'ec5f':
+                pass
+            else:
+                cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write Country Code
             '''
@@ -552,7 +595,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                    /data/misc/wifi/WCNSS_qcom_cfg.ini   (Android7)
                 then, remove them
             '''
-            if self.board_id != "ef90":
+            if self.board_id != "ef90" or self.board_id != "ec5f":
                 cmd = "rm {}".format(self.cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
@@ -560,7 +603,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             if self.board_id == "e980":
                 cmd = "echo gStaCountryCode={} > {}".format(self.android_cc, self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            elif self.board_id == "ef90" or self.board_id == "ef84":
+            elif self.board_id == "ef90" or self.board_id == "ef84" or  self.board_id == 'ec5f':
                 # No WiFi, No need to write teh country code
                 pass
             else:
