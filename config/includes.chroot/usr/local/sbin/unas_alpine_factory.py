@@ -116,19 +116,29 @@ class UNASALPINEFactory(ScriptBase):
         self.pkg_name = {
             'ea1a': "",
             'ea20': "factory-test-tools*",
-            'ea51': "nvr-lcm-tools*",
+            'ea51': "factory-test-tools*",
             'ea21': "",
             'ea30': "",
-            'ea50': "nvr-lcm-tools*",
+            'ea50': "factory-test-tools*",
         }
-
-
 
         self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
         }
+
+        self.INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
+        self.INSTALL_NAND_FW_ENABLE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        self.FWUPDATE_ENABLE = False
+        self.DATAVERIFY_ENABLE = True
+        if self.board_id == 'ea1a' or self.board_id == 'ea50':
+            self.WAIT_LCMUPGRADE_ENABLE = False
+        else:
+            self.WAIT_LCMUPGRADE_ENABLE = True
 
     def install_uboot_on_spi(self):
         fcd_spifwpath = os.path.join(self.tftpdir, "unas", "spi.image")
@@ -409,28 +419,16 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
-        INSTALL_NAND_FW_ENABLE = True
-        PROVISION_ENABLE = True
-        DOHELPER_ENABLE = True
-        REGISTER_ENABLE = True
-        FWUPDATE_ENABLE = False
-        DATAVERIFY_ENABLE = True
-        if self.board_id == 'ea1a' or self.board_id == 'ea50':
-            WAIT_LCMUPGRADE_ENABLE = False
-        else:
-            WAIT_LCMUPGRADE_ENABLE = True
-
         if self.board_id == 'ea51' or self.board_id == 'ea50':
             msg(3, 'Set fake sysid in uboot')
             self.set_fake_sysid()
         
-        if INSTALL_SPI_FLASH is True:
+        if self.INSTALL_SPI_FLASH is True:
             msg(5, "Boot to u-boot console and install spi flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
             self.install_uboot_on_spi()  # will be rebooting after installation
 
-        if INSTALL_NAND_FW_ENABLE is True:
+        if self.INSTALL_NAND_FW_ENABLE is True:
             msg(10, "Boot to u-boot console and install nand flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
             if self.board_id == 'ea51'or self.board_id == 'ea50':
@@ -450,23 +448,23 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, ["64 bytes from"])
         msg(35, "Boot up to linux console and network is good ...")
 
-        if PROVISION_ENABLE is True:
+        if self.PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
             self.copy_and_unzipping_tools_to_dut(timeout=30)
             self.data_provision_64k(netmeta=self.devnetmeta)
 
-        if DOHELPER_ENABLE is True:
+        if self.DOHELPER_ENABLE is True:
             self.erase_eefiles()
             msg(45, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files()
 
-        if REGISTER_ENABLE is True:
+        if self.REGISTER_ENABLE is True:
             self.registration()
             msg(60, "Finish doing registration ...")
             self.check_devreg_data(dut_tmp_subdir="unas")
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
-        if FWUPDATE_ENABLE is True:
+        if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
             self.pexp.expect_action(300, "login:", self.user)
             self.pexp.expect_action(15, "Password:", self.password)
@@ -480,14 +478,14 @@ class UNASALPINEFactory(ScriptBase):
             else:
                 self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
-        if DATAVERIFY_ENABLE is True:
+        if self.DATAVERIFY_ENABLE is True:
             if self.board_id == 'ea51' or self.board_id == 'ea50':
                 self.clear_shell()
 
             Retry(self.check_info, max_retry_count=3, delay_time=1)
             msg(90, "Succeeding in checking the devreg information ...")
 
-        if WAIT_LCMUPGRADE_ENABLE is True:
+        if self.WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id == 'ea50' or self.board_id == 'ea51':
                 self.load_pkg_tool()
             if self.board_id in self.wait_LCM_upgrade_en:

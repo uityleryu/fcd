@@ -27,6 +27,13 @@
           ]
         },
         {
+          "SRC_PATH": "images/tools/ea51/",
+          "DST_PATH": "tools/ea50",
+          "FILES": [
+            "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
+          ]
+        },
+        {
           "SRC_PATH": "images/tools/unas",
           "DST_PATH": "tools/unas",
           "FILES": [
