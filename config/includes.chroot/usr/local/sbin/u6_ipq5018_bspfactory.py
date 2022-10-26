@@ -163,21 +163,23 @@ class U6IPQ5018BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
-        self.BOOT_INITRAM_IMAGE = True
-        self.PROVISION_ENABLE  = True 
-        self.DOHELPER_ENABLE   = True 
-        self.REGISTER_ENABLE   = True 
+        '''
+            This is a special case for the U6-Pro recall event.
+        '''
+        self.BOOT_INITRAM_IMAGE = False
+
+        self.BOOT_BSP_IMAGE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
         if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674":
-            self.FWUPDATE_ENABLE   = False
+            self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
-        elif self.board_id == "a650":
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = True
         elif self.board_id == "a675":
-            self.FWUPDATE_ENABLE   = False
+            self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
-            self.FWUPDATE_ENABLE   = True
+            self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
@@ -186,6 +188,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
+    '''
+        This is a special case for the U6-Pro recall event.
+    '''
     def run_initram_bootup(self):
         self.pexp.expect_action(20, "to stop", "\033\033")
         self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
@@ -321,13 +326,16 @@ class U6IPQ5018BspFactory(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        if self.BOOT_INITRAM_IMAGE is True:
-            if self.board_id == "a675":
-                self.init_bsp_image()
-            else:
-                self.run_initram_bootup()
+        if self.BOOT_BSP_IMAGE is True:
+            self.init_bsp_image()
 
-            msg(10, "Boot up to linux console by initram and network is good ...")
+        '''
+            This is a special case for the U6-Pro recall event. 
+        '''
+        if self.BOOT_INITRAM_IMAGE is True:
+            self.run_initram_bootup()
+
+        msg(10, "Boot up to linux console by initram and network is good ...")
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
