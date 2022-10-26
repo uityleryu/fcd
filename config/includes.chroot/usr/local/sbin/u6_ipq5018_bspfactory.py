@@ -172,10 +172,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674":
-            self.FWUPDATE_ENABLE = False
-            self.DATAVERIFY_ENABLE = False
-        elif self.board_id == "a675":
+        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674" or self.board_id == "a675":
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
