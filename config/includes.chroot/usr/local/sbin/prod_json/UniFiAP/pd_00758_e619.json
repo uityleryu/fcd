@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "UMR-FLEX-US": {
+    "UMR-US-AC-00758": {
       "INDEX": 0,
-      "NAME": "UMR-FLEX-US",
+      "NAME": "UMR-US-AC",
       "BOARDID": "e619",
       "BOMREV": "113-00758",
-      "DESC": "UniFi Mobile Router FLEX US",
+      "DESC": "UniFi Mobile Router US AC",
       "FILE": "uap_qca956x_factory2.py",
       "T1FILE": "uap_qca956x_mfg.py",
       "QRCHECK": "activate_code",

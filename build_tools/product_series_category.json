@@ -72,5 +72,11 @@
   ],
   "UA_Elevator-SERIES" : [
     "03003_ec3b", "03920_ec3b"
+  ],
+  "UMR_EU_AC-SERIES" : [
+    "00830_e618", "01247_e618"
+  ],
+  "UMR_US_AC-SERIES" : [
+    "00758_e619", "00729_e619"
   ]
 }
