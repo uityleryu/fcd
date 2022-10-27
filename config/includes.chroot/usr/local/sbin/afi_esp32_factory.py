@@ -125,7 +125,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_ota_data = os.path.join(self.tftpdir, "images", "{}-ota{}.bin".format(self.board_id, encrypt_postfix))
         fw_mfg = os.path.join(self.tftpdir, "images", "{}-mfg{}.bin".format(self.board_id, encrypt_postfix))
         fw_app = os.path.join(self.tftpdir, "images", "{}-app{}.bin".format(self.board_id, encrypt_postfix))
-        fw_factory = os.path.join(self.tftpdir, "images", "{}-factory{}.bin".format(self.board_id, encrypt_postfix))
+        # fw_factory = os.path.join(self.tftpdir, "images", "{}-factory{}.bin".format(self.board_id, encrypt_postfix))
 
         if self.board_id == "da20":
             cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
@@ -145,7 +145,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                                          "0xe000", fw_ptn_table,
                                                          "0x10000", fw_ota_data,
                                                          "0x190000", fw_mfg,
-                                                         "0x510000", fw_app
+                                                         "0x810000", fw_app
                                                          )
 
         log_debug(cmd)
@@ -183,7 +183,10 @@ class UFPESP32FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
-        self.pexp.expect_only(60, "DEVREG:")  # The security check will fail if littlefs isn't mounted
+        if self.board_id == "da20":
+            self.pexp.expect_only(60, "DEVREG:")  # The security check will fail if littlefs isn't mounted
+        elif self.board_id == "da21":
+            self.pexp.expect_only(60, "check result: Pass")  # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
         time.sleep(15)  # delay because no delay the devreg check will be fail
