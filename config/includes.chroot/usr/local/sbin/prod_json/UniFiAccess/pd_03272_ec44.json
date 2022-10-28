@@ -1,14 +1,14 @@
 {
   "UniFiAccess": {
-    "UA-PRO": {
+    "UA-Elevator-Extender-TX": {
       "INDEX": 0,
-      "NAME": "UA-PRO",
-      "BOARDID": "ec5f",
-      "BOMREV": "113-02668",
-      "DESC": "UniFi PRO",
-      "FILE": "connect_apq8053_factory.py",
+      "NAME": "UA-Elevator-Extender-TX",
+      "BOARDID": "ec44",
+      "BOMREV": "113-03272",
+      "DESC": "UA-Elevator-Extender-TX",
+      "FILE": "ua_homeplug_factory.py",
       "T1FILE": "",
-      "QRCHECK": "False",
+      "QRCHECK": "True",
       "FCD_ID": "0012",
       "SW_ID": "1d01",
       "DOWNLOAD_FILE": [

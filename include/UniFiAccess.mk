@@ -59,6 +59,10 @@ TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
 
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
+TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
+TOOLS-UA-Elevator-Extender-TX+= \
+    ua_extender/plctool \
+    ua_extender/plcinit
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
@@ -67,6 +71,8 @@ $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
@@ -78,6 +84,7 @@ $(eval $(call ProductCompress,UA-SENSE-GATE,FCD_$(PRD)_UA-SENSE-GATE$(VER)_$(FWV
 $(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-Card,FCD_$(PRD)_UA-Card$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
@@ -101,5 +108,6 @@ $(eval $(call ProductCompress2,03920_ec3b))
 $(eval $(call ProductCompress2,UA_DISPLAY-SERIES))
 $(eval $(call ProductCompress2,03625_ec5e))
 $(eval $(call ProductCompress2,UA_HUB_4P-SERIES))
+$(eval $(call ProductCompress2,03272_ec44))
 $(eval $(call ProductCompress2,04035_ec53))
 $(eval $(call ProductCompress2,UA_Elevator-SERIES))
