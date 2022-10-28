@@ -16,6 +16,8 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a665: AFi-6-R
     a666: AFi-6-Ext
     a667: UniFi-Express
+    a674: UniFi-Express Mesh
+    a675: UniFi6 Pro outdoor
 '''
 
 
@@ -44,7 +46,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "1",
             'a665': "2",
             'a666': "0",
-            'a667': "2"
+            'a667': "2",
+            'a674': "2",
+            'a675': "4"
         }
 
         self.wifinum = {
@@ -57,7 +61,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "3",
             'a665': "2",
             'a666': "2",
-            'a667': "2"
+            'a667': "2",
+            'a674': "2",
+            'a675': "0"
         }
 
         self.btnum = {
@@ -70,9 +76,11 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "1",
             'a665': "1",
             'a666': "1",
-            'a667': "1"
+            'a667': "1",
+            'a674': "1",
+            'a675': "1"
         }
-        
+
         self.bootm_addr = {
             'a650': "0x50000000",
             'a651': "0x50000000",
@@ -83,9 +91,11 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "0x50000000",
             'a665': "1",
             'a666': "1",
-            'a667': ""
+            'a667': "",
+            'a674': "",
+            'a675': "0x50000000"
         }
-        
+
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
         self.bootm_cmd = {
             'a650': "bootm $fileaddr#config@a650",
@@ -97,9 +107,11 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': 'bootm $fileaddr#config@a656',
             'a665': "1",
             'a666': "1",
-            'a667': ""
+            'a667': "",
+            'a674': "",
+            'a675': "bootm $fileaddr#config@a675"
         }
-        
+
         self.linux_prompt_select = {
             'a650': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
             'a651': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
@@ -110,7 +122,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "#",
             'a665': "#",
             'a666': "#",
-            'a667': "#"
+            'a667': "#",
+            'a674': "#",
+            'a675': "#"
         }
 
         self.uboot_eth_port = {
@@ -123,7 +137,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "eth1",
             'a665': "eth0",
             'a666': "eth0",
-            'a667': "eth0"
+            'a667': "eth0",
+            'a674': "eth0",
+            'a675': "eth0"
         }
 
         self.lnx_eth_port = {
@@ -136,7 +152,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a656': "br-lan",
             'a665': "br-lan",
             'a666': "br-lan",
-            'a667': "br-lan"
+            'a667': "br-lan",
+            'a674': "br-lan",
+            'a675': "br-lan"
         }
 
         self.devnetmeta = {
@@ -145,15 +163,23 @@ class U6IPQ5018BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
-        self.BOOT_BSP_IMAGE    = True 
-        self.PROVISION_ENABLE  = True 
-        self.DOHELPER_ENABLE   = True 
-        self.REGISTER_ENABLE   = True 
-        if self.board_id == "a666" or self.board_id == "a665":
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False 
+        '''
+            This is a special case for the U6-Pro recall event.
+        '''
+        self.BOOT_INITRAM_IMAGE = False
+
+        self.BOOT_BSP_IMAGE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674":
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a675":
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
         else:
-            self.FWUPDATE_ENABLE   = True
+            self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
@@ -162,28 +188,57 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
-    def _ramboot_uap_fwupdate(self):
-        self.pexp.expect_action(40, "to stop", "\033")
+    '''
+        This is a special case for the U6-Pro recall event.
+    '''
+    def run_initram_bootup(self):
+        self.pexp.expect_action(20, "to stop", "\033\033")
         self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
         self.is_network_alive_in_uboot()
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && '\
-                                                           'mmc write 0x50000000 0x00000000 22'.format(self.gpt))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv bootcmd "mmc read {} 0x00000022 0x00020022;'.format(self.bootm_addr[self.board_id]) + \
-                                                           'bootm {}"'.format(self.bootm_addr[self.board_id]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'setenv imgaddr 0x44000000')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'saveenv')
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, 'tftpboot {} {}'.format(self.bootm_addr[self.board_id] ,self.initramfs))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, self.bootm_cmd[self.board_id])
+        cmd = "tftpboot 0x50000000 images/{}.itb".format(self.board_id)
+        self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+        cmd = self.bootm_cmd[self.board_id]
+        self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+
+        self.linux_prompt = "#"
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
+        cmd = "ifconfig br0"
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, "Link encap:Ethernet", retry=10)
+
+        self.set_lnx_net("br0")
+        self.is_network_alive_in_linux()
+        cmd = "echo 5edfacbf > /proc/ubnthal/.uf"
+        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
+
+    def _ramboot_uap_fwupdate(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        cmdset = [
+            "tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && mmc write 0x50000000 0x00000000 22".format(self.gpt),
+            "setenv bootcmd \"mmc read {0} 0x00000022 0x00020022; bootm {0}\"".format(self.bootm_addr[self.board_id]),
+            "setenv imgaddr 0x44000000",
+            "saveenv",
+            "tftpboot {} {}".format(self.bootm_addr[self.board_id] ,self.initramfs),
+            self.bootm_cmd[self.board_id]
+        ]
+        for cmd in cmdset:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
         self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
         self.disable_udhcpc()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 {}".format(self.dutip), self.linux_prompt)
+        cmd = "ifconfig br0 {}".format(self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         self.is_network_alive_in_linux()
-        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
-                     src_file=self.fwdir + "/" + self.board_id + "-fw.bin",
-                     dst_file=self.dut_tmpdir + "/fwupdate.bin")
+
+        src = "{}/{}-fw.bin".format(self.fwdir, self.board_id)
+        dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
+        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
+
         if self.board_id == 'a650' or self.board_id == 'a651':
             time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
 
@@ -273,7 +328,14 @@ class U6IPQ5018BspFactory(ScriptBase):
 
         if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
-            msg(10, "Boot up to linux console and network is good ...")
+
+        '''
+            This is a special case for the U6-Pro recall event. 
+        '''
+        if self.BOOT_INITRAM_IMAGE is True:
+            self.run_initram_bootup()
+
+        msg(10, "Boot up to linux console by initram and network is good ...")
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")

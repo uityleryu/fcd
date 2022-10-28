@@ -30,7 +30,7 @@
           "SRC_PATH": "images/tools/ea51/",
           "DST_PATH": "tools/ea51",
           "FILES": [
-            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
+            "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
           ]
         },
 

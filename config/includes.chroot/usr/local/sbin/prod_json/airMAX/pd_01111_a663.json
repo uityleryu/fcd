@@ -40,11 +40,11 @@
           "../am-fw/u-boot_1.0.0.mbn"
         ],
         [
-          "tftp/images/a663-nor.bin",
+          "tftp/images/a663-bsp-nor.bin",
           "../am-fw/nbe-ax-v2_nor.bin"
         ],
         [
-          "tftp/images/a663-emmc.bin",
+          "tftp/images/a663-bsp-2nd.bin",
           "../am-fw/nbe-ax-v2_emmc.bin"
         ],
         [

@@ -1,10 +1,10 @@
 {
   "UniFiAccess": {
-    "UA-ELEVATOR(03003)": {
+    "UA-ELEVATOR(03920)": {
       "INDEX": 2,
       "NAME": "UA-ELEVATOR",
       "BOARDID": "ec3b",
-      "BOMREV": "113-03003",
+      "BOMREV": "113-03920",
       "DESC": "UniFi Access Elevator",
       "FILE": "ua_mt7621_factory.py",
       "T1FILE": "",

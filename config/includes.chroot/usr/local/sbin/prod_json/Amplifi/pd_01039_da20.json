@@ -5,8 +5,8 @@
       "NAME": "AFi-100W-USB-C",
       "BOARDID": "da20",
       "BOMREV": "113-01039",
-      "DESC": "Amplifi 100W USB-C",
-      "FILE": "uc_esp32_factory.py",
+      "DESC": "AmpliFi Adapter",
+      "FILE": "afi_esp32_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0004",
@@ -27,38 +27,38 @@
           "SRC_PATH": "images/fcd-image/afi-fw/afi-100w-usb-c",
           "DST_PATH": "afi-fw/afi-100w-usb-c",
           "FILES": [
-            "AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-production.bin",
-            "AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-factory.bin",
-            "bootloader-20220823.bin",
-            "ota_data_initial-20220823.bin",
-            "partition-table-20220823.bin"
+            "AFi-ALN-Power-100W.esp32.v1.0.0.0-gaf7de94-production.bin",
+            "AFi-ALN-Power-100W.esp32.v1.0.0.0-gaf7de94-factory.bin",
+            "bootloader-20220923.bin",
+            "ota_data_initial-20220923.bin",
+            "partition-table-20220923.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/da20-app.bin",
-          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-production.bin"
+          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v1.0.0.0-gaf7de94-production.bin"
         ],
         [
           "tftp/images/da20-bootloader.bin",
-          "../afi-fw/afi-100w-usb-c/bootloader-20220823.bin"
+          "../afi-fw/afi-100w-usb-c/bootloader-20220923.bin"
         ],
         [
           "tftp/images/da20-factory.bin",
-          "../afi-fw/afi-100w-usb-c/ota_data_initial-20220823.bin"
+          "../afi-fw/afi-100w-usb-c/ota_data_initial-20220923.bin"
         ],
         [
           "tftp/images/da20-mfg.bin",
-          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v0.1.4.0-g36e8556-factory.bin"
+          "../afi-fw/afi-100w-usb-c/AFi-ALN-Power-100W.esp32.v1.0.0.0-gaf7de94-factory.bin"
         ],
         [
           "tftp/images/da20-ota.bin",
-          "../afi-fw/afi-100w-usb-c/ota_data_initial-20220823.bin"
+          "../afi-fw/afi-100w-usb-c/ota_data_initial-20220923.bin"
         ],
         [
           "tftp/images/da20-ptn-table.bin",
-          "../afi-fw/afi-100w-usb-c/partition-table-20220823.bin"
+          "../afi-fw/afi-100w-usb-c/partition-table-20220923.bin"
         ]
       ]
     }

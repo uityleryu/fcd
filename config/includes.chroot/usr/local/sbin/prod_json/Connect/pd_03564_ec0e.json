@@ -1,8 +1,8 @@
 {
   "Connect": {
-    "ULED-SWITCH": {
+    "UC-CONTROL": {
       "INDEX": 0,
-      "NAME": "ULED-SWITCH",
+      "NAME": "UC-CONTROL",
       "BOARDID": "ec0e",
       "BOMREV": "113-03564",
       "DESC": "UniFi Connect Managed POE 5 inch Touch LED Switch",

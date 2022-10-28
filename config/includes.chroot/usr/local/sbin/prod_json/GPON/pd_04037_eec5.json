@@ -1,11 +1,11 @@
 {
-  "UniFiISP": {
-    "UISP-FIBER-XGS": {
+  "GPON": {
+    "UF-WiFi6": {
       "INDEX": 0,
-      "NAME": "UISP-FIBER-XGS",
-      "BOARDID": "eec9",
-      "BOMREV": "113-03778",
-      "DESC": "UISP FIBER XGS",
+      "NAME": "UF-WiFi6",
+      "BOARDID": "eec5",
+      "BOMREV": "113-04037",
+      "DESC": "UF-WiFi6",
       "FILE": "uf_ecnt7521_factory.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -13,12 +13,9 @@
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uf-fw/eec8",
+          "SRC_PATH": "images/fcd-image/uf-fw/eec5",
           "DST_PATH": "uf-fw/",
-          "FILES": [
-            "UF-ONU.UISP-FIBER-XG.v4.5.0-beta4.202-9c0.221017.1112.img",
-            "boot-UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.109-179.220809.1116.img"
-          ]
+          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -38,14 +35,14 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/eec9-fw.bin",
-          "../uf-fw/UF-ONU.UISP-FIBER-XG.v4.5.0-beta4.202-9c0.221017.1112.img"
+          "tftp/images/eec5-fw.bin",
+          "../uf-fw/UF-ONU.UF-WIFI6.v4.4.1.413-8e3.211221.1024.img"
         ],
         [
-          "tftp/images/eec9-uboot.bin",
-          "../uf-fw/boot-UF-ONU.UISP-FIBER-XG.v4.5.0-beta1.109-179.220809.1116.img"
+          "tftp/images/eec5-uboot.bin",
+          "../uf-fw/boot-UF-ONU.UF-WIFI6.v4.4.0.352-b21.211102.0822.img"
         ]
-      ]
+      ] 
     }
   }
 }

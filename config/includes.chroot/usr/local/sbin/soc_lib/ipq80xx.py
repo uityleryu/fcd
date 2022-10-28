@@ -140,6 +140,16 @@ class IPQ80XXFactory(ScriptBase):
             'ac1a': "af_af60"   
         }
 
+        self.ethspeed_table = {
+            '0000': "1000Mb/s",
+            'ac11': "1000Mb/s",
+            'ac14': "1000Mb/s",
+            'ac15': "2500Mb/s",
+            'ac16': "2500Mb/s",
+            'ac17': "1000Mb/s",
+            'ac1a': "2500Mb/s"
+        }
+
         self.product_class = self.product_class_table[self.board_id]
 
         self.linux_prompt = self.lnxpmt[self.board_id]
@@ -292,16 +302,30 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_only(180, "Firmware update complete.")
         msg(35, "urescue: complete")
 
+        # Detect if unexpect error occured
+        exp_list = [
+            "Increase PRS flash failure count",
+            "Kernel panic",
+            "PREINIT: preinit script failed"
+        ]
+        index = self.pexp.expect_get_index(timeout=120, exptxt=exp_list)
+        if index != -1:
+            error_critical("Product FW Kernel Error")
+
         if self.board_id == "ac15":
-            self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
+            self.pexp.expect_ubcmd(120, "Please press Enter to activate this console.", "")
         else:
-            self.pexp.expect_ubcmd(240, "running real init", "")
+            self.pexp.expect_ubcmd(120, "running real init", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
         cmd = "ifconfig br0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
         self.lnx_netcheck()
+
+    def chk_ethernetspeed(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ethtool eth0 | grep Speed")
+        self.pexp.expect_only(10, self.ethspeed_table[self.board_id])
 
     def add_key(self):
         cmd = "rm {0}; dropbearkey -t rsa -f {0}".format(self.dropbear_key)
@@ -350,8 +374,8 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
-        cmd = "cat /proc/ubnthal/board.info"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "cat /usr/lib/version")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "jq .identification /etc/board.json")
 
     def airos_run(self):
         UPDATE_BOOTIMG_EN = True
@@ -365,6 +389,7 @@ class IPQ80XXFactory(ScriptBase):
         else:
             CHK_CAL_EN = True
         URESCUE_EN = True
+        ETHERSPEED_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
         ADDKEYS_EN = False
@@ -428,6 +453,10 @@ class IPQ80XXFactory(ScriptBase):
         if URESCUE_EN:
             msg(30, "Do urescue")
             self.urescue()
+
+        if ETHERSPEED_EN:
+            msg(35, "Check Ethernet Speed")
+            self.chk_ethernetspeed()
 
         if DOHELPER_EN is True:
             self.erase_eefiles()

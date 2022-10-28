@@ -3,6 +3,7 @@
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.common import Common
 
 import re
 import sys
@@ -12,6 +13,7 @@ import time
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
+FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = True
 
 
@@ -20,6 +22,7 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         super(UFBCM5616FactoryGeneral, self).__init__()
         self.init_vars()
         self.ver_extract()
+        self.cn = Common()
 
     def init_vars(self):
         self.bootloader_prompt = "u-boot>"
@@ -48,10 +51,6 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         self.init_ub_network()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "printenv")
         msg(20, "Environment Variables set")
-
-        # self.set_boot_net()
-        # self.gen_and_upload_ssh_key()
-        # msg(25, "SSH keys uploaded")
 
         self.check_info_in_uboot()
         msg(30, "Board ID/MAC address checked")
@@ -195,14 +194,61 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         if not match:
             error_critical(msg="Device Registration check failed!")
 
-        cmd = r"grep qrid /proc/ubnthal/system.info"
-        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
-        match = re.search(r'qrid=(.*)', output)
-        if match:
-            if match.group(1).strip() != self.qrcode:
-                error_critical("QR code doesn't match!")
+    def prepare_server_need_files(self, method="tftp"):
+        log_debug("Starting to do " + self.helperexe + "...")
+        # Ex: tools/uvp/helper_DVF99_release_ata_max
+        srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
+
+        # Ex: /tmp/helper_DVF99_release_ata_max
+        helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
+
+        if method == "tftp":
+            self.tftp_get(remote=srcp, local=helperexe_path, timeout=60)
+        elif method == "wget":
+            self.dut_wget(srcp, helperexe_path, timeout=100)
         else:
-            error_critical("Unable to get qrid!, please checkout output by grep")
+            error_critical("Transferring interface not support !!!!")
+
+        cmd = "chmod 777 {0}".format(helperexe_path)
+        self.pexp.expect_lnxcmd(timeout=20, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
+        eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
+        eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+        sstr = [
+            helperexe_path,
+            "--pipeline --quiet --output-product-class-fields product_class={}".format(self.product_class),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(eebin_dut_path),
+            "> {}".format(eetxt_dut_path)
+        ]
+        sstr = ' '.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+        time.sleep(1)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            # Ex: /tftpboot/e.t.0
+            srcp = os.path.join(self.tftpdir, fh)
+
+            # Ex: /tmp/e.t.0
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
+        log_debug("Send helper output files from DUT to host ...")
+
+    def fwupdate(self):
+        self.stop_uboot()
+        self.init_ub_network()
+        comma_mac = self.cn.mac_format_str2comma(self.mac)
+        cmdset = [
+            "setenv ethaddr {}".format(comma_mac),
+            "setenv bootargs console=ttyS0,115200 mtdparts=$\{mtdparts\} recovery",
+            "tftpboot images/{}-fw.bin".format(self.board_id),
+            "bootm"
+        ]
+        for cmd in cmdset:
+            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
 
     def run(self):
         '''
@@ -239,6 +285,9 @@ class UFBCM5616FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
             self.pexp.expect_action(timeout=10, exptxt=self.linux_prompt, action="reboot")
+
+        if FWUPDATE_ENABLE is True:
+            self.fwupdate()
 
         if DATAVERIFY_ENABLE is True:
             msg(70, "Checking registration ...")

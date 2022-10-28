@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-LOCKER-HUB": {
+    "UA-LOCKER": {
       "INDEX": 0,
-      "NAME": "UA-LOCKER-HUB",
-      "BOARDID": "ec43",
-      "BOMREV": "113-03291",
-      "DESC": "Unifi Access Smart Locker Hub",
+      "NAME": "UA-LOCKER",
+      "BOARDID": "ec53",
+      "BOMREV": "113-04035",
+      "DESC": "Unifi Access Smart Locker",
       "FILE": "ua_mt7621_factory2.py",
       "T1FILE": "ua_mt7621_mfg.py",
       "QRCHECK": "True",
@@ -34,15 +34,15 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec43.bin",
+          "tftp/images/ec53.bin",
           "../ua-fw/LK.mt7621.v0.0.4.0-pre.ga29719f.221011.1137-uboot.bin"
         ],
         [
-          "tftp/images/ec43-fwuboot.bin",
+          "tftp/images/ec53-fwuboot.bin",
           "../ua-fw/unifi-v1.1.49.13-gd538e167_ua-mt7621-45MB_u-boot.bin"
         ],
         [
-          "tftp/images/ec43-mfg.bin",
+          "tftp/images/ec53-mfg.bin",
           "../ua-fw/eot-ua-locker-v4.bin"
         ]
       ]

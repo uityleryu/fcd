@@ -21,80 +21,99 @@ class UAMT7621Factory(ScriptBase):
 
     def init_vars(self):
         '''
-            ec43: UA-Locker
+            ec43: UA-Locker-Hub
+            ec53: UA-Locker
         '''
 
         self.ubpmt = {
-            'ec43': "MT7621 #|==>|=>"
+            'ec43': "MT7621 #|==>|=>",
+            'ec53': "MT7621 #|==>|=>",
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'ec43': "root@LEDE:/#"
+            'ec43': "root@LEDE:/#",
+            'ec53': "root@LEDE:/#",
         }
 
         self.lnxpmt_fcdfw = {
-            'ec43': "#"
+            'ec43': "#",
+            'ec53': "#",
         }
 
         self.bootloader = {
-            'ec43': "{}-fwuboot.bin".format(self.board_id)
+            'ec43': "{}-fwuboot.bin".format(self.board_id),
+            'ec53': "{}-fwuboot.bin".format(self.board_id),
         }
 
         self.cacheaddr = {
-            'ec43': "0x80010000"
+            'ec43': "0x80010000",
+            'ec53': "0x80010000",
         }
 
         self.ubaddr = {
-            'ec43': "0x00000"
+            'ec43': "0x00000",
+            'ec53': "0x00000",
         }
 
         self.ubsz = {
-            'ec43': "0x60000"
+            'ec43': "0x60000",
+            'ec53': "0x60000",
         }
 
         self.cfgaddr = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.cfgsz = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.epromaddr = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.epromsz = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.product_class_table = {
-            'ec43': "basic"
+            'ec43': "basic",
+            'ec53': "basic",
         }
 
         self.devregmtd = {
-            'ec43': "/dev/mtdblock3"
+            'ec43': "/dev/mtdblock3",
+            'ec53': "/dev/mtdblock3",
         }
 
         self.helpername = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.pd_dir_table = {
-            'ec43': ""
+            'ec43': "",
+            'ec53': "",
         }
 
         self.ethnum = {
-            'ec43': "1"
+            'ec43': "2",
+            'ec53': "1",
         }
 
         self.wifinum = {
-            'ec43': "1"
+            'ec43': "1",
+            'ec53': "0",
         }
 
         self.btnum = {
-            'ec43': "0"
+            'ec43': "1",
+            'ec53': "0",
         }
 
         self.devnetmeta = {

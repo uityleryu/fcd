@@ -40,11 +40,11 @@
           "../am-fw/u-boot_1.0.0.mbn"
         ],
         [
-          "tftp/images/a659-nor.bin",
+          "tftp/images/a659-bsp-nor.bin",
           "../am-fw/lbe-ax-v6_nor.bin"
         ],
         [
-          "tftp/images/a659-nand.bin",
+          "tftp/images/a659-bsp-2nd.bin",
           "../am-fw/lbe-ax-v6_emmc.bin"
         ],
         [

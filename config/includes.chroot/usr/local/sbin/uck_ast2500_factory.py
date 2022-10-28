@@ -283,7 +283,7 @@ class UNIFIBMCFactory(ScriptBase):
         cmd = "/tmp/" + mac1tool + " /nic=1 /mac=" + self.mac
         out = self.session.execmd_getmsg(cmd)
 
-        mac_2  = self.mac[0:6]+str(hex(int(self.mac[6:12], 16)+1))[2:8].upper()
+        mac_2  = self.mac[0:6]+str(hex(int(self.mac[6:12], 16)+1))[2:8].zfill(6).upper()
         mac2 = mac_2[0:2]+":"+mac_2[2:4]+":"+mac_2[4:6]+":"+mac_2[6:8]+":"+mac_2[8:10]+":"+mac_2[10:12]
 
         mac2tool = "bnxtnvm"
@@ -318,7 +318,7 @@ class UNIFIBMCFactory(ScriptBase):
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig")
 
-        mac_3  = self.mac[0:6]+str(hex(int(self.mac[6:12], 16)+2))[2:8].upper()
+        mac_3  = self.mac[0:6]+str(hex(int(self.mac[6:12], 16)+2))[2:8].zfill(6).upper()
 
         cmd = "write_eeprom_mac.sh " + mac_3
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)

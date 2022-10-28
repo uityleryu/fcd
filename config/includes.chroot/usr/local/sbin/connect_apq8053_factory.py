@@ -1,5 +1,4 @@
-
-#!/usr/bin/python3
+# !/usr/bin/python3
 
 import sys
 import time
@@ -12,6 +11,7 @@ from script_base import ScriptBase
 from PAlib.Ubnt.edgeswitch import EdgeSwitch
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from datetime import datetime
 
 '''
     e980: Viewport            (Android 9)
@@ -60,16 +60,16 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         # defalut JEDEC ID for EMMC
         emmc_jedec = {
             'e980': "0007f100",
-            'ef80': "0007f100",    # UI EMMC PN: 140-04199
-            'ef81': "0007f100",    # UI EMMC PN: 140-04199
+            'ef80': "0007f100",  # UI EMMC PN: 140-04199
+            'ef81': "0007f100",  # UI EMMC PN: 140-04199
             'ef82': "0007f100",
             'ef13': "0007f100",
-            'ef87': "0007f100",    # UI EMMC PN: 140-04199
-            'ef88': "0007f100",    # UI EMMC PN: 140-04199
-            'ef90': "0007f102",    # UI EMMC PN: 140-04869
+            'ef87': "0007f100",  # UI EMMC PN: 140-04199
+            'ef88': "0007f100",  # UI EMMC PN: 140-04199
+            'ef90': "0007f102",  # UI EMMC PN: 140-04869
             'ef0e': "0007f100",
-            'ef83': "0007f100",    # UI EMMC PN: 140-04199
-            'ef84': "0007f100",    # UI EMMC PN: 140-04199
+            'ef83': "0007f100",  # UI EMMC PN: 140-04199
+            'ef84': "0007f100",  # UI EMMC PN: 140-04199
             'ef85': "0007f100",
             'ef86': "0007f100",
             'ec5e': "0007f100",
@@ -281,9 +281,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         }
 
         self.devnetmeta = {
-            'ethnum'    : self.macnum,
-            'wifinum'   : self.wifinum,
-            'btnum'     : self.btnum
+            'ethnum': self.macnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
         }
 
         self.cladb = None
@@ -386,6 +386,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             try:
                 self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
                 self.cladb.expect_only(10, "adbd is already running as root")
+                # if self.board_id == "ef90":
+                #     self.cladb.expect_action(10, "", "adb shell logcat > /tmp/dut_sys_log.txt &")
 
                 pexpect_cmd = "adb shell"
                 log_debug(msg=pexpect_cmd)
@@ -576,7 +578,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
             else:
                 lmac = self.mac_format_str2list(self.mac)
-                bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4], lmac[5])
+                bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4],
+                                                                     lmac[5])
                 cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
 
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
@@ -610,7 +613,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 cmd = "sed -i 's/^gStaCountryCode=*//g' {}".format(self.persist_cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
                 if self.android_cc != "000":
-                    cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc, self.persist_cfg_file)
+                    cmd = "sed -i 's/^END$/gStaCountryCode={}\n\nEND/g' {}".format(self.android_cc,
+                                                                                   self.persist_cfg_file)
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
         if self.REGISTER_ENABLE is True:
@@ -637,6 +641,34 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     if self.qrcode not in m_gqr[0]:
                         error_critical("Check QRID is not matched !!")
 
+        if self.board_id == "ef90":
+            msg(80, "Wait clean boot ...")
+            # time.sleep(40)
+            t_secs = 60
+            dt_last = datetime.now()
+            ts = datetime.now() - dt_last
+            while ts.seconds <= t_secs:
+                cmd = "getprop sys.boot_completed"
+                status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                if '1' in status:
+                    log_debug("Clean boot completed!!")
+                    break
+
+            log_debug('DUT system log:')
+            cmd = "logcat"
+            status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+
+            # try:
+            #     rsp = self.cladb.expect_get_output('cat /tmp/dut_sys_log.txt', 'RPi')
+            #     log_debug('DUT system log:\n{}'.format(rsp))
+            # except Exception as e:
+            #     # Ctrl+C anyway to avoid hangup cmd
+            #     self.cladb.expect_action(7, "", "\003")
+            #     self.cladb.close()
+            #     self.cladb = None
+            #     log_debug("Get DUT system log exception occurred!!\n{}".format(e))
+            #     raise e
+
         msg(100, "Complete FCD process ...")
         if not self.board_id in self.usbadb_list:
             self.egsw.close()
@@ -647,6 +679,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 def main():
     factory = CONNECTAPQ8053actoryGeneral()
     factory.run()
+
 
 if __name__ == "__main__":
     main()

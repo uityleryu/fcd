@@ -40,11 +40,11 @@
           "../am-fw/u-boot_1.0.0.mbn"
         ],
         [
-          "tftp/images/a661-nor.bin",
+          "tftp/images/a661-bsp-nor.bin",
           "../am-fw/prism-ax-v7_nor.bin"
         ],
         [
-          "tftp/images/a661-emmc.bin",
+          "tftp/images/a661-bsp-2nd.bin",
           "../am-fw/prism-ax-v7_emmc.bin"
         ],
         [

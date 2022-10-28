@@ -50,7 +50,7 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G4 Doorbell Pro POE"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-        elif  self.product_name == "UNIFI-WAVEROVECAMERA":
+        elif  self.product_name == "UNIFI-WAVEROVERCAMERA":
             self.board_name = "UniFi Wave Rover Camera"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
@@ -61,6 +61,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.mtd_name = 'amba_nor'
         elif self.product_name == "UVC-G5PRO":
             self.board_name = "UVC G5 Pro"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
+        elif self.product_name == "UVC-G5PRO-MP":
+            self.board_name = "UVC G5 Pro (MP ver.)"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
         ''' '''

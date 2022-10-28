@@ -53,24 +53,24 @@
           "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
           "DST_PATH": "uxg-fw/alpine",
           "FILES": [
-            "UXG.alpinev2.v1.12.22.2e4aeb3.220523.0458.bin",
-            "uImage_v1.12.22.r.1",
-            "boot.v1.12.22.img"
+            "UXG.alpinev2.v1.13.6.78c4575.220913.1608.bin",
+            "uImage.v1.13.6.r",
+            "boot.v1.13.6.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea19-fw.bin",
-          "../uxg-fw/alpine/UXG.alpinev2.v1.12.22.2e4aeb3.220523.0458.bin"
+          "../uxg-fw/alpine/UXG.alpinev2.v1.13.6.78c4575.220913.1608.bin"
         ],
         [
           "tftp/images/ea19-recovery",
-          "../uxg-fw/alpine/uImage_v1.12.22.r.1"
+          "../uxg-fw/alpine/uImage.v1.13.6.r"
         ],
         [
           "tftp/images/ea19_signed_boot.img",
-          "../uxg-fw/alpine/boot.v1.12.22.img"
+          "../uxg-fw/alpine/boot.v1.13.6.img"
         ]
       ]
     }

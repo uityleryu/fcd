@@ -40,11 +40,11 @@
           "../am-fw/u-boot_1.0.0.mbn"
         ],
         [
-          "tftp/images/a662-nor.bin",
+          "tftp/images/a662-bsp-nor.bin",
           "../am-fw/lap-ax-v1_nor.bin"
         ],
         [
-          "tftp/images/a662-emmc.bin",
+          "tftp/images/a662-bsp-2nd.bin",
           "../am-fw/lap-ax-v1_emmc.bin"
         ],
         [

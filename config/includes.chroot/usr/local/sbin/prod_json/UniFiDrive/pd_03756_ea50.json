@@ -1,11 +1,11 @@
 {
   "UniFiDrive": {
-    "UNAS": {
+    "UNAS-Studio": {
       "INDEX": 0,
-      "NAME": "UNAS",
+      "NAME": "UNAS-Studio",
       "BOARDID": "ea50",
-      "BOMREV": "113-03756",
-      "DESC": "UniFi NAS ",
+      "BOMREV": "113-03576",
+      "DESC": "UniFi Studio",
       "FILE": "unas_alpine_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -24,6 +24,13 @@
           "DST_PATH": "ea50",
           "FILES": [
             "uImage_ea50_srt"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ea51/",
+          "DST_PATH": "tools/ea50",
+          "FILES": [
+            "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
           ]
         },
         {

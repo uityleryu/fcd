@@ -18,6 +18,8 @@ REGISTER_EN = True
 UPDATEIMG_EN = True
 
 '''
+    e960: UCKG2
+    e961: UDC-CONSOLE
     e970: UCKP
 '''
 
@@ -32,17 +34,23 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         ethnum = {
-            'e970': "1",
+            'e960': "1",
+            'e961': "1",
+            'e970': "1"
         }
 
         # number of WiFi
         wifinum = {
-            'e970': "0",
+            'e960': "0",
+            'e961': "0",
+            'e970': "0"
         }
 
         # number of Bluetooth
         btnum = {
-            'e970': "1",
+            'e960': "1",
+            'e961': "1",
+            'e970': "1"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -54,7 +62,9 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         }
 
         self.netif = {
-            'e970': "ifconfig eth0 ",
+            'e960': "ifconfig eth0 ",
+            'e961': "ifconfig eth0 ",
+            'e970': "ifconfig eth0 "
         }
 
     def login_kernel(self):
@@ -86,7 +96,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         self.is_network_alive_in_linux()
 
     def prepare_server_need_files(self):
-        log_debug("Starting to do " + self.helperexe + "...")
+        rmsg = "Starting to do {} ...".format(self.helperexe) 
+        log_debug(rmsg)
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
         helperexe_path = os.path.join(self.dut_tmpdir, self.helperexe)
         self.tftp_get(remote=srcp, local=helperexe_path, timeout=30)
@@ -100,10 +111,9 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         sstr = [
             helperexe_path,
             "-q",
-            "-c product_class=" + self.product_class,
-            "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
-            ">",
-            eetxt_dut_path
+            "-c product_class={}".format(self.product_class),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(eebin_dut_path),
+            "> {}".format(eetxt_dut_path)
         ]
         sstr = ' '.join(sstr)
         log_debug(sstr)
@@ -194,8 +204,10 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "echo USBETH=$(lsusb | grep -c 0b95:1790 2>/dev/null)"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBETH=1")
 
-            cmd = "echo USBSATA=$(lsusb | grep -c 174c:1153 2>/dev/null)"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
+            if self.board_id == "e970":
+                cmd = "echo USBSATA=$(lsusb | grep -c 174c:1153 2>/dev/null)"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
+
             msg(15, "Check the provisioning data successfully")
 
             src = os.path.join(self.tools, self.helper_path, "check-part.txt")
@@ -237,8 +249,9 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "dd if=/dev/zero of=/dev/disk/by-partlabel/appdata bs=32M >/dev/null 2>/dev/null"
             self.pexp.expect_lnxcmd(480, self.linux_prompt, cmd, self.linux_prompt)
 
-            cmd = "dd if=/dev/zero of=/dev/sda bs=32M count=1"
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            if self.board_id == "e970":
+                cmd = "dd if=/dev/zero of=/dev/sda bs=32M count=1"
+                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
 
             cmd = "tftp -b 4096 -g -r {0}/{1}-recovery.bin -l /tmp/{1}-recovery.bin {2}".format(self.image, self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
@@ -264,8 +277,9 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             self.login_kernel()
             msg(70, "Completing the image update")
 
-        cmd = "grep -q 'App Startup Complete.' /srv/unifi-protect/logs/app.log"
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
+        if self.board_id == "e970":
+            cmd = "grep -q 'App Startup Complete.' /srv/unifi-protect/logs/app.log"
+            self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
 
         cmd = "grep -q 'WebRTC library version' /usr/lib/unifi/logs/server.log"
         self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)

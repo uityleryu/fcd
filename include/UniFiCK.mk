@@ -34,5 +34,6 @@ $(eval $(call ProductImage2,02570_e970))
 
 # Project target for RPi4
 
+$(eval $(call ProductCompress2,02570_e960))
 $(eval $(call ProductCompress2,02570_e970))
 $(eval $(call ProductCompress2,01166_e990))
