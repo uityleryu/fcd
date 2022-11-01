@@ -136,6 +136,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
             cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
 
+            # sync data to flash
+            cmd = "sync"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
