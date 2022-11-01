@@ -27,6 +27,7 @@ class IPQ80XXFactory(ScriptBase):
             ac16: Wave-AP-Micro
             ac17: Wave-AP-HD
             ac1a: Wave-AP-01206(2.5G)
+            ac18: Wave-Pro-01149
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -36,7 +37,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "IPQ807x# ",
             'ac16': "IPQ807x# ",
             'ac17': "IPQ807x# ",
-            'ac1a': "IPQ807x# "
+            'ac1a': "IPQ807x# ",
+            'ac18': "IPQ807x# "
         }
 
         # linux console prompt
@@ -47,7 +49,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "#",
             'ac16': "#",
             'ac17': "#",
-            'ac1a': "#"
+            'ac1a': "#",
+            'ac18': "#"
         }
 
         self.bootloader = {
@@ -57,7 +60,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "ac15-bootloader.bin",
             'ac16': "ac16-bootloader.bin",
             'ac17': "ac17-bootloader.bin",
-            'ac1a': "ac1a-bootloader.bin"
+            'ac1a': "ac1a-bootloader.bin",
+            'ac18': "ac18-bootloader.bin"
         }
 
         self.ubaddr = {
@@ -67,7 +71,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0xd80000",
             'ac16': "0xd80000",
             'ac17': "0xd80000",
-            'ac1a': "0xd80000"
+            'ac1a': "0xd80000",
+            'ac18': "0xd80000"
         }
 
         self.ubsz = {
@@ -77,7 +82,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0x100000",
             'ac16': "0x100000",
             'ac17': "0x100000",
-            'ac1a': "0x100000"
+            'ac1a': "0x100000",
+            'ac18': "0x100000"
         }
 
         self.cfgaddr = {
@@ -87,7 +93,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0xf000000",
             'ac16': "0xf000000",
             'ac17': "0xf000000",
-            'ac1a': "0xf000000"
+            'ac1a': "0xf000000",
+            'ac18': "0xf000000"
         }
 
         self.cfgsz = {
@@ -97,7 +104,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0x1000000",
             'ac16': "0x1000000",
             'ac17': "0x1000000",
-            'ac1a': "0x1000000"
+            'ac1a': "0x1000000",
+            'ac18': "0x1000000"
         }
 
         self.epromaddr = {
@@ -107,7 +115,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0x2a0000",
             'ac16': "0x2a0000",
             'ac17': "0x2a0000",
-            'ac1a': "0x2a0000"
+            'ac1a': "0x2a0000",
+            'ac18': "0x2a0000"
         }
 
         self.epromsz = {
@@ -117,7 +126,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "0x40000",
             'ac16': "0x40000",
             'ac17': "0x40000",
-            'ac1a': "0x40000"
+            'ac1a': "0x40000",
+            'ac18': "0x40000"
         }
 
         self.product_class_table = {
@@ -127,7 +137,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "basic",
             'ac16': "basic",
             'ac17': "basic",
-            'ac1a': "basic"
+            'ac1a': "basic",
+            'ac18': "basic"
         }
 
         self.pd_dir_table = {
@@ -137,7 +148,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "af_af60",
             'ac16': "af_af60",
             'ac17': "af_af60",
-            'ac1a': "af_af60"   
+            'ac1a': "af_af60",
+            'ac18': "af_af60"
         }
 
         self.ethspeed_table = {
@@ -147,7 +159,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac15': "2500Mb/s",
             'ac16': "2500Mb/s",
             'ac17': "1000Mb/s",
-            'ac1a': "2500Mb/s"
+            'ac1a': "2500Mb/s",
+            'ac18': "2500Mb/s"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -507,6 +520,7 @@ class IPQ80XXMFG(ScriptBase):
             ac16: Wave-AP-Micro
             ac17: Wave-AP-HD
             ac1a: Wave-AP-01206(2.5G)
+            ac18: Wave-Pro-01149
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -516,7 +530,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac15': "IPQ807x# ",
             'ac16': "IPQ807x# ",
             'ac17': "IPQ807x# ",
-            'ac1a': "IPQ807x# "
+            'ac1a': "IPQ807x# ",
+            'ac18': "IPQ807x# "
         }
 
         # linux console prompt
@@ -527,7 +542,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac15': "root@OpenWrt",
             'ac16': "root@OpenWrt",
             'ac17': "root@OpenWrt",
-            'ac1a': "root@OpenWrt"
+            'ac1a': "root@OpenWrt",
+            'ac18': "root@OpenWrt"
         }
 
         self.artimg = {
@@ -537,7 +553,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac15': "ac15-mfg.bin",
             'ac16': "ac16-mfg.bin",
             'ac17': "ac17-mfg.bin",
-            'ac1a': "ac1a-mfg.bin"
+            'ac1a': "ac1a-mfg.bin",
+            'ac18': "ac1a-mfg.bin"
         }
 
         self.addr = {
@@ -547,21 +564,36 @@ class IPQ80XXMFG(ScriptBase):
             'ac15': "0x0",
             'ac16': "0x0",
             'ac17': "0x0",
-            'ac1a': "0x0"
+            'ac1a': "0x0",
+            'ac18': "0x0"
         }
 
-        self.machid ={
+        self.machid = {
             '0000': "0x0",
             'ac11': "0x0",
             'ac14': "801000f",
             'ac15': "8010010",
             'ac16': "8010010",
             'ac17': "801000f",
-            'ac1a': "801000f"
+            'ac1a': "801000f",
+            'ac18': "801000f"
         }
+
+        self.method= {
+            '0000': 0,
+            'ac11': 0,
+            'ac14': 1,
+            'ac15': 1,
+            'ac16': 1,
+            'ac17': 1,
+            'ac1a': 1,
+            'ac18': 1
+        }
+
 
         self.linux_prompt = self.lnxpmt[self.board_id]
         self.bootloader_prompt = self.ubpmt[self.board_id]
+        self.b2a_method = self.method[self.board_id]
 
     def stop_uboot(self):
         self.pexp.expect_ubcmd(30, "Hit any key to stop autoboot", "\033")
@@ -604,7 +636,7 @@ class IPQ80XXMFG(ScriptBase):
         time.sleep(10)
         self.set_uboot_network()
      
-        if self.board_id == "ac11":
+        if self.b2a_method == 0:
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x42000000 images/{}".format(self.artimg[self.board_id])
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
@@ -619,7 +651,7 @@ class IPQ80XXMFG(ScriptBase):
             cmd = "nand write 0x42000000 {0} $filesize".format(self.addr[self.board_id])
             self.pexp.expect_ubcmd(120, self.bootloader_prompt, cmd)
             time.sleep(5)
-        elif self.board_id == "ac14" or self.board_id == "ac15" or self.board_id == "ac16" or self.board_id == "ac17":
+        elif self.b2a_method == 1:
 
             msg(10, "Get ART Image")
             cmd = "tftpboot 0x44000000 images/{}".format(self.artimg[self.board_id])
