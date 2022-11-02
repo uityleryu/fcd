@@ -27,39 +27,39 @@
           "SRC_PATH": "images/fcd-image/uc-fw/uc-plug-xx",
           "DST_PATH": "uc-fw/uc-plug-xx",
           "FILES": [
-            "CPP1.esp32app.1.0.15+422.221018.1014-unsigned.bin",
-            "bootloader-20221019.bin",
-            "plug_factory-20221019.bin",
-            "CPP1.esp32mfg.1.0.15+422.221018.1015-unsigned.bin",
-            "ota_data_initial-20221019.bin",
-            "partition-table-20221019.bin"
+            "CPP1.esp32app.1.0.16+428.221026.1807-unsigned.bin",
+            "bootloader-20221102.bin",
+            "plug_factory-20221102.bin",
+            "CPP1.esp32mfg.1.0.16+428.221026.1808-unsigned.bin",
+            "ota_data_initial-20221102.bin",
+            "partition-table-20221102.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ec5b-app.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.15+422.221018.1014-unsigned.bin"
+          "../uc-fw/uc-plug-xx/CPP1.esp32app.1.0.16+428.221026.1807-unsigned.bin"
         ],
         [
           "tftp/images/ec5b-bootloader.bin",
-          "../uc-fw/uc-plug-xx/bootloader-20221019.bin"
+          "../uc-fw/uc-plug-xx/bootloader-20221102.bin"
         ],
         [
           "tftp/images/ec5b-factory.bin",
-          "../uc-fw/uc-plug-xx/plug_factory-20221019.bin"
+          "../uc-fw/uc-plug-xx/plug_factory-20221102.bin"
         ],
         [
           "tftp/images/ec5b-mfg.bin",
-          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.15+422.221018.1015-unsigned.bin"
+          "../uc-fw/uc-plug-xx/CPP1.esp32mfg.1.0.16+428.221026.1808-unsigned.bin"
         ],
         [
           "tftp/images/ec5b-ota.bin",
-          "../uc-fw/uc-plug-xx/ota_data_initial-20221019.bin"
+          "../uc-fw/uc-plug-xx/ota_data_initial-20221102.bin"
         ],
         [
           "tftp/images/ec5b-ptn-table.bin",
-          "../uc-fw/uc-plug-xx/partition-table-20221019.bin"
+          "../uc-fw/uc-plug-xx/partition-table-20221102.bin"
         ]
       ]
     }
