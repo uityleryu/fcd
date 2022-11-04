@@ -13,7 +13,6 @@ import time
 PROVISION_ENABLE = True
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-FWUPDATE_ENABLE = True
 DATAVERIFY_ENABLE = True
 
 
@@ -174,7 +173,7 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         self.set_lnx_net("eth0")
         self.is_network_alive_in_linux()
 
-        log_debug("Upgrade to a special kernel image for registration ...")
+        log_debug("Upgrade to shipping FW for registration ...")
         cmd = "ubnt-upgrade -d /srv/upgrade.tar"
         postexp = [
             "Writing kernel",
@@ -237,19 +236,6 @@ class UFBCM5616FactoryGeneral(ScriptBase):
 
         log_debug("Send helper output files from DUT to host ...")
 
-    def fwupdate(self):
-        self.stop_uboot()
-        self.init_ub_network()
-        comma_mac = self.cn.mac_format_str2comma(self.mac)
-        cmdset = [
-            "setenv ethaddr {}".format(comma_mac),
-            "setenv bootargs console=ttyS0,115200 mtdparts=$\{mtdparts\} recovery",
-            "tftpboot images/{}-fw.bin".format(self.board_id),
-            "bootm"
-        ]
-        for cmd in cmdset:
-            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
-
     def run(self):
         '''
             Main procedure of factory
@@ -285,9 +271,6 @@ class UFBCM5616FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
             self.pexp.expect_action(timeout=10, exptxt=self.linux_prompt, action="reboot")
-
-        if FWUPDATE_ENABLE is True:
-            self.fwupdate()
 
         if DATAVERIFY_ENABLE is True:
             msg(70, "Checking registration ...")
