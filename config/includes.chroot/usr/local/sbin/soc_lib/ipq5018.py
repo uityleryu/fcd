@@ -14,6 +14,7 @@ class IPQ5018BSPFactory(ScriptBase):
         # script specific vars
         self.ubimg = "images/" + self.board_id + "-uboot.bin"
         self.fwimg = "images/" + self.board_id + ".bin"
+        self.nandimg = "images/" + self.board_id + "-nand.bin"
         
         self.devregpart = "/dev/mtdblock9"
         self.bomrev = "113-" + self.bom_rev
@@ -134,12 +135,15 @@ class IPQ5018BSPFactory(ScriptBase):
         if self.board_id == "a671" :
             self.FWUPDATE_ENABLE   = False
             self.DATAVERIFY_ENABLE = False
+            self.WRITENAND_ENABLE = False
         elif self.board_id == "a670" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = True
         else:
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -166,6 +170,19 @@ class IPQ5018BSPFactory(ScriptBase):
 
         self.pexp.expect_action(20, exptxt="Hit any key to stop autoboot|Autobooting in", 
                                 action= "\x1b\x1b")
+
+
+    def write_nand(self):
+        self.set_ub_net(self.premac)
+        self.is_network_alive_in_uboot()
+        cmd = "tftpboot $loadaddr " + self.nandimg
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(30, "Bytes transferred", "sf probe")
+
+        cmd = "nand erase 0x0000000 0x7800000;nand write 0x48000000 0x00000000 0x40000"
+
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
 
     def urescue(self):
         self.set_ub_net(self.premac)
@@ -262,6 +279,12 @@ class IPQ5018BSPFactory(ScriptBase):
         if self.FWUPDATE_ENABLE is True:
             self.update_uboot()
             msg(60, "Uboot upgrade success ...")
+
+            if self.WRITENAND_ENABLE is True:
+            
+                self.write_nand()
+                msg(65, "Write Nand success ...")
+
             self.urescue()
             msg(70, "Urescue success ...")
 
@@ -290,6 +313,22 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.bsp_nor_bin = "{}-bsp-nor.bin".format(self.board_id)
         self.bsp_2nd_bin = "{}-bsp-2nd.bin".format(self.board_id)
         
+        self.machid = {
+            '0000': "",
+            'a658': "",
+            'a659': "",
+            'a660': "",
+            'a661': "",
+            'a662': "",
+            'a663': "",
+            'a664': "",
+            'a669': "",
+            'a671': "",
+            'a672': "",
+            'a670': "8040004",
+            'a673': ""
+        }
+
         self.bsp_2nd_type = {
             '0000': "emmc",
             'a658': "emmc",
@@ -309,6 +348,11 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.set_bootloader_prompt("IPQ5018#")
 
     def update_nor(self):
+
+        if self.machid[self.board_id] != '':
+            cmd = "setenv machid {}".format(self.machid[self.board_id])
+            self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+
         cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
@@ -344,10 +388,14 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def update_nand(self):
+
         cmd = "imgaddr=$fileaddr && source $imgaddr:script"
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
 
+        self.pexp.expect_only(120, "Flashing u-boot:")
+        self.pexp.expect_only(120, "Flashing wifi_fw_ipq5018_qcn6122cs:")
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
@@ -360,7 +408,7 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_only(60, "Bytes transferred = {}".format(img_size))
 
     def t1_image_check(self):
-        self.pexp.expect_only(30, "Starting kernel")
+        self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(120, "UBNT BSP INIT", "dmesg -n1", "#", retry=0)
 
     def run(self):
