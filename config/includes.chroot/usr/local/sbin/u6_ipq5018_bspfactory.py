@@ -256,7 +256,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         comma_mac = self.mac_format_str2comma(self.mac)
         self.set_ub_net(comma_mac)
         self.is_network_alive_in_uboot()
-        self.display_aro_table()
+        self.display_arp_table()
 
         cmdset = [
             "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id),
@@ -273,7 +273,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         comma_mac = self.mac_format_str2comma(self.mac)
         self.set_ub_net(comma_mac)
         self.is_network_alive_in_uboot()
-        self.display_aro_table()
+        self.display_arp_table()
 
         cmdset = [
             "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(

@@ -20,38 +20,37 @@ class U6MT7981MFGGeneral(ScriptBase):
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(40, "to stop", "\033\033")
 
-    def uboot_update(self):
-        cmd = "sf probe"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        cmd = "sf erase 0x10000 0x80000"
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
-        cmd = "tftpboot 0x46000000 images/{}-bspub.bin".format(self.board_id)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        cmd = "mmc erase 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        cmd = "mmc write 0x46000000 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        cmd = "reset"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        self.stop_uboot()
-        self.set_ub_net()
-        self.is_network_alive_in_uboot()
-
     def bspimg_update(self):
+        '''
+            This case doesn't support clean the WiFi calibration data and signed data
+        '''
+
         cmd = "tftpboot 0x46000000 images/{}-bspfw.bin".format(self.board_id)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        '''
+            Clean GPT, partition table
+        '''
         cmd = "mmc erase 0x0 0x23ff"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         cmd = "mmc write 0x46000000 0x0 0x23ff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+
+        '''
+            Clean U-Boot
+        '''
         md = "mmc erase 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         cmd = "mmc write 0x46680000 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+
+        '''
+            Clean Kernel and Rootfs
+        '''
         md = "mmc erase 0x4480 0x90000"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         cmd = "mmc write 0x46890000 0x4480 0x90000"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
 
     def run(self):
         """
@@ -73,9 +72,6 @@ class U6MT7981MFGGeneral(ScriptBase):
         self.set_ub_net()
         self.is_network_alive_in_uboot()
         msg(20, 'Network in uboot works ...')
-
-        self.uboot_update()
-        msg(30, 'Finshing updating to BSP U-Boot image ...')
 
         self.bspimg_update()
         msg(40, 'Finshing updating to BSP image ...')

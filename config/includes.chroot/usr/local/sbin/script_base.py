@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.47"
+    __version__ = "1.0.48"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -650,7 +650,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
                                 valid_chk=True)
 
-    def display_aro_table(self):
+    def display_arp_table(self):
         log_debug("The current ARP table of the FCD host:")
         cmd = "arp -a"
         self.cnapi.xcmd(cmd)
@@ -676,7 +676,7 @@ class ScriptBase(object):
         self.pexp.expect_ubcmd(timeout=timeout, exptxt="", action=cmd, post_exp=exp, retry=retry)
 
         if arp_logging_en:
-            self.display_aro_table()
+            self.display_arp_table()
 
     def is_network_alive_in_linux(self, ipaddr=None, retry=3, arp_logging_en=False, del_dutip_en=False):
         if ipaddr is None:
@@ -690,7 +690,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
 
         if arp_logging_en:
-            self.display_aro_table()
+            self.display_arp_table()
 
     def disable_inittab_process(self, process):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "while ! grep -q \"{}\" /etc/inittab; "\
