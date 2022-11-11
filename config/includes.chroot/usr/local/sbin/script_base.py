@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.48"
+    __version__ = "1.0.49"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -241,6 +241,11 @@ class ScriptBase(object):
         if self.qrcode is not None:
             self.qrhex = self.qrcode.encode('utf-8').hex()
 
+        self.activate_code_hex = ""
+        # The HEX of the QR code
+        if self.activate_code is not None:
+            self.activate_code_hex = self.activate_code.encode('utf-8').hex()
+
         # HTTP server
         baseport = 8000
         self.http_port = int(self.row_id) + baseport
@@ -277,6 +282,7 @@ class ScriptBase(object):
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
         parse.add_argument('--bom_rev', '-bom', dest='bom_rev', help='BOM revision', default=None)
         parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
+        parse.add_argument('--activate_code', '-ac', dest='activate_code', help='Activate Code', default=None)
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
         parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
         parse.set_defaults(upload=True)
@@ -296,6 +302,7 @@ class ScriptBase(object):
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
+        self.activate_code = args.activate_code
         self.region = args.region
         self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
         self.fwimg = self.board_id + ".bin"
@@ -779,8 +786,9 @@ class ScriptBase(object):
         log_debug("cmd: " + cmd)
         self.cnapi.xcmd(cmd)
 
-    def data_provision_64k(self, netmeta, post_en=True):
-        self.gen_rsa_key()
+    def data_provision_64k(self, netmeta, post_en=True, rsa_en=True):
+        if rsa_en is True:
+            self.gen_rsa_key()
 
         post_exp = None
         if post_en is True:

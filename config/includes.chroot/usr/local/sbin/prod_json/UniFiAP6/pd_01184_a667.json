@@ -8,7 +8,7 @@
       "DESC": "UniFi Express",
       "FILE": "u6_ipq5018_bspfactory.py",
       "T1FILE": "u6_ipq5018_mfg.py",
-      "QRCHECK": "activate_code",
+      "QRCHECK": "mac-qr-ac",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {

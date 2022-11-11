@@ -6,6 +6,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 import time
 import os
+import re
 
 '''
     ea2a: UDW
@@ -296,10 +297,16 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         try:
             cmd = "cat /usr/share/firmware/udw-lcm-fw.version"
-            cmd_reply = self.pexp.expect_get_output(cmd)
-
-            cmd = "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0"
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=cmd_reply, retry=20)
+            cmd_reply = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            log_debug("Get LCM FW version from shipping FW(raw data): " + cmd_reply)
+            pattern = r"v([\d].[\d].[\d])-"
+            m_prod_lcm_fw = re.findall(pattern, cmd_reply)
+            if m_prod_lcm_fw:
+                log_debug("Get LCM FW version from shipping FW(extracted): " + m_prod_lcm_fw[0])
+                cmd = "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0"
+                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=m_prod_lcm_fw[0], retry=20)
+            else:
+                error_critical("Can't the LCM FW from the shipping FW, FAIL!!")
         except Exception as e:
             self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
