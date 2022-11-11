@@ -114,16 +114,32 @@ class UDM_AL324_FACTORY(ScriptBase):
             'btnum': self.btnum
         }
 
-        self.UPDATE_UBOOT = True
-        self.BOOT_RECOVERY_IMAGE = True
+        '''
+            2022/11/4
+            This is a special event for changing the BOM revision on the UDM-SE
+        '''
+        self.SPECIAL_RECALL_EVENT = False
+
         self.INIT_RECOVERY_IMAGE = True
+
+        if self.SPECIAL_RECALL_EVENT is True:
+            self.UPDATE_UBOOT = False
+            self.BOOT_RECOVERY_IMAGE = False
+        else:
+            self.UPDATE_UBOOT = True
+            self.BOOT_RECOVERY_IMAGE = True
+
         self.NEED_DROPBEAR = True
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        self.FWUPDATE_ENABLE = False
-        self.DATAVERIFY_ENABLE = True
-        self.LCM_CHECK_ENABLE = True
+
+        if self.SPECIAL_RECALL_EVENT is True:
+            self.DATAVERIFY_ENABLE = False
+            self.LCM_CHECK_ENABLE = False
+        else:
+            self.DATAVERIFY_ENABLE = True
+            self.LCM_CHECK_ENABLE = True
 
     def set_boot_net(self):
         # import pdb; pdb.set_trace()
@@ -279,7 +295,11 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "dpkg -i /tmp/mt-wifi-ated_*")
 
         try:
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=20)
+            cmd = "cat /usr/share/firmware/udw-lcm-fw.version"
+            cmd_reply = self.pexp.expect_get_output(cmd)
+
+            cmd = "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, post_exp=cmd_reply, retry=20)
         except Exception as e:
             self.pexp.expect_lnxcmd(30, "", "cat /var/log/ulcmd.log")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "")

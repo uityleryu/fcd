@@ -16,7 +16,7 @@
           "SRC_PATH": "images/tools/udw",
           "DST_PATH": "tools/udw",
           "FILES": [
-            "factory-test-tools_2.1-148+g6c1f107_arm64.deb",
+            "factory-test-tools_2.1-152+gfffb459_arm64.deb",
             "bc_1.07.1-2+b2_arm64.deb",
             "memtester_4.5.1-1_arm64.deb",
             "mt-wifi-ated_1.0.0-1+g53d0340_arm64.deb"
