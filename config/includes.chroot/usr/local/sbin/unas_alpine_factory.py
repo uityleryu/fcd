@@ -438,6 +438,7 @@ class UNASALPINEFactory(ScriptBase):
 
         msg(30, "Waiting boot to linux console...")
         if self.board_id == 'ea51' or self.board_id == 'ea50':
+            self.pexp.expect_action(600, "System Finish Bootup", "")
             self.login(timeout=300)
         else:
             self.pexp.expect_only(300, "Welcome to UniFi NVR!")
