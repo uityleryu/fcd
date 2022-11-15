@@ -1,11 +1,11 @@
 {
   "Amplifi": {
-    "AFi-ALN-MAX-R-B": {
+    "AFi-ALN-MAX-P-G": {
       "INDEX": 0,
-      "NAME": "AFi-ALN-MAX-R-B",
-      "BOARDID": "da15",
-      "BOMREV": "113-01150",
-      "DESC": "Amplifi Alien Max Router Black",
+      "NAME": "AFi-ALN-MAX-P-G",
+      "BOARDID": "da18",
+      "BOMREV": "113-01151",
+      "DESC": "Amplifi Alien Max Meshpoint Gray",
       "FILE": "afi_ipq807x_factory2.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -52,27 +52,27 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/da15-bootloader.bin",
+          "tftp/images/da18-bootloader.bin",
           "../afi-fw/nor_u-boot.bin"
         ],
         [
-          "tftp/images/da15-devcfg.mbn",
+          "tftp/images/da18-devcfg.mbn",
           "../afi-fw/devcfg.mbn"
         ],
         [
-          "tftp/images/da15-eeprom.bin",
+          "tftp/images/da18-eeprom.bin",
           "../afi-fw/fake_eeprom_aln_p.bin"
         ],
         [
-          "tftp/images/da15-fw.img",
+          "tftp/images/da18-fw.img",
           "../afi-fw/nand_ubi.img"
         ],
         [
-          "tftp/images/da15-mfg.img",
+          "tftp/images/da18-mfg.img",
           "../afi-fw/afi-aln-spf.10.0_nor-hw2-v4.img"
         ],
         [
-          "tftp/images/da15-tz.mbn",
+          "tftp/images/da18-tz.mbn",
           "../afi-fw/tz.mbn"
         ]
       ]

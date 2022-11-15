@@ -258,15 +258,14 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
         self.display_arp_table()
 
-        cmdset = [
-            "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id),
-            "sf probe",
-            "sf erase 0x110000 0xb0000",
-            "sf write 0x50000000 0x120000 $filesize",
-            "reset"
-        ]
-        for cmd in cmdset:
-            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+        cmd = "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
+        cmd = "sf erase 0x110000 0xb0000"
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        cmd = "sf write 0x50000000 0x120000 $filesize"
+        self.pexp.expect_ubcmd(60, "Erased: OK", cmd)
+        self.pexp.expect_ubcmd(60, "Written: OK", "reset")
 
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.del_arp_table(self.dutip)
@@ -275,14 +274,13 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
         self.display_arp_table()
 
-        cmdset = [
-            "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
-            self.tftp_server, self.dutip),
-            "tftpb 0x50000000 images/{}-loader.img".format(self.board_id),
-            "bootm"
-        ]
-        for cmd in cmdset:
-            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+        cmd = "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
+            self.tftp_server, self.dutip)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+
+        cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "Bytes transferred", "bootm")
 
         self.pexp.expect_only(120, "enter factory install mode")
         log_debug(msg="Enter factory install mode ...")
@@ -303,6 +301,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def registration_uex(self, regsubparams = None):
         log_debug("Starting to do registration ...")
+        self.devreg_hostname = "stage.udrs.io"
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
@@ -322,7 +321,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
         clientbin = "/usr/local/sbin/client_rpi4_release"
         regparam = [
-            "-h prod.udrs.io",
+            "-h {}".format(self.devreg_hostname),
             "-k {}".format(self.pass_phrase),
             regsubparams,
             "-i field=code_type,format=hex,value={}".format(code_type),
@@ -367,6 +366,16 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
 
+    def chk_caldata_uex(self):
+        cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock8"
+        post_exp = "0001000 0001 0404 0000 0000 8000"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+        time.sleep(1)
+        cmd = "hexdump -s 0x26800 -n 10 /dev/mtdblock8"
+        post_exp = "0026800 0001 0404 0000 0000 8000"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
     def run(self):
         """
             Main procedure of factory
@@ -404,6 +413,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 
         if self.REGISTER_ENABLE is True:
             if self.board_id == "a667":
+                self.chk_caldata_uex()
                 self.registration_uex()
             else:
                 self.registration()
