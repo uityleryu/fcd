@@ -480,7 +480,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             Scandi: 3
         '''
         region_name_dict = {
-            "World": 'US',
+            "World": 'EU',
             "USA/Canada": 'US',
             'EU': 'EU',
             "Scandi": 'SCANDI'}
@@ -591,6 +591,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
             msg(80, "Finish checking MAC in DUT ...")
+
 
         if self.board_id == "a919":
             self.ser.execmd(cmd="BOOTFW:1")
