@@ -256,33 +256,31 @@ class U6IPQ5018BspFactory(ScriptBase):
         comma_mac = self.mac_format_str2comma(self.mac)
         self.set_ub_net(comma_mac)
         self.is_network_alive_in_uboot()
-        self.display_aro_table()
+        self.display_arp_table()
 
-        cmdset = [
-            "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id),
-            "sf probe",
-            "sf erase 0x110000 0xb0000",
-            "sf write 0x50000000 0x120000 $filesize",
-            "reset"
-        ]
-        for cmd in cmdset:
-            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+        cmd = "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
+        cmd = "sf erase 0x110000 0xb0000"
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        cmd = "sf write 0x50000000 0x120000 $filesize"
+        self.pexp.expect_ubcmd(60, "Erased: OK", cmd)
+        self.pexp.expect_ubcmd(60, "Written: OK", "reset")
 
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.del_arp_table(self.dutip)
         comma_mac = self.mac_format_str2comma(self.mac)
         self.set_ub_net(comma_mac)
         self.is_network_alive_in_uboot()
-        self.display_aro_table()
+        self.display_arp_table()
 
-        cmdset = [
-            "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
-            self.tftp_server, self.dutip),
-            "tftpb 0x50000000 images/{}-loader.img".format(self.board_id),
-            "bootm"
-        ]
-        for cmd in cmdset:
-            self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
+        cmd = "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
+            self.tftp_server, self.dutip)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+
+        cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "Bytes transferred", "bootm")
 
         self.pexp.expect_only(120, "enter factory install mode")
         log_debug(msg="Enter factory install mode ...")
@@ -301,6 +299,65 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.linux_prompt = "root@UEX"
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=False, retry=3)
 
+    def registration_uex(self, regsubparams = None):
+        log_debug("Starting to do registration ...")
+        self.devreg_hostname = "stage.udrs.io"
+        if regsubparams is None:
+            regsubparams = self.access_chips_id()
+
+        code_type = "01"
+
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=qr_code,format=hex,value={}".format(self.qrhex)
+
+        # The HEX of the activate code
+        if self.activate_code is None or not self.activate_code:
+            reg_activate_code = ""
+        else:
+            reg_activate_code = "-i field=code,format=hex,value={}".format(self.activate_code_hex)
+
+        clientbin = "/usr/local/sbin/client_rpi4_release"
+        regparam = [
+            "-h {}".format(self.devreg_hostname),
+            "-k {}".format(self.pass_phrase),
+            regsubparams,
+            "-i field=code_type,format=hex,value={}".format(code_type),
+            reg_qr_field,
+            reg_activate_code,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x {}ca.pem".format(self.key_dir),
+            "-y {}key.pem".format(self.key_dir),
+            "-z {}crt.pem".format(self.key_dir)
+        ]
+
+        regparam = ' '.join(regparam)
+
+        cmd = "sudo {0} {1}".format(clientbin, regparam)
+        print("cmd: " + cmd)
+        clit = ExpttyProcess(self.row_id, cmd, "\n")
+        clit.expect_only(30, "Security Service Device Registration Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
+
+        log_debug("Excuting client registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
+
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -309,8 +366,19 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
 
+    def chk_caldata_uex(self):
+        cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock8"
+        post_exp = "0001000 0001 0404 0000 0000 8000"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+        time.sleep(1)
+        cmd = "hexdump -s 0x26800 -n 10 /dev/mtdblock8"
+        post_exp = "0026800 0001 0404 0000 0000 8000"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
     def run(self):
-        """Main procedure of factory
+        """
+            Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
@@ -344,7 +412,12 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.REGISTER_ENABLE is True:
-            self.registration()
+            if self.board_id == "a667":
+                self.chk_caldata_uex()
+                self.registration_uex()
+            else:
+                self.registration()
+
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")

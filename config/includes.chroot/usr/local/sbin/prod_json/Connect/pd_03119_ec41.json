@@ -10,7 +10,43 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0011",
-      "SW_ID": "1c01"
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/lvdu-fw",
+          "DST_PATH": "lvdu-fw",
+          "FILES": [
+            "LH.qca953x.v5.4.9.11.ga0faa53.221021.0145-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/lvdu_4_24",
+          "DST_PATH": "tools/lvdu_4_24",
+          "FILES": [
+            "helper_ARxxxx_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec41-fw.bin",
+          "../lvdu-fw/lvdu-24-fw.bin"
+        ],
+        [
+          "tftp/lvdu-fw/lvdu-24-fw.bin",
+          "../lvdu-fw/LH.qca953x.v5.4.9.11.ga0faa53.221021.0145-uboot.bin"
+        ]
+      ]
     }
   }
 }

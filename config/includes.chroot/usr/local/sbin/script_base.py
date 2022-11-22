@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.47"
+    __version__ = "1.0.51"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -165,6 +165,11 @@ class ScriptBase(object):
            Ex: /tmp/uvp
         '''
         self.devregpart = ""
+        '''
+            This is the host name of the devreg server, if there is any change,
+            please approach Mike.Tyler
+        '''
+        self.devreg_hostname = "prod.udrs.io"
         self.helperexe = ""
         self.product_class = "basic"
 
@@ -241,6 +246,11 @@ class ScriptBase(object):
         if self.qrcode is not None:
             self.qrhex = self.qrcode.encode('utf-8').hex()
 
+        self.activate_code_hex = ""
+        # The HEX of the QR code
+        if self.activate_code is not None:
+            self.activate_code_hex = self.activate_code.encode('utf-8').hex()
+
         # HTTP server
         baseport = 8000
         self.http_port = int(self.row_id) + baseport
@@ -277,6 +287,7 @@ class ScriptBase(object):
         parse.add_argument('--key_dir', '-k', dest='key_dir', help='Directory of key files', default=None)
         parse.add_argument('--bom_rev', '-bom', dest='bom_rev', help='BOM revision', default=None)
         parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
+        parse.add_argument('--activate_code', '-ac', dest='activate_code', help='Activate Code', default=None)
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
         parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
         parse.set_defaults(upload=True)
@@ -296,6 +307,7 @@ class ScriptBase(object):
         self.key_dir = args.key_dir
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
+        self.activate_code = args.activate_code
         self.region = args.region
         self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
         self.fwimg = self.board_id + ".bin"
@@ -436,6 +448,19 @@ class ScriptBase(object):
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
+        # To decide which client executed file
+        cmd = "uname -a"
+        [sto, rtc] = self.cnapi.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("Get linux information failed!!")
+        else:
+            log_debug("Get linux information successfully")
+            match = re.findall("armv7l", sto)
+            if match:
+                clientbin = "/usr/local/sbin/client_rpi4_release"
+            else:
+                clientbin = "/usr/local/sbin/client_x86_release"
+
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
             reg_qr_field = ""
@@ -443,57 +468,44 @@ class ScriptBase(object):
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
         if self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
-            clientbin = "/usr/local/sbin/client_x86_release"
             regparam = [
-                "-h prod.udrs.io",
-                "-k " + self.pass_phrase,
+                "-h {}".format(self.devreg_hostname),
+                "-k {}".format(self.pass_phrase),
                 regsubparams,
                 reg_qr_field,
-                "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-                "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
+                "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+                "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
                 "-o field=registration_id",
                 "-o field=result",
                 "-o field=device_id",
                 "-o field=registration_status_id",
                 "-o field=registration_status_msg",
                 "-o field=error_message",
-                "-x " + self.key_dir + "ca.pem",
-                "-y " + self.key_dir + "key.pem",
-                "-z " + self.key_dir + "crt.pem"
+                "-x {}ca.pem".format(self.key_dir),
+                "-y {}key.pem".format(self.key_dir),
+                "-z {}crt.pem".format(self.key_dir)
             ]
             print("WARNING: should plan to add SW_ID ... won't block this time")
         else:
-            cmd = "uname -a"
-            [sto, rtc] = self.cnapi.xcmd(cmd)
-            if int(rtc) > 0:
-                error_critical("Get linux information failed!!")
-            else:
-                log_debug("Get linux information successfully")
-                match = re.findall("armv7l", sto)
-                if match:
-                    clientbin = "/usr/local/sbin/client_rpi4_release"
-                else:
-                    clientbin = "/usr/local/sbin/client_x86_release"
-
             regparam = [
-                "-h prod.udrs.io",
-                "-k " + self.pass_phrase,
+                "-h {}".format(self.devreg_hostname),
+                "-k {}".format(self.pass_phrase),
                 regsubparams,
                 reg_qr_field,
-                "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-                "-i field=fcd_version,format=hex,value=" + self.sem_ver,
-                "-i field=sw_id,format=hex,value=" + self.sw_id,
-                "-i field=sw_version,format=hex,value=" + self.fw_ver,
-                "-o field=flash_eeprom,format=binary,pathname=" + self.eesign_path,
+                "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+                "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+                "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+                "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+                "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
                 "-o field=registration_id",
                 "-o field=result",
                 "-o field=device_id",
                 "-o field=registration_status_id",
                 "-o field=registration_status_msg",
                 "-o field=error_message",
-                "-x " + self.key_dir + "ca.pem",
-                "-y " + self.key_dir + "key.pem",
-                "-z " + self.key_dir + "crt.pem"
+                "-x {}ca.pem".format(self.key_dir),
+                "-y {}key.pem".format(self.key_dir),
+                "-z {}crt.pem".format(self.key_dir)
             ]
 
         regparam = ' '.join(regparam)
@@ -626,7 +638,7 @@ class ScriptBase(object):
 
     def set_ub_net(self, premac=None, dutaddr=None, srvaddr=None, ethact=None):
         if premac is not None:
-            cmd = "setenv ethaddr {0}".format(premac)
+            cmd = "setenv ethaddr {0}; saveenv".format(premac)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         if dutaddr is None:
@@ -644,13 +656,31 @@ class ScriptBase(object):
             cmd = "setenv ethact {0}".format(ethact)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-    def set_lnx_net(self, intf):
+    def set_lnx_net(self, intf, setmac=False, retry=5):
         log_debug("Starting to configure the networking ... ")
+        ct = 0
+        while ct < retry:
+            cmd = "ifconfig {}".format(intf)
+            cmd_reply = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            if "Link encap:Ethernet" in cmd_reply:
+                rmsg = "Network interface: {} is active".format(intf)
+                log_debug(rmsg)
+                break
+
+            time.sleep(5)
+            ct += 1
+
+        if setmac is True:
+            comma_mac = self.mac_format_str2comma(self.mac)
+            cmd = "ifconfig br0 hw ether {}".format(comma_mac)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
+                                    valid_chk=True)
+
         cmd = "ifconfig {0} {1}".format(intf, self.dutip)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
                                 valid_chk=True)
 
-    def display_aro_table(self):
+    def display_arp_table(self):
         log_debug("The current ARP table of the FCD host:")
         cmd = "arp -a"
         self.cnapi.xcmd(cmd)
@@ -676,7 +706,7 @@ class ScriptBase(object):
         self.pexp.expect_ubcmd(timeout=timeout, exptxt="", action=cmd, post_exp=exp, retry=retry)
 
         if arp_logging_en:
-            self.display_aro_table()
+            self.display_arp_table()
 
     def is_network_alive_in_linux(self, ipaddr=None, retry=3, arp_logging_en=False, del_dutip_en=False):
         if ipaddr is None:
@@ -690,7 +720,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=retry)
 
         if arp_logging_en:
-            self.display_aro_table()
+            self.display_arp_table()
 
     def disable_inittab_process(self, process):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "while ! grep -q \"{}\" /etc/inittab; "\
@@ -711,6 +741,7 @@ class ScriptBase(object):
     def gen_rsa_key(self):
         if os.path.isfile(self.rsakey_path):
             os.remove(self.rsakey_path)
+
         cmd = "dropbearkey -t rsa -f {0}".format(self.rsakey_path)
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
@@ -779,8 +810,9 @@ class ScriptBase(object):
         log_debug("cmd: " + cmd)
         self.cnapi.xcmd(cmd)
 
-    def data_provision_64k(self, netmeta, post_en=True):
-        self.gen_rsa_key()
+    def data_provision_64k(self, netmeta, post_en=True, rsa_en=True):
+        if rsa_en is True:
+            self.gen_rsa_key()
 
         post_exp = None
         if post_en is True:
@@ -792,16 +824,19 @@ class ScriptBase(object):
         sstr = [
             flasheditor,
             "-F",
-            "-f " + self.eegenbin_path,
-            "-r 113-{0}".format(self.bom_rev),
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + netmeta['ethnum'][self.board_id],
-            "-w " + netmeta['wifinum'][self.board_id],
-            "-b " + netmeta['btnum'][self.board_id],
-            "-k " + self.rsakey_path
+            "-f {}".format(self.eegenbin_path),
+            "-r 113-{}".format(self.bom_rev),
+            "-s 0x{}".format(self.board_id),
+            "-m {}".format(self.mac),
+            "-c 0x{}".format(self.region),
+            "-e {}".format(netmeta['ethnum'][self.board_id]),
+            "-w {}".format(netmeta['wifinum'][self.board_id]),
+            "-b {}".format(netmeta['btnum'][self.board_id])
         ]
+        if rsa_en is True:
+            cmd_option = "-k {}".format(self.rsakey_path)
+            sstr.append(cmd_option)
+
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
         [sto, rtc] = self.cnapi.xcmd(sstr)

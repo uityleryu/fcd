@@ -9,8 +9,7 @@
       "FILE": "afi_ipq807x_factory.py",
       "T1FILE": "afi_ipq807x_mfg.py",
       "QRCHECK": "False",
-      "FCD_ID": {},
-      "SW_ID": {},
+      "SW_ID": "",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/fcd-image/afi-fw",
