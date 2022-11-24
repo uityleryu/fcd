@@ -5,6 +5,7 @@ from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
+
 class UAQCA9531Factory(ScriptBase):
     def __init__(self):
         super(UAQCA9531Factory, self).__init__()
@@ -12,8 +13,8 @@ class UAQCA9531Factory(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.ubimg = "images/" + "ua-readerlite-uboot.bin"
-        self.fwimg = "images/" + "ua-readerlite-fcd.bin"
+        self.ubimg = "images/" + "{}-uboot.bin".format(self.board_id)
+        self.fwimg = "images/" + "{}-fcd.bin".format(self.board_id)
         self.devregpart = "/dev/mtd6"
         self.bomrev = "113-" + self.bom_rev
         self.bootloader_prompt = "ath>"
@@ -30,15 +31,15 @@ class UAQCA9531Factory(ScriptBase):
         self.btnum = {
             'ec4d': "1"
         }
-        
+
         self.bootm_addr = {
             'ec4d': "0x50000000"
         }
-        
+
         self.linux_prompt_select = {
             'ec4d': "#"
         }
-        
+
         self.uboot_eth_port = {
             'ec4d': "eth0"
         }
@@ -50,24 +51,24 @@ class UAQCA9531Factory(ScriptBase):
         }
 
         self.row_dev_ip = "192.168.1." + str((int(self.row_id)))
-        self.BOOT_BSP_IMAGE    = True 
-        self.PROVISION_ENABLE  = True 
-        self.DOHELPER_ENABLE   = True 
-        self.REGISTER_ENABLE   = True 
-        if self.board_id == "xxx" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False 
+        self.BOOT_BSP_IMAGE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        if self.board_id == "xxx":
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
         else:
-            self.FWUPDATE_ENABLE   = True
+            self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
-        self.pexp.expect_ubcmd(300, "Please press Enter to activate this console.", "\n\n")
+        self.pexp.expect_ubcmd(300, "Please press Enter to activate this console.", "\n\n", retry=0)
         time.sleep(3)
         self.pexp.expect_ubcmd(5, self.linux_prompt, "\n", retry=10)
 
     def _bootloader_fwupdate(self):
-        self.pexp.expect_ubcmd(20, self.linux_prompt, "reboot",retry=3)
+        self.pexp.expect_ubcmd(20, self.linux_prompt, "reboot", retry=3)
         self.pexp.expect_ubcmd(20, "Hit any key to stop autoboot:", " ")
         self.pexp.expect_ubcmd(1, self.bootloader_prompt, " ", retry=5)
         self.set_ub_net()
@@ -103,6 +104,8 @@ class UAQCA9531Factory(ScriptBase):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+        if self.board_id == 'ec4d':
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo 1 4 1 7 > /proc/sys/kernel/printk", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
@@ -159,6 +162,7 @@ class UAQCA9531Factory(ScriptBase):
 def main():
     uaqca9531_factory = UAQCA9531Factory()
     uaqca9531_factory.run()
+
 
 if __name__ == "__main__":
     main()
