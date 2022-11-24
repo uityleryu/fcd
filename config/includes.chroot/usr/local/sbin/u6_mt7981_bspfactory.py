@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+import os
 import time
 
 from script_base import ScriptBase
@@ -25,6 +27,7 @@ class U6MT7981BspFactory(ScriptBase):
         self.bootloader_prompt = "MT7981"
         self.linux_prompt = "root@OpenWrt:/#"
         self.linux_prompt_fw = "#"
+        self.mmc_ver = "0x0200000000000000"
 
         self.ethnum = {
             'a642': "1",
@@ -74,6 +77,7 @@ class U6MT7981BspFactory(ScriptBase):
         self.CHECK_CAL_DATA = True
         self.REGISTER_ENABLE = True
         self.FWUPDATE_ENABLE = True
+        self.EMMC_FW_UPDATE_ENABLE = False
         self.DATAVERIFY_ENABLE = True
         self.FCD_TLV_data = False
 
@@ -136,7 +140,8 @@ class U6MT7981BspFactory(ScriptBase):
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
-        self.pexp.expect_only(10, self.linux_prompt)
+        cmd = "cat /sys/bus/mmc/devices/mmc0\:0001/fwrev"
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, self.mmc_ver)
 
     def check_caldata(self):
         cmd = "ifconfig ra0 up"
@@ -161,6 +166,25 @@ class U6MT7981BspFactory(ScriptBase):
         for cmd in cmdset:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd[0])
             self.pexp.expect_only(10, cmd[1])
+
+    def write_mmc(self):
+        src_path = os.path.join(self.fwdir, "mmc")
+        dst_path = os.path.join(self.dut_tmpdir, "mmc")
+        self.tftp_get(src_path, dst_path)
+        time.sleep(2)
+        cmd = "chmod 777 {}".format(dst_path)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        src_path = os.path.join(self.fwdir, "mmc-fw")
+        dst_path = os.path.join(self.dut_tmpdir, "mmc-fw")
+        self.tftp_get(src_path, dst_path)
+        time.sleep(2)
+        cmd = "chmod 777 {}".format(dst_path)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        cmd = "/tmp/mmc ffu /tmp/mmc-fw /dev/mmcblk0"
+        post_exp = "Please reboot to complete firmware installation"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp)
 
     def run(self):
         """
@@ -200,6 +224,9 @@ class U6MT7981BspFactory(ScriptBase):
             cmd = "mtd erase {}".format(self.devregpart)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
             self.check_devreg_data()
+            if self.EMMC_FW_UPDATE_ENABLE is True:
+                self.write_mmc()
+
             msg(60, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
