@@ -2,6 +2,7 @@
 
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.Framework.fcd.ssh_client import SSHClient
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 import re
@@ -225,6 +226,12 @@ class AFIIPQ807XFactory(ScriptBase):
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
 
         if self.PROVISION_ENABLE is True:
+            if self.board_id == "da11" or self.board_id == "da12":
+                ssh_dut = SSHClient(host=self.dutip, username=constant.DEFAULT_DUT_USERNAME,
+                        password=constant.DEFAULT_DUT_PASSWORD)
+                src_path = os.path.join(self.fcd_toolsdir, "tftp")
+                ssh_dut.put_file(src_path, dst_path, "/usr/bin/tftp")
+
             msg(20, "Sendtools to DUT and data provision ...")
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False, rsa_en=False)
 
