@@ -16,10 +16,11 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_1.0.0.mbn",
-            "nbe-ax-v2_emmc.bin",
-            "nbe-ax-v2_nor.bin",
-            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+            "u-boot_20221108.mbn",
+            "nbe-ax-norplusnand-v2.img",
+            "nbe-ax-norplusnand-v2_nor.bin",
+            "RAX.ipq5018.v1.2.0-devel+nand-initial-support-256m.8fe85207.221116.0056-mp03.5-c2.bin",
+            "ax-nand-factory_20221108.img"
           ]
         },
         {
@@ -36,19 +37,23 @@
       "CREATE_LINK":[
         [
           "tftp/images/a673-uboot.bin",
-          "../am-fw/u-boot_1.0.0.mbn"
-        ],
-        [
-          "tftp/images/a673-nor.bin",
-          "../am-fw/nbe-ax-v2_nor.bin"
-        ],
-        [
-          "tftp/images/a673-emmc.bin",
-          "../am-fw/nbe-ax-v2_emmc.bin"
+          "../am-fw/u-boot_20221108.mbn"
         ],
         [
           "tftp/images/a673.bin",
-          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.2.0-devel+nand-initial-support-256m.8fe85207.221116.0056-mp03.5-c2.bin"
+        ],
+        [
+          "tftp/images/a673-nand.bin",
+          "../am-fw/ax-nand-factory_20221108.img"
+        ],
+        [
+          "tftp/images/a673-bsp-nor.bin",
+          "../am-fw/nbe-ax-norplusnand-v2_nor.bin"
+        ],
+        [
+          "tftp/images/a673-bsp-2nd.bin",
+          "../am-fw/nbe-ax-norplusnand-v2.img"
         ]
       ]
     }
