@@ -11,8 +11,39 @@
       "QRCHECK": "False",
       "FCD_ID": "0009",
       "SW_ID": "0e03",
-      "DOWNLOAD_FILE": [],
-      "CREATE_LINK": []
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "g5pro.UVC.gen5s.v4.59.0.67-fcddbg.4e2d4fc.221124.0741.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a598-fw.bin",
+            "a598-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a598-fw.bin",
+          "../uvc-fw/g5pro.UVC.gen5s.v4.59.0.67-fcddbg.4e2d4fc.221124.0741.bin"
+        ]
+      ]
     }
   }
 }

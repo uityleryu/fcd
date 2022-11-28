@@ -275,6 +275,11 @@ $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO-MP,FCD_$(PRD)_G5PRO-MP_$(VER)_$(FWVER)))
 
+# Project target black panther
+$(eval $(call ProductImage2,03933_a598))
+$(eval $(call ProductImage2,04055_a598))
+$(eval $(call ProductImage2,UVC_G5PRO-SERIES))
+
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
