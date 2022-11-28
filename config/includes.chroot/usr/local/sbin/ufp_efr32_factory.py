@@ -56,14 +56,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         }
 
         self.bom_check_dict = {
-            'a911': False,
-            'a941': False,
-            'a912': False,
-            'a915': False,
-            'a918': False,
-            'a919': False,
-            'ee76': False,
-            'a922': False,
+            'a911': True,
+            'a941': True,
+            'a912': True,
+            'a915': True,
+            'a918': True,
+            'a919': True,
+            'ee76': True,
+            'a922': True,
             'ec51': True,
         }
 
