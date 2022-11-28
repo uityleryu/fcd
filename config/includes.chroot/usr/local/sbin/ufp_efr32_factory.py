@@ -22,7 +22,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 SET_SKU_ENABLE = True
 CHECK_MAC_ENABLE = True
-
+CHECK_BOMID_CORRECT = True
 
 class UFPEFR32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -52,6 +52,18 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'a919': True,
             'ee76': True,
             'a922': True,
+            'ec51': True,
+        }
+
+        self.bom_check_dict = {
+            'a911': False,
+            'a941': False,
+            'a912': False,
+            'a915': False,
+            'a918': False,
+            'a919': False,
+            'ee76': False,
+            'a922': False,
             'ec51': True,
         }
 
@@ -546,6 +558,31 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         else:
             error_critical("MAC_DUT and MAC_expect are NOT match")
 
+    def check_bom(self):
+         log_debug("Starting to check BOM ID")
+         log_info("self.bom_check_dict = {}".format(self.bom_check_dict))
+
+         if self.bom_check_dict[self.board_id] is False:
+             log_debug("skip check the BOM ID in DUT ...")
+             return
+
+         rtv_verison = self.ser.execmd_getmsg(self.cmd_version, ignore=True)
+
+         version = self._read_version(rtv_verison)
+         for key, value in version.items():
+             log_info("{} = {}".format(key, value))
+
+         dut_bom = version["BOMPCB"]
+         expect_bom = '113-' + self.bom_rev
+         log_info("BOM_REV_DUT    = {}".format(dut_bom))
+         log_info("BOM_REV_expect = {}".format(expect_bom))
+         log_info("FW version in DUT = {}".format(version["SWv"]))
+
+         if dut_bom == expect_bom:
+             log_debug('BOM_REV_DUT and BOM_REV_expect are match')
+         else:
+             error_critical("BOM_REV_DUT and BOM_REV_expect are NOT match")
+   
     def run(self):
         """
         Main procedure of factory
@@ -591,6 +628,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
             msg(80, "Finish checking MAC in DUT ...")
+
+        if CHECK_BOMID_CORRECT is True:
+            self.check_bom()
+            msg(90, "Finish checking BOM ...")  
 
         if self.board_id == "a919":
             self.ser.execmd(cmd="BOOTFW:1")
