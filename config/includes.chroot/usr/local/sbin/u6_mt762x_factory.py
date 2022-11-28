@@ -125,14 +125,28 @@ class U6MT762xFactory(ScriptBase):
             'flashed_dir'     : self.flashed_dir
         }
 
-        self.UPDATE_UBOOT_ENABLE    = True
-        self.BOOT_RECOVERY_IMAGE    = True
-        self.PROVISION_ENABLE       = True
-        self.DOHELPER_ENABLE        = True
-        self.REGISTER_ENABLE        = True
-        self.FWUPDATE_ENABLE        = True
-        self.DATAVERIFY_ENABLE      = True
+        '''
+            2022/11/4
+            This is a special recall event for changing the BOM revision on the U6-LR
+        '''
+        self.SPECIAL_RECALL_EVENT = False
 
+        if self.SPECIAL_RECALL_EVENT is True:
+            self.UPDATE_UBOOT_ENABLE = False
+        else:
+            self.UPDATE_UBOOT_ENABLE = True
+
+        self.BOOT_RECOVERY_IMAGE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+
+        if self.SPECIAL_RECALL_EVENT is True:
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
+        else:
+            self.FWUPDATE_ENABLE = True
+            self.DATAVERIFY_ENABLE = True
 
     def boot_recovery_image(self, Img):
         cmd = "tftpboot {} images/{}".format(self.recovery_addr[self.board_id], Img)
@@ -376,7 +390,6 @@ class U6MT762xFactory(ScriptBase):
         # [   42.419253] [btmtk_info] btmtk_load_flash_chech_version send
         # [   42.420077] [btmtk_err] ***btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update***
         # [   43.020197] mtk_soc_eth 1b100000.ethernet: path gmac1_sgmii in set_mux_gdm1_to_gmac1_esw updated = 1
-
 
         number_time = 0 # one loop is 5sec for 1 time
         while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 

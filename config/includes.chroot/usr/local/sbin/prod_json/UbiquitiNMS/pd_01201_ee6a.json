@@ -38,11 +38,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ee6a-fw.bin",
-          "../unms-fw/uisp-console/UISPR.alpinev2.v2.0.0+ubnt.4419.612394d.220608.0556.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.v3.0.0.80c69eb.221121.1850.bin"
         ],
         [
           "tftp/images/ee6a-recovery",
-          "../unms-fw/uisp-console/1.13.0/UISPR.alpinev2.recovery.v1.13.0-rc.4.30cc82a.211103.1320.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.recovery.v3.0.0.80c69eb.221121.1913.bin"
         ],
         [
           "tftp/images/ee6a_signed_boot.img",

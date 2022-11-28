@@ -16,7 +16,7 @@
           "SRC_PATH": "images/tools/udw",
           "DST_PATH": "tools/udw",
           "FILES": [
-            "factory-test-tools_2.1-148+g6c1f107_arm64.deb",
+            "factory-test-tools_2.1-152+gfffb459_arm64.deb",
             "bc_1.07.1-2+b2_arm64.deb",
             "memtester_4.5.1-1_arm64.deb",
             "mt-wifi-ated_1.0.0-1+g53d0340_arm64.deb"
@@ -44,24 +44,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw",
           "DST_PATH": "udm-fw/udw",
           "FILES": [
-            "UDW.al324.v3.0.4.126bfc7.220817.2317.bin",
-            "uImage_20220818",
-            "boot_20220818.img"
+            "UDW.al324.v3.0.12.d4dc34d.221027.0057.bin",
+            "uImage_20221110",
+            "boot_20221110.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v3.0.4.126bfc7.220817.2317.bin"
+          "../udm-fw/udw/UDW.al324.v3.0.12.d4dc34d.221027.0057.bin"
         ],
         [
           "tftp/images/ea2a-recovery",
-          "../udm-fw/udw/uImage_20220818"
+          "../udm-fw/udw/uImage_20221110"
         ],
         [
           "tftp/images/ea2a-uboot.bin",
-          "../udm-fw/udw/boot_20220818.img"
+          "../udm-fw/udw/boot_20221110.img"
         ]
       ]
     }

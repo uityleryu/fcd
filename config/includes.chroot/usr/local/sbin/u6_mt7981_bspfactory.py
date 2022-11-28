@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+
+import os
 import time
 
 from script_base import ScriptBase
@@ -25,6 +27,7 @@ class U6MT7981BspFactory(ScriptBase):
         self.bootloader_prompt = "MT7981"
         self.linux_prompt = "root@OpenWrt:/#"
         self.linux_prompt_fw = "#"
+        self.mmc_ver = "0x0200000000000000"
 
         self.ethnum = {
             'a642': "1",
@@ -68,38 +71,46 @@ class U6MT7981BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
-        self.BOOT_BSP_IMAGE    = True
-        self.PROVISION_ENABLE  = True
-        self.DOHELPER_ENABLE   = True
-        self.REGISTER_ENABLE   = True
-        self.FWUPDATE_ENABLE   = True
+        self.BOOT_BSP_IMAGE = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.CHECK_CAL_DATA = True
+        self.REGISTER_ENABLE = True
+        self.FWUPDATE_ENABLE = True
+        self.EMMC_FW_UPDATE_ENABLE = False
         self.DATAVERIFY_ENABLE = True
         self.FCD_TLV_data = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
+
+        comma_mac = self.mac_format_str2comma(self.mac)
+        cmd = "ifconfig eth0 hw ether {}".format(comma_mac)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
-        self.is_network_alive_in_linux()
+        self.is_network_alive_in_linux(arp_logging_en=True, del_dutip_en=True, retry=10)
 
     def uboot_update(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.set_ub_net()
-        self.is_network_alive_in_uboot()
+        self.set_ub_net(premac=self.mac)
+        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
+
         cmd = "sf probe"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         cmd = "sf erase 0x10000 0x80000"
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
         cmd = "tftpboot 0x46000000 images/{}-uboot.bin".format(self.board_id)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         cmd = "mmc erase 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         cmd = "mmc write 0x46000000 0x3400 0xfff"
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, "reset")
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.set_ub_net()
-        self.is_network_alive_in_uboot()
+        self.set_ub_net(premac=self.mac)
+        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
@@ -118,7 +129,7 @@ class U6MT7981BspFactory(ScriptBase):
         else:
             log_debug("Uploading firmware image successfully")
 
-        self.pexp.expect_only(10, "")
+        self.pexp.expect_only(30, "")
 
         self.linux_prompt = "#"
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
@@ -129,10 +140,55 @@ class U6MT7981BspFactory(ScriptBase):
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
-        self.pexp.expect_only(10, self.linux_prompt)
+        cmd = "cat /sys/bus/mmc/devices/mmc0\:0001/fwrev"
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, self.mmc_ver)
+
+    def check_caldata(self):
+        cmd = "ifconfig ra0 up"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        if self.board_id == "a642":
+            cmdset = [
+                ["iwpriv ra0 e2p 190", "0x5212"],
+                ["iwpriv ra0 e2p 192", "0x4848"],
+                ["iwpriv ra0 e2p 19a", "0x0007"]
+            ]
+        elif self.board_id == "a643":
+            cmdset = [
+                ["iwpriv ra0 e2p 190", "0x5B12"],
+                ["iwpriv ra0 e2p 192", "0x4C48"],
+                ["iwpriv ra0 e2p 19a", "0x0007"]
+            ]
+        else:
+            log_deubg("The Board ID is not support!!!")
+            return RC.E_FTU_GENERIC
+
+        for cmd in cmdset:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd[0])
+            self.pexp.expect_only(10, cmd[1])
+
+    def write_mmc(self):
+        src_path = os.path.join(self.fwdir, "mmc")
+        dst_path = os.path.join(self.dut_tmpdir, "mmc")
+        self.tftp_get(src_path, dst_path)
+        time.sleep(2)
+        cmd = "chmod 777 {}".format(dst_path)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        src_path = os.path.join(self.fwdir, "mmc-fw")
+        dst_path = os.path.join(self.dut_tmpdir, "mmc-fw")
+        self.tftp_get(src_path, dst_path)
+        time.sleep(2)
+        cmd = "chmod 777 {}".format(dst_path)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        cmd = "/tmp/mmc ffu /tmp/mmc-fw /dev/mmcblk0"
+        post_exp = "Please reboot to complete firmware installation"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp)
 
     def run(self):
-        """Main procedure of factory
+        """
+        Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
@@ -158,13 +214,20 @@ class U6MT7981BspFactory(ScriptBase):
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
 
+        if self.CHECK_CAL_DATA is True:
+            self.check_caldata()
+            msg(40, "Finish checking the calibration data ...")
+
         if self.REGISTER_ENABLE is True:
             self.registration()
-            msg(40, "Finish doing registration ...")
+            msg(50, "Finish doing registration ...")
             cmd = "mtd erase {}".format(self.devregpart)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
             self.check_devreg_data()
-            msg(50, "Finish doing signed file and EEPROM checking ...")
+            if self.EMMC_FW_UPDATE_ENABLE is True:
+                self.write_mmc()
+
+            msg(60, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()

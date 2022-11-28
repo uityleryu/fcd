@@ -13,9 +13,12 @@
       "SW_ID": "0c01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uf-fw/eec5",
+          "SRC_PATH": "images/fcd-image/uf-fw/eec5/",
           "DST_PATH": "uf-fw/",
-          "FILES": []
+          "FILES": [
+            "boot-UF-ONU.UF-WIFI6.v4.4.0.352-b21.211102.0822.img",
+            "UF-ONU.UF-WIFI6.v4.4.1.413-8e3.211221.1024.img"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",

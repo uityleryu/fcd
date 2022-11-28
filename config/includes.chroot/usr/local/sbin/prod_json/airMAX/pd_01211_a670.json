@@ -16,10 +16,11 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_1.0.0.mbn",
-            "lap-ax-v1_emmc.bin",
-            "lap-ax-v1_nor.bin",
-            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+            "u-boot_20221108.mbn",
+            "lap-ax-512m-norplusnand-v1.img",
+            "lap-ax-512m-norplusnand-v1_nor.bin",
+            "RAX.ipq5018.v1.2.0-devel+nand-initial-support.3e26497b.221116.0056-mp03.5-c2.bin",
+            "ax-nand-factory_20221108.img"
           ]
         },
         {
@@ -36,19 +37,23 @@
       "CREATE_LINK":[
         [
           "tftp/images/a670-uboot.bin",
-          "../am-fw/u-boot_1.0.0.mbn"
-        ],
-        [
-          "tftp/images/a670-nor.bin",
-          "../am-fw/lap-ax-v1_nor.bin"
-        ],
-        [
-          "tftp/images/a670-emmc.bin",
-          "../am-fw/lap-ax-v1_emmc.bin"
+          "../am-fw/u-boot_20221108.mbn"
         ],
         [
           "tftp/images/a670.bin",
-          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.2.0-devel+nand-initial-support.3e26497b.221116.0056-mp03.5-c2.bin"
+        ],
+        [
+          "tftp/images/a670-nand.bin",
+          "../am-fw/ax-nand-factory_20221108.img"
+        ],
+        [
+          "tftp/images/a670-bsp-nor.bin",
+          "../am-fw/lap-ax-512m-norplusnand-v1_nor.bin"
+        ],
+        [
+          "tftp/images/a670-bsp-2nd.bin",
+          "../am-fw/lap-ax-512m-norplusnand-v1.img"
         ]
       ]
     }

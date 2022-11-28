@@ -8,7 +8,7 @@
       "DESC": "UniFi Express",
       "FILE": "u6_ipq5018_bspfactory.py",
       "T1FILE": "u6_ipq5018_mfg.py",
-      "QRCHECK": "activate_code",
+      "QRCHECK": "mac-qr-ac",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
@@ -26,9 +26,9 @@
           "SRC_PATH": "images/fcd-image/a667",
           "DST_PATH": "a667",
           "FILES": [
-            "UEX.ipq5018.v0.0.2+root.9112.000a02c.221024.2126.bin",
-            "uImage-v0.0.2",
-            "unifi-uex-0.0.2.132-g6f0a78db_ipq5018_uex_u-boot.mbn",
+            "UEX.ipq5018.v1.0.0.277609a.221115.1047.bin",
+            "uImage-v1.0.0",
+            "unifi-uex-0.0.3.135-g4086284b_ipq5018_uex_u-boot.mbn",
             "u6-express-v2.img",
             "u6-express-v2_nor.bin"
           ]
@@ -45,15 +45,15 @@
         ],
         [
           "tftp/images/a667-fw.bin",
-          "../a667/UEX.ipq5018.v0.0.2+root.9112.000a02c.221024.2126.bin"
+          "../a667/UEX.ipq5018.v1.0.0.277609a.221115.1047.bin"
         ],
         [
           "tftp/images/a667-uboot.mbn",
-          "../a667/unifi-uex-0.0.2.132-g6f0a78db_ipq5018_uex_u-boot.mbn"
+          "../a667/unifi-uex-0.0.3.135-g4086284b_ipq5018_uex_u-boot.mbn"
         ],
         [
           "tftp/images/a667-loader.img",
-          "../a667/uImage-v0.0.2"
+          "../a667/uImage-v1.0.0"
         ]
       ]
     }

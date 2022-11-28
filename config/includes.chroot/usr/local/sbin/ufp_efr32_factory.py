@@ -480,7 +480,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             Scandi: 3
         '''
         region_name_dict = {
-            "World": 'US',
+            "World": 'EU',
             "USA/Canada": 'US',
             'EU': 'EU',
             "Scandi": 'SCANDI'}
