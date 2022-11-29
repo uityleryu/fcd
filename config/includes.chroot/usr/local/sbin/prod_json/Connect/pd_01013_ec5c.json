@@ -26,39 +26,39 @@
           "SRC_PATH": "images/fcd-image/uc-fw/uc-wall-outlet-us",
           "DST_PATH": "uc-fw/uc-wall-outlet-us",
           "FILES": [
-            "CPP2.esp32app.1.0.15+422.221018.1017-unsigned.bin",
-            "bootloader-20221019.bin",
-            "dual_factory-20221019.bin",
-            "CPP2.esp32mfg.1.0.16+428.221026.1811-unsigned.bin",
-            "ota_data_initial-20221019.bin",
-            "partition-table-20221019.bin"
+            "CPP2.esp32app.1.0.17+434.221123.0952-unsigned.bin",
+            "bootloader-20221125.bin",
+            "dual_factory-20221125.bin",
+            "CPP2.esp32mfg.1.0.17+434.221123.0953-unsigned.bin",
+            "ota_data_initial-20221125.bin",
+            "partition-table-20221125.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ec5c-app.bin",
-          "../uc-fw/uc-wall-outlet-us/CPP2.esp32app.1.0.15+422.221018.1017-unsigned.bin"
+          "../uc-fw/uc-wall-outlet-us/CPP2.esp32app.1.0.17+434.221123.0952-unsigned.bin"
         ],
         [
           "tftp/images/ec5c-bootloader.bin",
-          "../uc-fw/uc-wall-outlet-us/bootloader-20221019.bin"
+          "../uc-fw/uc-wall-outlet-us/bootloader-20221125.bin"
         ],
         [
           "tftp/images/ec5c-factory.bin",
-          "../uc-fw/uc-wall-outlet-us/dual_factory-20221019.bin"
+          "../uc-fw/uc-wall-outlet-us/dual_factory-20221125.bin"
         ],
         [
           "tftp/images/ec5c-mfg.bin",
-          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.16+428.221026.1811-unsigned.bin"
+          "../uc-fw/uc-wall-outlet-us/CPP2.esp32mfg.1.0.17+434.221123.0953-unsigned.bin"
         ],
         [
           "tftp/images/ec5c-ota.bin",
-          "../uc-fw/uc-wall-outlet-us/ota_data_initial-20221019.bin"
+          "../uc-fw/uc-wall-outlet-us/ota_data_initial-20221125.bin"
         ],
         [
           "tftp/images/ec5c-ptn-table.bin",
-          "../uc-fw/uc-wall-outlet-us/partition-table-20221019.bin"
+          "../uc-fw/uc-wall-outlet-us/partition-table-20221125.bin"
         ]
       ]
     }
