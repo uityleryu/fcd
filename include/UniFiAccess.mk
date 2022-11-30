@@ -61,8 +61,8 @@ TOOLS-UA-ThermalScan+= \
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
 TOOLS-UA-Elevator-Extender-TX+= \
-    ua_extender/plctool \
-    ua_extender/plcinit
+    ua_extender/fcd/plctool \
+    ua_extender/fcd/plcinit
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
