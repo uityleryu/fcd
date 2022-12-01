@@ -30,7 +30,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # customize variable for different products
         self.wait_LCM_upgrade_en = {
             'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e','ed50', 'ed51', 'ed52', 'ed53'
+            'ed2e','ed50', 'ed51', 'ed52', 'ed53', 'ed56'
         }
 
         self.disable_powerd_list = ['ed2c']
@@ -56,6 +56,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "3",  # usw-48 32MB
             'ed54': "3",  # usw-lite-16-poe 32MB
             'ed55': "3",  # usw-lite-8-poe 32MB
+            'ed56': "3",  # usw-pro-24-poe (RTK)
         }
 
         # number of WiFi
@@ -77,6 +78,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "0",  # usw-48 32MB
             'ed54': "0",  # usw-lite-16-poe 32MB
             'ed55': "0",  # usw-lite-8-poe 32MB
+            'ed56': "0",  # usw-pro-24-poe (RTK)
         }
 
         # number of Bluetooth
@@ -98,6 +100,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "0",  # usw-48 32MB
             'ed54': "0",  # usw-lite-16-poe 32MB
             'ed55': "0",  # usw-lite-8-poe 32MB
+            'ed56': "0",  # usw-pro-24-poe (RTK)
         }
 
         self.netif = {
@@ -118,6 +121,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "ifconfig eth0 ",  # usw-48 32MB
             'ed54': "ifconfig eth0 ",  # usw-lite-16-poe 32MB
             'ed55': "ifconfig eth0 ",  # usw-lite-8-poe 32MB
+            'ed56': "ifconfig eth0 ",  # usw-pro-24-poe (RTK)
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -269,10 +273,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT_ENABLE == True:
+        if self.UPDATE_UBOOT_ENABLE is True:
             pass
-
-        if self.BOOT_RECOVERY_IMAGE == True:
+        if self.BOOT_RECOVERY_IMAGE is True:
             pass
 
         self.clear_eeprom_in_uboot()
