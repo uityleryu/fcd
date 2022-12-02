@@ -16,7 +16,7 @@ import traceback
 
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-QRCODE_ENABLE = False
+QRCODE_ENABLE = True
 CHECK_MAC_ENABLE = True
 
 
@@ -36,7 +36,9 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         # Base path
         self.toolsdir = "tools/"
-        self.plctool = os.path.join(self.tftpdir, "tools", "ua_extender")
+        self.plctool = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plctool")
+        self.plcinit = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plcinit")
+        self.modpib = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "modpib")
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -51,24 +53,33 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         # check MAC
         self.DAK = ""
+        self.cmd_version = "VERSION"
+        self.cmd_reset = "RESET"
+        self.cmd_erase_devreg = "ERASEDEVREG"
+        self.cmd_devregcheck = "DEVREGCHECK"
+        self.cmd_getqrcode = "GETQRCODE"
 
         self.mac_check_dict = {
             'ec44': True,
+            'ec3e': True,
         }
 
         # number of Ethernet
         self.ethnum = {
             'ec44': "1",
+            'ec3e': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'ec44': "0",
+            'ec3e': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec44': "1",
+            'ec3e': "1",
         }
 
     def prepare_server_need_files(self):
@@ -95,6 +106,14 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             error_critical("Generating " + self.eebin_path + " file failed!!")
         else:
             log_debug("Generating " + self.eebin_path + " files successfully")
+
+        tool_list = [self.plctool, self.plcinit, self.modpib]
+        for tool in tool_list:
+            if self.session.execmd('sudo chmod 777 {}'.format(tool)) == 0:
+                log_debug("{} chmod 777 successfully".format(tool))
+            else:
+                self.critical_error("{} chmod 777 failed".format(tool))
+
 
     def registration(self):
         log_debug("Starting to do registration ...")

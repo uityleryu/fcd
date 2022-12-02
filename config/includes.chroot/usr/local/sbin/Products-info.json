@@ -2889,8 +2889,8 @@
     "UA-Elevator-Extender-TX": {
       "INDEX": 11,
       "NAME": "UA-Elevator-Extender-TX",
-      "BOARDID": "ec44",
-      "BOMREV": "113-03272",
+      "BOARDID": "ec3e",
+      "BOMREV": "113-03034",
       "DESC": "UA-Elevator-Extender-TX",
       "FILE": "ua_homeplug_factory.py",
       "T1FILE": "",

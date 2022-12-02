@@ -22,6 +22,13 @@ IMAGE-UA-ELEVATOR= \
 
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
 
+IMAGE-UA-ELEVATOR-EXTENDER-TX= \
+    images/ec3e* \
+    ua-fw/ua-elevator*
+
+IMAGE-UA+=$(IMAGE-UA-ELEVATOR-EXTENDER-TX)
+
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -62,7 +69,9 @@ TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
 TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
 TOOLS-UA-Elevator-Extender-TX+= \
     ua_extender/fcd/plctool \
-    ua_extender/fcd/plcinit
+    ua_extender/fcd/plcinit \
+    ua_extender/fcd/modpib \
+    ua_extender/fcd/gen_flash_block_bin.py
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
@@ -109,5 +118,6 @@ $(eval $(call ProductCompress2,UA_DISPLAY-SERIES))
 $(eval $(call ProductCompress2,03625_ec5e))
 $(eval $(call ProductCompress2,UA_HUB_4P-SERIES))
 $(eval $(call ProductCompress2,03272_ec44))
+$(eval $(call ProductCompress2,03034_ec3e))
 $(eval $(call ProductCompress2,04035_ec53))
 $(eval $(call ProductCompress2,UA_Elevator-SERIES))

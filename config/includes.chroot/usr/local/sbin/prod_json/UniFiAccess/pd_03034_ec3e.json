@@ -1,0 +1,29 @@
+{
+  "UniFiAccess": {
+    "UA-Elevator-Extender-TX": {
+      "INDEX": 0,
+      "NAME": "UA-Elevator-Extender-TX",
+      "BOARDID": "ec3e",
+      "BOMREV": "113-03034",
+      "DESC": "UA-Elevator-Extender-TX",
+      "FILE": "ua_homeplug_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
