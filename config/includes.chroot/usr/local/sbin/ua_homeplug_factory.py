@@ -42,7 +42,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.plcinit = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plcinit")
         self.modpib = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "modpib")
         self.gen_bin = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "gen_flash_block_bin.py")
-        self.fwbin = os.path.join(self.tftpdir, "ua-fw", self.bom_rev + '.bin')
+        self.fwbin = os.path.join(self.tftpdir, "ua-fw", self.board_id + '.bin')
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -57,11 +57,6 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         # check MAC
         self.DAK = ""
-        self.cmd_version = "VERSION"
-        self.cmd_reset = "RESET"
-        self.cmd_erase_devreg = "ERASEDEVREG"
-        self.cmd_devregcheck = "DEVREGCHECK"
-        self.cmd_getqrcode = "GETQRCODE"
 
         self.mac_check_dict = {
             'ec44': True,
@@ -82,16 +77,18 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             'ec44': "1",
         }
 
-        tool_list = [self.plctool, self.plcinit, self.modpib]
+        tool_list = [self.plctool, self.plcinit, self.modpib, self.gen_bin]
         for tool in tool_list:
-            if self.session.execmd('sudo chmod 777 {}'.format(tool)) == 0:
-                log_debug("{} chmod 777 successfully".format(tool))
-            else:
+            cmd = "sudo chmod 777 {}".format(tool)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if int(rtc) > 0:
                 self.critical_error("{} chmod 777 failed".format(tool))
+            else:
+                log_debug("{} chmod 777 successfully".format(tool))
 
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
-        cmd = "python {} {} {} {} {} {}".format(self.gen_bin, self.board_id, self.mac, self.bom_rev, self.hwrev, self.eebin_path)
+        cmd = "python {} {} {} {} {} {}".format(self.gen_bin, self.board_id, self.mac, self.sysid, self.hwrev, self.eebin_path)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(1)
@@ -99,8 +96,6 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             error_critical("Generating " + self.eebin_path + " file failed!!")
         else:
             log_debug("Generating " + self.eebin_path + " files successfully")
-
-
 
     def registration(self):
         log_debug("Starting to do registration ...")
@@ -125,13 +120,13 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             "sudo /usr/local/sbin/client_x86_release",
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
-            "-i field=product_class_id,value=basic"
-            #"-i field=product_class_id,format=hex,value=" + self.prodclass, 
+            #"-i field=product_class_id,value=basic "
+            "-i field=product_class_id,format=hex,value=" + self.prodclass, 
             "-i field=flash_jedec_id,format=hex,value=" + jedecid,
             "-i field=flash_uid,format=hex,value=" + uid,
             "-i field=cpu_rev_id,format=hex,value=" + cpuid,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
+            "-i field=fcd_id,format=hex,value=0012",
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -153,15 +148,15 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         log_debug(cmdj)
         clit = ExpttyProcess(self.row_id, cmdj, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
-        clit.expect_only(30, "Hostname")
+#        clit.expect_only(30, "Ubiquiti Device Security Client")
+#        clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         cmd[2] = "-k " + self.input_args.pass_phrase
         poscmd = ' '.join(cmd)
         print("CMD: \n" + poscmd)
 
-        log_debug("Excuting client_x86 registration successfully")
+        log_debug("Executing client_x86 registration successfully")
 
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
@@ -212,75 +207,54 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         log_debug('modpib MAC')
         cmd = "{} -M {} {}".format(self.modpib, self.mac, self.fwbin)
         log_debug('cmd : {}'.format(cmd))
-        [sto.rtc] = self.fcd.common.xcmd(cmd)
-        if sto == "1":
-            log_info("modpib MAC success")
-            return True
-        else:
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        log_debug("sto = {}, rtc = {}".format(sto, rtc))
+        if int(rtc) > 0:
             error_critical("modpib MAC failed")
+        else:
+            log_info("modpib MAC success")
 
         log_debug('write MAC to device factory default') # need to clarify why mac cannot set to default
         cmd = "{} -i eth1 -P {} -D {} -FF".format(self.plcinit, self.fwbin, self.DAK) # eth1 need to be a variable
         log_debug('cmd : {}'.format(cmd))
-        [sto.rtc] = self.fcd.common.xcmd(cmd)
-        if sto == "1":
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("write MAC to device factory success")
+        else:
             self.check_connect()
             log_info("write MAC to device factory success")
-            return True
-        else:
-            error_critical("write MAC to device factory failed")
 
         log_debug('write MAC to device device user section')
         cmd = "{} -i eth1 -P {} -FF".format(self.plctool, self.fwbin) # eth1 need to be a variable
         log_debug('cmd : {}'.format(cmd))
-        [sto.rtc] = self.fcd.common.xcmd(cmd)
-        if sto == "1":
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("write MAC to device user section failed")
+        else:
             self.check_connect()
             log_info("write MAC to device user section success")
             return True
-        else:
-            error_critical("write MAC to device user section failed")
 
     def check_mac(self):
         log_debug("Starting to check MAC")
         log_info("self.mac_check_dict = {}".format(self.mac_check_dict))
 
         if self.mac_check_dict[self.board_id] is False:
-            log_debug("skip check the MAC in DUT ...")
+            log_debug("skip check the MAC in DUT")
             return
 
-        self._reset()
-
-        rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
-        version = self._read_version(rtv_verison)
-        for key, value in version.items():
-            log_info("{} = {}".format(key, value))
-
-        dut_mac = version["MAC"].replace(".", "").upper()
+        [sto, rtc] = self.fcd.common.xcmd(self.plctool + " -i eth1 -I > /tmp/temp.log")
+        [sto, rtc] = self.fcd.common.xcmd('cat /tmp/temp.log |grep MAC | awk -F" " \'{print $2 }\' | tr -d "\n"')
+        dut_mac = sto.replace(":","").upper()
         expect_mac = self.mac.upper()
+
         log_info("MAC_DUT    = {}".format(dut_mac))
         log_info("MAC_expect = {}".format(expect_mac))
-        log_info("FW version in DUT = {}".format(version["SWv"]))
 
         if dut_mac == expect_mac:
             log_debug('MAC_DUT and MAC_expect are match')
         else:
             error_critical("MAC_DUT and MAC_expect are NOT match")
-
-        rtv_devregcheck = self.ser.execmd_getmsg(self.cmd_devregcheck)
-        if 'CHECK SUCCESS' in rtv_devregcheck:
-            log_debug('DEVREG: CHECK SUCCESS')
-        else:
-            error_critical('DEVREG: CHECK FAIL')
-
-
-        rtv_getqrcode = self.ser.execmd_getmsg(self.cmd_getqrcode)
-        msg_qrcode = rtv_getqrcode.split("QRCODE:6-")[-1].split("\r")[0].strip('\n\t\r')
-        msg = 'QRCODE_DUT = {}   (x = {})'.format(msg_qrcode, self.qrcode)
-        if msg_qrcode == self.qrcode:
-            log_debug('[PASS] ' + msg)
-        else:
-            error_critical('[FAIL] ' + msg)
 
 
     def critical_error(self, msg):
