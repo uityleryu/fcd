@@ -20,7 +20,11 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # script specific vars
         self.ver_extract()
         self.boot_prompt = "uboot> #"
-        self.devregpart = "/dev/mtdblock6"
+
+        # TODO: FW have issue now. It should be fixed.
+        # self.devregpart = "/dev/mtdblock6"
+        self.devregpart = "/dev/mtd6"
+
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_RTL838x"
         self.helper_path = "usw_rtl838x"
@@ -29,8 +33,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         # customize variable for different products
         self.wait_LCM_upgrade_en = {
-            'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e','ed50', 'ed51', 'ed52', 'ed53', 'ed56'
+            'ed20', 'ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
+            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56'
         }
 
         self.disable_powerd_list = ['ed2c']
@@ -170,14 +174,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             error_critical(msg='Can not detect "Wrong boardmodel" or "TFTP transfer on", failed to start urescue.')
         elif index == 0:
             log_debug('Detected "Wrong boardmodel", reboot into Uboot again for urescue.')
-            
+
             self.pexp.expect_action(120, "Hit Esc key to stop autoboot", "\x1b")
             set_ip_and_urescue()
             self.pexp.expect_only(60, "Listening for TFTP transfer on.")
         elif index == 1:
             log_debug('No "Wrong boardmodel" error, continue to FW upload.')
             pass
-   
+
         cmd = ["atftp",
                "-p",
                "-l",
@@ -306,7 +310,6 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         # reboot anyway
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
-
         if self.FWUPDATE_ENABLE is True:
             msg(55, "Starting firmware upgrade process...")
             self.fwupdate()
@@ -338,6 +341,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 def main():
     us_factory_general = USW_RTL838X_FactoryGeneral()
     us_factory_general.run()
+
 
 if __name__ == "__main__":
     main()

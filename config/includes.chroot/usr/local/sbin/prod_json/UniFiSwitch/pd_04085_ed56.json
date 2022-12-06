@@ -1,10 +1,10 @@
 {
   "UniFiSwitch": {
-    "USW-PRO-24-POE-04252": {
+    "USW-PRO-24-POE-04085": {
       "INDEX": 0,
-      "NAME": "USW-PRO-24-POE-04252",
+      "NAME": "USW-PRO-24-POE-04085",
       "BOARDID": "ed56",
-      "BOMREV": "113-04252",
+      "BOMREV": "113-04085",
       "DESC": "UBNT UniFiSwitch Pro 24 POE (RTK)",
       "FILE": "us_rtl838x_factory.py",
       "T1FILE": "us_rtl838x_mfg.py",
@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-24poe-fw.bin.16MB"
+            "usw-pro-24-poe-fw.bin"
           ]
         },
         {
@@ -40,11 +40,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed56-fw.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
+          "../usw-fw/usw-pro-24-poe-fw.bin"
         ],
         [
           "tftp/images/ed56-t1.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
+          "../usw-fw/usw-pro-24-poe-fw.bin"
         ]
       ]
     }
