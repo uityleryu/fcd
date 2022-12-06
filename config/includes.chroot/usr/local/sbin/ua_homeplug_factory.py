@@ -35,6 +35,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.hwrev = self.bom_rev.split('-')[1]
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
+        self.eth = "eth1"
 
         # Base path
         self.toolsdir = "tools/"
@@ -82,12 +83,17 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             cmd = "sudo chmod 777 {}".format(tool)
             [sto, rtc] = self.fcd.common.xcmd(cmd)
             if int(rtc) > 0:
-                self.critical_error("{} chmod 777 failed".format(tool))
+                error_critical("{} chmod 777 failed".format(tool))
             else:
                 log_debug("{} chmod 777 successfully".format(tool))
 
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
+
+        [sto, rtc] = self.fcd.common.xcmd('python --version')
+        if 'Python 2.7' not in sto :
+            error_critical("Expect Python version = Python 2.7, Current version = {}".format(sto))
+
         cmd = "python {} {} {} {} {} {}".format(self.gen_bin, self.board_id, self.mac, self.sysid, self.hwrev, self.eebin_path)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
@@ -164,28 +170,11 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         log_debug("Add the date code in the devreg binary file")
 
-    def _read_version(self, msg):
-        # only for LOCK-R(a911) and 60G-LAS(a918)
-        msg_versw = msg.split("VER-SW:")[-1].split("\r")[0].split(";")
-        msg_verhw = msg.split("VER-HW:")[-1].split("\r")[0].split(";")
-        msg_verswhw = msg_versw + msg_verhw
-        version = {}
-        for ii in msg_verswhw:
-            version[ii.split("-", 1)[0]] = ii.split("-", 1)[1]
-        return version
-
-    def _reset(self):
-        # it needs to reset for updating the MAC, otherwise the MAC would be like "VER-HW:MAC-ff.ff.ff.ff.ff.ff"
-        log_info('Sending the reset command')
-        rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
-        log_info('rtv_reset = {}'.format(rtv_reset))
-        time.sleep(1)
-
     def check_connect(self):
         log_debug('check connecting...')
         time_end = time.time() + 10
         while time.time() < time_end:
-            [sto, rtc] = self.fcd.common.xcmd(self.plctool + " -i eth1 -I > /tmp/temp.log")
+            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp.log".format(self.plctool, self.eth))
             [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp.log")
             if sto == "1":
                 log_info("connect with DUT success")
@@ -202,30 +191,30 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             self.DAK = sto
             log_info("DAK:{}".format(self.DAK))
             return True
+        error_critical('get DAK on DUT FAIL')
 
     def write_mac(self):
         log_debug('modpib MAC')
         cmd = "{} -M {} {}".format(self.modpib, self.mac, self.fwbin)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
-        log_debug("sto = {}, rtc = {}".format(sto, rtc))
         if int(rtc) > 0:
             error_critical("modpib MAC failed")
         else:
             log_info("modpib MAC success")
 
         log_debug('write MAC to device factory default') # need to clarify why mac cannot set to default
-        cmd = "{} -i eth1 -P {} -D {} -FF".format(self.plcinit, self.fwbin, self.DAK) # eth1 need to be a variable
+        cmd = "{} -i {} -P {} -D {} -FF".format(self.plcinit, self.eth, self.fwbin, self.DAK)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if int(rtc) > 0:
-            error_critical("write MAC to device factory success")
+            error_critical("write MAC to device factory failed")
         else:
             self.check_connect()
             log_info("write MAC to device factory success")
 
         log_debug('write MAC to device device user section')
-        cmd = "{} -i eth1 -P {} -FF".format(self.plctool, self.fwbin) # eth1 need to be a variable
+        cmd = "{} -i {} -P {} -FF".format(self.plctool, self.eth, self.fwbin)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
         if int(rtc) > 0:
@@ -243,7 +232,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             log_debug("skip check the MAC in DUT")
             return
 
-        [sto, rtc] = self.fcd.common.xcmd(self.plctool + " -i eth1 -I > /tmp/temp.log")
+        [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp.log".format(self.plctool, self.eth))
         [sto, rtc] = self.fcd.common.xcmd('cat /tmp/temp.log |grep MAC | awk -F" " \'{print $2 }\' | tr -d "\n"')
         dut_mac = sto.replace(":","").upper()
         expect_mac = self.mac.upper()
@@ -261,43 +250,6 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.finalret = False
         self.errmsg = msg
         error_critical(msg)
-
-    def write_devreg_data_to_dut(self):
-        log_info('write_devreg_data_to_dut')
-        dut_rom_path = '/tmp/rom384.bin'
-        self.session.put_file(self.eesign_path, dut_rom_path)
-        time.sleep(1)
-
-        duetime = 6
-        p_board_id = self.board_id
-        p_country_code = 0
-        p_rev = int(self.bom_rev.split('-')[1])
-        p_MAC_QR = self.mac + '-' + self.qrcode
-        p_rompath = dut_rom_path
-
-        para = [
-            str(p_board_id),
-            str(p_country_code),
-            str(p_rev),
-            str(p_MAC_QR),
-            str(p_rompath)
-        ]
-
-        paras = ' '.join(para)
-        print('paras: ' + paras)
-
-        ret = False
-        for i in range(3):
-            if self.nfc_write(paras, 6) is True:
-                ret = True
-                break
-
-        rstr = 'write_devreg_data_to_dut: '
-        if ret is False:
-            self.critical_error(rstr + 'fail!')
-        else:
-            log_info(rstr + 'succeed.')
-
 
     def run(self):
         """
