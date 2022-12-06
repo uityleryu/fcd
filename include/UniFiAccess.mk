@@ -23,8 +23,7 @@ IMAGE-UA-ELEVATOR= \
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
 
 IMAGE-UA-ELEVATOR-EXTENDER-TX= \
-    images/ec3e* \
-    ua-fw/ua-elevator*
+    images/ec44*
 
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR-EXTENDER-TX)
 
