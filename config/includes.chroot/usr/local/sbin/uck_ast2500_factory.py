@@ -70,7 +70,6 @@ class UNIFIBMCFactory(ScriptBase):
             try:
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, "64 bytes from")
 
-                return
             except Exception as e:
                 print("set network fail..." + str(i))
                 continue
@@ -78,6 +77,9 @@ class UNIFIBMCFactory(ScriptBase):
         else:
             print("set network retry fail")
             raise NameError('set network retry fail')
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ipmitool raw 0x34 0xee 0x9B 0x1F 0x01")
+
 
     def set_host_network(self):
 
@@ -305,8 +307,8 @@ class UNIFIBMCFactory(ScriptBase):
     def write_bmc_mac(self):
 
         sshclient_obj = SSHClient(host=self.bmcip,
-                    username="root",
-                    password="0penBmc",
+                    username="ubnt",
+                    password="ubnt",
                     polling_connect=True,
                     polling_mins=3)
 
@@ -346,7 +348,7 @@ class UNIFIBMCFactory(ScriptBase):
 
         time.sleep(30)
 
-        self.login(timeout=300, username="root", password="0penBmc")
+        self.login(timeout=300, username="ubnt", password="ubnt")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n1", self.linux_prompt)
         msg(10, "OpenBMC login success")
 
