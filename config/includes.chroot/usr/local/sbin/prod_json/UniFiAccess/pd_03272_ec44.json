@@ -13,13 +13,6 @@
       "SW_ID": "1d01",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/ua-fw",
-          "DST_PATH": "ua-fw",
-          "FILES": [
-            "ec44.bin"
-          ]
-        },
-        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [

@@ -18,6 +18,7 @@ IMAGE-UA-ELEVATOR= \
     ua-fw/e9a5-openwrt-4.0.12-88*
 
 IMAGE-UA-ELEVATOR-EXTENDER-TX= \
+    images/ec3b* \
     images/ec44* \
     ua-fw/ua-elevator-*
 
