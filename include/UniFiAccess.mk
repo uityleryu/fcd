@@ -10,21 +10,20 @@ IMAGE-UA-ThermalScan= \
     images/ec70* \
     ua-fw/thermalscan.*
 
-IMAGE-UA+=$(IMAGE-UA-GATE)
-IMAGE-UA+=$(IMAGE-UA-ThermalScan)
-
 IMAGE-UA-ELEVATOR= \
     images/ec3b* \
     ua-fw/ua-elevator* \
     ua-fw/ua-gate-nor-v2.bin \
     ua-fw/EL.mt7621* \
-    ua-fw/e9a5-openwrt-4.0.12-88* 
-
-IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
+    ua-fw/e9a5-openwrt-4.0.12-88*
 
 IMAGE-UA-ELEVATOR-EXTENDER-TX= \
-    images/ec44*
+    images/ec44* \
+    ua-fw/ua-elevator-*
 
+IMAGE-UA+=$(IMAGE-UA-GATE)
+IMAGE-UA+=$(IMAGE-UA-ThermalScan)
+IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR-EXTENDER-TX)
 
 
