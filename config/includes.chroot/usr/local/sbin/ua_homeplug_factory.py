@@ -43,7 +43,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.plcinit = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plcinit")
         self.modpib = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "modpib")
         self.gen_bin = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "gen_flash_block_bin.py")
-        self.fwbin = os.path.join(self.tftpdir, "ua-fw", self.board_id + '.bin')
+        self.fwbin = os.path.join(self.tftpdir, "tools", "ua_extender", self.board_id + '.bin')
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
