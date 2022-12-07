@@ -18,7 +18,6 @@ IMAGE-UA-ELEVATOR= \
     ua-fw/e9a5-openwrt-4.0.12-88*
 
 IMAGE-UA-ELEVATOR-EXTENDER-TX= \
-    images/ec3b* \
     images/ec44* \
     ua-fw/ua-elevator-*
 
@@ -70,7 +69,8 @@ TOOLS-UA-Elevator-Extender-TX+= \
     ua_extender/fcd/plctool \
     ua_extender/fcd/plcinit \
     ua_extender/fcd/modpib \
-    ua_extender/fcd/gen_flash_block_bin.py
+    ua_extender/fcd/gen_flash_block_bin.py \
+    ua_extender/ec44.bin
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
