@@ -15,8 +15,8 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a656: U6-Exterprise-IW
     a665: AFi-6-R
     a666: AFi-6-Ext
-    a667: UniFi-Express
-    a674: UniFi-Express Mesh
+    a667: UEX
+    a674: UEXP
     a675: UniFi6 Pro outdoor
 '''
 
@@ -172,7 +172,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a674" or self.board_id == "a675":
+        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a675":
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
@@ -278,9 +278,16 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.tftp_server, self.dutip)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
 
+        '''
+            The recovery image == image loader
+            which is "uImage"
+        '''
         cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(60, "Bytes transferred", "bootm")
+        self.pexp.expect_only(60, "Bytes transferred")
+        cmd = "mmc write 0x50000000 0x20800 0xffff"
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "written: OK", "bootm")
 
         self.pexp.expect_only(120, "enter factory install mode")
         log_debug(msg="Enter factory install mode ...")
@@ -412,7 +419,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.REGISTER_ENABLE is True:
-            if self.board_id == "a667":
+            if self.board_id == "a667" or self.board_id == "a674":
                 self.chk_caldata_uex()
                 self.registration_uex()
             else:
@@ -423,7 +430,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
-            if self.board_id == "a667":
+            if self.board_id == "a667" or self.board_id == "a674":
                 self.fwupdate_uex()
             else:
                 self.fwupdate()

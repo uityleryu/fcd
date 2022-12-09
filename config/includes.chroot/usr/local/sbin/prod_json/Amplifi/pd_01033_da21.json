@@ -27,38 +27,38 @@
           "SRC_PATH": "images/fcd-image/afi-fw/afi-aln-pe",
           "DST_PATH": "afi-fw/afi-aln-pe",
           "FILES": [
-            "AFi-ALN-PE.esp32.v1.0.3.0-gf09293d-production.bin",
-            "AFi-ALN-PE.esp32.v1.0.3.0-gf09293d-factory.bin",
-            "bootloader-20221021.bin",
-            "ota_data_initial-20221021.bin",
-            "partition-table-20221021.bin"
+            "AFi-ALN-PE.esp32.v1.0.7.0-gd331fca-production.bin",
+            "AFi-ALN-PE.esp32.v1.0.7.0-gd331fca-factory.bin",
+            "bootloader-20221203.bin",
+            "ota_data_initial-20221203.bin",
+            "partition-table-20221203.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/da21-app.bin",
-          "../afi-fw/afi-aln-pe/AFi-ALN-PE.esp32.v1.0.3.0-gf09293d-production.bin"
+          "../afi-fw/afi-aln-pe/AFi-ALN-PE.esp32.v1.0.7.0-gd331fca-production.bin"
         ],
         [
           "tftp/images/da21-bootloader.bin",
-          "../afi-fw/afi-aln-pe/bootloader-20221021.bin"
+          "../afi-fw/afi-aln-pe/bootloader-20221203.bin"
         ],
         [
           "tftp/images/da21-factory.bin",
-          "../afi-fw/afi-aln-pe/ota_data_initial-20221021.bin"
+          "../afi-fw/afi-aln-pe/ota_data_initial-20221203.bin"
         ],
         [
           "tftp/images/da21-mfg.bin",
-          "../afi-fw/afi-aln-pe/AFi-ALN-PE.esp32.v1.0.3.0-gf09293d-factory.bin"
+          "../afi-fw/afi-aln-pe/AFi-ALN-PE.esp32.v1.0.7.0-gd331fca-factory.bin"
         ],
         [
           "tftp/images/da21-ota.bin",
-          "../afi-fw/afi-aln-pe/ota_data_initial-20221021.bin"
+          "../afi-fw/afi-aln-pe/ota_data_initial-20221203.bin"
         ],
         [
           "tftp/images/da21-ptn-table.bin",
-          "../afi-fw/afi-aln-pe/partition-table-20221021.bin"
+          "../afi-fw/afi-aln-pe/partition-table-20221203.bin"
         ]
       ]
     }
