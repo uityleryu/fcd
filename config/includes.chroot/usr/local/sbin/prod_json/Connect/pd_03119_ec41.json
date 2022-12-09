@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/lvdu-fw",
           "DST_PATH": "lvdu-fw",
           "FILES": [
-            "LH.qca953x.v5.4.9.11.ga0faa53.221021.0145-uboot.bin"
+            "LH.qca953x.v5.4.13.5.gadcae88.221209.0740-uboot.bin"
           ]
         },
         {
@@ -44,7 +44,7 @@
         ],
         [
           "tftp/lvdu-fw/lvdu-24-fw.bin",
-          "../lvdu-fw/LH.qca953x.v5.4.9.11.ga0faa53.221021.0145-uboot.bin"
+          "../lvdu-fw/LH.qca953x.v5.4.13.5.gadcae88.221209.0740-uboot.bin"
         ]
       ]
     }
