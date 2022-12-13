@@ -69,16 +69,16 @@ TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
 
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
-TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
-TOOLS-UA-Elevator-Extender-TX+= \
+TOOLS-UA-ELEVATOR-EXTENDER-TX+=$(TOOLS-CONFIG)
+TOOLS-UA-ELEVATOR-EXTENDER-TX+= \
     ua_extender/fcd/plctool \
     ua_extender/fcd/plcinit \
     ua_extender/fcd/modpib \
     ua_extender/fcd/gen_flash_block_bin.py \
     ua_extender/ec44.bin
 
-TOOLS-UA-Elevator-Extender-RX+=$(TOOLS-CONFIG)
-TOOLS-UA-Elevator-Extender-RX+= \
+TOOLS-UA-ELEVATOR-EXTENDER-RX+=$(TOOLS-CONFIG)
+TOOLS-UA-ELEVATOR-EXTENDER-RX+= \
     ua_extender/fcd/plctool \
     ua_extender/fcd/plcinit \
     ua_extender/fcd/modpib \
@@ -93,8 +93,8 @@ $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UA-Elevator-Extender-RX,FCD_$(PRD)_UA-Elevator-Extender-RX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
@@ -106,8 +106,8 @@ $(eval $(call ProductCompress,UA-SENSE-GATE,FCD_$(PRD)_UA-SENSE-GATE$(VER)_$(FWV
 $(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-Card,FCD_$(PRD)_UA-Card$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UA-Elevator-Extender-RX,FCD_$(PRD)_UA-Elevator-Extender-RX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
