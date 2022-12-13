@@ -2897,6 +2897,19 @@
       "QRCHECK": "True",
       "FCD_ID": "0012",
       "SW_ID": "1d01"
+    },
+
+      "UA-Elevator-Extender-RX": {
+      "INDEX": 12,
+      "NAME": "UA-Elevator-Extender-RX",
+      "BOARDID": "ec45",
+      "BOMREV": "113-03273",
+      "DESC": "UA-Elevator-Extender-RX",
+      "FILE": "ua_homeplug_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01"
     }
   },
 
