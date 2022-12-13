@@ -61,21 +61,25 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         self.mac_check_dict = {
             'ec44': True,
+            'ec45': True
         }
 
         # number of Ethernet
         self.ethnum = {
             'ec44': "1",
+            'ec45': "1"
         }
 
         # number of WiFi
         self.wifinum = {
             'ec44': "0",
+            'ec45': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec44': "1",
+            'ec45': "1"
         }
 
         tool_list = [self.plctool, self.plcinit, self.modpib, self.gen_bin]
