@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-Elevator-Extender-TX": {
+    "UA-ELEVATOR-EXTENDER-TX": {
       "INDEX": 0,
-      "NAME": "UA-Elevator-Extender-TX",
+      "NAME": "UA-ELEVATOR-EXTENDER-TX",
       "BOARDID": "ec44",
       "BOMREV": "113-03272",
-      "DESC": "UA-Elevator-Extender-TX",
+      "DESC": "UA-ELEVATOR-EXTENDER-TX",
       "FILE": "ua_homeplug_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
