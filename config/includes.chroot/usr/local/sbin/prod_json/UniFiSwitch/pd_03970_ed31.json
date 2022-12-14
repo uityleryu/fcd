@@ -26,39 +26,39 @@
           "SRC_PATH": "images/fcd-image/usw-fw/usw-flex-mini-esp32",
           "DST_PATH": "usw-fw/usw-flex-mini-esp32",
           "FILES": [
-            "USMINI.esp32app.1.0.12+429.220920.2154-unsigned.bin",
-            "bootloader-20220921.bin",
-            "usmini_factory-20220921.bin",
-            "USMINI.esp32mfg.1.0.12+429.220920.2155-unsigned.bin",
-            "ota_data_initial-20220921.bin",
-            "partition-table-20220921.bin"
+            "USMINI2.esp32app.1.9.0+521.221209.1628-unsigned.bin",
+            "bootloader.1.9.0.bin",
+            "usmini2_factory.1.9.0.bin",
+            "USMINI2.esp32mfg.1.9.0+521.221209.1629-unsigned.bin",
+            "ota_data_initial.1.9.0.bin",
+            "partition-table.1.9.0.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ed31-app.bin",
-          "../usw-fw/usw-flex-mini-esp32/USMINI.esp32app.1.0.12+429.220920.2154-unsigned.bin"
+          "../usw-fw/usw-flex-mini-esp32/USMINI2.esp32app.1.9.0+521.221209.1628-unsigned.bin"
         ],
         [
           "tftp/images/ed31-bootloader.bin",
-          "../usw-fw/usw-flex-mini-esp32/bootloader-20220921.bin"
+          "../usw-fw/usw-flex-mini-esp32/bootloader.1.9.0.bin"
         ],
         [
           "tftp/images/ed31-factory.bin",
-          "../usw-fw/usw-flex-mini-esp32/usmini_factory-20220921.bin"
+          "../usw-fw/usw-flex-mini-esp32/usmini2_factory.1.9.0.bin"
         ],
         [
           "tftp/images/ed31-mfg.bin",
-          "../usw-fw/usw-flex-mini-esp32/USMINI.esp32mfg.1.0.12+429.220920.2155-unsigned.bin"
+          "../usw-fw/usw-flex-mini-esp32/USMINI2.esp32mfg.1.9.0+521.221209.1629-unsigned.bin"
         ],
         [
           "tftp/images/ed31-ota.bin",
-          "../usw-fw/usw-flex-mini-esp32/ota_data_initial-20220921.bin"
+          "../usw-fw/usw-flex-mini-esp32/ota_data_initial.1.9.0.bin"
         ],
         [
           "tftp/images/ed31-ptn-table.bin",
-          "../usw-fw/usw-flex-mini-esp32/partition-table-20220921.bin"
+          "../usw-fw/usw-flex-mini-esp32/partition-table.1.9.0.bin"
         ]
       ]
     }
