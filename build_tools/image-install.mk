@@ -34,11 +34,6 @@ image-install-$1: $1-namechk
 	mkdir -p $(NEWSQUASHFS)/usr/local/sbin/PAlib
 	cp -rf $(UBNTLIB_DIR)/PAlib/* $(NEWSQUASHFS)/usr/local/sbin/PAlib/
 	rm -rf ${NEWSQUASHFS}/srv/tftp/*
-	@echo " >> 1 = $1"
-	@echo " >> IMAGE-$1 = IMAGE-$1"
-	@echo " >> IMAGE-$1 = $(IMAGE-$1)"
-	@echo " >> TOOLS-$1 = TOOLS-$1"
-	@echo " >> TOOLS-$1 = $(TOOLS-$1)"
 	bash build_tools/cp2tftp.sh iso $(IMAGE-$1)
 	bash build_tools/tar2tftp.sh iso $(TOOLS-$1)
 
