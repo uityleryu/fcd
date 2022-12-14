@@ -840,6 +840,26 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(cmd)
         self.session.execmd(cmd)
 
+        cmd = 'cat /etc/inittab | grep -v "ubnt_smart_detect" > /tmp/inittab; mv /tmp/inittab /etc/inittab; init -q ; pkill -9 ubnt_smart_detect'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
+        cmd = 'freeup_tmpfs'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
+        cmd = 'cat /etc/inittab | grep -v "ubnt_streamer" > /tmp/inittab; mv /tmp/inittab /etc/inittab; init -q ; pkill -9 ubnt_streamer'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
+        cmd = 'cat /etc/inittab | grep -v "ubnt_audio_agent_sstar" > /tmp/inittab; mv /tmp/inittab /etc/inittab; init -q ; pkill -9 ubnt_audio_agent_sstar'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
+        cmd = 'echo 3 > /proc/sys/vm/drop_caches; sync; free 2>&1'
+        log_debug(cmd)
+        self.session.execmd(cmd)
+
         log_debug("Updating firmware...")
         host_path = self.ini_fw_path
         dut_path = os.path.join(self.dut_tmpdir, "fwupdate.bin")
