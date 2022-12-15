@@ -104,8 +104,9 @@ class UAQCA9531Factory(ScriptBase):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-        if self.board_id == 'ec4d':
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo 1 4 1 7 > /proc/sys/kernel/printk", self.linux_prompt)
+        # if self.board_id == 'ec4d':
+        #     self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo 0 > /proc/sys/kernel/panic", self.linux_prompt)
+        #     self.pexp.expect_lnxcmd(5, self.linux_prompt, "echo 1 4 1 7 > /proc/sys/kernel/printk", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
