@@ -193,6 +193,22 @@ class UFBCM5616FactoryGeneral(ScriptBase):
         if not match:
             error_critical(msg="Device Registration check failed!")
 
+    def check_board_mac(self):
+        cmd = r"grep macaddr /proc/ubnthal/system.info"
+        self.pexp.expect_action(10, "", "")
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt, 1.5)
+        pattern = r"(?:[0-9a-fA-F]:?){12}"
+        macs = re.findall(pattern, output)
+        if macs:
+            eth0 = macs[0].replace(":", "").lower()
+            mac = self.mac.replace(":", "").lower()
+            if eth0 != mac:
+                error_critical(msg="MAC address doesn't match!")
+        else:
+            error_critical(msg="Found no mac info by regular expression. Please check output")
+
+        log_debug("MAC address matched!")
+
     def prepare_server_need_files(self, method="tftp"):
         log_debug("Starting to do " + self.helperexe + "...")
         # Ex: tools/uvp/helper_DVF99_release_ata_max
@@ -276,6 +292,7 @@ class UFBCM5616FactoryGeneral(ScriptBase):
             msg(70, "Checking registration ...")
             self.login(timeout=120)
             self.check_board_signed()
+            self.check_board_mac()
             msg(80, "Device Registration check OK...")
 
         msg(no=100, out="Formal firmware completed with MAC0: " + self.mac)
