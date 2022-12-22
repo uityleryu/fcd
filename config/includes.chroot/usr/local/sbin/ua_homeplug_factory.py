@@ -91,6 +91,18 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             else:
                 log_debug("{} chmod 777 successfully".format(tool))
 
+    def check_dut_eth(self):
+        log_debug("Starting to check DUT network interface")
+        [sto, rtc] = self.fcd.common.xcmd("ifconfig -a |grep eth |grep mtu |awk -F \': \' \'{print $1}\'")
+        all_iface = sto.split()
+        for iface in all_iface:
+            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I |grep DAK -q".format(self.plctool, iface))
+            if int(rtc) > 0:
+                log_info('Not detecting DAK in {}'.format(iface))
+            else:
+                log_info('Detecting DAK in DUT - {}'.format(iface))
+                self.eth = iface
+
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
 
@@ -131,7 +143,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
             #"-i field=product_class_id,value=basic "
-            "-i field=product_class_id,format=hex,value=" + self.prodclass, 
+            "-i field=product_class_id,format=hex,value=" + self.prodclass,
             "-i field=flash_jedec_id,format=hex,value=" + jedecid,
             "-i field=flash_uid,format=hex,value=" + uid,
             "-i field=cpu_rev_id,format=hex,value=" + cpuid,
@@ -260,6 +272,8 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         Main procedure of factory
         """
         self.fcd.common.print_current_fcd_version()
+        self.check_dut_eth()
+        msg(5, "Get DUT network interface success")
         self.check_connect()
         msg(10, "Connect with DUT success")
         self.get_DAK()
