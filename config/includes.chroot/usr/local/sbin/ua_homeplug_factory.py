@@ -96,12 +96,12 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         [sto, rtc] = self.fcd.common.xcmd("ifconfig -a |grep eth |grep mtu |awk -F \': \' \'{print $1}\'")
         all_iface = sto.split()
         for iface in all_iface:
-            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I |grep DAK -q".format(self.plctool, iface))
-            if int(rtc) > 0:
-                log_info('Not detecting DAK in {}'.format(iface))
-            else:
-                log_info('Detecting DAK in DUT - {}'.format(iface))
+            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp-{}.log".format(self.plctool, iface, iface))
+            [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp-{}.log".format(iface))
+            if sto == "1":
+                log_info('Detecting DAK in DUT, interface = {}'.format(iface))
                 self.eth = iface
+                break
 
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
