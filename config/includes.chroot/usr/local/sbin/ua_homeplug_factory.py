@@ -35,7 +35,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.hwrev = self.bom_rev.split('-')[1]
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
-        self.eth = "eth1"
+        self.eth = "eth0"
 
         # Base path
         self.toolsdir = "tools/"
@@ -96,12 +96,16 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         [sto, rtc] = self.fcd.common.xcmd("ifconfig -a |grep eth |grep mtu |awk -F \': \' \'{print $1}\'")
         all_iface = sto.split()
         for iface in all_iface:
-            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp-{}.log".format(self.plctool, iface, iface))
-            [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp-{}.log".format(iface))
-            if sto == "1":
-                log_info('Detecting DAK in DUT, interface = {}'.format(iface))
-                self.eth = iface
-                break
+            time_end = time.time() + 10
+            while time.time() < time_end:
+                [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp-{}.log".format(self.plctool, iface, iface))
+                [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp-{}.log".format(iface))
+                if sto == "1":
+                    log_info('Detecting DAK in DUT, interface = {}'.format(iface))
+                    self.eth = iface
+                    return True
+                time.sleep(1)
+        error_critical('Check DUT network interface FAIL')
 
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
