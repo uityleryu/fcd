@@ -285,7 +285,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_only(60, "Bytes transferred")
-        cmd = "mmc write 0x50000000 0x20800 0xffff"
+        cmd = "mmc write 0x50000000 0x20800 0xffff; saveenv"
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, "written: OK", "bootm")
 
@@ -303,8 +303,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         log_debug(msg="FW update done ...")
 
         # the linux prompt is different to other products
-        self.linux_prompt = "root@UEX"
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=False, retry=3)
+        if self.board_id == "a667":
+            self.linux_prompt = "root@UX"
+        elif self.board_id == "a674":
+            self.linux_prompt = "root@UXP"
+
+        self.login("ui", "ui", timeout=300, log_level_emerg=True, press_enter=False, retry=3)
 
     def registration_uex(self, regsubparams = None):
         log_debug("Starting to do registration ...")

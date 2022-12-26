@@ -24,10 +24,10 @@
         },
         {
           "SRC_PATH": "images/fcd-image/a667",
-          "DST_PATH": "a674",
+          "DST_PATH": "a667",
           "FILES": [
-            "UEX.ipq5018.v3.1.1.9fb4a49.221214.1458.bin",
-            "uImage-v3.1.1",
+            "UEX.ipq5018.v3.1.2.86130c9.221221.1533.bin",
+            "uImage-v3.1.2",
             "unifi-uex-1.0.1.141-gf82fd08b_ipq5018_uex_u-boot.mbn",
             "u6-express-v2.img",
             "u6-express-v2_nor.bin"
@@ -37,23 +37,23 @@
       "CREATE_LINK": [
         [
           "tftp/images/a674-nor.bin",
-          "../a674/u6-express-v2_nor.bin"
+          "../a667/u6-express-v2_nor.bin"
         ],
         [
           "tftp/images/a674-emmc.img",
-          "../a674/u6-express-v2.img"
+          "../a667/u6-express-v2.img"
         ],
         [
           "tftp/images/a674-fw.bin",
-          "../a674/UEX.ipq5018.v3.1.1.9fb4a49.221214.1458.bin"
+          "../a667/UEX.ipq5018.v3.1.2.86130c9.221221.1533.bin"
         ],
         [
           "tftp/images/a674-uboot.mbn",
-          "../a674/unifi-uex-1.0.1.141-gf82fd08b_ipq5018_uex_u-boot.mbn"
+          "../a667/unifi-uex-1.0.1.141-gf82fd08b_ipq5018_uex_u-boot.mbn"
         ],
         [
           "tftp/images/a674-loader.img",
-          "../a674/uImage-v3.1.1"
+          "../a667/uImage-v3.1.2"
         ]
       ]
     }
