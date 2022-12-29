@@ -133,14 +133,18 @@ class IPQ5018BSPFactory(ScriptBase):
         self.DOHELPER_ENABLE   = True 
         self.REGISTER_ENABLE   = True 
         if self.board_id == "a671" :
-            self.FWUPDATE_ENABLE   = False
-            self.DATAVERIFY_ENABLE = False
-            self.WRITENAND_ENABLE = False
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = True
         elif self.board_id == "a670" :
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = True
         elif self.board_id == "a673" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = True
+        elif self.board_id == "a672" :
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = True
@@ -327,8 +331,8 @@ class IPQ5018MFGGeneral(ScriptBase):
             'a663': "",
             'a664': "",
             'a669': "",
-            'a671': "",
-            'a672': "",
+            'a671': "8040004",
+            'a672': "8040004",
             'a670': "8040004",
             'a673': ""
         }
