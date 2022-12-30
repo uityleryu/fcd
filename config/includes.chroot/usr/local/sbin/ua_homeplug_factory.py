@@ -174,8 +174,6 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         log_debug(cmdj)
         clit = ExpttyProcess(self.row_id, cmdj, "\n")
-#        clit.expect_only(30, "Ubiquiti Device Security Client")
-#        clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         cmd[2] = "-k " + self.input_args.pass_phrase
@@ -187,8 +185,6 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign_path)
-
-        log_debug("Add the date code in the devreg binary file")
 
     def check_connect(self):
         log_debug('check connecting...')
