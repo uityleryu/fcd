@@ -16,14 +16,14 @@
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "unas.ea50.srt1.fw.bin"
+            "ea50-srt2-fw-image.bin"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "ea50",
           "FILES": [
-            "uImage_ea50_srt"
+            "ea50-srt2-uImage"
           ]
         },
         {
@@ -58,11 +58,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea50-fw.bin",
-          "../unas/unas.ea50.srt1.fw.bin"
+          "../unas/ea50-srt2-fw-image.bin"
         ],
         [
           "tftp/ea50/uImage",
-          "../ea50/uImage_ea50_srt"
+          "../ea50/ea50-srt2-uImage"
         ]
       ]
     }

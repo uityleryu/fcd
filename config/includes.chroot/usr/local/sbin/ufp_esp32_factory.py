@@ -77,10 +77,12 @@ class UFPESP32FactoryGeneral(ScriptBase):
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("uniqueid", self.esp32_prompt, timeout=10)
         log_debug(output)
-        id_list = re.findall(r'id: 0x(\w+)', output)
+        id_list = re.findall(r'cpu_id: 0x(\w+)', output)
         cpu_id = id_list[0]
-        flash_jedec_id = id_list[1]
-        flash_uuid = id_list[2]
+        id_list = re.findall(r'flash_jedec_id: 0x(\w+)', output)
+        flash_jedec_id = id_list[0]
+        id_list = re.findall(r'flash_uid: 0x(\w+)', output)
+        flash_uuid = id_list[0]
         
         log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \

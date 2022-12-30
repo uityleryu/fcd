@@ -1,8 +1,8 @@
 {
   "UniFiAP6": {
-    "UEX": {
+    "UX": {
       "INDEX": 0,
-      "NAME": "UEX",
+      "NAME": "UX",
       "BOARDID": "a667",
       "BOMREV": "113-01184",
       "DESC": "UniFi Express",
@@ -26,9 +26,9 @@
           "SRC_PATH": "images/fcd-image/a667",
           "DST_PATH": "a667",
           "FILES": [
-            "UEX.ipq5018.v1.0.0.277609a.221115.1047.bin",
-            "uImage-v1.0.0",
-            "unifi-uex-0.0.3.135-g4086284b_ipq5018_uex_u-boot.mbn",
+            "UEX.ipq5018.v3.1.2.86130c9.221221.1533.bin",
+            "uImage-v3.1.2",
+            "unifi-uex-1.0.1.141-gf82fd08b_ipq5018_uex_u-boot.mbn",
             "u6-express-v2.img",
             "u6-express-v2_nor.bin"
           ]
@@ -45,15 +45,15 @@
         ],
         [
           "tftp/images/a667-fw.bin",
-          "../a667/UEX.ipq5018.v1.0.0.277609a.221115.1047.bin"
+          "../a667/UEX.ipq5018.v3.1.2.86130c9.221221.1533.bin"
         ],
         [
           "tftp/images/a667-uboot.mbn",
-          "../a667/unifi-uex-0.0.3.135-g4086284b_ipq5018_uex_u-boot.mbn"
+          "../a667/unifi-uex-1.0.1.141-gf82fd08b_ipq5018_uex_u-boot.mbn"
         ],
         [
           "tftp/images/a667-loader.img",
-          "../a667/uImage-v1.0.0"
+          "../a667/uImage-v3.1.2"
         ]
       ]
     }

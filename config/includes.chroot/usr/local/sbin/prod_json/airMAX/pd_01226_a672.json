@@ -16,10 +16,11 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_1.0.0.mbn",
-            "prism-ax-v7_emmc.bin",
-            "prism-ax-v7_nor.bin",
-            "rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+            "u-boot_20221108.mbn",
+            "RAX.ipq5018.v1.2.0-devel+nand-initial-support.3e26497b.221116.0056-mp03.5-c2.bin",
+            "ax-nand-factory_20221108.img",
+            "prism-ax-v8-nand_nor.bin",
+            "prism-ax-v8-nand.img"
           ]
         },
         {
@@ -36,19 +37,23 @@
       "CREATE_LINK":[
         [
           "tftp/images/a672-uboot.bin",
-          "../am-fw/u-boot_1.0.0.mbn"
-        ],
-        [
-          "tftp/images/a672-nor.bin",
-          "../am-fw/prism-ax-v7_nor.bin"
-        ],
-        [
-          "tftp/images/a672-emmc.bin",
-          "../am-fw/prism-ax-v7_emmc.bin"
+          "../am-fw/u-boot_20221108.mbn"
         ],
         [
           "tftp/images/a672.bin",
-          "../am-fw/rax.ipq5018.v1.0.1.9517d368.220725.0926-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.2.0-devel+nand-initial-support.3e26497b.221116.0056-mp03.5-c2.bin"
+        ],
+        [
+          "tftp/images/a672-nand.bin",
+          "../am-fw/ax-nand-factory_20221108.img"
+        ],
+        [
+          "tftp/images/a672-bsp-nor.bin",
+          "../am-fw/prism-ax-v8-nand_nor.bin"
+        ],
+        [
+          "tftp/images/a672-bsp-2nd.bin",
+          "../am-fw/prism-ax-v8-nand.img"
         ]
       ]
     }
