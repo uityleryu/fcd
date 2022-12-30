@@ -36,6 +36,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
         self.eth = "eth0"
+        self.fcd_id = "0012"
 
         # Base path
         self.toolsdir = "tools/"
@@ -152,7 +153,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             "-i field=flash_uid,format=hex,value=" + uid,
             "-i field=cpu_rev_id,format=hex,value=" + cpuid,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            "-i field=fcd_id,format=hex,value=0012",
+            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -245,7 +246,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         log_info("self.mac_check_dict = {}".format(self.mac_check_dict))
 
         if self.mac_check_dict[self.board_id] is False:
-            log_debug("skip check the MAC in DUT")
+            log_debug("skip check the MAC in DUT ...")
             return
 
         [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp.log".format(self.plctool, self.eth))
