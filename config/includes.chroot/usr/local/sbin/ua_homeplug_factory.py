@@ -219,7 +219,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         else:
             log_info("modpib MAC success")
 
-        log_debug('write MAC to device factory default') # need to clarify why mac cannot set to default
+        log_debug('write MAC to device factory default')
         cmd = "{} -i {} -P {} -D {} -FF".format(self.plcinit, self.eth, self.fwbin, self.DAK)
         log_debug('cmd : {}'.format(cmd))
         [sto, rtc] = self.fcd.common.xcmd(cmd)
