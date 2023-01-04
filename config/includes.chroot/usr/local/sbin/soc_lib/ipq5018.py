@@ -325,8 +325,8 @@ class IPQ5018MFGGeneral(ScriptBase):
             '0000': "",
             'a658': "",
             'a659': "",
-            'a660': "",
-            'a661': "",
+            'a660': "8040104",
+            'a661': "8040104",
             'a662': "",
             'a663': "",
             'a664': "",
@@ -386,13 +386,20 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def update_emmc(self):
-        cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
+        #cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
+        #log_debug(cmd)
+        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+        #self.pexp.expect_only(60, "blocks erased: OK")
+        #self.pexp.expect_only(60, "blocks written: OK")
+        #cmd = "mmc erase 0x48422 0x40000"
+        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
+        cmd = "imgaddr=$fileaddr && source $imgaddr:script"
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        self.pexp.expect_only(60, "blocks erased: OK")
-        self.pexp.expect_only(60, "blocks written: OK")
-        cmd = "mmc erase 0x48422 0x40000"
-        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+
+        self.pexp.expect_only(120, "Flashing u-boot:")
+        self.pexp.expect_only(120, "Flashing wifi_fw_ipq5018_qcn6122cs:")
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def update_nand(self):

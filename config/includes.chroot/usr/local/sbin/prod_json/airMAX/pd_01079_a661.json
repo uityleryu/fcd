@@ -17,10 +17,10 @@
           "SRC_PATH": "images/fcd-image/amax-fw",
           "DST_PATH": "am-fw",
           "FILES": [
-            "u-boot_1.0.0.mbn",
-            "prism-ax-v6_emmc.bin",
-            "prism-ax-v7_nor.bin",
-            "RAX.ipq5018.v1.2.0.6f934888.221018.1801-mp03.5-c2.bin"
+            "u-boot_20221207.mbn",
+            "prism-ax-v8-emmc.img",
+            "prism-ax-v8-emmc_nor.bin",
+            "RAX.ipq5018.v1.3.1-devel+devel.dd3ebc2d.221207.1108-mp03.5-c2.bin"
           ]
         },
         {
@@ -37,19 +37,19 @@
       "CREATE_LINK":[
         [
           "tftp/images/a661-uboot.bin",
-          "../am-fw/u-boot_1.0.0.mbn"
+          "../am-fw/u-boot_20221207.mbn"
         ],
         [
           "tftp/images/a661-bsp-nor.bin",
-          "../am-fw/prism-ax-v7_nor.bin"
+          "../am-fw/prism-ax-v8-emmc_nor.bin"
         ],
         [
           "tftp/images/a661-bsp-2nd.bin",
-          "../am-fw/prism-ax-v7_emmc.bin"
+          "../am-fw/prism-ax-v8-emmc.img"
         ],
         [
           "tftp/images/a661.bin",
-          "../am-fw/RAX.ipq5018.v1.2.0.6f934888.221018.1801-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.3.1-devel+devel.dd3ebc2d.221207.1108-mp03.5-c2.bin"
         ]
       ]
     }
