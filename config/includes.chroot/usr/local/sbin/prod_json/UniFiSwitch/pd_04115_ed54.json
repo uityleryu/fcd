@@ -1,10 +1,14 @@
 {
   "UniFiSwitch": {
-    "USW-LITE-16-POE-04115": {
+    "USW-LITE-16-POE": {
       "INDEX": 0,
       "NAME": "USW-LITE-16-POE",
       "BOARDID": "ed54",
-      "BOMREV": "113-04115",
+      "BOMREV": [
+        "113-04115",
+        "113-04116",
+        "113-04117"
+      ],
       "DESC": "UBNT UniFiSwitch Lite 16 POE",
       "FILE": "us_rtl838x_factory.py",
       "T1FILE": "us_rtl838x_mfg.py",

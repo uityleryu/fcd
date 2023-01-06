@@ -262,7 +262,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
@@ -271,6 +271,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         if self.UPDATE_UBOOT_ENABLE == True:
             pass
+
         if self.BOOT_RECOVERY_IMAGE == True:
             pass
 
@@ -292,7 +293,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         if self.DOHELPER_ENABLE is True:
             msg(30, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
-            self.prepare_server_need_files()
+            self.prepare_server_need_files(helper_args_type="new")
 
         if self.REGISTER_ENABLE is True:
             self.registration()

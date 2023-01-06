@@ -1,8 +1,8 @@
 {
   "UniFiSwitch": {
-    "USW-24-04113": {
+    "USW-24": {
       "INDEX": 0,
-      "NAME": "USW-24-04113",
+      "NAME": "USW-24",
       "BOARDID": "ed51",
       "BOMREV": "113-04113",
       "DESC": "UBNT UniFiSwitch 24",

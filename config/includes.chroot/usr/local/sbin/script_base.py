@@ -912,7 +912,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
         time.sleep(0.1)
 
-    def prepare_server_need_files(self, method="tftp"):
+    def prepare_server_need_files(self, method="tftp", helper_args_type="default"):
         log_debug("Starting to do " + self.helperexe + "...")
         # Ex: tools/uvp/helper_DVF99_release_ata_max
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
@@ -933,10 +933,18 @@ class ScriptBase(object):
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
         eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
+
+        HELPER_PROD_CLASS_ARG = {
+            'default': "-c",
+            'new': "--output-product-class-fields",
+        }
+
+        prod_class_arg = HELPER_PROD_CLASS_ARG.get(helper_args_type, HELPER_PROD_CLASS_ARG['default'])
+
         sstr = [
             helperexe_path,
             "-q",
-            "-c product_class=" + self.product_class,
+            "{} product_class={}".format(prod_class_arg, self.product_class),
             "-o field=flash_eeprom,format=binary,pathname=" + eebin_dut_path,
             ">",
             eetxt_dut_path
