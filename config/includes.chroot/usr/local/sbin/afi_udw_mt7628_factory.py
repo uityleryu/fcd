@@ -295,9 +295,9 @@ class UCMT7628Factory(ScriptBase):
             msg(15, "Boot into initRamfs image for registration ...")
             self.enter_uboot()
             self.init_ramfs_image()
-        else:
-            self.login(press_enter=True, log_level_emerg=True, timeout=90)
-            msg(15, "Login system ...")
+
+        self.login(press_enter=True, log_level_emerg=True, timeout=90)
+        msg(15, "Login system ...")
 
         self.init_kernel_net()
         self.clear_eeprom()
