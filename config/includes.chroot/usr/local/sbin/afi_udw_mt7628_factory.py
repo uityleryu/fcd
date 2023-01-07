@@ -75,13 +75,13 @@ class UCMT7628Factory(ScriptBase):
         self.UPDATE_UBOOT_ENABLE = {
             'ed14': True,  # afi-ups, project is canceled
             'ed15': True,  # usp-pro-pdu, FIXME: disable uboot update process next build
-            'ea2e': False,  # udw-pro-pu
+            'ea2e': True,  # udw-pro-pu
         }
 
         self.BOOT_RAMFS_IMAGE = {
             'ed14': True,
             'ed15': True,
-            'ea2e': False,
+            'ea2e': True,
         }
 
         self.PROVISION_ENABLE = True
