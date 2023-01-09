@@ -36,6 +36,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.bootloader_prompt = "IPQ5018#"
         self.linux_prompt = "root@OpenWrt:/#"
 
+        if self.board_id in ["a667", "a674"]:
+            self.log_upload_failed_alert_en = True
+
         self.ethnum = {
             'a650': "1",
             'a651': "1",
@@ -293,21 +296,47 @@ class U6IPQ5018BspFactory(ScriptBase):
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client")
         log_debug(msg="nc ready ...")
-        nc_cmd = "nc -N {} 5566 < {}/{}-fw.bin".format(self.dutip, self.fwdir, self.board_id)
-        [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
-        if (int(rtc) > 0):
-            error_critical("cmd: \"{}\" fails, return value: {}".format(nc_cmd, rtc))
+
+        ct = 0
+        retry = 5
+        while ct < retry:
+            ct += 1
+            cmd = "ping -c 3 {}".format(self.dutip)
+            [buf, rtc] = self.fcd.common.xcmd(cmd)
+            if (int(rtc) > 0):
+                rmsg = "ping IP: {}, FAILED, Retry: {}".format(self.dutip, ct)
+                log_debug(rmsg)
+            else:
+                log_debug("ping IP: {} successfully".format(self.dutip))
+                break
+        else:
+            rmsg = "ping IP: {}, FAILED".format(self.dutip)
+            error_critical(rmsg)
+
+        cmd = "nc -N {} 5566 < {}/{}-fw.bin".format(self.dutip, self.fwdir, self.board_id)
+        log_debug("cmd: " + cmd)
+        ct = 0
+        retry = 4
+        while ct < retry:
+            ct += 1
+            [buf, rtc] = self.fcd.common.xcmd(cmd)
+            if (int(rtc) > 0):
+                rmsg = "\nCommand output:\n{}".format(buf)
+                rmsg += "Retry: {}".format(ct)
+                log_debug(rmsg)
+                time.sleep(1)
+            else:
+                break
+        else:
+            rmsg = "\nCommand output:\n{}".format(buf)
+            rmsg += "Uploading FW FAIL!!!"
+            error_critical(rmsg)
 
         log_debug(msg="Upgrading FW ...")
         self.pexp.expect_only(120, "Reboot system safely")
         log_debug(msg="FW update done ...")
 
-        # the linux prompt is different to other products
-        if self.board_id == "a667":
-            self.linux_prompt = "root@UX"
-        elif self.board_id == "a674":
-            self.linux_prompt = "root@UXP"
-
+        self.linux_prompt = "root"
         self.login("ui", "ui", timeout=300, log_level_emerg=True, press_enter=False, retry=3)
 
     def registration_uex(self, regsubparams = None):
@@ -370,10 +399,16 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.add_FCD_TLV_info()
 
     def check_info(self):
+        if self.board_id == "a667":
+            prod_shortname = "UX"
+        elif self.board_id == "a674":
+            prod_shortname = "UXP"
+
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
+        self.pexp.expect_only(10, "shortname=" + prod_shortname)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
 
@@ -444,6 +479,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
+
+        if self.board_id in ["a667", "a674"]:
+            self.__del__()
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
