@@ -260,7 +260,7 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_action(30, self.linux_prompt, "cat /usr/lib/version")
 
     def lcm_fw_check(self):
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'cat /var/log/ulcmd.log', 'version', retry=6)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, 'cat /var/log/ulcmd.log', 'FW version', retry=6)
         self.pexp.expect_only(30, self.linux_prompt)
 
     def mcu_fw_check(self):
