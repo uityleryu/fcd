@@ -10,17 +10,27 @@ IMAGE-UA-ThermalScan= \
     images/ec70* \
     ua-fw/thermalscan.*
 
-IMAGE-UA+=$(IMAGE-UA-GATE)
-IMAGE-UA+=$(IMAGE-UA-ThermalScan)
-
 IMAGE-UA-ELEVATOR= \
     images/ec3b* \
     ua-fw/ua-elevator* \
     ua-fw/ua-gate-nor-v2.bin \
     ua-fw/EL.mt7621* \
-    ua-fw/e9a5-openwrt-4.0.12-88* 
+    ua-fw/e9a5-openwrt-4.0.12-88*
 
+IMAGE-UA-ELEVATOR-EXTENDER-TX= \
+    images/ec44* \
+    ua-fw/ua-elevator-*
+
+IMAGE-UA-ELEVATOR-EXTENDER-RX= \
+    images/ec45* \
+    ua-fw/ua-elevator-*
+
+IMAGE-UA+=$(IMAGE-UA-GATE)
+IMAGE-UA+=$(IMAGE-UA-ThermalScan)
 IMAGE-UA+=$(IMAGE-UA-ELEVATOR)
+IMAGE-UA+=$(IMAGE-UA-ELEVATOR-EXTENDER-TX)
+IMAGE-UA+=$(IMAGE-UA-ELEVATOR-EXTENDER-RX)
+
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -59,10 +69,22 @@ TOOLS-UA-ThermalScan+= \
     uvc/128k_ff.bin
 
 TOOLS-UA-ELEVATOR+=$(TOOLS-UA)
-TOOLS-UA-Elevator-Extender-TX+=$(TOOLS-CONFIG)
-TOOLS-UA-Elevator-Extender-TX+= \
-    ua_extender/plctool \
-    ua_extender/plcinit
+TOOLS-UA-ELEVATOR-EXTENDER-TX+=$(TOOLS-CONFIG)
+TOOLS-UA-ELEVATOR-EXTENDER-TX+= \
+    ua_extender/fcd/plctool \
+    ua_extender/fcd/plcinit \
+    ua_extender/fcd/modpib \
+    ua_extender/fcd/gen_flash_block_bin.py \
+    ua_extender/ec44.bin
+
+TOOLS-UA-ELEVATOR-EXTENDER-RX+=$(TOOLS-CONFIG)
+TOOLS-UA-ELEVATOR-EXTENDER-RX+= \
+    ua_extender/fcd/plctool \
+    ua_extender/fcd/plcinit \
+    ua_extender/fcd/modpib \
+    ua_extender/fcd/gen_flash_block_bin.py \
+    ua_extender/ec45.bin
+
 
 # Project target
 $(eval $(call ProductImage,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
@@ -71,8 +93,8 @@ $(eval $(call ProductImage,UA-ELEVATOR,FCD_$(PRD)_UA-ELEVATOR_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-HOTEL,FCD_$(PRD)_UA-HOTEL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
@@ -84,7 +106,8 @@ $(eval $(call ProductCompress,UA-SENSE-GATE,FCD_$(PRD)_UA-SENSE-GATE$(VER)_$(FWV
 $(eval $(call ProductCompress,UA-Fob,FCD_$(PRD)_UA-Fob$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-Card,FCD_$(PRD)_UA-Card$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UA-Elevator-Extender-TX,FCD_$(PRD)_UA-Elevator-Extender-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
@@ -109,5 +132,6 @@ $(eval $(call ProductCompress2,UA_DISPLAY-SERIES))
 $(eval $(call ProductCompress2,03625_ec5e))
 $(eval $(call ProductCompress2,UA_HUB_4P-SERIES))
 $(eval $(call ProductCompress2,03272_ec44))
+$(eval $(call ProductCompress2,03273_ec45))
 $(eval $(call ProductCompress2,04035_ec53))
 $(eval $(call ProductCompress2,UA_Elevator-SERIES))

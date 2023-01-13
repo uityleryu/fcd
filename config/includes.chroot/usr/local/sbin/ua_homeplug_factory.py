@@ -16,7 +16,7 @@ import traceback
 
 DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
-QRCODE_ENABLE = False
+QRCODE_ENABLE = True
 CHECK_MAC_ENABLE = True
 
 
@@ -31,12 +31,20 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.bomrev = "113-" + self.bom_rev
+        self.sysid = self.bom_rev.split('-')[0]
+        self.hwrev = self.bom_rev.split('-')[1]
         self.linux_prompt = "EH:"
         self.prodclass = "0014"
+        self.eth = "eth0"
+        self.fcd_id = "0012"
 
         # Base path
         self.toolsdir = "tools/"
-        self.plctool = os.path.join(self.tftpdir, "tools", "ua_extender")
+        self.plctool = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plctool")
+        self.plcinit = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "plcinit")
+        self.modpib = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "modpib")
+        self.gen_bin = os.path.join(self.tftpdir, "tools", "ua_extender", "fcd", "gen_flash_block_bin.py")
+        self.fwbin = os.path.join(self.tftpdir, "tools", "ua_extender", self.board_id + '.bin')
         self.common_dir = os.path.join(self.tftpdir, "tools", "common")
 
         self.ncert = "cert_{0}.pem".format(self.row_id)
@@ -54,42 +62,62 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         self.mac_check_dict = {
             'ec44': True,
+            'ec45': True
         }
 
         # number of Ethernet
         self.ethnum = {
             'ec44': "1",
+            'ec45': "1"
         }
 
         # number of WiFi
         self.wifinum = {
             'ec44': "0",
+            'ec45': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec44': "1",
+            'ec45': "1"
         }
+
+        tool_list = [self.plctool, self.plcinit, self.modpib, self.gen_bin]
+        for tool in tool_list:
+            cmd = "sudo chmod 777 {}".format(tool)
+            [sto, rtc] = self.fcd.common.xcmd(cmd)
+            if int(rtc) > 0:
+                error_critical("{} chmod 777 failed".format(tool))
+            else:
+                log_debug("{} chmod 777 successfully".format(tool))
+
+    def check_dut_eth(self):
+        log_debug("Starting to check DUT network interface")
+        [sto, rtc] = self.fcd.common.xcmd("ifconfig -a |grep eth |grep mtu |awk -F \': \' \'{print $1}\'")
+        all_iface = sto.split()
+        for iface in all_iface:
+            time_end = time.time() + 10
+            while time.time() < time_end:
+                [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp-{}.log".format(self.plctool, iface, iface))
+                [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp-{}.log".format(iface))
+                if sto == "1":
+                    log_info('Detecting DAK in DUT, interface = {}'.format(iface))
+                    self.eth = iface
+                    return True
+                time.sleep(1)
+        error_critical('Check DUT network interface FAIL')
 
     def prepare_server_need_files(self):
         log_debug("Starting to create a 64KB binary file ...")
-        self.gen_rsa_key()
 
-        sstr = [
-            self.flasheditor,
-            "-F",
-            "-f " + self.eebin_path,
-            "-r " + self.bomrev,
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + self.ethnum[self.board_id],
-            "-w " + self.wifinum[self.board_id],
-            "-b " + self.btnum[self.board_id],
-            "-k " + self.rsakey_path
-        ]
-        sstr = ' '.join(sstr)
-        [sto, rtc] = self.fcd.common.xcmd(sstr)
+        [sto, rtc] = self.fcd.common.xcmd('python --version')
+        if 'Python 2.7' not in sto :
+            error_critical("Expect Python version = Python 2.7, Current version = {}".format(sto))
+
+        cmd = "python {} {} {} {} {} {}".format(self.gen_bin, self.board_id, self.mac, self.sysid, self.hwrev, self.eebin_path)
+        log_debug('cmd : {}'.format(cmd))
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
         time.sleep(1)
         if int(rtc) > 0:
             error_critical("Generating " + self.eebin_path + " file failed!!")
@@ -119,12 +147,13 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             "sudo /usr/local/sbin/client_x86_release",
             "-h devreg-prod.ubnt.com",
             "-k " + self.pass_phrase,
+            #"-i field=product_class_id,value=basic "
             "-i field=product_class_id,format=hex,value=" + self.prodclass,
             "-i field=flash_jedec_id,format=hex,value=" + jedecid,
             "-i field=flash_uid,format=hex,value=" + uid,
             "-i field=cpu_rev_id,format=hex,value=" + cpuid,
             "-i field=flash_eeprom,format=binary,pathname=" + self.eebin_path,
-            #"-i field=fcd_id,format=hex,value=" + self.fcd_id,
+            "-i field=fcd_id,format=hex,value=" + self.fcd_id,
             "-i field=fcd_version,format=hex,value=" + self.sem_ver,
             "-i field=sw_id,format=hex,value=" + self.sw_id,
             "-i field=sw_version,format=hex,value=" + self.fw_ver,
@@ -146,44 +175,23 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
 
         log_debug(cmdj)
         clit = ExpttyProcess(self.row_id, cmdj, "\n")
-        clit.expect_only(30, "Ubiquiti Device Security Client")
-        clit.expect_only(30, "Hostname")
         clit.expect_only(30, "field=result,format=u_int,value=1")
 
         cmd[2] = "-k " + self.input_args.pass_phrase
         poscmd = ' '.join(cmd)
         print("CMD: \n" + poscmd)
 
-        log_debug("Excuting client_x86 registration successfully")
+        log_debug("Executing client_x86 registration successfully")
 
         rtf = os.path.isfile(self.eesign_path)
         if rtf is not True:
             error_critical("Can't find " + self.eesign_path)
 
-        log_debug("Add the date code in the devreg binary file")
-
-    def _read_version(self, msg):
-        # only for LOCK-R(a911) and 60G-LAS(a918)
-        msg_versw = msg.split("VER-SW:")[-1].split("\r")[0].split(";")
-        msg_verhw = msg.split("VER-HW:")[-1].split("\r")[0].split(";")
-        msg_verswhw = msg_versw + msg_verhw
-        version = {}
-        for ii in msg_verswhw:
-            version[ii.split("-", 1)[0]] = ii.split("-", 1)[1]
-        return version
-
-    def _reset(self):
-        # it needs to reset for updating the MAC, otherwise the MAC would be like "VER-HW:MAC-ff.ff.ff.ff.ff.ff"
-        log_info('Sending the reset command')
-        rtv_reset = self.ser.execmd_getmsg(self.cmd_reset)
-        log_info('rtv_reset = {}'.format(rtv_reset))
-        time.sleep(1)
-
     def check_connect(self):
         log_debug('check connecting...')
         time_end = time.time() + 10
         while time.time() < time_end:
-            [sto, rtc] = self.fcd.common.xcmd(self.plctool + " -i eth1 -I > /tmp/temp.log")
+            [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp.log".format(self.plctool, self.eth))
             [sto, rtc] = self.fcd.common.xcmd("grep -c \"DAK\" /tmp/temp.log")
             if sto == "1":
                 log_info("connect with DUT success")
@@ -192,7 +200,7 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         error_critical('connect with DUT FAIL')
 
 
-    def write_mac(self):
+    def get_DAK(self):
         log_debug('get DAK..')
         time_end = time.time() + 10
         while time.time() < time_end:
@@ -200,9 +208,38 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             self.DAK = sto
             log_info("DAK:{}".format(self.DAK))
             return True
+        error_critical('get DAK on DUT FAIL')
 
-            
-        
+    def write_mac(self):
+        log_debug('modpib MAC')
+        cmd = "{} -M {} {}".format(self.modpib, self.mac, self.fwbin)
+        log_debug('cmd : {}'.format(cmd))
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("modpib MAC failed")
+        else:
+            log_info("modpib MAC success")
+
+        log_debug('write MAC to device factory default')
+        cmd = "{} -i {} -P {} -D {} -FF".format(self.plcinit, self.eth, self.fwbin, self.DAK)
+        log_debug('cmd : {}'.format(cmd))
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("write MAC to device factory failed")
+        else:
+            self.check_connect()
+            log_info("write MAC to device factory success")
+
+        log_debug('write MAC to device device user section')
+        cmd = "{} -i {} -P {} -FF".format(self.plctool, self.eth, self.fwbin)
+        log_debug('cmd : {}'.format(cmd))
+        [sto, rtc] = self.fcd.common.xcmd(cmd)
+        if int(rtc) > 0:
+            error_critical("write MAC to device user section failed")
+        else:
+            self.check_connect()
+            log_info("write MAC to device user section success")
+            return True
 
     def check_mac(self):
         log_debug("Starting to check MAC")
@@ -212,38 +249,18 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
             log_debug("skip check the MAC in DUT ...")
             return
 
-        self._reset()
-
-        rtv_verison = self.ser.execmd_getmsg(self.cmd_version)
-        version = self._read_version(rtv_verison)
-        for key, value in version.items():
-            log_info("{} = {}".format(key, value))
-
-        dut_mac = version["MAC"].replace(".", "").upper()
+        [sto, rtc] = self.fcd.common.xcmd("{} -i {} -I > /tmp/temp.log".format(self.plctool, self.eth))
+        [sto, rtc] = self.fcd.common.xcmd('cat /tmp/temp.log |grep MAC | awk -F" " \'{print $2 }\' | tr -d "\n"')
+        dut_mac = sto.replace(":","").upper()
         expect_mac = self.mac.upper()
+
         log_info("MAC_DUT    = {}".format(dut_mac))
         log_info("MAC_expect = {}".format(expect_mac))
-        log_info("FW version in DUT = {}".format(version["SWv"]))
 
         if dut_mac == expect_mac:
             log_debug('MAC_DUT and MAC_expect are match')
         else:
             error_critical("MAC_DUT and MAC_expect are NOT match")
-
-        rtv_devregcheck = self.ser.execmd_getmsg(self.cmd_devregcheck)
-        if 'CHECK SUCCESS' in rtv_devregcheck:
-            log_debug('DEVREG: CHECK SUCCESS')
-        else:
-            error_critical('DEVREG: CHECK FAIL')
-
-
-        rtv_getqrcode = self.ser.execmd_getmsg(self.cmd_getqrcode)
-        msg_qrcode = rtv_getqrcode.split("QRCODE:6-")[-1].split("\r")[0].strip('\n\t\r')
-        msg = 'QRCODE_DUT = {}   (x = {})'.format(msg_qrcode, self.qrcode)
-        if msg_qrcode == self.qrcode:
-            log_debug('[PASS] ' + msg)
-        else:
-            error_critical('[FAIL] ' + msg)
 
 
     def critical_error(self, msg):
@@ -251,67 +268,35 @@ class UAHOMEPLUGFactoryGeneral(ScriptBase):
         self.errmsg = msg
         error_critical(msg)
 
-    def write_devreg_data_to_dut(self):
-        log_info('write_devreg_data_to_dut')
-        dut_rom_path = '/tmp/rom384.bin'
-        self.session.put_file(self.eesign_path, dut_rom_path)
-        time.sleep(1)
-
-        duetime = 6
-        p_board_id = self.board_id
-        p_country_code = 0
-        p_rev = int(self.bom_rev.split('-')[1])
-        p_MAC_QR = self.mac + '-' + self.qrcode
-        p_rompath = dut_rom_path
-
-        para = [
-            str(p_board_id),
-            str(p_country_code),
-            str(p_rev),
-            str(p_MAC_QR),
-            str(p_rompath)
-        ]
-
-        paras = ' '.join(para)
-        print('paras: ' + paras)
-
-        ret = False
-        for i in range(3):
-            if self.nfc_write(paras, 6) is True:
-                ret = True
-                break
-
-        rstr = 'write_devreg_data_to_dut: '
-        if ret is False:
-            self.critical_error(rstr + 'fail!')
-        else:
-            log_info(rstr + 'succeed.')
-
-
     def run(self):
         """
         Main procedure of factory
         """
         self.fcd.common.print_current_fcd_version()
+        self.check_dut_eth()
+        msg(5, "Get DUT network interface success")
         self.check_connect()
         msg(10, "Connect with DUT success")
+        self.get_DAK()
+        msg(20, "Get DAK in DUT success")
         self.write_mac()
-        msg(15, "Write MAC in DUT success")
+        msg(30, "Write MAC in DUT success")
+
         if DOHELPER_ENABLE is True:
             self.erase_eefiles()
-            msg(20, "Finish erasing ee files ...")
+            msg(40, "Finish erasing ee files ...")
             self.prepare_server_need_files()
-            msg(30, "Finish preparing the devreg file ...")
+            msg(50, "Finish preparing the devreg file ...")
 
         if REGISTER_ENABLE is True:
             if self.board_id != 'ec3a' and self.board_id != 'ec38':
                 self.registration()
-                msg(40, "Finish doing registration ...")
-                msg(50, "Finish doing signed file and EEPROM checking ...")
+                msg(60, "Finish doing registration ...")
+                msg(70, "Finish doing signed file and EEPROM checking ...")
 
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
-            msg(60, "Finish checking MAC in DUT ...")
+            msg(80, "Finish checking MAC in DUT ...")
 
 
         msg(100, "Completing registration ...")
