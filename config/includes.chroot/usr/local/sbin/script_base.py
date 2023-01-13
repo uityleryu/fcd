@@ -28,7 +28,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.51"
+    __version__ = "1.0.52"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -43,6 +43,7 @@ class ScriptBase(object):
         self.__pexpect_obj = None
         self.__serial_obj = None
         self.__ssh_client_obj = None
+        self.log_upload_failed_alert_en = False
 
         self.version_scriptbase = self.__version__
         self.version_PAlib = PAlib.__version__
@@ -731,7 +732,7 @@ class ScriptBase(object):
 
     def disable_udhcpc(self):
         self.disable_inittab_process("udhcpc")
-        
+
     def disable_wpa_supplicant(self):
         self.disable_inittab_process("wpa_supplicant")
 
@@ -1472,11 +1473,16 @@ class ScriptBase(object):
                 log_debug('[Upload_ui_taipei Success]')
             else:
                 raise subprocess.CalledProcessError
-
         except subprocess.CalledProcessError as e:
-            log_debug('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
+            if self.log_upload_failed_alert_en is True:
+                error_critical('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
+            else:
+                log_debug('\n{}\n{}\n[Upload_ui_taipei Fail]'.format(e.output.decode('utf-8'), e.returncode))
         except:
-            log_debug("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
+            if self.log_upload_failed_alert_en is True:
+                error_critical("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
+            else:
+                log_debug("[Upload_ui_taipei Unexpected error: {}]".format(sys.exc_info()[0]))
 
     def _upload_ui_taipei_fargate(self, uploadfolder, mac, bom):
         """
