@@ -28,6 +28,7 @@ class IPQ80XXFactory(ScriptBase):
             ac17: Wave-AP-HD
             ac1a: Wave-AP-01206(2.5G)
             ac18: Wave-Pro-01149
+            ac1b: Wave-AP-HD
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -38,7 +39,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "IPQ807x# ",
             'ac17': "IPQ807x# ",
             'ac1a': "IPQ807x# ",
-            'ac18': "IPQ807x# "
+            'ac18': "IPQ807x# ",
+            'ac1b': "IPQ807x# "
         }
 
         # linux console prompt
@@ -50,7 +52,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "#",
             'ac17': "#",
             'ac1a': "#",
-            'ac18': "#"
+            'ac18': "#",
+            'ac1b': "#"
         }
 
         self.bootloader = {
@@ -61,7 +64,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "ac16-bootloader.bin",
             'ac17': "ac17-bootloader.bin",
             'ac1a': "ac1a-bootloader.bin",
-            'ac18': "ac18-bootloader.bin"
+            'ac18': "ac18-bootloader.bin",
+            'ac1b': "ac1b-bootloader.bin"
         }
 
         self.ubaddr = {
@@ -72,7 +76,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0xd80000",
             'ac17': "0xd80000",
             'ac1a': "0xd80000",
-            'ac18': "0xd80000"
+            'ac18': "0xd80000",
+            'ac1b': "0xd80000"
         }
 
         self.ubsz = {
@@ -83,7 +88,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0x100000",
             'ac17': "0x100000",
             'ac1a': "0x100000",
-            'ac18': "0x100000"
+            'ac18': "0x100000",
+            'ac1b': "0x100000"
         }
 
         self.cfgaddr = {
@@ -94,7 +100,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0xf000000",
             'ac17': "0xf000000",
             'ac1a': "0xf000000",
-            'ac18': "0xf000000"
+            'ac18': "0xf000000",
+            'ac1b': "0xf000000"
         }
 
         self.cfgsz = {
@@ -105,7 +112,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0x1000000",
             'ac17': "0x1000000",
             'ac1a': "0x1000000",
-            'ac18': "0x1000000"
+            'ac18': "0x1000000",
+            'ac1b': "0x1000000"
         }
 
         self.epromaddr = {
@@ -116,7 +124,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0x2a0000",
             'ac17': "0x2a0000",
             'ac1a': "0x2a0000",
-            'ac18': "0x2a0000"
+            'ac18': "0x2a0000",
+            'ac1b': "0x2a0000"
         }
 
         self.epromsz = {
@@ -127,7 +136,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "0x40000",
             'ac17': "0x40000",
             'ac1a': "0x40000",
-            'ac18': "0x40000"
+            'ac18': "0x40000",
+            'ac1b': "0x40000"
         }
 
         self.product_class_table = {
@@ -138,7 +148,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "basic",
             'ac17': "basic",
             'ac1a': "basic",
-            'ac18': "basic"
+            'ac18': "basic",
+            'ac1b': "basic"
         }
 
         self.pd_dir_table = {
@@ -149,7 +160,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "af_af60",
             'ac17': "af_af60",
             'ac1a': "af_af60",
-            'ac18': "af_af60"
+            'ac18': "af_af60",
+            'ac1b': "af_af60"
         }
 
         self.ethspeed_table = {
@@ -160,7 +172,8 @@ class IPQ80XXFactory(ScriptBase):
             'ac16': "2500Mb/s",
             'ac17': "1000Mb/s",
             'ac1a': "2500Mb/s",
-            'ac18': "2500Mb/s"
+            'ac18': "2500Mb/s",
+            'ac1b': "2500Mb/s"
         }
 
         self.product_class = self.product_class_table[self.board_id]
@@ -521,6 +534,7 @@ class IPQ80XXMFG(ScriptBase):
             ac17: Wave-AP-HD
             ac1a: Wave-AP-01206(2.5G)
             ac18: Wave-Pro-01149
+            ac1b: Wave-AP-HD
         '''
         # U-boot prompt
         self.ubpmt = {
@@ -531,7 +545,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': "IPQ807x# ",
             'ac17': "IPQ807x# ",
             'ac1a': "IPQ807x# ",
-            'ac18': "IPQ807x# "
+            'ac18': "IPQ807x# ",
+            'ac1b': "IPQ807x# "
         }
 
         # linux console prompt
@@ -543,7 +558,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': "root@OpenWrt",
             'ac17': "root@OpenWrt",
             'ac1a': "root@OpenWrt",
-            'ac18': "root@OpenWrt"
+            'ac18': "root@OpenWrt",
+            'ac1b': "root@OpenWrt"
         }
 
         self.artimg = {
@@ -554,7 +570,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': "ac16-mfg.bin",
             'ac17': "ac17-mfg.bin",
             'ac1a': "ac1a-mfg.bin",
-            'ac18': "ac1a-mfg.bin"
+            'ac18': "ac1a-mfg.bin",
+            'ac1b': "ac1a-mfg.bin"
         }
 
         self.addr = {
@@ -565,7 +582,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': "0x0",
             'ac17': "0x0",
             'ac1a': "0x0",
-            'ac18': "0x0"
+            'ac18': "0x0",
+            'ac1b': "0x0"
         }
 
         self.machid = {
@@ -576,7 +594,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': "8010010",
             'ac17': "801000f",
             'ac1a': "801000f",
-            'ac18': "801000f"
+            'ac18': "801000f",
+            'ac1b': "801000f"
         }
 
         self.method= {
@@ -587,7 +606,8 @@ class IPQ80XXMFG(ScriptBase):
             'ac16': 1,
             'ac17': 1,
             'ac1a': 1,
-            'ac18': 1
+            'ac18': 1,
+            'ac1b': 1
         }
 
 
