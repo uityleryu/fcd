@@ -16,7 +16,8 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "usw-pro-24-poe-fw.bin"
+            "usw-pro-24-poe-fw.bin",
+            "US.rtl9301_6.6.8+14551.230116.1203-uboot.bin"
           ]
         },
         {
