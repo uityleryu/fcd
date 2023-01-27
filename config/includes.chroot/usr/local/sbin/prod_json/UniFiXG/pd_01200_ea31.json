@@ -1,0 +1,58 @@
+{
+  "UniFiXG": {
+    "UXG-PLUS-PRO": {
+      "INDEX": 0,
+      "NAME": "UXG-PLUS-PRO",
+      "BOARDID": "ea31",
+      "BOMREV": "113-01200",
+      "DESC": "UniFi Next-Generation Gateway+ Pro",
+      "FILE": "uxg_al524_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/uxgpluspro",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
+          "DST_PATH": "uxg-fw/alpine",
+          "FILES": [
+            "fw-image.bin",
+            "uxg_plus_pro_uImage",
+            "uxg_plus_pro_boot.img"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea31-fw.bin",
+          "../uxg-fw/alpine/fw-image.bin"
+        ],
+        [
+          "tftp/images/ea31-recovery",
+          "../uxg-fw/alpine/uxg_plus_pro_uImage"
+        ],
+        [
+          "tftp/images/ea31_signed_boot.img",
+          "../uxg-fw/alpine/uxg_plus_pro_boot.img"
+        ]
+      ]
+    }
+  }
+}
