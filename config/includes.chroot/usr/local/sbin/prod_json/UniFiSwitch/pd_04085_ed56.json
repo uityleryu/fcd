@@ -1,11 +1,11 @@
 {
   "UniFiSwitch": {
-    "USW-PRO-24-POE-04085": {
+    "USW-XP-24-POE": {
       "INDEX": 0,
-      "NAME": "USW-PRO-24-POE-04085",
+      "NAME": "USW-XP-24-POE",
       "BOARDID": "ed56",
       "BOMREV": "113-04085",
-      "DESC": "UBNT UniFiSwitch Pro 24 POE (RTK)",
+      "DESC": "UBNT UniFiSwitch Pro 24 POE",
       "FILE": "us_rtl838x_factory.py",
       "T1FILE": "us_rtl838x_mfg.py",
       "QRCHECK": "True",
