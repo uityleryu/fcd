@@ -357,7 +357,8 @@ class UNASALPINEFactory(ScriptBase):
         self.fcd_server_send_firmware_by_nc(cmd)
 
     def install_firmware_on_emmc(self):
-        self.copy_rename_uImage_to_tftpboot()
+        if self.board_id == 'ea1a' or self.board_id == 'ea20':
+            self.copy_rename_uImage_to_tftpboot()
         self.set_tftp_at_uboot()
         self.pull_uImage_from_fcd_server(dut_nc_ip=self.dutip)
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")

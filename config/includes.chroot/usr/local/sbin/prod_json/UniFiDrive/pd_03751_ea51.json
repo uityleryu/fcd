@@ -13,27 +13,26 @@
       "SW_ID": "2101",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/tools/ea51/",
+          "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
             "UNASPRO.al324.v0.8.6.0c32df3M.220912.1610.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/ea51/",
-          "DST_PATH": "ea51",
+          "SRC_PATH": "images/fcd-image/unas/",
+          "DST_PATH": "unas",
           "FILES": [
-            "uImage"
+            "uImage-ea51"
           ]
         },
         {
-          "SRC_PATH": "images/tools/ea51/",
+          "SRC_PATH": "images/tools/unas/ea51/",
           "DST_PATH": "tools/ea51",
           "FILES": [
             "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
           ]
         },
-
         {
           "SRC_PATH": "images/tools/unas",
           "DST_PATH": "tools/unas",
@@ -60,6 +59,10 @@
         [
           "tftp/images/ea51-fw.bin",
           "../unas/UNASPRO.al324.v0.8.6.0c32df3M.220912.1610.bin"
+        ],
+        [
+          "tftp/uImage",
+          "unas/uImage-ea51"
         ]
       ]
     }
