@@ -20,6 +20,7 @@ REGISTER_EN = True
 
 '''
     ec80:  UC-SPK-MINI
+    aa02:  Amplifi-AMP
 '''
 
 
@@ -32,17 +33,20 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         ethnum = {
-            'ec80': "1"
+            'ec80': "0",
+            'aa02': "1"
         }
 
         # number of WiFi
         wifinum = {
-            'ec80': "1"
+            'ec80': "0",
+            'aa02': "1"
         }
 
         # number of Bluetooth
         btnum = {
-            'ec80': "2"
+            'ec80': "0",
+            'aa02': "1"
         }
 
         self.devnetmeta = {
@@ -66,10 +70,12 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
         msg(10, "TTY initialization successfully ...")
+        log_debug(msg="sleep 60 secs")
         time.sleep(60)
 
         self.pexp.expect_lnxcmd(10, "", "")
-        self.login(username="root", password="ubnt", timeout=120)
+        if self.board_id != "aa02":
+            self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         self.chk_lnxcmd_valid()

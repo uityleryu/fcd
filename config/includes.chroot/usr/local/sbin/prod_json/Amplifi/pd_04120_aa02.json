@@ -1,0 +1,28 @@
+{
+  "Amplifi": {
+    "AFi-AMP": {
+      "INDEX": 0,
+      "NAME": "AFi-AMP",
+      "BOARDID": "aa02",
+      "BOMREV": "113-04120",
+      "DESC": "Amplifi AMP",
+      "FILE": "uc_qcs403_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
