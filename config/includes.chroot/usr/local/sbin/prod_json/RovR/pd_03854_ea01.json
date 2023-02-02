@@ -1,0 +1,67 @@
+{
+  "Rover": {
+    "UWR-Console-03854": {
+      "INDEX": 0,
+      "NAME": "UWR-CONSOLE-03854",
+      "BOARDID": "ea01",
+      "BOMREV": "113-03854",
+      "DESC": "UniFi Wave Rover Console",
+      "FILE": "udm_al324_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/uwr",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uwr_console",
+          "DST_PATH": "tools/uwr",
+          "FILES": [
+            "bc_1.07.1-2+b2_arm64.deb",
+            "factory-test-tools_2.3.1-163+g8ab2244_arm64.deb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uwr-fw",
+          "DST_PATH": "uwr-fw/uwr",
+          "FILES": [
+            "fw-image.bin",
+            "uImage",
+            "boot.img"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea01-fw.bin",
+          "../uwr-fw/uwr/fw-image.bin"
+        ],
+        [
+          "tftp/images/ea01-recovery",
+          "../uwr-fw/uwr/uImage"
+        ],
+        [
+          "tftp/images/ea01-uboot.bin",
+          "../uwr-fw/uwr/boot.img"
+        ]
+      ]
+    }
+  }
+}
