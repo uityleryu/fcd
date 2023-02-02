@@ -74,8 +74,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
         time.sleep(60)
 
         self.pexp.expect_lnxcmd(10, "", "")
-        if self.board_id != "aa02":
-            self.login(username="root", password="ubnt", timeout=120)
+        self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         self.chk_lnxcmd_valid()
