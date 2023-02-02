@@ -35,7 +35,6 @@ class UNASALPINEFactory(ScriptBase):
 
     def init_vars(self):
         # override the base vars
-        self.user = "root"
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
         self.wait_LCM_upgrade_en = {'ea20', 'ea21', 'ea51'}
@@ -128,8 +127,24 @@ class UNASALPINEFactory(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.loginname = {
+            'ea1a': "ubnt",
+            'ea20': "ubnt",
+            'ea51': "ui",
+            'ea21': "ubnt",
+            'ea30': "ubnt",
+            'ea50': "ubnt",
+        }
+
+        self.user = self.loginname[self.board_id]
+        self.password = self.loginname[self.board_id]
+
         self.INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
         self.INSTALL_NAND_FW_ENABLE = True
+        if self.board_id == 'ea51':
+            self.UNLOCKEEPROM_ENABLE = True
+        else:
+            self.UNLOCKEEPROM_ENABLE = False
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
@@ -440,7 +455,7 @@ class UNASALPINEFactory(ScriptBase):
         msg(30, "Waiting boot to linux console...")
         if self.board_id == 'ea51' or self.board_id == 'ea50':
             self.pexp.expect_action(600, "System Finish Bootup", "")
-            self.login(timeout=300)
+            self.login(username=self.user, password=self.password, timeout=300)
         else:
             self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
@@ -449,6 +464,9 @@ class UNASALPINEFactory(ScriptBase):
         time.sleep(2)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, ["64 bytes from"])
         msg(35, "Boot up to linux console and network is good ...")
+
+        if self.UNLOCKEEPROM_ENABLE is True:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf")
 
         if self.PROVISION_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
@@ -476,7 +494,7 @@ class UNASALPINEFactory(ScriptBase):
             self.pexp.expect_action(30, self.linux_prompt, "reboot")
             msg(85, "Waiting boot to linux console...")
             if self.board_id == 'ea51' or self.board_id == 'ea50':
-                self.login(timeout=300)
+                self.login(username=self.user, password=self.password, timeout=300)
             else:
                 self.pexp.expect_only(300, "Welcome to UniFi NVR!")
 
