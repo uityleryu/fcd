@@ -158,6 +158,8 @@ class RovR_AL324_FACTORY(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop systemd-networkd")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl disable systemd-networkd")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i '/^\[Network\]$/,/^\[.*\]/s/Address=.*/Address=192.168.1.1\/24/' /lib/systemd/network/20-vlan-eth0.network")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i '/^\[DHCPServer\]$/,/^\[.*\]/s/ServerAddress=.*/ServerAddress=192.168.1.1\/24/' /lib/systemd/network/20-vlan-eth0.network")
         self.is_network_alive_in_linux(ipaddr=self.dutip)
 
     def update_uboot(self):
