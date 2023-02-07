@@ -158,6 +158,7 @@ class UNMSALPINEFactoryGeneral(ScriptBase):
         sstr = [
             "tftp",
             "-g",
+            "-b 4096",
             "-r images/" + self.board_id + "-fw.bin",
             "-l " + self.dut_tmpdir + "/upgrade.bin",
             self.tftp_server
