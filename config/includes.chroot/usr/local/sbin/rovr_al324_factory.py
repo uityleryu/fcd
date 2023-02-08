@@ -376,6 +376,14 @@ class RovR_AL324_FACTORY(ScriptBase):
 
         self.check_flash_data()
 
+    def modify_bootloader_args(self):
+        log_debug(msg="Write bootlloader args")
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv kern_img uImage")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv rootfs rootfs")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run loadbootargs")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootemmc")
     def show_info(self):
         retry_time = 15
         while retry_time >= 0:
@@ -436,6 +444,8 @@ class RovR_AL324_FACTORY(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
+            if self.board_id == "ea01":
+                self.modify_bootloader_args()
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
             time.sleep(15)  # for stable eth
             self.set_kernel_net()
