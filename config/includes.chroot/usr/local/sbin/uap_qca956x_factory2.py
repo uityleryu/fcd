@@ -162,9 +162,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
     def login_kernel(self):
         log_debug(msg="Login kernel")
-        # self.pexp.expect_action(120, "Please press Enter to activate this console", "")
-        time.sleep(60)
-        self.pexp.expect_action(30, "", "\n")
+        self.pexp.expect_action(120, "Please press Enter to activate this console", "")
 
         time.sleep(15)  # for stable system
 
@@ -181,13 +179,22 @@ class UAPQCA956xFactory2(ScriptBase):
             exp = self.dutip
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=5)
         elif self.board_id in ["dca6", "dca7"]:
-            cmd = "/etc/init.d/network start"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, retry=60)
+            # Init network manually
+            self.pexp.expect_action(30, self.linux_prompt, "/etc/init.d/network start")
+            time.sleep(3)
+            # Check br-lan inited or not
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ifconfig br-lan", post_exp="HWaddr", retry=60)
+            time.sleep(1)
+            # Set br-lan to dutip
+            self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
+            time.sleep(3)
+            # Check br-lan
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ifconfig", post_exp=self.dutip, retry=5)
 
-        self.is_network_alive_in_linux(retry=60, arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_linux(retry=20, arp_logging_en=True, del_dutip_en=True)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
         time.sleep(3)  # for stable eth
-        self.is_network_alive_in_linux(retry=10, arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_linux(retry=20, arp_logging_en=True, del_dutip_en=True)
 
     def enable_ssh(self):
         self.pexp.expect_action(30, self.linux_prompt, "echo ssh | prst_tool -w misc; /etc/init.d/dropbear start")
@@ -315,7 +322,7 @@ class UAPQCA956xFactory2(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(5, "Open serial port successfully ...")
-
+        """
         if self.UPDATE_UBOOT is True:
             msg(20, "Updating uboot ...")
             self.enter_uboot()
@@ -337,7 +344,7 @@ class UAPQCA956xFactory2(ScriptBase):
             self.gen_and_upload_ssh_key()
 
             self.pexp.expect_action(30, self.bootloader_prompt, "reset")
-
+        """
         if self.BOOT_RECOVERY_IMAGE is True:
             msg(50, "Booting into recovery images...")
             self.enter_uboot()
