@@ -149,6 +149,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_action(60, "Hit Esc key to stop autoboot", "\x1b")
         msg(60, "Reboot into Uboot for resetting to default environment")
+        # FIXME: need to add sysid condition?
         self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel unknown")
         self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")
         self.pexp.expect_only(60, "Resetting to default environment")
