@@ -68,6 +68,23 @@ class UAPQCA956xFactory2(ScriptBase):
         self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
 
     def update_uboot(self):
+        '''
+        Flash layout of UMR-PRO
+        [    0.369964] 0x000000000000-0x000000080000 : "u-boot"
+        [    0.375934] 0x000000080000-0x000000090000 : "u-boot-env"
+        [    0.382243] 0x000000090000-0x0000000a0000 : "eeprom"
+        [    0.388216] 0x0000000a0000-0x0000000b0000 : "bs1"
+        [    0.393950] 0x0000000b0000-0x0000000c0000 : "bs2"
+        [    0.399640] 0x0000000c0000-0x0000000d0000 : "prst"
+        [    0.405515] 0x0000000d0000-0x000000150000 : "cfg"
+        [    0.411189] 0x000000150000-0x0000001f0000 : "stats"
+        [    0.417095] 0x0000001f0000-0x0000002f0000 : "lcmfw"
+        [    0.422963] 0x0000002f0000-0x0000022f0000 : "ltefw"
+        [    0.428851] 0x0000022f0000-0x0000026a0000 : "recovery"
+        [    0.435038] 0x0000026a0000-0x0000046a0000 : "fw_inactive"
+        [    0.441530] 0x0000046a0000-0x0000066a0000 : "firmware"
+        '''
+
         uboot_path = os.path.join(self.fwdir, self.board_id + "-uboot.bin")
         log_debug(msg="uboot bin path:" + uboot_path)
 
@@ -75,9 +92,9 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, "tftpboot 0x81000000", "Bytes transferred")
 
         # erase and write flash
-        self.pexp.expect_action(30, self.bootloader_prompt, 'erase_ext 0 80000')
-        self.pexp.expect_action(60, self.bootloader_prompt, 'write_ext 0x81000000 0 80000')
-        self.pexp.expect_action(60, self.bootloader_prompt, 'erase_ext 80000 10000')
+        self.pexp.expect_action(30, self.bootloader_prompt, 'erase_ext 0 80000')  # erase u-boot
+        self.pexp.expect_action(60, self.bootloader_prompt, 'write_ext 0x81000000 0 80000')  # write -uboot.bin
+        self.pexp.expect_action(60, self.bootloader_prompt, 'erase_ext 80000 10000')  # erase u-boot-env
 
     def boot_recovery(self):
         recovery_path = os.path.join(self.fwdir, self.board_id + "-recovery.bin")
@@ -322,7 +339,7 @@ class UAPQCA956xFactory2(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(5, "Open serial port successfully ...")
-        """
+
         if self.UPDATE_UBOOT is True:
             msg(20, "Updating uboot ...")
             self.enter_uboot()
@@ -344,7 +361,7 @@ class UAPQCA956xFactory2(ScriptBase):
             self.gen_and_upload_ssh_key()
 
             self.pexp.expect_action(30, self.bootloader_prompt, "reset")
-        """
+
         if self.BOOT_RECOVERY_IMAGE is True:
             msg(50, "Booting into recovery images...")
             self.enter_uboot()
