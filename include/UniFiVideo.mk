@@ -94,7 +94,7 @@ IMAGE-UVC-G5PRO-MP= \
     images/a598* \
     uvc-fw/g5pro.*
 
-IMAGE-ROVR-WAVE-CAMERA= \
+IMAGE-UNIFI-ROVRWAVECAMERA= \
     images/a599* \
     uvc-fw/uwr.*
 
@@ -120,7 +120,7 @@ IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVERCAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO-MP)
-IMAGE-UVC+=$(IMAGE-ROVR-WAVE-CAMERA)
+IMAGE-UVC+=$(IMAGE-UNIFI-ROVRWAVECAMERA)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -256,6 +256,10 @@ TOOLS-UVC-G5PRO-MP+=$(TOOLS-UVC)
 TOOLS-UVC-G5PRO-MP+= \
     uvc/128k_ff.bin
 
+TOOLS-UNIFI-ROVRWAVECAMERA+=$(TOOLS-UVC)
+TOOLS-UNIFI-ROVRWAVECAMERA+= \
+    uvc/128k_ff.bin
+
 # Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -279,7 +283,7 @@ $(eval $(call ProductImage,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VE
 $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO-MP,FCD_$(PRD)_G5PRO-MP_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,ROVR-WAVE-CAMERA,FCD_$(PRD)_ROVR_WAVE_CAMERA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ROVR-WAVE-CAMERA,FCD_$(PRD)_ROVR-WAVE-CAMERA_$(VER)_$(FWVER)))
 
 # Project target black panther
 $(eval $(call ProductImage2,03933_a598))
@@ -308,7 +312,7 @@ $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,ROVR-WAVE-CAMERA,FCD_$(PRD)_ROVR_WAVE_CAMERA_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ROVR-WAVE-CAMERA,FCD_$(PRD)_ROVR-WAVE-CAMERA_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
