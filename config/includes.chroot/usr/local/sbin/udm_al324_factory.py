@@ -173,13 +173,15 @@ class UDM_AL324_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         if self.board_id == "ea2c":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
-
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
+            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl mask network-init upapi-server")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop network-init upapi-server")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 eth10")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
 
-        self.is_network_alive_in_linux(ipaddr=self.dutip)
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server)
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -464,7 +466,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
             log_debug(output)
-
+        if self.board_id =="ea2c":
+            output = self.pexp.expect_get_output(action="ubnt-systool reset2defaults", prompt="", timeout=3)
+            log_debug(output)
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
