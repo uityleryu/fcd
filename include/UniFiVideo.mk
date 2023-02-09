@@ -94,6 +94,10 @@ IMAGE-UVC-G5PRO-MP= \
     images/a598* \
     uvc-fw/g5pro.*
 
+IMAGE-ROVR-WAVE-CAMERA= \
+    images/a599* \
+    uvc-fw/uwr.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -116,6 +120,7 @@ IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVERCAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO-MP)
+IMAGE-UVC+=$(IMAGE-ROVR-WAVE-CAMERA)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -303,6 +308,7 @@ $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,ROVR-WAVE-CAMERA,FCD_$(PRD)_ROVR_WAVE_CAMERA_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
