@@ -1,8 +1,8 @@
 {
   "UniFiVideo": {
-    "UNIFI-ROVRWAVECAMERA": {
+    "ROVR-WAVE-CAMERA": {
       "INDEX": 0,
-      "NAME": "UNIFI-ROVRWAVECAMERA",
+      "NAME": "ROVR-WAVE-CAMERA",
       "BOARDID": "a599",
       "BOMREV": "113-04106",
       "DESC": "RovR Wave Camera",
