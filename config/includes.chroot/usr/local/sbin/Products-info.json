@@ -2602,9 +2602,8 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
-    }
-  },
-  "ROVR-WAVE-CAMERA":{
+    },
+    "ROVR-WAVE-CAMERA":{
       "INDEX"       : 21,
       "NAME"        : "ROVR-WAVE-CAMERA",
       "BOARDID"     : "a599",
@@ -2617,7 +2616,8 @@
       "SW_ID"       : "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
-    },
+    }
+  },
 
   "UbiquitiNMS":
   {
