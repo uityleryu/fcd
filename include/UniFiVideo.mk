@@ -274,6 +274,7 @@ $(eval $(call ProductImage,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VE
 $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO-MP,FCD_$(PRD)_G5PRO-MP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,ROVR-WAVE-CAMERA,FCD_ROVR_WAVE_CAMERA_$(VER)_$(FWVER)))
 
 # Project target black panther
 $(eval $(call ProductImage2,03933_a598))
