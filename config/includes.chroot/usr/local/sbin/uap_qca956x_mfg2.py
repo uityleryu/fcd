@@ -7,7 +7,7 @@ from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-This back to MFG script is for ULTE-FLEX, ULTE-FLEX-EU, ULTE-FLEX-US
+This back to MFG script is for ULTE-FLEX, ULTE-FLEX-EU, ULTE-FLEX-US, UMR-PRO
 '''
 
 '''

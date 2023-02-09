@@ -7,7 +7,7 @@
       "BOMREV": "113-01112",
       "DESC": "UniFi Mobile Router PRO US",
       "FILE": "uap_qca956x_factory2.py",
-      "T1FILE": "uap_qca956x_mfg.py",
+      "T1FILE": "uap_qca956x_mfg2.py",
       "QRCHECK": "activate_code",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
@@ -16,7 +16,7 @@
           "DST_PATH": "uap-fw/ulte-flex",
           "FILES": [
             "ULTE-Flex.qca956x.v1.2.7.3-g127b2692-recovery.bin",
-            "XD.qca956x-LSDK-ART-ULTE-FLEX-V10.img",
+            "XD.qca956x-LSDK-ART-UMR-PRO-V1.img",
             "ee-1.2.7-3-g127b2692-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
             "qca956x-ulte-flex-u-boot_dca6_20230202.bin"
           ]
@@ -46,7 +46,7 @@
         ],
         [
           "tftp/images/dca6-mfg.bin",
-          "../uap-fw/ulte-flex/XD.qca956x-LSDK-ART-ULTE-FLEX-V10.img"
+          "../uap-fw/ulte-flex/XD.qca956x-LSDK-ART-UMR-PRO-V1.img"
         ],
         [
           "tftp/images/dca6-recovery.bin",
