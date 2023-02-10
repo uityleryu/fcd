@@ -124,6 +124,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
             cmd = "btnvtool -b {}".format(comma_bt_mac)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
+            # Check MAC
+            cmd = "cat /persist/emac_config.ini"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
+
             # Check WiFi MAC
             cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
