@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "UAP-AC-PRO": {
+    "UAP-AC-IW-PRO": {
       "INDEX": 0,
-      "NAME": "UAP-AC-PRO",
-      "BOARDID": "e537",
-      "BOMREV": "113-00390",
-      "DESC": "UniFi AC PRO",
+      "NAME": "UAP-AC-IW-PRO",
+      "BOARDID": "e597",
+      "BOMREV": "113-00547",
+      "DESC": "UniFi AC InWall Pro",
       "FILE": "uap_qca9563_factory.py",
       "T1FILE": "uap_qca9563_mfg.py",
       "QRCHECK": "True",
@@ -17,7 +17,8 @@
           "DST_PATH": "uap-fw",
           "FILES": [
             "ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin",
-            "BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin"
+            "BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin",
+            "unifi-v1.6.6.244-gffe17035_uap-qca956x-16MB_u-boot.bin"
           ]
         },
         {
@@ -40,12 +41,16 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e537-art.bin",
+          "tftp/images/e597-art.bin",
           "../uap-fw/ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin"
         ],
         [
-          "tftp/images/e537-fw.bin",
+          "tftp/images/e597-fw.bin",
           "../uap-fw/BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin"
+        ],
+        [
+          "tftp/images/e597.uboot",
+          "../uap-fw/unifi-v1.6.6.244-gffe17035_uap-qca956x-16MB_u-boot.bin"
         ]
       ]
     }
