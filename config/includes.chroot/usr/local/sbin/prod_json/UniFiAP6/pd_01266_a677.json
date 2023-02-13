@@ -1,0 +1,61 @@
+{
+  "UniFiAP6": {
+    "UXG": {
+      "INDEX": 0,
+      "NAME": "UXG",
+      "BOARDID": "a677",
+      "BOMREV": "113-01266",
+      "DESC": "UniFi Express Mesh",
+      "FILE": "ux_uxp_uxg_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image//ux-uxp-uxg-fw/uxg",
+          "DST_PATH": "a677",
+          "FILES": [
+            "a677-fw.bin",
+            "a677-loader.img",
+            "a677-uboot.mbn",
+            "uxg-1g-v1.img",
+            "uxg-1g-v1_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a677-nor.bin",
+          "../a677/uxg-1g-v1_nor.bin"
+        ],
+        [
+          "tftp/images/a677-emmc.img",
+          "../a677/uxg-1g-v1.img"
+        ],
+        [
+          "tftp/images/a677-fw.bin",
+          "../a677/a677-fw.bin"
+        ],
+        [
+          "tftp/images/a677-uboot.mbn",
+          "../a677/a677-uboot.mbn"
+        ],
+        [
+          "tftp/images/a677-loader.img",
+          "../a677/a677-loader.img"
+        ]
+      ]
+    }
+  }
+}
