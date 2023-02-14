@@ -48,6 +48,7 @@ IMAGE-AC-SERIES= \
     am-fw/WA.v8.7.11.46972.220614.0420.bin \
     am-fw/XC.v8.7.11.46972.220614.0419.bin \
     am-fw/WA.v8.7.5-alpha.45137.210419.1121.bin \
+    am-fw/WA.v8.7.12-beta3.47166.230210.1255.bin \
     am-fw/UBNT_WA.bin \
     am-fw/UBNT_2WA.bin \
     am-fw/UBNT_XC.bin \
