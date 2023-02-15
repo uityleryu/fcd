@@ -959,11 +959,17 @@ class UVCFactoryGeneral(ScriptBase):
                 else:
                     if self.finalret is True:
                         msg(43, "Doing registration ...")
-                        try:
-                            self.registration()
-                            msg(49, "register PASS")
-                        except Exception as e:
-                            print(str(e))
+                        for i in range(2):
+                            log_debug("Registration attempt: {}".format(i+1))
+                            try:
+                                self.registration()
+                                msg(49, "register PASS")
+                            except Exception as e:
+                                print(str(e))
+                                time.sleep(3)
+                            else:
+                                break
+                        else:
                             msg(48, "register FAIL")
                             self.critical_error("register FAIL")
 
