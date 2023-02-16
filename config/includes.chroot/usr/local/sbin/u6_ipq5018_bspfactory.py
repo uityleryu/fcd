@@ -288,7 +288,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_only(60, "Bytes transferred")
-        cmd = "mmc write 0x50000000 0x20800 0xffff; saveenv"
+        cmd = "mmc write 0x50000000 0x20800 0xffff"
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, "written: OK", "bootm")
 

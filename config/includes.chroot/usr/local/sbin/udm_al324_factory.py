@@ -460,15 +460,37 @@ class UDM_AL324_FACTORY(ScriptBase):
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
             # self.show_info()
             
-            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
         else:
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
-            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
+
         if self.board_id =="ea2c":
             output = self.pexp.expect_get_output(action="ubnt-systool reset2defaults", prompt="", timeout=3)
             log_debug(output)
+
+
+        cmd = "systemctl is-system-running"
+        ct = 0
+        retry_max = 120
+        while ct < retry_max:
+            output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+            m_run = re.findall("running", output)
+            m_degraded = re.findall("degraded", output)
+            if len(m_run) == 2 or len(m_degraded) == 1:
+                rmsg = "The system is running good"
+                log_debug(rmsg)
+                break
+
+            time.sleep(1)
+            ct += 1
+        else:
+            rmsg = "The system is not booting up successfully, FAIL!!"
+            error_critical(rmsg)
+
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 

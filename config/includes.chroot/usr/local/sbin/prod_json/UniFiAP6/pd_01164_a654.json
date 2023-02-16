@@ -28,9 +28,9 @@
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
             "u6-infinity_1gb-v6.img",
-            "BZ.ipq50xx_6.2.38+14070.220902.1549-uboot.bin",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
-            "ramload-6.0.17.bin",
+            "ramload-6.2.49.bin",
             "u6-infinity_1gb-v6_nor.bin"
           ]
         }
@@ -42,7 +42,7 @@
         ],
         [
           "tftp/images/a654-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.38+14070.220902.1549-uboot.bin"
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
         ],
         [
           "tftp/images/a654-gpt.bin",
@@ -50,7 +50,7 @@
         ],
         [
           "tftp/images/a654-initramfs.bin",
-          "../u6-fw/ipq5018/ramload-6.0.17.bin"
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
         ],
         [
           "tftp/images/a654-nor.bin",
