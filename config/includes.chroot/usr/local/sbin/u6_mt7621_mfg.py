@@ -27,7 +27,6 @@ class MT7621MFGGeneral(ScriptBase):
         self.pexp.expect_only(timeout=600, exptxt=self.bootloader_prompt)
         self.pexp.expect_action(timeout=10, exptxt="", action=" ")
 
-
     def stop_uboot(self, timeout=30):
         self.set_bootloader_prompt("MT7621> |MT7621 #|==>")
         if self.pexp is None:
@@ -95,9 +94,11 @@ class MT7621MFGGeneral(ScriptBase):
         msg(no=100, out="Back to T1 has completed")
         self.close_fcd()
 
+
 def main():
     mt7621_mfg_general = MT7621MFGGeneral()
     mt7621_mfg_general.run()
+
 
 if __name__ == "__main__":
     main()
