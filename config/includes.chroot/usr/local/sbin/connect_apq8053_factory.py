@@ -41,6 +41,7 @@ from datetime import datetime
     efb5: UniFi TouchMax (unLock)(Android 9)
     efb6: UniFi TouchMax White (Lock)(Android 9)
     efb7: UniFi TouchMax White (unLock)(Android 9)
+    efa1: EV-Charger-EU        (Android 9)
 
 '''
 
@@ -85,7 +86,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "0007f100",
             'efb5': "0007f100",
             'efb6': "0007f100",
-            'efb7': "0007f100"
+            'efb7': "0007f100",
+            'efa1': "0007f100"
         }
 
         # default product class: basic
@@ -94,7 +96,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f"
+            "efb7", "efa0", "ec5e", "ec5f", "efa1"
         ]
 
         self.ospl = {
@@ -124,7 +126,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "adr9",
             'efb6': "adr9",
             'efb7': "adr9",
-            'ec5f': "adr9"
+            'ec5f': "adr9",
+            'efa1': "adr9"
         }
 
         self.lnxpmt = {
@@ -154,7 +157,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "uvp_touchmax",
             'efb5': "uvp_touchmax",
             'efb6': "uvp_touchmax",
-            'efb7': "uvp_touchmax"
+            'efb7': "uvp_touchmax",
+            'efa1': "ev_charger"
         }
 
         # Number of Ethernet
@@ -185,7 +189,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efa1': "1"
         }
 
         # Number of WiFi
@@ -216,7 +221,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efa1': "1"
         }
 
         # Number of Bluetooth
@@ -247,7 +253,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efa1': "1"
         }
 
         self.qrcode_dict = {
@@ -277,7 +284,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': True,
             'efb5': True,
             'efb6': True,
-            'efb7': True
+            'efb7': True,
+            'efa1': True
         }
 
         self.devnetmeta = {
