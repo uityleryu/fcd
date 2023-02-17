@@ -38,6 +38,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "udw",  # udw
             'ea2b': "udw",  # udw_pro, but tools same as udw
             'ea2c': "udm_se",  # udm_se
+            'ea15': "udm_pro"
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
@@ -46,67 +47,80 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "0x220000",
             'ea2b': "0x220000",
             'ea2c': "0x1f0000",
+            'ea15': "0x1f0000"
         }
         
         self.eeprom_offset_2 = {
             'ea2a': "0x228000",
             'ea2b': "0x228000",
             'ea2c': "0x1f8000",
+            'ea15': "0x1f8000"
         }
 
         self.wsysid = {
             'ea2a': "77072aea",
             'ea2b': "77072bea",
             'ea2c': "77072cea",
+            'ea15': "770715ea"
         }
 
         # active port
         self.activeport = {
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
-            'ea2c': "al_eth2"  # set sfp 0 or 2 for SPF+
+            'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
+            'ea15': "al_eth2"
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea2a': "20",
             'ea2b': "23",
-            'ea2c': "11"
+            'ea2c': "11",
+            'ea15': "11"
         }
 
         # number of WiFi
         self.wifinum = {
             'ea2a': "2",
             'ea2b': "3",
-            'ea2c': "0"
+            'ea2c': "0",
+            'ea15': "0"
+
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1",
             'ea2a': "1",
-            'ea2b': "1"
+            'ea2b': "1",
+            'ea15': "1"
+
         }
 
         # ethernet interface
         self.netif = {
             'ea2a': "br0",
             'ea2b': "psu0",
-            'ea2c': "eth10"
+            'ea2c': "eth10",
+            'ea15': "eth0"
+
         }
 
         # LCM update
         self.lcmupdate = {
             'ea2a': True,
             'ea2b': False,
-            'ea2c': False
+            'ea2c': False,
+            'ea15': False
         }
 
         # Wifi cal data setting
         self.wifical = {
             'ea2a': True,
             'ea2b': True,
-            'ea2c': False
+            'ea2c': False,
+            'ea15': False
         }
 
         self.devnetmeta = {
