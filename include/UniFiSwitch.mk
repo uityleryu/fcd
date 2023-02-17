@@ -155,6 +155,20 @@ IMAGE-USW-Enterprise-8-PoE= \
     usw-fw/unifiswitch-enterprise-8-poe.bin \
     usw-fw/US.mvpj4b*
 
+IMAGE-USC-8= \
+    images/ed01* \
+    usw-fw/unifiswitch-usc8-fw.bin \
+    usw-fw/unifiswitch-usc8-mfg.bin \
+    usw-fw/unifiswitch-usc8-ubidiag.bin \
+    usw-fw/US.mscc7514*
+
+IMAGE-UIS-8-450= \
+    images/ed04* \
+    usw-fw/unifiswitch-usc8-fw.bin \
+    usw-fw/unifiswitch-usc8-mfg.bin \
+    usw-fw/unifiswitch-usc8-ubidiag.bin \
+    usw-fw/US.mscc7514*
+
 IMAGE-USW+=$(IMAGE-USW-PRO)
 IMAGE-USW+=$(IMAGE-USW-6XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX)
@@ -175,6 +189,8 @@ IMAGE-USW+=$(IMAGE-US-GEN1)
 IMAGE-USW+=$(IMAGE-US-16-XG)
 IMAGE-USW+=$(IMAGE-USW-FLEX-XG)
 IMAGE-USW+=$(IMAGE-USW-Enterprise-8-PoE)
+IMAGE-USW+=$(IMAGE-USC-8)
+IMAGE-USW+=$(IMAGE-UIS-8-450)
 
 
 # Model
@@ -271,11 +287,21 @@ TOOLS-USW-Enterprise-8-PoE=$(TOOLS-USW)
 TOOLS-USW-Enterprise-8-PoE+= \
     usw_enterprise_8_poe/helper*
 
+TOOLS-USC-8=$(TOOLS-USW)
+TOOLS-USC-8+= \
+    usc_8/helper*
+
+TOOLS-UIS-8-450=$(TOOLS-USW)
+TOOLS-UIS-8-450+= \
+    usc_8/helper*
+
 # ALL
 TOOLS-USW+=$(TOOLS-CONFIG)
 
 TOOLS-US-GEN1+=$(TOOLS-USW)
 TOOLS-US-16-XG+=$(TOOLS-USW)
+TOOLS-USC-8+=$(TOOLS-USW)
+TOOLS-UIS-8-450+=$(TOOLS-USW)
 
 # Project target
 
@@ -302,6 +328,8 @@ $(eval $(call ProductImage,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_$(F
 $(eval $(call ProductImage,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,USC-8,FCD_$(PRD)_USC-8_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UIS-8-450,FCD_$(PRD)_UIS-8-450_$(VER)_$(FWVER)))
 
 # Project target black panther
 
@@ -331,6 +359,8 @@ $(eval $(call ProductCompress,USW-Aggregation,FCD_$(PRD)_USW-Aggregation_$(VER)_
 $(eval $(call ProductCompress,USW-Aggregation-Pro,FCD_$(PRD)_USW-Aggregation-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-FLEX-XG,FCD_$(PRD)_USW-FLEX-XG_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,USW-Enterprise-8-PoE,FCD_$(PRD)_USW-Enterprise-8-PoE_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,USC-8,FCD_$(PRD)_USC-8_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UIS-8-450,FCD_$(PRD)_UIS-8-450_$(VER)_$(FWVER)))
 
 
 
@@ -377,3 +407,6 @@ $(eval $(call ProductCompress2,USW_POE16MB-SERIES))
 $(eval $(call ProductCompress2,USW_LITEPOE32MB-SERIES))
 $(eval $(call ProductCompress2,USW_POE32MB-SERIES))
 $(eval $(call ProductCompress2,03970_ed31))
+$(eval $(call ProductCompress2,02540_ed60))
+$(eval $(call ProductCompress2,02556_ed01))
+$(eval $(call ProductCompress2,02672_ed04))

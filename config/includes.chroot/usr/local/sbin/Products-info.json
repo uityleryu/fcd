@@ -961,6 +961,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USC-8":{
+      "INDEX"       : 39,
+      "NAME"        : "USC-8",
+      "BOARDID"     : "ed01",
+      "BOMREV"      : "113-02556",
+      "DESC"        : "UBNT UniFiSwitch USC 8 ports",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "UIS-8-450":{
+      "INDEX"       : 40,
+      "NAME"        : "UIS-8-450",
+      "BOARDID"     : "ed04",
+      "BOMREV"      : "113-02672",
+      "DESC"        : "UniFi Industrial Switch 8 ports 450W",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },

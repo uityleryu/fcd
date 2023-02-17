@@ -21,13 +21,13 @@
         },
         {
           "SRC_PATH": "images/fcd-image/unas/",
-          "DST_PATH": "ea50",
+          "DST_PATH": "unas",
           "FILES": [
             "ea50-srt2-uImage"
           ]
         },
         {
-          "SRC_PATH": "images/tools/ea51/",
+          "SRC_PATH": "images/tools/unas/ea51/",
           "DST_PATH": "tools/ea50",
           "FILES": [
             "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
@@ -61,8 +61,8 @@
           "../unas/ea50-srt2-fw-image.bin"
         ],
         [
-          "tftp/ea50/uImage",
-          "../ea50/ea50-srt2-uImage"
+          "tftp/uImage",
+          "unas/ea50-srt2-uImage"
         ]
       ]
     }

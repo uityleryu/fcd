@@ -140,8 +140,9 @@ class U6MT7981BspFactory(ScriptBase):
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
-        cmd = "cat /sys/bus/mmc/devices/mmc0\:0001/fwrev"
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, self.mmc_ver)
+# Double: no need now, backup
+#        cmd = "cat /sys/bus/mmc/devices/mmc0\:0001/fwrev"
+#        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, self.mmc_ver)
 
     def check_caldata(self):
         cmd = "ifconfig ra0 up"
@@ -160,12 +161,13 @@ class U6MT7981BspFactory(ScriptBase):
                 ["iwpriv ra0 e2p 19a", "0x0007"]
             ]
         else:
-            log_deubg("The Board ID is not support!!!")
+            log_debug("The Board ID is not support!!!")
             return RC.E_FTU_GENERIC
 
         for cmd in cmdset:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd[0])
             self.pexp.expect_only(10, cmd[1])
+
 
     def write_mmc(self):
         src_path = os.path.join(self.fwdir, "mmc")
@@ -185,6 +187,7 @@ class U6MT7981BspFactory(ScriptBase):
         cmd = "/tmp/mmc ffu /tmp/mmc-fw /dev/mmcblk0"
         post_exp = "Please reboot to complete firmware installation"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp)
+
 
     def run(self):
         """

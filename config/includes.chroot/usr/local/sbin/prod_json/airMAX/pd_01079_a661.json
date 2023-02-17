@@ -20,7 +20,7 @@
             "u-boot_20221207.mbn",
             "prism-ax-v8-emmc.img",
             "prism-ax-v8-emmc_nor.bin",
-            "RAX.ipq5018.v1.3.1-devel+devel.dd3ebc2d.221207.1108-mp03.5-c2.bin"
+            "RAX.ipq5018.v1.3.2-devel+devel.ed27ebee.230104.1811-mp03.5-c2.bin"
           ]
         },
         {
@@ -49,7 +49,7 @@
         ],
         [
           "tftp/images/a661.bin",
-          "../am-fw/RAX.ipq5018.v1.3.1-devel+devel.dd3ebc2d.221207.1108-mp03.5-c2.bin"
+          "../am-fw/RAX.ipq5018.v1.3.2-devel+devel.ed27ebee.230104.1811-mp03.5-c2.bin"
         ]
       ]
     }

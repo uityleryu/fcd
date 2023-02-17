@@ -9,7 +9,7 @@
       "FILE": "uc_qcs403_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "0a01",
+      "SW_ID": "1c01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",

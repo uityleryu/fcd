@@ -1,17 +1,15 @@
 {
-  "UniFiProtect": {
-    "Viewport": {
+  "Connect": {
+    "EV-Charger-EU": {
       "INDEX": 0,
-      "NAME": "Viewport",
-      "BOARDID": "e980",
-      "BOMREV": "113-02900",
-      "DESC": "UniFi Protect viewport",
+      "NAME": "EV-Charger-EU",
+      "BOARDID": "efa1",
+      "BOMREV": "113-04101",
+      "DESC": "UniFi EV Charger",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "CLIENT_FILE": "client_rpi4_release_20210911",
-      "FCD_ID": "0009",
-      "SW_ID": "1701",
+      "SW_ID": "1ce3",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
@@ -21,13 +19,6 @@
             "tmux.conf",
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/protectbox",
-          "DST_PATH": "protectbox",
-          "FILES": [
-            "usb_mode.sh"
           ]
         }
       ],

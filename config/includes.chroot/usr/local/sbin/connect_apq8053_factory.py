@@ -41,6 +41,8 @@ from datetime import datetime
     efb5: UniFi TouchMax (unLock)(Android 9)
     efb6: UniFi TouchMax White (Lock)(Android 9)
     efb7: UniFi TouchMax White (unLock)(Android 9)
+    efba: UniFi G3 TouchMax Wallmount   (Android 9)
+    efa1: EV-Charger-EU        (Android 9)
 
 '''
 
@@ -85,7 +87,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "0007f100",
             'efb5': "0007f100",
             'efb6': "0007f100",
-            'efb7': "0007f100"
+            'efb7': "0007f100",
+            'efba': "0007f100",
+            'efa1': "0007f100"
         }
 
         # default product class: basic
@@ -94,7 +98,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f"
+            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1"
         ]
 
         self.ospl = {
@@ -124,7 +128,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "adr9",
             'efb6': "adr9",
             'efb7': "adr9",
-            'ec5f': "adr9"
+            'ec5f': "adr9",
+            'efba': "adr9",
+            'efa1': "adr9"
         }
 
         self.lnxpmt = {
@@ -154,7 +160,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "uvp_touchmax",
             'efb5': "uvp_touchmax",
             'efb6': "uvp_touchmax",
-            'efb7': "uvp_touchmax"
+            'efb7': "uvp_touchmax",
+            'efba': "utp_wallmount",
+            'efa1': "ev_charger"
         }
 
         # Number of Ethernet
@@ -185,7 +193,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efba': "1",
+            'efa1': "1"
         }
 
         # Number of WiFi
@@ -216,7 +226,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efba': "1",
+            'efa1': "1"
         }
 
         # Number of Bluetooth
@@ -247,7 +259,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': "1",
             'efb5': "1",
             'efb6': "1",
-            'efb7': "1"
+            'efb7': "1",
+            'efba': "2",
+            'efa1': "1"
         }
 
         self.qrcode_dict = {
@@ -277,7 +291,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb4': True,
             'efb5': True,
             'efb6': True,
-            'efb7': True
+            'efb7': True,
+            'efba': True,
+            'efa1': True
         }
 
         self.devnetmeta = {
@@ -340,7 +356,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     time.sleep(1)
                     continue
                 else:
-                    print("Exceeded maximum retry times {0}".format(i))
+                    print("Exceeded maximum retry times {0}".format(ct))
                     raise e
             else:
                 break
@@ -355,7 +371,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         for i in range(0, retry):
             try:
                 cmd = "adb connect {0}:5555".format(self.dutip)
-                self.cnapi.xcmd(cmd)
+                [buffer, returncode] = self.cnapi.xcmd(cmd)
+                if "connected to {}".format(self.dutip) not in buffer:
+                    if i < retry:
+                        print("Retry {0}".format(i + 1))
+                        time.sleep(1)
+                        continue
+                    else:
+                        print("Exceeded maximum retry times {0}".format(i))
+                        error_critical(msg="ADB over ethernet Failed!")
 
                 self.cladb = ExpttyProcess(self.row_id, "adb root", "\n")
                 self.cladb.expect_only(2, "adbd is already running as root")
@@ -547,6 +571,52 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
     def check_qrcode(self):
         pass
 
+    def write_and_check_mac_e980(self):
+        mode_script_source = os.path.join(self.tftpdir, "protectbox", "usb_mode.sh")
+        mode_script_target = os.path.join("/data", "usb_mode.sh")
+        self.cnapi.xcmd("adb push {} {}".format(mode_script_source, mode_script_target))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "chmod 777 {}".format(mode_script_target))
+        lmac = self.mac_format_str2comma(self.mac)
+        cmd = "lan78xx-update-mac {}".format(lmac)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+        self.pexp.close()
+        time.sleep(2)
+        self.cnapi.xcmd("adb tcpip 5555")
+        # reconnect using adb over ethernet
+        time.sleep(2)
+        self.cnapi.xcmd("adb shell {} host &".format(mode_script_target))
+        time.sleep(20)
+        #self.get_dut_ip()
+        # use static IP address - FTU configuration
+        cmd = "echo \"ubnt\" | sudo -S ip addr add {}/24 dev eth0".format("192.168.168.19")
+        self.cnapi.xcmd(cmd)
+        time.sleep(2)
+        self.dutip = "192.168.168.11"
+        self.connect_adb_eth()
+        cmd = "ethtool -E eth0 magic 0x78A5 offset 0 length 512 < /data/lan7801_eeprom.bin"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        time.sleep(2)
+        cmd = "ethtool -e eth0 offset 1 length 6 maconly 2"
+        output = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        if lmac.upper() not in output:
+            error_critical("Fail to write Eth MAC address ...")
+        # switch back to usb adb
+        self.pexp.expect_lnxcmd(10, "", "")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "{} usb &".format(mode_script_target))
+        self.pexp.close()
+        time.sleep(2)
+        self.cnapi.xcmd("adb disconnect {}".format(self.dutip))
+        time.sleep(5)
+        self.connect_adb_usb()
+        # write BT MAC
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "rm -rf /persist/bluetooth/.bt_nv.bin")
+        btmac = self.mac_format_str2comma(hex(int(self.mac, 16) + 1)[2:].zfill(12))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "btnvtool -b {}".format(btmac))
+        output = self.pexp.expect_get_output("btnvtool -g", self.linux_prompt)
+        if btmac.upper() not in output:
+            error_critical("Fail to write BT MAC address ...")
+
+
     def run(self):
         """
         Main procedure of factory
@@ -575,7 +645,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             elif self.board_id == "ec5f":
                 lmac = self.mac_format_str2comma(self.mac)
                 cmd = "mkdir /persist/eth; echo {0} > {1}".format(lmac, self.f_eth_mac)
-
+            elif self.board_id == "e980":
+                cmd = ""
+                self.write_and_check_mac_e980()
             else:
                 lmac = self.mac_format_str2list(self.mac)
                 bmac = '\\x{0}\\x{1}\\x{2}\\x{3}\\x{4}\\x{5}'.format(lmac[0], lmac[1], lmac[2], lmac[3], lmac[4],
@@ -585,7 +657,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
-            if self.board_id == 'ec5f':
+            if self.board_id == 'e980' or self.board_id == 'ec5f':
                 pass
             else:
                 cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
@@ -603,10 +675,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
             # Write persist cfg file
-            if self.board_id == "e980":
-                cmd = "echo gStaCountryCode={} > {}".format(self.android_cc, self.persist_cfg_file)
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            elif self.board_id == "ef90" or self.board_id == "ef84" or  self.board_id == 'ec5f':
+            if self.board_id == "e980" or self.board_id == "ef90" or self.board_id == "ef84" or self.board_id == 'ec5f':
                 # No WiFi, No need to write teh country code
                 pass
             else:
