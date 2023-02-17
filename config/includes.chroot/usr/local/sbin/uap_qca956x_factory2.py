@@ -42,6 +42,8 @@ class UAPQCA956xFactory2(ScriptBase):
             'dca7': "ulte_flex"
         }
 
+        self.ac_code_model = ['dca6', 'dca7']
+
         self.helperexe = "helper_ARxxxx_release"
         self.helper_path = helppth[self.board_id]
 
@@ -389,6 +391,12 @@ class UAPQCA956xFactory2(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             msg(90, "Checking the devrenformation ...")
             self.check_info()
+
+        if self.board_id in self.ac_code_model:
+            if self._upload_log() is True:
+                self.upload = False  # Skip to upload log again while __del__
+            else:
+                error_critical("Failed to upload FCD log. This model must upload log")
 
         msg(100, "Completed FCD process ...")
 
