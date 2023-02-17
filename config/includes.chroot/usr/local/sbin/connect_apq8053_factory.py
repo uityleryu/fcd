@@ -41,6 +41,7 @@ from datetime import datetime
     efb5: UniFi TouchMax (unLock)(Android 9)
     efb6: UniFi TouchMax White (Lock)(Android 9)
     efb7: UniFi TouchMax White (unLock)(Android 9)
+    efba: UniFi G3 TouchMax Wallmount   (Android 9)
     efa1: EV-Charger-EU        (Android 9)
 
 '''
@@ -87,6 +88,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "0007f100",
             'efb6': "0007f100",
             'efb7': "0007f100",
+            'efba': "0007f100",
             'efa1': "0007f100"
         }
 
@@ -96,7 +98,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f", "efa1"
+            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1"
         ]
 
         self.ospl = {
@@ -127,6 +129,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "adr9",
             'efb7': "adr9",
             'ec5f': "adr9",
+            'efba': "adr9",
             'efa1': "adr9"
         }
 
@@ -158,6 +161,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "uvp_touchmax",
             'efb6': "uvp_touchmax",
             'efb7': "uvp_touchmax",
+            'efba': "utp_wallmount",
             'efa1': "ev_charger"
         }
 
@@ -190,6 +194,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "1",
             'efb6': "1",
             'efb7': "1",
+            'efba': "1",
             'efa1': "1"
         }
 
@@ -222,6 +227,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "1",
             'efb6': "1",
             'efb7': "1",
+            'efba': "1",
             'efa1': "1"
         }
 
@@ -254,6 +260,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': "1",
             'efb6': "1",
             'efb7': "1",
+            'efba': "2",
             'efa1': "1"
         }
 
@@ -285,6 +292,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': True,
             'efb6': True,
             'efb7': True,
+            'efba': True,
             'efa1': True
         }
 
@@ -348,7 +356,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     time.sleep(1)
                     continue
                 else:
-                    print("Exceeded maximum retry times {0}".format(i))
+                    print("Exceeded maximum retry times {0}".format(ct))
                     raise e
             else:
                 break
