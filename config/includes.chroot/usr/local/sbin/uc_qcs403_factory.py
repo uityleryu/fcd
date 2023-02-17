@@ -33,19 +33,19 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         ethnum = {
-            'ec80': "0",
+            'ec80': "1",
             'aa02': "1"
         }
 
         # number of WiFi
         wifinum = {
-            'ec80': "0",
+            'ec80': "1",
             'aa02': "1"
         }
 
         # number of Bluetooth
         btnum = {
-            'ec80': "0",
+            'ec80': "2",
             'aa02': "1"
         }
 
