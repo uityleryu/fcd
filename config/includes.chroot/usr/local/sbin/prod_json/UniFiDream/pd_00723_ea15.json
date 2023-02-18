@@ -50,7 +50,7 @@
           "../udm-fw/udmp/uImage_v2.4.27"
         ],
         [
-          "tftp/images/ea15_signed_boot.img",
+          "tftp/images/ea15-uboot.bin",
           "../udm-fw/udmp/boot_v2.4.27.img"
         ]
       ]

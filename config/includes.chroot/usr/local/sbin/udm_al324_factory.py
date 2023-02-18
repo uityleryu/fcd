@@ -103,7 +103,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "br0",
             'ea2b': "psu0",
             'ea2c': "eth10",
-            'ea15': "eth0"
+            'ea15': "eth10"
 
         }
 
@@ -186,10 +186,10 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def set_kernel_net(self):
-        if self.board_id == "ea2c":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+        if self.board_id == "ea2c" or self.board_id == "ea15":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl mask network-init udapi-server")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop network-init udapi-server")
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id]))
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
 
