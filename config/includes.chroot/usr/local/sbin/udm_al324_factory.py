@@ -193,7 +193,7 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
 
-        self.is_network_alive_in_linux(ipaddr=self.dutip)
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server)
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
