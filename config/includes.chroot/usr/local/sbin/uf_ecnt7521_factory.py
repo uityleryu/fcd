@@ -295,6 +295,17 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000a {}'.format(mac_list[4]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(mac_list[5]))
 
+    def kill_watchdog_if_reboot(self):
+        try:
+            log_debug("Check reboot msg...")
+            self.pexp.expect_only(100, ['The system is going down NOW!', 'Press any key to enter boot'])
+            self.login(timeout=30, retry=5)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'launcher stop /userfs/bin/ubnt-monitord', post_exp=self.linux_prompt)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'killall ubnt-watchdog', post_exp=self.linux_prompt)
+            log_debug("Watchdog process killed.")
+        except Exception as e:
+            log_debug("No reboot msg found, ignore this exception...")
+
     def run(self):
         UPDATE_UBOOT_EN = True
         PROVISION_EN = True
@@ -353,6 +364,7 @@ class UFECNT7521Factory(ScriptBase):
         if DOHELPER_EN is True:
             msg(60, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
+            self.kill_watchdog_if_reboot()
             self.prepare_server_need_files()
 
         if REGISTER_EN is True:
