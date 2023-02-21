@@ -490,13 +490,14 @@ class UDM_AL324_FACTORY(ScriptBase):
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
-
             time.sleep(1)
             ct += 1
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
-
+        if self.board_id == "ea2c" or self.board_id == "ea15":
+            output = self.pexp.expect_get_output(action="ubnt-systool reset2defaults", prompt="" ,timeout=15)
+            log_debug(output)
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
