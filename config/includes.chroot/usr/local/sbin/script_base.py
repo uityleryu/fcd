@@ -1363,25 +1363,31 @@ class ScriptBase(object):
         except Exception as e:
             log_debug(str(e))
 
-
     def __del__(self):
+        if self.upload:
+            self._upload_log()
+
+    def _upload_log(self) -> bool:
         try:
-            if self.upload:
-                # Compute test_time/duration
-                self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
-                self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
-                self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
-                self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+            # Compute test_time/duration
+            self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+            self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
+            self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+            self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:')
 
-                # Store error function
-                self.__store_error_function()
+            # Store error function
+            self.__store_error_function()
 
-                # Dump all var
-                self.__dump_JSON()
-                self._upload_prepare()
+            # Dump all var
+            self.__dump_JSON()
+            self._upload_prepare()
 
         except Exception as e:
-            print (e)
+            print("***** upload_log exception msg *****")
+            print(e)
+            return False
+        else:
+            return True
 
     def __store_error_function(self):
         PAlib_errorcollecter = errorcollecter()

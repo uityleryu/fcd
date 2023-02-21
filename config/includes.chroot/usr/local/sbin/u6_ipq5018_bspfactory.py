@@ -521,7 +521,10 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(80, "Succeeding in checking the devrenformation ...")
 
         if self.board_id in ["a667", "a674"]:
-            self.__del__()
+            if self._upload_log() is True:
+                self.upload = False  # Skip to upload log again while __del__
+            else:
+                error_critical("Failed to upload FCD log. This model must upload log")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
