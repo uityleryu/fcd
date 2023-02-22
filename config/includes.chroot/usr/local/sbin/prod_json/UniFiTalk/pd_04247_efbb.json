@@ -9,7 +9,7 @@
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "0a02",
+      "SW_ID": "0a01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
