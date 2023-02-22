@@ -43,6 +43,8 @@ from datetime import datetime
     efb7: UniFi TouchMax White (unLock)(Android 9)
     efba: UniFi G3 TouchMax Wallmount   (Android 9)
     efa1: EV-Charger-EU        (Android 9)
+    efbb: Phone G3 Touch Pro   (Android 9)
+    efbc: Phone G3 Touch Pro Max   (Android 9)
 
 '''
 
@@ -63,7 +65,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         emmc_jedec = {
             'e980': "0007f100",
             'ef80': "0007f100",  # UI EMMC PN: 140-04199
-            'ef81': "0007f100",  # UI EMMC PN: 140-04199
+            'ef81': "0007f100",  # SUI EMMC PN: 140-04199
             'ef82': "0007f100",
             'ef13': "0007f100",
             'ef87': "0007f100",  # UI EMMC PN: 140-04199
@@ -89,7 +91,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "0007f100",
             'efb7': "0007f100",
             'efba': "0007f100",
-            'efa1': "0007f100"
+            'efa1': "0007f100",
+            'efbb': "0007f100",
+            'efbc': "0007f100"
         }
 
         # default product class: basic
@@ -98,7 +102,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1"
+            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
+            "efbc"
         ]
 
         self.ospl = {
@@ -130,7 +135,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "adr9",
             'ec5f': "adr9",
             'efba': "adr9",
-            'efa1': "adr9"
+            'efa1': "adr9",
+            'efbb': "adr9",
+            'efbc': "adr9"
         }
 
         self.lnxpmt = {
@@ -162,7 +169,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "uvp_touchmax",
             'efb7': "uvp_touchmax",
             'efba': "utp_wallmount",
-            'efa1': "ev_charger"
+            'efa1': "ev_charger",
+            'efbb': "utp_g3_pro",
+            'efbc': "utp_g3_pro_max"
+
         }
 
         # Number of Ethernet
@@ -195,7 +205,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "1",
-            'efa1': "1"
+            'efa1': "1",
+            'efbb': "1",
+            'efbc': "1"
         }
 
         # Number of WiFi
@@ -228,7 +240,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "1",
-            'efa1': "1"
+            'efa1': "1",
+            'efbb': "1",
+            'efbc': "1"
         }
 
         # Number of Bluetooth
@@ -261,7 +275,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "2",
-            'efa1': "1"
+            'efa1': "1",
+            'efbb': "2",
+            'efbc': "2"
         }
 
         self.qrcode_dict = {
@@ -293,7 +309,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': True,
             'efb7': True,
             'efba': True,
-            'efa1': True
+            'efa1': True,
+            'efbb': True,
+            'efbc': True
         }
 
         self.devnetmeta = {

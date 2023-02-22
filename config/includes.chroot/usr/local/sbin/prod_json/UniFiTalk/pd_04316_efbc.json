@@ -1,11 +1,11 @@
 {
   "UniFiTalk": {
-    "UTP-G3-TouchMax-Wall": {
+    "UTP-G3-Touch-Pro-Max": {
       "INDEX": 0,
-      "NAME": "UTP-G3-TouchMax-Wall",
-      "BOARDID": "efba",
-      "BOMREV": "113-04099",
-      "DESC": "UniFi G3 TouchMax Wallmount",
+      "NAME": "UTP-G3-Touch-Pro-Max",
+      "BOARDID": "efbc",
+      "BOMREV": "113-04316",
+      "DESC": "Phone G3 Touch Pro Max",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
