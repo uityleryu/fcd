@@ -7,7 +7,7 @@
       "BOMREV": "113-01266",
       "DESC": "UniFi Express Mesh",
       "FILE": "ux_uxp_uxg_ipq5018_bspfactory.py",
-      "T1FILE": "u6_ipq5018_mfg.py",
+      "T1FILE": "ux_uxp_uxg_ipq5018_mfg.py",
       "QRCHECK": "True",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
