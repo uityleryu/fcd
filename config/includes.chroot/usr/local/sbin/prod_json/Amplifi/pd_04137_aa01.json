@@ -1,0 +1,28 @@
+{
+  "Amplifi": {
+    "AFi-Cinema-Bridge": {
+      "INDEX": 0,
+      "NAME": "AFi-Cinema-Bridge",
+      "BOARDID": "aa01",
+      "BOMREV": "113-04137",
+      "DESC": "AmpliFi Cinema Bridge",
+      "FILE": "uc_qcs403_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "",
+      "DOWNLOAD_FILE": [
+         {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}
