@@ -12,6 +12,7 @@ import re
     ea2a: UDW
     ea2b: UDW-PRO
     ea2c: UDM-SE
+    ea11: UDM
 '''
 
 
@@ -38,6 +39,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "udw",  # udw
             'ea2b': "udw",  # udw_pro, but tools same as udw
             'ea2c': "udm_se",  # udm_se
+            'ea11': "udm"
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
@@ -46,67 +48,77 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "0x220000",
             'ea2b': "0x220000",
             'ea2c': "0x1f0000",
+            'ea11': "0x1f0000"
         }
         
         self.eeprom_offset_2 = {
             'ea2a': "0x228000",
             'ea2b': "0x228000",
             'ea2c': "0x1f8000",
+            'ea11': "0x1f8000"
         }
 
         self.wsysid = {
             'ea2a': "77072aea",
             'ea2b': "77072bea",
             'ea2c': "77072cea",
+            'ea11': "770711ea",
         }
 
         # active port
         self.activeport = {
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
-            'ea2c': "al_eth2"  # set sfp 0 or 2 for SPF+
+            'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
+            'ea11': "al_eth3"
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea2a': "20",
             'ea2b': "23",
-            'ea2c': "11"
+            'ea2c': "11",
+            'ea11': "5"
         }
 
         # number of WiFi
         self.wifinum = {
             'ea2a': "2",
             'ea2b': "3",
-            'ea2c': "0"
+            'ea2c': "0",
+            'ea11': "2"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1",
             'ea2a': "1",
-            'ea2b': "1"
+            'ea2b': "1",
+            'ea11': "1"
         }
 
         # ethernet interface
         self.netif = {
             'ea2a': "br0",
             'ea2b': "psu0",
-            'ea2c': "eth10"
+            'ea2c': "eth10",
+            'ea11': "br0 "
         }
 
         # LCM update
         self.lcmupdate = {
             'ea2a': True,
             'ea2b': False,
-            'ea2c': False
+            'ea2c': False,
+            'ea11': False
         }
 
         # Wifi cal data setting
         self.wifical = {
             'ea2a': True,
             'ea2b': True,
-            'ea2c': False
+            'ea2c': False,
+            'ea11': False,
         }
 
         self.devnetmeta = {
@@ -451,7 +463,8 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
-        self.del_anonymous_file()
+        if self.board_id != "ea11":
+            self.del_anonymous_file()
 
         if self.board_id == "ea2b":
             # below one of two function will cause the data of flash(MTD3) was removed so do not use it
@@ -461,7 +474,6 @@ class UDM_AL324_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
         else:
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
 
