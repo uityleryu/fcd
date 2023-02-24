@@ -1,17 +1,17 @@
 {
-  "Connect": {
-    "UC-AUDIENCE": {
+  "Amplifi": {
+    "AFi-Cinema-Bridge": {
       "INDEX": 0,
-      "NAME": "UC-AUDIENCE",
-      "BOARDID": "ec80",
-      "BOMREV": "113-03523",
-      "DESC": "UniFi Connect Audience",
+      "NAME": "AFi-Cinema-Bridge",
+      "BOARDID": "aa01",
+      "BOMREV": "113-04137",
+      "DESC": "AmpliFi Cinema Bridge",
       "FILE": "uc_qcs403_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1c01",
+      "SW_ID": "",
       "DOWNLOAD_FILE": [
-        {
+         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [

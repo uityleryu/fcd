@@ -1,0 +1,348 @@
+PRODUCT_LINE,INDEX,NAME,BOARDID,BOMREV,DESC,FILE,T1FILE,QRCHECK,SW_ID
+UniFiCK,0,UCKP,e970,113-02570,UniFi CloudKey Pluss,uck_apq8053_factory.py,,True,0c01
+UniFiCK,0,CK-Enterprise,e990,113-01166,UniFi CloudKey Enterprise,uck_ast2500_factory.py,,True,0c01
+UniFiISP,0,UISP-FIBER-XGS,eec9,113-03778,UISP FIBER XGS,uf_ecnt7521_factory.py,,False,0008,0c01
+UniFiISP,0,UISP-FIBER-OLT-XGS,eec7,113-03647,UISP-FIBER-OLT-XGS,uf_bcm5616_factory.py,,False,0008,0c01
+UniFiISP,0,UISP-FIBER-XG,eec8,113-03685,UISP FIBER XG,uf_ecnt7521_factory.py,,False,0008,0c01
+Accessory,0,UACC-ADAPTER-POE-USB,efcc,113-03846,UACC-ADAPTER-POE-USB,uf_ecnt7521_factory.py,,False,0008,0c01
+UniFiDrive,0,UNAS-Studio,ea50,113-03576,UniFi Studio,unas_alpine_factory.py,,True,0006,2101
+UniFiDrive,0,UNAS-Pro,ea51,113-03751,UniFi NAS PRO,unas_alpine_factory.py,,True,0006,2101
+USP,0,USP-RPS-PRO,ed13,113-03086,UniFi SmartPower RPS PRO,us_mt7621_factory.py,,True,0002,0201
+USP,0,USP3,e643,113-00364,Unifi Smart Plug 3,unifi_ar9331_factory.py,,True,000e,1801
+USP,0,USP-Plug,ee73,113-00731,UniFi smart plug,usp_esp8266_factory.py,,True,000e,1801
+USP,0,USP-RPS,ed11,113-02781,UniFi SmartPower RPS,us_mt7621_factory.py,,True,0002,0201
+USP,0,USP-STRIP_777,ee74,113-00777,Unifi Smart Power STRIP,usp_esp8266_factory.py,,True,000e,1801
+USP,0,USP-PRO-PDU-HD,ed15,113-01036,UniFi Smart Power PRO PDU HD,afi_udw_mt7628_factory.py,,True,000e,1801
+USP,0,USP8,e648,113-00365,Unifi Smart Plug 8,unifi_ar9331_factory.py,,True,000e,1801
+USP,0,USP-STRIP_896,ee74,113-00896,Unifi Smart Power STRIP,usp_esp8266_factory.py,,True,000e,1801
+USP,0,USP-PDU-PRO,ed12,113-03098,UniFi Smart Power PDU PRO,usp_mt7628_factory.py,,True,000e,1801
+USP,0,USP-PDU-PRO,ed12,113-00986,UniFi Smart Power PDU PRO,usp_mt7628_factory.py,,True,000e,1801
+UniFiTalk,0,TouchMax-UL-04950,efb5,113-04950,UniFi TouchMax (UnLock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-PHONE-TOUCHMAX,ef0e,113-04950,UniFi Talk IP PHOMEMAX,connect_apq8053_factory.py,,True,0007,0a01
+UniFiTalk,0,TOUCH-UL,efb1,113-02150,UniFi Touch (Unlock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-ATA-MAX,ef12,113-03370,UniFi Talk Analog Telephone Adapter,ut_dvf9918_factory.py,,True,0007,0a01
+UniFiTalk,0,TouchMax-W-UL,efb7,113-03950,UniFi TouchMax White (UnLock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-PHONE-FLEX,ef0d,113-02808,UniFi Talk Phone FLEX,ut_dvf9918_factory.py,,True,0a01
+UniFiTalk,0,UT-CONFERENCE,ef11,113-03038,UniFi Talk conference,uvp_qcs403_factory.py,,True,0a01
+UniFiTalk,0,Touch-W-UL,efb3,113-03150,UniFi Touch White (UnLock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-ATA,ef0f,113-03808,UniFi Talk Analog Telephone Adapter,ut_dvf9918_factory.py,,True,0a01
+UniFiTalk,0,TouchMax-W-L,efb6,113-03950,UniFi TouchMax White (Lock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-CONF-BOX,ef10,113-03028,UniFi Talk conference box,uvp_qcs603_factory.py,,True,0a01
+UniFiTalk,0,TouchMax-UL,efb5,113-02950,UniFi TouchMax (UnLock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-TALKMOVE,ec1f,113-03445,UniFi Talk TalkMove,ut_utmove_factory.py,,True,0a01
+UniFiTalk,0,TOUCH-L,efb0,113-02150,UniFi Touch (Lock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,TouchMax-L,efb4,113-02950,UniFi TouchMax (Lock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-PHONE-TOUCH,ef82,113-02150,UniFi Talk IP PHOME,connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,TouchMax-L-04950,efb4,113-04950,UniFi TouchMax (Lock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-PHONE-TOUCHMAX,ef0e,113-02950,UniFi Talk IP PHOMEMAX,connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,Touch-W-L,efb2,113-03150,UniFi Touch White (Lock),connect_apq8053_factory.py,,True,0a01
+UniFiTalk,0,UT-PHONE-TOUCH-W,ef13,113-03150,UniFi Talk IP PHOME W,connect_apq8053_factory.py,,True,0007,0a01
+GPON,0,UF-WiFi6,eec5,113-04037,UF-WiFi6,uf_ecnt7521_factory.py,,False,0008,0c01
+GPON,0,UF-WiFi6,eec5,113-03376,UF-WiFi6,uf_ecnt7521_factory.py,,False,0008,0c01
+UniFiProtect,0,UP-MHS,ec70,113-03274,UniFi Protect Managed Health Scanner,uvc_factory.py,,False,0009,0e03
+UniFiProtect,0,UP-Chime-PoE,ab14,113-03837,UniFi Protect Chime PoE,ufp_esp32_factory.py,,False,000d,1604
+UniFiProtect,0,UFP-LOCK-R,a941,113-02765,UniFi Protect Doorlock (HomeKit),ufp_efr32_factory.py,,False,000d,1602
+UniFiProtect,0,UFP-CARD-COMBO,a914,113-03089,UniFi Protect Bluetooth Card,ufp_tag_combo_factory.py,,True,000d,1604
+UniFiProtect,0,ULM,a919,113-03495,UniFi BLE Location,ufp_efr32_factory.py,,True,1601
+UniFiProtect,0,UP-KEYPAD,a920,113-03325,UniFi Protect Keypad,up_a920_factory.py,,False,000d,1601
+UniFiProtect,0,UP-RADAR,dcb0,113-00806,UniFi Protect Radar,ufp_uboot_factory.py,,False,000d,1604
+UniFiProtect,0,UFP-TAG-COMBO,a913,113-02973,UniFi Protect Bluetooth Tag,ufp_tag_combo_factory.py,,True,000d,1604
+UniFiProtect,0,UFP-LOCK-R,a911,113-02765,UniFi Protect Doorlock,ufp_efr32_factory.py,,False,000d,1602
+UniFiProtect,0,UFP-SENSE,a912,113-02823,UniFi Protect Sensor,ufp_efr32_factory.py,,False,000d,1601
+UniFiProtect,0,UP-GARAGE,a915,113-03452,UniFi Protect Smart Garage Door Control,ufp_efr32_factory.py,,True,000d,1604,client_rpi4_release_hk_20210412
+UniFiProtect,0,Viewport,e980,113-02900,UniFi Protect viewport,connect_apq8053_factory.py,,True,client_rpi4_release_20210911,0009,1701
+UniFiProtect,0,UP-Chime,ab12,113-03302,UniFi Protect Chime,ufp_esp32_factory.py,,False,000d,1604
+UniFiAP6,0,UX,a667,113-01184,UniFi Express,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,mac-qr-ac,0601
+UniFiAP6,0,U6-Lite-00773,a612,113-00773,UniFi AP6 LITE,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-LR-00742,a640,113-00742,UniFi AP6 LR,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Lite,a612,113-01076,UniFi AP6 LITE,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Enterprise,a654,113-01164,UniFi AP6 Enterprise,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Plus,a642,113-01181,UniFi AP6 Plus,u6_mt7981_bspfactory.py,u6_mt7981_mfg.py,True,0601
+UniFiAP6,0,U6-LR-00742,a614,113-00742,UniFi AP6 LR,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-LR-00744,a620,113-00744,UniFi AP6 LR,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Extender,a653,113-01083,UniFi AP6 Extender,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Lite-01141,a612,113-01141,UniFi AP6 LITE,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-LRPLUS,a643,113-01183,UniFi AP6 Long Range Plus,u6_mt7981_bspfactory.py,u6_mt7981_mfg.py,True,0601
+UniFiAP6,0,U6-LR-01078,a620,113-01078,UniFi AP6 LR,u6_mt762x_factory.py,u6_mt762x_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Enterprise-IW,a656,113-00956,UniFi AP6 Enterprise IW,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Infinity,a655,113-10897,UniFi AP6 Infinity,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-IW,a652,113-10745,UniFi AP6 InWall,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-PRO-01115,a650,113-01115,UniFi AP6 PRO,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-PRO-OUTDOOR,a675,113-01208,UniFi AP6 PRO Outdoor,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Enterprise,a654,113-10898,UniFi AP6 Enterprise,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Mesh,a651,113-10743,UniFi AP6 Mesh Point,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,UXP,a674,113-01184,UniFi Express Mesh,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,mac-qr-ac,0601
+UniFiAP6,0,U6-PRO-00963,a650,113-00963,UniFi AP6 PRO,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiAP6,0,U6-Extender,a653,113-10746,UniFi AP6 Extender,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,True,0004,0601
+UniFiDC,0,UDC-CONSOLE,e961,113-02618,UniFi Data Center Console,uck_apq8053_factory.py,,True,0c01
+Connect,0,LVDU-1,ec48,113-03435,Low Voltage Distribution Unit 1 Port,connect_esp32_factory.py,,True,0012,1d01
+Connect,0,UC-Plug-US,ec5a,113-00997,UniFi Connect Plug US,uc_esp32_factory.py,,True,0011,1c01
+Connect,0,UC-Outlet-US,ec5d,113-01020,UniFi Connect Outlet US,uc_esp32_factory.py,,True,0011,1c01
+Connect,0,ULED-BULB,ec4a,113-03634,,uled_esp32_factory_nonekey.py,,True,0011,1c01
+Connect,0,UC-AUDIENCE,ec80,113-03523,UniFi Connect Audience,uc_qcs403_factory.py,,True,0a01
+Connect,0,UC-THERMOSTAT,ec47,113-03232,,ufc_esp32_factory.py,,True,0011,1c01
+Connect,0,UC-E-INK-10,ec1e,113-03279,UniFi Connect E Ink 10,ut_utmove_factory.py,,True,0a01
+Connect,0,UCD-7,ef87,113-03383,UniFi Connect Disply 7 (BLE/WiFi),connect_apq8053_factory.py,,True,1c01
+Connect,0,UCD-13-B,ef81,113-03182,UniFi Connect Display 13 (BLE),connect_apq8053_factory.py,,True,1c01
+Connect,0,UC-THERMOSTAT-newant,ec47,113-03777,,ufc_esp32_factory.py,,True,0011,1c01
+Connect,0,ULED-BULB-Color,ec4b,113-03634,,uled_esp32_factory_nonekey.py,,True,0011,1c01
+Connect,0,UC-Wall-Outlet-US,ec5c,113-01013,UniFi Connect Wall Outlet US,uc_esp32_factory.py,,True,0011,1c01
+Connect,0,LVDU-1,ec48,113-03710,Low Voltage Distribution Unit 1 Port,connect_esp32_factory.py,,True,0012,1d01
+Connect,0,UC-CAST,ef90,113-03471,UniFi Connect Cast,connect_apq8053_factory.py,,True,1ce1
+Connect,0,ULED-INSTANT,ec4c,113-03548,,uled_esp32_factory.py,,True,0011,1c01
+Connect,0,UCD-7-B,ef80,113-03168,UniFi Connect Display 7 (BLE),connect_apq8053_factory.py,,True,1c01
+Connect,0,LVDU-4,ec3d,113-03076,Low Voltage Distribution Unit 4 Ports,uap_qca953x_factory.py,,True,0011,1c01
+Connect,0,LVDU-24,ec41,113-03119,Low Voltage Distribution Unit 24 Ports,uap_qca953x_factory.py,,True,0011,1c01
+Connect,0,UCD-13,ef88,113-03396,UniFi Connect Disply 13 (BLE/WiFi),connect_apq8053_factory.py,,True,1c01
+Connect,0,UCD-27,ef84,113-03256,UniFi Connect Display 27,connect_apq8053_factory.py,,True,0011,1c01
+Connect,0,UC-CONTROL,ec0e,113-03564,UniFi Connect Managed POE 5 inch Touch LED Switch,ut_dvf9918_factory.py,,True,1ce2
+Connect,0,EV-CHARGER,efa0,113-03328,UniFi EV Charger,connect_apq8053_factory.py,,True,1ce3
+Connect,0,UC-Plug-EU,ec5b,113-01025,UniFi Connect Plug EU,uc_esp32_factory.py,,True,0011,1c01
+Connect,0,UCD-21,ef83,113-03287,UniFi Connect Display 21,connect_apq8053_factory.py,,True,1c01
+UniFiXG,0,UXG-PRO,ea19,113-00740,UniFi Next-Generation Gateway,ubios_alpine_factory.py,,True,0005,0701
+UniFiXG,0,UXG-PLUS-PRO,ea31,113-01200,UniFi Next-Generation Gateway+ Pro,uxg_al524_factory.py,,True,0701
+UniFiXG,0,UXG-LITE,b080,113-00778,UniFi Next-Generation Gateway Lite,uxg_mt7622_factory.py,,True,0013,1e01
+UniFiServer,0,USRV-TT,1200,113-00732,Ubiquiti Server,unifi_ast2500_factory.py,,True,0010,1b01
+UniFiSwitch,0,USW-Enterprise-24-PoE,eb38,113-03154,UniFi Switch Enterprise 24 PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-FLEX-XG,ed40,113-03166,UniFi Switch Flex XG,us_mrvl_factory.py,,True,0002,0201
+UniFiSwitch,0,USW-16,ed23,113-02943,UBNT UniFiSwitch 16,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24-POE,ed50,"['113-04107', '113-04108', '113-04109', '113-04235']",UBNT UniFiSwitch 24 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-16-POE,ed2e,"['113-04103', '113-04104', '113-04105', '113-04233']",UBNT UniFiSwitch 16 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,US-48-500W,eb62,113-02146,UBNT UniFiSwitch 48-Port 500W,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-EnterpriseXG-24,eb29,113-03112,UniFiSwitch EnterpriseXG 24,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-FLEX,ed10,113-02767,UniFi Switch Flex,us_mt7621_factory.py,unifi_mt7621_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LITE-8-POE,ed2a,113-02992,UBNT UniFiSwitch Lite 8 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,6,USW-LITE-8-POE,ed2a,113-02992,UBNT UniFiSwitch Lite 8 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LITE-16-POE,ed26,"['113-02945', '113-03954', '113-03596']",UBNT UniFiSwitch Lite 16 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24-PRO-POE,eb36,113-02779,UBNT UniFiSwitch 24-Port Pro PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-SPINE,f062,113-02932,UniFi Super Switch Spine,us_udc-alpine_factory.py,,True,0002,0201
+UniFiSwitch,0,USW-Aggregation-Pro,eb27,113-03046,UBNT UniFiSwitch Aggregation Pro,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-Enterprise-48-PoE,eb28,113-03213,UniFi Switch Enterprise 48 PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,US-6XG-150,eb23,113-02604,UBNT UniFiSwitch 6XG,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24-POE,ed21,"['113-02831', '113-03956', '113-03962']",UBNT UniFiSwitch 24 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-MISSION-CRITICAL,ed2c,113-02730,UBNT UniFiSwitch Mission Critical,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-48-POE,ed52,"['113-04110', '113-04111', '113-04112', '113-04238']",UBNT UniFiSwitch 48 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24,ed51,113-04113,UBNT UniFiSwitch 24,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-48,ed53,113-04114,UBNT UniFiSwitch 48 POE (RTK),us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-XG-24-POE,eb25,113-02793,UBNT UniFiSwitch XG 24-Port PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LEAF,f060,113-02997,UniFi Super Switch 48-port,us_udc-alpine_factory.py,,True,0002,0201
+UniFiSwitch,0,USW-48,ed25,113-02972,UBNT UniFiSwitch 48 POE (RTK),us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-XG-48-POE,eb26,113-02792,UBNT UniFiSwitch XG 48-Port PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-Aggregation,ed2d,113-03138,UBNT UniFiSwitch Aggregation,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LITE-8-POE,ed55,"['113-04100', '113-04102']",UBNT UniFiSwitch Lite 8 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-48-POE,ed22,"['113-02865', '113-03957', '113-03964']",UBNT UniFiSwitch 48 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24-PRO,eb37,113-02953,UBNT UniFiSwitch 24-Port Pro,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-FLEX-MINI,ed31,113-03970,UniFi Switch Flex Mini (ESP32),usw_esp32_factory.py,,True,0002,0201
+UniFiSwitch,0,USW-48-500W,eb67,113-02146,UBNT UniFiSwitch 48-Port Pro PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-48-PRO-POE,eb67,113-02757,UBNT UniFiSwitch 48-Port Pro PoE,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-24,ed24,113-02944,UBNT UniFiSwitch 24,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-Enterprise-8-PoE,ed41,113-03188,UniFi Switch Enterprise 8-port PoE,us_mrvl_factory.py,,True,0002,0201
+UniFiSwitch,0,US-8-150W,eb10,113-02189,UniFi Switch 8-port 150W,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LITE-16-POE,ed54,"['113-04115', '113-04116', '113-04117']",UBNT UniFiSwitch Lite 16 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-48-PRO,eb68,113-02952,UBNT UniFiSwitch 48-Port Pro,us_bcm5616_factory.py,us_bcm5616_mfg.py,True,0002,0201
+UniFiSwitch,0,US-24,eb30,113-02294,UBNT UniFiSwitch 24-Port,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-LEAF-PRO,f063,113-03162,UniFi Super Switch 48-port,us_udc-alpine_factory.py,,True,0002,0201
+UniFiSwitch,0,USW-16-POE,ed20,"['113-02848', '113-03955', '113-03960']",UBNT UniFiSwitch 16 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,6,USW-LITE-8-POE,ed55,"['113-04100', '113-04102']",UBNT UniFiSwitch Lite 8 POE,us_rtl838x_factory.py,us_rtl838x_mfg.py,True,0002,0201
+UniFiSwitch,0,US-48,eb60,113-02295,UBNT UniFiSwitch 48-Port (BCM),us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,US-16-150W,eb21,113-02290,UBNT UniFiSwitch 16-Port 150W,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,US-24-250W,eb31,113-02147,UBNT UniFiSwitch 24-Port 250W,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,US-8-60W,eb18,113-02341,UniFi Switch 8-port 60W,us_bcm5334x_factory.py,us_bcm5334x_mfg.py,True,0002,0201
+UniFiSwitch,0,USW-FLEX-MINI,ed30,113-02851,UniFi Switch Flex Mini,us_m487_factory.py,us_m487_mfg.py,True,0002,0201
+UniFiAP,0,UAP-NANO-HD,ec20,113-00573,UniFi AP NANO HD,us_mt7621_factory.py,unifi_mt7621_mfg.py,True,0004,0601
+UniFiAP,0,UMR-PRO-US,dca6,113-01112,UniFi Mobile Router PRO US,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0601
+UniFiAP,0,UMR-EU-AC,e618,113-01247,UniFi Mobile Router EU AC,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0004,0601
+UniFiAP,0,UAP-Industrial,ec2a,113-00710,UniFi AP nanoHD industrial,us_mt7621_factory.py,,True,0004,0601
+UniFiAP,0,U-LTE-Backup-Pro-EU,e612,113-00718,UniFi LTE Backup Pro EU,uap_qca956x_factory.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiAP,0,UAP-AC-Lite,e517,113-00391,UniFi AC Lite,uap_qca9563_factory.py,uap_qca9563_mfg.py,True,0004,0601
+UniFiAP,0,UAP-AC-PRO,e537,113-00390,UniFi AC PRO,uap_qca9563_factory.py,uap_qca9563_mfg.py,True,0004,0601
+UniFiAP,0,UMR-EU-AC,e618,113-00830,UniFi Mobile Router EU AC,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0004,0601
+UniFiAP,0,UACC-M-PoE,dcb4,113-01068,UACC M PoE,upoe_ipq40xx_factory.py,upoe_ipq40xx_mfg.py,True,0004,0601
+UniFiAP,0,UAP-IWHD,ec22,113-00600,UniFi AP IW HD,us_mt7621_factory.py,unifi_mt7621_mfg.py,True,0004,0601
+UniFiAP,0,ULTE-PRO,e611,113-02525,UniFi LTE Pro EU,uap_qca956x_factory.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiAP,0,UMR-US-AC,e619,113-00758,UniFi Mobile Router US AC,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0004,0601
+UniFiAP,0,U-LTE-Backup-Pro-US-01155,e613,113-01155,UniFi LTE Backup Pro US,uap_qca956x_factory.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiAP,0,WiFiMan-Scanner,a922,113-03621,Bluetooth Paired WiFi Spectrum Analyzer,ufp_efr32_factory.py,,True,1601
+UniFiAP,0,UAP-AC-LR,e527,113-00392,UniFi AC Long Range,uap_qca9563_factory.py,uap_qca9563_mfg.py,True,0004,0601
+UniFiAP,0,UACC-M-PoE-at,dcb5,113-01068,UACC M PoE at,upoe_ipq40xx_factory.py,upoe_ipq40xx_mfg.py,True,0004,0601
+UniFiAP,0,UAP-UBB,dc98,113-00694,UniFi AP Building Bridge,uap_ipq40xx_factory.py,uap_ipq40xx_mfg.py,True,0004,0601
+UniFiAP,0,U-LTE-Backup-Pro-US,e613,113-00788,UniFi LTE Backup Pro US,uap_qca956x_factory.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiAP,0,UMR-US-AC,e619,113-00729,UniFi Mobile Router US AC,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0004,0601
+UniFiAP,0,UAP-UBB 831,dc9c,113-00800,UniFi AP Building Bridge 831,uap_ipq40xx_factory.py,uap_ipq40xx_mfg.py,True,0004,0601
+UniFiAP,0,UMR-PRO-EU,dca7,113-01248,UniFi Mobile Router PRO EU,uap_qca956x_factory2.py,uap_qca956x_mfg.py,activate_code,0601
+UniFiAP,0,UAP-FLEXHD,ec26,113-00641,UniFi AP Flex HD,us_mt7621_factory.py,unifi_mt7621_mfg.py,True,0004,0601
+UniFiAP,0,ULTE-FLEX-US,e615,113-00758,UniFi LTE FLEX US,uap_qca956x_factory2.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiAP,0,UBB-XG,dd12,113-00958,UniFi AP Building Bridge XG,uap_ls104x_factory.py,uap_ls104x_mfg.py,True,0004,0601
+UniFiAP,0,ULTE-FLEX-EU,e614,113-00830,UniFi LTE FLEX EU,uap_qca956x_factory2.py,uap_qca956x_mfg.py,True,0004,0601
+UniFiVideo,0,UVC-G4DOME,a573,113-02998,UVC G4 Dome,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G3INFANTRY-CAMERA,a5c0,113-03759,AmpliFi InstaCam,uvc_snxx_factory.py,,False,0009,0e03
+UniFiVideo,0,UNIFI-WAVEROVERCAMERA,a594,113-04000,UniFi Wave Rover Camera,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4BULLET,a572,113-02987,UVC G4 Bullet,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4DOORBELL,a571,113-02712,UVC G4 Doorbell,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G5FLEX,a593,113-03911,UVC G5 Flex,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-G5GBULLET,a591,113-03815,UVC G5 Bullet,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4INS,a595,113-03346,UVC G4 Instant,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G3INFANTRY-DISPLAY,a5c1,113-03783,AmpliFi InstaCam Display,uvc_snxx_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-DSLR-Bullet,a5b0,113-03377,UVC DSLR Bullet,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G3MINI,a590,113-03132,UVC G3 Mini,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4DOORBELLPROPOE,a575,113-03849,UVC G4 Doorbell Pro POE,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4DOORBELLPRO,a574,113-03194,UVC G4 Doorbell Pro,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G5PRO-MP,a598,113-04055,UVC G5 Pro (MP ver.),uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4PTZ,a564,113-02967,UVC G4 PTZ,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4DOORBELLBATTERY,a597,113-03465,UVC G4 Doorbell Battery,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G5PRO,a598,113-03933,UVC G5 Pro,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-AIBULLET,a5a2,113-03388,UVC AI Bullet,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4FLOODLIGHTBATTERY,a596,113-03455,UVC G4 FloodLight Battery,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G3FLEX,a534,113-02591,UVC G3 Flex,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G5DOME,a592,113-03910,UVC G5 Dome,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-G3BATTERY,a580,113-02692,UVC G3 Battery,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-G4PRO,a563,113-02574,UVC G4 Pro,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-AI360,a5a0,113-03268,UVC AI 360,uvc_factory.py,,False,0009,0e03
+UniFiVideo,0,UVC-AIPRO,a5a4,113-03821,UVC AI Pro,uvc_factory_camera2.py,,False,0009,0e03
+UniFiVideo,0,UVC-AITHETA,a5a3,113-03422,UVC AI THETA,uvc_factory.py,,False,0009,0e03
+Amplifi,0,AFi-ALN-R,da11,113-01605,Amplifi Alien Router SKU change,afi_ipq807x_sku_change.py,,False,
+Amplifi,0,AFi-6-Extender,a666,113-01136,Amplifi 6 Extender,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,False,0004,0601
+Amplifi,0,AFi-ALN-P,da12,113-00657,Amplifi Alien Mesh Point SKU change,afi_ipq807x_sku_change.py,,False,
+Amplifi,0,AFi-6-Instant,a616,113-00775,Amplifi 6 Instant,afi_mt7621_bspfactory.py,,False,0004,0601
+Amplifi,0,AFi-ALN-MAX-P-B,da16,113-01151,Amplifi Alien Max Meshpoint Black,afi_ipq807x_factory2.py,,False,1c01
+Amplifi,0,AFi-6-Router,a665,113-01135,Amplifi 6 Router,u6_ipq5018_bspfactory.py,u6_ipq5018_mfg.py,False,0004,0601
+Amplifi,0,AFi-ALN-P-EU,da14,113-00957,Amplifi ALien Mesh Point EU,afi_ipq807x_factory.py,afi_ipq807x_mfg.py,False,
+Amplifi,0,Amplifi-UPS,ed14,113-01033,Amplifi UPS,afi_udw_mt7628_factory.py,afi_udw_mt7628_mfg.py,False,0011,1c01
+Amplifi,0,AFi-6-Kits,a641,113-01135,Amplifi 6 Kits,afi_mt7621_bspfactory.py,,False,0004,0601
+Amplifi,0,AFi-ALN-R-EU,da13,113-01905,Amplifi ALien Router EU,afi_ipq807x_factory.py,afi_ipq807x_mfg.py,False,
+Amplifi,0,AFi-100W-USB-C,da20,113-01039,AmpliFi Adapter,afi_esp32_factory.py,,False,0004,0601
+Amplifi,0,AFi-ALN-PE,da21,113-01033,AmpliFi-ALN-PE,afi_esp32_factory.py,,False,0004,0601
+Amplifi,0,AFi-ALN-MAX-R-G,da17,113-01150,Amplifi Alien Max Router Gray,afi_ipq807x_factory2.py,,False,1c01
+Amplifi,0,AFi-6-Mesh,a639,113-01136,Amplifi 6 Mesh,afi_mt7621_bspfactory.py,,False,0004,0601
+Amplifi,0,AFi-ALN-MAX-R-B,da15,113-01150,Amplifi Alien Max Router Black,afi_ipq807x_factory2.py,,False,1c01
+Amplifi,0,AFi-ALN-MAX-P-G,da18,113-01151,Amplifi Alien Max Meshpoint Gray,afi_ipq807x_factory2.py,,False,1c01
+UniFiNVR,0,UNVR-HD,ea30,113-03298,UniFi Protect NVR HD,unas_alpine_factory.py,,True,0006,0801
+UniFiNVR,0,UNVR-4,ea1a,113-03192,UniFi NVR,unas_alpine_factory.py,,True,0006,0801
+UniFiNVR,0,UNVR-PRO,ea20,113-03137,UniFi Protect NVR Pro,unas_alpine_factory.py,,True,0006,0801
+UniFiNVR,0,UNVR-PRO,ea21,113-03026,UniFi Protect NVR AI,unas_alpine_factory.py,,True,0006,0801
+UniFiAccess,2,UA-HUB-4P,ec42,113-03172,UniFi Access Hub,ua_mt7621_factory3.py,,True,0012,1d01
+UniFiAccess,0,UA-Thermal-Scan,ec70,113-03274,UniFi Thermal Scan,uvc_factory.py,,False,0009,0e03
+UniFiAccess,0,UA-PRO,ec5f,113-02668,UniFi PRO,connect_apq8053_factory.py,,False,0012,1d01
+UniFiAccess,0,UA-Display-GateAA,ec61,113-03628,Unifi Access Display Gate,connect_apq8053_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-G2-Reader-Pro,ec5e,113-03625,UniFiAccess G2 Reader Pro,connect_apq8053_factory.py,,True,1ce3
+UniFiAccess,0,UA-ELEVATOR-EXTENDER-RX,ec45,113-03273,UA-ELEVATOR-EXTENDER-RX,ua_homeplug_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-LOCKER,ec53,113-04035,Unifi Access Smart Locker,ua_mt7621_factory2.py,ua_mt7621_mfg.py,True,1d01
+UniFiAccess,2,UA-ELEVATOR,ec3b,113-03920,UniFi Access Elevator,ua_mt7621_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-PRO-BL,ec60,113-02966,UniFi PRO Backlight,connect_apq8053_factory.py,,True,0012,1d01
+UniFiAccess,1,UA-HUB-GATE,ec46,113-03329,UniFi Access Hub Gate,ua_mt7621_factory.py,,True,0012,1d01
+UniFiAccess,2,UA-HUB-4P,ec42,113-03919,UniFi Access Hub,ua_mt7621_factory3.py,,True,0012,1d01
+UniFiAccess,2,UA-ELEVATOR,ec3b,113-03003,UniFi Access Elevator,ua_mt7621_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-LOCKER-HUB,ec43,113-03291,Unifi Access Smart Locker Hub,ua_mt7621_factory2.py,ua_mt7621_mfg.py,True,1d01
+UniFiAccess,0,UniFi Access Card,ec38,113-03224,UniFi Access Card,ufp_tag_combo_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-Display-GateAC,ec61,113-03587,Unifi Access Display Gate,connect_apq8053_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-HOTEL,ec40,113-03675,UA Hotel,ua_psoc6_factory.py,,True,0001,0001
+UniFiAccess,0,UA-SENSE-GATE,ec51,113-03624,UniFi Access Sensor Gate,ufp_efr32_factory.py,,True,000d,1604,client_rpi4_release_hk_20210412
+UniFiAccess,0,UA-ELEVATOR-EXTENDER-TX,ec44,113-03272,UA-ELEVATOR-EXTENDER-TX,ua_homeplug_factory.py,,True,0012,1d01
+UniFiAccess,0,UniFi Access Fob,ec3a,113-03823,UniFi Access Fob,ufp_tag_combo_factory.py,,True,0012,1d01
+UniFiAccess,0,UA-HOTEL,ec40,113-02940,UA Hotel,ua_psoc6_factory.py,,True,0001,0001
+UniFiAccess,1,UA-G2-MINI,ec4d,113-03610,UniFi Access G2 Mini,ua_qca9531_factory.py,,True,0012,1d01
+AirFiber,0,AF-6XHD,ae0f,113-03290,airFiber6XHD,af_factory.py,,False,000a,1001
+AirFiber,0,LTU-XR,ae11,113-00966,AirFiber LTU-XR,af_factory.py,,False,000a,1001
+AirFiber,0,LTU-FEED,ae10,113-00927,AirFiber LTU-FEED,af_factory.py,,False,000a,1001
+AirFiber,0,LTU-Pro,ae06,113-00680,AirFiber LTU-LR,af_factory.py,,False,000a,1001
+AirFiber,0,LTU-Lite,ae08,113-00708,AirFiber LTU-Lite,af_factory.py,,False,000a,1001
+AirFiber,0,Wave-AP,ac14,113-01066,Wave-AP,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,AF60-LR,dc9e,113-00738,AirFiber 60 LR,af_ipq40xx_factory.py,af_ipq40xx_mfg.py,False,000a,1001
+AirFiber,0,WaveAP,dc9f,113-00953,Wave AP,af_ipq40xx_factory.py,af_ipq40xx_mfg.py,False,000a,1001
+AirFiber,0,AF-6XHD-OMT,ae13,113-01160,airFiber 6XHD-OMT,af_factory.py,,False,000a,1001
+AirFiber,0,LTU-LR,ae0b,113-00727,AirFiber LTU-LR,af_factory.py,,False,000a,1001
+AirFiber,0,Wave-AP-HD,ac1b,113-01206,Wave-AP-HD,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,Wave-LR,a664,113-00979,Wave-LR,af_ipq5018_bspfactory.py,af_ipq5018_mfg.py,False,000a,1001
+AirFiber,0,AF60-XR,ac11,113-00719,AirFiber 60 XR,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,Wave-AP-01206,ac1a,113-01206,Wave-AP,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,Wave-Nano,a658,113-01070,Wave-Nano,af_ipq5018_bspfactory.py,af_ipq5018_mfg.py,False,000a,1001
+AirFiber,0,Wave-AP-Micro,ac16,113-01105,Wave-AP-Micro,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,AF60-HD,dd13,113-00871,AirFiber 60 HD,af_ls104x_factory.py,af_ls104x_mfg.py,False,000a,1001
+AirFiber,0,AF60,dc9b,113-00720,AirFiber 60,af_ipq40xx_factory.py,af_ipq40xx_mfg.py,False,000a,1001
+AirFiber,0,AF60-XG,dd11,113-00809,AirFiber 60 XG,af_ls104x_factory.py,af_ls104x_mfg.py,False,000a,1001
+AirFiber,0,Wave-AP-HD,ac17,113-01066,Wave-AP-HD,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+AirFiber,0,Wave-Mesh,ac15,113-01005,Wave-Mesh,af_ipq80xx_factory.py,af_ipq80xx_mfg.py,False,000a,1001
+airMAX,0,Prism-AX-OMT,a660,113-00991,Prism-AX-OMT,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,NBE-5AC-QCA9557,e3d7,113-00494,NBE 5AC,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LAP-GPS,e7fd,113-00616,LAP GPS,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,NBE-5AC-Gen2,e7fc,113-00556,NanoBeam 5AC Gen2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LBE-5AC-LR,e7fe,113-00643,LiteBeam 5AC LR,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,Prism-AX,a661,113-01079,Prism-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,PS-5AC,e7e8,113-00546,Prisam Base Station 5AC,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PrismAP,dc97,113-00697,PrismStation AP,am_qca955x_factory.py,,False,000b,1201
+airMAX,0,PBE-5AC-500-ISO,e3d5,113-00427,PowerBeam 5AC 500,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,Loco5AC,e7fa,113-00552,Loco 5AC,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,R5AC-PTP-M-US,e7e5,113-00406,Rocket Prism 5AC M US,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LBE-M5-23,e865,113-00372,LiteBeam M5 23,am_ar9342_factory2.py,am_ar9342_mfg2.py,False,000b,1202
+airMAX,0,NBE-AX,a673,113-01227,NBE-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000b,1202
+airMAX,0,60G-LAS,a918,113-00717,Link Assist Sensor,ufp_efr32_factory.py,,False,000b,1203
+airMAX,0,PBE-5AC-500,e3d5,113-00477,PowerBeam 5AC 500,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LAP-AX,a670,113-01211,LAP-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000b,1202
+airMAX,0,Prism-AX-OMT,a672,113-01226,Prism-AX-OMT,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000b,1202
+airMAX,0,RP-5AC-Gen2,e7e9,113-00545,Rocket-5AC-Prism-G2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LAP-AX,a662,113-01099,LAP-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,IS-5AC,e7f7,113-00485,ISO Station 5AC,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,R2AC-PRISM,e2f3,113-00570,Rocket 2AC PRISM,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,NS-5AC,e7fb,113-00554,NanoStation 5AC,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PBE-5AC-Gen2,e3d6,113-00492,PBE-5AC-G2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,GBE,dc9a,113-00714,GBE,am_ipq40xx_factory.py,am_ipq40xx_mfg.py,False,000b,1201
+airMAX,0,NBE-5AC-19,e4f5,113-00346,NanoBeam M5 AC 19,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LBE-AX,a669,113-01210,LiteBeam AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,LBE-5AC-XR,e7ff,113-00962,LiteBeam AC XR,am_ar9342_factory.py,am_ar9342_mfg.py,False,000B,1202
+airMAX,0,R5AC-Lite,e1f5,113-00348,Rocket M5 AC Lite,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PBE-5AC-ISO-Gen2,e3d6,113-00559,PowerBeam 5AC ISO G2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PBE-5AC-620,e5f5,113-00429,PowerBeam 5AC 620,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PBE-2AC-400,e3f3,113-00568,PowerBeam 2AC 400 Gen2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,Prism-AX,a671,113-01225,Prism-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000b,1202
+airMAX,0,NBE-AX,a663,113-01111,NBE-AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,PS-5AC-US,e7e6,113-00513,Prisam Base Station 5AC (US),am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LBE-5AC-Gen2,e7f9,113-00497,LBE-5AC-G2,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,B-DB-AC,e2c5,113-00549,Bullet AC Dual,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,GBE-AP,dca0,113-00825,GBE AP,am_ipq40xx_factory.py,am_ipq40xx_mfg.py,False,000b,1201
+airMAX,0,GBE-LR,dc99,113-00709,GBE,am_ipq40xx_factory.py,am_ipq40xx_mfg.py,False,000b,1201
+airMAX,0,LAP-120,e8e5,113-00402,NanoBeam 5AC 16 120,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,R5AC-PTP-M-WORLD,e7e5,113-00450,Rocket Prism 5AC M World,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,LBE-AX,a659,113-01073,LiteBeam AX,am_ipq5018_bspfactory.py,am_ipq5018_mfg.py,False,000B,1202
+airMAX,0,BulletAC-IP67,e2c7,113-00592,BulletAC IP67,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,RP-5AC-Gen2-US,e7e7,113-00526,Rocket-5AC-Prism-G2-US,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,PBE-5AC-620-US,e5f5,113-00421,PowerBeam 5AC 620 US,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+airMAX,0,NBE-2AC-13,e4f3,113-00569,NanoBeam 2AC 13,am_ar9342_factory.py,am_ar9342_mfg.py,False,000b,1202
+UbiquitiNMS,0,UISP-S-PRO,eed1,113-01019,Ubiquiti Network Management System Switch PRO,unms_rtl838x_factory.py,,True,client_rpi4_release_20210911,000f,1a01
+UbiquitiNMS,0,UNMS-S-LITE,eed0,113-00817,Ubiquiti Network Management System Switch Lite,unms_rtl838x_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-S-LITE,ee50,113-00900,Ubiquiti Network Management System Switch Lite,unms_rtl838x_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-LEAF-100G,eed5,113-03162,UISP Managed 100Gbps Data Center Leaf Switch,uisp_alpine-100g_factory.py,uisp_alpine-100g_mfg.py,True,1a01
+UbiquitiNMS,0,UISP-P,ee5a,113-00990,Ubiquiti Internet Service Provider Power,uisp_qca9531_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-LTE-US,dca2,113-00782,Ubiquiti Network Management System LTE US version,unms_qca9563_factory.py,,False,000f,1a01
+UbiquitiNMS,0,UISP-P-PRO,ee5b,113-00822,Ubiquiti Internet Service Provider Power PRO,uisp_qca9531_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-Spine-100G,eed4,113-02932,UISP Managed 100Gbps Data Center Spine Switch,uisp_alpine-100g_factory.py,uisp_alpine-100g_mfg.py,True,1a01
+UbiquitiNMS,0,UISP-O-PRO,eed3,113-00820,UISP outdoor PRO,unms_rtl838x_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-CONSOLE,ee6a,113-01168,Ubiquiti Network Management System Router Console,unms_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-CONSOLE,ee6a,113-01201,Ubiquiti Network Management System Router Console,unms_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-O-LITE,ee6c,113-00819,Ubiquiti Network Management System Outdoor Lite,unms_mt7621_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-SERVER,1200,113-00732,Ubiquiti Server,unifi_ast2500_factory.py,,True,0010,1b01
+UbiquitiNMS,0,UISP-S,ee6f,113-00988,Ubiquiti Network Management System Switch,unms_rtl838x_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-CONSOLE,ee6a,113-01129,Ubiquiti Network Management System Router Console,unms_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-R-PRO,ee6d,113-01061,Ubiquiti Network Management System Router Pro XG,uisp_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-LTE-EU,dca3,113-00832,Ubiquiti Network Management System LTE EU version,unms_qca9563_factory.py,,False,000f,1a01
+UbiquitiNMS,0,UISP-P-LITE,eefa,113-00821,Ubiquiti Internet Service Provider Power Lite,uisp_ar933x_factory.py,,True,000f,1a01
+UbiquitiNMS,1,UISP-LEAF-100G,eed5,113-03162,UISP Managed 100Gbps Data Center Leaf Switch,uisp_alpine-100g_factory.py,uisp_alpine-100g_mfg.py,True,1a01
+UbiquitiNMS,0,UISP-R-PRO-XG,ee6d,113-00816,Ubiquiti Network Management System Router Pro XG,unms_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-S-PRO,eed1,113-00818,Ubiquiti Network Management System Switch PRO,unms_rtl838x_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-CONSOLE,ee6a,113-00973,Ubiquiti Network Management System Router Console,unms_alpine_factory.py,,True,000f,1a01
+UbiquitiNMS,0,UISP-R,ee6e,113-00989,Ubiquiti Network Management System Router,unms_mt7621_factory.py,,True,000f,1a01
+UniFiDream,0,UDW-PRO-PU,ea2e,113-01029,UniFi Dream Wall Pro Power unit,afi_udw_mt7628_factory.py,afi_udw_mt7628_mfg.py,True,0005,0701
+UniFiDream,0,UDM-PRO-01133,ea15,113-01133,UniFi Dream Machine Pro,ubios_alpine_factory.py,,True,0005,0701
+UniFiDream,0,UDW-PRO,ea2b,113-00845,UniFi Dream Wall Pro,udm_al324_factory.py,,True,0005,0701
+UniFiDream,0,UDM-LITE,ec28,113-00633,UniFi One Dream Machine LITE,udm_mt7622_factory.py,,True,0005,0701
+UniFiDream,0,UDM-B,ec25,113-00622,UniFi One Dream Machine Beacon,us_mt7621_factory.py,unifi_mt7621_mfg.py,True,0005,0701
+UniFiDream,0,UDM-00623,ea11,113-00623,UniFi Dream Machine,ubios_alpine_factory.py,ubios_alpine_mfg.py,True,0005,0701
+UniFiDream,0,UDM-XG,ea17,113-02719,UniFi One Dream Machine XG,udm_xeon1521_factory.py,,True,{},{}
+UniFiDream,0,UDM-SE,ea13,113-00618,UniFi Dream Machine Special,udm_alpine_factory.py,,True,{},{}
+UniFiDream,0,UDW,ea2a,113-00843,UniFi Dream Wall,udm_al324_factory.py,,True,0005,0701
+UniFiDream,0,UDR-01159,eccc,113-01159,UniFi Dream Router,udm_mt7622_bspfactory.py,udm_mt7622_mfg.py,True,0005,0701
+UniFiDream,0,UDR-00786,eccc,113-00786,UniFi Dream Router,udm_mt7622_bspfactory.py,udm_mt7622_mfg.py,True,0005,0701
+UniFiDream,0,UDM-PRO-00723,ea15,113-00723,UniFi Dream Machine Pro,ubios_alpine_factory.py,,True,0005,0701
+UniFiDream,0,UDM-SE-01097,ea2c,113-01097,UniFi Dream Machine SE,udm_al324_factory.py,,True,0005,0701
+UniFiDream,0,UDM-SE-00917,ea2c,113-00917,UniFi Dream Machine SE,udm_al324_factory.py,,True,0005,0701
+UniFiDream,0,UDM-01134,ea11,113-01134,UniFi Dream Machine,ubios_alpine_factory.py,ubios_alpine_mfg.py,True,0005,0701
+UniFiDream,0,UDM-LITE,ec2d,113-01075,UniFi Dream Machine Lite,udm_mt7622_bspfactory.py,udm_mt7622_mfg.py,True,0005,0701

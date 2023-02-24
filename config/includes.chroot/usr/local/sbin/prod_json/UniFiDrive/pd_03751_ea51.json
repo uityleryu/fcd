@@ -30,7 +30,7 @@
           "SRC_PATH": "images/tools/unas/",
           "DST_PATH": "tools/ea51",
           "FILES": [
-            "factory-test-tools_2.3.1-166+g50cd2c39b81_arm64.deb"
+            "factory-test-tools_2.3.1-168+g0dcf6938c5f_arm64.deb"
           ]
         },
         {

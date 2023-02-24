@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "UAP-AC-PRO": {
+    "UAP-AC-M-PRO": {
       "INDEX": 0,
-      "NAME": "UAP-AC-PRO",
-      "BOARDID": "e537",
-      "BOMREV": "113-00390",
-      "DESC": "UniFi AC PRO",
+      "NAME": "UAP-AC-M-PRO",
+      "BOARDID": "e567",
+      "BOMREV": "113-00445",
+      "DESC": "UniFi AC Mesh PRO",
       "FILE": "uap_qca9563_factory.py",
       "T1FILE": "uap_qca9563_mfg.py",
       "QRCHECK": "True",
@@ -40,11 +40,11 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/e537-art.bin",
+          "tftp/images/e567-art.bin",
           "../uap-fw/ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin"
         ],
         [
-          "tftp/images/e537-fw.bin",
+          "tftp/images/e567-fw.bin",
           "../uap-fw/BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin"
         ]
       ]

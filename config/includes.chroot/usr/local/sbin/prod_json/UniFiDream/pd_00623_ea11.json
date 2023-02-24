@@ -1,13 +1,16 @@
 {
   "UniFiDream": {
-    "UDM-00623": {
+    "UDM-BASE": {
       "INDEX": 0,
-      "NAME": "UDM-00623",
+      "NAME": "UDM-BASE",
       "BOARDID": "ea11",
-      "BOMREV": "113-00623",
+      "BOMREV": [
+        "113-00623",
+        "113-01134"
+      ],
       "DESC": "UniFi Dream Machine",
-      "FILE": "ubios_alpine_factory.py",
-      "T1FILE": "ubios_alpine_mfg.py",
+      "FILE": "udm_al324_factory.py",
+      "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
@@ -53,29 +56,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm",
           "DST_PATH": "udm-fw/udm",
           "FILES": [
-            "ubnt_udm_all_v1_boot.img",
-            "UDM.alpinev2.v1.12.30.060f0fe.220909.0030.bin",
-            "uImage.v1.12.30.r",
-            "boot.v1.12.30.img"
+            "UDM.al324.v2.4.27.c78626a.230119.1411.bin",
+            "uImage-20230218",
+            "boot-20230217.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea11-bsp.bin",
-          "../udm-fw/udm/ubnt_udm_all_v1_boot.img"
-        ],
-        [
           "tftp/images/ea11-fw.bin",
-          "../udm-fw/udm/UDM.alpinev2.v1.12.30.060f0fe.220909.0030.bin"
+          "../udm-fw/udm/UDM.al324.v2.4.27.c78626a.230119.1411.bin"
         ],
         [
           "tftp/images/ea11-recovery",
-          "../udm-fw/udm/uImage.v1.12.30.r"
+          "../udm-fw/udm/uImage-20230218"
         ],
         [
-          "tftp/images/ea11_signed_boot.img",
-          "../udm-fw/udm/boot.v1.12.30.img"
+          "tftp/images/ea11-uboot.bin",
+          "../udm-fw/udm/boot-20230217.img"
         ]
       ]
     }

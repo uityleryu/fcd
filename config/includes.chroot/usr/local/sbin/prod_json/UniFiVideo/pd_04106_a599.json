@@ -1,11 +1,11 @@
 {
   "UniFiVideo": {
-    "UNIFI-WAVEROVERCAMERA": {
+    "WAVE-ROVR-G4": {
       "INDEX": 0,
-      "NAME": "UNIFI-WAVEROVERCAMERA",
-      "BOARDID": "a594",
-      "BOMREV": "113-04000",
-      "DESC": "UniFi Wave Rover Camera (SAV530)",
+      "NAME": "WAVE-ROVR-G4",
+      "BOARDID": "a599",
+      "BOMREV": "113-04106",
+      "DESC": "UniFi Wave Rover Camera (SAV837)",
       "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
