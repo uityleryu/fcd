@@ -17,7 +17,8 @@
           "DST_PATH": "usw-fw",
           "FILES": [
             "usw-pro-48-poe-fw.bin",
-            "US.rtl9311_lf-support-uslp48p+14664.230209.1428-uboot.bin"
+            "US.rtl9311_usw-pcb-uslp48p+14732.230302.0539-uboot.bin"
+
           ]
         },
         {
