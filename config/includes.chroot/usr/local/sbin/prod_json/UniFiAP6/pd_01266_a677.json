@@ -44,16 +44,16 @@
           "../a677/uxg-1g-v1.img"
         ],
         [
-          "tftp/images/a677-fw-v3.1.0+root.10653.91cd0af.230223.1245.bin",
-          "../a677/a677-fw.bin"
+          "tftp/images/a677-fw.bin",
+          "../a677/a677-fw-v3.1.0+root.10653.91cd0af.230223.1245.bin"
         ],
         [
-          "tftp/images/a677-uboot-v3.1.0+root.10653.91cd0af.230223.1245.mbn",
-          "../a677/a677-uboot.mbn"
+          "tftp/images/a677-uboot.mbn",
+          "../a677/a677-uboot-v3.1.0+root.10653.91cd0af.230223.1245.mbn"
         ],
         [
-          "tftp/images/a677-loader-v3.1.0+root.10653.91cd0af.230223.1245.img",
-          "../a677/a677-loader.img"
+          "tftp/images/a677-loader.img",
+          "../a677/a677-loader-v3.1.0+root.10653.91cd0af.230223.1245.img"
         ]
       ]
     }
