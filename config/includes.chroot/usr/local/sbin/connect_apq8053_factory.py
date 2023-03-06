@@ -65,7 +65,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         emmc_jedec = {
             'e980': "0007f100",
             'ef80': "0007f100",  # UI EMMC PN: 140-04199
-            'ef81': "0007f100",  # SUI EMMC PN: 140-04199
+            'ef81': "0007f100",  # UI EMMC PN: 140-04199
             'ef82': "0007f100",
             'ef13': "0007f100",
             'ef87': "0007f100",  # UI EMMC PN: 140-04199
