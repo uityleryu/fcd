@@ -86,7 +86,7 @@ class RovR_AL324_FACTORY(ScriptBase):
 
         # Wifi cal data setting
         self.wifical = {
-            'ea01': False,
+            'ea01': True,
         }
 
         self.devnetmeta = {
