@@ -321,6 +321,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
                 self.f_eth_mac = "/vendor/factory/MAC_ADDR"
                 self.f_qr_id = "/vendor/factory/qr_id"
+                self.f_wifi_country_code = "/vendor/factory/wificountrycode"
                 self.cfg_file = ""
             elif self.board_id == "ec5f":
                 self.persist_cfg_file = ""
@@ -670,6 +671,14 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                    /data/misc/wifi/WCNSS_qcom_cfg.ini   (Android7)
                 then, remove them
             '''
+            if self.board_id == "ef90":
+                if self.region is not None:
+                    if self.region == '0000':
+                        wifi_country_code = 'EU'
+                    elif self.region == '002a':
+                        wifi_country_code = 'US'
+                    cmd = "echo {0} > {1}".format(wifi_country_code, self.f_wifi_country_code)
+                    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
             if self.board_id != "ef90" or self.board_id != "ec5f":
                 cmd = "rm {}".format(self.cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
@@ -720,12 +729,29 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 cmd = "getprop sys.boot_completed"
                 status = self.pexp.expect_get_output(cmd, self.linux_prompt)
                 if '1' in status:
-                    log_debug("Clean boot completed!!")
+                    log_debug("System boot completed!!")
+                    break
+
+            dt_last = datetime.now()
+            ts = datetime.now() - dt_last
+            while ts.seconds <= t_secs:
+                cmd = "getprop sys.bootstat.first_boot_completed"
+                status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                if '1' in status:
+                    log_debug("System first boot completed!!")
                     break
 
             log_debug('DUT system log:')
             cmd = "logcat"
             status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+
+            msg(90, "Sync data ...")
+            cmd = "sync"
+            status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            time.sleep(1)
+            cmd = "setprop sys.powerctl reboot,shutdown"
+            status = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            time.sleep(10)
 
             # try:
             #     rsp = self.cladb.expect_get_output('cat /tmp/dut_sys_log.txt', 'RPi')
