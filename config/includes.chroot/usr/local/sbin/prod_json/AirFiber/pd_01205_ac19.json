@@ -18,7 +18,7 @@
           "FILES": [
             "MGMP.ipq807x.v3.1.4.2e71645c.230302.1637.bin",
             "u-boot_01205.mbn",
-            "wave-pro-8386-acorn-spf11.3-csu1-nor-v3.bin"
+            "wave-pro-8386-acorn-spf11.3-csu1-nand-v3-single.img"
           ]
         },
         {
@@ -53,7 +53,7 @@
         ],
         [
           "tftp/images/ac19-mfg.bin",
-          "../af-fw/wave-pro-8386-acorn-spf11.3-csu1-nor-v3.bin"
+          "../af-fw/wave-pro-8386-acorn-spf11.3-csu1-nand-v3-single.img"
         ]
       ]
     }
