@@ -241,6 +241,29 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             else:
                 break
 
+    # To fix tftp not working issue
+    def tftp_rescue_np_update(self):
+        arm_fw_ver = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+        if "US.mxl277_MFG_CM_1.0.2+191.20230114.0512" in arm_fw_ver:
+            log_debug("Upgrade CM np FW to fix tftp issue ...")
+            self.reboot_by_watchdog()
+            image_name = self.board_id + "-cm-np.bin"
+            source = os.path.join(self.tftpdir, self.image, image_name)
+            target = os.path.join(self.dut_tmpdir, image_name)
+            self.scp_get("ubnt", "ubnt", self.dut_default_ip, source, target)
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_action(10, self.linux_prompt, "md5sum {}".format(target))
+            self.pexp.expect_action(10, self.linux_prompt, "update 1 {}".format(target))
+            self.pexp.expect_only(10, "update: Exit OK")
+            self.pexp.expect_action(10, self.linux_prompt, "update 2 {}".format(target))
+            self.pexp.expect_only(10, "update: Exit OK")
+            self.pexp.expect_action(10, self.linux_prompt, "rm {}".format(target))
+            # self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+            self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+            result = self.reboot_handler(watchdog=True)
+            if result is False:
+                error_critical("Fail to reboot ...")
+
     def fwupdate_modem(self):
         retry_max = 3
         count_fw = 0
@@ -252,6 +275,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 if count_fw == retry_max:
                     error_critical("Fail to upgrade cm fw ...")
                 log_debug("Upgrading cm fw count {} ...".format(count_fw))
+                self.reboot_by_watchdog()
                 # file location:
                 # tftp/images/ed60-modemfw.bin -> ../usw-fw/file.bin
                 image_name = self.board_id+"-cm-app.bin"
@@ -279,7 +303,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 self.pexp.expect_action(10, self.linux_prompt, "rm {}".format(target))
                 #self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
-                result = self.reboot_handler()
+                result = self.reboot_handler(watchdog=True)
                 if result is False:
                     error_critical("Fail to reboot ...")
             else:
@@ -332,7 +356,15 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
         log_info("==========SYS INFO==========")
 
-    def reboot_handler(self):
+    # watchdog reboot, trigger reboot after 60s
+    def reboot_by_watchdog(self):
+        log_info("Trigger watchdog reboot")
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"systemctl restart sw-watchdog\"")
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/bin/systemctl stop rpc-ci-server")
+
+    def reboot_handler(self, watchdog=False):
         expect_list = [
             "Input/output error",
             "Restarting system",
@@ -342,36 +374,16 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         if index != 0:
             self.wait_for_bootup()
             return True
-
-        cmds = [
-            "systemctl reboot",
-            "/sbin/reboot",
-            "reboot -f",
-            "reboot",
-            "LD_LIBRARY_PATH=/lib /sbin/reboot",
-            "halt",
-            "exit"
-        ]
-        for i in range(len(cmds)):
-            if i == 3 or i == 6:
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.linux_prompt, "exit")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.puma7_prompt, cmds[i])
-            else:
-                if i == 4:
-                    self.pexp.expect_action(10, "", "")
-                    self.pexp.expect_action(10, self.puma7_prompt, "shell")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.linux_prompt, cmds[i])
-            index = self.pexp.expect_get_index(150, expect_list)
-            if index > 0:
+        elif watchdog:
+            try:
+                # wait for watchdog action
+                self.pexp.expect_only(70, "Cougar Mountain C0 - Boot Ram.")
                 self.wait_for_bootup()
                 return True
-        # Fail to reboot
-        return False
+            except:
+                return False
+        else:
+            return False
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
@@ -392,6 +404,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         self.wait_for_bootup(firstboot=True)
+        self.tftp_rescue_np_update()
 
         if PROVISION_ENABLE is True:
             msg(10, "Send tools to DUT and data provision ...")
