@@ -1,0 +1,51 @@
+{
+  "UniFiAccess": {
+    "UA-HUB-ENTERPRISE": {
+      "INDEX": 1,
+      "NAME": "UA-HUB-ENTERPRISE",
+      "BOARDID": "ec55",
+      "BOMREV": "113-06892",
+      "DESC": "UniFi Access Hub Enterprise",
+      "FILE": "ua_mt7621_factory4.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw",
+          "DST_PATH": "ua-fw",
+          "FILES": [
+            "uboot-ua-hub-enterprise.bin",
+            "unifi-v1.1.11.22-g4cc378d1-dirty_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin",
+            "HE.mt7621.v4.1.1.5.gcb13a66.230308.1724-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec55-t1_uboot.bin",
+          "../ua-fw/ua-gate-t1.bin"
+        ],
+        [
+          "tftp/images/ec55-uboot.bin",
+          "../ua-fw/unifi-v1.1.11.22-g4cc378d1-dirty_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin"
+        ],
+        [
+          "tftp/images/ec55-fw.bin",
+          "../ua-fw/HE.mt7621.v4.1.1.5.gcb13a66.230308.1724-uboot.bin"
+        ]
+      ]
+    }
+  }
+}
