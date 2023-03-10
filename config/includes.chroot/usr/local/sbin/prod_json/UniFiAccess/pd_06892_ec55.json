@@ -34,8 +34,8 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec55-t1_uboot.bin",
-          "../ua-fw/ua-gate-t1.bin"
+          "tftp/images/ec55-t1-uboot.bin",
+          "../ua-fw/uboot-ua-hub-enterprise.bin"
         ],
         [
           "tftp/images/ec55-uboot.bin",
