@@ -116,9 +116,6 @@ class UAMT7621Factory(ScriptBase):
         time.sleep(3)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_fcdfw, "reset")
 
-    def uboot_update(self):
-        return True
-        
     def boot_to_T1(self):
         return True
 
@@ -134,14 +131,12 @@ class UAMT7621Factory(ScriptBase):
         log_debug("Send uboot image from host to DUT ...")
         self.tftp_get(remote=source, local=target, timeout=10, post_en=self.linux_prompt)
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd0")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if={} of=/dev/mtd0".format(target))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase {}".format(self.ubootpart))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if={} of={}".format(target, self.ubootpart))
         uboot_img_md5 = self.pexp.expect_get_output("md5sum {}".format(target), self.linux_prompt).split()[0]
-        cmd = "dd if=/dev/mtd0 of=/tmp/dump_uboot bs=1 count={}".format(uboot_img_sz)
+        cmd = "dd if={} of=/tmp/dump_uboot bs=1 count={}".format(self.ubootpart, uboot_img_sz)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         uboot_dump_md5 = self.pexp.expect_get_output("md5sum /tmp/dump_uboot", self.linux_prompt).split()[0]
-        log_debug("uboot_img_md5: " + uboot_img_md5)
-        log_debug("uboot_dump_md5: " + uboot_dump_md5)
         if uboot_img_md5 == uboot_dump_md5:
             log_debug("Upgrade FCD Uboot success !")
         else:
@@ -184,11 +179,11 @@ class UAMT7621Factory(ScriptBase):
 
     def run(self):
         UPDATE_UBOOT_EN = False
-        PROVISION_EN = False
-        DOHELPER_EN = False
-        REGISTER_EN = False
+        PROVISION_EN = True
+        DOHELPER_EN = True
+        REGISTER_EN = True
         UPDATE_FCDFW_EN = True
-        DATAVERIFY_EN = False
+        DATAVERIFY_EN = True
 
         """
         Main procedure of factory
@@ -206,8 +201,6 @@ class UAMT7621Factory(ScriptBase):
         time.sleep(1)
 
         if UPDATE_UBOOT_EN is True:
-            msg(5, "Update U-Boot ...")
-            #self.uboot_update()
             msg(10, "Booting the T1 image ...")
             #self.boot_to_T1()
 
@@ -230,13 +223,13 @@ class UAMT7621Factory(ScriptBase):
         
         if UPDATE_FCDFW_EN is True:
             msg(70, "update firmware...")
-            #self.update_fcd_uboot()
-            #self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
+            self.update_fcd_uboot()
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
             self.update_fcd_fw()
             self.turn_on_console()
 
         if DATAVERIFY_EN is True:
-            #self.check_info2()
+            self.check_info2()
             msg(80, "Succeeding in checking the devreg information ...")
 
 
