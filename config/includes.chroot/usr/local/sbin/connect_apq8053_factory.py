@@ -43,6 +43,7 @@ from datetime import datetime
     efb7: UniFi TouchMax White (unLock)(Android 9)
     efba: UniFi G3 TouchMax Wallmount   (Android 9)
     efa1: EV-Charger-EU        (Android 9)
+    ec64: UniFi Access G2 Portal(Android 9)
 
 '''
 
@@ -89,7 +90,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "0007f100",
             'efb7': "0007f100",
             'efba': "0007f100",
-            'efa1': "0007f100"
+            'efa1': "0007f100",
+            'ec64': "0007f100"
         }
 
         # default product class: basic
@@ -98,7 +100,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1"
+            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "ec64"
         ]
 
         self.ospl = {
@@ -130,7 +132,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "adr9",
             'ec5f': "adr9",
             'efba': "adr9",
-            'efa1': "adr9"
+            'efa1': "adr9",
+            'ec64': "adr9"
         }
 
         self.lnxpmt = {
@@ -162,7 +165,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "uvp_touchmax",
             'efb7': "uvp_touchmax",
             'efba': "utp_wallmount",
-            'efa1': "ev_charger"
+            'efa1': "ev_charger",
+            'ec64': "rdr_mdu"
         }
 
         # Number of Ethernet
@@ -195,7 +199,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "1",
-            'efa1': "1"
+            'efa1': "1",
+            'ec64': "1"
         }
 
         # Number of WiFi
@@ -228,7 +233,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "1",
-            'efa1': "1"
+            'efa1': "1",
+            'ec64': "0"
         }
 
         # Number of Bluetooth
@@ -261,7 +267,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': "1",
             'efb7': "1",
             'efba': "2",
-            'efa1': "1"
+            'efa1': "1",
+            'ec64': "1"
         }
 
         self.qrcode_dict = {
@@ -293,13 +300,48 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb6': True,
             'efb7': True,
             'efba': True,
-            'efa1': True
+            'efa1': True,
+            'ec64': True
         }
 
         self.devnetmeta = {
             'ethnum': self.macnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
+        }
+        
+        #Add method for write BOM ID/ QR ID
+        self.write_persist = {
+            'e980': False,
+            'ef80': False,
+            'ef81': False,
+            'ef87': False,
+            'ef88': False,
+            'ef82': False,
+            'ef13': False,
+            'ef0e': False,
+            'ef83': False,
+            'ef84': False,
+            'ef85': False,
+            'ef86': False,
+            'ef90': False,
+            'ec5e': False,
+            'ec5f': False,
+            'ec60': False,
+            'ec62': False,
+            'ec61': False,
+            'efa0': False,
+            'efb0': False,
+            'efb1': False,
+            'efb2': False,
+            'efb3': False,
+            'efb4': False,
+            'efb5': False,
+            'efb6': False,
+            'efb7': False,
+            'efba': False,
+            'efa1': False,
+            'ec64': True
         }
 
         self.cladb = None
@@ -695,6 +737,32 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                                                                                    self.persist_cfg_file)
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
+            #Write Wifi/BT MAC,BOM ID and QR ID
+            if self.write_persist[self.board_id] is True:
+                nextmac = self.mac
+                if self.wifinum[self.board_id] == '1':
+                    self.wifimac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
+                    cmd = "write_wlan_mac -w  {}".format(nextmac)
+                    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+                if self.btnum[self.board_id] == '1':
+                    self.btmac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
+                    nextmac = ":".join(nextmac[i:i + 2] for i in range(0, len(nextmac), 2))
+                    cmd = "btnvtool -b {}".format(nextmac)
+                    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+                cmd = "echo 113-{} > /mnt/vendor/persist/bom_id".format(self.bom_rev)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+                cmd = "echo {} > /mnt/vendor/persist/bom_hwver".format(self.bom_rev[-2:])
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+                cmd = "chmod 644 /mnt/vendor/persist/bom_id"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+                cmd = "chmod 644 /mnt/vendor/persist/bom_hwver"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+
         if self.REGISTER_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
             self.registration()
@@ -718,6 +786,56 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     log_debug("Get QR_ID: " + m_gqr[0])
                     if self.qrcode not in m_gqr[0]:
                         error_critical("Check QRID is not matched !!")
+            else:
+                cmd = "cat /mnt/vendor/persist/eth_mac | xxd"
+                getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                m_gmac = re.findall(r"00000000: (.*) ", getmac)[0].replace(" ","")
+                log_debug("Get MAC address: " + m_gmac)
+                if self.mac == m_gmac:
+                    log_debug("Check Eth MAC is matched !!")
+                else:
+                    error_critical("Check Eth MAC is not matched !!")
+
+                if self.wifinum[self.board_id] == "1":
+                    cmd = "write_wlan_mac -r"
+                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    m_gmac = getmac.replace(':','')
+                    if self.wifimac in m_gmac:
+                        log_debug("Check Wifi MAC is matched !!")
+                    else:
+                        error_critical("Check Wifi MAC is not matched !!")
+
+                if self.btnum[self.board_id] == "1":
+                    cmd = "btnvtool -z"
+                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    m_gmac = getmac.replace('.','')
+                    if self.btmac in m_gmac:
+                        log_debug("Check BT MAC is matched !!")
+                    else:
+                        error_critical("Check BT MAC is not matched !!")
+
+                cmd = "cat /mnt/vendor/persist/bom_id"
+                m_gbomid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                if self.bom_rev in m_gbomid:
+                    log_debug("Check BOM ID is matched !!")
+                else:
+                    error_critical("Check BOM ID is not matched !!")
+
+                cmd = "cat /mnt/vendor/persist/bom_hwver"
+                m_gbomrev = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                if self.bom_rev[-2:] in m_gbomrev:
+                    log_debug("Check BOM Rev is matched !!")
+                else:
+                    error_critical("Check BOM Rev is not matched !!")
+
+                if self.qrcode_dict[self.board_id] is True:
+                    cmd = "cat {}".format((self.f_qr_id))
+                    m_gqrid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.qrcode in m_gqrid:
+                        log_debug("Check QR ID is matched !!")
+                    else:
+                        error_critical("Check QR ID is not matched !!")
+
 
         if self.board_id == "ef90":
             msg(80, "Wait clean boot ...")
