@@ -478,7 +478,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
-
+        if self.board_id == "ea2c" or self.board_id == "ea15":
+            self.pexp.expect_action(10, self.linux_prompt, "systemctl unmask network-init udapi-server")
+            self.pexp.expect_action(10, self.linux_prompt, "systemctl start network-init udapi-server")
         cmd = "systemctl is-system-running"
         ct = 0
         retry_max = 120
@@ -495,9 +497,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
-        if self.board_id == "ea2c" or self.board_id == "ea15":
-            output = self.pexp.expect_get_output(action="ubnt-systool reset2defaults", prompt="" ,timeout=15)
-            log_debug(output)
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
