@@ -42,24 +42,24 @@
           "SRC_PATH": "images/fcd-image/rovr-fw/rovr-wave-console/",
           "DST_PATH": "rovr-fw/rovr-wave-console",
           "FILES": [
-            "ROVER.al324.v3.0.3+root.7913.04bc58f.230306.1535.bin",
-            "uImage",
-            "boot.img"
+            "ROVER.al324.v3.0.3_20230310.bin",
+            "uImage_20230310",
+            "boot_20230310.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea01-fw.bin",
-          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3+root.7913.04bc58f.230306.1535.bin"
+          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3_20230310.bin"
         ],
         [
           "tftp/images/ea01-recovery",
-          "../rovr-fw/rovr-wave-console/uImage"
+          "../rovr-fw/rovr-wave-console/uImage_20230310"
         ],
         [
           "tftp/images/ea01-uboot.bin",
-          "../rovr-fw/rovr-wave-console/boot.img"
+          "../rovr-fw/rovr-wave-console/boot_20230310.img"
         ]
       ]
     }

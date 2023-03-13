@@ -39,11 +39,11 @@ class RovR_AL324_FACTORY(ScriptBase):
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         self.eeprom_offset = {
-            'ea01': "0x1f0000",
+            'ea01': "0x220000",
         }
 
         self.eeprom_offset_2 = {
-            'ea01': "0x1f8000",
+            'ea01': "0x228000",
         }
 
         self.vendorid = {
