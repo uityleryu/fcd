@@ -40,8 +40,16 @@ class UAMT7621Factory(ScriptBase):
             'ec55': "#"
         }
 
-        self.fcd_bootloader = {
-            'ec55': "ec55-uboot.bin"
+        self.cacheaddr = {
+            'ec55': "0x80010000"
+        }
+
+        self.ubaddr = {
+            'ec55': "0x0"
+        }
+
+        self.ubsz = {
+            'ec55': "0x2000000"
         }
 
         self.ubmtd = {
@@ -85,7 +93,11 @@ class UAMT7621Factory(ScriptBase):
         self.linux_prompt_fcdfw = self.lnxpmt_fcdfw[self.board_id]
         self.bootloader_prompt = self.ubpmt[self.board_id]
         self.bootloader_prompt_fcdfw = self.ubpmt_fcdfw[self.board_id]
+        self.bootloader_prompt_combine = [self.bootloader_prompt, self.bootloader_prompt_fcdfw]
 
+        self.cache_address = self.cacheaddr[self.board_id]
+        self.uboot_address = self.ubaddr[self.board_id]
+        self.uboot_size = self.ubsz[self.board_id]
         self.ubootpart = self.ubmtd[self.board_id]
 
         self.tftpdir = self.tftpdir + "/"
@@ -101,11 +113,16 @@ class UAMT7621Factory(ScriptBase):
 
     def stop_uboot(self, timeout=30):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "\033")
+
+    def enter_console(self):
+        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
+        self.pexp.expect_ubcmd(10, "login:", "ubnt")
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
        
     def set_uboot_network(self):
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt_fcdfw, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt_fcdfw, "setenv serverip " + self.tftp_server)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt_fcdfw, "ping " + self.tftp_server)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "ping " + self.tftp_server)
 
     def turn_on_console(self):
         self.stop_uboot(240)
@@ -117,7 +134,24 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_fcdfw, "reset")
 
     def boot_to_T1(self):
-        return True
+        self.stop_uboot()
+        time.sleep(1)
+        self.set_uboot_network()
+
+        log_debug("Starting doing U-Boot update")
+        cmd = "tftpboot {0} images/{1}".format(self.cache_address, "{}-t1-fw.bin".format(self.board_id))
+        log_debug(cmd)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt_combine, cmd)
+        self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
+
+        cmd = "sf probe;sf erase {0} {1};sf write {2} {0} {1}".format(self.uboot_address, self.uboot_size, self.cache_address)
+        log_debug(cmd)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt_combine, cmd)
+        time.sleep(1)
+
+        self.pexp.expect_ubcmd(200, self.bootloader_prompt_combine, "reset")
+        self.pexp.expect_ubcmd(240, "drop_caches", "")
+        self.pexp.expect_ubcmd(10, self.linux_prompt, "")
 
     def update_fcd_uboot(self):
         source = os.path.join(self.fwdir, "{}-uboot.bin".format(self.board_id))
@@ -165,9 +199,7 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd)
 
     def check_info2(self):
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+        self.enter_console()
 
         cmd = "cat /etc/board.info | grep sysid"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
@@ -178,7 +210,7 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_only(10, "board.hwaddr=" + self.mac.upper())
 
     def run(self):
-        UPDATE_UBOOT_EN = False
+        UPDATE_UBOOT_EN = True
         PROVISION_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
@@ -202,7 +234,7 @@ class UAMT7621Factory(ScriptBase):
 
         if UPDATE_UBOOT_EN is True:
             msg(10, "Booting the T1 image ...")
-            #self.boot_to_T1()
+            self.boot_to_T1()
 
         if PROVISION_EN is True:    
             msg(20, "Sendtools to DUT and data provision ...")

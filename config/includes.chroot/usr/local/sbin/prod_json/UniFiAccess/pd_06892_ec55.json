@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "uboot-ua-hub-enterprise.bin",
+            "ua-hub-enterprise-nor-v1.bin",
             "unifi-v1.1.11.22-g4cc378d1-dirty_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin",
             "HE.mt7621.v4.1.1.5.gcb13a66.230308.1724-uboot.bin"
           ]
@@ -34,8 +34,8 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec55-t1-uboot.bin",
-          "../ua-fw/uboot-ua-hub-enterprise.bin"
+          "tftp/images/ec55-t1-fw.bin",
+          "../ua-fw/ua-hub-enterprise-nor-v1.bin"
         ],
         [
           "tftp/images/ec55-uboot.bin",
