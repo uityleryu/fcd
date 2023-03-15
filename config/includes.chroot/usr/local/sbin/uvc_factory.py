@@ -1054,6 +1054,20 @@ class UVCFactoryGeneral(ScriptBase):
             else:
                 log_debug("Modified e.g.0 files successfully")
 
+    def check_hostname(self):
+        retry_max = 10
+        hostname = None
+        cmd = "grep resolv.host.1.name /tmp/system.cfg | awk -F= '{print $2}'"
+        for i in range(retry_max):
+            hostname = self.session.execmd_getmsg(cmd)
+            log_debug("Count {} : hostname = {}".format(i+1, hostname))
+            time.sleep(1)
+
+        if hostname == "UVC Unknown":
+            cmd = "touch /etc/persistent/reset.flag; cfgmtd -w -p /etc"
+            self.session.execmd(cmd)
+
+
     def _get_init_dut_info(self):
         log_debug('===Init dut info'.ljust(80, '='))
 
@@ -1182,6 +1196,9 @@ class UVCFactoryGeneral(ScriptBase):
             if DATAVERIFY_EN is True:
                 time_start = time.time()
                 self.check_info_ssh()
+                if self.board_id == "a564":
+                    '''Check hostname'''
+                    self.check_hostname()
                 msg(80, "Succeeding in checking the devreg information ...")
                 self._log_duration('DATAVERIFY', time_start)
 
