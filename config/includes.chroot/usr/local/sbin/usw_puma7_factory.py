@@ -24,6 +24,7 @@ CERT_INSTALL        = True
 FWUPDATE_ENABLE     = True
 MODEM_UPDATE_ENABLE = True
 CHECK_FW_VER        = True
+SET_BURNIN_TIME     = True
 
 
 class USWPUMA7FactoryGeneral(ScriptBase):
@@ -385,6 +386,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         else:
             return False
 
+    def set_burnin_time(self):
+        log_info("Set burnin time to 4 hours")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/scripts/uci-burnin.sh 600 14400", self.linux_prompt)
+
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
@@ -446,6 +451,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         if CHECK_FW_VER is True:
             self.check_fw()
             msg(90, "Finish checking FW ...")
+
+        if SET_BURNIN_TIME is True:
+            self.set_burnin_time()
+            msg(95, "Finish set burnin time ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
