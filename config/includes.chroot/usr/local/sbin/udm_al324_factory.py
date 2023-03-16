@@ -430,6 +430,12 @@ class UDM_AL324_FACTORY(ScriptBase):
             time.sleep(15)  # for stable eth
             self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
+            self.copy_file(
+                source=os.path.join(self.fcd_toolsdir, self.board_id + "-factory.deb"),
+                dest=os.path.join(self.tftpdir, "factory.deb")  # fixed name
+            )
+            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + self.tftpdir + "/factory.deb")
+
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
@@ -478,9 +484,20 @@ class UDM_AL324_FACTORY(ScriptBase):
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
-        if self.board_id == "ea2c" or self.board_id == "ea15":
+        # if self.board_id == "ea2c" or self.board_id == "ea15": #UDM Pro Will implement set factory mode when receive new factory tool
+        if self.board_id == "ea2c":
+            # copy factory and memtester deb
+            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-factory.deb", local="/tmp/factory.deb",
+                          timeout=20)
+            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-memtester.deb", local="/tmp/memtester.deb",
+                          timeout=20)
+            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/memtester.deb")
+            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/factory.deb")
+            self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
             self.pexp.expect_action(10, self.linux_prompt, "systemctl unmask network-init udapi-server")
             self.pexp.expect_action(10, self.linux_prompt, "systemctl start network-init udapi-server")
+
+
         cmd = "systemctl is-system-running"
         ct = 0
         retry_max = 120
