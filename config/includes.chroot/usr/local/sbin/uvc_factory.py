@@ -1063,8 +1063,10 @@ class UVCFactoryGeneral(ScriptBase):
             log_debug("Count {} : hostname = {}".format(i+1, hostname))
             time.sleep(1)
 
-        if hostname == "UVC Unknown":
+        if "unknown" in hostname.lower():
+            log_debug("Host name incorrect! Perform reset to default")
             cmd = "touch /etc/persistent/reset.flag; cfgmtd -w -p /etc"
+            log_debug(cmd)
             self.session.execmd(cmd)
 
 
