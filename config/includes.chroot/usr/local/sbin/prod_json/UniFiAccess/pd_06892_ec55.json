@@ -17,8 +17,8 @@
           "DST_PATH": "ua-fw",
           "FILES": [
             "ua-hub-enterprise-nor-v1.bin",
-            "unifi-v1.1.11.22-g4cc378d1-dirty_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin",
-            "HE.mt7621.v4.1.1.5.gcb13a66.230308.1724-uboot.bin"
+            "unifi-v1.1.11.26-g70a031e2_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin",
+            "HE.mt7621.v4.1.3.8.g75c8cfd.230315.2121-uboot-change-FW-key.bin"
           ]
         },
         {
@@ -39,11 +39,11 @@
         ],
         [
           "tftp/images/ec55-uboot.bin",
-          "../ua-fw/unifi-v1.1.11.22-g4cc378d1-dirty_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin"
+          "../ua-fw/unifi-v1.1.11.26-g70a031e2_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin"
         ],
         [
           "tftp/images/ec55-fw.bin",
-          "../ua-fw/HE.mt7621.v4.1.1.5.gcb13a66.230308.1724-uboot.bin"
+          "../ua-fw/HE.mt7621.v4.1.3.8.g75c8cfd.230315.2121-uboot-change-FW-key.bin"
         ]
       ]
     }
