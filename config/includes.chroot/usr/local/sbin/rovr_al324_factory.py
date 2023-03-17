@@ -86,7 +86,7 @@ class RovR_AL324_FACTORY(ScriptBase):
 
         # Wifi cal data setting
         self.wifical = {
-            'ea01': True,
+            'ea01': False, # RovR Console RF Board is separate
         }
 
         self.devnetmeta = {
@@ -124,6 +124,8 @@ class RovR_AL324_FACTORY(ScriptBase):
 
     def set_boot_net(self):
         # import pdb; pdb.set_trace()
+        self.pexp.expect_action(10, self.bootloader_prompt, "rtl83xx")
+        self.pexp.expect_action(10, self.bootloader_prompt, "rtl83xx rgmii")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv sysid")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv model")
 
@@ -425,6 +427,12 @@ class RovR_AL324_FACTORY(ScriptBase):
             self.pexp.expect_only(120, "System Finish Bootup")
             self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
+
+            # For MTD Bloack Permission Issue need to reboot
+            self.pexp.expect_action(10, self.linux_prompt, "reboot")  # for correct ubnthal
+            self.login(self.username, self.password, timeout=200, log_level_emerg=True)
+            time.sleep(15)  # for stable eth
+            self.set_kernel_net()
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")

@@ -7,7 +7,7 @@
       "BOMREV": "113-03854",
       "DESC": "Rover Wave Console",
       "FILE": "rovr_al324_factory.py",
-      "T1FILE": "",
+      "T1FILE": "rovr_al324_bspfactory.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
@@ -42,16 +42,19 @@
           "SRC_PATH": "images/fcd-image/rovr-fw/rovr-wave-console/",
           "DST_PATH": "rovr-fw/rovr-wave-console",
           "FILES": [
-            "ROVER.al324.v3.0.3_20230310.bin",
+            "ROVER.al324.v3.0.3_230315.1703.bin",
             "uImage_20230310",
-            "boot_20230310.img"
+            "boot_20230312.img",
+            "bsp-bootloader-v4.2.img",
+            "bsp-uImage-initramfs-u6.v4",
+            "bsp-upgrade-u6-v3.6.4.tar"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea01-fw.bin",
-          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3_20230310.bin"
+          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3_230315.1703.bin"
         ],
         [
           "tftp/images/ea01-recovery",
@@ -59,7 +62,19 @@
         ],
         [
           "tftp/images/ea01-uboot.bin",
-          "../rovr-fw/rovr-wave-console/boot_20230310.img"
+          "../rovr-fw/rovr-wave-console/boot_20230312.img"
+        ],
+        [
+          "tftp/images/ea01-bsp-uboot.img",
+          "../rovr-fw/rovr-wave-console/bsp-bootloader-v4.2.img"
+        ],
+        [
+          "tftp/images/ea01-bsp-recovery",
+          "../rovr-fw/rovr-wave-console/bsp-uImage-initramfs-u6.v4"
+        ],
+        [
+          "tftp/images/ea01-bsp-fw.tar",
+          "../rovr-fw/rovr-wave-console/bsp-upgrade-u6-v3.6.4.tar"
         ]
       ]
     }
