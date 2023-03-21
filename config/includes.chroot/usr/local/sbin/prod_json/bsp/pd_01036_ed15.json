@@ -1,0 +1,59 @@
+{
+  "USP": {
+    "USP-PRO-PDU-HD": {
+      "INDEX": 0,
+      "NAME": "USP-PRO-PDU-HD",
+      "BOARDID": "ed15",
+      "BOMREV": "113-01036",
+      "DESC": "UniFi Smart Power PRO PDU HD",
+      "FILE": "afi_udw_mt7628_factory.py",
+      "T1FILE": "afi_udw_mt7628_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usp_pro_pdu_hd",
+          "DST_PATH": "tools/usp_pro_pdu_hd",
+          "FILES": [
+            "helper_MT7628_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/usp/pro-pdu-hd",
+          "DST_PATH": "usp/pro-pdu-hd",
+          "FILES": [
+            "US.mt7628_6.4.21+14358.230215.1603-uboot.bin",
+            "lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin",
+            "ramips-mt76x8-usp-initramfs-16MB.uboot"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed15-fw.bin",
+          "../usp/pro-pdu-hd/US.mt7628_6.4.21+14358.230215.1603-uboot.bin"
+        ],
+        [
+          "tftp/images/ed15-initramfs.bin",
+          "../usp/pro-pdu-hd/lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
+        ],
+        [
+          "tftp/images/ed15-uboot.bin",
+          "../usp/pro-pdu-hd/ramips-mt76x8-usp-initramfs-16MB.uboot"
+        ]
+      ]
+    }
+  }
+}

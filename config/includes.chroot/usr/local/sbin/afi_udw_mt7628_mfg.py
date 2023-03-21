@@ -22,44 +22,8 @@ class MT7628MFGGeneral(ScriptBase):
         
         self.bspimg = "images/" + self.board_id + "-nor.bin"
 
-    def update_nor(self):
-        # cmd = "sf probe; sf erase 0x0 0x1C0000; sf write {} 0x0 0x1C0000".format(self.mem_addr)
-        # log_debug(cmd)
-        # self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        # self.pexp.expect_only(60, "Erased: OK")
-        # self.pexp.expect_only(60, "Written: OK")
-
-        if self.erasecal == "True":
-            log_debug("Will Delete Calibration data")
-        #     cal_offset = "0x1C0000"
-        #     cmd = "sf erase 0x1C0000 0x070000"
-        #     log_debug("Erase calibration data ...")
-        #     log_debug(cmd)
-        #     self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        #     self.pexp.expect_only(60, "Erased: OK")
-
-        if self.erase_devreg == "True":
-            log_debug("Will Delete DevReg data")
-            # devreg_offset = "0x80000"
-            # cmd = "sf erase 0x80000 0x010000"
-            # log_debug("Erase devreg data ...")
-            # log_debug(cmd)
-            # self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-            # self.pexp.expect_only(60, "Erased: OK")
-
     def stop_uboot(self, timeout=30):
         self.set_bootloader_prompt(">")
-        # if self.pexp is None:
-        #     error_critical(msg="No pexpect obj exists!")
-        # else:
-        #     log_debug(msg="Stopping U-boot")
-        #     self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
-        #     try:
-        #         self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
-        #     except Exception as e:
-        #         self.set_bootloader_prompt("=>")
-        #         log_debug(msg="Changed uboot prompt to =>")
-        #         self.pexp.expect_action(timeout=5, exptxt=self.bootloader_prompt, action="")
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot", action="")
 
     def set_boot_netenv(self):
@@ -75,13 +39,15 @@ class MT7628MFGGeneral(ScriptBase):
 
         # let LCM stop work
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw 0x10000060 0x44050414; mw 0x10000600 0x40; mw 0x10000620 0xfc032c71;")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x2000000; sf write 0x80001000 0x0 0x2000000")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "sf probe; sf erase 0x0 0x1000000; sf write 0x80001000 0x0 0x1000000")
         ## Uboot of BSP
-        # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
-        # SF: 393216 bytes @ 0x0 Erased: OK
-        # device 0 offset 0x0, size 0x2c3f0
-        # SF: 181232 bytes @ 0x0 Written: OK
+        # sf probe; sf erase 0x0 0x1000000; sf write 0x80001000 0x0 0x1000000;
+        # SF: Detected mx25l12805d with page size 256 Bytes, erase size 64 KiB, total 16 MiB
+        # SF: 16777216 bytes @ 0x0 Erased: OK
+        # device 0 whole chip
+        # SF: 16777216 bytes @ 0x0 Written: OK
         # =>
+
 
         ## Uboot of FW
         # SF: Detected mx25l25635e with page size 256 Bytes, erase size 64 KiB, total 32 MiB
@@ -93,16 +59,12 @@ class MT7628MFGGeneral(ScriptBase):
         # Uboot, if you enter the "Enter", uboot will run previous command so "^c" is to avoid to re-run re-program flash again
         self.pexp.expect_ubcmd(120, self.bootloader_prompt, "^c")
 
-    def is_mfg_uboot(self):
-        ret = self.pexp.expect_get_output("version", self.bootloader_prompt)
-        log_debug("verison ret: "+str(ret))
-        if "U-Boot " not in ret:
-            return False
-        return True
-
     def reset_uboot(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
         # self.pexp.expect_only(120, "BusyBox")
+
+    def t1_image_check(self):
+        self.pexp.expect_lnxcmd(120, "br-lan:", "dmesg -n1", "#", retry=0)
 
     def run(self):
         """
@@ -116,7 +78,6 @@ class MT7628MFGGeneral(ScriptBase):
         
         msg(no=10, out="Waiting - PULG in the device...")
         self.stop_uboot()
-        self.update_nor()
 
         msg(no=20, out='Setting up IP address in u-boot ...')
         self.set_boot_netenv()
@@ -130,7 +91,10 @@ class MT7628MFGGeneral(ScriptBase):
         msg(no=80, out='Waiting for T1 booting ...')
         self.reset_uboot()
         
-        self.pexp.expect_only(60, "Booting kernel from Legacy Image at")
+        # self.pexp.expect_only(60, "Booting kernel from Legacy Image at")
+        # Check if we are in T1 image
+        self.t1_image_check()
+        msg(90, 'Check T1 image done ...')
 
         msg(no=100, out="Back to T1 has completed")
         self.close_fcd()

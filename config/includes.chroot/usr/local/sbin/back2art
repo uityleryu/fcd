@@ -31,11 +31,17 @@ b2a_u6_maple(){
 	sudo /usr/bin/python3 /usr/local/sbin/u6_ipq5018_mfg.py -b="$1" -m=$PREMAC $COMMON_ARG
 }
 
+b2a_mt7628(){
+	prepare_img $1
+	sudo /usr/bin/python3 /usr/local/sbin/afi_udw_mt7628_mfg.py -b="$1" $COMMON_ARG
+}
+
 list_product(){
 	do_echo "\nALL: Download all images\
 		\nProduct list: \
 		\n\tIPQ807x: af60-xr/wave-ap/wave-mesh/wave-micro/wave-pro \
 		\n\tIPQ5018: wave-nano/lbe-ax/UX \
+		\n\tMT7628: udw-pro-pu/pdu-pro-hd/pdu-power-switch \
 		"
 }
 
@@ -64,7 +70,10 @@ else
 		"wave-pro") b2a_acorn ac18 ;;
 		"wave-nano") b2a_af_maple a658 ;;
 		"lbe-ax") b2a_af_maple a659 ;;
+		"udw-pro-pu") b2a_mt7628 ea2e ;;
+		"pdu-pro-hd") b2a_mt7628 ed15 ;;
 		"UX") b2a_u6_maple a667 ;;
+		"mt7628") b2a_mt7628 ffff;;
 		*) 
 			list_product
 			do_echo "Error: Not support $1"

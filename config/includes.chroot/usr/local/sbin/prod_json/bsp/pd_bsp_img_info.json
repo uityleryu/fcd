@@ -61,6 +61,27 @@
         "a667-nor.bin": "u6-express-v4_nor.bin",
         "a667-emmc.img": "u6-express-v4.img"
       }
+    },
+    "USP-PRO-PDU-HD": {
+      "NAME": "USP-PRO-PDU-HD",
+      "BOARDID": "ed15",
+      "DOWNLOAD_FILE": {
+		  "ed15-nor.bin": "PDU-pro_hc_mt7628_nor-v2.bin"
+        }
+    },
+    "USP-Pdu-Power-Switch": {
+      "NAME": "USP-Pdu-Power-Switch",
+      "BOARDID": "ffff",
+      "DOWNLOAD_FILE": {
+        "ffff-nor.bin": "USP-PDU-power-switch_mt7628_nor-v1.3.bin"
+        }
+    },
+    "UDW-PRO-PU": {
+      "NAME": "UDW-PRO-PU",
+      "BOARDID": "ea2e",
+      "DOWNLOAD_FILE": {
+        "ea2e-nor.bin": "UDW-Pro-Power_mt7628_nor-v3.bin"
+      }
     }
   }
 }
