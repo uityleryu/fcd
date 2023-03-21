@@ -167,3 +167,21 @@ image-antman-install-$1:
 	python3 build_tools/prepare_fcd_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -nc=$(NICK_EN) -os=RPI
 
 endef
+
+define ProductCompress2_bsp
+MATCH_SINGLE := $(shell [[ $1 =~ [0-9]{5}_[0-9a-f]{4} ]] && echo matched)
+
+$1-antman: fcd-ubntlib image-antman-install-$1
+
+image-antman-install-$1:
+	rm -rf $(OSTRICH_DIR)
+	rm -rf $(OUTDIR)/tmp_wget
+	mkdir -p $(OSTRICH_DIR)/sbin
+	mkdir -p $(OUTDIR)/tmp_wget
+	git rev-parse --abbrev-ref HEAD > $(OSTRICH_DIR)/commit.branch.id
+	git rev-parse --short HEAD >> $(OSTRICH_DIR)/commit.branch.id
+	cp -rfL $(UBNTLIB_DIR)/PAlib $(OSTRICH_DIR)/sbin/.
+	find $(OSTRICH_DIR) -name "__pycache__" -or -name "*.pyc" -or -name ".git" -or -name "*.sw*" | xargs rm -rf
+	python3 build_tools/prepare_bsp_scripts.py -pl=$(PRD) -pn=$1 -v=$(VER) -j=$(FWVER) -nc=$(NICK_EN) -os=RPI
+
+endef
