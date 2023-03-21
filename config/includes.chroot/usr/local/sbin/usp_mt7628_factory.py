@@ -48,6 +48,7 @@ class USPMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
+        self.POWER_SUPPLY_EN = True
         self.UPDATE_RECOVERY_ENABLE = True
         self.BOOT_RECOVERY_IMAGE    = True 
         self.PROVISION_ENABLE       = True 
@@ -123,12 +124,19 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu.1 info', 'version', retry=48)
 
     def run(self):
+        if self.POWER_SUPPLY_EN is True:
+            self.set_ps_port_relay_off()
+
         self.fcd.common.config_stty(self.dev)
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        time.sleep(5)
+
+        if self.POWER_SUPPLY_EN is True:
+            self.set_ps_port_relay_on()
+
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_RECOVERY_ENABLE is True:
@@ -173,6 +181,10 @@ class USPMT7628Factory(ScriptBase):
         if self.MCU_FW_CHECK_ENABLE is True:
             self.mcu_fw_check()
             msg(90, "Succeeding in checking the MCU FW information ...")
+
+        if self.POWER_SUPPLY_EN is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

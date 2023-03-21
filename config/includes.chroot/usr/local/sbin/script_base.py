@@ -22,17 +22,19 @@ from PAlib.Framework.fcd.helper import FCDHelper
 from PAlib.Framework.fcd.logger import log_debug, log_info, log_error, msg, error_critical
 from PAlib.Framework.fcd.singleton import errorcollecter
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.devices.usp_pdu_pro_ed12 import USP_PDU_PRO
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.52"
+    __version__ = "1.0.53"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
     def __init__(self):
+        self.power_supply = None
         self.cnapi = Common()
         self.input_args = self._init_parse_inputs()
         self._init_share_var()
@@ -76,6 +78,42 @@ class ScriptBase(object):
             return self.__ssh_client_obj
         else:
             error_critical("No ssh client obj exists!")
+
+    def set_ps_port_relay_on(self, ps_ssid="ed12", port=5):
+        if self.power_supply is None:
+            if ps_ssid == "ed12":
+                self.power_supply = USP_PDU_PRO()
+            else:
+                error_critical("GU: Power supply doesn't support, FAIL!!!")
+        else:
+            log_debug("Power supply is existed")
+
+        if self.power_supply.connect() is False:
+            rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+            error_critical(rmsg)
+        else:
+            rmsg = "SSH connection with the {}".format(ps_ssid)
+            log_debug(rmsg)
+            self.power_supply.set_port_relay_on(port=int(self.row_id) + port)
+            time.sleep(2)
+
+    def set_ps_port_relay_off(self, ps_ssid="ed12", port=5):
+        if self.power_supply is None:
+            if ps_ssid == "ed12":
+                self.power_supply = USP_PDU_PRO()
+            else:
+                error_critical("GU: Power supply doesn't support, FAIL!!!")
+        else:
+            log_debug("Power supply is existed")
+
+        if self.power_supply.connect() is False:
+            rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+            error_critical(rmsg)
+        else:
+            rmsg = "SSH connection with the {}".format(ps_ssid)
+            log_debug(rmsg)
+            self.power_supply.set_port_relay_off(port=int(self.row_id) + port)
+            time.sleep(4)
 
     def set_sshclient_helper(self, ssh_client):
         self.__ssh_client_obj = ssh_client
