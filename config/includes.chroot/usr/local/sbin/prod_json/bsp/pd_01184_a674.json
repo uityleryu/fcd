@@ -1,0 +1,61 @@
+{
+  "UniFiAP6": {
+    "UXP": {
+      "INDEX": 0,
+      "NAME": "UXP",
+      "BOARDID": "a674",
+      "BOMREV": "113-01184",
+      "DESC": "UniFi Express Mesh",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "mac-qr-ac",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/a667",
+          "DST_PATH": "a667",
+          "FILES": [
+            "UEX.ipq5018.v3.1.7.e33382e.230214.1202.bin",
+            "uImage-v3.1.7",
+            "unifi-uex-1.0.5.149-g116e1d21_ipq5018_uex_u-boot.mbn",
+            "u6-express-v4.img",
+            "u6-express-v4_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a674-nor.bin",
+          "../a667/u6-express-v4_nor.bin"
+        ],
+        [
+          "tftp/images/a674-emmc.img",
+          "../a667/u6-express-v4.img"
+        ],
+        [
+          "tftp/images/a674-fw.bin",
+          "../a667/UEX.ipq5018.v3.1.7.e33382e.230214.1202.bin"
+        ],
+        [
+          "tftp/images/a674-uboot.mbn",
+          "../a667/unifi-uex-1.0.5.149-g116e1d21_ipq5018_uex_u-boot.mbn"
+        ],
+        [
+          "tftp/images/a674-loader.img",
+          "../a667/uImage-v3.1.7"
+        ]
+      ]
+    }
+  }
+}

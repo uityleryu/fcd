@@ -1,0 +1,61 @@
+{
+  "AirFiber": {
+    "AF60-XR": {
+      "INDEX": 0,
+      "NAME": "AF60-XR",
+      "BOARDID": "ac11",
+      "BOMREV": "113-00719",
+      "DESC": "AirFiber 60 XR",
+      "FILE": "af_ipq80xx_factory.py",
+      "T1FILE": "af_ipq80xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "XR.ipq807x.v1.0.3.7a6ed2d7.221005.1608.bin",
+            "u-boot.mbn",
+            "af60-xr-spf10.0-nand-v7.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/af_af60/",
+          "DST_PATH": "tools/af_af60",
+          "FILES": [
+            "cfg_part.bin",
+            "helper_IPQ807x",
+            "id_rsa",
+            "id_rsa.pub"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ac11.bin",
+          "../af-fw/XR.ipq807x.v1.0.3.7a6ed2d7.221005.1608.bin"
+        ],
+        [
+          "tftp/images/ac11-bootloader.bin",
+          "../af-fw/u-boot.mbn"
+        ],
+        [
+          "tftp/images/ac11-mfg.bin",
+          "../af-fw/af60-xr-spf10.0-nand-v7.bin"
+        ]
+      ]
+    }
+  }
+}

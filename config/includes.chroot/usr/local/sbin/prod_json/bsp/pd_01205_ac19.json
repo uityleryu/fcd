@@ -1,0 +1,61 @@
+{
+  "AirFiber": {
+    "Wave-Pro-01205": {
+      "INDEX": 0,
+      "NAME": "Wave-AP",
+      "BOARDID": "ac19",
+      "BOMREV": "113-01205",
+      "DESC": "Wave-PRO",
+      "FILE": "af_ipq80xx_factory.py",
+      "T1FILE": "af_ipq80xx_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000a",
+      "SW_ID": "1001",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/af-fw",
+          "DST_PATH": "af-fw",
+          "FILES": [
+            "MGMP.ipq807x.v3.1.4.2e71645c.230302.1637.bin",
+            "u-boot_01205.mbn",
+            "wave-pro-8386-acorn-spf11.3-csu1-nand-v3-single.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/af_af60/",
+          "DST_PATH": "tools/af_af60",
+          "FILES": [
+            "cfg_part.bin",
+            "helper_IPQ807x",
+            "id_rsa",
+            "id_rsa.pub"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ac19.bin",
+          "../af-fw/MGMP.ipq807x.v3.1.4.2e71645c.230302.1637.bin"
+        ],
+        [
+          "tftp/images/ac19-bootloader.bin",
+          "../af-fw/u-boot_01205.mbn"
+        ],
+        [
+          "tftp/images/ac19-mfg.bin",
+          "../af-fw/wave-pro-8386-acorn-spf11.3-csu1-nand-v3-single.img"
+        ]
+      ]
+    }
+  }
+}

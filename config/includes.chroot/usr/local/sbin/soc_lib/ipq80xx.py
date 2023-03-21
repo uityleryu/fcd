@@ -660,6 +660,9 @@ class IPQ80XXMFG(ScriptBase):
             print("ping retry fail")
             raise NameError('ping retry fail')
 
+    def t1_image_check(self):
+        self.pexp.expect_lnxcmd(120, "br-lan: ", "dmesg -n1", "#", retry=0)
+
     def run(self):
         """
         Main procedure of factory
@@ -722,6 +725,9 @@ class IPQ80XXMFG(ScriptBase):
             self.pexp.expect_only(120, "Linux version 4.4.241")
         else:
             self.pexp.expect_only(120, "Linux version 4.4.60")
+
+        self.t1_image_check()
+        msg(90, 'Check T1 image done ...')
 
         msg(100, "Back to ART has completed")
         self.close_fcd()
