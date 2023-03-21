@@ -1,0 +1,66 @@
+{
+  "bsp": {
+    "AF60-XR": {
+      "INDEX": 0,
+      "NAME": "AF60-XR",
+      "BOARDID": "ac11",
+      "DOWNLOAD_FILE": {
+        "ac11-mfg.bin": "af60-xr-spf10.0-nand-v9.bin"
+      }
+	},
+    "Wave-AP-01206": {
+      "NAME": "Wave-AP-01206",
+      "BOARDID": "ac1a",
+      "DOWNLOAD_FILE": {
+        "ac1a-mfg.bin": "wave-ap-acorn-spf11.3-csu1-nand-v5.2-single.img"
+      }
+    },
+    "Wave-Mesh": {
+      "NAME": "Wave-Mesh",
+      "BOARDID": "ac15",
+      "DOWNLOAD_FILE": {
+         "ac15-mfg.bin": "wave-mesh-acorn-spf11.3-csu1-nand-v7_256M32-single.img"
+      }
+    },
+    "Wave-AP-Micro": {
+      "NAME": "Wave-AP-Micro",
+      "BOARDID": "ac16",
+      "DOWNLOAD_FILE": {
+         "ac16-mfg.bin": "wave-micro-acorn-spf11.3-csu1-nand-v4.1-single.img"
+      }
+    },
+    "Wave-Pro-01205": {
+      "NAME": "Wave-AP",
+      "BOARDID": "ac19",
+      "BOMREV": "113-01205",
+      "DESC": "Wave-PRO",
+      "DOWNLOAD_FILE": {
+            "ac19-mfg.bin": "wave-pro-8386-acorn-spf11.3-csu1-nand-v3-single.img"
+      }
+    },
+    "Wave-Nano": {
+      "NAME": "Wave-Nano",
+      "BOARDID": "a658",
+      "DOWNLOAD_FILE": {
+        "a658-bsp-nor.bin": "wave-nano-v4_nor.bin",
+        "a658-bsp-2nd.bin": "wave-nano-v4_emmc.bin"
+      }
+    },
+    "LBE-AX": {
+      "NAME": "LBE-AX",
+      "BOARDID": "a659",
+      "DOWNLOAD_FILE": {
+        "a659-bsp-nor.bin": "lbe-ax-v6_nor.bin",
+        "a659-bsp-2nd.bin": "lbe-ax-v6.img"
+      }
+    },
+    "UX": {
+      "NAME": "UX",
+      "BOARDID": "a667",
+      "DOWNLOAD_FILE": {
+        "a667-nor.bin": "u6-express-v4_nor.bin",
+        "a667-emmc.img": "u6-express-v4.img"
+      }
+    }
+  }
+}
