@@ -1,0 +1,75 @@
+#!/bin/sh
+PREFIX="[back2art]: "
+SLOT=0
+TS=192.168.1.19
+TTY="ttyUSB0"
+PREMAC="fcecda000010"
+
+COMMON_ARG="-s=0 -d=$TTY -ts=$TS -e=False -ed=False --no-upload"
+
+do_echo(){
+	echo $PREFIX $@
+}
+
+prepare_img(){
+	sudo /usr/bin/python3 /usr/local/sbin/prepare_bsp_img.py --boardid="$1"
+	[ $? -eq 1 ] && echo "Download image Fail" && exit
+}
+
+b2a_acorn(){
+	prepare_img $1
+	sudo /usr/bin/python3 /usr/local/sbin/af_ipq80xx_mfg.py -pline=AirFiber -b="$1" $COMMON_ARG
+}
+
+b2a_af_maple(){
+	prepare_img $1
+	sudo /usr/bin/python3 /usr/local/sbin/af_ipq5018_mfg.py -pline=AirFiber -b="$1" $COMMON_ARG
+}
+
+b2a_u6_maple(){
+	prepare_img $1
+	sudo /usr/bin/python3 /usr/local/sbin/u6_ipq5018_mfg.py -b="$1" -m=$PREMAC $COMMON_ARG
+}
+
+list_product(){
+	do_echo "\nALL: Download all images\
+		\nProduct list: \
+		\n\tIPQ807x: af60-xr/wave-ap/wave-mesh/wave-micro/wave-pro \
+		\n\tIPQ5018: wave-nano/lbe-ax/UX \
+		"
+}
+
+readme(){
+	do_echo "ReadMe: Please connect your device to usb console and re-power on it after running the command."
+	do_echo "Usage: back2art [Product/ALL]"
+}
+
+
+
+readme
+if [ ! -e /dev/ttyUSB0 ];then
+	do_echo "Error: Find no usb console"; exit;
+fi
+
+if [ $# -eq 0 ];then
+	list_product
+	do_echo "Error: Which Product need to back to art?"
+else
+	case "$1" in
+		"ALL") prepare_img ALL;;
+		"af60-xr") b2a_acorn ac11 ;;
+		"wave-ap") b2a_acorn ac1a ;; #ac1a for 2.5G ver Wave-AP
+		"wave-mesh") b2a_acorn ac15 ;;
+		"wave-micro") b2a_acorn ac16 ;;
+		"wave-pro") b2a_acorn ac18 ;;
+		"wave-nano") b2a_af_maple a658 ;;
+		"lbe-ax") b2a_af_maple a659 ;;
+		"UX") b2a_u6_maple a667 ;;
+		*) 
+			list_product
+			do_echo "Error: Not support $1"
+			;;
+	esac
+fi
+
+
