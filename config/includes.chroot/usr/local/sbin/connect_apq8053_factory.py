@@ -807,8 +807,11 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
                 if self.btnum[self.board_id] == "1":
                     cmd = "btnvtool -z"
-                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                    m_gmac = getmac.replace('.','')
+                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt).strip()
+                    m_gmac = getmac.replace('.',':').split('\n')[1]
+
+                    m_gmac = ''.join([ss.zfill(2) for ss in m_gmac.split(':')])
+                    log_debug(m_gmac)
                     if self.btmac in m_gmac:
                         log_debug("Check BT MAC is matched !!")
                     else:
