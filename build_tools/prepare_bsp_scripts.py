@@ -126,7 +126,7 @@ def gen_prod_json():
 
         if pjson[pn][0] == "all":
             # Ex: /home/vjc/malon/uifcd5/config/includes.chroot/usr/local/sbin/prod_json/airMAX
-            pattern = "{}/{}/*".format(prod_json_dir, pl)
+            pattern = "{}/*/*".format(prod_json_dir)
             tg_list = glob.glob(pattern)
         else:
             tg_list = []
