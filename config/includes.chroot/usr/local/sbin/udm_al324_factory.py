@@ -106,6 +106,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea15': "eth10"
 
         }
+        #LCM version file
+
+
 
         # LCM update
         self.lcmupdate = {
@@ -465,7 +468,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
-
+        self.lcm_fw_ver_check()
         if self.wifical[self.board_id] is True:
             msg(95, "Write and check calibration data")
             self.check_refuse_data()
