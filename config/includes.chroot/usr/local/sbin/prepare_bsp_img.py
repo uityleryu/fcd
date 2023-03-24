@@ -41,6 +41,7 @@ def findfile(name, path):
         if name in fileName:
             print(dirPath + name)
             return os.path.join(dirPath, name)
+    return False
 
 def download_images():
     # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp
@@ -48,10 +49,18 @@ def download_images():
     if os.path.isdir(ostype_tftp_dir) is False:
         os.makedirs(ostype_tftp_dir)
 
+    fh = open("/usr/local/sbin/Products-info.json")
+    pjson = json.load(fh)
+    fh.close()
+
     download_wget_list = []
     for im in pjson[pl].keys():
         rmsg = "**** WGET FTP files for Model: {} ****".format(im)
         print(rmsg)
+
+        # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
+        if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+            continue
 
         if "DOWNLOAD_FILE" in pjson[pl][im].keys():
             download_list = pjson[pl][im]["DOWNLOAD_FILE"]
@@ -65,17 +74,19 @@ def download_images():
                         os.makedirs(local_dir)
 
                     for i in item["FILES"]:
-                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
-                        src_file_path = os.path.join(url_dir, i)
-                        src_file_path = src_file_path.replace("\\", "/")
-                        cmd = "wget -P {} {}".format(local_dir, src_file_path)
-                        if cmd not in download_wget_list:
-                            download_wget_list.append(cmd)
-                            print("WGET: " + cmd)
-                            rtc = os.system(cmd)
-                            if rtc != 0:
-                                print("WGET failed: " + cmd)
-                                exit(1)
+                        dst_file_path = os.path.join(local_dir,i)
+                        if os.path.isfile(dst_file_path) is False:
+                            # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
+                            src_file_path = os.path.join(url_dir, i)
+                            src_file_path = src_file_path.replace("\\", "/")
+                            cmd = "wget -P {} {}".format(local_dir, src_file_path)
+                            if cmd not in download_wget_list:
+                                download_wget_list.append(cmd)
+                                print("WGET: " + cmd)
+                                rtc = os.system(cmd)
+                                if rtc != 0:
+                                    print("WGET failed: " + cmd)
+                                    exit(1)
                 else:
                     # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
                     url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
@@ -119,9 +130,16 @@ def download_images():
     # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/tftp/tools
     ostype_tools_dir = os.path.join(ostype_tftp_dir, "tools")
     cmd = "chmod -R 777 {}".format(ostype_tools_dir)
-    cn.xcmd(cmd)
+    rtc = os.system(cmd)
 
     for im in pjson[pl].keys():
+        rmsg = "**** LINK files for Model: {} {} ****".format(im,pjson[pl][im]["BOARDID"])
+        print(rmsg)
+
+        # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
+        if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+            continue
+
         if "CREATE_LINK" in pjson[pl][im].keys():
             symoblic_list = pjson[pl][im]["CREATE_LINK"]
             for item in symoblic_list:
@@ -130,13 +148,14 @@ def download_images():
                 # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp/images/e7e7-art-uboot.bin
                 # Ex: case2: /home/vjc/malon/uifcd1/output/stage/NewSquashfs/tftp/images/e7e7-art-uboot.bin
                 dst_path = os.path.join(ostype_softlink_dir, item[0])
+                dst_path = dst_path.replace("tftp","tftpboot")
                 dst_dir = os.path.dirname(dst_path)
                 if os.path.isdir(dst_dir) is False:
                     os.makedirs(dst_dir)
 
                 if os.path.islink(dst_path) is False:
                     cmd = "ln -s {} {}".format(src_path, dst_path)
-                    cn.xcmd(cmd)
+                    rtc = os.system(cmd)
 
     tools_all = []
     for dh in glob.glob(ostype_tools_dir + "/*"):
@@ -145,12 +164,11 @@ def download_images():
     tg = " ".join(tools_all)
     cmd = "cd {}; tar -cvzf tools.tar {}; chmod 777 tools.tar".format(ostype_tools_dir, tg)
     print("TAR cmd: " + cmd)
-    cn.xcmd(cmd)
+    rtc = os.system(cmd)
     for i in tools_all:
         i_path = os.path.join(ostype_tools_dir, i)
         if os.path.isdir(i_path) is True:
             shutil.rmtree(i_path)
-
 
 def download_bsp_images():
     if os.path.isdir(ostype_tftp_dir) is False:
@@ -189,9 +207,10 @@ def download_bsp_images():
                 # if len(item["FILES"]) > 0:
 
                 fcd_file_path=findfile(f, ostype_tftp_dir)
-                print("Find image in FCD dir: " + fcd_file_path)
 
                 if os.path.isfile(fcd_file_path) is True:
+                    print("Find image in FCD dir: " + fcd_file_path)
+
                     link_dir = os.path.join(ostype_tftp_dir, "images")
                     link_file_path = os.path.join(link_dir,ln)
                     print("Link " + link_file_path)
