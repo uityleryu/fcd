@@ -18,7 +18,7 @@
           "FILES": [
             "ua-hub-enterprise-nor-v1.bin",
             "unifi-v1.1.11.26-g70a031e2_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin-change-sign-key.uboot",
-            "HE.mt7621.v4.1.3.8.g75c8cfd.230315.2121-uboot-change-FW-key.bin"
+            "HE.mt7621.v4.1.3.12.g926c78f.230324.2126-uboot.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ec55-fw.bin",
-          "../ua-fw/HE.mt7621.v4.1.3.8.g75c8cfd.230315.2121-uboot-change-FW-key.bin"
+          "../ua-fw/HE.mt7621.v4.1.3.12.g926c78f.230324.2126-uboot.bin"
         ]
       ]
     }
