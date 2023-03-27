@@ -9,6 +9,7 @@ import json
 import time
 import subprocess
 import glob
+import fnmatch
 
 pjson = ""
 d_list = []
@@ -36,12 +37,21 @@ ostype_tftp_dir = os.path.join(ostype_dir, "tftpboot")
 ostype_softlink_dir = ostype_dir
 
 def findfile(name, path):
+    findlist = []
     for dirPath, dirName, fileName in os.walk(path):
         print(dirPath)
         if name in fileName:
             print(dirPath + name)
             return os.path.join(dirPath, name)
-    return False
+        for f in fnmatch.filter(fileName, "*" + name + "*"):
+            findlist.append(os.path.join(dirPath, f))
+
+    if len(findlist) == 0:
+        return False
+    else:
+        print("len of findlist: " , len(findlist))
+        return findlist
+
 
 def download_images():
     # Ex: case1: /home/vjc/malon/uifcd1/output/ostrich/tftp
@@ -270,8 +280,7 @@ def check_file():
         print("Can not find the image in the /tftpboot")
         exit(1)
     else:
-        cmd = "ls -l {}".format(f)
-        os.system(cmd)
+        print("Find: {}".format(f))
 
 def main():
     if args.boardid is None and args.boardid != "ALL":
