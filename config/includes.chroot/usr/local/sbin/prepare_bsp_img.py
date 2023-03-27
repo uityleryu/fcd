@@ -264,6 +264,14 @@ def download_bsp_images():
         print("Not support in pd_bsp_img_info.json, board id : " + args.boardid)
         # exit(1)
 
+def check_file():
+    f = findfile(args.boardid,ostype_tftp_dir)
+    if f is False:
+        print("Can not find the image in the /tftpboot")
+        exit(1)
+    else:
+        cmd = "ls -l {}".format(f)
+        os.system(cmd)
 
 def main():
     if args.boardid is None and args.boardid != "ALL":
@@ -272,6 +280,7 @@ def main():
 
     download_images()
     download_bsp_images()
+    check_file()
 
 
 
