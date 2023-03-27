@@ -207,7 +207,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         """under developing
