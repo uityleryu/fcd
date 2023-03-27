@@ -262,7 +262,7 @@ def download_bsp_images():
     # print("len of download list: " , len(download_wget_list))
     if len(d_list) == 0:
         print("Not support in pd_bsp_img_info.json, board id : " + args.boardid)
-        exit(1)
+        # exit(1)
 
 
 def main():
