@@ -42,9 +42,9 @@
           "SRC_PATH": "images/fcd-image/rovr-fw/rovr-wave-console/",
           "DST_PATH": "rovr-fw/rovr-wave-console",
           "FILES": [
-            "ROVER.al324.v3.0.3_230315.1703.bin",
-            "uImage_20230310",
-            "boot_20230312.img",
+            "ROVER.al324.v3.0.3_230324.bin",
+            "uImage_20230324",
+            "boot_20230321.img",
             "bsp-bootloader-v4.2.img",
             "bsp-uImage-initramfs-u6.v4",
             "bsp-upgrade-u6-v3.6.4.tar"
@@ -54,15 +54,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea01-fw.bin",
-          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3_230315.1703.bin"
+          "../rovr-fw/rovr-wave-console/ROVER.al324.v3.0.3_230324.bin"
         ],
         [
           "tftp/images/ea01-recovery",
-          "../rovr-fw/rovr-wave-console/uImage_20230310"
+          "../rovr-fw/rovr-wave-console/uImage_20230324"
         ],
         [
           "tftp/images/ea01-uboot.bin",
-          "../rovr-fw/rovr-wave-console/boot_20230312.img"
+          "../rovr-fw/rovr-wave-console/boot_20230321.img"
         ],
         [
           "tftp/images/ea01-bsp-uboot.img",
