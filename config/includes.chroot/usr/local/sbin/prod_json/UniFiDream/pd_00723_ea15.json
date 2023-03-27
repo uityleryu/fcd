@@ -6,7 +6,7 @@
       "BOARDID": "ea15",
       "BOMREV": "113-00723",
       "DESC": "UniFi Dream Machine Pro",
-      "FILE": "ubios_alpine_factory.py",
+      "FILE": "udm_al324_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0005",
@@ -34,24 +34,32 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
           "DST_PATH": "udm-fw/udmp",
           "FILES": [
-            "UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin",
-            "uImage.v1.12.30.r",
-            "boot.v1.12.30.img"
+            "UDMPRO.al324.v2.4.27.c78626a.230119.1411.bin",
+            "uImage_v2.4.27",
+            "boot_v2.4.27.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/udmp/UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin"
+          "../udm-fw/udmp/UDMPRO.al324.v2.4.27.c78626a.230119.1411.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/udmp/uImage.v1.12.30.r"
+          "../udm-fw/udmp/uImage_v2.4.27"
         ],
         [
-          "tftp/images/ea15_signed_boot.img",
-          "../udm-fw/udmp/boot.v1.12.30.img"
+          "tftp/images/ea15-uboot.bin",
+          "../udm-fw/udmp/boot_v2.4.27.img"
+        ],
+        [
+          "tftp/tools/ea15-factory.deb",
+          "../tools/udmp/factory-test-tools_2.3.1-168+g0dcf6938c5f_arm64.deb"
+        ],
+        [
+          "tftp/tools/ea15-memtester.deb",
+          "../tools/udmp/memtester_4.5.1-1_arm64.deb"
         ]
       ]
     }
