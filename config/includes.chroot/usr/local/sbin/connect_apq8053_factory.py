@@ -796,40 +796,41 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 else:
                     error_critical("Check Eth MAC is not matched !!")
 
-                if self.wifinum[self.board_id] == "1":
-                    cmd = "write_wlan_mac -r"
-                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                    m_gmac = getmac.replace(':','')
-                    if self.wifimac in m_gmac:
-                        log_debug("Check Wifi MAC is matched !!")
+                if self.write_persist[self.board_id] is True:
+                    if self.wifinum[self.board_id] == "1":
+                        cmd = "write_wlan_mac -r"
+                        getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                        m_gmac = getmac.replace(':','')
+                        if self.wifimac in m_gmac:
+                            log_debug("Check Wifi MAC is matched !!")
+                        else:
+                            error_critical("Check Wifi MAC is not matched !!")
+
+                    if self.btnum[self.board_id] == "1":
+                        cmd = "btnvtool -z"
+                        getmac = self.pexp.expect_get_output(cmd, self.linux_prompt).strip()
+                        m_gmac = getmac.replace('.',':').split('\n')[1]
+
+                        m_gmac = ''.join([ss.zfill(2) for ss in m_gmac.split(':')])
+                        log_debug(m_gmac)
+                        if self.btmac in m_gmac:
+                            log_debug("Check BT MAC is matched !!")
+                        else:
+                            error_critical("Check BT MAC is not matched !!")
+
+                    cmd = "cat /mnt/vendor/persist/bom_id"
+                    m_gbomid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.bom_rev in m_gbomid:
+                        log_debug("Check BOM ID is matched !!")
                     else:
-                        error_critical("Check Wifi MAC is not matched !!")
+                        error_critical("Check BOM ID is not matched !!")
 
-                if self.btnum[self.board_id] == "1":
-                    cmd = "btnvtool -z"
-                    getmac = self.pexp.expect_get_output(cmd, self.linux_prompt).strip()
-                    m_gmac = getmac.replace('.',':').split('\n')[1]
-
-                    m_gmac = ''.join([ss.zfill(2) for ss in m_gmac.split(':')])
-                    log_debug(m_gmac)
-                    if self.btmac in m_gmac:
-                        log_debug("Check BT MAC is matched !!")
+                    cmd = "cat /mnt/vendor/persist/bom_hwver"
+                    m_gbomrev = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.bom_rev[-2:] in m_gbomrev:
+                        log_debug("Check BOM Rev is matched !!")
                     else:
-                        error_critical("Check BT MAC is not matched !!")
-
-                cmd = "cat /mnt/vendor/persist/bom_id"
-                m_gbomid = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                if self.bom_rev in m_gbomid:
-                    log_debug("Check BOM ID is matched !!")
-                else:
-                    error_critical("Check BOM ID is not matched !!")
-
-                cmd = "cat /mnt/vendor/persist/bom_hwver"
-                m_gbomrev = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                if self.bom_rev[-2:] in m_gbomrev:
-                    log_debug("Check BOM Rev is matched !!")
-                else:
-                    error_critical("Check BOM Rev is not matched !!")
+                        error_critical("Check BOM Rev is not matched !!")
 
                 if self.qrcode_dict[self.board_id] is True:
                     cmd = "cat {}".format((self.f_qr_id))
