@@ -41,6 +41,10 @@ b2a_mt7628(){
 	sudo /usr/bin/python3 /usr/local/sbin/afi_udw_mt7628_mfg.py -b="$1" $COMMON_ARG
 }
 
+sync_bspimages(){
+	curl http://wingchun.corp.ubnt.com:8080/view/BSP/job/Image_Sync/build?token=bsp_images
+}
+
 list_product(){
 	do_echo "\nALL: Download all images\
 		\nProduct list: \
@@ -66,6 +70,7 @@ if [ $# -eq 0 ];then
 	list_product
 	do_echo "Error: Which Product need to back to art?"
 else
+	sync_bspimages
 	case "$1" in
 		"ALL") prepare_img ALL;;
 		"af60-xr") b2a_acorn ac11 ;;
