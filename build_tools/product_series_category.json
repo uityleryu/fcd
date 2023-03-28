@@ -91,5 +91,8 @@
   ],
   "UISP_XGPON-SERIES" : [
     "03685_eec8", "03778_eec9"
+  ],
+  "UniFiDrive_DRIVE-SERIES" : [
+    "03576_ea50", "03751_ea51", "04338_ea50"
   ]
 }
