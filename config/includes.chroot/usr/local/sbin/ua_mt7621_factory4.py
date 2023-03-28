@@ -193,21 +193,33 @@ class UAMT7621Factory(ScriptBase):
         else:
             log_debug("Uploading firmware image successfully")
 
-    def check_info(self):
-        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        cmd = 'cat /proc/bsp_helper/cpu_rev_id'
-        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd)
-
     def check_info2(self):
         self.enter_console()
 
-        cmd = "cat /etc/board.info | grep sysid"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
-        self.pexp.expect_only(10, "board.sysid=0x" + self.board_id)
+        time.sleep(3)
 
-        cmd = "cat /etc/board.info | grep hwaddr"
+        cmd = "cat /etc/board.info"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
-        self.pexp.expect_only(10, "board.hwaddr=" + self.mac.upper())
+
+        cmd = "cat /proc/ubnthal/board"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "cat /proc/ubnthal/system.info"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "cat /proc/meminfo  | head -n 3"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "cat /proc/cpuinfo  | grep processor"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "cat /proc/cmdline"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "cat /proc/mtd"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        self.pexp.expect_only(10, self.linux_prompt_fcdfw)
 
     def run(self):
         UPDATE_UBOOT_EN = True
