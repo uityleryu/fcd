@@ -27,18 +27,24 @@ class USPMT7628Factory(ScriptBase):
 
         # number of mac
         self.macnum =  {
-            'ed12': "2"
+            'ed12': "2",
+            'ed17': "1"
             }
         # number of WiFi
         self.wifinum = {
             'ed12': "0",
+            'ed17': "0"
             }
         # number of Bluetooth
         self.btnum =   {
             'ed12': "0",
+            'ed17': "0"
             }
         # flash size map
-        self.flash_size = {'ed12': "16777216"}
+        self.flash_size = {
+            'ed12': "16777216",
+            'ed17': "16777216"
+        }
         # firmware image
         self.fwimg = self.board_id + "-fw.bin"
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -48,16 +54,31 @@ class USPMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
-        self.POWER_SUPPLY_EN = True
-        self.UPDATE_RECOVERY_ENABLE = True
-        self.BOOT_RECOVERY_IMAGE    = True 
-        self.PROVISION_ENABLE       = True 
-        self.DOHELPER_ENABLE        = True 
-        self.REGISTER_ENABLE        = True 
-        self.FWUPDATE_ENABLE        = False
-        self.DATAVERIFY_ENABLE      = True 
-        self.LCM_FW_CHECK_ENABLE    = True 
-        self.MCU_FW_CHECK_ENABLE    = True 
+        if self.board_id == "ed17":
+            self.POWER_SUPPLY_EN        = False
+            self.UPDATE_RECOVERY_ENABLE = False
+            self.BOOT_RECOVERY_IMAGE    = False
+            self.INIT_NETWORK_INTERFACE = True
+            self.PROVISION_ENABLE       = True
+            self.DOHELPER_ENABLE        = True
+            self.REGISTER_ENABLE        = True
+            self.FWUPDATE_ENABLE        = False
+            self.DATAVERIFY_ENABLE      = False
+            self.LCM_FW_CHECK_ENABLE    = False
+            self.MCU_FW_CHECK_ENABLE    = False
+
+        else:
+            self.POWER_SUPPLY_EN        = True
+            self.UPDATE_RECOVERY_ENABLE = True
+            self.BOOT_RECOVERY_IMAGE    = True
+            self.INIT_NETWORK_INTERFACE = False
+            self.PROVISION_ENABLE       = True
+            self.DOHELPER_ENABLE        = True
+            self.REGISTER_ENABLE        = True
+            self.FWUPDATE_ENABLE        = False
+            self.DATAVERIFY_ENABLE      = True
+            self.LCM_FW_CHECK_ENABLE    = True
+            self.MCU_FW_CHECK_ENABLE    = True
 
     def enter_uboot(self):
         self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
@@ -66,6 +87,16 @@ class USPMT7628Factory(ScriptBase):
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+
+    def init_network_interface(self):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargs \'console=ttyS0,115200 factory=1\'")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootubnt")
+        time.sleep(20)
+        self.pexp.expect_only(30, "Please press Enter to activate this console.")
+        self.login(press_enter=True, log_level_emerg=True, timeout=60)
+        self.pexp.expect_action(10, self.linux_prompt, "ifconfig eth0 " + self.dutip)
+        self.is_network_alive_in_linux()
+
 
     def init_recovery_image(self):
         self.pexp.expect_only(30, "reading kernel")
@@ -146,6 +177,10 @@ class USPMT7628Factory(ScriptBase):
         if self.BOOT_RECOVERY_IMAGE is True:
             msg(15, "Boot into recovery image for registration ...")
             self.init_recovery_image()
+
+        if self.INIT_NETWORK_INTERFACE is True:
+            msg(15, "Initialize network interface from factory setting ...")
+            self.init_network_interface()
 
         if self.PROVISION_ENABLE is True:
             self.erase_eefiles()

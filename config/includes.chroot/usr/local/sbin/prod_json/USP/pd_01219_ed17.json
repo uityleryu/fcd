@@ -1,0 +1,54 @@
+{
+  "USP": {
+    "USP-PDU-POWER-SWITCH": {
+      "INDEX": 0,
+      "NAME": "USP-PDU-POWER-SWITCH",
+      "BOARDID": "ed17",
+      "BOMREV": [
+        "113-01219"
+      ],
+      "DESC": "UniFi Smart Power PDU Power Switch",
+      "FILE": "usp_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/pdu_pro",
+          "DST_PATH": "tools/pdu_pro",
+          "FILES": [
+            "calibration_empty.json",
+            "helper_MT7628_release",
+            "iperf3",
+            "iperf3_mt7628_new"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/usp/pdu-pro",
+          "DST_PATH": "usp/pdu-pro",
+          "FILES": [
+            "US.mt7628_pcb-usppdu-ps-factory+14740-g85abb56b.lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed12-fw.bin",
+          "../usp/pdu-pro/US.mt7628_pcb-usppdu-ps-factory+14740-g85abb56b.lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
+        ]
+      ]
+    }
+  }
+}
