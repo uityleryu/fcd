@@ -248,7 +248,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efbb': "1",
             'efbc': "1",
             'ec64': "0"
->>>>>>> develop
         }
 
         # Number of Bluetooth
@@ -359,6 +358,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': False,
             'efba': False,
             'efa1': False,
+            'efbb': False,
+            'efbc': False,
             'ec64': True
         }
 
