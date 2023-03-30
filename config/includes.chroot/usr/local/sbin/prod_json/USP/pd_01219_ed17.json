@@ -11,7 +11,6 @@
       "FILE": "usp_mt7628_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "FCD_ID": "000e",
       "SW_ID": "1801",
       "DOWNLOAD_FILE": [
         {
@@ -34,20 +33,7 @@
             "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/usp/pdu-pro",
-          "DST_PATH": "usp/pdu-pro",
-          "FILES": [
-            "US.mt7628_pcb-usppdu-ps-factory+14740-g85abb56b.lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
-          ]
         }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/ed12-fw.bin",
-          "../usp/pdu-pro/US.mt7628_pcb-usppdu-ps-factory+14740-g85abb56b.lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
-        ]
       ]
     }
   }
