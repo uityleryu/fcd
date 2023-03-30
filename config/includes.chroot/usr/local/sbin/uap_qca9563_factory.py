@@ -52,7 +52,7 @@ class UAPQCA9563Factory(ScriptBase):
             self.enter_uboot()
 
         self.set_ub_net()
-        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_uboot(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def update_uboot(self):
         cmd = "tftp 0x80800000 images/{}.uboot".format(self.board_id)
@@ -112,15 +112,13 @@ class UAPQCA9563Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "usetmac")
         self.pexp.expect_only(15, ':'.join(self.mac[i:i+2] for i in range(0,12,2)).upper())
 
-    def boot_image(self, registration_mode=False):
+    def boot_image(self):
         # Boot into OS and enable console
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv bootargs 'quiet console=ttyS0,115200 init=/init nowifi'")
         self.pexp.expect_action(30, self.bootloader_prompt, "boot")
         self.login(timeout=120, press_enter=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
-        if registration_mode is True:
-            self.disable_hostapd()
-            self.is_network_alive_in_linux(arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_linux(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()
@@ -170,7 +168,15 @@ class UAPQCA9563Factory(ScriptBase):
     def check_info(self):
         self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
         self.enter_uboot()
-        self.boot_image(registration_mode=False)
+        self.boot_image()
+
+        '''
+            To check if the hostpad is running because it is an indirect method to check if the signed data is well stored in the
+            memory. If the signed data is not correct, hostapd can't work well
+        '''
+        cmd = "while ! grep -q \"hostapd\" /etc/inittab; do echo 'Wait hostapd...'; sleep 1; done"
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
@@ -199,7 +205,7 @@ class UAPQCA9563Factory(ScriptBase):
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
             msg(30, "Updating FW successfully ...")
-            self.boot_image(registration_mode=True)
+            self.boot_image()
             msg(40, "Boot into kerenl successfully ...")
             self.erase_eefiles()
             msg(10, "Erase eefiles successfully ...")

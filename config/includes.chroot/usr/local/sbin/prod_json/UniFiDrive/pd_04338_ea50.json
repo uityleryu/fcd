@@ -1,0 +1,70 @@
+{
+  "UniFiDrive": {
+    "UNAS-Studio-04338": {
+      "INDEX": 0,
+      "NAME": "UNAS-Studio",
+      "BOARDID": "ea50",
+      "BOMREV": "113-04338",
+      "DESC": "UniFi Studio SSD Black",
+      "FILE": "unas_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0006",
+      "SW_ID": "2101",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/unas/",
+          "DST_PATH": "unas",
+          "FILES": [
+            "ea50-srt2-fw-image.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/unas/",
+          "DST_PATH": "unas",
+          "FILES": [
+            "ea50-srt2-uImage"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/unas/ea51/",
+          "DST_PATH": "tools/ea50",
+          "FILES": [
+            "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/unas",
+          "DST_PATH": "tools/unas",
+          "FILES": [
+            "al324-ee",
+            "config_gu.sh",
+            "enp0s1.network",
+            "enp0s2.network",
+            "helper_UNVR-AL324"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea50-fw.bin",
+          "../unas/ea50-srt2-fw-image.bin"
+        ],
+        [
+          "tftp/uImage",
+          "unas/ea50-srt2-uImage"
+        ]
+      ]
+    }
+  }
+}

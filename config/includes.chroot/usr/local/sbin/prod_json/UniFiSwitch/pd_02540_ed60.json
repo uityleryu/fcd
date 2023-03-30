@@ -19,7 +19,7 @@
             "US.puma7_puma-2-mxl+158.20221208.1215.bin",
             "US.mxl277_MFG_1.0.1+191.20230115.1404.bin",
             "US.mxl277_MFG_CM_1.0.2+191.20230114.0512+app.bin",
-            "US.mxl277_MFG_CM_1.0.2+191.20230114.0512+np.bin"
+            "US.mxl277_MFG_CM_1.0.2+191.20230308.1222+np.bin"
           ]
         },
         {
@@ -62,7 +62,7 @@
         ],
         [
           "tftp/images/ed60-cm-np.bin",
-          "../usw-fw/US.mxl277_MFG_CM_1.0.2+191.20230114.0512+np.bin"
+          "../usw-fw/US.mxl277_MFG_CM_1.0.2+191.20230308.1222+np.bin"
         ],
         [
           "tftp/certs/certs.tar.gz",

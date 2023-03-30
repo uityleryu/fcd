@@ -5,6 +5,7 @@ import stat
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from datetime import datetime
 
 '''
 This FCD script is for
@@ -45,15 +46,15 @@ class UAPQCA956xFactory2(ScriptBase):
         self.helperexe = "helper_ARxxxx_release"
         self.helper_path = helppth[self.board_id]
 
-        self.UPDATE_UBOOT          = True
-        self.FWUPDATE_ENABLE       = True
-        self.BOOT_RECOVERY_IMAGE   = True
-        self.INIT_RECOVERY_IMAGE   = False
-        self.PROVISION_ENABLE      = True
-        self.DOHELPER_ENABLE       = True
-        self.REGISTER_ENABLE       = True
-        self.DATAVERIFY_ENABLE     = True
-        self.SSH_ENABLE            = True
+        self.UPDATE_UBOOT = True
+        self.FWUPDATE_ENABLE = True
+        self.BOOT_RECOVERY_IMAGE = True
+        self.INIT_RECOVERY_IMAGE = False
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        self.DATAVERIFY_ENABLE = True
+        self.SSH_ENABLE = True
 
     def enter_uboot(self, init_uapp=False):
         self.pexp.expect_action(90, "Hit any key to stop autoboot", "\033")
@@ -244,7 +245,7 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
-    def registration(self, regsubparams = None):
+    def registration(self, regsubparams=None):
         log_debug("Starting to do registration ...")
         self.devreg_hostname = "stage.udrs.io"
         if regsubparams is None:
@@ -302,6 +303,43 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
+
+    def check_wireless_config(self):
+        log_debug("Starting to check wireless config ...")
+        status = False
+        t_secs = 180
+        dt_last = datetime.now()
+        ts = datetime.now() - dt_last
+        while ts.seconds <= t_secs:
+            output = self.pexp.expect_get_output2("ls /etc/config/wireless", self.linux_prompt, self.linux_prompt,
+                                                  timeout=5)
+            if '/etc/config/wireless' in output:
+                output = self.pexp.expect_get_output2("tail /etc/config/wireless", self.linux_prompt, self.linux_prompt,
+                                                      timeout=5)
+                if 'option ubnt_role \'initial_setup\'' in output:
+                    status = True
+                    break
+            time.sleep(1)
+            ts = datetime.now() - dt_last
+        if not status:
+            otmsg = "Check wireless config failed!!"
+            error_critical(otmsg)
+
+        log_debug("Check wireless config passed!!")
+
+    def enable_burn_in_mode(self):
+        log_debug("Starting to enable burn in mode ...")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt,
+                                "/etc/init.d/ajconf disable; uci set uictld.@uictld[0].lcd_test=1; uci commit; cfg.sh write")
+        time.sleep(1)
+        output = self.pexp.expect_get_output2("grep lcd_test /etc/config/uictld", self.linux_prompt, self.linux_prompt,
+                                              timeout=5)
+        output = str(output).strip()
+        if "lcd_test" not in output:
+            otmsg = "Enable burn in mode failed!!"
+            error_critical(otmsg)
+
+        log_debug("Enable burn in mode passed!!")
 
     def run(self):
         """Main procedure of factory
@@ -365,6 +403,15 @@ class UAPQCA956xFactory2(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             msg(90, "Checking the devrenformation ...")
             self.check_info()
+
+        if self.board_id in ["e618", "e619"]:
+            self.check_wireless_config()
+
+            time.sleep(5)
+
+            self.enable_burn_in_mode()
+
+            self.__del__()
 
         msg(100, "Completed FCD process ...")
 
