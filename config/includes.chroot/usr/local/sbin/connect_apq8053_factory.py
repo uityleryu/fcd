@@ -761,9 +761,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 nextmac = self.mac
                 if self.wifinum[self.board_id] == '1':
                     self.wifimac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
-                    cmd = "write_wlan_mac -w  {}".format(nextmac)
+                    cmd = "write_wlan_mac -w  {}".format(self.mac_format_str2comma(nextmac))
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-                if self.btnum[self.board_id] == '1':
+                if self.btnum[self.board_id] != '0':
                     self.btmac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
                     nextmac = ":".join(nextmac[i:i + 2] for i in range(0, len(nextmac), 2))
                     cmd = "btnvtool -b {}".format(nextmac)
@@ -825,11 +825,12 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                         else:
                             error_critical("Check Wifi MAC is not matched !!")
 
-                    if self.btnum[self.board_id] == "1":
+                    if self.btnum[self.board_id] != "0":
                         cmd = "btnvtool -z"
                         getmac = self.pexp.expect_get_output(cmd, self.linux_prompt).strip()
                         m_gmac = getmac.replace('.',':').split('\n')[1]
-
+                        # if no new line, remove prompt string
+                        m_gmac = m_gmac.split(self.lnxpmt[self.board_id])[0]
                         m_gmac = ''.join([ss.zfill(2) for ss in m_gmac.split(':')])
                         log_debug(m_gmac)
                         if self.btmac in m_gmac:
