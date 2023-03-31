@@ -26,10 +26,10 @@ import configparser
 # ec70 = Thermal Scan
 # a597 = G4DOORBELL BATTERY
 
-PROVISION_EN = True
-DOHELPER_EN = True
-REGISTER_EN = True
-FWUPDATE_EN = True
+PROVISION_EN = False
+DOHELPER_EN = False
+REGISTER_EN = False
+FWUPDATE_EN = False
 DATAVERIFY_EN = True
 #REGISTER_EN   = False
 #FWUPDATE_EN   = False
@@ -1070,6 +1070,61 @@ class UVCFactoryGeneral(ScriptBase):
             self.session.execmd(cmd)
 
 
+    def check_mcu_version(self):
+        rv = False
+        cmd = "cat /tmp/checksum.conf"
+        pan_ver = self.session.execmd_getmsg(cmd).split("\n")[0].split(":")[1].strip()
+        cmd = "basename /lib/firmware/*.mot .mot"
+        expected_pan_ver = self.session.execmd_getmsg(cmd).strip()
+        if pan_ver == expected_pan_ver:
+            log_debug("Current Pan version({}) = expected({})".format(pan_ver, expected_pan_ver))
+            rv = rv or False
+        else:
+            log_debug("Current Pan version({}) != expected({})".format(pan_ver, expected_pan_ver))
+            rv = rv or True
+
+        cmd = "cat /tmp/version"
+        zoom_ver = self.session.execmd_getmsg(cmd).split()[3].strip()
+        cmd = "basename /lib/firmware/T*.bin .bin"
+        expected_zoom_ver = self.session.execmd_getmsg(cmd).strip()
+        if zoom_ver == expected_zoom_ver:
+            log_debug("Current Zoom version({}) = expected({})".format(zoom_ver, expected_zoom_ver))
+            rv = rv or False
+        else:
+            log_debug("Current Zoom version({}) != expected({})".format(zoom_ver, expected_zoom_ver))
+            rv = rv or True
+
+        return rv
+
+    def check_mcu(self):
+        if self.check_mcu_version():
+            log_debug("Need to wait for MCU upgrade reboot")
+            time_start = time.time()
+            while True:
+                time.sleep(1)
+                if self.cnapi.ip_is_alive(self.ip) is False:
+                    log_debug("DUT is rebooting")
+                    break
+                if time.time() - time_start > 120:
+                    self.critical_error('[Fail] MCU version incorrect and Fail to wait for reboot')
+
+            try:
+                sshclient_obj = SSHClient(host=self.ip,
+                                        username=self.username,
+                                        password=self.password,
+                                        polling_connect=True,
+                                        polling_mins=self.polling_mins)
+                self.set_sshclient_helper(ssh_client=sshclient_obj)
+                log_debug("reconnected with DUT successfully")
+            except Exception as e:
+                print(str(e))
+                self.critical_error("Fail to reconnect to DUT ...")
+
+            if self.check_mcu_version():
+                self.critical_error("Fail to upgrade MCU FW ...")
+            else:
+                log_debug("MCU FW upgrade success")
+
     def _get_init_dut_info(self):
         log_debug('===Init dut info'.ljust(80, '='))
 
@@ -1207,6 +1262,8 @@ class UVCFactoryGeneral(ScriptBase):
                 if self.board_id == "a564":
                     '''Check hostname'''
                     self.check_hostname()
+                    '''Check MCU version'''
+                    self.check_mcu()
                 msg(80, "Succeeding in checking the devreg information ...")
                 self._log_duration('DATAVERIFY', time_start)
 
