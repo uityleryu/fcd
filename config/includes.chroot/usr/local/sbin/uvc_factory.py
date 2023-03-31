@@ -26,10 +26,10 @@ import configparser
 # ec70 = Thermal Scan
 # a597 = G4DOORBELL BATTERY
 
-PROVISION_EN = False
-DOHELPER_EN = False
-REGISTER_EN = False
-FWUPDATE_EN = False
+PROVISION_EN = True
+DOHELPER_EN = True
+REGISTER_EN = True
+FWUPDATE_EN = True
 DATAVERIFY_EN = True
 #REGISTER_EN   = False
 #FWUPDATE_EN   = False
