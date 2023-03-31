@@ -1,0 +1,66 @@
+{
+  "UniFiDream": {
+    "UDM-ENT-001100": {
+      "INDEX": 0,
+      "NAME": "UDM-ENT-01100",
+      "BOARDID": "ea3d",
+      "BOMREV": "113-01100",
+      "DESC": "UniFi Dream Machine Enterprise",
+      "FILE": "udm_cn96xx_factory",
+      "T1FILE": "udm_cn96xx_mfg",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/udm_ent",
+          "DST_PATH": "tools/udm_ent",
+          "FILES": [
+            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-ent",
+          "DST_PATH": "udm-fw/udm-ent",
+          "FILES": [
+            "UDMPROSE.al324.v2.4.15.e0a104a.220722.1354.bin",
+            "uImage_20220815",
+            "boot_20220815.img"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea2c-fw.bin",
+          "../udm-fw/udm-ent/UDMPROSE.al324.v2.4.15.e0a104a.220722.1354.bin"
+        ],
+        [
+          "tftp/images/ea2c-recovery",
+          "../udm-fw/udm-ent/uImage_20220815"
+        ],
+        [
+          "tftp/images/ea2c-uboot.bin",
+          "../udm-fw/udm-ent/boot_20220815.img"
+        ]
+      ]
+    }
+  }
+}
