@@ -89,13 +89,19 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def init_network_interface(self):
+        self.enter_uboot()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargs \'console=ttyS0,115200 factory=1\'")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootubnt")
         time.sleep(20)
-        self.pexp.expect_only(30, "Please press Enter to activate this console.")
+        # self.pexp.expect_only(60, "Please press Enter to activate this console.")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
         self.pexp.expect_action(10, self.linux_prompt, "ifconfig eth0 " + self.dutip)
         self.is_network_alive_in_linux()
+        self.unlock_EEPROM()
+
+    def unlock_EEPROM(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
+                                "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
 
 
     def init_recovery_image(self):
@@ -107,8 +113,7 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ps", self.linux_prompt)
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig eth0 "+self.dutip, self.linux_prompt)
         self.is_network_alive_in_linux()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo \"EEPROM,388caeadd99840d391301bec20531fcef05400f4\" > " +
-                                                       "/sys/module/mtd/parameters/write_perm", self.linux_prompt)
+        self.unlock_EEPROM()
 
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
