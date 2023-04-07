@@ -140,12 +140,7 @@ class RovR_AL324_BSPFACTORY(ScriptBase):
         log_debug(output)
         output = self.pexp.expect_get_output(action="cat /lib/version", prompt="", timeout=3)
         log_debug(output)
-        self.pexp.expect_lnxcmd(10, self.bsp_fw_prompt, "cat ./script/setup_br.sh",post_exp=self.bsp_fw_prompt)
-        self.pexp.expect_lnxcmd(10, self.bsp_fw_prompt,
-                                "sed -i 's/ifconfig eth2 up/ifconfig eth0 up/' ./script/setup_br.sh")
-        self.pexp.expect_lnxcmd(10, self.bsp_fw_prompt,
-                                "sed -i 's/brctl addif br-lan eth2 ra0 rai0/brctl addif br-lan eth0 ra0 rai0 /' ./script/setup_br.sh",post_exp=self.bsp_fw_prompt)
-        self.pexp.expect_lnxcmd(10, self.bsp_fw_prompt, "cat ./script/setup_br.sh",post_exp=self.bsp_fw_prompt)
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
