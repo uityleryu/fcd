@@ -47,16 +47,14 @@ sync_bspimages(){
 
 list_product(){
 	do_echo "\nALL: Download all images\
-		\nProduct list: \
-		\n\tIPQ807x: af60-xr/wave-ap/wave-mesh/wave-micro/wave-pro \
-		\n\tIPQ5018: wave-nano/lbe-ax/UX \
-		\n\tMT7628: udw-pro-pu/pdu-pro-hd/pdu-power-switch \
 		"
+	sudo /usr/bin/python3 /usr/local/sbin/prepare_bsp_img.py --listpd=y
+
 }
 
 readme(){
 	do_echo "ReadMe: Please connect your device to usb console and re-power on it after running the command."
-	do_echo "Usage: back2art [Product/ALL]"
+	do_echo "Usage: back2art [BOM/ALL]"
 }
 
 

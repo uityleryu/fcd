@@ -19,16 +19,17 @@ d_list = []
 curdir = os.getcwd()
 ftp_server_url = "http://10.2.0.33:8088"
 
-print("Current DIR: " + curdir)
+# print("Current DIR: " + curdir)
 
 parse = argparse.ArgumentParser(description="Generating product json file")
 parse.add_argument('--prodline', '-pl', dest='prodline', help='Product Line', default="bsp")
 parse.add_argument('--boardid', '-bid', dest='boardid', help='Board ID', default=None)
 parse.add_argument('--bomrev', '-brev', dest='bomrev', help='BOM revision', default=None)
+parse.add_argument('--listpd', '-l', dest='listpd', help='List product info only', default=None)
 args, _ = parse.parse_known_args()
 
 pl = args.prodline
-print("Product Line: " + pl)
+# print("Product Line: " + pl)
 
 # ostype_dir = os.path.join(curdir, "output", "ostrich")
 ostype_dir = os.path.join("/")
@@ -288,9 +289,19 @@ def check_file():
         # cmd = "ls -l {}".format(f)
         # os.system(cmd)
 
+def list_product_info():
+    fh = open("/usr/local/sbin/pd_bsp_img_info.json")
+    pjson = json.load(fh)
+    fh.close()
+    print("Support product List:")
+    for im in pjson[pl].keys():
+        rmsg = "Model: {}\t{}".format(pjson[pl][im]["BOMREV"], im)
+        print(rmsg)
+
 def main():
-    if args.bomrev is None or args.boardid is None :
+    if args.bomrev is None or args.boardid is None or args.listpd=="y":
         print("Please provide BOM revision and board id")
+        list_product_info()
         exit(1)
     # if args.boardid is None and args.boardid != "ALL":
     #     print("Please provide a board id")
