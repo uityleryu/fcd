@@ -70,7 +70,7 @@ def download_images():
         print(rmsg)
 
         # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
-        if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+        if args.boardid != pjson[pl][im]["BOARDID"]:
             continue
 
         if "DOWNLOAD_FILE" in pjson[pl][im].keys():
@@ -148,7 +148,7 @@ def download_images():
         print(rmsg)
 
         # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
-        if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+        if args.boardid != pjson[pl][im]["BOARDID"]:
             continue
 
         if "CREATE_LINK" in pjson[pl][im].keys():
