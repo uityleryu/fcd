@@ -24,6 +24,7 @@ print("Current DIR: " + curdir)
 parse = argparse.ArgumentParser(description="Generating product json file")
 parse.add_argument('--prodline', '-pl', dest='prodline', help='Product Line', default="bsp")
 parse.add_argument('--boardid', '-bid', dest='boardid', help='Board ID', default=None)
+parse.add_argument('--bomrev', '-brev', dest='bomrev', help='BOM revision', default=None)
 args, _ = parse.parse_known_args()
 
 pl = args.prodline
@@ -197,7 +198,8 @@ def download_bsp_images():
         print(rmsg)
 
         # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
-        if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+        # if args.boardid != pjson[pl][im]["BOARDID"] and args.boardid != "ALL":
+        if args.bomrev != pjson[pl][im]["BOMREV"] and args.bomrev != "ALL":
             continue
 
         if "DOWNLOAD_FILE" in pjson[pl][im].keys():
@@ -271,7 +273,9 @@ def download_bsp_images():
 
     # print("len of download list: " , len(download_wget_list))
     if len(d_list) == 0:
-        print("Not support in pd_bsp_img_info.json, board id : " + args.boardid)
+        print("Not support in pd_bsp_img_info.json, BOM revision : " + args.bomrev + ", going to download from fcd-image.git ")
+        download_images()
+        # print("Not support in pd_bsp_img_info.json, board id : " + args.boardid)
         # exit(1)
 
 def check_file():
@@ -281,13 +285,18 @@ def check_file():
         exit(1)
     else:
         print("Find: {}".format(f))
+        # cmd = "ls -l {}".format(f)
+        # os.system(cmd)
 
 def main():
-    if args.boardid is None and args.boardid != "ALL":
-        print("Please provide a board id")
+    if args.bomrev is None or args.boardid is None :
+        print("Please provide BOM revision and board id")
         exit(1)
+    # if args.boardid is None and args.boardid != "ALL":
+    #     print("Please provide a board id")
+    #     exit(1)
 
-    download_images()
+    # download_images()
     download_bsp_images()
     check_file()
 
