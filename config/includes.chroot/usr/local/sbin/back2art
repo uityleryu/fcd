@@ -75,7 +75,7 @@ else
 		"ALL") prepare_img ALL;;
 		"113-00719") b2a_acorn ac11 $1;; #AF60-XR
 		"113-01206") b2a_acorn ac1a $1;; #wave-ap 113-01206 ac1a for 2.5G phy
-		"113-01005-14") b2a_acorn ac15 $1;; #wave-mesh 113-01005
+		113-01005*) b2a_acorn ac15 $1;; #wave-mesh 113-01005
 		"113-01105") b2a_acorn ac16 $1;; #wave-ap-micro 113-01105
 		"113-01205") b2a_acorn ac18 $1;; #wave-pro 113-01205
 		"113-01070") b2a_af_maple a658 $1;; #wave-nano

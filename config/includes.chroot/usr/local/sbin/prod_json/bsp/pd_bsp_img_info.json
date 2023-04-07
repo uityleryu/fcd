@@ -17,7 +17,15 @@
         "ac1a-mfg.bin": "wave-ap-acorn-spf11.3-csu1-nand-v5.2-single.img"
       }
     },
-    "Wave-Mesh": {
+    "Wave-Mesh-1": {
+      "NAME": "Wave-Mesh",
+      "BOARDID": "ac15",
+      "BOMREV": "113-01005",
+      "DOWNLOAD_FILE": {
+         "ac15-mfg.bin": "wave-mesh-acorn-spf11.3-csu1-nand-v3-single.img"
+      }
+    },
+    "Wave-Mesh-2-After-bom-rev14": {
       "NAME": "Wave-Mesh",
       "BOARDID": "ac15",
       "BOMREV": "113-01005-14",

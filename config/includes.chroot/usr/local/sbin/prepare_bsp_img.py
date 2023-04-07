@@ -194,7 +194,7 @@ def download_bsp_images():
     #     exit(1)
 
     for im in pjson[pl].keys():
-        rmsg = "**** Model: {} ****".format(im)
+        rmsg = "**** Model: {} {}****".format(im, pjson[pl][im]["BOMREV"])
         print(rmsg)
 
         # print("board id: " + args.boardid + "pjson[pl][im][BOARDID]: " + pjson[pl][im]["BOARDID"])
