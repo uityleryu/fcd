@@ -409,7 +409,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
-        self.pexp.expect_only(10, "shortname=" + prod_shortname)
+        if self.board_id in ["a667", "a674"]:
+            self.pexp.expect_only(10, "shortname=" + prod_shortname)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
 
