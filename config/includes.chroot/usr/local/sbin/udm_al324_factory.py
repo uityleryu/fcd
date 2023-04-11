@@ -49,7 +49,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2c': "0x1f0000",
             'ea15': "0x1f0000"
         }
-        
+
         self.eeprom_offset_2 = {
             'ea2a': "0x228000",
             'ea2b': "0x228000",
@@ -106,9 +106,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea15': "eth10"
 
         }
-        #LCM version file
-
-
+        # LCM version file
 
         # LCM update
         self.lcmupdate = {
@@ -163,7 +161,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         # import pdb; pdb.set_trace()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv sysid")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv model")
-        
+
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
@@ -176,15 +174,20 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
         # reverse 77072aea to 2aea7707
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
@@ -211,7 +214,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "boot.img")
         )
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server,
+                                                                                           self.dutip))
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootupd")  # tranfer img and update
         self.pexp.expect_only(30, "Bytes transferred")
         self.pexp.expect_action(60, self.bootloader_prompt, "run delenv")
@@ -235,7 +240,9 @@ class UDM_AL324_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "fw-image.bin")
         )
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server, self.dutip))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server,
+                                                                                           self.dutip))
 
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
@@ -253,7 +260,9 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.is_network_alive_in_uboot(retry=9, timeout=10)
 
         log_debug("Updating FW image ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra 'factory server={} client={} nc_transfer'".format(self.tftp_server, self.dutip))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt,
+                               "setenv bootargsextra 'factory server={} client={} nc_transfer'".format(self.tftp_server,
+                                                                                                       self.dutip))
 
         # copy recovery image to tftp server
         self.copy_file(
@@ -392,11 +401,11 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, 'ated -i rai0 -c "sync eeprom all"')
 
         self.check_flash_data()
-        
+
     def show_info(self):
         retry_time = 15
         while retry_time >= 0:
-            output = self.pexp.expect_get_output(action="info", prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action="info", prompt="", timeout=3)
             if output.find("Version") >= 0:
                 break
             retry_time -= 1
@@ -433,12 +442,6 @@ class UDM_AL324_FACTORY(ScriptBase):
             time.sleep(15)  # for stable eth
             self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
-            self.copy_file(
-                source=os.path.join(self.fcd_toolsdir, self.board_id + "-factory.deb"),
-                dest=os.path.join(self.tftpdir, "factory.deb")  # fixed name
-            )
-            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + self.tftpdir + "/factory.deb")
-
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")
@@ -468,7 +471,6 @@ class UDM_AL324_FACTORY(ScriptBase):
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
-        self.lcm_fw_ver_check()
         if self.wifical[self.board_id] is True:
             msg(95, "Write and check calibration data")
             self.check_refuse_data()
@@ -480,32 +482,45 @@ class UDM_AL324_FACTORY(ScriptBase):
             # below one of two function will cause the data of flash(MTD3) was removed so do not use it
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
             # self.show_info()
-            
-            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
+
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="", timeout=3)
             log_debug(output)
         else:
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
-            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
+            output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="", timeout=3)
             log_debug(output)
-        # if self.board_id == "ea2c" or self.board_id == "ea15": #UDM Pro Will implement set factory mode when receive new factory tool
-        if self.board_id == "ea2c":
+        if self.board_id == "ea15":
+            cmd = "ulcmd --command dump --sender fcd_team"
+            ct = 0
+            retry_max = 240
+            while ct < retry_max:
+                cmd_reply = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                log_debug("Get LCM FW version from shipping FW(raw data): " + cmd_reply)
+                pattern = r"v([\d].[\d].[\d])-"
+                m_prod_lcm_fw = re.findall(pattern, cmd_reply)
+                if m_prod_lcm_fw:
+                    break # 若成功找到符合的 pattern，則跳出迴圈
+                time.sleep(1)
+                ct += 1
+            else:
+                rmsg = "Get LCM FW Version Fail!!!"
+                error_critical(rmsg)
+
+        if self.board_id == "ea15" or self.board_id =="ea2c":
             # copy factory and memtester deb
-            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-factory.deb", local="/tmp/factory.deb",
-                          timeout=20)
-            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-memtester.deb", local="/tmp/memtester.deb",
-                          timeout=20)
+            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-factory.deb", local="/tmp/factory.deb",timeout=20)
+            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-memtester.deb", local="/tmp/memtester.deb",timeout=20)
             self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/memtester.deb")
             self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/factory.deb")
             self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
             self.pexp.expect_action(10, self.linux_prompt, "systemctl unmask network-init udapi-server")
             self.pexp.expect_action(10, self.linux_prompt, "systemctl start network-init udapi-server")
 
-
         cmd = "systemctl is-system-running"
         ct = 0
         retry_max = 120
         while ct < retry_max:
-            output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
             if len(m_run) == 2 or len(m_degraded) == 1:
@@ -525,6 +540,7 @@ class UDM_AL324_FACTORY(ScriptBase):
 def main():
     udm_al324_factory = UDM_AL324_FACTORY()
     udm_al324_factory.run()
+
 
 if __name__ == "__main__":
     main()
