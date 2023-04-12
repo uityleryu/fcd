@@ -252,7 +252,7 @@ def download_bsp_images():
                         rtc = os.system(cmd)
                         if rtc != 0:
                             print("WGET failed: " + cmd)
-                            exit(1)
+                            break
 
 
                     link_dir = os.path.join(ostype_tftp_dir, "images")
