@@ -100,6 +100,16 @@
       "DOWNLOAD_FILE": {
         "ea2e-nor.bin": "UDW-Pro-Power_mt7628_nor-v3.bin"
       }
+    },
+    "UAP-AC-Lite": {
+      "NAME": "UAP-AC-Lite",
+      "BOARDID": "e517",
+      "BOMREV": "113-00391"
+    },
+    "UAP-AC-PRO": {
+      "NAME": "UAP-AC-PRO",
+      "BOARDID": "e537",
+      "BOMREV": "113-00390"
     }
   }
 }

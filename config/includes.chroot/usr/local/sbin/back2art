@@ -16,6 +16,11 @@ prepare_img(){
 	[ $? -eq 1 ] && echo "Download image Fail" && exit
 }
 
+b2a_qca9563(){
+	prepare_img $1 $2
+	sudo /usr/bin/python3 /usr/local/sbin/uap_qca9563_mfg.py -b="$1" $COMMON_ARG
+}
+
 b2a_ar9342(){
 	prepare_img $1 $2
 	sudo /usr/bin/python3 /usr/local/sbin/am_ar9342_mfg.py -b="$1" $COMMON_ARG
@@ -83,6 +88,8 @@ else
 		113-01184) b2a_u6_maple a667 $1;; #UX
 		113-01219) b2a_mt7628 ffff $1;; #USP-PDU-Power-Switch
 		113-00497) b2a_ar9342 e7f9 $1;;
+		113-00391) b2a_qca9563 e517 $1;; #UAP-AC-Lite
+		113-00390) b2a_qca9563 e537 $1;; #UAP-AC-Pro
 		*) 
 			list_product
 			do_echo "Error: Not support $1"
