@@ -4,7 +4,7 @@ import os
 import stat
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
-from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.logger import log_info, log_debug, log_error, msg, error_critical
 from datetime import datetime
 
 '''
@@ -304,6 +304,26 @@ class UAPQCA956xFactory2(ScriptBase):
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
 
+    def check_boot_complete(self):
+        log_debug("Starting to check DUT boot to complete ...")
+        status = False
+        t_secs = 90
+        dt_last = datetime.now()
+        ts = datetime.now() - dt_last
+        while ts.seconds <= t_secs:
+            output = self.pexp.expect_get_output2("brctl show | grep wlan0", self.linux_prompt, self.linux_prompt, timeout=5)
+            log_info('rsp = {}'.format(output))
+            if 'br-lan' in output and 'wlan0' in output:
+                status = True
+                break
+            time.sleep(1)
+            ts = datetime.now() - dt_last
+        if not status:
+            otmsg = "Check DUT boot to complete failed!!"
+            error_critical(otmsg)
+
+        log_debug("Check DUT boot to complete passed!!")
+
     def check_wireless_config(self):
         log_debug("Starting to check wireless config ...")
         status = False
@@ -329,12 +349,22 @@ class UAPQCA956xFactory2(ScriptBase):
 
     def enable_burn_in_mode(self):
         log_debug("Starting to enable burn in mode ...")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt,
-                                "/etc/init.d/ajconf disable; uci set uictld.@uictld[0].lcd_test=1; uci commit; cfg.sh write")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/ajconf stop")
         time.sleep(1)
-        output = self.pexp.expect_get_output2("grep lcd_test /etc/config/uictld", self.linux_prompt, self.linux_prompt,
-                                              timeout=5)
-        output = str(output).strip()
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "uci set uictld.@uictld[0].lcd_test=1")
+        time.sleep(0.5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "uci commit")
+        time.sleep(0.5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfg.sh write")
+        time.sleep(1)
+        for _ in range(3):
+            output = self.pexp.expect_get_output2("grep lcd_test /etc/config/uictld", self.linux_prompt,
+                                                  self.linux_prompt,
+                                                  timeout=5)
+            output = str(output).strip()
+            if "lcd_test" in output:
+                break
+            time.sleep(3)
         if "lcd_test" not in output:
             otmsg = "Enable burn in mode failed!!"
             error_critical(otmsg)
@@ -399,6 +429,10 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(80, "Updating firmware ...")
             self.fwupdate()
             self.login_kernel()
+
+            if self.board_id in ["e618", "e619"]:
+                self.check_boot_complete()
+                time.sleep(10)
 
         if self.DATAVERIFY_ENABLE is True:
             msg(90, "Checking the devrenformation ...")
