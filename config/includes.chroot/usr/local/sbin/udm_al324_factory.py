@@ -508,13 +508,14 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         if self.board_id == "ea15" or self.board_id =="ea2c":
             # copy factory and memtester deb
-            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-factory.deb", local="/tmp/factory.deb",timeout=20)
-            self.tftp_get(remote="/tftpboot/tools/" + self.board_id + "-memtester.deb", local="/tmp/memtester.deb",timeout=20)
-            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/memtester.deb")
-            self.pexp.expect_action(15, self.linux_prompt, "dpkg -i " + "/tmp/factory.deb")
-            self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
-            self.pexp.expect_action(10, self.linux_prompt, "systemctl unmask network-init udapi-server")
-            self.pexp.expect_action(10, self.linux_prompt, "systemctl start network-init udapi-server")
+            self.tftp_get(remote="{}/{}/{}-factory.deb".format(self.tftpdir, self.tools, self.board_id), local="/tmp/factory.deb" , timeout=20)
+            self.tftp_get(remote="{}/{}/{}-memtester.deb".format(self.tftpdir, self.tools, self.board_id), local="/tmp/memtester.deb" , timeout=20)
+            self.pexp.expect_action(30, self.linux_prompt, "dpkg -i " + "/tmp/memtester.deb")
+            self.pexp.expect_action(30, self.linux_prompt, "dpkg -i " + "/tmp/factory.deb")
+            self.pexp.expect_action(30, self.linux_prompt, "set-factory-mode on")
+            self.pexp.expect_action(30, self.linux_prompt, "systemctl unmask network-init udapi-server")
+            self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
+            self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
 
         cmd = "systemctl is-system-running"
         ct = 0
