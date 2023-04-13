@@ -198,6 +198,12 @@ class UAMT7621Factory(ScriptBase):
 
         time.sleep(3)
 
+        cmd = "cat /usr/lib/version"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
+        cmd = "info"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
+
         cmd = "cat /etc/board.info"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
 
