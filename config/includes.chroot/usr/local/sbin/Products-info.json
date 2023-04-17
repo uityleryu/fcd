@@ -26,8 +26,8 @@
           "SRC_PATH": "images/fcd-image//ux-uxp-uxg-fw/uxg",
           "DST_PATH": "a677",
           "FILES": [
-            "a677-fw-v3.1.2-20230323.bin",
-            "a677-loader-v3.1.2-20230323.img",
+            "a677-fw-v3.1.4-20230414.bin",
+            "a677-loader-v3.1.4-20230414.img",
             "a677-uboot-v3.1.2-20230323.mbn",
             "uxg-1g-v2.img",
             "uxg-1g-v2_nor.bin"
@@ -45,7 +45,7 @@
         ],
         [
           "tftp/images/a677-fw.bin",
-          "../a677/a677-fw-v3.1.2-20230323.bin"
+          "../a677/a677-fw-v3.1.4-20230414.bin"
         ],
         [
           "tftp/images/a677-uboot.mbn",
@@ -53,7 +53,7 @@
         ],
         [
           "tftp/images/a677-loader.img",
-          "../a677/a677-loader-v3.1.2-20230323.img"
+          "../a677/a677-loader-v3.1.4-20230414.img"
         ]
       ]
     }
