@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "DA.mt7621.v4.0.15.39.g3bde14a.221228.1656-uboot-4p-B-BOM-MFG-test-devreg-ON_01.bin",
+            "DA.mt7621.v4.1.3.7.g0d1795d.230310.1638-uboot-MFG-FW.bin",
             "ua-gate-nor-v2.bin"
           ]
         },
@@ -46,7 +46,7 @@
         ],
         [
           "tftp/ua-fw/ua-hub-4p-fw.bin",
-          "../ua-fw/DA.mt7621.v4.0.15.39.g3bde14a.221228.1656-uboot-4p-B-BOM-MFG-test-devreg-ON_01.bin"
+          "../ua-fw/DA.mt7621.v4.1.3.7.g0d1795d.230310.1638-uboot-MFG-FW.bin"
         ]
       ]
     }
