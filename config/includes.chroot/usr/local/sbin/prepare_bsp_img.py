@@ -100,39 +100,7 @@ def download_images():
                                     print("WGET failed: " + cmd)
                                     exit(1)
                 else:
-                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
-                    '''
-                        wget -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
-                        It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
-                        under the folder "am-fw", or it will copy all files under "fcd-image"
-                    '''
-                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
-                    # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
-                    url_dir = url_dir.replace("\\", "/")
-                    src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
-                    match_url = re.findall(src_pattern, url_dir)
-                    if match_url:
-                        print("!!!!!!!!! Fatal Error, you are going to copy all images from the FTP server !!!!!!!!!!!!")
-                        print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
-                        exit(1)
-
-                    cmd = "wget -r -np -nH -R \"index.html*\" {}".format(url_dir)
-                    print("copy whole folder: " + cmd)
-                    if cmd not in download_wget_list:
-                        download_wget_list.append(cmd)
-                        print("WGET: " + cmd)
-                        os.chdir(tmp_wget_dir)
-                        rtc = os.system(cmd)
-                        if rtc != 0:
-                            print("WGET failed: " + cmd)
-                            exit(1)
-
-                        os.chdir(curdir)
-
-                        src_path = os.path.join(tmp_wget_dir, item["SRC_PATH"])
-                        dst_path = os.path.join(ostype_tftp_dir, item["DST_PATH"])
-                        shutil.copytree(src_path, dst_path)
+                    print("Find NULL structure FILES in Products-info.json, skip here")
         else:
             print("Can't find the DOWNLOAD_FILE the projects")
 
