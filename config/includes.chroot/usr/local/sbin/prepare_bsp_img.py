@@ -219,19 +219,20 @@ def download_bsp_images():
                 print("ln:" + ln + " file:" + f + " download_list[ln]: " + download_list[ln])
                 # if len(item["FILES"]) > 0:
 
+                link_dir = os.path.join(ostype_tftp_dir, "images")
+                link_file_path = os.path.join(link_dir,ln)
+                print("Link " + link_file_path)
+                if os.path.islink(link_file_path) is True:
+                    os.remove(link_file_path)
+                if os.path.isdir(link_dir) is False:
+                    os.makedirs(link_dir)
+
+
                 fcd_file_path=findfile(f, ostype_tftp_dir)
 
                 if os.path.isfile(fcd_file_path) is True:
                     print("Find image in FCD dir: " + fcd_file_path)
 
-                    link_dir = os.path.join(ostype_tftp_dir, "images")
-                    link_file_path = os.path.join(link_dir,ln)
-                    print("Link " + link_file_path)
-                    if os.path.islink(link_file_path) is True:
-                        os.remove(link_file_path)
-
-                    if os.path.isdir(link_dir) is False:
-                        os.makedirs(link_dir)
 
                     cmd = "ln -s {} {}".format(fcd_file_path, link_file_path)
                     print("LN: " + cmd)
@@ -252,17 +253,7 @@ def download_bsp_images():
                         rtc = os.system(cmd)
                         if rtc != 0:
                             print("WGET failed: " + cmd)
-                            break
-
-
-                    link_dir = os.path.join(ostype_tftp_dir, "images")
-                    link_file_path = os.path.join(link_dir,ln)
-                    print("Link " + link_file_path)
-                    if os.path.islink(link_file_path) is True:
-                        os.remove(link_file_path)
-
-                    if os.path.isdir(link_dir) is False:
-                        os.makedirs(link_dir)
+                            exit(1)
 
                     cmd = "ln -s {} {}".format(dst_file_path, link_file_path)
                     print("LN: " + cmd)
