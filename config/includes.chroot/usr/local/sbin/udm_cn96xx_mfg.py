@@ -9,7 +9,8 @@ import os
 import re
 
 '''
-    ea01: Wave-Console
+    ea3d: UDM-Enterprise
+    ea3e: UXG-Enterprise
 '''
 
 
@@ -26,11 +27,13 @@ class RovR_AL324_BSPFACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea01': "al_eth3",
+            'ea3d': "al_eth3",
+            'ea3e': "al_eth3",
         }
         # ethernet interface
         self.netif = {
-            'ea01': "eth0",
+            'ea3d': "eth0",
+            'ea3e': "eth0",
         }
         self.INIT_RECOVERY_IMAGE = True
         self.FW_UPGRADE = True

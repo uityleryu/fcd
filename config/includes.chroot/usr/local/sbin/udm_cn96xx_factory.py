@@ -10,6 +10,7 @@ import re
 
 '''
     ea3d: UDM-Enterprise
+    ea3e: UXG-Enterprise
 '''
 
 
@@ -41,56 +42,67 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # Base Path
         tool_name = {
-            'ea3d': "udm_ent"
+            'ea3d': "udm_ent",
+            'ea3e': "uxg_ent"
         }
 
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         self.eeprom_offset = {
-            'ea3d': "0x00a60000"
+            'ea3d': "0x00a60000",
+            'ea3e': "0x00a60000"
         }
 
         self.eeprom_offset_2 = {
-            'ea3d': "0x00a68000"
+            'ea3d': "0x00a68000",
+            'ea3e': "0x00a68000"
         }
 
         self.wsysid = {
             'ea3d': "77073dea",
+            'ea3e': "77073dea",
         }
 
         # active port
         self.activeport = {
             'ea3d': "al_eth3",
+            'ea3e': "al_eth3",
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea3d': "13",
+            'ea3e': "13",
         }
 
         # number of Wi-Fi
         self.wifinum = {
             'ea3d': "0",
+            'ea3e': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea3d': "1",
+            'ea3e': "1",
         }
 
         # ethernet interface
         self.netif = {
             'ea3d': "br0",
+            'ea3e': "br0",
         }
 
         # LCM
         self.lcm = {
             'ea3d': True,
+            'ea3e': True,
         }
 
         # Wifi cal data setting
         self.wifical = {
             'ea3d': False,
+            'ea3e': False,
         }
 
         self.devnetmeta = {
