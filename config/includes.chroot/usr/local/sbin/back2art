@@ -70,7 +70,7 @@ list_product(){
 
 readme(){
 	do_echo "ReadMe: Please connect your device to usb console and re-power on it after running the command."
-	do_echo "Usage: back2art [BOM/ALL]"
+	do_echo "Usage: back2art [sync/BOM/ALL]"
 }
 
 
