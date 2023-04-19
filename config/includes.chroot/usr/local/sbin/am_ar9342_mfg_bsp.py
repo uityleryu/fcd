@@ -61,7 +61,7 @@ class AMAR9342MFG(ScriptBase):
         self.pexp.expect_only(30, "Starting TFTP server...")
         time.sleep(1)
         fw_path = os.path.join(self.fwdir, self.fwimg_mfg)
-        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, self.zero_ip)
+        cmd = "atftp --option \"mode octet\" -p -l {} {} 2>&1 > /dev/null".format(fw_path, "192.168.1.20")
         log_debug("host cmd:" + cmd)
         self.fcd.common.xcmd(cmd)
         self.pexp.expect_only(60, "Firmware Version:")
