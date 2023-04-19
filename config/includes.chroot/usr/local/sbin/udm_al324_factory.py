@@ -188,9 +188,13 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+        elif self.board_id == "ea11":
+            cmd = "swconfig dev switch0 vlan 99 set ports '0 1 2 3 4'"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            cmd = "swconfig dev switch0 set apply"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-
         self.is_network_alive_in_linux(ipaddr=self.dutip)
 
     def update_uboot(self):
@@ -453,6 +457,21 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
+        if self.board_id == "ea11":
+            # copy factory and memtester deb
+            pkg_sets = [
+                "{}-memtester.deb".format(self.board_id),
+                "{}-factory.deb".format(self.board_id)
+            ]
+            for pkg in pkg_sets:
+                src_path = os.path.join(self.fcd_toolsdir, pkg)
+                dst_path = os.path.join(self.dut_tmpdir, pkg)
+                self.tftp_get(remote=src_path, local=dst_path,timeout=20)
+                cmd = "dpkg -i {}".format(dst_path)
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd)
+
+            self.pexp.expect_lnxcmd(15, self.linux_prompt, "set-factory-mode on")
+
         if self.LCM_CHECK_ENABLE is True:
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
@@ -470,7 +489,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             # below one of two function will cause the data of flash(MTD3) was removed so do not use it
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
             # self.show_info()
-            
+
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
         else:
