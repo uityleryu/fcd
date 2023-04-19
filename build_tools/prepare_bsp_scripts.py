@@ -24,7 +24,8 @@ register_libs = [
     "blacklist",
     "prepare_bsp_img.py",
     "prod_json/bsp/pd_bsp_img_info.json",
-    "back2art"
+    "back2art",
+    "am_ar9342_mfg_bsp.py"
 ]
 
 pjson = ""

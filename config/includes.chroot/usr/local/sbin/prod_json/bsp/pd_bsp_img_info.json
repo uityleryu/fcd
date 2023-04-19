@@ -118,6 +118,14 @@
       "NAME": "UAP-AC-PRO",
       "BOARDID": "e537",
       "BOMREV": "113-00390"
+    },
+    "WASP-internal_2.4G": {
+      "NAME": "WASP-internal_2.4G",
+      "BOARDID": "fffff",
+      "BOMREV": "113-00306",
+      "DOWNLOAD_FILE": {
+          "fffff-mfg.bin": "XW.ar934x.LSDK-10.1.389-wasp_internal-2G-NO_EEPROM.bin"
+      }
     }
   }
 }
