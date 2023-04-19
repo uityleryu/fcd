@@ -154,22 +154,42 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
         # install d30 certs
-        for i in range(len(d30_target_files)):
-            target_file_name = d30_target_files[i].split("/")[-1]
-            cmd = "{} {} {} 1".format(cert_install_tool, d30_target_files[i], target_file_name)
-            log_debug(msg="cmd: " + cmd)
-            exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
-            self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
-            time.sleep(2)
+        d30_count = 0
+        d30_retry = True
+        while d30_retry and d30_count < 2:
+            try:
+                for i in range(len(d30_target_files)):
+                    target_file_name = d30_target_files[i].split("/")[-1]
+                    cmd = "{} {} {} 1".format(cert_install_tool, d30_target_files[i], target_file_name)
+                    log_debug(msg="cmd: " + cmd)
+                    exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
+                    self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
+                    time.sleep(2)
+                break
+            except Exception as e:
+                d30_count += 1
+                log_info("Fail to install cert, reboot DUT to retry")
+                self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+                self.reboot_handler()
 
         # install d31 certs
-        for i in range(len(d31_target_files)):
-            target_file_name = d31_target_files[i].split("/")[-1]
-            cmd = "{} {} {} 1".format(cert_install_tool, d31_target_files[i], target_file_name)
-            log_debug(msg="cmd: " + cmd)
-            exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
-            self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
-            time.sleep(2)
+        d31_count = 0
+        d31_retry = True
+        while d31_retry and d31_count < 2:
+            try:
+                for i in range(len(d31_target_files)):
+                    target_file_name = d31_target_files[i].split("/")[-1]
+                    cmd = "{} {} {} 1".format(cert_install_tool, d31_target_files[i], target_file_name)
+                    log_debug(msg="cmd: " + cmd)
+                    exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
+                    self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
+                    time.sleep(2)
+                break
+            except Exception as e:
+                d31_count += 1
+                log_info("Fail to install cert, reboot DUT to retry")
+                self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+                self.reboot_handler()
 
         # clean up files
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "rm /nvram/1/security/cm_*", self.linux_prompt)
