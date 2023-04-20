@@ -1,0 +1,35 @@
+{
+  "UniFiTalk": {
+    "UTP-G3-Touch": {
+      "INDEX": 0,
+      "NAME": "UTP-G3-Touch",
+      "BOARDID": "ef15",
+      "BOMREV": "113-04255",
+      "DESC": "UniFi Talk Phone G3 Touch",
+      "FILE": "ut_dvf9918_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/ec0e",
+          "DST_PATH": "tools/ef15",
+          "FILES": [
+            "helper_DVF101_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

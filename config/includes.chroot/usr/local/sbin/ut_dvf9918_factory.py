@@ -23,6 +23,7 @@ FWUPDATE_EN = False
     ef0f: UT-ATA
     ef12: UT-ATA-MAX
     ec0e: ULED-SWITCH
+    ef15: UTP-G3-Touch
 '''
 
 
@@ -40,7 +41,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "1",
             'ef0f': "1",
             'ef12': "1",
-            'ec0e': "1"
+            'ec0e': "1",
+            'ef15': "1"
         }
 
         # number of WiFi
@@ -48,7 +50,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "0",
             'ef0f': "0",
             'ef12': "1",
-            'ec0e': "0"
+            'ec0e': "0",
+            'ef15': "0"
         }
 
         # number of Bluetooth
@@ -56,7 +59,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "0",
             'ef0f': "0",
             'ef12': "0",
-            'ec0e': "1"
+            'ec0e': "1",
+            'ef15': "1"
         }
 
         # helper
@@ -65,7 +69,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "helper_DVF99_release",
             'ef0f': "helper_DVF99_release_ata",
             'ef12': "helper_DVF99_release_ata_max",
-            'ec0e': "helper_DVF101_release"
+            'ec0e': "helper_DVF101_release",
+            'ef15': "helper_DVF101_release"
         }
 
         pd_dir = {
@@ -73,7 +78,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "uvp",
             'ef0f': "uvp",
             'ef12': "uvp",
-            'ec0e': "ec0e"
+            'ec0e': "ec0e",
+            'ef15': "ef15"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -88,7 +94,8 @@ class UVPDVF99FactoryGeneral(ScriptBase):
             'ef0d': "ifconfig eth0 ",
             'ef0f': "ifconfig eth0 ",
             'ef12': "ifconfig eth0 ",
-            'ec0e': "ifconfig eth0 "
+            'ec0e': "ifconfig eth0 ",
+            'ef15': "ifconfig eth0 "
         }
 
         self.helperexe = hlp[self.board_id]
@@ -134,7 +141,11 @@ class UVPDVF99FactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "saveenv")
         self.pexp.expect_only(15, "Writing to NAND... OK")
         self.pexp.expect_ubcmd(15, self.bootloader_prompt, "reset")
-        self.login(username="root", password="", retry=15, log_level_emerg=True)
+        #ef15
+        if self.board_id == "ef15":
+            self.login(username="ubnt", password="ubnt", retry=15, log_level_emerg=True)
+        else:
+            self.login(username="root", password="", retry=15, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1", self.linux_prompt)
 
         cmd = "{0} {1}".format(self.netif[self.board_id], self.dutip)
