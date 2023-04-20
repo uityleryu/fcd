@@ -1,16 +1,24 @@
 {
-  "UniFiAP6": {
-    "U6-Plus": {
+  "UniFiDream": {
+    "UDM-ENT-01100": {
       "INDEX": 0,
-      "NAME": "U6-Plus",
-      "BOARDID": "a642",
-      "BOMREV": "113-01181",
-      "DESC": "UniFi AP6 Plus",
-      "FILE": "u6_mt7981_bspfactory.py",
-      "T1FILE": "u6_mt7981_mfg.py",
+      "NAME": "UDM-ENT-01100",
+      "BOARDID": "ea3d",
+      "BOMREV": "113-01100",
+      "DESC": "UniFi Dream Machine Enterprise",
+      "FILE": "udm_cn96xx_factory.py",
+      "T1FILE": "udm_cn96xx_bspfactory.py",
       "QRCHECK": "True",
-      "SW_ID": "0601",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
       "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+            "helper_AL324_release"
+          ]
+        },
         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
@@ -23,104 +31,27 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
-          "DST_PATH": "u6-fw/mt7981",
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
+          "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "BZ.MT7981_6.5.28+14491.230127.1612-uboot.bin",
-            "mtk-initramfs-mt7981-emmc.uboot",
-            "u6-plus-emmc-single-image-V3-20220707.bin",
-            "u6-plus-fip.bin",
-            "mmc_20221116",
-            "EMMC04G-MK27-G02_FFU.BIN"
+            "UDMENT.cn9670.v1.0.0+root.11249.e62e7b3.230418.1820.bin",
+            "uImage_20230418",
+            "boot_20230418.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a642-fw.bin",
-          "../u6-fw/mt7981/BZ.MT7981_6.5.28+14491.230127.1612-uboot.bin"
+          "tftp/images/ea3d-fw.bin",
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11249.e62e7b3.230418.1820.bin"
         ],
         [
-          "tftp/images/a642-uboot.bin",
-          "../u6-fw/mt7981/mtk-initramfs-mt7981-emmc.uboot"
+          "tftp/images/ea3d-recovery",
+          "../udm-fw/udm-enterprise/uImage_20230418"
         ],
         [
-          "tftp/images/a642-bspfw.bin",
-          "../u6-fw/mt7981/u6-plus-emmc-single-image-V3-20220707.bin"
-        ],
-        [
-          "tftp/images/a642-bspub.bin",
-          "../u6-fw/mt7981/u6-plus-fip.bin"
-        ],
-        [
-          "tftp/images/mmc",
-          "../u6-fw/mt7981/mmc_20221116"
-        ],
-        [
-          "tftp/images/mmc-fw",
-          "../u6-fw/mt7981/EMMC04G-MK27-G02_FFU.BIN"
-        ]
-      ]
-    },
-    "U6-LRPLUS": {
-      "INDEX": 1,
-      "NAME": "U6-LRPLUS",
-      "BOARDID": "a643",
-      "BOMREV": "113-01183",
-      "DESC": "UniFi AP6 Long Range Plus",
-      "FILE": "u6_mt7981_bspfactory.py",
-      "T1FILE": "u6_mt7981_mfg.py",
-      "QRCHECK": "True",
-      "SW_ID": "0601",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
-            "aarch64-rpi4-64k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
-          "DST_PATH": "u6-fw/mt7981",
-          "FILES": [
-            "BZ.MT7981_6.5.28+14491.230127.1612-uboot.bin",
-            "mtk-initramfs-mt7981-emmc.uboot",
-            "u6-LR-plus-emmc-single-image-V3-20220707.bin",
-            "u6-plus-fip.bin",
-            "mmc_20221116",
-            "EMMC04G-MK27-G02_FFU.BIN"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a643-fw.bin",
-          "../u6-fw/mt7981/BZ.MT7981_6.5.28+14491.230127.1612-uboot.bin"
-        ],
-        [
-          "tftp/images/a643-uboot.bin",
-          "../u6-fw/mt7981/mtk-initramfs-mt7981-emmc.uboot"
-        ],
-        [
-          "tftp/images/a643-bspfw.bin",
-          "../u6-fw/mt7981/u6-LR-plus-emmc-single-image-V3-20220707.bin"
-        ],
-        [
-          "tftp/images/a643-bspub.bin",
-          "../u6-fw/mt7981/u6-plus-fip.bin"
-        ],
-        [
-          "tftp/images/mmc",
-          "../u6-fw/mt7981/mmc_20221116"
-        ],
-        [
-          "tftp/images/mmc-fw",
-          "../u6-fw/mt7981/EMMC04G-MK27-G02_FFU.BIN"
+          "tftp/images/ea3d-boot.img",
+          "../udm-fw/udm-enterprise/boot_20230418.img"
         ]
       ]
     }

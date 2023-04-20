@@ -1,24 +1,17 @@
 {
   "UniFiDream": {
-    "UDM-ENT-001100": {
+    "UDM-ENT-01100": {
       "INDEX": 0,
       "NAME": "UDM-ENT-01100",
       "BOARDID": "ea3d",
       "BOMREV": "113-01100",
       "DESC": "UniFi Dream Machine Enterprise",
-      "FILE": "udm_cn96xx_factory",
-      "T1FILE": "udm_cn96xx_mfg",
+      "FILE": "udm_cn96xx_factory.py",
+      "T1FILE": "udm_cn96xx_bspfactory.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
       "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/tools/udm_ent",
-          "DST_PATH": "tools/udm_ent",
-          "FILES": [
-            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb"
-          ]
-        },
         {
           "SRC_PATH": "images/tools/udm",
           "DST_PATH": "tools/udm",
@@ -38,27 +31,27 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udm-ent",
-          "DST_PATH": "udm-fw/udm-ent",
+          "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
+          "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "UDMPROSE.al324.v2.4.15.e0a104a.220722.1354.bin",
-            "uImage_20220815",
-            "boot_20220815.img"
+            "UDMENT.cn9670.v1.0.0+root.11249.e62e7b3.230418.1820.bin",
+            "uImage_20230418",
+            "boot_20230418.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea2c-fw.bin",
-          "../udm-fw/udm-ent/UDMPROSE.al324.v2.4.15.e0a104a.220722.1354.bin"
+          "tftp/images/ea3d-fw.bin",
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11249.e62e7b3.230418.1820.bin"
         ],
         [
-          "tftp/images/ea2c-recovery",
-          "../udm-fw/udm-ent/uImage_20220815"
+          "tftp/images/ea3d-recovery",
+          "../udm-fw/udm-enterprise/uImage_20230418"
         ],
         [
-          "tftp/images/ea2c-uboot.bin",
-          "../udm-fw/udm-ent/boot_20220815.img"
+          "tftp/images/ea3d-boot.img",
+          "../udm-fw/udm-enterprise/boot_20230418.img"
         ]
       ]
     }

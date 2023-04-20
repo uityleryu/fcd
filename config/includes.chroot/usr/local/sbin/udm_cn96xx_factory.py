@@ -17,14 +17,8 @@ import re
 class UDM_CN96XX_FACTORY(ScriptBase):
     def __init__(self):
         super(UDM_CN96XX_FACTORY, self).__init__()
-        self.LCM_FW_Check_ENABLE = None
-        self.DATAVERIFY_ENABLE = None
-        self.REGISTER_ENABLE = None
-        self.DOHELPER_ENABLE = None
-        self.PROVISION_ENABLE = None
-        self.BOOT_RECOVERY_IMAGE = None
-        self.INIT_RECOVERY_IMAGE = None
-        self.UPDATE_UBOOT = None
+        self.ver_extract()
+        self.init_vars()
 
     def init_vars(self):
         # script specific vars
@@ -40,6 +34,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.username = "ui"
         self.password = "ui"
 
+        # CPU flash Path
+        self.node_info = ["/proc/cpumidr",
+                          "/sys/class/mtd/mtd0/jedec_id",
+                          "/sys/class/mtd/mtd0/flash_uid"]
         # Base Path
         tool_name = {
             'ea3d': "udm_ent",
@@ -71,8 +69,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # number of Ethernet
         self.ethnum = {
-            'ea3d': "13",
-            'ea3e': "13",
+            'ea3d': "6",
+            'ea3e': "6",
         }
 
         # number of Wi-Fi
@@ -84,13 +82,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # number of Bluetooth
         self.btnum = {
             'ea3d': "1",
-            'ea3e': "1",
+            'ea3e': "0",
         }
 
         # ethernet interface
         self.netif = {
-            'ea3d': "br0",
-            'ea3e': "br0",
+            'ea3d': "eth4",
+            'ea3e': "eth4",
         }
 
         # LCM
@@ -158,18 +156,53 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             source=os.path.join(self.fwdir, self.bootloader_img),
             dest=os.path.join(self.tftpdir, "boot.img")
         )
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server,
-                                                                                           self.dutip))
-        self.pexp.expect_action(10, self.bootloader_prompt, "run bootupd")  # tranfer img and update
-        self.pexp.expect_only(30, "Bytes transferred")
-        self.pexp.expect_action(60, self.bootloader_prompt, "run delenv")
+
+        self.pexp.expect_action(60, self.bootloader_prompt, "tftpboot boot.img")
+        self.pexp.expect_action(60, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
+        self.pexp.expect_action(60, self.bootloader_prompt, "reset")
 
     def update_recovery(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.set_boot_net()
+        time.sleep(2)
+        self.is_network_alive_in_uboot(retry=9, timeout=10)
+        # copy recovery image
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-recovery"),
+            dest=os.path.join(self.tftpdir, "uImage")
+        )
+
+        # copy FW image
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
+            dest=os.path.join(self.tftpdir, "fw-image.bin")
+        )
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d".format(
+                                   self.dutip,
+                                   self.tftp_server))
+        self.pexp.expect_action(60, self.bootloader_prompt,
+                                "setenv bootcmd 'ext4load mmc 0:1 $loadaddr uImage;bootm $loadaddr'")
+        self.pexp.expect_action(60, self.bootloader_prompt, "saveenv")
+        self.pexp.expect_action(60, self.bootloader_prompt,
+                                "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d factory".format(
+                                    self.dutip,
+                                    self.tftp_server))
+        self.pexp.expect_action(60, self.bootloader_prompt, "tftpboot uImage")
+        self.pexp.expect_action(60, self.bootloader_prompt, "bootm $loadaddr")
+
         time.sleep(2)
 
     def update_fw(self):
         time.sleep(2)
+
+    def set_boot_net(self):
+        # import pdb; pdb.set_trace()
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv sysid")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv model")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
     def set_kernel_net(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
@@ -198,6 +231,64 @@ class UDM_CN96XX_FACTORY(ScriptBase):
     def lcm_fw_ver_check(self):
         print('Wait Implement')
 
+    def prepare_server_need_files_by_cmd(self, nodes=None):
+        log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
+        # The sequencial has to be cpu id -> flash jedecid -> flash uuid
+        if nodes is None:
+            nodes = ["/proc/cpumidr",
+                     "/sys/class/mtd/mtd0/jedec_id",
+                     "/sys/class/mtd/mtd0/flash_uid"]
+
+        if self.product_class == 'basic':
+            product_class_hexval = "0014"
+        elif self.product_class == 'radio':
+            product_class_hexval = "0001"
+        else:
+            error_critical("product class is '{}', FCD doesn't support \"{}\" class now".format(self.product_class))
+
+        # Gen "e.t" from the nodes which were provided in BSP image
+        for i in range(0, len(nodes)):
+            sstr = [
+                "fcd_reg_val{}=`".format(i + 1),
+                "cat ",
+                nodes[i],
+                "`"
+            ]
+            sstr = ''.join(sstr)
+            log_debug(sstr)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                    valid_chk=True)
+        # fcd_reg_val2="00${fcd_reg_val2}" Requirement is 4 bytes
+        zero_padded_str = "fcd_reg_val2=\"00${fcd_reg_val2}\""
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=zero_padded_str,
+                                post_exp=self.linux_prompt, valid_chk=True)
+        sstr = [
+            "echo -e \"field=product_class_id,format=hex,value={}\n".format(product_class_hexval),
+            "field=cpu_rev_id,format=hex,value=$fcd_reg_val1\n",
+            "field=flash_jedec_id,format=hex,value=$fcd_reg_val2\n",
+            "field=flash_uid,format=hex,value=$fcd_reg_val3",
+            "\" > /tmp/{}".format(self.eetxt)
+        ]
+        sstr = ''.join(sstr)
+        log_debug(sstr)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
+                                valid_chk=True)
+
+        # copy "e.org" as "e.b", cp -a /tmp/e.org.0 /tmp/e.b.0
+        cmd = "cp -a {0}/{1} {0}/{2}".format(self.dut_tmpdir, self.eeorg, self.eebin)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+        files = [self.eetxt, self.eebin]
+        for fh in files:
+            # Ex: /tftpboot/e.t.0
+            srcp = os.path.join(self.tftpdir, fh)
+
+            # Ex: /tmp/e.t.0
+            dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
+            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+
+        log_debug("Send bspnode output files from DUT to host ...")
+
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
@@ -210,60 +301,60 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT:
-            self.set_fake_eeprom()
+        if not self.UPDATE_UBOOT:
+            # self.set_fake_eeprom()
             self.update_uboot()
             msg(10, "Boot up to linux console and network is good ...")
 
-        if self.BOOT_RECOVERY_IMAGE:
+        if not self.BOOT_RECOVERY_IMAGE:
             self.update_recovery()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.INIT_RECOVERY_IMAGE:
-            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
-            time.sleep(15)  # for stable eth
+            # self.login(self.username, self.password, timeout=240, log_level_emerg=True)
+            # time.sleep(15)  # for stable eth
             self.set_kernel_net()
             msg(20, "Boot up to linux console and network is good ...")
-            self.update_fw()
+            self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
         if self.PROVISION_ENABLE:
             self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
-            self.prepare_server_need_files()
+            self.prepare_server_need_files_by_cmd(nodes=self.node_info)
 
-        if self.REGISTER_ENABLE is True:
+        if self.REGISTER_ENABLE:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if self.DATAVERIFY_ENABLE is True:
+        if self.DATAVERIFY_ENABLE:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
-            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
             self.set_kernel_net()
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.wifical[self.board_id]:
+        if not self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
-        if self.LCM_FW_Check_ENABLE:
+        if not self.LCM_FW_Check_ENABLE:
             if self.lcm[self.board_id]:
                 msg(90, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
-
-
+        output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="", timeout=3)
+        log_debug(output)
         cmd = "systemctl is-system-running"
         ct = 0
         retry_max = 150
         while ct < retry_max:
-            output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2 :
+            if len(m_run) == 2:
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
@@ -276,6 +367,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
+
 
 def main():
     udm_cn96xx_factory = UDM_CN96XX_FACTORY()

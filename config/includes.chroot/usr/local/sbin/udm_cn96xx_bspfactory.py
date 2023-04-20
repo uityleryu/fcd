@@ -14,9 +14,9 @@ import re
 '''
 
 
-class RovR_AL324_BSPFACTORY(ScriptBase):
+class UDM_CN96XX_BSPFACTORY(ScriptBase):
     def __init__(self):
-        super(RovR_AL324_BSPFACTORY, self).__init__()
+        super(UDM_CN96XX_BSPFACTORY, self).__init__()
         self.init_vars()
 
     def init_vars(self):
@@ -149,8 +149,8 @@ class RovR_AL324_BSPFACTORY(ScriptBase):
 
 
 def main():
-    rovr_al324_bspfactory = RovR_AL324_BSPFACTORY()
-    rovr_al324_bspfactory.run()
+    udm_cn96xx_bspfactory = UDM_CN96XX_BSPFACTORY()
+    udm_cn96xx_bspfactory.run()
 
 
 if __name__ == "__main__":
