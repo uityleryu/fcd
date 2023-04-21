@@ -153,10 +153,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             log_debug(msg="cmd: " + cmd)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
+        retry_max = 3
         # install d30 certs
         d30_count = 0
-        d30_retry = True
-        while d30_retry and d30_count < 2:
+        while True:
             try:
                 for i in range(len(d30_target_files)):
                     target_file_name = d30_target_files[i].split("/")[-1]
@@ -168,14 +168,15 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 break
             except Exception as e:
                 d30_count += 1
+                if d30_count == retry_max:
+                    error_critical("Fail to install d30 certs ...")
                 log_info("Fail to install cert, reboot DUT to retry")
                 self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 self.reboot_handler()
 
         # install d31 certs
         d31_count = 0
-        d31_retry = True
-        while d31_retry and d31_count < 2:
+        while True:
             try:
                 for i in range(len(d31_target_files)):
                     target_file_name = d31_target_files[i].split("/")[-1]
@@ -187,6 +188,8 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 break
             except Exception as e:
                 d31_count += 1
+                if d31_count == retry_max:
+                    error_critical("Fail to install d31 certs ...")
                 log_info("Fail to install cert, reboot DUT to retry")
                 self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 self.reboot_handler()
