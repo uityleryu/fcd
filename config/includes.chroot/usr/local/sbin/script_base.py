@@ -94,7 +94,7 @@ class ScriptBase(object):
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_on(port=int(self.row_id) + self.power_supply_port)
+        self.power_supply.set_port_relay_on(port=int(self.power_supply_port))
         time.sleep(2)
 
     def set_ps_port_relay_off(self, ps_ssid="ed12"):
@@ -112,7 +112,7 @@ class ScriptBase(object):
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_off(port=int(self.row_id) + self.power_supply_port)
+        self.power_supply.set_port_relay_off(port=int(self.power_supply_port))
         time.sleep(4)
 
     def set_sshclient_helper(self, ssh_client):
