@@ -331,8 +331,8 @@ class ScriptBase(object):
         parse.add_argument('--ps_ipaddr', '-psaddr', dest='ps_ipaddr', help='Power supply state', default=None)
         parse.add_argument('--ps_state', '-pss', dest='ps_state', help='Power supply state', default=None)
         parse.add_argument('--ps_port', '-pspr', dest='ps_port', help='Power supply port', default=None)
-        parse.add_argument('--toplevelbom', '-tlb', dest='toplevelbom', help='Top level BOM', default=None)
-        parse.add_argument('--mebom', '-meb', dest='mebom', help='ME BOM', default=None)
+        parse.add_argument('--toplevelbom', '-tlb', dest='toplevelbom', help='Top level BOM', default="")
+        parse.add_argument('--mebom', '-meb', dest='mebom', help='ME BOM', default="")
         parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
         parse.set_defaults(upload=True)
 
