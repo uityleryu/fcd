@@ -117,7 +117,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.REGISTER_ENABLE = True
         self.DATAVERIFY_ENABLE = True
         self.LCM_FW_Check_ENABLE = True
-
+        self.POWER_SUPPLY_EN = True
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
@@ -290,6 +290,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         log_debug("Send bspnode output files from DUT to host ...")
 
     def run(self):
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
@@ -298,9 +300,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        time.sleep(5)
         msg(5, "Open serial port successfully ...")
-
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
         if not self.UPDATE_UBOOT:
             # self.set_fake_eeprom()
             self.update_uboot()
@@ -364,7 +367,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
-
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
