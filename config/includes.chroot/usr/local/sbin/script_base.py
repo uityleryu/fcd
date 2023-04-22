@@ -29,7 +29,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.54"
+    __version__ = "1.0.55"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -364,7 +364,7 @@ class ScriptBase(object):
         self.region = args.region
         self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
         self.fwimg = "{}.bin".format(self.board_id)
-        self.fwimg = "{}-mfg.bin".format(self.board_id)
+        self.fwimg_mfg = "{}-mfg.bin".format(self.board_id)
         self.upload = args.upload
         return args
 
