@@ -29,7 +29,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.54"
+    __version__ = "1.0.55"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -94,7 +94,7 @@ class ScriptBase(object):
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_on(port=int(self.row_id) + self.power_supply_port)
+        self.power_supply.set_port_relay_on(port=int(self.power_supply_port))
         time.sleep(2)
 
     def set_ps_port_relay_off(self, ps_ssid="ed12"):
@@ -112,7 +112,7 @@ class ScriptBase(object):
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_off(port=int(self.row_id) + self.power_supply_port)
+        self.power_supply.set_port_relay_off(port=int(self.power_supply_port))
         time.sleep(4)
 
     def set_sshclient_helper(self, ssh_client):
@@ -331,8 +331,8 @@ class ScriptBase(object):
         parse.add_argument('--ps_ipaddr', '-psaddr', dest='ps_ipaddr', help='Power supply state', default=None)
         parse.add_argument('--ps_state', '-pss', dest='ps_state', help='Power supply state', default=None)
         parse.add_argument('--ps_port', '-pspr', dest='ps_port', help='Power supply port', default=None)
-        parse.add_argument('--toplevelbom', '-tlb', dest='toplevelbom', help='Top level BOM', default=None)
-        parse.add_argument('--mebom', '-meb', dest='mebom', help='ME BOM', default=None)
+        parse.add_argument('--toplevelbom', '-tlb', dest='toplevelbom', help='Top level BOM', default="")
+        parse.add_argument('--mebom', '-meb', dest='mebom', help='ME BOM', default="")
         parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
         parse.set_defaults(upload=True)
 
@@ -364,7 +364,7 @@ class ScriptBase(object):
         self.region = args.region
         self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
         self.fwimg = "{}.bin".format(self.board_id)
-        self.fwimg = "{}-mfg.bin".format(self.board_id)
+        self.fwimg_mfg = "{}-mfg.bin".format(self.board_id)
         self.upload = args.upload
         return args
 

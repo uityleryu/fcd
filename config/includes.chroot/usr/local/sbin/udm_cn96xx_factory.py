@@ -30,7 +30,6 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.devregpart = "/dev/mtdblock4"
         self.helperexe = ""
         self.helper_path = "udm"
-        self.bom_rev = "113-" + self.bom_rev
         self.username = "ui"
         self.password = "ui"
 
@@ -258,7 +257,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             log_debug(sstr)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
                                     valid_chk=True)
-        # fcd_reg_val2="00${fcd_reg_val2}" Requirement is 4 bytes
+        # fcd_reg_val2="00${fcd_reg_val2}" Requirement is 4 bytes means 8 digits
         zero_padded_str = "fcd_reg_val2=\"00${fcd_reg_val2}\""
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=zero_padded_str,
                                 post_exp=self.linux_prompt, valid_chk=True)
@@ -292,6 +291,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
     def run(self):
         if self.ps_state is True:
             self.set_ps_port_relay_off()
+            time.sleep(2)
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
@@ -300,23 +300,25 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(5)
+        time.sleep(2)
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
             self.set_ps_port_relay_on()
-        if not self.UPDATE_UBOOT:
+        if self.UPDATE_UBOOT:
             # self.set_fake_eeprom()
             self.update_uboot()
             msg(10, "Boot up to linux console and network is good ...")
 
-        if not self.BOOT_RECOVERY_IMAGE:
+        if self.BOOT_RECOVERY_IMAGE:
             self.update_recovery()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.INIT_RECOVERY_IMAGE:
-            # self.login(self.username, self.password, timeout=240, log_level_emerg=True)
+            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             # time.sleep(15)  # for stable eth
             self.set_kernel_net()
+            self.unlock_eeprom_permission()
+            time.sleep(2)
             msg(20, "Boot up to linux console and network is good ...")
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
