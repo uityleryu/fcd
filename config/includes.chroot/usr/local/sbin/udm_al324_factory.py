@@ -13,6 +13,7 @@ import re
     ea2b: UDW-PRO
     ea2c: UDM-SE
     ea11: UDM
+    ea15: UDM-Pro
 '''
 
 
