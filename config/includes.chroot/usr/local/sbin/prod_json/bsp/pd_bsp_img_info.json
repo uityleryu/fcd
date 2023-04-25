@@ -122,9 +122,17 @@
     "WASP-internal_2.4G": {
       "NAME": "WASP-internal_2.4G",
       "BOARDID": "fffff",
-      "BOMREV": "113-00306",
+      "BOMREV": "113-00306-art",
       "DOWNLOAD_FILE": {
           "fffff-mfg.bin": "XW.ar934x.LSDK-10.1.389-wasp_internal-2G-NO_EEPROM.bin"
+      }
+    },
+    "WASP-internal_2.4G_ct": {
+      "NAME": "WASP-internal_2.4G_ct",
+      "BOARDID": "ffffe",
+      "BOMREV": "113-00306-ct",
+      "DOWNLOAD_FILE": {
+          "ffffe-mfg.bin": "WA.ar934x-LSDK-ROCKET_LOCO_M2-8M-ct-V2.NO_EEPROM.bin"
       }
     }
   }

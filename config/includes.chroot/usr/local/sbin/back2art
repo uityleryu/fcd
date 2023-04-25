@@ -104,7 +104,8 @@ else
 		113-01184) b2a_u6_maple a667 $1;; #UX
 		113-01219) b2a_mt7628 ffff $1;; #USP-PDU-Power-Switch
 		113-00497) b2a_ar9342 e7f9 $1;;
-		113-00306) b2a_ar9342_old fffff $1;; #Wasp internel 2.4G NBM2-HP
+		113-00306-art) b2a_ar9342_old fffff $1;; #Wasp internel 2.4G NBM2-HP art image
+		113-00306-ct) b2a_ar9342_old ffffe $1;; #Wasp internel 2.4G NBM2-HP ct image
 		113-00391) b2a_qca9563 e517 $1;; #UAP-AC-Lite
 		113-00390) b2a_qca9563 e537 $1;; #UAP-AC-Pro
 		*) 
