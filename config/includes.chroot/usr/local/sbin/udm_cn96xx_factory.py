@@ -317,8 +317,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             # time.sleep(15)  # for stable eth
             self.set_kernel_net()
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 140 >> /sys/class/hwmon/hwmon0/pwm1")
             self.unlock_eeprom_permission()
-            time.sleep(2)
+            time.sleep(1)
             msg(20, "Boot up to linux console and network is good ...")
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
@@ -341,7 +342,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if not self.wifical[self.board_id]:
+        if  self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
@@ -359,11 +360,14 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2:
+            if len(m_run) == 2 :
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
-
+            elif len(m_degraded) == 1:
+                rmsg = "The system is degraded"
+                log_debug(rmsg)
+                break
             time.sleep(1)
             ct += 1
         else:
