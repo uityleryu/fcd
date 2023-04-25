@@ -1,0 +1,54 @@
+{
+  "UniFiSwitch": {
+    "USW-XP-48-POE": {
+      "INDEX": 0,
+      "NAME": "USW-XP-48-POE",
+      "BOARDID": "ed58",
+      "BOMREV": "113-04086",
+      "DESC": "UBNT UniFiSwitch Pro 48 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "usw-pro-48-poe-fw.bin",
+            "US.rtl9311_usw-pcb-uslp48p+14732.230302.0539-uboot.bin"
+
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed58-fw.bin",
+          "../usw-fw/usw-pro-48-poe-fw.bin"
+        ],
+        [
+          "tftp/images/ed58-t1.bin",
+          "../usw-fw/usw-pro-48-poe-fw.bin"
+        ]
+      ]
+    }
+  }
+}

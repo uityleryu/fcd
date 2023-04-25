@@ -60,6 +60,16 @@ class U6MT7981BspFactory(ScriptBase):
             'a643': "#"
         }
 
+        self.bootloader_prompt_bsp = {
+            'a642': "MT7981>",
+            'a643': "MT7981>"
+        }
+
+        self.bootloader_prompt_ship = {
+            'a642': "MT7981#",
+            'a643': "MT7981#"
+        }
+
         self.lnx_eth_port = {
             'a642': "br-lan",
             'a643': "br-lan"
@@ -71,6 +81,7 @@ class U6MT7981BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.BOOT_VER_CHECK = True
         self.BOOT_BSP_IMAGE = True
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
@@ -80,6 +91,14 @@ class U6MT7981BspFactory(ScriptBase):
         self.EMMC_FW_UPDATE_ENABLE = False
         self.DATAVERIFY_ENABLE = True
         self.FCD_TLV_data = False
+
+    def bootFW_check(self):
+        self.pexp.expect_only(30, "U-Boot")
+        self.pexp.expect_lnxcmd(3, "to stop", "\033\033", self.bootloader_prompt_bsp[self.board_id], retry=0)
+
+        log_debug("check BSP bootloader PASS")
+        cmd = "bootm"
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt_bsp[self.board_id], cmd)
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -203,6 +222,10 @@ class U6MT7981BspFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
+
+        if self.BOOT_VER_CHECK is True:
+            self.bootFW_check()
+            msg(7, "BSP FW bootloader prompt check pass ...")
 
         if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()

@@ -5,7 +5,7 @@
       "NAME": "UNIFI-WAVEROVERCAMERA",
       "BOARDID": "a594",
       "BOMREV": "113-04000",
-      "DESC": "UniFi Wave Rover Camera",
+      "DESC": "UniFi Wave Rover Camera (SAV530)",
       "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -21,6 +21,20 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee",
             "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a594-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "uwr.UVC.SAV530q.v4.58.22.67-fcddbg.M_9064c67.221009.0728.bin"
           ]
         }
       ],

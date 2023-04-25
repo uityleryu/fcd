@@ -211,6 +211,10 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_ubcmd(10, "login:", "ubnt")
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
+        if self.board_id == 'ec42':
+            self.pexp.expect_ubcmd(30, "kmodloader: done loading kernel modules", "")
+            time.sleep(3)
+
         cmd = "cat /etc/board.info | grep sysid"
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
         self.pexp.expect_only(10, "board.sysid=0x" + self.board_id)

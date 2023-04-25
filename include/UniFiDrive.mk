@@ -40,3 +40,6 @@ $(eval $(call ProductCompress,UNAS-Pro,FCD_$(PRD)_UNAS-Pro_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03751_ea51))
 $(eval $(call ProductCompress2,03756_ea50))
+$(eval $(call ProductCompress2,03576_ea50))
+$(eval $(call ProductCompress2,04338_ea50))
+$(eval $(call ProductCompress2,UniFiDrive_DRIVE-SERIES))

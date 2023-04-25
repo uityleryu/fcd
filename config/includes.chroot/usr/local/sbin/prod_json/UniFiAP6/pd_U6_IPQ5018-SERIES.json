@@ -1,0 +1,559 @@
+{
+  "UniFiAP6": {
+    "U6-PRO-00963": {
+      "INDEX": 0,
+      "NAME": "U6-PRO-00963",
+      "BOARDID": "a650",
+      "BOMREV": "113-00963",
+      "DESC": "UniFi AP6 PRO",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_512MB-v18.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_512MB-v18_nor.bin",
+            "ipq50xx.itb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a650-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
+        ],
+        [
+          "tftp/images/a650-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a650-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a650-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a650-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
+        ],
+        [
+          "tftp/images/a650.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-PRO-01115": {
+      "INDEX": 1,
+      "NAME": "U6-PRO-01115",
+      "BOARDID": "a650",
+      "BOMREV": "113-01115",
+      "DESC": "UniFi AP6 PRO",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_512MB-v18.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_512MB-v18_nor.bin",
+            "ipq50xx.itb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a650-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
+        ],
+        [
+          "tftp/images/a650-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a650-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a650-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a650-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
+        ],
+        [
+          "tftp/images/a650.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-Mesh": {
+      "INDEX": 2,
+      "NAME": "U6-Mesh",
+      "BOARDID": "a651",
+      "BOMREV": "113-10743",
+      "DESC": "UniFi AP6 Mesh Point",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_512MB-v18.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_512MB-v18_nor.bin",
+            "ipq50xx.itb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a651-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
+        ],
+        [
+          "tftp/images/a651-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a651-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a651-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a651-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
+        ],
+        [
+          "tftp/images/a651.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-IW": {
+      "INDEX": 3,
+      "NAME": "U6-IW",
+      "BOARDID": "a652",
+      "BOMREV": "113-10745",
+      "DESC": "UniFi AP6 InWall",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_1gb-v17.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_1gb-v17_nor.bin",
+            "ipq50xx.itb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a652-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_1gb-v17.img"
+        ],
+        [
+          "tftp/images/a652-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a652-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a652-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a652-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_1gb-v17_nor.bin"
+        ],
+        [
+          "tftp/images/a652.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-Extender-01083": {
+      "INDEX": 4,
+      "NAME": "U6-Extender",
+      "BOARDID": "a653",
+      "BOMREV": "113-01083",
+      "DESC": "UniFi AP6 Extender",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_512MB-v18.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_512MB-v18_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a653-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
+        ],
+        [
+          "tftp/images/a653-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a653-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a653-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a653-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
+        ]
+      ]
+    },
+    "U6-Extender-10746": {
+      "INDEX": 5,
+      "NAME": "U6-Extender",
+      "BOARDID": "a653",
+      "BOMREV": "113-10746",
+      "DESC": "UniFi AP6 Extender",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-pro_512MB-v18.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-pro_512MB-v18_nor.bin",
+            "ipq50xx.itb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a653-emmc.img",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
+        ],
+        [
+          "tftp/images/a653-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a653-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a653-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a653-nor.bin",
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
+        ],
+        [
+          "tftp/images/a653.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-Enterprise-10898": {
+      "INDEX": 6,
+      "NAME": "U6-Enterprise",
+      "BOARDID": "a654",
+      "BOMREV": "113-10898",
+      "DESC": "UniFi AP6 Enterprise",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-infinity_1gb-v6.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-infinity_1gb-v6_nor.bin",
+            "ipq50xx.itb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a654-emmc.img",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v6.img"
+        ],
+        [
+          "tftp/images/a654-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a654-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a654-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a654-nor.bin",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a654.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U6-Enterprise-01164": {
+      "INDEX": 7,
+      "NAME": "U6-Enterprise",
+      "BOARDID": "a654",
+      "BOMREV": "113-01164",
+      "DESC": "UniFi AP6 Enterprise",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-infinity_1gb-v6.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-infinity_1gb-v6_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a654-emmc.img",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v6.img"
+        ],
+        [
+          "tftp/images/a654-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a654-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a654-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a654-nor.bin",
+          "../u6-fw/ipq5018/u6-infinity_1gb-v6_nor.bin"
+        ]
+      ]
+    },
+    "U6-Enterprise-IW": {
+      "INDEX": 8,
+      "NAME": "U6-Enterprise-IW",
+      "BOARDID": "a656",
+      "BOMREV": "113-00956",
+      "DESC": "UniFi AP6 Enterprise IW",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
+          "DST_PATH": "u6-fw/ipq5018",
+          "FILES": [
+            "u6-enterprise-iw-v7.img",
+            "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
+            "maple-4g-gpt_u6_pro_2nd_source.bin",
+            "ramload-6.2.49.bin",
+            "u6-enterprise-iw-v7_nor.bin",
+            "ipq50xx.itb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a656-emmc.img",
+          "../u6-fw/ipq5018/u6-enterprise-iw-v7.img"
+        ],
+        [
+          "tftp/images/a656-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a656-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a656-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a656-nor.bin",
+          "../u6-fw/ipq5018/u6-enterprise-iw-v7_nor.bin"
+        ],
+        [
+          "tftp/images/a656.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    }
+  }
+}
