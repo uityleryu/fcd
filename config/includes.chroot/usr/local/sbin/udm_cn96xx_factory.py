@@ -55,9 +55,16 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             'ea3e': "0x00a68000"
         }
 
-        self.wsysid = {
+        # Vendor ID + Sys ID
+        self.vdr_sysid = {
             'ea3d': "77073dea",
-            'ea3e': "77073dea",
+            'ea3e': "77073eea",
+        }
+
+        # Sys ID + Vendor ID
+        self.sysid_vdr = {
+            'ea3d': "3dea7707",
+            'ea3e': "3eea7707",
         }
 
         # active port
@@ -120,25 +127,19 @@ class UDM_CN96XX_FACTORY(ScriptBase):
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "a3d61804")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.vdr_sysid[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "4c710000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+        #
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.sysid_vdr[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000014 " + "4c710000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
@@ -156,8 +157,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "boot.img")
         )
 
-        self.pexp.expect_action(60, self.bootloader_prompt, "tftpboot boot.img")
-        self.pexp.expect_action(60, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
+        self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot boot.img")
+        self.pexp.expect_action(150, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
         self.pexp.expect_action(60, self.bootloader_prompt, "reset")
 
     def update_recovery(self):
@@ -305,7 +306,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         if self.ps_state is True:
             self.set_ps_port_relay_on()
         if self.UPDATE_UBOOT:
-            # self.set_fake_eeprom()
+            self.set_fake_eeprom()
             self.update_uboot()
             msg(10, "Boot up to linux console and network is good ...")
 
