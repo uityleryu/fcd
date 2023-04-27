@@ -1,17 +1,12 @@
 #!/usr/bin/python3
 
 from script_base import ScriptBase
-from PAlib.Framework.fcd.common import Common
-from PAlib.Framework.fcd.pserial import SerialExpect
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.ssh_client import SSHClient
 from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
 
-import sys
 import time
 import os
-import re
-import traceback
 import subprocess as sp
 import glob
 
@@ -224,7 +219,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /unifi_fs/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)  # noqa: E501
             if "US.mxl277" not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
@@ -245,7 +240,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /unifi_fs/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)  # noqa: E501
             if self.version not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
@@ -293,7 +288,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /usr/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /usr/lib/version\"", self.linux_prompt)  # noqa: E501
             if self.cm_version not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
@@ -325,7 +320,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 self.pexp.expect_action(10, self.linux_prompt, "update 2 {}".format(target))
                 self.pexp.expect_only(10, "update: Exit OK")
                 self.pexp.expect_action(10, self.linux_prompt, "rm {}".format(target))
-                #self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+                # self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 result = self.reboot_handler(watchdog=True)
                 if result is False:
@@ -413,6 +408,21 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         log_info("Set burnin time to 4 hours")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/scripts/uci-burnin.sh 600 14400", self.linux_prompt)
 
+    def flush_nvram(self):
+        log_info("Flush NVRAM")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "[ ! -d \"/nvram/1/security\" ] && mkdir /nvram/1/security", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"/etc/scripts/init/nss stop\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"umount /nvram\"", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mkfs.ext3 /dev/disk/by-partlabel/APP_CPU_NVRAM\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mount /dev/disk/by-partlabel/APP_CPU_NVRAM /nvram\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mkdir /nvram/itstore\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"echo \"vendorId=0a\" > /nvram/sec_vendorId\"", self.linux_prompt)  # noqa: E501
+
+    def check_nvram(self):
+        log_info("Check NVRAM")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"ls /nvram\"", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"cat /nvram/sec_vendorId\"", self.linux_prompt)  # noqa: E501
+
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
@@ -457,6 +467,11 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             msg(40, "Finish doing signed file and EEPROM checking ...")
 
         if CERT_INSTALL is True:
+            self.flush_nvram()
+            self.check_nvram()
+            msg(45, "Finish flushing NVRAM and going to reboot DUT ...")
+            self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+            self.reboot_handler()
             self.cert_upload()
             self.cert_install()
             msg(50, "Finish installing certificates ...")
