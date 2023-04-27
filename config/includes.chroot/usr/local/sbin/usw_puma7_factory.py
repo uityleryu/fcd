@@ -47,8 +47,8 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.mac_upper = self.mac.upper()
         self.certs_tftp_dir = os.path.join(self.tftpdir, self.certs)
         # Below used for FW version check. Remember to update when change firmware
-        self.version = "US.mxl277_MFG_1.0.1"
-        self.cm_version = "US.mxl277_MFG_CM_1.0.2"
+        self.version = "US.mxl277_MFG_1.0.5"
+        self.cm_version = "US.mxl277_MFG_CM_1.0.5"
         # overwrite
         self.tftp_server = "192.168.100.201"
 
