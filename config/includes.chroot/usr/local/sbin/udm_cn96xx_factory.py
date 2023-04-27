@@ -159,7 +159,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot boot.img")
         self.pexp.expect_action(150, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
-        self.pexp.expect_action(60, self.bootloader_prompt, "reset")
+        self.pexp.expect_action(150, self.bootloader_prompt, "reset")
 
     def update_recovery(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
