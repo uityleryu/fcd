@@ -1,4 +1,3 @@
-
 # Images
 
 IMAGE-6-ISP= \
@@ -127,14 +126,8 @@ $(eval $(call ProductCompress,6-Extender,FCD_$(PRD)_6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,6-Router,FCD_$(PRD)_6-Router$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ALN-E,FCD_$(PRD)_AFi-ALN-E$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ALN-PE,FCD_$(PRD)_AFi-ALN-PE_$(VER)_$(FWVER)))
-<<<<<<< HEAD
-$(eval $(call ProductCompress,AMP,FCD_$(PRD)_AFi-AMP_$(VER)_$(FWVER)))
-
-
-=======
 $(eval $(call ProductCompress,Cinema-Bridge,FCD_$(PRD)_Cinema-Bridge$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,AMP,FCD_$(PRD)_AFi-AMP_$(VER)_$(FWVER)))
->>>>>>> develop
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00775_a616))

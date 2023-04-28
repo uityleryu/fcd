@@ -20,10 +20,7 @@ REGISTER_EN = True
 
 '''
     ec80:  UC-SPK-MINI
-<<<<<<< HEAD
-=======
     aa01:  Amplifi-Cinema-Bridge
->>>>>>> develop
     aa02:  Amplifi-AMP
 '''
 
@@ -44,30 +41,21 @@ class UCQCS403FactoryGeneral(ScriptBase):
         # number of Ethernet
         ethnum = {
             'ec80': "1",
-<<<<<<< HEAD
-=======
             'aa01': "1",
->>>>>>> develop
             'aa02': "1"
         }
 
         # number of WiFi
         wifinum = {
             'ec80': "1",
-<<<<<<< HEAD
-=======
             'aa01': "1",
->>>>>>> develop
             'aa02': "1"
         }
 
         # number of Bluetooth
         btnum = {
             'ec80': "2",
-<<<<<<< HEAD
-=======
             'aa01': "2",
->>>>>>> develop
             'aa02': "1"
         }
 
@@ -92,13 +80,8 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
         msg(10, "TTY initialization successfully ...")
-<<<<<<< HEAD
-        log_debug(msg="sleep 60 secs")
-        time.sleep(60)
-=======
         log_debug(msg="sleep 70 secs")
         time.sleep(70)
->>>>>>> develop
 
         self.pexp.expect_lnxcmd(10, "", "")
         if self.board_id == 'aa01':
@@ -158,23 +141,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
                 for cmd in cmdset:
                     self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
-<<<<<<< HEAD
-            # Check MAC
-            cmd = "cat /persist/emac_config.ini"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
-
-            # Check WiFi MAC
-            cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-            time.sleep(5)
-            cmd = "ifconfig wlan0 up"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-=======
                 # Write BT MAC
                 comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
                 cmd = "btnvtool -b {}".format(comma_bt_mac)
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
->>>>>>> develop
 
                 # Check MAC
                 cmd = "cat /persist/emac_config.ini"
@@ -208,7 +178,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            cmd = "echo enable > /data/keymfg_mode"
+            if self.board_id != 'aa02':
+                cmd = "echo enable > /data/keymfg_mode"
+            else:
+                cmd = "echo 1 > /data/mfg_mode"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
         '''
             ============ Registration End ============
