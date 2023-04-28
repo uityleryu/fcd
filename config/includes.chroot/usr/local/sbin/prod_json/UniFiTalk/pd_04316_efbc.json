@@ -1,15 +1,15 @@
 {
-  "UniFiAccess": {
-    "UA-G2-Reader-Pro": {
+  "UniFiTalk": {
+    "UTP-G3-Touch-Pro-Max": {
       "INDEX": 0,
-      "NAME": "UA-G2-Reader-Pro",
-      "BOARDID": "ec5e",
-      "BOMREV": ["113-03625","113-04342"],
-      "DESC": "UniFiAccess G2 Reader Pro",
+      "NAME": "UTP-G3-Touch-Pro-Max",
+      "BOARDID": "efbc",
+      "BOMREV": "113-04316",
+      "DESC": "Phone G3 Touch Pro Max",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1ce3",
+      "SW_ID": "0a01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",

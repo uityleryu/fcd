@@ -127,9 +127,14 @@ $(eval $(call ProductCompress,6-Extender,FCD_$(PRD)_6-Extender_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,6-Router,FCD_$(PRD)_6-Router$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ALN-E,FCD_$(PRD)_AFi-ALN-E$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ALN-PE,FCD_$(PRD)_AFi-ALN-PE_$(VER)_$(FWVER)))
+<<<<<<< HEAD
 $(eval $(call ProductCompress,AMP,FCD_$(PRD)_AFi-AMP_$(VER)_$(FWVER)))
 
 
+=======
+$(eval $(call ProductCompress,Cinema-Bridge,FCD_$(PRD)_Cinema-Bridge$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,AMP,FCD_$(PRD)_AFi-AMP_$(VER)_$(FWVER)))
+>>>>>>> develop
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00775_a616))
@@ -145,5 +150,6 @@ $(eval $(call ProductCompress2,01605_da11))
 $(eval $(call ProductCompress2,01039_da20))
 $(eval $(call ProductCompress2,01033_ed14))
 $(eval $(call ProductCompress2,01033_da21))
+$(eval $(call ProductCompress2,04137_aa01))
 $(eval $(call ProductCompress2,AFI_ALNMAX-SERIES))
 $(eval $(call ProductCompress2,04120_aa02))

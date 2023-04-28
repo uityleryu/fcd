@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-G2-Reader-Pro": {
+    "UA-G2-Portal": {
       "INDEX": 0,
-      "NAME": "UA-G2-Reader-Pro",
-      "BOARDID": "ec5e",
-      "BOMREV": ["113-03625","113-04342"],
-      "DESC": "UniFiAccess G2 Reader Pro",
+      "NAME": "UA-G2-Portal",
+      "BOARDID": "ec64",
+      "BOMREV": "113-03693",
+      "DESC": "UniFiAccess G2 Portal",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

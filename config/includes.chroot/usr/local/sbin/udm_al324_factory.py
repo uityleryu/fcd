@@ -12,6 +12,7 @@ import re
     ea2a: UDW
     ea2b: UDW-PRO
     ea2c: UDM-SE
+    ea11: UDM
 '''
 
 
@@ -38,6 +39,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "udw",  # udw
             'ea2b': "udw",  # udw_pro, but tools same as udw
             'ea2c': "udm_se",  # udm_se
+            'ea11': "udm"
         }
 
         self.tool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
@@ -46,67 +48,77 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "0x220000",
             'ea2b': "0x220000",
             'ea2c': "0x1f0000",
+            'ea11': "0x1f0000"
         }
         
         self.eeprom_offset_2 = {
             'ea2a': "0x228000",
             'ea2b': "0x228000",
             'ea2c': "0x1f8000",
+            'ea11': "0x1f8000"
         }
 
         self.wsysid = {
             'ea2a': "77072aea",
             'ea2b': "77072bea",
             'ea2c': "77072cea",
+            'ea11': "770711ea",
         }
 
         # active port
         self.activeport = {
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
-            'ea2c': "al_eth2"  # set sfp 0 or 2 for SPF+
+            'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
+            'ea11': "al_eth3"
         }
 
         # number of Ethernet
         self.ethnum = {
             'ea2a': "20",
             'ea2b': "23",
-            'ea2c': "11"
+            'ea2c': "11",
+            'ea11': "5"
         }
 
         # number of WiFi
         self.wifinum = {
             'ea2a': "2",
             'ea2b': "3",
-            'ea2c': "0"
+            'ea2c': "0",
+            'ea11': "2"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ea2c': "1",
             'ea2a': "1",
-            'ea2b': "1"
+            'ea2b': "1",
+            'ea11': "1"
         }
 
         # ethernet interface
         self.netif = {
             'ea2a': "br0",
             'ea2b': "psu0",
-            'ea2c': "eth10"
+            'ea2c': "eth10",
+            'ea11': "br0 "
         }
 
         # LCM update
         self.lcmupdate = {
             'ea2a': True,
             'ea2b': False,
-            'ea2c': False
+            'ea2c': False,
+            'ea11': False
         }
 
         # Wifi cal data setting
         self.wifical = {
             'ea2a': True,
             'ea2b': True,
-            'ea2c': False
+            'ea2c': False,
+            'ea11': False,
         }
 
         self.devnetmeta = {
@@ -176,9 +188,13 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop udapi-server udapi-bridge")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+        elif self.board_id == "ea11":
+            cmd = "swconfig dev switch0 vlan 99 set ports '0 1 2 3 4'"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            cmd = "swconfig dev switch0 set apply"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-
         self.is_network_alive_in_linux(ipaddr=self.dutip)
 
     def update_uboot(self):
@@ -441,6 +457,21 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
+        if self.board_id == "ea11":
+            # copy factory and memtester deb
+            pkg_sets = [
+                "{}-memtester.deb".format(self.board_id),
+                "{}-factory.deb".format(self.board_id)
+            ]
+            for pkg in pkg_sets:
+                src_path = os.path.join(self.fcd_toolsdir, pkg)
+                dst_path = os.path.join(self.dut_tmpdir, pkg)
+                self.tftp_get(remote=src_path, local=dst_path,timeout=20)
+                cmd = "dpkg -i {}".format(dst_path)
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd)
+
+            self.pexp.expect_lnxcmd(15, self.linux_prompt, "set-factory-mode on")
+
         if self.LCM_CHECK_ENABLE is True:
             if self.lcmupdate[self.board_id] is True:
                 msg(85, "Check LCM FW version ...")
@@ -451,17 +482,17 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
-        self.del_anonymous_file()
+        if self.board_id != "ea11":
+            self.del_anonymous_file()
 
         if self.board_id == "ea2b":
             # below one of two function will cause the data of flash(MTD3) was removed so do not use it
             # self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig psu0 169.254.1.1 netmask 255.255.0.0")
             # self.show_info()
-            
+
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
         else:
-            # self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /usr/lib/version")
             output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="" ,timeout=3)
             log_debug(output)
 

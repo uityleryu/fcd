@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g5pro.UVC.gen5s.v4.61.0.67-fcddbg.M_611c740.221215.0736.bin"
+            "g5pro.UVC.gen5s.v4.61.0.67-fcddbg.M_08f5a2c.230303.0316.bin"
           ]
         },
         {
@@ -41,7 +41,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a598-fw.bin",
-          "../uvc-fw/g5pro.UVC.gen5s.v4.61.0.67-fcddbg.M_611c740.221215.0736.bin"
+          "../uvc-fw/g5pro.UVC.gen5s.v4.61.0.67-fcddbg.M_08f5a2c.230303.0316.bin"
         ]
       ]
     }

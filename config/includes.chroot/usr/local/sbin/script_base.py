@@ -22,17 +22,19 @@ from PAlib.Framework.fcd.helper import FCDHelper
 from PAlib.Framework.fcd.logger import log_debug, log_info, log_error, msg, error_critical
 from PAlib.Framework.fcd.singleton import errorcollecter
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
+from PAlib.devices.usp_pdu_pro_ed12 import USP_PDU_PRO
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.52"
+    __version__ = "1.0.55"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
     def __init__(self):
+        self.power_supply = None
         self.cnapi = Common()
         self.input_args = self._init_parse_inputs()
         self._init_share_var()
@@ -76,6 +78,42 @@ class ScriptBase(object):
             return self.__ssh_client_obj
         else:
             error_critical("No ssh client obj exists!")
+
+    def set_ps_port_relay_on(self, ps_ssid="ed12"):
+        if self.power_supply is None:
+            if ps_ssid == "ed12":
+                self.power_supply = USP_PDU_PRO(ip=self.ps_ipaddr)
+                if self.power_supply.connect() is False:
+                    rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+                    error_critical(rmsg)
+                else:
+                    rmsg = "SSH connection with the {}".format(ps_ssid)
+                    log_debug(rmsg)
+            else:
+                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(self.ps_ssid))
+        else:
+            log_debug("Power supply instance is existed")
+
+        self.power_supply.set_port_relay_on(port=int(self.power_supply_port))
+        time.sleep(2)
+
+    def set_ps_port_relay_off(self, ps_ssid="ed12"):
+        if self.power_supply is None:
+            if ps_ssid == "ed12":
+                self.power_supply = USP_PDU_PRO(ip=self.ps_ipaddr)
+                if self.power_supply.connect() is False:
+                    rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+                    error_critical(rmsg)
+                else:
+                    rmsg = "SSH connection with the {}".format(ps_ssid)
+                    log_debug(rmsg)
+            else:
+                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(self.ps_ssid))
+        else:
+            log_debug("Power supply instance is existed")
+
+        self.power_supply.set_port_relay_off(port=int(self.power_supply_port))
+        time.sleep(4)
 
     def set_sshclient_helper(self, ssh_client):
         self.__ssh_client_obj = ssh_client
@@ -290,6 +328,11 @@ class ScriptBase(object):
         parse.add_argument('--qrcode', '-q', dest='qrcode', help='QR code', default=None)
         parse.add_argument('--activate_code', '-ac', dest='activate_code', help='Activate Code', default=None)
         parse.add_argument('--region', '-r', dest='region', help='Region Code', default=None)
+        parse.add_argument('--ps_ipaddr', '-psaddr', dest='ps_ipaddr', help='Power supply state', default=None)
+        parse.add_argument('--ps_state', '-pss', dest='ps_state', help='Power supply state', default=None)
+        parse.add_argument('--ps_port', '-pspr', dest='ps_port', help='Power supply port', default=None)
+        parse.add_argument('--toplevelbom', '-tlb', dest='toplevelbom', help='Top level BOM', default="")
+        parse.add_argument('--mebom', '-meb', dest='mebom', help='ME BOM', default="")
         parse.add_argument('--no-upload', dest='upload', help='Disable uploadlog to cloud', action='store_false')
         parse.set_defaults(upload=True)
 
@@ -306,13 +349,22 @@ class ScriptBase(object):
         self.premac = "fc:ec:da:00:00:1" + self.row_id
         self.pass_phrase = args.pass_phrase
         self.key_dir = args.key_dir
+        self.ps_ipaddr = args.ps_ipaddr
+        if args.ps_state == "True":
+            self.ps_state = True
+        else:
+            self.ps_state = False
+
+        self.power_supply_port = args.ps_port
+        self.tlb_rev = args.toplevelbom
+        self.meb_rev = args.mebom
         self.bom_rev = args.bom_rev
         self.qrcode = args.qrcode
         self.activate_code = args.activate_code
         self.region = args.region
         self.region_name = CONST.region_names[CONST.region_codes.index(self.region)] if self.region is not None else None
-        self.fwimg = self.board_id + ".bin"
-        self.fwimg_mfg = self.board_id + "-mfg.bin"
+        self.fwimg = "{}.bin".format(self.board_id)
+        self.fwimg_mfg = "{}-mfg.bin".format(self.board_id)
         self.upload = args.upload
         return args
 
@@ -407,7 +459,7 @@ class ScriptBase(object):
             print("No semantic version and fw version found in version.txt")
 
         # version mapping
-        
+
         fh = open('/usr/local/sbin/Products-info.json')
         self.fsiw = json.load(fh)
         fh.close()
@@ -787,15 +839,23 @@ class ScriptBase(object):
         sstr = [
             flasheditor,
             "-F",
-            "-f " + self.eegenbin_path,
-            "-r 113-{0}".format(self.bom_rev),
-            "-s 0x" + self.board_id,
-            "-m " + self.mac,
-            "-c 0x" + self.region,
-            "-e " + netmeta['ethnum'][self.board_id],
-            "-w " + netmeta['wifinum'][self.board_id],
-            "-b " + netmeta['btnum'][self.board_id],
+            "-f {}".format(self.eegenbin_path),
+            "-r 113-{}".format(self.bom_rev),
+            "-s 0x{}".format(self.board_id),
+            "-m {}".format(self.mac),
+            "-c 0x{}".format(self.region),
+            "-e {}".format(netmeta['ethnum'][self.board_id]),
+            "-w {}".format(netmeta['wifinum'][self.board_id]),
+            "-b {}".format(netmeta['btnum'][self.board_id])
         ]
+        log_debug("Top level BOM:" + self.tlb_rev)
+        if self.tlb_rev != "":
+            sstr.append("-t 002-{}".format(self.tlb_rev))
+
+        log_debug("ME BOM:" + self.meb_rev)
+        if self.meb_rev != "":
+            sstr.append("-M 300-{}".format(self.meb_rev))
+
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
         [output, rv] = self.cnapi.xcmd(sstr)
@@ -834,6 +894,14 @@ class ScriptBase(object):
             "-w {}".format(netmeta['wifinum'][self.board_id]),
             "-b {}".format(netmeta['btnum'][self.board_id])
         ]
+        log_debug("Top level BOM:" + self.tlb_rev)
+        if self.tlb_rev != "":
+            sstr.append("-t 002-{}".format(self.tlb_rev))
+
+        log_debug("ME BOM:" + self.meb_rev)
+        if self.meb_rev != "":
+            sstr.append("-M 300-{}".format(self.meb_rev))
+
         if rsa_en is True:
             cmd_option = "-k {}".format(self.rsakey_path)
             sstr.append(cmd_option)
@@ -1021,7 +1089,6 @@ class ScriptBase(object):
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
 
         log_debug("Send bspnode output files from DUT to host ...")
-
 
     '''
         DUT view point
@@ -1319,7 +1386,7 @@ class ScriptBase(object):
         # If do back to T1, self.key_dir should be None and do not check blacklist
         if self.key_dir:
             self.check_blacklist()
-            
+
         self.test_result = 'Pass'
         time.sleep(2)
         exit(0)
@@ -1333,7 +1400,7 @@ class ScriptBase(object):
             logpath = os.path.join("/tftpboot/", "log_slot" + str(self.row_id) + ".log")
             with open(logpath, 'r') as logfile:
                 logcontent = logfile.read().rsplit('Ubiquiti Device Security Client')[-1]
-            
+
             # Read BlackList Dict
             with open(blacklist_path) as fh:
                 self.blacklist_json = json.load(fh)
@@ -1363,25 +1430,31 @@ class ScriptBase(object):
         except Exception as e:
             log_debug(str(e))
 
-
     def __del__(self):
+        if self.upload:
+            self._upload_log()
+
+    def _upload_log(self) -> bool:
         try:
-            if self.upload:
-                # Compute test_time/duration
-                self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
-                self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
-                self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
-                self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+            # Compute test_time/duration
+            self.test_endtime_datetime = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
+            self.test_duration = (self.test_endtime_datetime - self.test_starttime_datetime).seconds
+            self.test_starttime = self.test_starttime_datetime.strftime('%Y-%m-%d_%H:%M:%S')
+            self.test_endtime = self.test_endtime_datetime.strftime('%Y-%m-%d_%H:%M:')
 
-                # Store error function
-                self.__store_error_function()
+            # Store error function
+            self.__store_error_function()
 
-                # Dump all var
-                self.__dump_JSON()
-                self._upload_prepare()
+            # Dump all var
+            self.__dump_JSON()
+            self._upload_prepare()
 
         except Exception as e:
-            print (e)
+            print("***** upload_log exception msg *****")
+            print(e)
+            return False
+        else:
+            return True
 
     def __store_error_function(self):
         PAlib_errorcollecter = errorcollecter()
@@ -1533,5 +1606,3 @@ class ScriptBase(object):
             log_debug('\n{}\n{}\n[Upload_ui_taipei farget Fail]'.format(e.output.decode('utf-8'), e.returncode))
         except:
             log_debug("[Upload_ui_taipei farget Unexpected error: {}]".format(sys.exc_info()[0]))
-
-

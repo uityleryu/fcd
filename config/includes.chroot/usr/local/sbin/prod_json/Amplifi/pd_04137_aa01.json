@@ -1,17 +1,17 @@
 {
-  "UniFiAccess": {
-    "UA-G2-Reader-Pro": {
+  "Amplifi": {
+    "AFi-Cinema-Bridge": {
       "INDEX": 0,
-      "NAME": "UA-G2-Reader-Pro",
-      "BOARDID": "ec5e",
-      "BOMREV": ["113-03625","113-04342"],
-      "DESC": "UniFiAccess G2 Reader Pro",
-      "FILE": "connect_apq8053_factory.py",
+      "NAME": "AFi-Cinema-Bridge",
+      "BOARDID": "aa01",
+      "BOMREV": "113-04137",
+      "DESC": "AmpliFi Cinema Bridge",
+      "FILE": "uc_qcs403_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1ce3",
+      "SW_ID": "",
       "DOWNLOAD_FILE": [
-        {
+         {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
