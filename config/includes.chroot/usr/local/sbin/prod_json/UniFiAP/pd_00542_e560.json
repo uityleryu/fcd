@@ -1,0 +1,73 @@
+{
+  "UniFiAP": {
+    "UAP-AC-XG": {
+      "INDEX": 0,
+      "NAME": "UAP-AC-XG",
+      "BOARDID": "e560",
+      "BOMREV": "113-00542",
+      "DESC": "UniFi AC XG",
+      "FILE": "uap_ipq806x_factory.py",
+      "T1FILE": "uap_ipq806x_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw/uwb-xg",
+          "DST_PATH": "e560",
+          "FILES": [
+            "gen3-uboot.mbn",
+            "uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin",
+            "uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb",
+            "lede-ipq806x-4.4-itb-5.43.55-tftp",
+            "uap-ac-sxg-spf.4.0_nor-v6.bin",
+            "BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uap",
+          "DST_PATH": "tools/uap",
+          "FILES": [
+            "ath3k-bdaddr",
+            "helper_IPQ806x_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e560-uboot.bin",
+          "../e560/gen3-uboot.mbn"
+        ],
+        [
+          "tftp/images/e560-factory.bin",
+          "../e560/uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin"
+        ],
+        [
+          "tftp/images/e560-fcd-kernel.bin",
+          "../e560/uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb"
+        ],
+        [
+          "tftp/images/e560-fcd-new-kernel.bin",
+          "../e560/lede-ipq806x-4.4-itb-5.43.55-tftp"
+        ],
+        [
+          "tftp/images/e560-art.bin",
+          "../e560/uap-ac-sxg-spf.4.0_nor-v6.bin"
+        ],
+        [
+          "tftp/images/e560.bin",
+          "../e560/BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+        ]
+      ]
+    }
+  }
+}
