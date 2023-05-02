@@ -1,0 +1,58 @@
+{
+  "UniFiDream": {
+    "UDR-PRO-01263": {
+      "INDEX": 0,
+      "NAME": "UDR-PRO-01263",
+      "BOARDID": "a678",
+      "BOMREV": "113-011263",
+      "DESC": "UniFi Dream Machine Router Pro",
+      "FILE": "udm_ipq53xx_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udr-pro",
+          "DST_PATH": "udm-fw/udr-pro",
+          "FILES": [
+            "UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin",
+            "uImage.v1.12.30.r",
+            "boot.v1.12.30.img"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a678-fw.bin",
+          "../udm-fw/udr-pro/UDMPRO.alpinev2.v1.12.30.060f0fe.220909.0034.bin"
+        ],
+        [
+          "tftp/images/a678-recovery",
+          "../udm-fw/udr-pro/uImage.v1.12.30.r"
+        ],
+        [
+          "tftp/images/a678_signed_boot.img",
+          "../udm-fw/udr-pro/boot.v1.12.30.img"
+        ]
+      ]
+    }
+  }
+}
