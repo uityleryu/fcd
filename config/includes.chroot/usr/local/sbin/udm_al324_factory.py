@@ -276,8 +276,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_only(120, "Wait for nc client to push firmware")
 
         time.sleep(5)  # for stable
-
-        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.board_id + "-fw.bin"))
+        nc_cmd = "nc -v -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.board_id + "-fw.bin"))
         log_debug(msg=nc_cmd)
 
         [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
