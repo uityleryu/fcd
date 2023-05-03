@@ -88,7 +88,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # number of Bluetooth
         self.btnum = {
             'ea3d': "1",
-            'ea3e': "0",
+            'ea3e': "1",
         }
 
         # ethernet interface
