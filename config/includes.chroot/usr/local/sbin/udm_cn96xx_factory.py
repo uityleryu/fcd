@@ -94,7 +94,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # ethernet interface
         self.netif = {
             'ea3d': "eth4",
-            'ea3e': "eth4",
+            'ea3e': "eth0",
         }
 
         # LCM
@@ -124,25 +124,58 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.DATAVERIFY_ENABLE = True
         self.LCM_FW_Check_ENABLE = True
         self.POWER_SUPPLY_EN = True
+
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "a3d61804")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.vdr_sysid[self.board_id])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "4c710000")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
         #
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.sysid_vdr[self.board_id])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000014 " + "4c710000")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
+    def set_fake_eeprom_uxg(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_only(60, "Erased: OK")
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "a3d61804")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "1806ee97")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + "ee97a3d6")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.vdr_sysid[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "050c0000")
+        #
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08008000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.sysid_vdr[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x08000000 {} 0x10000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_only(30, "Written: OK")
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
+    def config_board_model_nbumer(self):
+        self.pexp.expect_action(60,"boot menu","B")
+        self.pexp.expect_action(60,"S) Enter Setup","S")
+        self.pexp.expect_action(60,"B) Board Manufacturing Data","B")
+        self.pexp.expect_only(30,"(INS)Board Model Number [uxg-enterprise]:")
+        self.pexp.expect_action(60,"B) Board Model Number","uxg-enterprise")
+        self.pexp.expect_only(30,"XXXXXXXXXXXXXXXXXXXXX")
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -179,16 +212,18 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         )
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d".format(
+                               "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid={}".format(
                                    self.dutip,
-                                   self.tftp_server))
+                                   self.tftp_server,
+                                   self.board_id))
         self.pexp.expect_action(60, self.bootloader_prompt,
                                 "setenv bootcmd 'ext4load mmc 0:1 $loadaddr uImage;bootm $loadaddr'")
         self.pexp.expect_action(60, self.bootloader_prompt, "saveenv")
         self.pexp.expect_action(60, self.bootloader_prompt,
-                                "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d factory".format(
+                                "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid={} factory".format(
                                     self.dutip,
-                                    self.tftp_server))
+                                    self.tftp_server,
+                                    self.board_id))
         self.pexp.expect_action(60, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_action(60, self.bootloader_prompt, "bootm $loadaddr")
 
@@ -306,8 +341,12 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         if self.ps_state is True:
             self.set_ps_port_relay_on()
         if self.UPDATE_UBOOT:
-            self.set_fake_eeprom()
+            self.config_board_model_nbumer()
             self.update_uboot()
+            if self.board_id == "ea3d":
+                self.set_fake_eeprom()
+            elif self.board_id == "ea3e":
+                self.set_fake_eeprom_uxg()
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
@@ -343,7 +382,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if  self.wifical[self.board_id]:
+        if self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
@@ -361,7 +400,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2 :
+            if len(m_run) == 2:
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
