@@ -107,6 +107,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             "/etc/docsis/security/mfg_cert.cer",
             "{}/mfg_key_pub.bin".format(d30_cert_path)
         ]
+
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ls -ll {}".format(d30_cert_path), post_exp=self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ls -ll {}".format(d31_cert_path), post_exp=self.linux_prompt)  # noqa: E501
+
         log_debug(msg="d30 source files:")
         log_debug(msg=' '.join(d30_source_files))
 
@@ -149,46 +153,23 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             log_debug(msg="cmd: " + cmd)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
 
-        retry_max = 3
         # install d30 certs
-        d30_count = 0
-        while True:
-            try:
-                for i in range(len(d30_target_files)):
-                    target_file_name = d30_target_files[i].split("/")[-1]
-                    cmd = "{} {} {} 1".format(cert_install_tool, d30_target_files[i], target_file_name)
-                    log_debug(msg="cmd: " + cmd)
-                    exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
-                    self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
-                    time.sleep(2)
-                break
-            except Exception as e:
-                d30_count += 1
-                if d30_count == retry_max:
-                    error_critical("Fail to install d30 certs ...")
-                log_info("Fail to install cert, reboot DUT to retry")
-                self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
-                self.reboot_handler()
+        for i in range(len(d30_target_files)):
+            target_file_name = d30_target_files[i].split("/")[-1]
+            cmd = "{} {} {} 1".format(cert_install_tool, d30_target_files[i], target_file_name)
+            log_debug(msg="cmd: " + cmd)
+            exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
+            self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
+            time.sleep(2)
 
         # install d31 certs
-        d31_count = 0
-        while True:
-            try:
-                for i in range(len(d31_target_files)):
-                    target_file_name = d31_target_files[i].split("/")[-1]
-                    cmd = "{} {} {} 1".format(cert_install_tool, d31_target_files[i], target_file_name)
-                    log_debug(msg="cmd: " + cmd)
-                    exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
-                    self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
-                    time.sleep(2)
-                break
-            except Exception as e:
-                d31_count += 1
-                if d31_count == retry_max:
-                    error_critical("Fail to install d31 certs ...")
-                log_info("Fail to install cert, reboot DUT to retry")
-                self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
-                self.reboot_handler()
+        for i in range(len(d31_target_files)):
+            target_file_name = d31_target_files[i].split("/")[-1]
+            cmd = "{} {} {} 1".format(cert_install_tool, d31_target_files[i], target_file_name)
+            log_debug(msg="cmd: " + cmd)
+            exp_return = "successfully created Secure Asset \"{}\"".format(target_file_name)
+            self.pexp.expect_lnxcmd(3, self.linux_prompt, cmd, exp_return)
+            time.sleep(2)
 
         # clean up files
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "rm /nvram/1/security/cm_*", self.linux_prompt)
@@ -421,7 +402,12 @@ class USWPUMA7FactoryGeneral(ScriptBase):
     def check_nvram(self):
         log_info("Check NVRAM")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"ls /nvram\"", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"cat /nvram/sec_vendorId\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"cat /nvram/sec_vendorId\"", "vendorId=0a")  # noqa: E501
+
+    def reboot_DUT(self):
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+        self.reboot_handler()
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
@@ -467,13 +453,25 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             msg(40, "Finish doing signed file and EEPROM checking ...")
 
         if CERT_INSTALL is True:
-            self.flush_nvram()
-            self.check_nvram()
-            msg(45, "Finish flushing NVRAM and going to reboot DUT ...")
-            self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
-            self.reboot_handler()
-            self.cert_upload()
-            self.cert_install()
+            retry_max = 2
+            count = 0
+            while True:
+                self.cert_upload()
+                try:
+                    self.cert_install()
+                    break
+                except Exception as e:
+                    count += 1
+                    if count == retry_max:
+                        error_critical("Fail to install certificates ...")
+                    log_info("Fail to install certificates ...")
+                    log_info("Flush NVRAM and reboot DUT to retry")
+                    self.flush_nvram()
+                    self.check_nvram()
+                    self.reboot_DUT()
+                    time.sleep(3)
+                    self.reboot_DUT()  # Reboot twice will fix cert installation issue
+
             msg(50, "Finish installing certificates ...")
             self.cert_verify()
             msg(60, "Finish verifying certificates ...")
