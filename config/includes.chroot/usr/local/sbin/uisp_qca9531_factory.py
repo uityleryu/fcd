@@ -106,13 +106,16 @@ class UISPQCA9531Factory(ScriptBase):
     def set_up_kernel(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, 'ifconfig eth0 ' + self.dutip)
         self.is_network_alive_in_linux()
+ 
+    def get_product_name(self):
+	    return self.fsiw[self.product_line][self.product_name]['NAME']
 
     def set_up_uboot(self):
         self.stop_uboot()
         
         parameters = {
             'mac': self.mac.lower(),
-            'product_name': self.product_name.lower(),
+            'product_name': self.get_product_name().lower(),
             'bom_rev': self.bom_rev[0 : 5],
             'rev': self.bom_rev[6:8]
         }

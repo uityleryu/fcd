@@ -27,11 +27,11 @@
           "SRC_PATH": "images/fcd-image/u6-fw/ipq5018",
           "DST_PATH": "u6-fw/ipq5018",
           "FILES": [
-            "u6-pro_1gb-v17.img",
+            "u6-pro_512MB-v18.img",
             "BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin",
             "maple-4g-gpt_u6_pro_2nd_source.bin",
             "ramload-6.2.49.bin",
-            "u6-pro_1gb-v17_nor.bin",
+            "u6-pro_512MB-v18_nor.bin",
             "ipq50xx.itb"
           ]
         }
@@ -39,7 +39,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a653-emmc.img",
-          "../u6-fw/ipq5018/u6-pro_1gb-v17.img"
+          "../u6-fw/ipq5018/u6-pro_512MB-v18.img"
         ],
         [
           "tftp/images/a653-fw.bin",
@@ -55,7 +55,7 @@
         ],
         [
           "tftp/images/a653-nor.bin",
-          "../u6-fw/ipq5018/u6-pro_1gb-v17_nor.bin"
+          "../u6-fw/ipq5018/u6-pro_512MB-v18_nor.bin"
         ],
         [
           "tftp/images/a653.itb",

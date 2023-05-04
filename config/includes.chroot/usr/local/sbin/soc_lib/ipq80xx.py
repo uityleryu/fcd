@@ -205,6 +205,8 @@ class IPQ80XXFactory(ScriptBase):
 
         self.tftpdir = self.tftpdir + "/"
 
+        self.fwimg = self.board_id + ".bin"
+
         # EX: /tftpboot/tools/af_af60
         self.pd_dir = self.pd_dir_table[self.board_id]
         self.tools_full_dir = os.path.join(self.fcd_toolsdir, self.pd_dir)

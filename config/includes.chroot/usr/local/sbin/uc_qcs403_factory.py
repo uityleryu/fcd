@@ -178,7 +178,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            cmd = "echo enable > /data/keymfg_mode"
+            if self.board_id != 'aa02':
+                cmd = "echo enable > /data/keymfg_mode"
+            else:
+                cmd = "echo 1 > /data/mfg_mode"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
         '''
             ============ Registration End ============

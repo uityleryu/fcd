@@ -97,7 +97,7 @@ class U6MT7981BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(3, "to stop", "\033\033", self.bootloader_prompt_bsp[self.board_id], retry=0)
 
         log_debug("check BSP bootloader PASS")
-        cmd = "boot"
+        cmd = "bootm"
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_bsp[self.board_id], cmd)
 
     def init_bsp_image(self):
