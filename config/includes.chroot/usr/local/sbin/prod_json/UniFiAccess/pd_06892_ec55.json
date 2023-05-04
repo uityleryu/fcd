@@ -16,9 +16,9 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "ua-hub-enterprise-nor-v1.bin",
-            "unifi-v1.1.11.26-g70a031e2_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin-change-sign-key.uboot",
-            "HE.mt7621.v4.1.3.26.g6777aa1.230412.0959-uboot.bin"
+            "ua-hub-enterprise-nor-v2.bin",
+            "unifi-v1.1.11.27-g22d5148d_uah_enterprise-mt7621-64MB_nodebug_u-boot-support-winbond-64M-spi-flash.bin",
+            "HE.mt7621.v4.1.3.55.g63400ad.230503.1330-uboot.bin"
           ]
         },
         {
@@ -35,15 +35,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec55-t1-fw.bin",
-          "../ua-fw/ua-hub-enterprise-nor-v1.bin"
+          "../ua-fw/ua-hub-enterprise-nor-v2.bin"
         ],
         [
           "tftp/images/ec55-uboot.bin",
-          "../ua-fw/unifi-v1.1.11.26-g70a031e2_uah_enterprise-mt7621-64MB_nodebug_u-boot.bin-change-sign-key.uboot"
+          "../ua-fw/unifi-v1.1.11.27-g22d5148d_uah_enterprise-mt7621-64MB_nodebug_u-boot-support-winbond-64M-spi-flash.bin"
         ],
         [
           "tftp/images/ec55-fw.bin",
-          "../ua-fw/HE.mt7621.v4.1.3.26.g6777aa1.230412.0959-uboot.bin"
+          "../ua-fw/HE.mt7621.v4.1.3.55.g63400ad.230503.1330-uboot.bin"
         ]
       ]
     }
