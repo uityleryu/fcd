@@ -341,7 +341,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         if self.ps_state is True:
             self.set_ps_port_relay_on()
         if self.UPDATE_UBOOT:
-            self.config_board_model_nbumer()
+            # self.config_board_model_nbumer()
             self.update_uboot()
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
