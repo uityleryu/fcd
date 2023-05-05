@@ -150,6 +150,16 @@ class UCQCS403FactoryGeneral(ScriptBase):
                 cmd = "cat /persist/emac_config.ini"
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
 
+            if self.board_id == 'aa02':
+                # reboot to have MAC addresses take effect
+                self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
+                self.check_connect(duration=90)
+                self.login(username="root", password="ubnt", timeout=120)
+                self.set_lnx_net("eth0")
+                self.set_lnx_net("eth0")
+                time.sleep(10)
+                self.is_network_alive_in_linux()
+
             # for AmpliFi Cinema Bridge, the FW driver not ready so skip wifi/bt mac parts.
             if self.board_id != 'aa01':
                 # Check WiFi MAC
@@ -278,6 +288,17 @@ class UCQCS403FactoryGeneral(ScriptBase):
         # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action='mv /tmp/e.org.0 /tmp/e.b.0', post_exp=self.linux_prompt, valid_chk=True)
         log_debug("provided {} successfully".format(output_path))
 
+    def check_connect(self, duration):
+        log_debug('check connecting...')
+        time_end = time.time() + duration
+        while time.time() < time_end:
+            cmd = "cat /proc/uptime"
+            rtv = self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            if rtv != "":
+                log_debug("connect with DUT success")
+                return True
+            time.sleep(1)
+        error_critical('connect with DUT FAIL')
 
 def main():
     uc_factory_general = UCQCS403FactoryGeneral()
