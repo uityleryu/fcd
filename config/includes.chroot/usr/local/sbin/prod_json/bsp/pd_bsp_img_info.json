@@ -119,6 +119,11 @@
       "BOARDID": "e537",
       "BOMREV": "113-00390"
     },
+    "UBB": {
+      "NAME": "UBB",
+      "BOARDID": "dc98",
+      "BOMREV": "113-00694"
+    },
     "WASP-internal_2.4G": {
       "NAME": "WASP-internal_2.4G",
       "BOARDID": "fffff",
