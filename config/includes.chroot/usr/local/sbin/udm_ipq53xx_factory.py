@@ -27,7 +27,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.bootloader_img = self.board_id + "-boot.img"
         self.bootloader_prompt = ">"
         self.linux_prompt = "#"
-        self.devregpart = "/dev/mtdblock4"
+        self.devregpart = "/dev/mtdblock10"
         self.helperexe = ""
         self.helper_path = "udm"
         self.username = "ui"
