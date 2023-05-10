@@ -1,0 +1,49 @@
+{
+  "UniFiVideo": {
+    "UVC-G5TURRETPRO": {
+      "INDEX": 0,
+      "NAME": "UVC-G5TURRETPRO",
+      "BOARDID": "a59a",
+      "BOMREV": "113-04340",
+      "DESC": "UVC G5 Turret Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "xxxxxx.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a59a-fw.bin",
+            "a59a-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a59a-fw.bin",
+          "../uvc-fw/xxxxxx.bin"
+        ]
+      ]
+    }
+  }
+}
