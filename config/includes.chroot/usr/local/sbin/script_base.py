@@ -980,7 +980,7 @@ class ScriptBase(object):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=post_exp)
         time.sleep(0.1)
 
-    def prepare_server_need_files(self, method="tftp", helper_args_type="default"):
+    def prepare_server_need_files(self, method="tftp", helper_args_type="default", tftp_timeout=10):
         log_debug("Starting to do " + self.helperexe + "...")
         # Ex: tools/uvp/helper_DVF99_release_ata_max
         srcp = os.path.join(self.tools, self.helper_path, self.helperexe)
@@ -1030,7 +1030,7 @@ class ScriptBase(object):
 
             # Ex: /tmp/e.t.0
             dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
-            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+            self.tftp_put(remote=srcp, local=dstp, timeout=tftp_timeout)
 
         log_debug("Send helper output files from DUT to host ...")
 

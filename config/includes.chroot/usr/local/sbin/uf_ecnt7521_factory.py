@@ -30,8 +30,8 @@ class UFECNT7521Factory(ScriptBase):
     def init_vars(self):
         self.ubpmt = {
             'eec5': "",
-            'eec8': "",
-            'eec9': ""
+            'eec8': "bldr>",
+            'eec9': "bldr>"
         }
 
         self.lnxpmt = {
@@ -171,8 +171,9 @@ class UFECNT7521Factory(ScriptBase):
 
     def set_show_mac(self):
         mac_with_colon = self.get_mac_with_colon()
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "", self.bootloader_prompt, err_msg="Please Check console connection!")  # noqa: E501
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "macaddr {}".format(mac_with_colon))
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'macaddr')
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'macaddr', post_exp=mac_with_colon, err_msg="Please Check console connection!")  # noqa: E501
 
     def update_fw(self, where):
         time.sleep(1)
@@ -186,9 +187,14 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "urescue {}".format(image_name[where][0]))
 
-        rt = self.cnapi.ip_is_alive("{}".format(self.dutip), retry=120)
-        if rt is False:
-            error_critical("Can't ping to DUT {}".format(self.dutip))
+        time.sleep(10)
+        self.del_arp_table(self.dutip)
+        time.sleep(10)
+
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'ipaddr')
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'macaddr')
+
+        self.bltdr_ping_test(ip=self.dutip)
 
         upload_retry = True
         retry_count = 0
@@ -202,6 +208,8 @@ class UFECNT7521Factory(ScriptBase):
                 if retry_count == retry_max:
                     error_critical("Failed to upload image")
                 log_debug("Failed to upload image, perform retry attempt {0}".format(retry_count))
+
+                self.bltdr_ping_test(ip=self.dutip)
             else:
                 log_debug("Uploading image successfully")
                 upload_retry = False
@@ -269,9 +277,7 @@ class UFECNT7521Factory(ScriptBase):
         log_debug('Region name = {}.'.format(self.region_name))
         log_debug('Region code = {}.'.format(self.region_code))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80001000 {}'.format(self.region_code))
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'dump 80000000 30')
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'flash 01f60000 80000000 10000 0')
 
     def erase_setting(self, only_cfg=False):
@@ -296,7 +302,6 @@ class UFECNT7521Factory(ScriptBase):
     def eth1_mac_old_rule(self, mac_list, op):
         mac0_or_02 = hex(int(mac_list[0], 16) | op)[2:]
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000006 {}'.format(mac0_or_02))
-
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000007 {}'.format(mac_list[1]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000008 {}'.format(mac_list[2]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 80000009 {}'.format(mac_list[3]))
@@ -306,13 +311,22 @@ class UFECNT7521Factory(ScriptBase):
     def kill_watchdog_if_reboot(self):
         try:
             log_debug("Check reboot msg...")
-            self.pexp.expect_only(100, ['The system is going down NOW!', 'Press any key to enter boot'])
+            self.pexp.expect_only(100, ['The system is going down NOW!', 'Press any key to enter boot', 'Please press Enter to activate this console'])  # noqa: E501
             self.login(timeout=30, retry=5)
-            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'launcher stop /userfs/bin/ubnt-monitord', post_exp=self.linux_prompt)
+            self.pexp.expect_lnxcmd(5, self.linux_prompt, 'launcher stop /userfs/bin/ubnt-monitord', post_exp=self.linux_prompt)  # noqa: E501
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'killall ubnt-watchdog', post_exp=self.linux_prompt)
             log_debug("Watchdog process killed.")
         except Exception as e:
             log_debug("No reboot msg found, ignore this exception...")
+
+    def bltdr_ping_test(self, ip):
+        log_debug("Ping {} ...".format(ip))
+        try:
+            self.cnapi.ip_is_alive("{}".format(ip), retry=3)
+        except:
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'ipaddr')
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'macaddr')
+            error_critical("Can't ping to {}".format(ip))
 
     def run(self):
         UPDATE_UBOOT_EN = True
@@ -373,20 +387,21 @@ class UFECNT7521Factory(ScriptBase):
             msg(60, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
             self.kill_watchdog_if_reboot()
-            self.prepare_server_need_files()
+            self.prepare_server_need_files(tftp_timeout=30)
 
         if REGISTER_EN is True:
             self.FCD_TLV_data = False
             self.registration()
             msg(70, "Finish doing registration ...")
-            self.check_devreg_data()
+            self.bltdr_ping_test(ip=self.tftp_server)
+            self.check_devreg_data(timeout=30)
             msg(80, "Finish doing signed file and EEPROM checking ...")
 
         self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
         self.stop_uboot()
         self.erase_setting(only_cfg=True)
 
-        time.sleep(40)
+        time.sleep(50)
         self.login(retry=5)
 
         if DATAVERIFY_EN is True:
