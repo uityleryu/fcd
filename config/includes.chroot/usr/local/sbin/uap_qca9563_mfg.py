@@ -39,7 +39,7 @@ class UAPQCA956xMFG(ScriptBase):
                                                             "64k(u-boot-env),1280k(uImage), 14528k(rootfs)," \
                                                             "64k(mib0),64k(ART)\"".format(self.cmd_prefix))
         self.pexp.expect_action(30, self.bootloader_prompt, "{} uappinit".format(self.cmd_prefix))
-        self.pexp.expect_action(10, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")                        
+        self.pexp.expect_action(10, self.bootloader_prompt, "setenv do_urescue TRUE; urescue -u -e")
         # TFTP bin from TestServer
         fw_path = os.path.join(self.fwdir, self.board_id + "-art.bin")
         log_debug(msg="firmware path:" + fw_path)
@@ -54,6 +54,12 @@ class UAPQCA956xMFG(ScriptBase):
         """Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
@@ -61,10 +67,18 @@ class UAPQCA956xMFG(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(2)
+
+        if self.ps_state is True:
+            time.sleep(3)
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         msg(10, 'Stop in uboot ...')
-        self.enter_uboot(stop_uboot_only = False)
+        self.enter_uboot(stop_uboot_only=False)
         msg(20, 'Finish net env in setting u-boot ...')
 
         if self.erasecal == "True":
@@ -79,6 +93,12 @@ class UAPQCA956xMFG(ScriptBase):
 
         self.enter_uboot(stop_uboot_only = True)
         msg(90, 'Stop in uboot again ...')
+
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Completed back to T1 ...")
         self.close_fcd()
