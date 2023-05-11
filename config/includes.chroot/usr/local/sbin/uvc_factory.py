@@ -1260,10 +1260,10 @@ class UVCFactoryGeneral(ScriptBase):
                 time_start = time.time()
                 self.check_info_ssh()
                 if self.board_id == "a564":
-                    '''Check hostname'''
-                    self.check_hostname()
                     '''Check MCU version'''
                     self.check_mcu()
+                    '''Check hostname'''
+                    self.check_hostname()
                 msg(80, "Succeeding in checking the devreg information ...")
                 self._log_duration('DATAVERIFY', time_start)
 
