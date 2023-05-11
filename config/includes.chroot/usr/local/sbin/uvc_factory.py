@@ -937,6 +937,10 @@ class UVCFactoryGeneral(ScriptBase):
 
         log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
 
+        if self.board_id == "a564":
+            '''Check MCU version'''
+            self.check_mcu()
+
         cmd = "sudo rm /t/home/ubnt/.ssh/known_hosts; sync; sleep 1".format(self.row_id)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -1108,6 +1112,8 @@ class UVCFactoryGeneral(ScriptBase):
                 if time.time() - time_start > 120:
                     self.critical_error('[Fail] MCU version incorrect and Fail to wait for reboot')
 
+            log_debug('MCU upgrade duration = {:.2f} sec'.format(time.time() - time_start))
+
             try:
                 sshclient_obj = SSHClient(host=self.ip,
                                         username=self.username,
@@ -1260,8 +1266,6 @@ class UVCFactoryGeneral(ScriptBase):
                 time_start = time.time()
                 self.check_info_ssh()
                 if self.board_id == "a564":
-                    '''Check MCU version'''
-                    self.check_mcu()
                     '''Check hostname'''
                     self.check_hostname()
                 msg(80, "Succeeding in checking the devreg information ...")
