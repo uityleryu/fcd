@@ -146,9 +146,36 @@ class UCQCS403FactoryGeneral(ScriptBase):
                 cmd = "btnvtool -b {}".format(comma_bt_mac)
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
+                # sync data to flash
+                cmd = "sync"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
                 # Check MAC
                 cmd = "cat /persist/emac_config.ini"
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
+
+
+            # for AMP, it needs reboot to have MAC address take effect
+            if self.board_id == 'aa02':
+                self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
+
+                self.login(username="root", password="ubnt", timeout=120)
+                log_debug(msg="sleep 50 secs")
+                time.sleep(50)
+
+                cmd = "dmesg -n1"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+                self.chk_lnxcmd_valid()
+
+                cmd = "ifconfig eth0 down"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+                self.chk_lnxcmd_valid()
+                time.sleep(10)
+
+                self.set_lnx_net("eth0")
+                self.set_lnx_net("eth0")
+                time.sleep(10)
+                self.is_network_alive_in_linux()
 
             # for AmpliFi Cinema Bridge, the FW driver not ready so skip wifi/bt mac parts.
             if self.board_id != 'aa01':
@@ -169,9 +196,6 @@ class UCQCS403FactoryGeneral(ScriptBase):
                 cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
 
-            # sync data to flash
-            cmd = "sync"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
         if REGISTER_EN is True:
             self.registration()
