@@ -1,11 +1,14 @@
 {
   "UniFiDream": {
-    "UDM-PRO-00723": {
+    "UDM-BASE": {
       "INDEX": 0,
-      "NAME": "UDM-PRO-00723",
-      "BOARDID": "ea15",
-      "BOMREV": "113-00723",
-      "DESC": "UniFi Dream Machine Pro",
+      "NAME": "UDM-BASE",
+      "BOARDID": "ea11",
+      "BOMREV": [
+        "113-00623",
+        "113-01134"
+      ],
+      "DESC": "UniFi Dream Machine",
       "FILE": "udm_al324_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -14,17 +17,30 @@
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/udm",
-          "DST_PATH": "tools/udm_pro",
-          "FILES": [
-            "factory-test-tools_2.3.2-178+g1861a755876_arm64.deb",
-            "memtester_4.5.1-1_arm64.deb"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/udm",
           "DST_PATH": "tools/udm",
           "FILES": [
-            "helper_AL324_release"
+            "al324-ee",
+            "dfu-util",
+            "dreammachine-pro-lcm-fw.dfu",
+            "dreammachine-se-lcm-fw.dfu",
+            "dropbear_arm64",
+            "dropbearkey_arm64",
+            "evtest",
+            "fping_x64.exe",
+            "fping_x86.exe",
+            "ftu_system_udm.cfg",
+            "ftu-tool-common.sh",
+            "ftu-tool-platform.sh",
+            "ftu-tool.sh",
+            "helper_AL324_release",
+            "helper_MT7622_release",
+            "iperf3",
+            "rtl8370mb_rw",
+            "spidev_test",
+            "ubios-udapi-server.default",
+            "ubios-udm-fcd-network_sh.sh",
+            "factory-test-tools_2.3.2-181+ge954f1c4870_arm64.deb",
+            "memtester_4.5.1-1_arm64.deb"
           ]
         },
         {
@@ -39,35 +55,35 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udmp",
-          "DST_PATH": "udm-fw/udm_pro",
+          "SRC_PATH": "images/fcd-image/udm-fw/udm",
+          "DST_PATH": "udm-fw/udm",
           "FILES": [
-            "UDMPRO.al324.v2.5.17.484939b.230308.1924.bin",
-            "uImage.v2.5.17",
-            "boot.v2.5.17.img"
+            "UDM.al324.v3.0.20.5256a39.230406.2140.bin",
+            "uImage-20230404",
+            "boot-20230404.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea15-fw.bin",
-          "../udm-fw/udm_pro/UDMPRO.al324.v2.5.17.484939b.230308.1924.bin"
+          "tftp/images/ea11-fw.bin",
+          "../udm-fw/udm/UDM.al324.v3.0.20.5256a39.230406.2140.bin"
         ],
         [
-          "tftp/images/ea15-recovery",
-          "../udm-fw/udm_pro/uImage.v2.5.17"
+          "tftp/images/ea11-recovery",
+          "../udm-fw/udm/uImage-20230404"
         ],
         [
-          "tftp/images/ea15-uboot.bin",
-          "../udm-fw/udm_pro/boot.v2.5.17.img"
+          "tftp/images/ea11-uboot.bin",
+          "../udm-fw/udm/boot-20230404.img"
         ],
         [
-          "tftp/tools/ea15-factory.deb",
-          "../tools/udm_pro/factory-test-tools_2.3.2-178+g1861a755876_arm64.deb"
+          "tftp/tools/ea11-factory.deb",
+          "../tools/udm/factory-test-tools_2.3.2-181+ge954f1c4870_arm64.deb"
         ],
         [
-          "tftp/tools/ea15-memtester.deb",
-          "../tools/udm_pro/memtester_4.5.1-1_arm64.deb"
+          "tftp/tools/ea11-memtester.deb",
+          "../tools/udm/memtester_4.5.1-1_arm64.deb"
         ]
       ]
     }

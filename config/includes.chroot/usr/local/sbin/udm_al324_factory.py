@@ -205,11 +205,11 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl mask network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id]))
-        elif self.board_id == "ea11":
-            cmd = "swconfig dev switch0 vlan 99 set ports '0 1 2 3 4'"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-            cmd = "swconfig dev switch0 set apply"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        # elif self.board_id == "ea11":
+        #     cmd = "swconfig dev switch0 vlan 99 set ports '0 1 2 3 4'"
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        #     cmd = "swconfig dev switch0 set apply"
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
         self.is_network_alive_in_linux(ipaddr=self.tftp_server)
 
@@ -535,6 +535,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
             self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0", "192.168.1.1", retry=3)
+        if self.board_id == "ea11" or self.board_id == "ea15" or self.board_id == "ea2c":
             self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
             self.pexp.expect_action(10, self.linux_prompt, "sync;sync;sync")
 
