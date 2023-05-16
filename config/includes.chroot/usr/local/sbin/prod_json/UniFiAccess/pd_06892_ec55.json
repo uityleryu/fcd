@@ -47,7 +47,7 @@
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
-          "tftp/tools/common/aarch64-rpi4-64k-ee_20230414"
+          "../tools/common/aarch64-rpi4-64k-ee_20230414"
         ]
       ]
     }
