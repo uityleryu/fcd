@@ -29,7 +29,7 @@
             "tmux.conf",
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee",
-            "aarch64-rpi4-4k-ee_20230414"
+            "aarch64-rpi4-64k-ee_20230414"
           ]
         }
       ],
