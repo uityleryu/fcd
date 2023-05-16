@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "xxxxxx.bin"
+            "UVC.gen4s.v4.65.18.67-alpha3.M_2404fb9.230514.1907.bin"
           ]
         },
         {
@@ -41,7 +41,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a59a-fw.bin",
-          "../uvc-fw/xxxxxx.bin"
+          "../uvc-fw/UVC.gen4s.v4.65.18.67-alpha3.M_2404fb9.230514.1907.bin"
         ]
       ]
     }
