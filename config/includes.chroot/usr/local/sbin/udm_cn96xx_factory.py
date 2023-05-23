@@ -27,7 +27,11 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.bootloader_img = self.board_id + "-boot.img"
         self.bootloader_prompt = ">"
         self.linux_prompt = "#"
-        self.devregpart = "/dev/mtdblock4"
+        if self.board_id == "ea3d":
+            self.devregpart = "/dev/mtdblock6"
+        elif self.board_id == "ea3e":
+            self.devregpart = "/dev/mtdblock4"
+
         self.helperexe = ""
         self.helper_path = "udm"
         self.username = "ui"
@@ -93,8 +97,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea3d': "eth4",
-            'ea3e': "eth0",
+            'ea3d': "eth2",
+            'ea3e': "br0",
         }
 
         # LCM
@@ -170,12 +174,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def config_board_model_nbumer(self):
-        self.pexp.expect_action(60,"boot menu","B")
-        self.pexp.expect_action(60,"S) Enter Setup","S")
-        self.pexp.expect_action(60,"B) Board Manufacturing Data","B")
-        self.pexp.expect_only(30,"(INS)Board Model Number [uxg-enterprise]:")
-        self.pexp.expect_action(60,"B) Board Model Number","uxg-enterprise")
-        self.pexp.expect_only(30,"XXXXXXXXXXXXXXXXXXXXX")
+        self.pexp.expect_action(60, "Press 'B' within 2 seconds for boot menu", "B")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "S","Choice: B")
+        self.pexp.expect_action(60, "S) Enter Setup", )
+        self.pexp.expect_action(60, "B) Board Manufacturing Data", "B")
+        self.pexp.expect_only(30, "(INS)Board Model Number [uxg-enterprise]:")
+        self.pexp.expect_action(60, "B) Board Model Number", "uxg-enterprise")
+        self.pexp.expect_only(30, "XXXXXXXXXXXXXXXXXXXXX")
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -354,7 +359,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.INIT_RECOVERY_IMAGE:
-            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
+            self.login(self.username, self.password, timeout=360, log_level_emerg=True)
             # time.sleep(15)  # for stable eth
             self.set_kernel_net()
             self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 140 >> /sys/class/hwmon/hwmon0/pwm1")

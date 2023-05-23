@@ -19,16 +19,16 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee_20230414",
-            "aarch64-rpi4-64k-ee_20230414"
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/udm-fw/uxg-enterprise",
           "DST_PATH": "udm-fw/uxg-enterprise",
           "FILES": [
-            "UXGENT.cn9670.v3.2.0_20230502.bin ",
-            "uImage_20230502",
+            "UXGENT.cn9670.v3.2.0_20230519.bin ",
+            "uImage_20230519",
             "boot_20230502.img"
           ]
         }
@@ -36,11 +36,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea3e-fw.bin",
-          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.0_20230502.bin "
+          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.0_20230519.bin "
         ],
         [
           "tftp/images/ea3e-recovery",
-          "../udm-fw/uxg-enterprise/uImage_20230502"
+          "../udm-fw/uxg-enterprise/uImage_20230519"
         ],
         [
           "tftp/images/ea3e-boot.img",

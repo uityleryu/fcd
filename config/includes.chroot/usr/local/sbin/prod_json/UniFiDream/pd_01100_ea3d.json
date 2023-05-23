@@ -19,32 +19,32 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee_20230414",
-            "aarch64-rpi4-64k-ee_20230414"
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
           "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "UDMENT.cn9670.v1.0.0+ubnt.11392.a7147d3.230424.2302.bin",
-            "uImage_20230424",
-            "octeontx-bootfs-uboot-t96_20230424.img"
+            "UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin",
+            "uImage_20230522",
+            "bootfs_uboot_20230522.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea3d-fw.bin",
-          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+ubnt.11392.a7147d3.230424.2302.bin"
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin"
         ],
         [
           "tftp/images/ea3d-recovery",
-          "../udm-fw/udm-enterprise/uImage_20230424"
+          "../udm-fw/udm-enterprise/uImage_20230522"
         ],
         [
           "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/octeontx-bootfs-uboot-t96_20230424.img"
+          "../udm-fw/udm-enterprise/bootfs_uboot_20230522.img"
         ]
       ]
     }
