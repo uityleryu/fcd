@@ -187,7 +187,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             elif self.board_id == "ec51":
                 res = re.search(r"UNIQUEID:27-(.*)\r\n", uid_rtv, re.S)
             else:
-                res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
+                res = re.search(r"UNIQUEID:27-(.*?)\n", uid_rtv, re.S)
 
             self.uid = res.group(1)
 
