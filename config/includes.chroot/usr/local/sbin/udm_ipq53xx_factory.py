@@ -24,7 +24,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # script specific vars
         self.fw_img = self.board_id + "-fw.bin"
         self.recovery_img = self.board_id + "-recovery"
-        self.bootloader_img = self.board_id + "-boot.img"
+        self.bootloader_img = self.board_id + "u-boot.mbn"
         self.bootloader_prompt = ">"
         self.linux_prompt = "#"
         self.devregpart = "/dev/mtdblock10"
@@ -45,21 +45,21 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         self.eeprom_offset = {
-            'a678': "0x00a60000",
+            'a678': "0x00410000",
         }
 
         self.eeprom_offset_2 = {
-            'a678': "0x00a68000"
+            'a678': "0x00418000"
         }
 
         # Vendor ID + Sys ID
         self.vdr_sysid = {
-            'a678': "77073dea",
+            'a678': "770778a6",
         }
 
         # Sys ID + Vendor ID
         self.sysid_vdr = {
-            'a678': "3dea7707",
+            'a678': "78a67707",
         }
 
         # active port
@@ -112,22 +112,20 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.DATAVERIFY_ENABLE = True
         self.LCM_FW_Check_ENABLE = True
         self.POWER_SUPPLY_EN = True
+
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
-        self.pexp.expect_only(60, "Erased: OK")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "a3d61804")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.vdr_sysid[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "4c710000")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000000" + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x4400000c" + self.vdr_sysid[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010" + self.sysid_vdr[self.board_id])
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf erase {} +0x9000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_only(60, "Erased: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf write 0x44000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        #
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.sysid_vdr[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000014 " + "4c710000")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf write 0x44000000  {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
@@ -142,11 +140,13 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
         self.copy_file(
             source=os.path.join(self.fwdir, self.bootloader_img),
-            dest=os.path.join(self.tftpdir, "boot.img")
+            dest=os.path.join(self.tftpdir, "u-boot.mbn")
         )
 
-        self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot boot.img")
-        self.pexp.expect_action(150, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
+        self.pexp.expect_action(150, self.bootloader_prompt, "sf probe")
+        self.pexp.expect_action(150, self.bootloader_prompt, "sf erase 0x00260000 +${filesize}")
+        self.pexp.expect_only(60, "Erased: OK")
+        self.pexp.expect_action(150, self.bootloader_prompt, "sf write ${fileaddr} 0x00260000 ${filesize}")
         self.pexp.expect_action(150, self.bootloader_prompt, "reset")
 
     def update_recovery(self):
@@ -155,32 +155,33 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         time.sleep(2)
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra factory nc_transfer client={}".format(self.dutip))
+
+        # copy recovery image to tftp server
         self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-recovery"),
-            dest=os.path.join(self.tftpdir, "uImage")
+            dest=os.path.join(self.tftpdir, "uImage")  # fixed name
         )
 
-        # copy FW image
-        self.copy_file(
-            source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
-            dest=os.path.join(self.tftpdir, "fw-image.bin")
-        )
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run load_bootargs")
+        self.set_boot_net()
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d".format(
-                                   self.dutip,
-                                   self.tftp_server))
-        self.pexp.expect_action(60, self.bootloader_prompt,
-                                "setenv bootcmd 'ext4load mmc 0:1 $loadaddr uImage;bootm $loadaddr'")
-        self.pexp.expect_action(60, self.bootloader_prompt, "saveenv")
-        self.pexp.expect_action(60, self.bootloader_prompt,
-                                "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid=ea3d factory".format(
-                                    self.dutip,
-                                    self.tftp_server))
-        self.pexp.expect_action(60, self.bootloader_prompt, "tftpboot uImage")
-        self.pexp.expect_action(60, self.bootloader_prompt, "bootm $loadaddr")
+        log_debug(msg="Enter factory install mode ...")
+        self.pexp.expect_only(120, "Wait for nc client to push firmware")
 
-        time.sleep(2)
+        time.sleep(5)  # for stable
+
+        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.board_id + "-fw.bin"))
+        log_debug(msg=nc_cmd)
+
+        [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
+        if (int(rtc) > 0):
+            error_critical("cmd: \"{}\" fails, return value: {}".format(nc_cmd, rtc))
+
+        log_debug(msg="Upgrading FW ...")
+        self.pexp.expect_only(240, "Reboot system safely")
+        log_debug(msg="FW update done ...")
 
     def update_fw(self):
         time.sleep(2)
@@ -330,7 +331,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if  self.wifical[self.board_id]:
+        if self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
@@ -348,7 +349,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2 :
+            if len(m_run) == 2:
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
