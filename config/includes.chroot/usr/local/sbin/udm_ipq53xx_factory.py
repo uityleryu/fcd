@@ -24,13 +24,13 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # script specific vars
         self.fw_img = self.board_id + "-fw.bin"
         self.recovery_img = self.board_id + "-recovery"
-        self.bootloader_img = self.board_id + "u-boot.mbn"
-        self.bootloader_prompt = ">"
+        self.bootloader_img = self.board_id + "-uboot.mbn"
+        self.bootloader_prompt = "#"
         self.linux_prompt = "#"
-        self.devregpart = "/dev/mtdblock10"
+        self.devregpart = "/dev/mtdblock3"
         self.helperexe = ""
         self.helper_path = "udm"
-        self.username = "ui"
+        self.username = "root"
         self.password = "ui"
 
         # CPU flash Path
@@ -84,12 +84,12 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'a678': "eth0",
+            'a678': "switch0",
         }
 
         # LCM
         self.lcm = {
-            'a678': True,
+            'a678': False,
         }
 
         # Wifi cal data setting
@@ -117,9 +117,9 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000000" + "544e4255")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x4400000c" + self.vdr_sysid[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010" + self.sysid_vdr[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x4400000c " + self.vdr_sysid[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010 " + self.sysid_vdr[self.board_id])
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf erase {} +0x9000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
@@ -143,10 +143,13 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "u-boot.mbn")
         )
 
+        self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot u-boot.mbn")
+        self.pexp.expect_only(60, "Bytes transferred =")
         self.pexp.expect_action(150, self.bootloader_prompt, "sf probe")
         self.pexp.expect_action(150, self.bootloader_prompt, "sf erase 0x00260000 +${filesize}")
         self.pexp.expect_only(60, "Erased: OK")
         self.pexp.expect_action(150, self.bootloader_prompt, "sf write ${fileaddr} 0x00260000 ${filesize}")
+        self.pexp.expect_only(60, "Written: OK")
         self.pexp.expect_action(150, self.bootloader_prompt, "reset")
 
     def update_recovery(self):
@@ -159,20 +162,23 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
         # copy recovery image to tftp server
         self.copy_file(
-            source=os.path.join(self.fwdir, self.board_id + "-recovery"),
+            source=os.path.join(self.fwdir, self.recovery_img),
             dest=os.path.join(self.tftpdir, "uImage")  # fixed name
         )
 
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run load_bootargs")
         self.set_boot_net()
+        self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
+        self.pexp.expect_only(60, "Bytes transferred =")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
 
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client to push firmware")
 
         time.sleep(5)  # for stable
 
-        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.board_id + "-fw.bin"))
+        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.fw_img))
         log_debug(msg=nc_cmd)
 
         [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
@@ -224,8 +230,8 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
         # The sequencial has to be cpu id -> flash jedecid -> flash uuid
         if nodes is None:
-            nodes = ["/proc/cpumidr",
-                     "/sys/class/mtd/mtd0/jedec_id",
+            nodes = ["/proc/bsp_helper/cpu_rev_id",
+                     "/proc/bsp_helper/flash_jedec_id",
                      "/sys/class/mtd/mtd0/flash_uid"]
 
         if self.product_class == 'basic':
@@ -297,6 +303,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         if self.UPDATE_UBOOT:
             self.set_fake_eeprom()
             self.update_uboot()
+
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
@@ -315,7 +322,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         if self.PROVISION_ENABLE:
             self.erase_eefiles()
             msg(30, "Do helper to get the output file to devreg server ...")
-            self.prepare_server_need_files_by_cmd(nodes=self.node_info)
+            self.prepare_server_need_files_bspnode()
 
         if self.REGISTER_ENABLE:
             self.registration()
