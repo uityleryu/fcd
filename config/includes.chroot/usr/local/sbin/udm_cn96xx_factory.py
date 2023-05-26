@@ -27,10 +27,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.bootloader_img = self.board_id + "-boot.img"
         self.bootloader_prompt = ">"
         self.linux_prompt = "#"
-        if self.board_id == "ea3d":
-            self.devregpart = "/dev/mtdblock6"
-        elif self.board_id == "ea3e":
-            self.devregpart = "/dev/mtdblock4"
+        self.devregpart = "/dev/mtdblock6"
 
         self.helperexe = ""
         self.helper_path = "udm"
@@ -418,9 +415,6 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
-        if self.ps_state is True:
-            time.sleep(2)
-            self.set_ps_port_relay_off()
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 

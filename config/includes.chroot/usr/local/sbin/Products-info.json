@@ -1,10 +1,10 @@
 {
   "UniFiDream": {
-    "UDM-ENT-01100": {
+    "UXG-ENT-01218": {
       "INDEX": 0,
-      "NAME": "UDM-ENT-01100",
-      "BOARDID": "ea3d",
-      "BOMREV": "113-01100",
+      "NAME": "UXG-ENT-01218",
+      "BOARDID": "ea3e",
+      "BOMREV": "113-01218",
       "DESC": "UniFi Dream Machine Enterprise",
       "FILE": "udm_cn96xx_factory.py",
       "T1FILE": "udm_cn96xx_bspfactory.py",
@@ -24,27 +24,27 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
-          "DST_PATH": "udm-fw/udm-enterprise",
+          "SRC_PATH": "images/fcd-image/udm-fw/uxg-enterprise",
+          "DST_PATH": "udm-fw/uxg-enterprise",
           "FILES": [
-            "UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin",
-            "uImage_20230522",
-            "bootfs_uboot_20230522.img"
+            "UXGENT.cn9670.v3.2.1_20230524.bin",
+            "uImage_20230524",
+            "boot_20230524.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ea3d-fw.bin",
-          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin"
+          "tftp/images/ea3e-fw.bin",
+          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.1_20230524.bin"
         ],
         [
-          "tftp/images/ea3d-recovery",
-          "../udm-fw/udm-enterprise/uImage_20230522"
+          "tftp/images/ea3e-recovery",
+          "../udm-fw/uxg-enterprise/uImage_20230524"
         ],
         [
-          "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/bootfs_uboot_20230522.img"
+          "tftp/images/ea3e-boot.img",
+          "../udm-fw/uxg-enterprise/boot_20230524.img"
         ]
       ]
     }
