@@ -18,7 +18,7 @@
           "FILES": [
             "ua-hub-enterprise-nor-v2.bin",
             "unifi-v1.1.11.27-g22d5148d_uah_enterprise-mt7621-64MB_nodebug_u-boot-support-winbond-64M-spi-flash.bin",
-            "HE.mt7621.v4.1.3.73.gb77b600.230518.0616.bin"
+            "HE.mt7621.v4.1.3.75.gf23aef8.230525.1035-uboot.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ec55-fw.bin",
-          "../ua-fw/HE.mt7621.v4.1.3.73.gb77b600.230518.0616.bin"
+          "../ua-fw/HE.mt7621.v4.1.3.75.gf23aef8.230525.1035-uboot.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
