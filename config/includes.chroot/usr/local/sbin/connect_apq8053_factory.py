@@ -356,7 +356,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': False,
             'efb6': False,
             'efb7': False,
-            'efba': False,
+            'efba': True,
             'efa1': False,
             'efbb': True,
             'efbc': True,
