@@ -96,5 +96,8 @@
   ],
   "EV_CHARGER-SERIES" : [
     "03328_efa0", "04277_efa0"
+  ],
+  "USP_PDU-SERIES" : [
+    "00986_ed12", "01036_ed15"
   ]
 }
