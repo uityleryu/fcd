@@ -330,7 +330,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if self.DATAVERIFY_ENABLE:
+        if not self.DATAVERIFY_ENABLE:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
@@ -338,7 +338,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.wifical[self.board_id]:
+        if not self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
@@ -369,9 +369,6 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
-        if self.ps_state is True:
-            time.sleep(2)
-            self.set_ps_port_relay_off()
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
