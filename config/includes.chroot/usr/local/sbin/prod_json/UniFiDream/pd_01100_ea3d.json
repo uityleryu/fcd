@@ -27,24 +27,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
           "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin",
-            "uImage_20230522",
-            "bootfs_uboot_20230522.img"
+            "UDMENT.cn9670.v1.0.0+root.11734.8013aa8.230529.1028.bin",
+            "uImage_20230529",
+            "bootfs_uboot_20230529.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea3d-fw.bin",
-          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11674.6fe6131.230522.0127.bin"
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.11734.8013aa8.230529.1028.bin"
         ],
         [
           "tftp/images/ea3d-recovery",
-          "../udm-fw/udm-enterprise/uImage_20230522"
+          "../udm-fw/udm-enterprise/uImage_20230529"
         ],
         [
           "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/bootfs_uboot_20230522.img"
+          "../udm-fw/udm-enterprise/bootfs_uboot_20230529.img"
         ]
       ]
     }
