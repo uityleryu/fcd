@@ -180,8 +180,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
-            self.FWUPDATE_ENABLE = True
-            self.DATAVERIFY_ENABLE = True
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
