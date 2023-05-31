@@ -37,17 +37,17 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/usp/pdu-pro",
-          "DST_PATH": "usp/pdu-pro",
+          "SRC_PATH": "images/fcd-image/usp",
+          "DST_PATH": "usp",
           "FILES": [
-            "US.mt7628_6.4.21+14358.230215.1603-uboot.bin"
+            "US.mt7628_6.5.48+14683.230424.0502-uboot.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ed12-fw.bin",
-          "../usp/pdu-pro/US.mt7628_6.4.21+14358.230215.1603-uboot.bin"
+          "../usp/US.mt7628_6.5.48+14683.230424.0502-uboot.bin"
         ]
       ]
     }
