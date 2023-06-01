@@ -17,9 +17,9 @@
           "DST_PATH": "usw-fw",
           "FILES": [
             "US.puma7_puma-2-mxl+158.20221208.1215.bin",
-            "US.mxl277_MFG_1.0.1+191.20230115.1404.bin",
-            "US.mxl277_MFG_CM_1.0.2+191.20230114.0512+app.bin",
-            "US.mxl277_MFG_CM_1.0.2+191.20230308.1222+np.bin"
+            "US.mxl277_MFG_1.0.5+237.20230420.1229.bin",
+            "US.mxl277_MFG_CM_1.0.5+235.20230420.1840+app.bin",
+            "US.mxl277_MFG_CM_1.0.5+235.20230420.1840+np.bin"
           ]
         },
         {
@@ -54,15 +54,15 @@
         ],
         [
           "tftp/images/ed60-fw.bin",
-          "../usw-fw/US.mxl277_MFG_1.0.1+191.20230115.1404.bin"
+          "../usw-fw/US.mxl277_MFG_1.0.5+237.20230420.1229.bin"
         ],
         [
           "tftp/images/ed60-cm-app.bin",
-          "../usw-fw/US.mxl277_MFG_CM_1.0.2+191.20230114.0512+app.bin"
+          "../usw-fw/US.mxl277_MFG_CM_1.0.5+235.20230420.1840+app.bin"
         ],
         [
           "tftp/images/ed60-cm-np.bin",
-          "../usw-fw/US.mxl277_MFG_CM_1.0.2+191.20230308.1222+np.bin"
+          "../usw-fw/US.mxl277_MFG_CM_1.0.5+235.20230420.1840+np.bin"
         ],
         [
           "tftp/certs/certs.tar.gz",
