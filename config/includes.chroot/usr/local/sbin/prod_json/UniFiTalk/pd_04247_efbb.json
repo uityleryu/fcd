@@ -1,15 +1,15 @@
 {
-  "Connect": {
-    "EV-CHARGER-03328": {
+  "UniFiTalk": {
+    "UTP-G3-Touch-Pro": {
       "INDEX": 0,
-      "NAME": "EV-CHARGER",
-      "BOARDID": "efa0",
-      "BOMREV": "113-03328",
-      "DESC": "UniFi EV Charger",
+      "NAME": "UTP-G3-Touch-Pro",
+      "BOARDID": "efbb",
+      "BOMREV": "113-04247",
+      "DESC": "Phone G3 Touch Pro",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1ce3",
+      "SW_ID": "0a01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",

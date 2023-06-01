@@ -37,7 +37,7 @@
             "UDR.mt7622.v3.0.17.8102bbc.230210.1526.bin",
             "u-boot-mtk_20230308.bin",
             "udr-mt7622-mt7915a-v11_nor.bin",
-            "uImage_20230308"
+            "uImage-fix-fcd"
           ]
         }
       ],
@@ -72,7 +72,7 @@
         ],
         [
           "tftp/images/eccc-recovery",
-          "../udm-fw/udr/uImage_20230308"
+          "../udm-fw/udr/uImage-fix-fcd"
         ]
       ]
     }

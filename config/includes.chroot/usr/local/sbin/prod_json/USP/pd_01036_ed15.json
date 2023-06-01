@@ -31,10 +31,10 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/usp/pro-pdu-hd",
-          "DST_PATH": "usp/pro-pdu-hd",
+          "SRC_PATH": "images/fcd-image/usp",
+          "DST_PATH": "usp",
           "FILES": [
-            "US.mt7628_6.4.21+14358.230215.1603-uboot.bin",
+            "US.mt7628_6.5.48+14683.230424.0502-uboot.bin",
             "lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin",
             "ramips-mt76x8-usp-initramfs-16MB.uboot"
           ]
@@ -43,15 +43,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed15-fw.bin",
-          "../usp/pro-pdu-hd/US.mt7628_6.4.21+14358.230215.1603-uboot.bin"
+          "../usp/US.mt7628_6.5.48+14683.230424.0502-uboot.bin"
         ],
         [
           "tftp/images/ed15-initramfs.bin",
-          "../usp/pro-pdu-hd/lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
+          "../usp/lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin"
         ],
         [
           "tftp/images/ed15-uboot.bin",
-          "../usp/pro-pdu-hd/ramips-mt76x8-usp-initramfs-16MB.uboot"
+          "../usp/ramips-mt76x8-usp-initramfs-16MB.uboot"
         ]
       ]
     }

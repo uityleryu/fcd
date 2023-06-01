@@ -68,7 +68,6 @@ class UCMT7628Factory(ScriptBase):
             'btnum'           : self.btnum,
         }
 
-        self.POWER_SUPPLY_EN = True
         self.UPDATE_UBOOT_ENABLE    = True
         self.BOOT_RAMFS_IMAGE       = True
         self.PROVISION_ENABLE       = True
@@ -278,23 +277,25 @@ class UCMT7628Factory(ScriptBase):
         time.sleep(1)
 
     def run(self):
-        if self.POWER_SUPPLY_EN is True:
+        if self.ps_state is True:
             self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         self.fcd.common.config_stty(self.dev)
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
 
-        if self.POWER_SUPPLY_EN is True:
+        if self.ps_state is True:
             self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
 
         msg(5, "Open serial port successfully ...")
-
         if self.UPDATE_UBOOT_ENABLE is True:
-            # self.fwupdate(self.fwimg, reboot_en=False)
             self.enter_uboot()
             self.update_uboot_image()
             msg(10, "Update Uboot image successfully ...")
@@ -345,9 +346,11 @@ class UCMT7628Factory(ScriptBase):
         if self.OFF_POWER_UNIT_ENABLE[self.board_id] is True:
             self.off_power_unit_power()
 
-        if self.POWER_SUPPLY_EN is True:
+        if self.ps_state is True:
             time.sleep(2)
             self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

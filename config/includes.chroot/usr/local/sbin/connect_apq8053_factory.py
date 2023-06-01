@@ -43,6 +43,8 @@ from datetime import datetime
     efb7: UniFi TouchMax White (unLock)(Android 9)
     efba: UniFi G3 TouchMax Wallmount   (Android 9)
     efa1: EV-Charger-EU        (Android 9)
+    efbb: Phone G3 Touch Pro   (Android 9)
+    efbc: Phone G3 Touch Pro Max   (Android 9)
     ec64: UniFi Access G2 Portal(Android 9)
 
 '''
@@ -91,6 +93,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "0007f100",
             'efba': "0007f100",
             'efa1': "0007f100",
+            'efbb': "0007f100",
+            'efbc': "0007f100",
             'ec64': "0007f100"
         }
 
@@ -100,7 +104,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "ec64"
+            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
+            "efbc", "ec64"
         ]
 
         self.ospl = {
@@ -133,6 +138,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec5f': "adr9",
             'efba': "adr9",
             'efa1': "adr9",
+            'efbb': "adr9",
+            'efbc': "adr9",
             'ec64': "adr9"
         }
 
@@ -166,6 +173,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "uvp_touchmax",
             'efba': "utp_wallmount",
             'efa1': "ev_charger",
+            'efbb': "utp_g3_pro",
+            'efbc': "utp_g3_pro_max",
             'ec64': "rdr_mdu"
         }
 
@@ -200,6 +209,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "1",
             'efba': "1",
             'efa1': "1",
+            'efbb': "1",
+            'efbc': "1",
             'ec64': "1"
         }
 
@@ -234,6 +245,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "1",
             'efba': "1",
             'efa1': "1",
+            'efbb': "1",
+            'efbc': "1",
             'ec64': "0"
         }
 
@@ -268,6 +281,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': "1",
             'efba': "2",
             'efa1': "1",
+            'efbb': "2",
+            'efbc': "2",
             'ec64': "1"
         }
 
@@ -301,6 +316,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': True,
             'efba': True,
             'efa1': True,
+            'efbb': True,
+            'efbc': True,
             'ec64': True
         }
 
@@ -341,6 +358,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb7': False,
             'efba': False,
             'efa1': False,
+            'efbb': True,
+            'efbc': True,
             'ec64': True
         }
 
@@ -742,9 +761,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 nextmac = self.mac
                 if self.wifinum[self.board_id] == '1':
                     self.wifimac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
-                    cmd = "write_wlan_mac -w  {}".format(nextmac)
+                    cmd = "write_wlan_mac -w  {}".format(self.mac_format_str2comma(nextmac))
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-                if self.btnum[self.board_id] == '1':
+                if self.btnum[self.board_id] != '0':
                     self.btmac = nextmac = hex(int(nextmac, 16) + 1)[2:].zfill(12)
                     nextmac = ":".join(nextmac[i:i + 2] for i in range(0, len(nextmac), 2))
                     cmd = "btnvtool -b {}".format(nextmac)
@@ -787,7 +806,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     if self.qrcode not in m_gqr[0]:
                         error_critical("Check QRID is not matched !!")
             else:
-                cmd = "cat /mnt/vendor/persist/eth_mac | xxd"
+                cmd = "cat {}| xxd".format(self.f_eth_mac)
                 getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
                 m_gmac = re.findall(r"00000000: (.*) ", getmac)[0].replace(" ","")
                 log_debug("Get MAC address: " + m_gmac)
@@ -806,11 +825,12 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                         else:
                             error_critical("Check Wifi MAC is not matched !!")
 
-                    if self.btnum[self.board_id] == "1":
+                    if self.btnum[self.board_id] != "0":
                         cmd = "btnvtool -z"
                         getmac = self.pexp.expect_get_output(cmd, self.linux_prompt).strip()
                         m_gmac = getmac.replace('.',':').split('\n')[1]
-
+                        # if no new line, remove prompt string
+                        m_gmac = m_gmac.split(self.lnxpmt[self.board_id])[0]
                         m_gmac = ''.join([ss.zfill(2) for ss in m_gmac.split(':')])
                         log_debug(m_gmac)
                         if self.btmac in m_gmac:

@@ -1,6 +1,6 @@
 {
   "UbiquitiNMS": {
-    "UISP-S": {
+    "UISP-S-00988": {
       "INDEX": 0,
       "NAME": "UISP-S",
       "BOARDID": "ee6f",
@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix"
+            "DIAG_UISP_S_1.3.6_DEV07.vmlinux.bix"
           ]
         },
         {
@@ -43,9 +43,21 @@
       "CREATE_LINK": [
         [
           "tftp/images/ee6f-fw.bin",
-          "../unms-fw/DIAG_UISP_S_1.3.6_DEV05.vmlinux.bix"
+          "../unms-fw/DIAG_UISP_S_1.3.6_DEV07.vmlinux.bix"
         ]
       ]
+    },
+    "UISP-S-01261": {
+      "INDEX": 0,
+      "NAME": "UISP-S",
+      "BOARDID": "ee6f",
+      "BOMREV": "113-01261",
+      "DESC": "Ubiquiti Network Management System Switch",
+      "FILE": "unms_rtl838x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01"
     }
   }
 }
