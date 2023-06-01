@@ -197,3 +197,5 @@ $(eval $(call ProductCompress2,UniFiAP_UACCMPOE-SERIES,FCD_$(PRD)_UACCMPOE-SERIE
 $(eval $(call ProductCompress2,UMR_EU_AC-SERIES))
 $(eval $(call ProductCompress2,UMR_US_AC-SERIES))
 $(eval $(call ProductCompress2,UAP_ACGEN2-SERIES))
+$(eval $(call ProductCompress2,01247_e618))
+$(eval $(call ProductCompress2,00729_e619))

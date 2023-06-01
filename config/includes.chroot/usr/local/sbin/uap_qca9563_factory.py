@@ -52,7 +52,7 @@ class UAPQCA9563Factory(ScriptBase):
             self.enter_uboot()
 
         self.set_ub_net()
-        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_uboot(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def update_uboot(self):
         cmd = "tftp 0x80800000 images/{}.uboot".format(self.board_id)
@@ -118,7 +118,7 @@ class UAPQCA9563Factory(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "boot")
         self.login(timeout=120, press_enter=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dmesg -n 1")
-        self.is_network_alive_in_linux(arp_logging_en=True, del_dutip_en=True)
+        self.is_network_alive_in_linux(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def gen_and_upload_ssh_key(self):
         self.gen_rsa_key()

@@ -17,7 +17,7 @@
           "DST_PATH": "uap-fw",
           "FILES": [
             "UBBXG-1.0.10-668f42d53f86402a89d96e724891da7a.bin",
-            "UBB_XG_V032_FULL_NOR_IMAGE_W_PAIR.bin"
+            "UBB_XG_V035_FULL_NOR_IMAGE.bin"
           ]
         },
         {
@@ -47,7 +47,7 @@
         ],
         [
           "tftp/images/dd12-boot.bin",
-          "../uap-fw/UBB_XG_V032_FULL_NOR_IMAGE_W_PAIR.bin"
+          "../uap-fw/UBB_XG_V035_FULL_NOR_IMAGE.bin"
         ],
         [
           "tftp/images/dd12-mfg-nand.bin",
