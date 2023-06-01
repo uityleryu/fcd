@@ -92,6 +92,7 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug(msg="firmware path:" + fw_path)
 
         if self.board_id in ["dca6", "dca7", "e618", "e619"]:
+            self.user = "ui"
             self.password = "ui"
 
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
