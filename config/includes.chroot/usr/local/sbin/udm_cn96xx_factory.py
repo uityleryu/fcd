@@ -94,8 +94,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea3d': "br0",
-            'ea3e': "br0",
+            'ea3d': "eth3",
+            'ea3e': "eth3",
         }
 
         # LCM
