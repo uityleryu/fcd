@@ -47,7 +47,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed12-fw.bin",
-          "../usp/pdu-pro/US.mt7628_6.5.53+14734.230517.0545-uboot.bin"
+          "../usp/US.mt7628_6.5.53+14734.230517.0545-uboot.bin"
         ]
       ]
     }
