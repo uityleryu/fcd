@@ -324,8 +324,9 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             # Create Soft link /bin/tftp from /bin/busybox due to FW team do not create the link already
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
                                     action="cp /usr/bin/tftp /usr/bin/tftp_backup")  # backup deb tftp
+            self.pexp.expect_lnxcmd(timeout=10,pre_exp=self.linux_prompt,action="mv /usr/bin/tftp /tmp")
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
-                                    action="ln -s /usr/bin/tftp /bin/busybox")  # Create Soft link
+                                    action="ln -s /bin/busybox /usr/bin/tftp")  # Create Soft link
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
         if self.PROVISION_ENABLE:
