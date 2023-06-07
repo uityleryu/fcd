@@ -1109,7 +1109,7 @@ class ScriptBase(object):
             log_debug(__func_name + "source file and destination file can't be empty")
             return False
 
-        cmd = "busybox tftp -g -r {0} -l {1} {2}".format(remote, local, self.tftp_server)
+        cmd = "tftp -g -r {0} -l {1} {2}".format(remote, local, self.tftp_server)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd,
                                 post_exp=post_exp, valid_chk=True, retry=retry)
 
@@ -1149,7 +1149,7 @@ class ScriptBase(object):
         os.chmod(remote, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         time.sleep(2)
 
-        cmd = "busybox tftp -p -r {0} -l {1} {2}".format(os.path.basename(remote), local, self.tftp_server)
+        cmd = "tftp -p -r {0} -l {1} {2}".format(os.path.basename(remote), local, self.tftp_server)
         self.pexp.expect_lnxcmd(timeout=timeout, pre_exp=self.linux_prompt, action=cmd,
                                 post_exp=post_exp, valid_chk=True, retry=retry)
 

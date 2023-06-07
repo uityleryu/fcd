@@ -7,7 +7,7 @@
       "BOMREV": "113-07651",
       "DESC": "UniFi Dream Machine Router Pro",
       "FILE": "udm_ipq53xx_factory.py",
-      "T1FILE": "",
+      "T1FILE": "udm_ipq53xx_bspfactory.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
@@ -27,16 +27,21 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udr-pro",
           "DST_PATH": "udm-fw/udr-pro",
           "FILES": [
-            "UDRPRO.ipq5322.v0.0.1+root.11636.afca054.230524.1002.bin",
+            "UDRPRO.ipq5322.v0.0.1+inaro.11644.7c57185M.230601.1532.bin",
             "uImage_20230524",
-            "u-boot_20230524.mbn"
+            "u-boot_20230524.mbn",
+            "udr-pro-2g-rework-test-image.img",
+            "udr-pro-v2.1-single.img",
+            "udr-pro_mi03_1-2g_nor.bin",
+            "udr-pro_mi03_1-4g_nor.bin"
+
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a678-fw.bin",
-          "../udm-fw/udr-pro/UDRPRO.ipq5322.v0.0.1+root.11636.afca054.230524.1002.bin"
+          "../udm-fw/udr-pro/UDRPRO.ipq5322.v0.0.1+inaro.11644.7c57185M.230601.1532.bin"
         ],
         [
           "tftp/images/a678-recovery",
@@ -45,6 +50,22 @@
         [
           "tftp/images/a678-uboot.mbn",
           "../udm-fw/udr-pro/u-boot_20230524.mbn"
+        ],
+        [
+          "tftp/images/a678-bsp-2g_nor.bin",
+          "../udm-fw/udr-pro/udr-pro_mi03_1-2g_nor.bin"
+        ],
+        [
+          "tftp/images/a678-bsp-4g_nor.bin",
+          "../udm-fw/udr-pro/udr-pro_mi03_1-4g_nor.bin"
+        ],
+        [
+          "tftp/images/a678-bsp-2g.img",
+          "../udm-fw/udr-pro/udr-pro-2g-rework-test-image.img"
+        ],
+        [
+          "tftp/images/a678-bsp-4g.img",
+          "../udm-fw/udr-pro/udr-pro-v2.1-single.img"
         ]
       ]
     }

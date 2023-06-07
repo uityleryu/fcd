@@ -121,11 +121,14 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x4400000c " + self.vdr_sysid[self.board_id])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010 " + self.sysid_vdr[self.board_id])
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf erase {} +0x9000".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf erase {} +0x9000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(60, "Erased: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf write 0x44000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x44000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"sf write 0x44000000  {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "sf write 0x44000000  {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
@@ -158,7 +161,8 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         time.sleep(2)
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargsextra factory nc_transfer client={}".format(self.dutip))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt,
+                               "setenv bootargsextra factory nc_transfer client={}".format(self.dutip))
 
         # copy recovery image to tftp server
         self.copy_file(
@@ -317,6 +321,11 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.unlock_eeprom_permission()
             time.sleep(1)
             msg(20, "Boot up to linux console and network is good ...")
+            # Create Soft link /bin/tftp from /bin/busybox due to FW team do not create the link already
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
+                                    action="cp /usr/bin/tftp /usr/bin/tftp_backup")  # backup deb tftp
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
+                                    action="ln -s /usr/bin/tftp /bin/busybox")  # Create Soft link
             self.data_provision_64k(netmeta=self.devnetmeta, post_en=False)
 
         if self.PROVISION_ENABLE:
