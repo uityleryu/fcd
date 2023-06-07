@@ -85,7 +85,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         self.pexp.expect_lnxcmd(10, "", "")
         if self.board_id == 'aa01':
-            self.login(username="root", password="oelinux123", timeout=120)
+            self.login(username="root", password="ubnt", timeout=120)
         else:
             self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
@@ -126,63 +126,90 @@ class UCQCS403FactoryGeneral(ScriptBase):
             hex_wifi_mac = hex(int_mac + 1).replace("0x", "").zfill(12)
             hex_bt_mac = hex(int_mac + 2).replace("0x", "").zfill(12)
             comma_mac = self.mac_format_str2comma(self.mac)
-            # for AmpliFi Cinema Bridge, the FW driver not ready so skip wifi/bt mac parts.
-            if self.board_id != 'aa01':
-                # Write Eth MAC
-                cmd = "echo {} > /persist/emac_config.ini".format(comma_mac)
+
+            # Write Eth MAC
+            cmd = "echo {} > /persist/emac_config.ini".format(comma_mac)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+            # Write WiFi MAC
+            cmdset = [
+                "mkdir -p /persist/factory/wlan/",
+                "echo \"Intf0MacAddress={}\" > /persist/factory/wlan/wlan_mac.bin".format(hex_wifi_mac),
+                "echo \"END\" >> /persist/factory/wlan/wlan_mac.bin"
+            ]
+            for cmd in cmdset:
                 self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
-                # Write WiFi MAC
-                cmdset = [
-                    "mkdir -p /persist/factory/wlan/",
-                    "echo \"Intf0MacAddress={}\" > /persist/factory/wlan/wlan_mac.bin".format(hex_wifi_mac),
-                    "echo \"END\" >> /persist/factory/wlan/wlan_mac.bin"
-                ]
-                for cmd in cmdset:
-                    self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-
-                # Write BT MAC
-                comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
-                cmd = "btnvtool -b {}".format(comma_bt_mac)
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-
-                # Check MAC
-                cmd = "cat /persist/emac_config.ini"
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
-
-            # for AmpliFi Cinema Bridge, the FW driver not ready so skip wifi/bt mac parts.
-            if self.board_id != 'aa01':
-                # Check WiFi MAC
-                cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-                time.sleep(5)
-                cmd = "ifconfig wlan0 up"
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-
-                cmd = "ifconfig wlan0 | grep HWaddr"
-                comma_wifi_mac = self.mac_format_str2comma(hex_wifi_mac)
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_wifi_mac.upper())
-                # postexp = "Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac.upper())
-                # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
-
-                # Check BT MAC
-                cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
+            # Write BT MAC
+            comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
+            cmd = "btnvtool -b {}".format(comma_bt_mac)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # sync data to flash
             cmd = "sync"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+            # Check MAC
+            cmd = "cat /persist/emac_config.ini"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_mac)
+
+
+            # for AMP, it needs reboot to have MAC address take effect
+            if self.board_id == 'aa01' or self.board_id == 'aa02':
+                self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
+                log_debug(msg="sleep 50 secs")
+                time.sleep(50)
+
+                self.login(username="root", password="ubnt", timeout=120)
+
+                cmd = "dmesg -n1"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+                self.chk_lnxcmd_valid()
+
+                cmd = "ifconfig eth0 down"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+                self.chk_lnxcmd_valid()
+                time.sleep(10)
+
+                self.set_lnx_net("eth0")
+                self.set_lnx_net("eth0")
+                time.sleep(10)
+                self.is_network_alive_in_linux()
+
+            # Check WiFi MAC
+            cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            time.sleep(5)
+            cmd = "ifconfig wlan0 up"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+            cmd = "ifconfig wlan0 | grep HWaddr"
+            comma_wifi_mac = self.mac_format_str2comma(hex_wifi_mac)
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_wifi_mac.upper())
+            # postexp = "Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac.upper())
+            # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
+
+            # Check BT MAC
+            cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
+
 
         if REGISTER_EN is True:
             self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            if self.board_id != 'aa02':
-                cmd = "echo enable > /data/keymfg_mode"
-            else:
+            if self.board_id == 'aa02' or self.board_id == 'aa01':
                 cmd = "echo 1 > /data/mfg_mode"
+            else:
+                cmd = "echo enable > /data/keymfg_mode"
+
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
+
+            if self.board_id == 'aa02' or self.board_id == 'aa01':
+                cmd = "cat /data/mfg_mode"
+                flag = "1"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=flag)
         '''
             ============ Registration End ============
         '''

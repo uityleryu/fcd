@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/af-fw",
           "DST_PATH": "af-fw",
           "FILES": [
-            "MEX.ipq807x.v3.3.0-alpha.68c8e3df.230425.1618.bin",
+            "MEX.ipq807x.v3.3.0-alpha.28386e13.230510.1622.bin",
             "u-boot_01005.mbn",
             "wave-mesh-acorn-spf11.3-csu1-nand-v7_256M32-single.img"
           ]
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ac15.bin",
-          "../af-fw/MEX.ipq807x.v3.3.0-alpha.68c8e3df.230425.1618.bin"
+          "../af-fw/MEX.ipq807x.v3.3.0-alpha.28386e13.230510.1622.bin"
         ],
         [
           "tftp/images/ac15-bootloader.bin",
