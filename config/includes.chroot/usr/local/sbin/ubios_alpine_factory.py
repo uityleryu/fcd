@@ -137,9 +137,9 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.PROVISION_ENABLE      = True 
         self.DOHELPER_ENABLE       = True 
         self.REGISTER_ENABLE       = True 
-        self.FWUPDATE_ENABLE       = True 
+        self.FWUPDATE_ENABLE       = False
         self.DATAVERIFY_ENABLE     = True 
-        self.POWEROFF_CHECK_ENABLE = True if self.board_id == "ea11" or self.board_id == "ea15" else False
+        self.POWEROFF_CHECK_ENABLE = False
         self.LCM_CHECK_ENABLE      = True if self.board_id == "ea15" or self.board_id == "ea19" else False
 
     def set_boot_net(self):
@@ -186,12 +186,11 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def update_uboot(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id]+" ledtest link")
         self.set_boot_net()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
         time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(10, "host " + self.tftp_server + " is alive")
+        self.is_network_alive_in_uboot(self.tftp_server,timeout=10)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_only(10, "bootupd done")
@@ -199,23 +198,26 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def boot_recovery_image(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id]+" ledtest link")
         self.set_boot_net()
         time.sleep(2)
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "ping " + self.tftp_server)
-        self.pexp.expect_only(20, "host " + self.tftp_server + " is alive")
-
-        cmd = "setenv bootargs ubnt-flash-factory pci=pcie_bus_perf console=ttyS0,115200"
+        self.is_network_alive_in_uboot(self.tftp_server,timeout=10)
+        # copy fw image to tftp server
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
+            dest=os.path.join(self.tftpdir, "fw-image.bin")  # fixed name
+        )
+        # copy Recovery image to tftp server
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-recovery"),
+            dest=os.path.join(self.tftpdir, "uImage")  # fixed name
+        )
+        cmd="setenv bootargsextra 'server={} client={} factory'".format(self.tftp_server,self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
-
-        cmd = "tftpboot 0x08000004 images/{}-recovery".format(self.board_id)
-        self.pexp.expect_action(10, self.bootloader_prompt, cmd)
-
+        self.pexp.expect_action(11, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
-        self.pexp.expect_action(11, self.bootloader_prompt, "bootm $fitbootconf")
-
     def init_recovery_image(self):
-        self.login(self.username, self.password, timeout=60, log_level_emerg=True)
+        self.login(self.username, self.password, timeout=150, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.linux_prompt)
         if self.board_id == 'ea19':
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
