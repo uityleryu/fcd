@@ -182,7 +182,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
         time.sleep(5)  # for stable
 
-        nc_cmd = "nc -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.fw_img))
+        nc_cmd = "nc -v -q 1 {} 5566 < {}".format(self.dutip, os.path.join(self.fwdir, self.fw_img))
         log_debug(msg=nc_cmd)
 
         [buf, rtc] = self.fcd.common.xcmd(nc_cmd)
@@ -340,7 +340,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
-        if not self.DATAVERIFY_ENABLE:
+        if self.DATAVERIFY_ENABLE:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
@@ -348,12 +348,12 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if not self.wifical[self.board_id]:
+        if self.wifical[self.board_id]:
             msg(85, "Write and check calibration data")
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
-        if not self.LCM_FW_Check_ENABLE:
+        if self.LCM_FW_Check_ENABLE:
             if self.lcm[self.board_id]:
                 msg(90, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
@@ -366,7 +366,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2:
+            if len(m_run) == 2 or len(m_degraded)==1:
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break

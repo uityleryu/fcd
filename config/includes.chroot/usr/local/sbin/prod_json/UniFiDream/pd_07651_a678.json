@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udr-pro",
           "DST_PATH": "udm-fw/udr-pro",
           "FILES": [
-            "UDRPRO.ipq5322.v0.0.1+inaro.11644.7c57185M.230601.1532.bin",
+            "UDRPRO.ipq5322.v0.0.1+inaro.11648.d4d141aM.230608.1428.bin",
             "uImage_20230524",
             "u-boot_20230524.mbn",
             "udr-pro-2g-rework-test-image.img",
@@ -41,7 +41,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a678-fw.bin",
-          "../udm-fw/udr-pro/UDRPRO.ipq5322.v0.0.1+inaro.11644.7c57185M.230601.1532.bin"
+          "../udm-fw/udr-pro/UDRPRO.ipq5322.v0.0.1+inaro.11648.d4d141aM.230608.1428.bin"
         ],
         [
           "tftp/images/a678-recovery",
