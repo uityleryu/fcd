@@ -1,0 +1,74 @@
+{
+  "UniFiSwitch": {
+    "UNIFI_CABLE_INTERNET": {
+      "INDEX": 0,
+      "NAME": "UNIFI_CABLE_INTERNET",
+      "BOARDID": "ed60",
+      "BOMREV": "113-02540",
+      "DESC": "UniFi Cable Internet",
+      "FILE": "usw_puma7_factory.py",
+      "T1FILE": "usw_puma7_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "US.puma7_puma-2-mxl+158.20221208.1215.bin",
+            "US.mxl277_MFG_1.0.5+237.20230420.1229.bin",
+            "US.mxl277_MFG_CM_1.0.5+235.20230420.1840+app.bin",
+            "US.mxl277_MFG_CM_1.0.5+235.20230420.1840+np.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_puma7/",
+          "DST_PATH": "tools/usw_puma7",
+          "FILES": [
+            "helper_PUMA7_ARM_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common/",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_puma7/20221223_562",
+          "DST_PATH": "certs",
+          "FILES": [
+            "certs_221223_562.tar.gz"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed60-fw-puma-to-mxl277.bin",
+          "../usw-fw/US.puma7_puma-2-mxl+158.20221208.1215.bin"
+        ],
+        [
+          "tftp/images/ed60-fw.bin",
+          "../usw-fw/US.mxl277_MFG_1.0.5+237.20230420.1229.bin"
+        ],
+        [
+          "tftp/images/ed60-cm-app.bin",
+          "../usw-fw/US.mxl277_MFG_CM_1.0.5+235.20230420.1840+app.bin"
+        ],
+        [
+          "tftp/images/ed60-cm-np.bin",
+          "../usw-fw/US.mxl277_MFG_CM_1.0.5+235.20230420.1840+np.bin"
+        ],
+        [
+          "tftp/certs/certs.tar.gz",
+          "certs_221223_562.tar.gz"
+        ]
+      ]
+    }
+  }
+}

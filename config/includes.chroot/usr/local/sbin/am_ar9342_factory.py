@@ -234,6 +234,7 @@ class AMAR9342Factory(ScriptBase):
         time.sleep(1)
 
         log_debug("do_urescue !!!")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw 0x18000014 0x404e")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "urescue -f -e", "Waiting for connection")
 
         fw_path = "{}/{}.bin".format(self.fwdir, self.board_id)

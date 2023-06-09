@@ -26,34 +26,34 @@
           "SRC_PATH": "images/fcd-image/a667",
           "DST_PATH": "a667",
           "FILES": [
-            "UEX.ipq5018.v3.1.4.3b2a9b8.230108.2014.bin",
-            "uImage-v3.1.4",
-            "unifi-uex-1.0.2.142-g1aac98f8_ipq5018_uex_u-boot.mbn",
-            "u6-express-v2.img",
-            "u6-express-v2_nor.bin"
+            "UEX.ipq5018.v3.1.10.275297d.230324.1437.bin",
+            "UEX.ipq5018.v3.1.10.275297d.230324.1437.uImage",
+            "unifi-uex-1.0.5.149-g116e1d21_ipq5018_uex_u-boot.mbn",
+            "u6-express-v4.img",
+            "u6-express-v4_nor.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a674-nor.bin",
-          "../a667/u6-express-v2_nor.bin"
+          "../a667/u6-express-v4_nor.bin"
         ],
         [
           "tftp/images/a674-emmc.img",
-          "../a667/u6-express-v2.img"
+          "../a667/u6-express-v4.img"
         ],
         [
-          "tftp/images/a674-fw.bin",
-          "../a667/UEX.ipq5018.v3.1.4.3b2a9b8.230108.2014.bin"
+          "tftp/images/a667-fw.bin",
+          "../a667/UEX.ipq5018.v3.1.10.275297d.230324.1437.bin"
         ],
         [
-          "tftp/images/a674-uboot.mbn",
-          "../a667/unifi-uex-1.0.2.142-g1aac98f8_ipq5018_uex_u-boot.mbn"
+          "tftp/images/a667-uboot.mbn",
+          "../a667/unifi-uex-1.0.5.149-g116e1d21_ipq5018_uex_u-boot.mbn"
         ],
         [
-          "tftp/images/a674-loader.img",
-          "../a667/uImage-v3.1.4"
+          "tftp/images/a667-loader.img",
+          "../a667/UEX.ipq5018.v3.1.10.275297d.230324.1437.uImage"
         ]
       ]
     }

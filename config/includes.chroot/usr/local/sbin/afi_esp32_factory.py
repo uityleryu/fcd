@@ -183,10 +183,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(5)
-        if self.board_id == "da20":
-            self.pexp.expect_only(60, "DEVREG:")  # The security check will fail if littlefs isn't mounted
-        elif self.board_id == "da21":
-            self.pexp.expect_only(60, "check result: Pass")  # The security check will fail if littlefs isn't mounted
+        self.pexp.expect_only(120, "check result: Pass")  # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
         time.sleep(15)  # delay because no delay the devreg check will be fail

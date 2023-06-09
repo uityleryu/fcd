@@ -1,8 +1,8 @@
 {
   "UniFiSwitch": {
-    "USW-48-04114": {
+    "USW-48": {
       "INDEX": 0,
-      "NAME": "USW-48-04114",
+      "NAME": "USW-48",
       "BOARDID": "ed53",
       "BOMREV": "113-04114",
       "DESC": "UBNT UniFiSwitch 48 POE (RTK)",

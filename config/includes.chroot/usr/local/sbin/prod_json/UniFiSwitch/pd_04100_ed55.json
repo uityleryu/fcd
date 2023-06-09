@@ -4,7 +4,10 @@
       "INDEX": 0,
       "NAME": "USW-LITE-8-POE",
       "BOARDID": "ed55",
-      "BOMREV": "113-04100",
+      "BOMREV": [
+        "113-04100",
+        "113-04102"
+      ],
       "DESC": "UBNT UniFiSwitch Lite 8 POE",
       "FILE": "us_rtl838x_factory.py",
       "T1FILE": "us_rtl838x_mfg.py",

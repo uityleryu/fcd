@@ -1,0 +1,58 @@
+{
+  "UniFiAP": {
+    "UAP-AC-IW": {
+      "INDEX": 0,
+      "NAME": "UAP-AC-IW",
+      "BOARDID": "e587",
+      "BOMREV": "113-00446",
+      "DESC": "UniFi AC InWall",
+      "FILE": "uap_qca9563_factory.py",
+      "T1FILE": "uap_qca9563_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin",
+            "BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin",
+            "unifi-v1.6.6.244-gffe17035_uap-qca956x-16MB_u-boot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uap",
+          "DST_PATH": "tools/uap",
+          "FILES": [
+            "helper_ARxxxx_musl"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e587-art.bin",
+          "../uap-fw/ART.qca956x.v9.9.9.999-BL_gbd91cc13.ART_14afd1be.bin"
+        ],
+        [
+          "tftp/images/e587-fw.bin",
+          "../uap-fw/BZ.qca956x_6.2.49+14111.221201.0240-uboot.bin"
+        ],
+        [
+          "tftp/images/e587.uboot",
+          "../uap-fw/unifi-v1.6.6.244-gffe17035_uap-qca956x-16MB_u-boot.bin"
+        ]
+      ]
+    }
+  }
+}

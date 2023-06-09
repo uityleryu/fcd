@@ -94,6 +94,7 @@ class U6MT762xFactory(ScriptBase):
             'a640': "'6 0'",
         }
 
+
         # flash size map
         self.flash_size = {
             'a612': "33554432",
@@ -130,6 +131,7 @@ class U6MT762xFactory(ScriptBase):
             This is a special recall event for changing the BOM revision on the U6-LR
         '''
         self.SPECIAL_RECALL_EVENT = False
+        # 20221202 for Gavin BLE reboot special case
 
         if self.SPECIAL_RECALL_EVENT is True:
             self.UPDATE_UBOOT_ENABLE = False
@@ -459,6 +461,17 @@ class U6MT762xFactory(ScriptBase):
             self.boot_recovery_image(self.fcdimg)
             msg(15, "Boot into recovery image for registration ...")
             self.init_recovery_image()
+
+# 20221202 Double add for recall sample's reboot issue (BLE FW update fail)
+        if self.SPECIAL_RECALL_EVENT is True:
+            cmd = "echo 5edfacbf > /proc/ubnthal/.uf"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            time.sleep(1)
+            #self.cnapi.xcmd("ll")
+            self.pexp.expect_lnxcmd(timeout=1, pre_exp=self.linux_prompt, action="ll", post_exp="abcd")
+            #### echo 5edfacbf > /proc/ubnthal/.uf
+
+
 
         if self.PROVISION_ENABLE is True:
             msg(20, "Sendtools to DUT and data provision ...")

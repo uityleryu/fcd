@@ -4,7 +4,10 @@
       "INDEX": 0,
       "NAME": "USP-PDU-PRO",
       "BOARDID": "ed12",
-      "BOMREV": "113-00986",
+      "BOMREV": [
+        "113-00986",
+        "113-03098"
+      ],
       "DESC": "UniFi Smart Power PDU PRO",
       "FILE": "usp_mt7628_factory.py",
       "T1FILE": "",
@@ -34,17 +37,17 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/usp/pdu-pro",
-          "DST_PATH": "usp/pdu-pro",
+          "SRC_PATH": "images/fcd-image/usp",
+          "DST_PATH": "usp",
           "FILES": [
-            "US.mt7628_6.3.4+14039.220624.0738-uboot.bin"
+            "US.mt7628_6.5.53+14734.230517.0545-uboot.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ed12-fw.bin",
-          "../usp/pdu-pro/US.mt7628_6.3.4+14039.220624.0738-uboot.bin"
+          "../usp/US.mt7628_6.5.53+14734.230517.0545-uboot.bin"
         ]
       ]
     }

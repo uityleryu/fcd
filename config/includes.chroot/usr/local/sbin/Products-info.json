@@ -961,6 +961,32 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "0002",
       "SW_ID"       : "0201"
+    },
+
+    "USC-8":{
+      "INDEX"       : 39,
+      "NAME"        : "USC-8",
+      "BOARDID"     : "ed01",
+      "BOMREV"      : "113-02556",
+      "DESC"        : "UBNT UniFiSwitch USC 8 ports",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "UIS-8-450":{
+      "INDEX"       : 40,
+      "NAME"        : "UIS-8-450",
+      "BOARDID"     : "ed04",
+      "BOMREV"      : "113-02672",
+      "DESC"        : "UniFi Industrial Switch 8 ports 450W",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
     }
 
   },
@@ -1656,7 +1682,7 @@
       "SW_ID"       : "0801"
     },
 
-    
+
     "UNVR-AI":{
       "INDEX"       : 3,
       "NAME"        : "UNVR-PRO",
@@ -1891,7 +1917,7 @@
       "FCD_ID"      : "0012",
       "SW_ID"       : "1d01"
      },
-  
+
     "LVDU-4":{
       "INDEX"       : 4,
       "NAME"        : "LVDU-4",
@@ -2435,7 +2461,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
     },
-    
+
     "UVC-G4FLOODLIGHTBATTERY": {
       "INDEX": 12,
       "NAME": "UVC-G4FLOODLIGHTBATTERY",
@@ -2569,6 +2595,20 @@
       "BOARDID": "a598",
       "BOMREV": "113-04055",
       "DESC": "UVC G5 Pro (MP ver.)",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5TURRETPRO": {
+      "INDEX": 23,
+      "NAME": "UVC-G5TURRETPRO",
+      "BOARDID": "a59a",
+      "BOMREV": "113-04340",
+      "DESC": "UVC G5 Turret Pro",
       "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
@@ -2735,7 +2775,7 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-    }, 
+    },
 
     "UISP-P":{
       "INDEX"       : 14,
@@ -2776,11 +2816,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R-PRO":{
+    "UISP-R-PRO-01061":{
       "INDEX"       : 14,
       "NAME"        : "UISP-R-PRO",
       "BOARDID"     : "ee6d",
       "BOMREV"      : "113-01061",
+      "DESC"        : "Ubiquiti Network Management System Router PRO",
+      "FILE"        : "uisp_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-PRO-01265":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-R-PRO",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-01265",
       "DESC"        : "Ubiquiti Network Management System Router PRO",
       "FILE"        : "uisp_alpine_factory.py",
       "T1FILE"      : "",
@@ -2959,7 +3012,7 @@
       "FCD_ID"      : "0008",
       "SW_ID"       : "0c01"
     }
-  }, 
+  },
 
   "UniFiDrive":
   {

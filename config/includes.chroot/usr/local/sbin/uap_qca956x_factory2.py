@@ -4,10 +4,17 @@ import os
 import stat
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
-from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.logger import log_info, log_debug, log_error, msg, error_critical
+from datetime import datetime
 
 '''
-This FCD script is for ULTE-FLEX, ULTE-FLEX-EU, ULTE-FLEX-US
+This FCD script is for
+    e614: ULTE-FLEX-EU
+    e615: ULTE-FLEX-US
+    e618: UMR-EU-AC
+    e619: UMR-US-AC
+    dca6: UMR-PRO-US
+    dca7: UMR-PRO-EU
 '''
 
 
@@ -21,33 +28,33 @@ class UAPQCA956xFactory2(ScriptBase):
         # script specific vars
         self.devregpart = "/dev/mtdblock2"
         self.bomrev = "113-" + self.bom_rev
-
         self.bootloader_prompt = "ath>"
         self.linux_prompt = "# "
         self.cmd_prefix = "go 0x80200020 "
         self.product_class = "radio"  # For this product using radio
-
 
         # helper path
         helppth = {
             'e614': "ulte_flex",
             'e615': "ulte_flex",
             'e618': "ulte_flex",
-            'e619': "ulte_flex"
+            'e619': "ulte_flex",
+            'dca6': "ulte_flex",
+            'dca7': "ulte_flex"
         }
 
         self.helperexe = "helper_ARxxxx_release"
         self.helper_path = helppth[self.board_id]
 
-        self.UPDATE_UBOOT          = True
-        self.FWUPDATE_ENABLE       = True
-        self.BOOT_RECOVERY_IMAGE   = True
-        self.INIT_RECOVERY_IMAGE   = False
-        self.PROVISION_ENABLE      = True
-        self.DOHELPER_ENABLE       = True
-        self.REGISTER_ENABLE       = True
-        self.DATAVERIFY_ENABLE     = True
-        self.SSH_ENABLE            = True
+        self.UPDATE_UBOOT = True
+        self.FWUPDATE_ENABLE = True
+        self.BOOT_RECOVERY_IMAGE = True
+        self.INIT_RECOVERY_IMAGE = False
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        self.DATAVERIFY_ENABLE = True
+        self.SSH_ENABLE = True
 
     def enter_uboot(self, init_uapp=False):
         self.pexp.expect_action(90, "Hit any key to stop autoboot", "\033")
@@ -58,12 +65,8 @@ class UAPQCA956xFactory2(ScriptBase):
             # Init uapp. DUT will reset after init
             self.pexp.expect_action(30, self.bootloader_prompt, self.cmd_prefix + "uappinit")
 
-        self.set_net_uboot()
-
-    def set_net_uboot(self):
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
-        self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
-        self.is_network_alive_in_uboot()
+        self.set_ub_net()
+        self.is_network_alive_in_uboot(arp_logging_en=True, del_dutip_en=True)
 
     def update_uboot(self):
         uboot_path = os.path.join(self.fwdir, self.board_id + "-uboot.bin")
@@ -87,6 +90,10 @@ class UAPQCA956xFactory2(ScriptBase):
     def fwupdate(self):
         fw_path = os.path.join(self.fwdir, self.board_id + ".bin")
         log_debug(msg="firmware path:" + fw_path)
+
+        if self.board_id in ["dca6", "dca7", "e618", "e619"]:
+            self.user = "ui"
+            self.password = "ui"
 
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
                      src_file=fw_path, dst_file=self.dut_tmpdir)
@@ -163,7 +170,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
         time.sleep(15)  # for stable system
 
-        if self.board_id == 'e618' or self.board_id == 'e619':
+        if self.board_id in ["e618", "e619"]:
             log_debug(msg="Add IP Addr")
             cmd = "ifconfig"
             exp = "br-lan"
@@ -175,11 +182,14 @@ class UAPQCA956xFactory2(ScriptBase):
             cmd = "ip addr"
             exp = self.dutip
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=exp, retry=5)
+        elif self.board_id in ["dca6", "dca7"]:
+            cmd = "/etc/init.d/network start"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, retry=60)
 
-        self.is_network_alive_in_linux(retry=60)
+        self.is_network_alive_in_linux(retry=60, arp_logging_en=True, del_dutip_en=True)
         self.pexp.expect_action(30, self.linux_prompt, "ifconfig br-lan {}".format(self.dutip))
         time.sleep(3)  # for stable eth
-        self.is_network_alive_in_linux(retry=10)
+        self.is_network_alive_in_linux(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def enable_ssh(self):
         self.pexp.expect_action(30, self.linux_prompt, "echo ssh | prst_tool -w misc; /etc/init.d/dropbear start")
@@ -236,26 +246,17 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
 
-    def registration(self, regsubparams = None):
+    def registration(self, regsubparams=None):
         log_debug("Starting to do registration ...")
+        self.devreg_hostname = "stage.udrs.io"
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
-        code_type = "01"
-
-        # The HEX of the QR code
-        if self.qrcode is None or not self.qrcode:
-            reg_qr_field = ""
-        else:
-            reg_qr_field = "-i field=code,format=hex,value={}".format(self.qrhex)
-
         clientbin = "/usr/local/sbin/client_rpi4_release"
         regparam = [
-            "-h stage.udrs.io",
+            "-h {}".format(self.devreg_hostname),
             "-k {}".format(self.pass_phrase),
             regsubparams,
-            "-i field=code_type,format=hex,value={}".format(code_type),
-            reg_qr_field,
             "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
             "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
             "-i field=sw_id,format=hex,value={}".format(self.sw_id),
@@ -272,6 +273,23 @@ class UAPQCA956xFactory2(ScriptBase):
             "-z {}crt.pem".format(self.key_dir)
         ]
 
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=code,format=hex,value={}".format(self.qrhex)
+            regparam.append(reg_qr_field)
+
+        # The HEX of the activate code
+        if self.activate_code is None or not self.activate_code:
+            reg_activate_code = ""
+        else:
+            code_type = "01"
+            reg_code_type = "-i field=code_type,format=hex,value={}".format(code_type)
+            regparam.append(reg_code_type)
+            reg_activate_code = "-i field=code,format=hex,value={}".format(self.activate_code_hex)
+            regparam.append(reg_activate_code)
+
         regparam = ' '.join(regparam)
 
         cmd = "sudo {0} {1}".format(clientbin, regparam)
@@ -286,6 +304,73 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
+
+    def check_boot_complete(self):
+        log_debug("Starting to check DUT boot to complete ...")
+        status = False
+        t_secs = 90
+        dt_last = datetime.now()
+        ts = datetime.now() - dt_last
+        while ts.seconds <= t_secs:
+            output = self.pexp.expect_get_output2("brctl show | grep wlan0", self.linux_prompt, self.linux_prompt, timeout=5)
+            log_info('rsp = {}'.format(output))
+            if 'br-lan' in output and 'wlan0' in output:
+                status = True
+                break
+            time.sleep(1)
+            ts = datetime.now() - dt_last
+        if not status:
+            otmsg = "Check DUT boot to complete failed!!"
+            error_critical(otmsg)
+
+        log_debug("Check DUT boot to complete passed!!")
+
+    def check_wireless_config(self):
+        log_debug("Starting to check wireless config ...")
+        status = False
+        t_secs = 180
+        dt_last = datetime.now()
+        ts = datetime.now() - dt_last
+        while ts.seconds <= t_secs:
+            output = self.pexp.expect_get_output2("ls /etc/config/wireless", self.linux_prompt, self.linux_prompt,
+                                                  timeout=5)
+            if '/etc/config/wireless' in output:
+                output = self.pexp.expect_get_output2("tail /etc/config/wireless", self.linux_prompt, self.linux_prompt,
+                                                      timeout=5)
+                if 'option ubnt_role \'initial_setup\'' in output:
+                    status = True
+                    break
+            time.sleep(1)
+            ts = datetime.now() - dt_last
+        if not status:
+            otmsg = "Check wireless config failed!!"
+            error_critical(otmsg)
+
+        log_debug("Check wireless config passed!!")
+
+    def enable_burn_in_mode(self):
+        log_debug("Starting to enable burn in mode ...")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/etc/init.d/ajconf stop")
+        time.sleep(1)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "uci set uictld.@uictld[0].lcd_test=1")
+        time.sleep(0.5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "uci commit")
+        time.sleep(0.5)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cfg.sh write")
+        time.sleep(1)
+        for _ in range(3):
+            output = self.pexp.expect_get_output2("grep lcd_test /etc/config/uictld", self.linux_prompt,
+                                                  self.linux_prompt,
+                                                  timeout=5)
+            output = str(output).strip()
+            if "lcd_test" in output:
+                break
+            time.sleep(3)
+        if "lcd_test" not in output:
+            otmsg = "Enable burn in mode failed!!"
+            error_critical(otmsg)
+
+        log_debug("Enable burn in mode passed!!")
 
     def run(self):
         """Main procedure of factory
@@ -346,9 +431,22 @@ class UAPQCA956xFactory2(ScriptBase):
             self.fwupdate()
             self.login_kernel()
 
+            if self.board_id in ["e618", "e619"]:
+                self.check_boot_complete()
+                time.sleep(10)
+
         if self.DATAVERIFY_ENABLE is True:
             msg(90, "Checking the devrenformation ...")
             self.check_info()
+
+        if self.board_id in ["e618", "e619"]:
+            self.check_wireless_config()
+
+            time.sleep(5)
+
+            self.enable_burn_in_mode()
+
+            self.__del__()
 
         msg(100, "Completed FCD process ...")
 

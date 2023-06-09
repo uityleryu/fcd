@@ -1,0 +1,28 @@
+{
+  "Connect": {
+    "EV-CHARGER-04277": {
+      "INDEX": 0,
+      "NAME": "EV-CHARGER",
+      "BOARDID": "efa0",
+      "BOMREV": "113-04277",
+      "DESC": "UniFi EV Charger (Second Source)",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "1ce3",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

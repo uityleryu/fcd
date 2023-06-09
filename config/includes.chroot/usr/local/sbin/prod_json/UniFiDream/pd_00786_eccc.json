@@ -1,10 +1,13 @@
 {
   "UniFiDream": {
-    "UDR-00786": {
+    "UDR": {
       "INDEX": 0,
-      "NAME": "UDR-00786",
+      "NAME": "UDR",
       "BOARDID": "eccc",
-      "BOMREV": "113-00786",
+      "BOMREV": [
+        "113-00786",
+        "113-01159"
+      ],
       "DESC": "UniFi Dream Router",
       "FILE": "udm_mt7622_bspfactory.py",
       "T1FILE": "udm_mt7622_mfg.py",
@@ -31,10 +34,10 @@
             "preloader_evb7622_64_forspinor_lower_DDR_freq.bin",
             "preloader_rfb1_7622_64_forspinor_flyby_restore_DDR_setting.bin",
             "udr-mt7622-mt7915a-v11_emmc.bin",
-            "UDR.mt7622.v2.3.16+root.6569.9c7dbf8.220721.1821.bin",
-            "u-boot-mtk.bin",
+            "UDR.mt7622.v3.0.17.8102bbc.230210.1526.bin",
+            "u-boot-mtk_20230308.bin",
             "udr-mt7622-mt7915a-v11_nor.bin",
-            "uImage"
+            "uImage-fix-fcd"
           ]
         }
       ],
@@ -57,11 +60,11 @@
         ],
         [
           "tftp/images/eccc-fw.bin",
-          "../udm-fw/udr/UDR.mt7622.v2.3.16+root.6569.9c7dbf8.220721.1821.bin"
+          "../udm-fw/udr/UDR.mt7622.v3.0.17.8102bbc.230210.1526.bin"
         ],
         [
           "tftp/images/eccc-fw.uboot",
-          "../udm-fw/udr/u-boot-mtk.bin"
+          "../udm-fw/udr/u-boot-mtk_20230308.bin"
         ],
         [
           "tftp/images/eccc-mfg.bin",
@@ -69,7 +72,7 @@
         ],
         [
           "tftp/images/eccc-recovery",
-          "../udm-fw/udr/uImage"
+          "../udm-fw/udr/uImage-fix-fcd"
         ]
       ]
     }

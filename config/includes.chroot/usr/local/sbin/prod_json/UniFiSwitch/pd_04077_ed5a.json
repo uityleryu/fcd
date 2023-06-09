@@ -1,11 +1,11 @@
 {
   "UniFiSwitch": {
-    "USW-24-POE-03956": {
+    "USW-PRO-8-POE": {
       "INDEX": 0,
-      "NAME": "USW-24-POE",
-      "BOARDID": "ed21",
-      "BOMREV": "113-03956",
-      "DESC": "UBNT UniFiSwitch 24 POE",
+      "NAME": "USW-PRO-8-POE",
+      "BOARDID": "ed5a",
+      "BOMREV": "113-04077",
+      "DESC": "UBNT UniFiSwitch Pro 8 POE",
       "FILE": "us_rtl838x_factory.py",
       "T1FILE": "us_rtl838x_mfg.py",
       "QRCHECK": "True",
@@ -16,7 +16,8 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "unifiswitch-24poe-fw.bin.16MB"
+            "usw-pro-8-poe-fw.bin",
+            "US2.rtl93xx_usw-pcb-uslp8p+14849.230407.0713-uboot.bin"
           ]
         },
         {
@@ -39,12 +40,12 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ed21-fw.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
+          "tftp/images/ed5a-fw.bin",
+          "../usw-fw/usw-pro-8-poe-fw.bin"
         ],
         [
-          "tftp/images/ed21-t1.bin",
-          "../usw-fw/unifiswitch-24poe-fw.bin.16MB"
+          "tftp/images/ed5a-t1.bin",
+          "../usw-fw/usw-pro-8-poe-fw.bin"
         ]
       ]
     }

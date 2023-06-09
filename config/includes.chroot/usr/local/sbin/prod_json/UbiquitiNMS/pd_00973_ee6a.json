@@ -15,7 +15,11 @@
         {
           "SRC_PATH": "images/fcd-image/unms-fw/uisp-console/",
           "DST_PATH": "unms-fw/uisp-console",
-          "FILES": []
+          "FILES": [
+            "UISPR.alpinev2.v3.0.1.4938c4c.221215.1246.bin",
+            "UISPR.alpinev2.recovery.v3.0.1.4938c4c.221215.1324.bin",
+            "ubnt_uispr_alpinev2_rev1_boot_v1.7.0.img"
+          ]
         },
         {
           "SRC_PATH": "images/tools/uisp-console",
@@ -38,11 +42,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ee6a-fw.bin",
-          "../unms-fw/uisp-console/UISPR.alpinev2.v3.0.0.80c69eb.221121.1850.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.v3.0.1.4938c4c.221215.1246.bin"
         ],
         [
           "tftp/images/ee6a-recovery",
-          "../unms-fw/uisp-console/UISPR.alpinev2.recovery.v3.0.0.80c69eb.221121.1913.bin"
+          "../unms-fw/uisp-console/UISPR.alpinev2.recovery.v3.0.1.4938c4c.221215.1324.bin"
         ],
         [
           "tftp/images/ee6a_signed_boot.img",

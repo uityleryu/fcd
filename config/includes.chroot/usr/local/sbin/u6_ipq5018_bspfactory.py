@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import time
+import re
 
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
@@ -288,7 +289,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_only(60, "Bytes transferred")
-        cmd = "mmc write 0x50000000 0x20800 0xffff; saveenv"
+        cmd = "mmc write 0x50000000 0x20800 0xffff"
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, "written: OK", "bootm")
 
@@ -408,9 +409,49 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
-        self.pexp.expect_only(10, "shortname=" + prod_shortname)
+        if self.board_id in ["a667", "a674"]:
+            self.pexp.expect_only(10, "shortname=" + prod_shortname)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
+
+        if self.board_id in ["a667", "a674"]:
+            cmd = "ifconfig | grep -C 2 br0"
+            ct = 0
+            retry_max = 300
+            while ct < retry_max:
+                output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+                pattern = r"192.168.1.[\d]+"
+                m_run = re.findall(pattern, output)
+                if len(m_run) == 1:
+                    rmsg = "The system is running good"
+                    log_debug(rmsg)
+                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
+                    break
+
+                time.sleep(1)
+                ct += 1
+            else:
+                rmsg = "The system is not booting up successfully, FAIL!!"
+                error_critical(rmsg)
+
+        # Joseph: Just keep it for a period of time, if there is no problem to the upper method, then will remove it
+        # if self.board_id in ["a667", "a674"]:
+        #     cmd = "systemctl is-system-running"
+        #     ct = 0
+        #     retry_max = 300
+        #     while ct < retry_max:
+        #         output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+        #         m_run = re.findall("running", output)
+        #         if len(m_run) == 2:
+        #             rmsg = "The system is running good"
+        #             log_debug(rmsg)
+        #             break
+
+        #         time.sleep(1)
+        #         ct += 1
+        #     else:
+        #         rmsg = "The system is not booting up successfully, FAIL!!"
+        #         error_critical(rmsg)
 
     def chk_caldata_uex(self):
         cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock8"
@@ -481,7 +522,10 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(80, "Succeeding in checking the devrenformation ...")
 
         if self.board_id in ["a667", "a674"]:
-            self.__del__()
+            if self._upload_log() is True:
+                self.upload = False  # Skip to upload log again while __del__
+            else:
+                error_critical("Failed to upload FCD log. This model must upload log")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()

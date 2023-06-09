@@ -36,25 +36,27 @@ class UVCFactoryGeneral(ScriptBase):
         Please set "self.helper_rule = 1" in each product if it follows new rule that
         doesn't need m25p80 and helper, refer to "UVC-G4PTZ"
         '''
-        if  self.product_name == "UVC-G5DOME":
+        if self.product_name == "UVC-G5DOME":
             self.board_name = "UVC G5 DOME"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-
-        elif  self.product_name == "UVC-G5FLEX":
+        elif self.product_name == "UVC-G5FLEX":
             self.board_name = "UVC G5 FLEX"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-
-        elif  self.product_name == "UVC-G4DOORBELLPROPOE":
+        elif self.product_name == "UVC-G4DOORBELLPROPOE":
             self.board_name = "UVC G4 Doorbell Pro POE"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-        elif  self.product_name == "UNIFI-WAVEROVERCAMERA":
+        elif self.product_name == "UNIFI-WAVEROVERCAMERA":
             self.board_name = "UniFi Wave Rover Camera"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
-        elif  self.product_name == "UVC-AIPRO":
+        elif self.product_name == "WAVE-ROVR-G4":
+            self.board_name = "UniFi Wave Rover Camera (SAV837)"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
+        elif self.product_name == "UVC-AIPRO":
             self.board_name = "UVC-AIPRO"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
@@ -65,6 +67,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.helper_rule = 1
         elif self.product_name == "UVC-G5PRO-MP":
             self.board_name = "UVC G5 Pro (MP ver.)"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
+        elif self.product_name == "UVC-G5TURRETPRO":
+            self.board_name = "UVC G5 Turret Pro"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
         ''' '''
@@ -89,6 +95,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '1',
             'a5a4': '1',
             'a598': '1',
+            'a599': '1',
+            'a59a': '1'
         }
 
         # number of WiFi
@@ -99,6 +107,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '0',
             'a5a4': '0',
             'a598': '0',
+            'a599': '0',
+            'a59a': '0'
         }
 
         # number of Bluetooth
@@ -109,6 +119,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '0',
             'a5a4': '0',
             'a598': '0',
+            'a599': '0',
+            'a59a': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -126,6 +138,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': "ifconfig eth0 ",
             'a5a4': "ifconfig eth0 ",
             'a598': "ifconfig eth0 ",
+            'a599': "ifconfig eth0 ",
+            'a59a': "ifconfig eth0 "
         }
 
     def ezreadini(self, path, section, item):
@@ -959,11 +973,17 @@ class UVCFactoryGeneral(ScriptBase):
                 else:
                     if self.finalret is True:
                         msg(43, "Doing registration ...")
-                        try:
-                            self.registration()
-                            msg(49, "register PASS")
-                        except Exception as e:
-                            print(str(e))
+                        for i in range(2):
+                            log_debug("Registration attempt: {}".format(i+1))
+                            try:
+                                self.registration()
+                                msg(49, "register PASS")
+                            except Exception as e:
+                                print(str(e))
+                                time.sleep(3)
+                            else:
+                                break
+                        else:
                             msg(48, "register FAIL")
                             self.critical_error("register FAIL")
 
