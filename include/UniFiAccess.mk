@@ -95,6 +95,11 @@ $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
+
+$(eval $(call ProductImage2,03272_ec44))
+$(eval $(call ProductImage2,03273_ec45))
+$(eval $(call ProductImage2,UA_EXTENDER-SERIES))
+
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))

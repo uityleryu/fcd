@@ -99,5 +99,8 @@
   ],
   "USP_PDU-SERIES" : [
     "00986_ed12", "01036_ed15"
+  ],
+  "UA_EXTENDER-SERIES" : [
+    "03272_ec44", "03273_ec45"
   ]
 }
