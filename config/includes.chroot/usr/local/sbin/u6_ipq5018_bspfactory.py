@@ -19,6 +19,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a667: UEX
     a674: UEXP
     a675: UniFi6 Pro outdoor
+    a684: UMR-PRO
 '''
 
 
@@ -52,7 +53,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "0",
             'a667': "2",
             'a674': "2",
-            'a675': "4"
+            'a675': "4",
+            'a684': "2",
         }
 
         self.wifinum = {
@@ -67,7 +69,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "2",
             'a667': "2",
             'a674': "2",
-            'a675': "0"
+            'a675': "0",
+            'a684': "2",
         }
 
         self.btnum = {
@@ -82,7 +85,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "1",
             'a667': "1",
             'a674': "1",
-            'a675': "1"
+            'a675': "1",
+            'a684': "1",
         }
 
         self.bootm_addr = {
@@ -97,7 +101,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "1",
             'a667': "",
             'a674': "",
-            'a675': "0x50000000"
+            'a675': "0x50000000",
+            'a684': "",
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -113,7 +118,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "1",
             'a667': "",
             'a674': "",
-            'a675': "bootm $fileaddr#config@a675"
+            'a675': "bootm $fileaddr#config@a675",
+            'a684': "",
         }
 
         self.linux_prompt_select = {
@@ -128,7 +134,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "#",
             'a667': "#",
             'a674': "#",
-            'a675': "#"
+            'a675': "#",
+            'a684': "#",
         }
 
         self.uboot_eth_port = {
@@ -143,7 +150,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "eth0",
             'a667': "eth0",
             'a674': "eth0",
-            'a675': "eth0"
+            'a675': "eth0",
+            'a684': "eth0",
         }
 
         self.lnx_eth_port = {
@@ -158,7 +166,8 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a666': "br-lan",
             'a667': "br-lan",
             'a674': "br-lan",
-            'a675': "br-lan"
+            'a675': "br-lan",
+            'a684': "br-lan",
         }
 
         self.devnetmeta = {
@@ -176,7 +185,9 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a675":
+
+        # FIXME: remove a684 when FW is ready
+        if self.board_id in ['a666', 'a665', 'a675', 'a684']:
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
@@ -482,7 +493,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.init_bsp_image()
 
         '''
-            This is a special case for the U6-Pro recall event. 
+            This is a special case for the U6-Pro recall event.
         '''
         if self.BOOT_INITRAM_IMAGE is True:
             self.run_initram_bootup()
@@ -499,7 +510,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.REGISTER_ENABLE is True:
-            if self.board_id == "a667" or self.board_id == "a674":
+            if self.board_id in ['a667', 'a674', 'a684']:
                 self.chk_caldata_uex()
                 self.registration_uex()
             else:
@@ -510,7 +521,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
-            if self.board_id == "a667" or self.board_id == "a674":
+            if self.board_id in ['a667', 'a674', 'a684']:
                 self.fwupdate_uex()
             else:
                 self.fwupdate()
@@ -521,7 +532,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
-        if self.board_id in ["a667", "a674"]:
+        if self.board_id in ["a667", "a674", 'a684']:
             if self._upload_log() is True:
                 self.upload = False  # Skip to upload log again while __del__
             else:
@@ -534,6 +545,7 @@ class U6IPQ5018BspFactory(ScriptBase):
 def main():
     u6ipq5018_bspfactory = U6IPQ5018BspFactory()
     u6ipq5018_bspfactory.run()
+
 
 if __name__ == "__main__":
     main()

@@ -59,7 +59,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
     def stop_uboot(self, timeout=60):
-        self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
+        self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in",
                                 action= "\x1b\x1b")
 
     def transfer_img(self, address, filename):
@@ -91,7 +91,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
-        elif  self.board_id == "a667":
+        elif self.board_id in ["a667", 'a684']:
             comma_mac = self.mac_format_str2comma(self.mac)
             self.set_ub_net(comma_mac, ethact="eth1")
         else:
@@ -110,7 +110,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
-        elif  self.board_id == "a667":
+        elif self.board_id in ["a667", 'a684']:
             comma_mac = self.mac_format_str2comma(self.mac)
             self.set_ub_net(comma_mac, ethact="eth1")
         else:

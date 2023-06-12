@@ -1,0 +1,46 @@
+{
+  "UniFiMobility": {
+    "UMR-PRO": {
+      "INDEX": 0,
+      "NAME": "UMR-PRO",
+      "BOARDID": "a684",
+      "BOMREV": "113-07948",
+      "DESC": "UniFi Mobility Router Pro",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "activate_code",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/a684",
+          "DST_PATH": "a684",
+          "FILES": [
+            "u6-express-v4.img",
+            "u6-express-v4_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a684-nor.bin",
+          "../a684/u6-express-v4_nor.bin"
+        ],
+        [
+          "tftp/images/a684-emmc.img",
+          "../a684/u6-express-v4.img"
+        ]
+      ]
+    }
+  }
+}
