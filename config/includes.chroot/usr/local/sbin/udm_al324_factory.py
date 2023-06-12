@@ -183,11 +183,12 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
         # reverse 77072aea to 2aea7707
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}{}".format(self.wsysid[self.board_id][4:],
+                                                                                         self.wsysid[self.board_id][
+                                                                                         :4]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000010 " + self.wsysid[self.board_id][4:] + self.wsysid[self.board_id][:4])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000018 " + str(self.row_id).zfill(2) + "01ac74")  # fake mac
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
+                               "mw.l 0x08000018 {} {}".format(str(self.row_id).zfill(2), "01ac74"))  # fake mac
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c {}".format("00032cbd"))
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
@@ -211,7 +212,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             cmd = "swconfig dev switch0 set apply"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-        self.is_network_alive_in_linux(ipaddr=self.tftp_server,retry=10)
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server, retry=10)
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -478,7 +479,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
-        if self.board_id == "ea11" or self.board_id == "ea15" or self.board_id == "ea2c":
+        if self.board_id in ["ea11", "ea15", "ea2c"]:
             # copy factory and memtester deb
             pkg_sets = [
                 "{}-memtester.deb".format(self.board_id),
