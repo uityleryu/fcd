@@ -109,6 +109,9 @@ class UDM_CN96XX_BSPFACTORY(ScriptBase):
         self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh",post_exp=self.bsp_fw_prompt)
 
     def run(self):
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+            time.sleep(2)
         """
                 Main procedure of factory
                 """
@@ -123,27 +126,9 @@ class UDM_CN96XX_BSPFACTORY(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
-        if self.UPDATE_UBOOT is True:
-            self.update_uboot()
-            self.pexp.expect_action(10, self.bootloader_prompt, "reset")
-            msg(20, "Finish boot updating")
-
-        if self.BOOT_RECOVERY_IMAGE is True:
-            msg(40, "Updating FW")
-            self.boot_recovery_image()
-
-        if self.INIT_RECOVERY_IMAGE is True:
-            self.init_recovery_image()
-            msg(60, "Boot up to linux console and network is good ...")
-        if self.FW_UPGRADE is True:
-            self.fw_upgrade()
-            msg(80, "Boot up to linux console and network is good ...")
-        output = self.pexp.expect_get_output(action="cat /sys/firmware/devicetree/base/soc/board-cfg/id", prompt="",
-                                             timeout=3)
-        log_debug(output)
-        output = self.pexp.expect_get_output(action="cat /lib/version", prompt="", timeout=3)
-        log_debug(output)
-
+        # The Back2T1 feature has not been implemented because there are no requirements for it.
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
