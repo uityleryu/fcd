@@ -98,15 +98,12 @@ class UDM_CN96XX_BSPFACTORY(ScriptBase):
     def fw_upgrade(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
         self.is_network_alive_in_linux(ipaddr=self.tftp_server)
-        self.copy_file(
-            source=os.path.join(self.fwdir, self.board_id + "-bsp-fw.tar"),
-            dest=os.path.join(self.tftpdir, "upgrade.tar")
-        )
-        self.pexp.expect_action(10, self.linux_prompt, "cd /tmp")
-        self.pexp.expect_lnxcmd(240, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync",post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar",post_exp="upgrade.tar")
-        self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh",post_exp=self.bsp_fw_prompt)
+        remote_path = self.fwdir, "{}-bsp-fw.tar".format(self.board_id)
+        local_path = "{}/upgrade.tar".format(self.dut_tmpdir)
+        self.tftp_get(remote=remote_path,local= local_path)
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar", post_exp="upgrade.tar")
+        self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh", post_exp=self.bsp_fw_prompt)
 
     def run(self):
         if self.ps_state is True:
