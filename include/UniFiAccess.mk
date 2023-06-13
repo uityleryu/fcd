@@ -79,7 +79,6 @@ TOOLS-UA-ELEVATOR-EXTENDER-TX+= \
     ua_extender/ec44.bin \
     ua_extender/ec45.bin
 
-
 TOOLS-UA-ELEVATOR-EXTENDER-RX+=$(TOOLS-CONFIG)
 TOOLS-UA-ELEVATOR-EXTENDER-RX+= \
     ua_extender/fcd/plctool \
@@ -98,7 +97,6 @@ $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
-
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ThermalScan,FCD_$(PRD)_ThermalScan_$(VER)_$(FWVER)))
