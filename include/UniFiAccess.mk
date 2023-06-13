@@ -18,11 +18,12 @@ IMAGE-UA-ELEVATOR= \
     ua-fw/e9a5-openwrt-4.0.12-88*
 
 IMAGE-UA-ELEVATOR-EXTENDER-TX= \
-    images/ec3e* \
+    images/ec44* \
+    images/ec45* \
     ua-fw/ua-elevator-*
 
 IMAGE-UA-ELEVATOR-EXTENDER-RX= \
-    images/ec3f* \
+    images/ec45* \
     ua-fw/ua-elevator-*
 
 IMAGE-UA+=$(IMAGE-UA-GATE)
@@ -75,7 +76,9 @@ TOOLS-UA-ELEVATOR-EXTENDER-TX+= \
     ua_extender/fcd/plcinit \
     ua_extender/fcd/modpib \
     ua_extender/fcd/gen_flash_block_bin.py \
-    ua_extender/ec3e.bin
+    ua_extender/ec44.bin \
+    ua_extender/ec45.bin
+
 
 TOOLS-UA-ELEVATOR-EXTENDER-RX+=$(TOOLS-CONFIG)
 TOOLS-UA-ELEVATOR-EXTENDER-RX+= \
@@ -83,7 +86,7 @@ TOOLS-UA-ELEVATOR-EXTENDER-RX+= \
     ua_extender/fcd/plcinit \
     ua_extender/fcd/modpib \
     ua_extender/fcd/gen_flash_block_bin.py \
-    ua_extender/ec3f.bin
+    ua_extender/ec45.bin
 
 
 # Project target
@@ -95,10 +98,6 @@ $(eval $(call ProductImage,UA-Fob,FCD_$(PRD)_UA-Fob_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
-$(eval $(call ProductImage,EXTENDER-SERIES,FCD_$(PRD)_EXTENDER-SERIES_$(VER)_$(FWVER)))
-
-$(eval $(call ProductImage2,03034_ec3e))
-$(eval $(call ProductImage2,03035_ec3f))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UA-GATE,FCD_$(PRD)_UA-GATE_$(VER)_$(FWVER)))

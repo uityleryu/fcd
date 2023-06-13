@@ -3,8 +3,8 @@
     "UA-ELEVATOR-EXTENDER-RX": {
       "INDEX": 0,
       "NAME": "UA-ELEVATOR-EXTENDER-RX",
-      "BOARDID": "ec3f",
-      "BOMREV": "113-03035",
+      "BOARDID": "ec45",
+      "BOMREV": "113-03273",
       "DESC": "UA Elevator Extender RX",
       "FILE": "ua_homeplug_factory.py",
       "T1FILE": "",
