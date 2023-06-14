@@ -31,9 +31,9 @@
             "uImage_20230524",
             "u-boot_20230524.mbn",
             "udr-pro-2g-rework-test-image.img",
-            "udr-pro-v2.1-single.img",
+            "udr-pro-v2.2.1-single.img",
             "udr-pro_mi03_1-2g_nor.bin",
-            "udr-pro_mi03_1-4g_nor.bin"
+            "udr-pro_mi03_1-4g_nor_v1.bin"
 
           ]
         }
@@ -57,7 +57,7 @@
         ],
         [
           "tftp/images/a678-bsp-4g_nor.bin",
-          "../udm-fw/udr-pro/udr-pro_mi03_1-4g_nor.bin"
+          "../udm-fw/udr-pro/udr-pro_mi03_1-4g_nor_v1.bin"
         ],
         [
           "tftp/images/a678-bsp-2g.img",
@@ -65,7 +65,7 @@
         ],
         [
           "tftp/images/a678-bsp-4g.img",
-          "../udm-fw/udr-pro/udr-pro-v2.1-single.img"
+          "../udm-fw/udr-pro/udr-pro-v2.2.1-single.img"
         ]
       ]
     }
