@@ -69,6 +69,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 Pro (MP ver.)"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif self.product_name == "UVC-G5TURRETPRO":
+            self.board_name = "UVC G5 Turret Pro"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -91,7 +95,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '1',
             'a5a4': '1',
             'a598': '1',
-            'a599': '1'
+            'a599': '1',
+            'a59a': '1'
         }
 
         # number of WiFi
@@ -102,7 +107,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '0',
             'a5a4': '0',
             'a598': '0',
-            'a599': '0'
+            'a599': '0',
+            'a59a': '0'
         }
 
         # number of Bluetooth
@@ -113,7 +119,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': '0',
             'a5a4': '0',
             'a598': '0',
-            'a599': '0'
+            'a599': '0',
+            'a59a': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -131,7 +138,8 @@ class UVCFactoryGeneral(ScriptBase):
             'a594': "ifconfig eth0 ",
             'a5a4': "ifconfig eth0 ",
             'a598': "ifconfig eth0 ",
-            'a599': "ifconfig eth0 "
+            'a599': "ifconfig eth0 ",
+            'a59a': "ifconfig eth0 "
         }
 
     def ezreadini(self, path, section, item):

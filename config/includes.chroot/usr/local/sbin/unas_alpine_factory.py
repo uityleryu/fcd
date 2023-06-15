@@ -37,7 +37,7 @@ class UNASALPINEFactory(ScriptBase):
         # override the base vars
         self.ubpmt = ">"
         self.linux_prompt = ["#"]
-        self.wait_LCM_upgrade_en = {'ea20', 'ea21', 'ea51'}
+        self.wait_LCM_upgrade_en = {'ea20', 'ea21', 'ea50', 'ea51'}
         # script specific vars
 
         '''
@@ -133,7 +133,7 @@ class UNASALPINEFactory(ScriptBase):
             'ea51': "ui",
             'ea21': "ubnt",
             'ea30': "ubnt",
-            'ea50': "ubnt",
+            'ea50': "ui",
         }
 
         self.user = self.loginname[self.board_id]
@@ -141,7 +141,7 @@ class UNASALPINEFactory(ScriptBase):
 
         self.INSTALL_SPI_FLASH = False  # this is temp solution, will remove after next build
         self.INSTALL_NAND_FW_ENABLE = True
-        if self.board_id == 'ea51':
+        if self.board_id == 'ea51' or self.board_id == 'ea50':
             self.UNLOCKEEPROM_ENABLE = True
         else:
             self.UNLOCKEEPROM_ENABLE = False
@@ -150,7 +150,7 @@ class UNASALPINEFactory(ScriptBase):
         self.REGISTER_ENABLE = True
         self.FWUPDATE_ENABLE = False
         self.DATAVERIFY_ENABLE = True
-        if self.board_id == 'ea1a' or self.board_id == 'ea50':
+        if self.board_id == 'ea1a':
             self.WAIT_LCMUPGRADE_ENABLE = False
         else:
             self.WAIT_LCMUPGRADE_ENABLE = True
@@ -190,6 +190,7 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(60, "Wrapping spi flash", err_msg="No msg of process of installation")
         self.pexp.expect_action(600, "SPI flash updated", "reset", err_msg="No msg of installation completed")
 
+    # if self.board_id != 'ea51' and self.board_id != 'ea50':
     def install_nand_fw(self):
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
         nand_path_for_dut = os.path.join(self.tftpdir, "fw-image.bin")
@@ -317,7 +318,10 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(10, "serialno=" + self.mac, err_msg="serialno error")
 
     def wait_lcm_upgrade(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
+        if self.board_id == 'ea50':
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-control --command dump --sender FCD", post_exp="setup.ready", retry=24)
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
 
     def copy_rename_uImage_to_tftpboot(self):
@@ -371,9 +375,13 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_only(300, nc_ready_message, err_msg="Failed at {}".format(nc_ready_message))
         self.fcd_server_send_firmware_by_nc(cmd)
 
+    #if self.board_id == 'ea51'or self.board_id == 'ea50':
     def install_firmware_on_emmc(self):
+        '''
+        Should never enter this
         if self.board_id == 'ea1a' or self.board_id == 'ea20':
             self.copy_rename_uImage_to_tftpboot()
+        '''
         self.set_tftp_at_uboot()
         self.pull_uImage_from_fcd_server(dut_nc_ip=self.dutip)
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
