@@ -309,7 +309,7 @@ def gen_prod_json():
                 [devreg_pd, rtc] = cn.xcmd(cmd)
 
                 # Ex: FCD_e7f9_1.77.15_8.7.4_LBE-5AC-Gen2
-                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", "").replace(" ","-"))
+                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", "").replace(" ", "-"))
             else:
                 # Ex: FCD_e7f9_1.77.15_8.7.4
                 fcdname = "FCD_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver)

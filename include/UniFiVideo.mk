@@ -291,6 +291,7 @@ $(eval $(call ProductImage,UVC-G5TURRETPRO,FCD_$(PRD)_G5TURRETPRO_$(VER)_$(FWVER
 $(eval $(call ProductImage2,03933_a598))
 $(eval $(call ProductImage2,04055_a598))
 $(eval $(call ProductImage2,UVC_G5PRO-SERIES))
+$(eval $(call ProductImage2,04272_a59b))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
@@ -337,3 +338,4 @@ $(eval $(call ProductCompress2,03783_a5c1))
 $(eval $(call ProductCompress2,04000_a594))
 $(eval $(call ProductCompress2,03821_a5a4))
 $(eval $(call ProductCompress2,03849_a575))
+$(eval $(call ProductCompress2,04272_a59b))
