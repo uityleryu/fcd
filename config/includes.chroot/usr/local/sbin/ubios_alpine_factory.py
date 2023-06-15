@@ -190,7 +190,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.set_boot_net()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
         time.sleep(2)
-        self.is_network_alive_in_uboot(self.tftp_server,timeout=10)
+        self.is_network_alive_in_uboot(self.tftp_server,timeout=15)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_only(10, "bootupd done")
@@ -201,8 +201,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id]+" ledtest link")
         self.set_boot_net()
         time.sleep(2)
-        self.is_network_alive_in_uboot(self.tftp_server,timeout=10)
-        # copy fw image to tftp server
+        self.is_network_alive_in_uboot(self.tftp_server,timeout=15)
+        # copy fw image to tftp server10
         self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
             dest=os.path.join(self.tftpdir, "fw-image.bin")  # fixed name
