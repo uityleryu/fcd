@@ -55,8 +55,8 @@
           "../unas/UNASSTU.al324.v0.9.5+root.11925.1590ce4.230612.1401.bin"
         ],
         [
-          "tftp/uImage",
-          "unas/ea50-sz-pr1-0.9.5.uImage"
+          "tftp/unas/uImage-ea50",
+          "./ea50-sz-pr1-0.9.5.uImage"
         ]
       ]
     }

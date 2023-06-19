@@ -319,32 +319,32 @@ class UNASALPINEFactory(ScriptBase):
 
     def wait_lcm_upgrade(self):
         if self.board_id == 'ea50':
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-control --command dump --sender FCD", post_exp="setup.ready", retry=24)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-control --command dump --sender FCD", post_exp="setup.ready", retry=240)
         else:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
 
-    def copy_rename_uImage_to_tftpboot(self):
-        uImage = 'uImage'
-        fcd_spifwpath = os.path.join(self.tftpdir, self.board_id, uImage)
-        spi_fw_path = os.path.join(self.tftpdir, uImage)
-        if not os.path.isfile(spi_fw_path):
+    def link_uImage_to_tftpboot(self):
+        uImage = 'uImage-' + self.board_id
+        link_target = os.path.join(self.tftpdir, 'unas', uImage)
+        link_dest = os.path.join(self.tftpdir, 'uImage')
+        if not os.path.isfile(link_dest):
             sstr = [
-                "cp",
-                "-p",
-                fcd_spifwpath,
-                spi_fw_path
+                "ln",
+                "-s",
+                link_target,
+                link_dest
             ]
             sstrj = ' '.join(sstr)
             [sto, rtc] = self.fcd.common.xcmd(sstrj)
             time.sleep(1)
             if int(rtc) > 0:
-                error_critical("Copying {} to tftp server failed".format(uImage))
+                error_critical("Create link to {} failed".format(link_target))
             else:
                 time.sleep(5)
-                log_debug("Copying {} to tftp server successfully".format(uImage))
+                log_debug("Create link to {} successfully".format(link_target))
         else:
-            log_debug("{} is already existed under /tftpboot".format(uImage))
+            log_debug("{} is already existed under /tftpboot".format(link_dest))
 
     def set_tftp_at_uboot(self):
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
@@ -377,11 +377,8 @@ class UNASALPINEFactory(ScriptBase):
 
     #if self.board_id == 'ea51'or self.board_id == 'ea50':
     def install_firmware_on_emmc(self):
-        '''
-        Should never enter this
-        if self.board_id == 'ea1a' or self.board_id == 'ea20':
-            self.copy_rename_uImage_to_tftpboot()
-        '''
+        self.link_uImage_to_tftpboot()
+
         self.set_tftp_at_uboot()
         self.pull_uImage_from_fcd_server(dut_nc_ip=self.dutip)
         fcd_fwpath = os.path.join(self.fwdir, self.board_id + "-fw.bin")
