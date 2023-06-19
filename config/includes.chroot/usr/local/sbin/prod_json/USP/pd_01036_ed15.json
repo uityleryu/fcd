@@ -34,7 +34,7 @@
           "SRC_PATH": "images/fcd-image/usp",
           "DST_PATH": "usp",
           "FILES": [
-            "US.mt7628_6.5.48+14683.230424.0502-uboot.bin",
+            "US.mt7628_6.5.53+14734.230517.0545-uboot.bin",
             "lede-ramips-mt76x8-USP-PDU-PRO-initramfs-kernel.bin",
             "ramips-mt76x8-usp-initramfs-16MB.uboot"
           ]
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed15-fw.bin",
-          "../usp/US.mt7628_6.5.48+14683.230424.0502-uboot.bin"
+          "../usp/US.mt7628_6.5.53+14734.230517.0545-uboot.bin"
         ],
         [
           "tftp/images/ed15-initramfs.bin",
