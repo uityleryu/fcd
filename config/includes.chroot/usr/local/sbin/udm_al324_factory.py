@@ -531,7 +531,7 @@ class UDM_AL324_FACTORY(ScriptBase):
                 rmsg = "Get LCM FW Version Fail!!!"
                 error_critical(rmsg)
 
-        if self.board_id == "ea15" or self.board_id == "ea2c":
+        if self.board_id in [ "ea15","ea2c"]:
             self.pexp.expect_action(30, self.linux_prompt, "systemctl unmask network-init udapi-server")
             self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
             self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
