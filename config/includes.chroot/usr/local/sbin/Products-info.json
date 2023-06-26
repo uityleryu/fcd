@@ -2738,11 +2738,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R":{
+    "UISP-R-00989":{
       "INDEX"       : 11,
       "NAME"        : "UISP-R",
       "BOARDID"     : "ee6e",
       "BOMREV"      : "113-00989",
+      "DESC"        : "Ubiquiti Network Management System Router",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-01262":{
+      "INDEX"       : 11,
+      "NAME"        : "UISP-R",
+      "BOARDID"     : "ee6e",
+      "BOMREV"      : "113-01262",
       "DESC"        : "Ubiquiti Network Management System Router",
       "FILE"        : "unms_mt7621_factory.py",
       "T1FILE"      : "",
