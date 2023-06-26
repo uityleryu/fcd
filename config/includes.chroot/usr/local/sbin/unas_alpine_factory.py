@@ -350,7 +350,7 @@ class UNASALPINEFactory(ScriptBase):
         self.pexp.expect_action(30, self.ubpmt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.ubpmt, "setenv serverip  " + self.tftp_server)
         self.is_network_alive_in_uboot(retry=9, timeout=5)
-    
+
     def pull_uImage_from_fcd_server(self, dut_nc_ip):
         cmd = 'setenv ipaddr {}; setenv serverip {}; setenv bootargsextra \'client={} server={} factory nc_transfer\'; run bootcmdtftp'.format(self.dutip, self.tftp_server, self.dutip, self.tftp_server)
         self.pexp.expect_action(30, self.ubpmt, cmd)
@@ -403,9 +403,18 @@ class UNASALPINEFactory(ScriptBase):
         if self.board_id == "ea50":
             self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770750ea")
             self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 50ea7707")
-        else:
+        elif self.board_id == "ea51":
             self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770751ea")
             self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 51ea7707")
+        elif self.board_id == "ea1a":
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 77071aea")
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 1aea7707")
+        elif self.board_id == "ea20":
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x0800000c 770720ea")
+            self.pexp.expect_ubcmd(10, self.ubpmt, "mw.l 0x08000010 20ea7707")
+        else:
+            error_critical("System ID is not support!!!")
+
         self.pexp.expect_ubcmd(10, self.ubpmt, "sf erase 0x1f0000 0x9000")
         self.pexp.expect_only(30, "Erased: OK")
         self.pexp.expect_ubcmd(10, self.ubpmt, "sf write 0x08000000 0x1f0000 0x20")
@@ -440,10 +449,10 @@ class UNASALPINEFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
 
-        if self.board_id == 'ea51' or self.board_id == 'ea50':
+        if self.board_id in ['ea51', 'ea50', 'ea1a', 'ea20']:
             msg(3, 'Set fake sysid in uboot')
             self.set_fake_sysid()
-        
+
         if self.INSTALL_SPI_FLASH is True:
             msg(5, "Boot to u-boot console and install spi flash...")
             self.pexp.expect_action(300, "Autobooting in 2 seconds, press", "\x1b\x1b")  # \x1b is esc key
