@@ -2866,6 +2866,19 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-Plus":{
+      "INDEX"       : 17,
+      "NAME"        : "UISP-S-Plus",
+      "BOARDID"     : "ee7c",
+      "BOMREV"      : "113-01223",
+      "DESC"        : "UISP S Plus",
+      "FILE"        : "uisp_mrvl98dx25xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
     }
   },
 
