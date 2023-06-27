@@ -1,9 +1,4 @@
-
 # Images
-#
-IMAGE-UISP-S-Plus= \
-    images/ee7c* \
-    unms-fw/uisp-s-plus/uisp-s-plus*
 
 IMAGE-UISP-P-LITE= \
     images/eefa* \
@@ -49,7 +44,15 @@ IMAGE-UISP-P-UPS= \
 		unms-fw/uisp-p-ups/UISP-P-UPS* \
 		images/eed6*
 
-IMAGE-UNMS+=$(IMAGE-UISP-S-Plus)
+IMAGE-UISP-S-Plus= \
+    images/ee7c* \
+    unms-fw/uisp-s-plus/uisp-s-plus*
+
+IMAGE-UISP-R-Plus= \
+		unms-fw/uisp-r-plus/UISPR* \
+		unms-fw/uisp-r-plus/ubnt_uispr* \
+		images/ee7a*
+
 IMAGE-UNMS+=$(IMAGE-UISP-CONSOLE)
 IMAGE-UNMS+=$(IMAGE-UISP-LTE)
 IMAGE-UNMS+=$(IMAGE-UISP-O-LITE)
@@ -61,6 +64,8 @@ IMAGE-UNMS+=$(IMAGE-UISP-P-LITE)
 IMAGE-UNMS+=$(IMAGE-UISP-P)
 IMAGE-UNMS+=$(IMAGE-UISP-P-PRO)
 IMAGE-UNMS+=$(IMAGE-UISP-P-UPS)
+IMAGE-UNMS+=$(IMAGE-UISP-R-Plus)
+IMAGE-UNMS+=$(IMAGE-UISP-S-Plus)
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -121,6 +126,9 @@ TOOLS-UISP-P-UPS+= eed6/*
 TOOLS-UISP-S-Plus=$(TOOLS-UNMS)
 TOOLS-UISP-S-Plus+= uisp_s_plus/helper_MRVL_ACT5_release
 
+TOOLS-UISP-R-Plus=$(TOOLS-UNMS)
+TOOLS-UISP-R-Plus+= uisp_r_plus/*
+
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-CONSOLE,FCD_$(PRD)_UISP-CONSOLE_$(VER)_$(FWVER)))
@@ -137,6 +145,7 @@ $(eval $(call ProductImage,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-P-UPS,FCD_$(PRD)_UISP-P-UPS_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UISP-S-Plus,FCD_$(PRD)_UISP-S-Plus_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UISP-R-Plus,FCD_$(PRD)_UISP-R-Plus_$(VER)_$(FWVER)))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
@@ -154,6 +163,7 @@ $(eval $(call ProductCompress,UISP-P,FCD_$(PRD)_UISP-P_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-PRO,FCD_$(PRD)_UISP-P-PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-P-UPS,FCD_$(PRD)_UISP-P-UPS_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UISP-S-Plus,FCD_$(PRD)_UISP-S-Plus_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UISP-R-Plus,FCD_$(PRD)_UISP-R-Plus_$(VER)_$(FWVER)))
 
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
@@ -182,3 +192,4 @@ $(eval $(call ProductCompress2,UISP_UDC-SERIES))
 $(eval $(call ProductCompress2,UISP_Console-SERIES))
 $(eval $(call ProductCompress2,01123_eed6))
 $(eval $(call ProductCompress2,01223_ee7c))
+$(eval $(call ProductCompress2,01224_ee7a))
