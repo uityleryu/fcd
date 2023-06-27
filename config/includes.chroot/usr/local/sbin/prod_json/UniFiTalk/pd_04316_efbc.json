@@ -1,0 +1,33 @@
+{
+  "UniFiTalk": {
+    "UTP-G3-Touch-Pro-Max": {
+      "INDEX": 0,
+      "NAME": "UTP-G3-Touch-Pro-Max",
+      "BOARDID": "efbc",
+      "BOMREV": "113-04316",
+      "DESC": "Phone G3 Touch Pro Max",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee_20230414"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230414"
+        ]
+      ]
+    }
+  }
+}

@@ -1682,7 +1682,7 @@
       "SW_ID"       : "0801"
     },
 
-    
+
     "UNVR-AI":{
       "INDEX"       : 3,
       "NAME"        : "UNVR-PRO",
@@ -1917,7 +1917,7 @@
       "FCD_ID"      : "0012",
       "SW_ID"       : "1d01"
      },
-  
+
     "LVDU-4":{
       "INDEX"       : 4,
       "NAME"        : "LVDU-4",
@@ -2461,7 +2461,7 @@
       "FCD_ID"      : "0009",
       "SW_ID"       : "0e03"
     },
-    
+
     "UVC-G4FLOODLIGHTBATTERY": {
       "INDEX": 12,
       "NAME": "UVC-G4FLOODLIGHTBATTERY",
@@ -2602,6 +2602,20 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
+    },
+    "UVC-G5TURRETPRO": {
+      "INDEX": 23,
+      "NAME": "UVC-G5TURRETPRO",
+      "BOARDID": "a59a",
+      "BOMREV": "113-04340",
+      "DESC": "UVC G5 Turret Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
   },
 
@@ -2724,11 +2738,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R":{
+    "UISP-R-00989":{
       "INDEX"       : 11,
       "NAME"        : "UISP-R",
       "BOARDID"     : "ee6e",
       "BOMREV"      : "113-00989",
+      "DESC"        : "Ubiquiti Network Management System Router",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-01262":{
+      "INDEX"       : 11,
+      "NAME"        : "UISP-R",
+      "BOARDID"     : "ee6e",
+      "BOMREV"      : "113-01262",
       "DESC"        : "Ubiquiti Network Management System Router",
       "FILE"        : "unms_mt7621_factory.py",
       "T1FILE"      : "",
@@ -2761,7 +2788,7 @@
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
       "SW_ID"       : "1a01"
-    }, 
+    },
 
     "UISP-P":{
       "INDEX"       : 14,
@@ -2802,11 +2829,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R-PRO":{
+    "UISP-R-PRO-01061":{
       "INDEX"       : 14,
       "NAME"        : "UISP-R-PRO",
       "BOARDID"     : "ee6d",
       "BOMREV"      : "113-01061",
+      "DESC"        : "Ubiquiti Network Management System Router PRO",
+      "FILE"        : "uisp_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-PRO-01265":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-R-PRO",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-01265",
       "DESC"        : "Ubiquiti Network Management System Router PRO",
       "FILE"        : "uisp_alpine_factory.py",
       "T1FILE"      : "",
@@ -2822,6 +2862,19 @@
       "BOMREV"      : "113-01123",
       "DESC"        : "UISP Power UPS",
       "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-Plus":{
+      "INDEX"       : 17,
+      "NAME"        : "UISP-S-Plus",
+      "BOARDID"     : "ee7c",
+      "BOMREV"      : "113-01223",
+      "DESC"        : "UISP S Plus",
+      "FILE"        : "uisp_mrvl98dx25xx_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
@@ -2985,7 +3038,7 @@
       "FCD_ID"      : "0008",
       "SW_ID"       : "0c01"
     }
-  }, 
+  },
 
   "UniFiDrive":
   {

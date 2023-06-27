@@ -324,7 +324,7 @@ class IPQ5018MFGGeneral(ScriptBase):
         self.machid = {
             '0000': "",
             'a658': "",
-            'a659': "",
+            'a659': "8040104",
             'a660': "8040104",
             'a661': "8040104",
             'a662': "",
@@ -338,14 +338,14 @@ class IPQ5018MFGGeneral(ScriptBase):
         }
 
         self.bsp_2nd_type = {
-            '0000': "emmc",
-            'a658': "emmc",
-            'a659': "emmc",
-            'a660': "emmc",
-            'a661': "emmc",
-            'a662': "emmc",
-            'a663': "emmc",
-            'a664': "emmc",
+            '0000': "emmc1",
+            'a658': "emmc1",
+            'a659': "emmc2",
+            'a660': "emmc2",
+            'a661': "emmc2",
+            'a662': "emmc2",
+            'a663': "emmc2",
+            'a664': "emmc1",
             'a669': "nand",
             'a671': "nand",
             'a672': "nand",
@@ -385,15 +385,17 @@ class IPQ5018MFGGeneral(ScriptBase):
 
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
 
-    def update_emmc(self):
-        #cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
-        #log_debug(cmd)
-        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        #self.pexp.expect_only(60, "blocks erased: OK")
-        #self.pexp.expect_only(60, "blocks written: OK")
-        #cmd = "mmc erase 0x48422 0x40000"
-        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
-        #self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
+    def update_emmc1(self):
+        cmd = "mmc erase 0x0 0x2804A1; mmc write 0x44000000 0x0 0x2A422".format(self.mem_addr)
+        log_debug(cmd)
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+        self.pexp.expect_only(60, "blocks erased: OK")
+        self.pexp.expect_only(60, "blocks written: OK")
+        cmd = "mmc erase 0x48422 0x40000"
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
+        self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action="reset")
+        
+    def update_emmc2(self):
         cmd = "imgaddr=$fileaddr && source $imgaddr:script"
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
@@ -461,8 +463,10 @@ class IPQ5018MFGGeneral(ScriptBase):
         msg(60, 'Network in uboot works ...')
         self.transfer_img(address=self.mem_addr, filename=self.bsp_2nd_bin)
         msg(70, 'Transfer 2nd image done')
-        if self.bsp_2nd_type[self.board_id] == 'emmc':
-            self.update_emmc()
+        if self.bsp_2nd_type[self.board_id] == 'emmc1':
+            self.update_emmc1()
+        elif self.bsp_2nd_type[self.board_id] == 'emmc2':
+            self.update_emmc2()
         else:
             self.update_nand()
         msg(80, 'Update nand done ...')

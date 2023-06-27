@@ -81,6 +81,7 @@ class USPMT7628Factory(ScriptBase):
     def fwupdate(self, image, reboot_en):
         if reboot_en is True:
             self.pexp.expect_action(30, self.linux_prompt, "reboot -f")
+
         self.enter_uboot()
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearcfg TRUE")
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ubnt_clearenv TRUE")
@@ -123,12 +124,23 @@ class USPMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu.1 info', 'version', retry=48)
 
     def run(self):
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         self.fcd.common.config_stty(self.dev)
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        time.sleep(5)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_RECOVERY_ENABLE is True:
@@ -173,6 +185,12 @@ class USPMT7628Factory(ScriptBase):
         if self.MCU_FW_CHECK_ENABLE is True:
             self.mcu_fw_check()
             msg(90, "Succeeding in checking the MCU FW information ...")
+
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()

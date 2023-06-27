@@ -208,7 +208,7 @@ TOOLS-CONFIG= \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release \
-    common/aarch64-rpi4-64k-ee
+    common/aarch64-rpi4-64k-ee*
 
 # Project specific tools
 
@@ -410,3 +410,6 @@ $(eval $(call ProductCompress2,03970_ed31))
 $(eval $(call ProductCompress2,02540_ed60))
 $(eval $(call ProductCompress2,02556_ed01))
 $(eval $(call ProductCompress2,02672_ed04))
+$(eval $(call ProductCompress2,04085_ed56))
+$(eval $(call ProductCompress2,04086_ed58))
+$(eval $(call ProductCompress2,04077_ed5a))

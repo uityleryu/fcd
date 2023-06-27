@@ -1,17 +1,12 @@
 #!/usr/bin/python3
 
 from script_base import ScriptBase
-from PAlib.Framework.fcd.common import Common
-from PAlib.Framework.fcd.pserial import SerialExpect
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.ssh_client import SSHClient
 from PAlib.Framework.fcd.logger import log_debug, msg, error_critical, log_info
 
-import sys
 import time
 import os
-import re
-import traceback
 import subprocess as sp
 import glob
 
@@ -24,6 +19,7 @@ CERT_INSTALL        = True
 FWUPDATE_ENABLE     = True
 MODEM_UPDATE_ENABLE = True
 CHECK_FW_VER        = True
+SET_BURNIN_TIME     = True
 
 
 class USWPUMA7FactoryGeneral(ScriptBase):
@@ -46,8 +42,8 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.mac_upper = self.mac.upper()
         self.certs_tftp_dir = os.path.join(self.tftpdir, self.certs)
         # Below used for FW version check. Remember to update when change firmware
-        self.version = "US.mxl277_MFG_1.0.1"
-        self.cm_version = "US.mxl277_MFG_CM_1.0.2"
+        self.version = "US.mxl277_MFG_1.0.5"
+        self.cm_version = "US.mxl277_MFG_CM_1.0.5"
         # overwrite
         self.tftp_server = "192.168.100.201"
 
@@ -111,6 +107,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             "/etc/docsis/security/mfg_cert.cer",
             "{}/mfg_key_pub.bin".format(d30_cert_path)
         ]
+
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ls -ll {}".format(d30_cert_path), post_exp=self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action="ls -ll {}".format(d31_cert_path), post_exp=self.linux_prompt)  # noqa: E501
+
         log_debug(msg="d30 source files:")
         log_debug(msg=' '.join(d30_source_files))
 
@@ -200,7 +200,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /unifi_fs/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)  # noqa: E501
             if "US.mxl277" not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
@@ -221,7 +221,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /unifi_fs/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /unifi_fs/lib/version\"", self.linux_prompt)  # noqa: E501
             if self.version not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
@@ -241,17 +241,41 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             else:
                 break
 
+    # To fix tftp not working issue
+    def tftp_rescue_np_update(self):
+        arm_fw_ver = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+        if "US.mxl277_MFG_CM_1.0.2+191.20230114.0512" in arm_fw_ver:
+            log_debug("Upgrade CM np FW to fix tftp issue ...")
+            self.reboot_by_watchdog()
+            image_name = self.board_id + "-cm-np.bin"
+            source = os.path.join(self.tftpdir, self.image, image_name)
+            target = os.path.join(self.dut_tmpdir, image_name)
+            self.scp_get("ubnt", "ubnt", self.dut_default_ip, source, target)
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_action(10, self.linux_prompt, "md5sum {}".format(target))
+            self.pexp.expect_action(10, self.linux_prompt, "update 1 {}".format(target))
+            self.pexp.expect_only(10, "update: Exit OK")
+            self.pexp.expect_action(10, self.linux_prompt, "update 2 {}".format(target))
+            self.pexp.expect_only(10, "update: Exit OK")
+            self.pexp.expect_action(10, self.linux_prompt, "rm {}".format(target))
+            # self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+            self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+            result = self.reboot_handler(watchdog=True)
+            if result is False:
+                error_critical("Fail to reboot ...")
+
     def fwupdate_modem(self):
         retry_max = 3
         count_fw = 0
         while True:
             arm_fw_ver = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
-            #atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /usr/lib/version\"", self.linux_prompt)
+            # atom_fw_ver = self.pexp.expect_get_output("/unifi_fs/bin/rcli 1 \"cat /usr/lib/version\"", self.linux_prompt)  # noqa: E501
             if self.cm_version not in arm_fw_ver:
                 count_fw = count_fw + 1
                 if count_fw == retry_max:
                     error_critical("Fail to upgrade cm fw ...")
                 log_debug("Upgrading cm fw count {} ...".format(count_fw))
+                self.reboot_by_watchdog()
                 # file location:
                 # tftp/images/ed60-modemfw.bin -> ../usw-fw/file.bin
                 image_name = self.board_id+"-cm-app.bin"
@@ -277,9 +301,9 @@ class USWPUMA7FactoryGeneral(ScriptBase):
                 self.pexp.expect_action(10, self.linux_prompt, "update 2 {}".format(target))
                 self.pexp.expect_only(10, "update: Exit OK")
                 self.pexp.expect_action(10, self.linux_prompt, "rm {}".format(target))
-                #self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+                # self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
                 self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
-                result = self.reboot_handler()
+                result = self.reboot_handler(watchdog=True)
                 if result is False:
                     error_critical("Fail to reboot ...")
             else:
@@ -332,7 +356,15 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.pexp.expect_get_output("cat /proc/ubnthal/system.info", self.linux_prompt)
         log_info("==========SYS INFO==========")
 
-    def reboot_handler(self):
+    # watchdog reboot, trigger reboot after 60s
+    def reboot_by_watchdog(self):
+        log_info("Trigger watchdog reboot")
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"systemctl restart sw-watchdog\"")
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/bin/systemctl stop rpc-ci-server")
+
+    def reboot_handler(self, watchdog=False):
         expect_list = [
             "Input/output error",
             "Restarting system",
@@ -342,36 +374,40 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         if index != 0:
             self.wait_for_bootup()
             return True
-
-        cmds = [
-            "systemctl reboot",
-            "/sbin/reboot",
-            "reboot -f",
-            "reboot",
-            "LD_LIBRARY_PATH=/lib /sbin/reboot",
-            "halt",
-            "exit"
-        ]
-        for i in range(len(cmds)):
-            if i == 3 or i == 6:
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.linux_prompt, "exit")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.puma7_prompt, cmds[i])
-            else:
-                if i == 4:
-                    self.pexp.expect_action(10, "", "")
-                    self.pexp.expect_action(10, self.puma7_prompt, "shell")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, "", "")
-                self.pexp.expect_action(10, self.linux_prompt, cmds[i])
-            index = self.pexp.expect_get_index(150, expect_list)
-            if index > 0:
+        elif watchdog:
+            try:
+                # wait for watchdog action
+                self.pexp.expect_only(70, "Cougar Mountain C0 - Boot Ram.")
                 self.wait_for_bootup()
                 return True
-        # Fail to reboot
-        return False
+            except:
+                return False
+        else:
+            return False
+
+    def set_burnin_time(self):
+        log_info("Set burnin time to 4 hours")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/scripts/uci-burnin.sh 600 14400", self.linux_prompt)
+
+    def flush_nvram(self):
+        log_info("Flush NVRAM")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "[ ! -d \"/nvram/1/security\" ] && mkdir /nvram/1/security", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"/etc/scripts/init/nss stop\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"umount /nvram\"", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mkfs.ext3 /dev/disk/by-partlabel/APP_CPU_NVRAM\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mount /dev/disk/by-partlabel/APP_CPU_NVRAM /nvram\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"mkdir /nvram/itstore\"", self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"echo \"vendorId=0a\" > /nvram/sec_vendorId\"", self.linux_prompt)  # noqa: E501
+
+    def check_nvram(self):
+        log_info("Check NVRAM")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"ls /nvram\"", self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/bin/rcli 1 \"cat /nvram/sec_vendorId\"", "vendorId=0a")  # noqa: E501
+
+    def reboot_DUT(self):
+        self.pexp.expect_action(10, "", "")
+        self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
+        self.reboot_handler()
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
@@ -392,6 +428,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         self.wait_for_bootup(firstboot=True)
+        self.tftp_rescue_np_update()
 
         if PROVISION_ENABLE is True:
             msg(10, "Send tools to DUT and data provision ...")
@@ -416,8 +453,25 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             msg(40, "Finish doing signed file and EEPROM checking ...")
 
         if CERT_INSTALL is True:
-            self.cert_upload()
-            self.cert_install()
+            retry_max = 2
+            count = 0
+            while True:
+                self.cert_upload()
+                try:
+                    self.cert_install()
+                    break
+                except Exception as e:
+                    count += 1
+                    if count == retry_max:
+                        error_critical("Fail to install certificates ...")
+                    log_info("Fail to install certificates ...")
+                    log_info("Flush NVRAM and reboot DUT to retry")
+                    self.flush_nvram()
+                    self.check_nvram()
+                    self.reboot_DUT()
+                    time.sleep(3)
+                    self.reboot_DUT()  # Reboot twice will fix cert installation issue
+
             msg(50, "Finish installing certificates ...")
             self.cert_verify()
             msg(60, "Finish verifying certificates ...")
@@ -433,6 +487,10 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         if CHECK_FW_VER is True:
             self.check_fw()
             msg(90, "Finish checking FW ...")
+
+        if SET_BURNIN_TIME is True:
+            self.set_burnin_time()
+            msg(95, "Finish set burnin time ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()

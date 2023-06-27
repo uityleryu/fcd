@@ -7,7 +7,7 @@
       "BOMREV": "113-00830",
       "DESC": "UniFi Mobile Router EU AC",
       "FILE": "uap_qca956x_factory2.py",
-      "T1FILE": "uap_qca956x_mfg.py",
+      "T1FILE": "uap_qca956x_mfg2.py",
       "QRCHECK": "activate_code",
       "FCD_ID": "0004",
       "SW_ID": "0601",
@@ -16,10 +16,10 @@
           "SRC_PATH": "images/fcd-image/uap-fw/ulte-flex",
           "DST_PATH": "uap-fw/ulte-flex",
           "FILES": [
-            "ULTE-Flex.qca956x.v1.2.7.0-gd9f32e27-recovery.bin",
+            "ULTE-Flex.qca956x.v1.3.6.0-g87521e37-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V10.img",
-            "ee-1.2.7-0-gd9f32e27-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
-            "qca956x-ulte-flex-u-boot-20230202.bin"
+            "ee-1.3.6-0-g87521e37-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
+            "qca956x-ulte-flex-u-boot-20230413.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e618.bin",
-          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v1.2.7.0-gd9f32e27-recovery.bin"
+          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v1.3.6.0-g87521e37-recovery.bin"
         ],
         [
           "tftp/images/e618-mfg.bin",
@@ -51,11 +51,11 @@
         ],
         [
           "tftp/images/e618-recovery.bin",
-          "../uap-fw/ulte-flex/ee-1.2.7-0-gd9f32e27-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
+          "../uap-fw/ulte-flex/ee-1.3.6-0-g87521e37-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
         ],
         [
           "tftp/images/e618-uboot.bin",
-          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-20230202.bin"
+          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-20230413.bin"
         ]
       ]
     }

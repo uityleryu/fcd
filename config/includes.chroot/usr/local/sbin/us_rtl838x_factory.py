@@ -20,7 +20,11 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # script specific vars
         self.ver_extract()
         self.boot_prompt = "uboot> #"
-        self.devregpart = "/dev/mtdblock6"
+
+        # TODO: FW have issue now. It should be fixed.
+        # self.devregpart = "/dev/mtdblock6"
+        self.devregpart = "/dev/mtd6"
+
         self.bomrev = "113-" + self.bom_rev
         self.helperexe = "helper_RTL838x"
         self.helper_path = "usw_rtl838x"
@@ -29,8 +33,8 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         # customize variable for different products
         self.wait_LCM_upgrade_en = {
-            'ed20','ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e','ed50', 'ed51', 'ed52', 'ed53'
+            'ed20', 'ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
+            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58', 'ed5a'
         }
 
         self.disable_powerd_list = ['ed2c']
@@ -56,6 +60,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "3",  # usw-48 32MB
             'ed54': "3",  # usw-lite-16-poe 32MB
             'ed55': "3",  # usw-lite-8-poe 32MB
+            'ed56': "3",  # usw-pro-24-poe (RTK)
+            'ed58': "3",  # usw-pro-48-poe (RTK)
+            'ed5a': "3",  # usw-pro-8-poe (RTK)
         }
 
         # number of WiFi
@@ -77,6 +84,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "0",  # usw-48 32MB
             'ed54': "0",  # usw-lite-16-poe 32MB
             'ed55': "0",  # usw-lite-8-poe 32MB
+            'ed56': "0",  # usw-pro-24-poe (RTK)
+            'ed58': "0",  # usw-pro-48-poe (RTK)
+            'ed5a': "0",  # usw-pro-8-poe (RTK)
         }
 
         # number of Bluetooth
@@ -98,6 +108,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "0",  # usw-48 32MB
             'ed54': "0",  # usw-lite-16-poe 32MB
             'ed55': "0",  # usw-lite-8-poe 32MB
+            'ed56': "0",  # usw-pro-24-poe (RTK)
+            'ed58': "0",  # usw-pro-48-poe (RTK)
+            'ed5a': "0",  # usw-pro-8-poe (RTK)
         }
 
         self.netif = {
@@ -118,6 +131,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed53': "ifconfig eth0 ",  # usw-48 32MB
             'ed54': "ifconfig eth0 ",  # usw-lite-16-poe 32MB
             'ed55': "ifconfig eth0 ",  # usw-lite-8-poe 32MB
+            'ed56': "ifconfig eth0 ",  # usw-pro-24-poe (RTK)
+            'ed58': "ifconfig eth0 ",  # usw-pro-48-poe (RTK)
+            'ed5a': "ifconfig eth0 ",  # usw-pro-8-poe (RTK)
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -141,6 +157,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
     def fwupdate(self):
         self.pexp.expect_action(60, "Hit Esc key to stop autoboot", "\x1b")
         msg(60, "Reboot into Uboot for resetting to default environment")
+        # FIXME: need to add sysid condition?
         self.pexp.expect_action(15, self.bootloader_prompt, "env set boardmodel unknown")
         self.pexp.expect_action(20, self.bootloader_prompt, "bootubnt")
         self.pexp.expect_only(60, "Resetting to default environment")
@@ -166,14 +183,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             error_critical(msg='Can not detect "Wrong boardmodel" or "TFTP transfer on", failed to start urescue.')
         elif index == 0:
             log_debug('Detected "Wrong boardmodel", reboot into Uboot again for urescue.')
-            
+
             self.pexp.expect_action(120, "Hit Esc key to stop autoboot", "\x1b")
             set_ip_and_urescue()
             self.pexp.expect_only(60, "Listening for TFTP transfer on.")
         elif index == 1:
             log_debug('No "Wrong boardmodel" error, continue to FW upload.')
             pass
-   
+
         cmd = ["atftp",
                "-p",
                "-l",
@@ -194,7 +211,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         msg(70, "Updating released firmware...")
         self.pexp.expect_only(120, "Updating kernel0 partition \(and skip identical blocks\)")
-        self.pexp.expect_only(120, "done")
+        self.pexp.expect_only(240, "done")
 
     def check_info(self):
         """under developing
@@ -269,10 +286,9 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT_ENABLE == True:
+        if self.UPDATE_UBOOT_ENABLE is True:
             pass
-
-        if self.BOOT_RECOVERY_IMAGE == True:
+        if self.BOOT_RECOVERY_IMAGE is True:
             pass
 
         self.clear_eeprom_in_uboot()
@@ -303,7 +319,6 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 
         # reboot anyway
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
-
         if self.FWUPDATE_ENABLE is True:
             msg(55, "Starting firmware upgrade process...")
             self.fwupdate()
@@ -335,6 +350,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
 def main():
     us_factory_general = USW_RTL838X_FactoryGeneral()
     us_factory_general.run()
+
 
 if __name__ == "__main__":
     main()

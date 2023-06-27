@@ -16,14 +16,14 @@
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "UNASPRO.al324.v3.1.3.8e6f23a.230119.2306.bin"
+            "UNASPRO.al324.v3.1.11.036a331.230608.1337.bin"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "uImage-ea51"
+            "ea51-fxn-pp1-3.1.11.uImage"
           ]
         },
         {
@@ -58,11 +58,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea51-fw.bin",
-          "../unas/UNASPRO.al324.v3.1.3.8e6f23a.230119.2306.bin"
+          "../unas/UNASPRO.al324.v3.1.11.036a331.230608.1337.bin"
         ],
         [
-          "tftp/uImage",
-          "unas/uImage-ea51"
+          "tftp/unas/uImage-ea51",
+          "./ea51-fxn-pp1-3.1.11.uImage"
         ]
       ]
     }

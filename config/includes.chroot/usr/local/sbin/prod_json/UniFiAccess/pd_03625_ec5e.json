@@ -4,7 +4,7 @@
       "INDEX": 0,
       "NAME": "UA-G2-Reader-Pro",
       "BOARDID": "ec5e",
-      "BOMREV": "113-03625",
+      "BOMREV": ["113-03625","113-04342"],
       "DESC": "UniFiAccess G2 Reader Pro",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",

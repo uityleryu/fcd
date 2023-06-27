@@ -30,7 +30,7 @@
           "SRC_PATH": "images/fcd-image/unms-fw",
           "DST_PATH": "unms-fw",
           "FILES": [
-            "DIAG_UISP-S-Pro-1.3.8-DEV07.bix"
+            "DIAG_UISP-S-Pro-1.3.8-DEV08.bix"
           ]
         },
         {
@@ -57,7 +57,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/eed1-fw.bin",
-          "../unms-fw/DIAG_UISP-S-Pro-1.3.8-DEV07.bix"
+          "../unms-fw/DIAG_UISP-S-Pro-1.3.8-DEV08.bix"
         ],
         [
           "tftp/images/eed1-uboot.img",

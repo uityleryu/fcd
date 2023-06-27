@@ -1,0 +1,53 @@
+{
+  "UniFiSwitch": {
+    "USW-XP-24-POE": {
+      "INDEX": 0,
+      "NAME": "USW-XP-24-POE",
+      "BOARDID": "ed56",
+      "BOMREV": "113-04085",
+      "DESC": "UBNT UniFiSwitch Pro 24 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "usw-pro-24-poe-fw.bin",
+            "US.rtl9301_lf-fix-rtl9301-reset-gpio+14612.230208.1255-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed56-fw.bin",
+          "../usw-fw/usw-pro-24-poe-fw.bin"
+        ],
+        [
+          "tftp/images/ed56-t1.bin",
+          "../usw-fw/usw-pro-24-poe-fw.bin"
+        ]
+      ]
+    }
+  }
+}
