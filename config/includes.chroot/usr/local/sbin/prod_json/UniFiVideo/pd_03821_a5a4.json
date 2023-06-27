@@ -19,12 +19,31 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-64k-ee_20230608",
             "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a5a4-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "aipro.UVC.CV2X.v4.60.7.67-fcddbg.f2317a6.230614.0628.bin"
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230608"
+        ]
+      ]
     }
   }
 }
