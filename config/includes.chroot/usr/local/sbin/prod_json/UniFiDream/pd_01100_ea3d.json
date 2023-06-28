@@ -29,7 +29,7 @@
           "FILES": [
             "UDMENT.cn9670.v1.0.0+root.11734.8013aa8.230529.1028.bin",
             "uImage_20230529",
-            "bootfs_uboot_20230529.img"
+            "bootfs_uboot_20230621.img"
           ]
         }
       ],
@@ -44,7 +44,7 @@
         ],
         [
           "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/bootfs_uboot_20230529.img"
+          "../udm-fw/udm-enterprise/bootfs_uboot_20230621.img"
         ]
       ]
     }

@@ -70,7 +70,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea3d': "al_eth3",
+            'ea3d': "rvu_pf#3",
             'ea3e': "al_eth3",
         }
 
@@ -95,7 +95,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # ethernet interface
         self.netif = {
             'ea3d': "eth3",
-            'ea3e': "eth3",
+            'ea3e': "br0",
         }
 
         # LCM
@@ -172,7 +172,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def config_board_model_nbumer(self):
         self.pexp.expect_action(60, "Press 'B' within 2 seconds for boot menu", "B")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "S","Choice: B")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "S", "Choice: B")
         self.pexp.expect_action(60, "S) Enter Setup", )
         self.pexp.expect_action(60, "B) Board Manufacturing Data", "B")
         self.pexp.expect_only(30, "(INS)Board Model Number [uxg-enterprise]:")
@@ -185,8 +185,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         time.sleep(2)
 
+        if self.board_id in ["ea3d"]:
+            self.pexp.expect_action(40,action="ping {}".format(self.tftp_server))
+            self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
-
         self.copy_file(
             source=os.path.join(self.fwdir, self.bootloader_img),
             dest=os.path.join(self.tftpdir, "boot.img")
@@ -200,6 +202,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
+        if self.board_id in ["ea3d"]:
+            self.pexp.expect_action(40,action="ping {}".format(self.tftp_server))
+            self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
         self.copy_file(
