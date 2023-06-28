@@ -31,18 +31,22 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         self.ethnum = {
             'a681': "1",
+            'a685': "4",
         }
 
         self.wifinum = {
             'a681': "3",
+            'a685': "3",
         }
 
         self.btnum = {
             'a681': "1",
+            'a685': "1",
         }
 
         self.bootm_addr = {
             'a681': "0x50000000",
+            'a685': "0x50000000",
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -63,14 +67,17 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         self.linux_prompt_select = {
             'a681': "#",
+            'a685': "#",
         }
 
         self.uboot_eth_port = {
             'a681': "eth0",
+            'a685': "eth0",
         }
 
         self.lnx_eth_port = {
             'a681': "br-lan",
+            'a685': "br-lan",
         }
 
         self.devnetmeta = {
@@ -385,12 +392,12 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
 
-        """
+
         if self.ps_state is True:
             self.set_ps_port_relay_on()
         else:
             log_debug("No need power supply control")
-        """
+
         msg(5, "Open serial port successfully ...")
 
         if self.BOOT_BSP_IMAGE is True:
@@ -431,13 +438,13 @@ class U7IPQ5322BspFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
-        """
+
         if self.ps_state is True:
             time.sleep(2)
             self.set_ps_port_relay_off()
         else:
             log_debug("No need power supply control")
-        """
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
