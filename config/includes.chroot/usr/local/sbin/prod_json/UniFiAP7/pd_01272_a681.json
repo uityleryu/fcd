@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a681-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v2.1.img"
+          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2.img"
         ],
         [
           "tftp/images/a654-fw.bin",
@@ -53,7 +53,7 @@
         ],
         [
           "tftp/images/a681-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v2.1_nor.bin"
+          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2_nor.bin"
         ],
         [
           "tftp/images/a654.itb",
