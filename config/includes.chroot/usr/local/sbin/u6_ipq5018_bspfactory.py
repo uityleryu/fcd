@@ -510,7 +510,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.REGISTER_ENABLE is True:
-            if self.board_id in ['a667', 'a674', 'a684']:
+            if self.board_id in ['a667', 'a674']:
                 self.chk_caldata_uex()
                 self.registration_uex()
             else:
