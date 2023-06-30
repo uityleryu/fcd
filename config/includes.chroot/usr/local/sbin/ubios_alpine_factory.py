@@ -149,7 +149,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
     def set_fake_EEPROM(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x10000")
         self.pexp.expect_only(30, "Erased: OK")
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
@@ -168,7 +168,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
     def set_fake_EEPROM2(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x10000")
         self.pexp.expect_only(30, "Erased: OK")
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
