@@ -27,24 +27,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/uxg-enterprise",
           "DST_PATH": "udm-fw/uxg-enterprise",
           "FILES": [
-            "UXGENT.cn9670.v3.2.1_20230524.bin",
-            "uImage_20230524",
-            "boot_20230524.img"
+            "UXGENT.cn9670.v3.2.1+root.11581.d6add6a.230629.1119.bin",
+            "uImage_20230629.uImage",
+            "bootfs_uboot_20230629.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea3e-fw.bin",
-          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.1_20230524.bin"
+          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.1+root.11581.d6add6a.230629.1119.bin"
         ],
         [
           "tftp/images/ea3e-recovery",
-          "../udm-fw/uxg-enterprise/uImage_20230524"
+          "../udm-fw/uxg-enterprise/uImage_20230629.uImage"
         ],
         [
           "tftp/images/ea3e-boot.img",
-          "../udm-fw/uxg-enterprise/boot_20230524.img"
+          "../udm-fw/uxg-enterprise/bootfs_uboot_20230629.img"
         ]
       ]
     }

@@ -7,6 +7,8 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 import time
 import os
 import re
+import pexpect
+import sys
 
 '''
     ea3d: UDM-Enterprise
@@ -116,6 +118,21 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             'btnum': self.btnum
         }
 
+        self.boarad_model = {
+            'ea3d': "udm-enterprise",
+            'ea3e': "uxg-enterprise"
+        }
+
+        self.board_rev = {
+            'ea3d': "r7",
+            'ea3e': "r3"
+        }
+
+        self.MAC_Num = {
+            'ea3d': "12",
+            'ea3e': "12"
+        }
+
         self.INIT_RECOVERY_IMAGE = True
         self.UPDATE_UBOOT = True
         self.BOOT_RECOVERY_IMAGE = True
@@ -125,6 +142,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.DATAVERIFY_ENABLE = True
         self.LCM_FW_Check_ENABLE = True
         self.POWER_SUPPLY_EN = True
+
+        self.proc = None
+        self.pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        self.newline = "\n"
 
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -148,6 +169,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+            time.sleep(3)
+            self.set_ps_port_relay_on()
 
     def set_fake_eeprom_uxg(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -169,25 +194,66 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+            time.sleep(3)
+            self.set_ps_port_relay_on()
+
+    def send_cmd_by_char(self, cmd):
+        for s in cmd:
+            self.proc.send(s)
+            time.sleep(0.1)
+        self.proc.send(cmd)
+        # self.proc.send(self.newline)
+
+    def send_cmd_by_line(self, cmd):
+        self.proc.send(cmd)
+
+    def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None):
+        if post_exp is None:
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
+            self.send_cmd_by_line(cmd)
+        else:
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
+            self.send_cmd_by_char(cmd)
+            self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
 
     def config_board_model_nbumer(self):
-        self.pexp.expect_action(60, "Press 'B' within 2 seconds for boot menu", "B")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "S", "Choice: B")
-        self.pexp.expect_action(60, "S) Enter Setup", )
-        self.pexp.expect_action(60, "B) Board Manufacturing Data", "B")
-        self.pexp.expect_only(30, "(INS)Board Model Number [uxg-enterprise]:")
-        self.pexp.expect_action(60, "B) Board Model Number", "uxg-enterprise")
-        self.pexp.expect_only(30, "XXXXXXXXXXXXXXXXXXXXX")
+        idx = self.pexp.expect_get_index(30, "Press 'B' within 2 seconds for boot menu")
+        if idx == 0:
+            return 0
+        idx = self.pexp.expect_get_index(30, "Choice:")
+        if idx != 0:
+            return -1
+        log_debug("idx={}".format(idx))
+        self.pexp.close()
+        time.sleep(1)
+        self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
+        self.proc.logfile_read = sys.stdout
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("Choice:", "s")
+        time.sleep(1)
+        self.send_wo_extra_newline("Choice:", "b")
+        time.sleep(1)
+        self.send_wo_extra_newline("Choice:", "b")
+        time.sleep(1)
+        self.send_wo_extra_newline("]:", "{}\n".format(self.boarad_model[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "r")
+        self.send_wo_extra_newline("]:", "{}\n".format(self.board_rev[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "n")
+        self.send_wo_extra_newline("]:", "{}\n".format(self.MAC_Num[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "w")
+        self.send_wo_extra_newline("Choice:", "q")
+        self.send_wo_extra_newline("Choice:", "f")
+        self.proc.close()
+        return 1
 
     def update_uboot(self):
-        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_action(30, "to stop", "\033\033")
         self.set_boot_net()
 
         time.sleep(2)
 
-        if self.board_id in ["ea3d"]:
-            self.pexp.expect_action(40,action="ping {}".format(self.tftp_server))
-            self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.copy_file(
             source=os.path.join(self.fwdir, self.bootloader_img),
@@ -197,14 +263,15 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot boot.img")
         self.pexp.expect_action(150, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
         self.pexp.expect_action(150, self.bootloader_prompt, "reset")
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+            time.sleep(3)
+            self.set_ps_port_relay_on()
 
     def update_recovery(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
-        if self.board_id in ["ea3d"]:
-            self.pexp.expect_action(40,action="ping {}".format(self.tftp_server))
-            self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
         self.copy_file(
@@ -271,7 +338,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         print('Wait Implement')
 
     def lcm_fw_ver_check(self):
-        print('Wait Implement')
+        cmd = "ulcmd --command dump --sender fcd_team"
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, cmd, '"lcm.fw.version":"v', retry=48)
 
     def prepare_server_need_files_by_cmd(self, nodes=None):
         log_debug("Starting to extract cpuid, flash_jedecid and flash_uuid from bsp node ...")
@@ -339,16 +407,19 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
         # Connect into DUT and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
-        log_debug(msg=pexpect_cmd)
-        pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        # pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
+        # log_debug(msg=pexpect_cmd)
+        # pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
             self.set_ps_port_relay_on()
         if self.UPDATE_UBOOT:
-            # self.config_board_model_nbumer()
+            if self.config_board_model_nbumer() != 0:
+                pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+                self.set_pexpect_helper(pexpect_obj=pexpect_obj)
             self.update_uboot()
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
@@ -358,6 +429,11 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         if self.BOOT_RECOVERY_IMAGE:
             self.update_recovery()
+            idx = self.pexp.expect_get_index(timeout=300, exptxt="reboot: Restarting system")
+            if self.ps_state and idx == 0:
+                self.set_ps_port_relay_off()
+                time.sleep(3)
+                self.set_ps_port_relay_on()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.INIT_RECOVERY_IMAGE:
@@ -394,7 +470,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
-        if not self.LCM_FW_Check_ENABLE:
+        if self.LCM_FW_Check_ENABLE:
             if self.lcm[self.board_id]:
                 msg(90, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
