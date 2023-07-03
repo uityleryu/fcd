@@ -976,7 +976,7 @@ class ScriptBase(object):
         f3.write(arr)
         f3.close()
 
-        self.print_eeprom_content(self.eeorg)
+        self.print_eeprom_content(self.eeorg_path)
 
         eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eeorg)
         self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
