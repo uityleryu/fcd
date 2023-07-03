@@ -211,20 +211,20 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None):
         if post_exp is None:
-            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
             self.send_cmd_by_line(cmd)
         else:
-            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
             self.send_cmd_by_char(cmd)
-            self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 20)
+            self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
 
     def config_board_model_nbumer(self):
-        idx = self.pexp.expect_get_index(30, "Press 'B' within 2 seconds for boot menu")
+        idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
         if idx == 0:
             return 0
-        idx = self.pexp.expect_get_index(30, "Choice:")
+        idx = self.pexp.expect_get_index(10, "Choice:")
         if idx != 0:
-            return -1
+            return 1
         log_debug("idx={}".format(idx))
         self.pexp.close()
         time.sleep(1)
@@ -235,6 +235,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         time.sleep(1)
         self.send_wo_extra_newline("Choice:", "b")
         time.sleep(1)
+        self.send_wo_extra_newline("Choice:", "b")
+        time.sleep(1)
+        self.send_wo_extra_newline("]:", "{}\n".format(self.boarad_model[self.board_id]))
         self.send_wo_extra_newline("Choice:", "b")
         time.sleep(1)
         self.send_wo_extra_newline("]:", "{}\n".format(self.boarad_model[self.board_id]))
@@ -253,7 +256,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.set_boot_net()
 
         time.sleep(2)
-
+        self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.copy_file(
             source=os.path.join(self.fwdir, self.bootloader_img),
@@ -272,6 +276,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
+        self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
         self.copy_file(
@@ -497,6 +503,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
         msg(100, "Completing FCD process ...")
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
         self.close_fcd()
 
 
