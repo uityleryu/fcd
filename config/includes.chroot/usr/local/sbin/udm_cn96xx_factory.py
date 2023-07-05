@@ -73,7 +73,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # active port
         self.activeport = {
             'ea3d': "rvu_pf#3",
-            'ea3e': "al_eth3",
+            'ea3e': "rvu_pf#3",
         }
 
         # number of Ethernet
@@ -168,11 +168,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                                "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-        if self.ps_state is True:
-            self.set_ps_port_relay_off()
-            time.sleep(3)
-            self.set_ps_port_relay_on()
+        # if self.ps_state is True:
+        #     self.set_ps_port_relay_off()
+        #     time.sleep(3)
+        #     self.set_ps_port_relay_on()
 
     def set_fake_eeprom_uxg(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -192,12 +194,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf write 0x08000000 {} 0x10000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
-        if self.ps_state is True:
-            self.set_ps_port_relay_off()
-            time.sleep(3)
-            self.set_ps_port_relay_on()
+        # if self.ps_state is True:
+        #     self.set_ps_port_relay_off()
+        #     time.sleep(3)
+        #     self.set_ps_port_relay_on()
 
     def send_cmd_by_char(self, cmd):
         for s in cmd:
@@ -217,11 +220,50 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
             self.send_cmd_by_char(cmd)
             self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
+    def config_fuse_setting(self):
+        # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
+        # if idx != 0:
+        #     return 0
+        # self.pexp.close()
+        self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
+        self.proc.logfile_read = sys.stdout
+        self.proc.send("b")
+        self.proc.send("b")
+        self.proc.send("b")
+        self.proc.send("b")
+        self.proc.send("b")
+        self.send_wo_extra_newline("Choice:", "s")
+        self.send_wo_extra_newline("Choice:", "t")
+        self.send_wo_extra_newline("(INS)Menu choice", "13\n")
+        self.send_wo_extra_newline("(INS)Menu choice", "6\n")
+        for i in range(0,12):
+        # for i in range(0,11):
+            self.send_wo_extra_newline("]:", "\n")
+        self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
+        # self.send_wo_extra_newline("Secure NV counter", "0\n")
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("(INS)Menu choice", "7\n")
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("(INS)Menu choice", "15\n")
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("Choice:", "s")
+        # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
+        self.proc.close()
 
     def config_board_model_nbumer(self):
         idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
+        log_debug("idx={}".format(idx))
         if idx == 0:
             return 0
+        # if idx !=0 and idx !=1:
+        #     for i in range(3):
+        #         if self.ps_state is True:
+        #             self.set_ps_port_relay_off()
+        #             time.sleep(3)
+        #             self.set_ps_port_relay_on()
+        #         idx = self.pexp.expect_get_index(10, "OcteonTX SOC")
+        #         if idx ==0:
+        #             break
         idx = self.pexp.expect_get_index(10, "Choice:")
         if idx != 0:
             return 1
@@ -247,7 +289,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("]:", "{}\n".format(self.MAC_Num[self.board_id]))
         self.send_wo_extra_newline("Choice:", "w")
         self.send_wo_extra_newline("Choice:", "q")
-        self.send_wo_extra_newline("Choice:", "f")
+        # self.send_wo_extra_newline("Choice:", "f")
         self.proc.close()
         return 1
 
@@ -258,6 +300,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         time.sleep(2)
         self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
         self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(10,self.bootloader_prompt,"ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.copy_file(
             source=os.path.join(self.fwdir, self.bootloader_img),
@@ -267,16 +312,18 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_action(150, self.bootloader_prompt, "tftpboot boot.img")
         self.pexp.expect_action(150, self.bootloader_prompt, "bootimgup spi 0 $loadaddr $filesize")
         self.pexp.expect_action(150, self.bootloader_prompt, "reset")
-        if self.ps_state is True:
-            self.set_ps_port_relay_off()
-            time.sleep(3)
-            self.set_ps_port_relay_on()
+        # if self.ps_state is True:
+        #     self.set_ps_port_relay_off()
+        #     time.sleep(3)
+        #     self.set_ps_port_relay_on()
 
     def update_recovery(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
         self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(10,self.bootloader_prompt,"ping {}".format(self.tftp_server))
         self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
@@ -424,22 +471,28 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.set_ps_port_relay_on()
         if self.UPDATE_UBOOT:
             if self.config_board_model_nbumer() != 0:
-                pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-                self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-            self.update_uboot()
+                if self.ps_state is True:
+                    self.set_ps_port_relay_off()
+                    time.sleep(3)
+                    self.set_ps_port_relay_on()
+                    self.config_fuse_setting()
+                    pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+                    self.set_pexpect_helper(pexpect_obj=pexpect_obj)
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
             elif self.board_id == "ea3e":
                 self.set_fake_eeprom_uxg()
+            self.update_uboot()
+
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
             self.update_recovery()
             idx = self.pexp.expect_get_index(timeout=300, exptxt="reboot: Restarting system")
-            if self.ps_state and idx == 0:
-                self.set_ps_port_relay_off()
-                time.sleep(3)
-                self.set_ps_port_relay_on()
+            # if self.ps_state and idx == 0:
+            #     self.set_ps_port_relay_off()
+            #     time.sleep(3)
+            #     self.set_ps_port_relay_on()
             msg(15, "Boot up to linux console and network is good ...")
 
         if self.INIT_RECOVERY_IMAGE:
@@ -465,6 +518,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         if self.DATAVERIFY_ENABLE:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
+            # if self.ps_state and idx == 0:
+            #     self.set_ps_port_relay_off()
+            #     time.sleep(3)
+            #     self.set_ps_port_relay_on()
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
             self.set_kernel_net()
@@ -505,7 +562,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         msg(100, "Completing FCD process ...")
         if self.ps_state is True:
             time.sleep(2)
-            self.set_ps_port_relay_off()
+            # self.set_ps_port_relay_off()
         self.close_fcd()
 
 
