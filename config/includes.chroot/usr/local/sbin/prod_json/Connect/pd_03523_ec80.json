@@ -25,7 +25,7 @@
       "CREATE_LINK": [
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
-          "../aarch64-rpi4-64k-ee_20230608"
+          "./aarch64-rpi4-64k-ee_20230608"
         ]
       ]
     }
