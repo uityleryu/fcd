@@ -86,6 +86,8 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, "", "")
         if self.board_id == 'aa01':
             self.login(username="root", password="ubnt", timeout=120)
+        elif self.board_id == 'ec80':
+            self.login(username="ui", password="ui", timeout=120)
         else:
             self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
