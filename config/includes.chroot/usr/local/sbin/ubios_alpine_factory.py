@@ -14,7 +14,7 @@ class UbiOSLib(object):
 
     def fwupdate(self):
         log_debug("Transfer fw image ... ")
-        self.ubios_obj.scp_get(dut_user=self.username, dut_pass=self.password, dut_ip=self.ubios_obj.dutip, 
+        self.ubios_obj.scp_get(dut_user=self.username, dut_pass=self.password, dut_ip=self.ubios_obj.dutip,
                                src_file=os.path.join(self.ubios_obj.fwdir, self.ubios_obj.fwimg),
                                dst_file=self.ubios_obj.dut_tmpdir + "/upgrade.bin")
 
@@ -24,12 +24,12 @@ class UbiOSLib(object):
             "-d {}/upgrade.bin".format(self.ubios_obj.dut_tmpdir)
         ]
         sstr = ' '.join(sstr)
-        postexp = [ "Starting kernel" ]
+        postexp = ["Starting kernel"]
 
         self.ubios_obj.pexp.expect_lnxcmd(300, self.ubios_obj.linux_prompt, sstr, postexp, retry=0)
 
     def check_info(self):
-        self.ubios_obj.pexp.expect_lnxcmd(5, self.ubios_obj.linux_prompt, "info", 
+        self.ubios_obj.pexp.expect_lnxcmd(5, self.ubios_obj.linux_prompt, "info",
                                           self.ubios_obj.infover[self.ubios_obj.board_id], retry=12)
         self.ubios_obj.pexp.expect_lnxcmd(10, self.ubios_obj.linux_prompt, "cat /proc/ubnthal/system.info")
         self.ubios_obj.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
@@ -56,8 +56,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.username = "root"
         self.password = "ubnt"
         self.linux_prompt = "#"
-        self.unifios_prompt = "root@ubnt:/#"                                                                       
- 
+        self.unifios_prompt = "root@ubnt:/#"
+
         # switch chip
         self.swchip = {
             'ea11': "qca8k",
@@ -65,13 +65,16 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             'ea15': "rtl83xx",
             'ea19': "rtl83xx"
         }
-        
+
         # sub-system ID
         self.wsysid = {
             'ea11': "0x770711ea",
             'ea13': "0x770713ea",
             'ea15': "0x770715ea",
             'ea19': "0x770719ea"
+        }
+        self.wsysid_2 = {
+            'ea19': "0x19ea7707"
         }
 
         # BOM and revision
@@ -83,7 +86,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             '113-01134': "0x016e0400",
             '113-00740': "0x01e40200"
         }
-      
+
         # number of Ethernet
         self.ethnum = {
             'ea11': "5",
@@ -91,7 +94,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             'ea15': "11",
             'ea19': "4"
         }
-        
+
         # number of WiFi
         self.wifinum = {
             'ea11': "2",
@@ -99,7 +102,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             'ea15': "0",
             'ea19': "0"
         }
-        
+
         # number of Bluetooth
         self.btnum = {
             'ea11': "1",
@@ -107,15 +110,15 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             'ea15': "1",
             'ea19': "1"
         }
-       
+
         # ethernet interface 
         self.netif = {
             'ea11': "ifconfig eth0 ",
             'ea13': "ifconfig eth1 ",
             'ea15': "ifconfig eth0 ",
-            'ea19': "ifconfig eth1 "
+            'ea19': "ifconfig br0 "
         }
-        
+
         self.infover = {
             'ea11': "Version:",
             'ea13': "Version",
@@ -124,23 +127,23 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         }
 
         self.devnetmeta = {
-            'ethnum'          : self.ethnum,
-            'wifinum'         : self.wifinum,
-            'btnum'           : self.btnum
+            'ethnum': self.ethnum,
+            'wifinum': self.wifinum,
+            'btnum': self.btnum
         }
 
-        self.SET_FAKE_EEPROM       = True 
-        self.UPDATE_UBOOT          = True 
-        self.BOOT_RECOVERY_IMAGE   = True 
-        self.INIT_RECOVERY_IMAGE   = True 
-        self.NEED_DROPBEAR         = True 
-        self.PROVISION_ENABLE      = True 
-        self.DOHELPER_ENABLE       = True 
-        self.REGISTER_ENABLE       = True 
-        self.FWUPDATE_ENABLE       = False
-        self.DATAVERIFY_ENABLE     = True 
+        self.SET_FAKE_EEPROM = True
+        self.UPDATE_UBOOT = True
+        self.BOOT_RECOVERY_IMAGE = True
+        self.INIT_RECOVERY_IMAGE = True
+        self.NEED_DROPBEAR = True
+        self.PROVISION_ENABLE = True
+        self.DOHELPER_ENABLE = True
+        self.REGISTER_ENABLE = True
+        self.FWUPDATE_ENABLE = False
+        self.DATAVERIFY_ENABLE = True
         self.POWEROFF_CHECK_ENABLE = False
-        self.LCM_CHECK_ENABLE      = True if self.board_id == "ea15" or self.board_id == "ea19" else False
+        self.LCM_CHECK_ENABLE = True if self.board_id == "ea15" or self.board_id == "ea19" else False
 
     def set_boot_net(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
@@ -153,15 +156,14 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.pexp.expect_only(30, "Erased: OK")
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
-        # set sub-system ID
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id]) 
-        # set BOM and revision
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.wbom[self.bom_number])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c {}".format(self.wsysid[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}".format(self.wsysid_2[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + "0001ac74")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f8000 20")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
@@ -173,10 +175,11 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                               "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55 + int(self.row_id))[2:]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55 + int(self.row_id)) + "443322")
         # set sub-system ID
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id]) 
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
         # set BOM and revision
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "0x01d30200")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
@@ -186,11 +189,11 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def update_uboot(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id]+" ledtest link")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id] + " ledtest link")
         self.set_boot_net()
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv tftpdir images/" + self.board_id + "_signed_")
         time.sleep(2)
-        self.is_network_alive_in_uboot(self.tftp_server,timeout=15)
+        self.is_network_alive_in_uboot(self.tftp_server, timeout=15)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_only(10, "bootupd done")
@@ -198,10 +201,10 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def boot_recovery_image(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id]+" ledtest link")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id] + " ledtest link")
         self.set_boot_net()
         time.sleep(2)
-        self.is_network_alive_in_uboot(self.tftp_server,timeout=15)
+        self.is_network_alive_in_uboot(self.tftp_server, timeout=15)
         # copy fw image to tftp server10
         self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-fw.bin"),
@@ -212,17 +215,18 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             source=os.path.join(self.fwdir, self.board_id + "-recovery"),
             dest=os.path.join(self.tftpdir, "uImage")  # fixed name
         )
-        cmd="setenv bootargsextra 'server={} client={} factory'".format(self.tftp_server,self.dutip)
+        cmd = "setenv bootargsextra 'server={} client={} factory'".format(self.tftp_server, self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
         self.pexp.expect_action(11, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
+
     def init_recovery_image(self):
         self.login(self.username, self.password, timeout=150, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.linux_prompt)
-        if self.board_id == 'ea19':
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
+        # if self.board_id == 'ea19':
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+        #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
@@ -230,8 +234,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             "64 bytes from",
             self.linux_prompt
         ]
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)        
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt) 
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ping -c 1 " + self.tftp_server, postexp)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", self.linux_prompt)
 
     def fwupdate(self):
         self.ubios_obj.fwupdate()
@@ -243,7 +247,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
     # It needs to shutdown gracefully in order to make sure everything gets flushed for first time.
     def poweroff_check(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "unifi-os shell", self.unifios_prompt)
-        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt,retry=20)
+        self.pexp.expect_lnxcmd(10, self.unifios_prompt, "systemctl is-system-running --wait", self.unifios_prompt,
+                                retry=20)
         self.pexp.expect_lnxcmd(10, self.unifios_prompt, "exit", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Connected", retry=40)
 
@@ -313,13 +318,18 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             msg(70, "FW update done ...")
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
 
-        if self.DATAVERIFY_ENABLE is True:
-            self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
 
         if self.LCM_CHECK_ENABLE is True:
             msg(85, "Check LCM FW version ...")
             self.lcm_fw_ver_check()
+
+        if self.DATAVERIFY_ENABLE is True:
+            self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
+            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            self.check_info()
+            msg(80, "Succeeding in checking the devreg information ...")
+
+
 
         if self.POWEROFF_CHECK_ENABLE is True:
             msg(90, "Wait system running up and reboot...")
@@ -334,6 +344,6 @@ def main():
     ubios_alpine_factory_general = UbiosAlpineFactoryGeneral()
     ubios_alpine_factory_general.run()
 
-if __name__ == "__main__":
-    main()     
 
+if __name__ == "__main__":
+    main()
