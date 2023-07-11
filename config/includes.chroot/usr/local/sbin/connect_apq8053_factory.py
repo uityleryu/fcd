@@ -812,9 +812,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     if self.qrcode not in m_gqr[0]:
                         error_critical("Check QRID is not matched !!")
             else:
-                cmd = "cat {}| xxd".format(self.f_eth_mac)
+                cmd = "cat {}| xxd -p".format(self.f_eth_mac)
                 getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                m_gmac = re.findall(r"00000000: (.*) ", getmac)[0].replace(" ","")
+                m_gmac = re.findall(r"([0-9A-Fa-f]{12})", getmac)[0].replace(" ","")
                 log_debug("Get MAC address: " + m_gmac)
                 if self.mac == m_gmac:
                     log_debug("Check Eth MAC is matched !!")
