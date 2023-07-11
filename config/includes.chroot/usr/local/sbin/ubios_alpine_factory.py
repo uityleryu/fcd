@@ -157,6 +157,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c {}".format(self.wsysid[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}".format(self.wsysid_2[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + "0001ac74")
@@ -201,6 +203,9 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
     def boot_recovery_image(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
+        self.pexp.expect_action(11, self.bootloader_prompt, "setenv rootfs rootfs")
+        self.pexp.expect_action(11, self.bootloader_prompt, "setenv kern_img uImage")
+        self.pexp.expect_action(11, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, self.swchip[self.board_id] + " ledtest link")
         self.set_boot_net()
         time.sleep(2)

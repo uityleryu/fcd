@@ -1,0 +1,78 @@
+{
+  "UniFiDream": {
+    "UXG-PRO": {
+      "INDEX": 0,
+      "NAME": "UXG-PRO",
+      "BOARDID": "ea19",
+      "BOMREV": "113-00740",
+      "DESC": "UniFi Next-Generation Gateway",
+      "FILE": "ubios_alpine_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm",
+          "FILES": [
+          "al324-ee",
+          "dfu-util",
+          "dreammachine-pro-lcm-fw.dfu",
+          "dreammachine-se-lcm-fw.dfu",
+          "dropbear_arm64",
+          "dropbearkey_arm64",
+          "evtest",
+          "fping_x64.exe",
+          "fping_x86.exe",
+          "ftu_system_udm.cfg",
+          "ftu-tool-common.sh",
+          "ftu-tool-platform.sh",
+          "ftu-tool.sh",
+          "helper_AL324_release",
+          "helper_MT7622_release",
+          "iperf3",
+          "rtl8370mb_rw",
+          "spidev_test",
+          "ubios-udapi-server.default",
+          "ubios-udm-fcd-network_sh.sh"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uxg-fw/alpine",
+          "DST_PATH": "uxg-fw/alpine",
+          "FILES": [
+            "UXGPRO.al324.v3.0.7.e07b4bd.230406.1407.bin",
+            "uImage_20230406",
+            "boot_20230406.img"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ea19-fw.bin",
+          "../uxg-fw/alpine/UXGPRO.al324.v3.0.7.e07b4bd.230406.1407.bin"
+        ],
+        [
+          "tftp/images/ea19-recovery",
+          "../uxg-fw/alpine/uImage_20230406"
+        ],
+        [
+          "tftp/images/ea19_signed_boot.img",
+          "../uxg-fw/alpine/boot_20230406.img"
+        ]
+      ]
+    }
+  }
+}
