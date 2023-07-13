@@ -157,13 +157,11 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
         # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c {}".format(self.wsysid[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}".format(self.wsysid_2[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000018 " + "0001ac74")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c " + "00032cbd")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
+        #self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f8000 20")
         self.pexp.expect_only(30, "Written: OK")
