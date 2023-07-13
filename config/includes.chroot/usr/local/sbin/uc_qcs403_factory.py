@@ -80,8 +80,12 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
         msg(10, "TTY initialization successfully ...")
-        log_debug(msg="sleep 70 secs")
-        time.sleep(70)
+        if self.board_id == 'ec80':
+            log_debug(msg="sleep 90 secs")
+            time.sleep(90)
+        else:
+            log_debug(msg="sleep 70 secs")
+            time.sleep(70)
 
         self.pexp.expect_lnxcmd(10, "", "")
         if self.board_id == 'aa01':
