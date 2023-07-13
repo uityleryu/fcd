@@ -304,15 +304,23 @@ class UFECNT7521Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, 'memwb 8000000b {}'.format(mac_list[5]))
 
     def kill_watchdog_if_reboot(self):
-        try:
-            log_debug("Check reboot msg...")
-            self.pexp.expect_only(100, ['The system is going down NOW!', 'Press any key to enter boot'])
-            self.login(timeout=30, retry=5)
+        reboot_found = self.check_reboot_msg()
+
+        if reboot_found:
+            self.login(retry=5)
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'launcher stop /userfs/bin/ubnt-monitord', post_exp=self.linux_prompt)
             self.pexp.expect_lnxcmd(5, self.linux_prompt, 'killall ubnt-watchdog', post_exp=self.linux_prompt)
             log_debug("Watchdog process killed.")
+
+    def check_reboot_msg(self):
+        try:
+            log_debug("Check reboot msg...")
+            self.pexp.expect_only(150, ['The system is going down NOW!', 'Press any key to enter boot'])
+            self.pexp.expect_only(100, ['ONU BOOT FINISHED', 'Please press Enter to activate this console'])
         except Exception as e:
             log_debug("No reboot msg found, ignore this exception...")
+            return False
+        return True
 
     def run(self):
         UPDATE_UBOOT_EN = True
@@ -363,7 +371,8 @@ class UFECNT7521Factory(ScriptBase):
             self.update_fw('kernel')
             msg(40, "Upgrade fw... done")
 
-        self.login(timeout=30, retry=5)
+        self.pexp.expect_only(100, ['ONU BOOT FINISHED', 'Please press Enter to activate this console'])
+        self.login(retry=5)
 
         if PROVISION_EN is True:    
             msg(50, "Sendtools to DUT and data provision ...")
@@ -386,7 +395,7 @@ class UFECNT7521Factory(ScriptBase):
         self.stop_uboot()
         self.erase_setting(only_cfg=True)
 
-        time.sleep(40)
+        self.pexp.expect_only(100, ['ONU BOOT FINISHED', 'Please press Enter to activate this console'])
         self.login(retry=5)
 
         if DATAVERIFY_EN is True:
