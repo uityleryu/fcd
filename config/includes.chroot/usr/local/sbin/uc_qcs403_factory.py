@@ -102,7 +102,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_lnx_net("eth0")
         self.set_lnx_net("eth0")
         time.sleep(10)
-        if self.board_id != 'ec80':
+        if self.board_id == 'ec80':
             cmd = "ifconfig eth0 down"
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
             self.chk_lnxcmd_valid()
