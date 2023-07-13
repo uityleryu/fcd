@@ -253,9 +253,12 @@ class UDM_AL324_FACTORY(ScriptBase):
             dest=os.path.join(self.tftpdir, "fw-image.bin")
         )
 
+        time.sleep(2)
+
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server,
                                                                                            self.dutip))
+
 
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
