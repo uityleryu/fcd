@@ -144,7 +144,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.POWER_SUPPLY_EN = True
 
         self.proc = None
-        self.pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        self.pexpect_cmd = str("sudo picocom /dev/" + self.dev + " -b 115200")
         self.newline = "\n"
 
     def set_fake_eeprom(self):
@@ -168,7 +168,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                                "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
 
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
         # if self.ps_state is True:
@@ -194,7 +194,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf write 0x08000000 {} 0x10000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "saveenv")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
         # if self.ps_state is True:
@@ -220,6 +220,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
             self.send_cmd_by_char(cmd)
             self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
+
     def config_fuse_setting(self):
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
         # if idx != 0:
@@ -236,8 +237,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("Choice:", "t")
         self.send_wo_extra_newline("(INS)Menu choice", "13\n")
         self.send_wo_extra_newline("(INS)Menu choice", "6\n")
-        for i in range(0,12):
-        # for i in range(0,11):
+        for i in range(0, 12):
+            # for i in range(0,11):
             self.send_wo_extra_newline("]:", "\n")
         self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
         # self.send_wo_extra_newline("Secure NV counter", "0\n")
@@ -298,10 +299,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.set_boot_net()
 
         time.sleep(2)
-        self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
-        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
-        self.pexp.expect_action(10,self.bootloader_prompt,"ping {}".format(self.tftp_server))
-        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(40, self.bootloader_prompt, "ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(10, self.bootloader_prompt, "ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
 
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.copy_file(
@@ -321,10 +322,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
-        self.pexp.expect_action(40,self.bootloader_prompt,"ping {}".format(self.tftp_server))
-        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
-        self.pexp.expect_action(10,self.bootloader_prompt,"ping {}".format(self.tftp_server))
-        self.pexp.expect_action(40, self.bootloader_prompt,"setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(40, self.bootloader_prompt, "ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_action(10, self.bootloader_prompt, "ping {}".format(self.tftp_server))
+        self.pexp.expect_action(40, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         # copy recovery image
         self.copy_file(
@@ -463,12 +464,32 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         # log_debug(msg=pexpect_cmd)
         # pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
-        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(2)
+        # pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+        # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', timeout=10)
+        self.proc.logfile_read = sys.stdout
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
             self.set_ps_port_relay_on()
+        for i in range(30):
+            try:
+                index = self.proc.expect(
+                    ["[sudo] password for",pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=8)
+                if index == 0:
+                    self.proc.sendline("123456")
+                    print("type 123456")
+                if index in [2, 3]:
+                    output = self.proc.before  # 获取之前的输出
+                    log_debug(output)
+                else:
+                    if self.ps_state is True:
+                        self.set_ps_port_relay_off()
+                        time.sleep(2)
+                        self.set_ps_port_relay_on()
+            except Exception as e:
+                log_debug(str(e))
+        raise Warning("tty exception")
+        time.sleep(2)
         if self.UPDATE_UBOOT:
             if self.config_board_model_nbumer() != 0:
                 if self.ps_state is True:
