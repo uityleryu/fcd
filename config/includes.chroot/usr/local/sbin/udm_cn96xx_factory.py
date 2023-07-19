@@ -146,6 +146,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.proc = None
         self.pexpect_cmd = str("sudo picocom /dev/" + self.dev + " -b 115200")
         self.newline = "\n"
+        self.board_config = False
+        self.fuse_config = False
 
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -177,7 +179,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         #     self.set_ps_port_relay_on()
 
     def set_fake_eeprom_uxg(self):
-        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_action(90, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf erase {} 0x10000".format(self.eeprom_offset[self.board_id]))
@@ -212,27 +214,27 @@ class UDM_CN96XX_FACTORY(ScriptBase):
     def send_cmd_by_line(self, cmd):
         self.proc.send(cmd)
 
-    def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None):
+    def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None,timout=10):
         if post_exp is None:
-            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
             self.send_cmd_by_line(cmd)
         else:
-            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
+            self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
             self.send_cmd_by_char(cmd)
-            self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], 5)
+            self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
 
     def config_fuse_setting(self):
-        # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
-        # if idx != 0:
-        #     return 0
-        # self.pexp.close()
-        self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
-        self.proc.logfile_read = sys.stdout
-        self.proc.send("b")
-        self.proc.send("b")
-        self.proc.send("b")
-        self.proc.send("b")
-        self.proc.send("b")
+        # # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
+        # # if idx != 0:
+        # #     return 0
+        # # self.pexp.close()
+        # self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
+        # self.proc.logfile_read = sys.stdout
+        # self.proc.send("b")
+        # self.proc.send("b")
+        # self.proc.send("b")
+        # self.proc.send("b")
+        # self.proc.send("b")
         self.send_wo_extra_newline("Choice:", "s")
         self.send_wo_extra_newline("Choice:", "t")
         self.send_wo_extra_newline("(INS)Menu choice", "13\n")
@@ -244,39 +246,34 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # self.send_wo_extra_newline("Secure NV counter", "0\n")
         self.proc.send(self.newline)
         self.send_wo_extra_newline("(INS)Menu choice", "7\n")
-        self.proc.send(self.newline)
         self.send_wo_extra_newline("(INS)Menu choice", "15\n")
-        self.proc.send(self.newline)
-        self.send_wo_extra_newline("Choice:", "s")
+        self.send_wo_extra_newline("Choice:", "s",timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
-        self.proc.close()
 
     def config_board_model_nbumer(self):
-        idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
-        log_debug("idx={}".format(idx))
-        if idx == 0:
-            return 0
-        # if idx !=0 and idx !=1:
-        #     for i in range(3):
-        #         if self.ps_state is True:
-        #             self.set_ps_port_relay_off()
-        #             time.sleep(3)
-        #             self.set_ps_port_relay_on()
-        #         idx = self.pexp.expect_get_index(10, "OcteonTX SOC")
-        #         if idx ==0:
-        #             break
-        idx = self.pexp.expect_get_index(10, "Choice:")
-        if idx != 0:
-            return 1
-        log_debug("idx={}".format(idx))
-        self.pexp.close()
-        time.sleep(1)
-        self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
-        self.proc.logfile_read = sys.stdout
+        # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
+        # log_debug("idx={}".format(idx))
+        # if idx == 0:
+        #     return 0
+        # # if idx !=0 and idx !=1:
+        # #     for i in range(3):
+        # #         if self.ps_state is True:
+        # #             self.set_ps_port_relay_off()
+        # #             time.sleep(3)
+        # #             self.set_ps_port_relay_on()
+        # #         idx = self.pexp.expect_get_index(10, "OcteonTX SOC")
+        # #         if idx ==0:
+        # #             break
+        # idx = self.pexp.expect_get_index(10, "Choice:")
+        # if idx != 0:
+        #     return 1
+        # log_debug("idx={}".format(idx))
+        # self.pexp.close()
+        # time.sleep(1)
+        # self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
+        # self.proc.logfile_read = sys.stdout
         self.proc.send(self.newline)
         self.send_wo_extra_newline("Choice:", "s")
-        time.sleep(1)
-        self.send_wo_extra_newline("Choice:", "b")
         time.sleep(1)
         self.send_wo_extra_newline("Choice:", "b")
         time.sleep(1)
@@ -291,8 +288,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("Choice:", "w")
         self.send_wo_extra_newline("Choice:", "q")
         # self.send_wo_extra_newline("Choice:", "f")
-        self.proc.close()
-        return 1
+        # self.proc.close()
+        # return 1
 
     def update_uboot(self):
         self.pexp.expect_action(30, "to stop", "\033\033")
@@ -467,6 +464,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
         # self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', timeout=10)
+        # self.proc.sendline("123456")  # For Local test
         self.proc.logfile_read = sys.stdout
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
@@ -474,31 +472,42 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(30):
             try:
                 index = self.proc.expect(
-                    ["[sudo] password for",pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=8)
-                if index == 0:
-                    self.proc.sendline("123456")
-                    print("type 123456")
-                if index in [2, 3]:
-                    output = self.proc.before  # 获取之前的输出
+                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=8)
+                if index in [2] and not self.board_config:
+                    output = self.proc.before  # Get the previous data
                     log_debug(output)
+                    self.config_board_model_nbumer()
+                    self.board_config = True
+                    continue
+                elif index in [3] and not self.fuse_config:
+                    output = self.proc.before  # Get the previous data
+                    log_debug(output)
+                    if "2023-06-28" in output:
+                        self.fuse_config = True
+                    else:
+                        self.proc.send("b")
+                        self.proc.send("b")
+                        self.config_fuse_setting()
+                        self.fuse_config = True
                 else:
                     if self.ps_state is True:
                         self.set_ps_port_relay_off()
                         time.sleep(2)
                         self.set_ps_port_relay_on()
+                if self.fuse_config:
+                    self.proc.close(True)
+                    self.proc.close(True)
+                    break
             except Exception as e:
                 log_debug(str(e))
-        raise Warning("tty exception")
-        time.sleep(2)
+        else:
+            raise Warning("Set Board Info Failed....")
         if self.UPDATE_UBOOT:
-            if self.config_board_model_nbumer() != 0:
-                if self.ps_state is True:
-                    self.set_ps_port_relay_off()
-                    time.sleep(3)
-                    self.set_ps_port_relay_on()
-                    self.config_fuse_setting()
-                    pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
-                    self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+            log_debug(msg=self.pexpect_cmd)
+            pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+            self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+            time.sleep(2)
+            # self.pexp.expect_action(10, "", "123456")  # For Local test
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
             elif self.board_id == "ea3e":
