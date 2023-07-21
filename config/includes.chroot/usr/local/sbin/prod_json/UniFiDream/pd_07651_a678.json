@@ -1,11 +1,11 @@
 {
   "UniFiDream": {
-    "UDR-PRO-07651": {
+    "UDR-ULTRA": {
       "INDEX": 0,
-      "NAME": "UDR-PRO-07651",
+      "NAME": "UDR-ULTRA-07651",
       "BOARDID": "a678",
       "BOMREV": "113-07651",
-      "DESC": "UniFi Dream Machine Router Pro",
+      "DESC": "UniFi Dream Router Ultra",
       "FILE": "udm_ipq53xx_factory.py",
       "T1FILE": "udm_ipq53xx_bspfactory.py",
       "QRCHECK": "True",
@@ -24,48 +24,47 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udr-pro",
-          "DST_PATH": "udm-fw/udr-pro",
+          "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra",
+          "DST_PATH": "udm-fw/udr-ultra",
           "FILES": [
-            "UDRULT.ipq5322.v0.0.1+inaro.11654.377f3c9.230614.1734.bin",
-            "uImage_20230614_V2",
-            "u-boot_20230524.mbn",
+            "UDRULT.ipq5322.v0.0.1+root.12243.94a2618.230719.1623.bin",
+            "uImage_20230719",
+            "u-boot_2023230719.mbn",
             "udr-pro-2g-rework-test-image.img",
-            "udr-pro-v2.2.1-single.img",
+            "ipq5322_udr_ultra_v4.img",
             "udr-pro_mi03_1-2g_nor.bin",
-            "udr-pro_mi03_1-4g_nor_v1.bin"
-
+            "ipq5322_udr_ultra_nor_v4.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a678-fw.bin",
-          "../udm-fw/udr-pro/UDRULT.ipq5322.v0.0.1+inaro.11654.377f3c9.230614.1734.bin"
+          "../udm-fw/udr-ultra/UDRULT.ipq5322.v0.0.1+root.12243.94a2618.230719.1623.bin"
         ],
         [
           "tftp/images/a678-recovery",
-          "../udm-fw/udr-pro/uImage_20230614_V2"
+          "../udm-fw/udr-ultra/uImage_20230719"
         ],
         [
           "tftp/images/a678-uboot.mbn",
-          "../udm-fw/udr-pro/u-boot_20230524.mbn"
+          "../udm-fw/udr-ultra/u-boot_2023230719.mbn"
         ],
         [
           "tftp/images/a678-bsp-2g_nor.bin",
-          "../udm-fw/udr-pro/udr-pro_mi03_1-2g_nor.bin"
+          "../udm-fw/udr-ultra/udr-pro_mi03_1-2g_nor.bin"
         ],
         [
           "tftp/images/a678-bsp-4g_nor.bin",
-          "../udm-fw/udr-pro/udr-pro_mi03_1-4g_nor_v1.bin"
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v4.bin"
         ],
         [
           "tftp/images/a678-bsp-2g.img",
-          "../udm-fw/udr-pro/udr-pro-2g-rework-test-image.img"
+          "../udm-fw/udr-ultra/udr-pro-2g-rework-test-image.img"
         ],
         [
           "tftp/images/a678-bsp-4g.img",
-          "../udm-fw/udr-pro/udr-pro-v2.2.1-single.img"
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v4.img"
         ]
       ]
     }

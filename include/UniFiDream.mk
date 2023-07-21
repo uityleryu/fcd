@@ -174,7 +174,7 @@ $(eval $(call ProductCompress,UDM-SE,FCD_$(PRD)_UDM-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
-$(eval $(call ProductCompress,UDR-PRO,FCD_$(PRD)_UDR-PRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UDR-PRO,FCD_$(PRD)_UDR-ULTRA_$(VER)_$(FWVER)))
 
 # Project compressed type2 file for RPi FCD host
 

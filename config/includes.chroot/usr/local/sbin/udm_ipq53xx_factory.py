@@ -39,7 +39,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
                           "/sys/class/mtd/mtd0/flash_uid"]
         # Base Path
         tool_name = {
-            'a678': "udr_pro",
+            'a678': "udr_ultra",
         }
 
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
@@ -175,6 +175,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_only(60, "Bytes transferred =")
+        self.pexp.expect_ubcmd(30,self.bootloader_prompt,"mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x101A004 0x2")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
 
         log_debug(msg="Enter factory install mode ...")
@@ -205,7 +206,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-        self.is_network_alive_in_linux(ipaddr=self.dutip)
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server)
 
     def unlock_eeprom_permission(self):
         log_debug(msg="Unlock eeprom permission")

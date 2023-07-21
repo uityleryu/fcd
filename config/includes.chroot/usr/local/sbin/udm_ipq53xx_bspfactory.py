@@ -113,11 +113,16 @@ class UDM_IPQ53XX_BSPFACTORY(ScriptBase):
                 Main procedure of factory
                 """
         # Connect into DUT and set pexpect helper for class using picocom
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+            time.sleep(2)
         pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
         msg(5, "Open serial port successfully ...")
         if self.UPDATE_UBOOT is True:
             self.update_uboot()
