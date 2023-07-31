@@ -10,7 +10,7 @@ import re
 
 '''
     a678: UDR-Pro
-   
+    a690: UXG-Max
 '''
 
 
@@ -40,61 +40,73 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # Base Path
         tool_name = {
             'a678': "udr_ultra",
+            'a690': "uxg_max"
         }
 
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         self.eeprom_offset = {
             'a678': "0x00410000",
+            'a690': "0x00410000"
         }
 
         self.eeprom_offset_2 = {
-            'a678': "0x00418000"
+            'a678': "0x00418000",
+            'a690': "0x00418000"
         }
 
         # Vendor ID + Sys ID
         self.vdr_sysid = {
             'a678': "770778a6",
+            'a690': "770790a6",
         }
 
         # Sys ID + Vendor ID
         self.sysid_vdr = {
             'a678': "78a67707",
+            'a690': "90a67707",
         }
 
         # active port
         self.activeport = {
             'a678': "al_eth3",
+            'a690': "al_eth3",
         }
 
         # number of Ethernet
         self.ethnum = {
             'a678': "5",
+            'a690': "5",
         }
 
         # number of Wi-Fi
         self.wifinum = {
             'a678': "0",
+            'a690': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'a678': "1",
+            'a690': "1",
         }
 
         # ethernet interface
         self.netif = {
             'a678': "switch0",
+            'a690': "switch0",
         }
 
         # LCM
         self.lcm = {
             'a678': False,
+            'a690': False,
         }
 
         # Wifi cal data setting
         self.wifical = {
             'a678': False,
+            'a690': False,
         }
 
         self.devnetmeta = {
