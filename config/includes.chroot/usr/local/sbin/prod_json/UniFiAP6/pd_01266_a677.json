@@ -1,8 +1,8 @@
 {
   "UniFiAP6": {
-    "UXG": {
+    "UXG-Lite": {
       "INDEX": 0,
-      "NAME": "UXG",
+      "NAME": "UXG-Lite",
       "BOARDID": "a677",
       "BOMREV": "113-01266",
       "DESC": "UniFi Express Mesh",
