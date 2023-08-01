@@ -482,13 +482,22 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 elif index in [3] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
-                    if "2023-06-28" in output:
-                        self.fuse_config = True
+                    if self.board_id=="ea3d":
+                        if "2023-06-29" in output:
+                            self.fuse_config = True
+                        else:
+                            self.proc.send("b")
+                            self.proc.send("b")
+                            self.config_fuse_setting()
+                            self.fuse_config = True
                     else:
-                        self.proc.send("b")
-                        self.proc.send("b")
-                        self.config_fuse_setting()
-                        self.fuse_config = True
+                        if "2023-06-28" in output:
+                            self.fuse_config = True
+                        else:
+                            self.proc.send("b")
+                            self.proc.send("b")
+                            self.config_fuse_setting()
+                            self.fuse_config = True
                 else:
                     if self.ps_state is True:
                         self.set_ps_port_relay_off()
