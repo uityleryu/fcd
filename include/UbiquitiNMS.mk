@@ -127,7 +127,7 @@ TOOLS-UISP-S-Plus=$(TOOLS-UNMS)
 TOOLS-UISP-S-Plus+= uisp_s_plus/helper_MRVL_ACT5_release
 
 TOOLS-UISP-R-Plus=$(TOOLS-UNMS)
-TOOLS-UISP-R-Plus+= uisp_r_plus/*
+TOOLS-UISP-R-Plus+= uisp_r_plus/helper*
 
 # Project target
 $(eval $(call ProductImage,UNMS,FCD_$(PRD)_UNMS-ALL_$(VER)_$(FWVER)))
