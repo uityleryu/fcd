@@ -10,7 +10,7 @@ import re
 
 '''
     a678: UDR-Pro
-    a690: UXG-Max
+    a690: UXG
 '''
 
 
@@ -40,7 +40,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # Base Path
         tool_name = {
             'a678': "udr_ultra",
-            'a690': "uxg_max"
+            'a690': "uxg"
         }
 
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])

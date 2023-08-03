@@ -1,0 +1,52 @@
+{
+  "UniFiXG": {
+    "UXG": {
+      "INDEX": 0,
+      "NAME": "UXG",
+      "BOARDID": "a690",
+      "BOMREV": "113-09565",
+      "DESC": "UXG",
+      "FILE": "udm_ipq53xx_factory.py",
+      "T1FILE": "udm_ipq53xx_bspfactory.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uxg-fw/a690",
+          "DST_PATH": "uxg-fw/uxg",
+          "FILES": [
+            "UXGB.ipq5322.v3.2.0+root.12490.798db64.230801.1159.bin",
+            "uImage_20230801",
+            "u-boot_20230801.mbn"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a690-fw.bin",
+          "../uxg-fw/uxg/UXGB.ipq5322.v3.2.0+root.12490.798db64.230801.1159.bin"
+        ],
+        [
+          "tftp/images/a690-recovery",
+          "../uxg-fw/uxg/uImage_20230801"
+        ],
+        [
+          "tftp/images/a690-uboot.mbn",
+          "../uxg-fw/uxg/u-boot_20230801.mbn"
+        ]
+      ]
+    }
+  }
+}
