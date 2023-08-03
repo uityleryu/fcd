@@ -33,6 +33,16 @@ class UAPQCA956xMFG(ScriptBase):
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_action(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
+    def art_update(self):
+        cmd = "tftp 0x81000000 images/{}-art.bin".format(self.board_id)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        cmd = "erase 0x9f000000 +0xff0000; protect off all"
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
+        cmd = "cp.b 0x81000000 0x9f000000 0xff0000"
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
+        cmd = "reset"
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
+
     def fwupdate(self, filename):
         self.pexp.expect_action(10, self.bootloader_prompt, "{} uclearenv".format(self.cmd_prefix))
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv mtdparts \"mtdparts=ath-nor0:384k(u-boot)," \
@@ -63,7 +73,7 @@ class UAPQCA956xMFG(ScriptBase):
         self.fcd.common.config_stty(self.dev)
 
         # Connect into DU and set pexpect helper for class using picocom
-        pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
+        pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
@@ -88,7 +98,10 @@ class UAPQCA956xMFG(ScriptBase):
             msg(30, 'Keep calibration data ...')
 
         msg(40, 'Start fwupdate ...')
-        self.fwupdate(filename=self.board_id + "-mfg.bin")
+        if self.board_id == "dca8":
+            self.art_update()
+        else:
+            self.fwupdate(filename=self.board_id + "-mfg.bin")
         msg(80, 'Finish fwupdate ...')
 
         self.enter_uboot(stop_uboot_only = True)
