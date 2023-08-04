@@ -214,7 +214,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
     def send_cmd_by_line(self, cmd):
         self.proc.send(cmd)
 
-    def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None,timout=10):
+    def send_wo_extra_newline(self, pre_exp, cmd, post_exp=None, timout=10):
         if post_exp is None:
             self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
             self.send_cmd_by_line(cmd)
@@ -247,7 +247,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.proc.send(self.newline)
         self.send_wo_extra_newline("(INS)Menu choice", "7\n")
         self.send_wo_extra_newline("(INS)Menu choice", "15\n")
-        self.send_wo_extra_newline("Choice:", "s",timout=15)
+        self.send_wo_extra_newline("Choice:", "s", timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
 
     def config_board_model_nbumer(self):
@@ -472,7 +472,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(30):
             try:
                 index = self.proc.expect(
-                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=8)
+                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=15)
                 if index in [2] and not self.board_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
@@ -482,8 +482,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 elif index in [3] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
-                    if self.board_id=="ea3d":
-                        if "2023-06-29" in output:
+                    if self.board_id == "ea3d":
+                        if "29 Jun" in output:
                             self.fuse_config = True
                         else:
                             self.proc.send("b")
@@ -491,7 +491,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                             self.config_fuse_setting()
                             self.fuse_config = True
                     else:
-                        if "2023-06-28" in output:
+                        if "01 Aug" in output:
                             self.fuse_config = True
                         else:
                             self.proc.send("b")
@@ -505,7 +505,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                         self.set_ps_port_relay_on()
                 if self.fuse_config:
                     self.proc.close(True)
-                    self.proc.close(True)
+                    # self.proc.close(True)
                     break
             except Exception as e:
                 log_debug(str(e))
