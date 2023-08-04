@@ -17,7 +17,7 @@
           "DST_PATH": "tools/udm_se",
           "FILES": [
             "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb",
-            "factory-test-tools_2.3.1-168+g0dcf6938c5f_arm64.deb",
+            "factory-test-tools_2.3.3-190+g0c466dfa394_arm64.deb",
             "memtester_4.5.1-1_arm64.deb"
           ]
         },
@@ -64,7 +64,7 @@
         ],
         [
           "tftp/tools/ea2c-factory.deb",
-          "../tools/udm_se/factory-test-tools_2.3.1-168+g0dcf6938c5f_arm64.deb"
+          "../tools/udm_se/factory-test-tools_2.3.3-190+g0c466dfa394_arm64.deb"
         ],
         [
           "tftp/tools/ea2c-memtester.deb",
