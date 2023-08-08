@@ -1,0 +1,65 @@
+{
+  "UniFiAP7": {
+    "U7-Enterprise-01272": {
+      "INDEX": 0,
+      "NAME": "U7-Enterprise",
+      "BOARDID": "a681",
+      "BOMREV": "113-01272",
+      "DESC": "UniFi AP7 Enterprise",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-enterprise-1g-v2.1.img",
+            "u7-enterprise-512m-v2.2.img",
+            "u7-enterprise-1g-v2.1_nor.bin",
+            "u7-enterprise-512m-v2.2_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a681-bsp.img",
+          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2.img"
+        ],
+        [
+          "tftp/images/a654-fw.bin",
+          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+        ],
+        [
+          "tftp/images/a654-gpt.bin",
+          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+        ],
+        [
+          "tftp/images/a654-initramfs.bin",
+          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+        ],
+        [
+          "tftp/images/a681-nor.bin",
+          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2_nor.bin"
+        ],
+        [
+          "tftp/images/a654.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    }
+  }
+}

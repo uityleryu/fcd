@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-G2-Portal": {
+    "UA-Intercom": {
       "INDEX": 0,
-      "NAME": "UA-G2-Portal",
+      "NAME": "UA-Intercom",
       "BOARDID": "ec64",
       "BOMREV": "113-03693",
-      "DESC": "UniFiAccess G2 Portal",
+      "DESC": "UniFiAccess Intercom Viewer",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",

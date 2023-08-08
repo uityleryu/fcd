@@ -29,7 +29,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.55"
+    __version__ = "1.0.57"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -599,6 +599,8 @@ class ScriptBase(object):
             log_debug("cmd: " + cmd)
             self.cnapi.xcmd(cmd)
 
+        self.print_eeprom_content(self.eesigndate_path)
+
     def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, zmodem=False, timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
@@ -652,6 +654,8 @@ class ScriptBase(object):
             self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, post_en=post_en)
         else:
             self.zmodem_recv_from_dut(file=eechk_dut_path, dest_path=self.tftpdir)
+
+        self.print_eeprom_content(self.eechk_path)
 
         otmsg = "Starting to compare the {0} and {1} files ...".format(self.eechk, eewrite)
         log_debug(otmsg)
@@ -971,6 +975,8 @@ class ScriptBase(object):
         arr = bytearray(org_tres)
         f3.write(arr)
         f3.close()
+
+        self.print_eeprom_content(self.eeorg_path)
 
         eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eeorg)
         self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
@@ -1381,6 +1387,20 @@ class ScriptBase(object):
                 error_critical('Executing linux command "{}" failed!!'.format(cmd))
 
         self.eebin_path = "{}.regdmn".format(eebin)
+
+    def print_eeprom_content(self, filename):
+        cmdset = [
+            "hexdump -C -s 0x0 -n 16 {}".format(filename),
+            "hexdump -C -s 0x8000 -n 16 {}".format(filename),
+            "hexdump -C -s 0xa020 -n 16 {}".format(filename),
+            "hexdump -C -s 0xd000 -n 64 {}".format(filename)
+        ]
+        for cmd in cmdset:
+            [sto, rtc] = self.cnapi.xcmd(cmd)
+            time.sleep(0.5)
+            if int(rtc) > 0:
+                otmsg = "Dump the content  of {}, FAIL!!!".format(filename)
+                error_critical(otmsg)
 
     def close_fcd(self):
         # If do back to T1, self.key_dir should be None and do not check blacklist
