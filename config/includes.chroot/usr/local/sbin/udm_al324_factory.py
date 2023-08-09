@@ -170,7 +170,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         # import pdb; pdb.set_trace()
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv sysid")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "printenv model")
-
+        if self.board_id in ["ea11"]:
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "qca8k")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
 
