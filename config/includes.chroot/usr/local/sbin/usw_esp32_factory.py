@@ -181,7 +181,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
             log_debug(output)
             log_debug("Need to boot on factory image @{}, now boot @{}".format(
-                self.fw_mfg_address[self.board_id], boot_address))
+                self.fw_mfg_offset[self.board_id], boot_address))
             if boot_address == self.fw_mfg_offset[self.board_id]:
                 log_debug("Boot to mfg image @{}".format(self.fw_mfg_offset[self.board_id]))
                 break
