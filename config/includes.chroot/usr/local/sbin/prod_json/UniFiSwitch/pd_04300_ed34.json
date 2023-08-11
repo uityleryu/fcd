@@ -19,7 +19,7 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee"
+            "aarch64-rpi4-4k-ee_20230608"
           ]
         },
         {
@@ -52,6 +52,10 @@
         [
           "tftp/images/ed34-ptn-table.bin",
           "../usw-fw/usw-ultra/partition-table.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "tftp/tools/common/aarch64-rpi4-4k-ee_20230608"
         ]
       ]
     }
