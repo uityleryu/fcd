@@ -1,0 +1,59 @@
+{
+  "UniFiSwitch": {
+    "USW-Ultra": {
+      "INDEX": 0,
+      "NAME": "USW-Ultra",
+      "BOARDID": "ed32",
+      "BOMREV": "113-04300",
+      "DESC": "UniFi Switch Ultra",
+      "FILE": "usw_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw/usw-ultra",
+          "DST_PATH": "usw-fw/usw-ultra",
+          "FILES": []
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed32-app.bin",
+          "../usw-fw/usw-ultra/USM8P.esp32_feat-inform-poe-stats+733.230811.1435-unsigned.bin"
+        ],
+        [
+          "tftp/images/ed32-bootloader.bin",
+          "../usw-fw/usw-ultra/bootloader.bin"
+        ],
+        [
+          "tftp/images/ed32-factory.bin",
+          "../usw-fw/usw-ultra/ultra_factory.bin"
+        ],
+        [
+          "tftp/images/ed32-mfg.bin",
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-inform-poe-stats+733.230811.1436-unsigned.bin"
+        ],
+        [
+          "tftp/images/ed32-ota.bin",
+          "../usw-fw/usw-ultra/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ed32-ptn-table.bin",
+          "../usw-fw/usw-ultra/partition-table.bin"
+        ]
+      ]
+    }
+  }
+}
