@@ -9,8 +9,8 @@ import os
 import re
 
 '''
-    a678: UDR-Pro
-   
+    a678: UDR-Ultra
+    a690: UXG
 '''
 
 
@@ -32,10 +32,12 @@ class UDM_IPQ53XX_BSPFACTORY(ScriptBase):
         # active port
         self.activeport = {
             'a678': "al_eth3",
+            'a690': "al_eth3",
         }
         # ethernet interface
         self.netif = {
             'a678': "eth0",
+            'a690': "eth0",
         }
         self.UPDATE_UBOOT = True
         self.UPDAE_Single = True

@@ -27,24 +27,34 @@
           "SRC_PATH": "images/fcd-image/uxg-fw/a690",
           "DST_PATH": "uxg-fw/uxg",
           "FILES": [
-            "UXGB.ipq5322.v3.2.0+root.12490.798db64.230801.1159.bin",
-            "uImage_20230801",
-            "u-boot_20230801.mbn"
+            "UXGB.ipq5322.v3.2.0+root.12646.55f0160.230809.1839.bin",
+            "uImage_20230809",
+            "u-boot_20230809.mbn",
+            "ipq5322_uxg_max_v1.img",
+            "ipq5322_uxg_max_nor_v1.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a690-fw.bin",
-          "../uxg-fw/uxg/UXGB.ipq5322.v3.2.0+root.12490.798db64.230801.1159.bin"
+          "../uxg-fw/uxg/UXGB.ipq5322.v3.2.0+root.12646.55f0160.230809.1839.bin"
         ],
         [
           "tftp/images/a690-recovery",
-          "../uxg-fw/uxg/uImage_20230801"
+          "../uxg-fw/uxg/uImage_20230809"
         ],
         [
           "tftp/images/a690-uboot.mbn",
-          "../uxg-fw/uxg/u-boot_20230801.mbn"
+          "../uxg-fw/uxg/u-boot_20230809.mbn"
+        ],
+        [
+          "tftp/images/a690-bsp-2g_nor.bin",
+          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v1.bin"
+        ],
+        [
+          "tftp/images/a690-bsp-2g.img",
+          "../uxg-fw/uxg/ipq5322_uxg_max_v1.img"
         ]
       ]
     }
