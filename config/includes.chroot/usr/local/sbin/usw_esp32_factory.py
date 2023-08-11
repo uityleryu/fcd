@@ -44,22 +44,52 @@ class UFPESP32FactoryGeneral(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ed31': "1",
+            'ed32': "1",
+            'ed33': "1",
+            'ed34': "1"
         }
 
         # number of WiFi
         self.wifinum = {
             'ed31': "0",
+            'ed32': "0",
+            'ed33': "0",
+            'ed34': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
             'ed31': "0",
+            'ed32': "0",
+            'ed33': "0",
+            'ed34': "0"
         }
 
         self.devnetmeta = {
             'ethnum': self.ethnum,
             'wifinum': self.wifinum,
             'btnum': self.btnum
+        }
+
+        self.fw_factory_offset = {
+            'ed31': "0x90000",
+            'ed32': "0x90000",
+            'ed33': "0x90000",
+            'ed34': "0x90000"
+        }
+
+        self.fw_mfg_offset = {
+            'ed31': "0x190000",
+            'ed32': "0x210000",
+            'ed33': "0x210000",
+            'ed34': "0x210000"
+        }
+
+        self.fw_app_offset = {
+            'ed31': "0x510000",
+            'ed32': "0x590000",
+            'ed33': "0x590000",
+            'ed34': "0x590000"
         }
 
     def prepare_server_need_files(self):
@@ -121,12 +151,12 @@ class UFPESP32FactoryGeneral(ScriptBase):
         cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
             "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size detect " \
             "{} {} {} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-                                                    "0x1000"  , fw_bootloader,
-                                                    "0xb000"  , fw_ptn_table ,
-                                                    "0xd000"  , fw_ota_data  ,
-                                                    "0x510000" , fw_app      ,
-                                                    "0x190000" , fw_mfg       ,
-                                                    "0x90000"  , fw_factory)
+                                                    "0x1000", fw_bootloader,
+                                                    "0xb000", fw_ptn_table,
+                                                    "0xd000", fw_ota_data,
+                                                    self.fw_app_offset[self.board_id], fw_app,
+                                                    self.fw_mfg_offset[self.board_id], fw_mfg,
+                                                    self.fw_factory_offset[self.board_id], fw_factory)
             #   "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
             #                                          "0x1000"     , fw_bootloader,
             #                                          "0xb000"  , fw_ptn_table ,
@@ -150,9 +180,10 @@ class UFPESP32FactoryGeneral(ScriptBase):
             output = self.pexp.expect_get_output("boot info", self.esp32_prompt, timeout=10)
             boot_address = re.findall("0x\d*@(0x\d*) ", output)[0]
             log_debug(output)
-            log_debug("Need to boot on factory image @0x190000, now boot @{}".format(boot_address))
-            if boot_address == "0x190000":
-                log_debug("Boot to mfg image @0x190000")
+            log_debug("Need to boot on factory image @{}, now boot @{}".format(
+                self.fw_mfg_address[self.board_id], boot_address))
+            if boot_address == self.fw_mfg_offset[self.board_id]:
+                log_debug("Boot to mfg image @{}".format(self.fw_mfg_offset[self.board_id]))
                 break
             output = self.pexp.expect_get_output("boot next", self.esp32_prompt, timeout=10)
             log_debug(output)
