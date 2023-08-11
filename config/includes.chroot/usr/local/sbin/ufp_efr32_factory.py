@@ -42,6 +42,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.cmd_version = "VERSION"
         self.cmd_reset = "RESET"
         self.cmd_erase_devreg = "ERASEDEVREG"
+        self.cmd_devregcheck = "DEVREGCHECK"
 
         self.mac_check_dict = {
             'a911': True,
@@ -192,14 +193,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            if self.board_id == "ec51":
+            if self.board_id in ["ec51", "a912"]:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\r", cpuid_rtv, re.S)
             else:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
-            if self.board_id == "ec51":
+            if self.board_id in ["ec51", "a912"]:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\r", jedecid_rtv, re.S)
             else:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
@@ -557,6 +558,13 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             log_debug('MAC_DUT and MAC_expect are match')
         else:
             error_critical("MAC_DUT and MAC_expect are NOT match")
+
+        if self.board_id == 'a912':
+            rtv_devregcheck = self.ser.execmd_getmsg(self.cmd_devregcheck)
+            if 'CHECK SUCCESS' in rtv_devregcheck:
+                log_debug('DEVREG: CHECK SUCCESS')
+            else:
+                error_critical('DEVREG: CHECK FAIL')
 
     def check_bom(self):
          log_debug("Starting to check BOM ID")
