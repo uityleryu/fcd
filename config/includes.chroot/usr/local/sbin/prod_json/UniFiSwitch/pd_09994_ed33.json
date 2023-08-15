@@ -54,7 +54,7 @@
           "../usw-fw/usw-ultra/partition-table.bin"
         ],
         [
-          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
           "./aarch64-rpi4-4k-ee_20230608"
         ]
       ]
