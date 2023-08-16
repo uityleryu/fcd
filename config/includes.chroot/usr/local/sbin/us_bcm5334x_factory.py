@@ -293,7 +293,7 @@ class USBCM5334xFactoryGeneral(BCM5334xLIB):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(zmodem=True)
+            self.check_devreg_data(method="zmodem")
             msg(50, "Finish doing signed file and EEPROM checking ...")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot")
 
