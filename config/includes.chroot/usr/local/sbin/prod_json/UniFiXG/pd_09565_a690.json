@@ -27,22 +27,29 @@
           "SRC_PATH": "images/fcd-image/uxg-fw/a690",
           "DST_PATH": "uxg-fw/uxg",
           "FILES": [
-            "UXGB.ipq5322.v3.2.0+root.12646.55f0160.230809.1839.bin",
-            "uImage_20230809",
+            "UXGB.ipq5322.v3.2.2+root.12816.d7bd6b8.230814.2304.bin",
+            "uImage_20230814",
             "u-boot_20230809.mbn",
             "ipq5322_uxg_max_v1.img",
             "ipq5322_uxg_max_nor_v1.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/devreg",
+          "DST_PATH": "tools/devreg",
+          "FILES": [
+            "ipq5322_devreg_1.0.1-38+g4e0943abeaa_arm64.deb"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a690-fw.bin",
-          "../uxg-fw/uxg/UXGB.ipq5322.v3.2.0+root.12646.55f0160.230809.1839.bin"
+          "../uxg-fw/uxg/UXGB.ipq5322.v3.2.2+root.12816.d7bd6b8.230814.2304.bin"
         ],
         [
           "tftp/images/a690-recovery",
-          "../uxg-fw/uxg/uImage_20230809"
+          "../uxg-fw/uxg/uImage_20230814"
         ],
         [
           "tftp/images/a690-uboot.mbn",
@@ -55,6 +62,10 @@
         [
           "tftp/images/a690-bsp-2g.img",
           "../uxg-fw/uxg/ipq5322_uxg_max_v1.img"
+        ],
+        [
+          "tftp/tools/a690-devreg.deb",
+          "../tools/devreg/ipq5322_devreg_1.0.1-38+g4e0943abeaa_arm64.deb"
         ]
       ]
     }

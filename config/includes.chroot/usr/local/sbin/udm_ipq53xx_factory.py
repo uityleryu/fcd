@@ -9,7 +9,8 @@ import os
 import re
 
 '''
-    a678: UDR-Pro
+    a678: UDR-Ultra
+    a679: UDR-Ultra-PoE
     a690: UXG
 '''
 
@@ -40,72 +41,85 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # Base Path
         tool_name = {
             'a678': "udr_ultra",
+            'a679': "udr_ultra_poe",
             'a690': "uxg"
+
         }
 
         self.toool_folder = os.path.join(self.fcd_toolsdir, tool_name[self.board_id])
 
         self.eeprom_offset = {
             'a678': "0x00410000",
+            'a679': "0x00410000",
             'a690': "0x00410000"
         }
 
         self.eeprom_offset_2 = {
             'a678': "0x00418000",
+            'a679': "0x00418000",
             'a690': "0x00418000"
         }
 
         # Vendor ID + Sys ID
         self.vdr_sysid = {
             'a678': "770778a6",
+            'a679': "770779a6",
             'a690': "770790a6",
         }
 
         # Sys ID + Vendor ID
         self.sysid_vdr = {
             'a678': "78a67707",
+            'a679': "79a67707",
             'a690': "90a67707",
         }
 
         # active port
         self.activeport = {
             'a678': "al_eth3",
+            'a679': "al_eth3",
             'a690': "al_eth3",
         }
 
         # number of Ethernet
         self.ethnum = {
             'a678': "5",
+            'a678': "8",
             'a690': "5",
         }
 
         # number of Wi-Fi
         self.wifinum = {
             'a678': "0",
+            'a679': "0",
             'a690': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'a678': "1",
+            'a679': "1",
             'a690': "1",
         }
 
         # ethernet interface
         self.netif = {
             'a678': "switch0",
+            'a679': "switch0",
             'a690': "switch0",
         }
 
         # LCM
         self.lcm = {
             'a678': False,
+            'a679': False,
             'a690': False,
         }
 
         # Wifi cal data setting
         self.wifical = {
             'a678': False,
+            'a679': False,
             'a690': False,
         }
 
@@ -124,6 +138,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.DATAVERIFY_ENABLE = True
         self.LCM_FW_Check_ENABLE = True
         self.POWER_SUPPLY_EN = True
+        self.DEV_REG_ENABLE=True
 
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -366,6 +381,24 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.check_refuse_data()
             self.write_caldata_to_flash()
 
+        if self.DEV_REG_ENABLE:
+            pkg_sets = [
+                "{}-devreg.deb".format(self.board_id),
+            ]
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
+                                    action="cp /usr/bin/tftp /usr/bin/tftp_backup")  # backup deb tftp
+            self.pexp.expect_lnxcmd(timeout=10,pre_exp=self.linux_prompt,action="mv /usr/bin/tftp /tmp")
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt,
+                                    action="ln -s /bin/busybox /usr/bin/tftp")  # Create Soft link
+            for pkg in pkg_sets:
+                src_path = os.path.join(self.fcd_toolsdir, pkg)
+                dst_path = os.path.join(self.dut_tmpdir, pkg)
+                self.tftp_get(remote=src_path, local=dst_path, timeout=20)
+                cmd = "dpkg -i {}".format(dst_path)
+                self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd)
+                output = self.pexp.expect_get_output(action="devreg_IPQ53xx | grep Result", prompt="", timeout=25)
+                if "PASS" not in output:
+                    raise NameError('Check Registration FAIL')
         if self.LCM_FW_Check_ENABLE:
             if self.lcm[self.board_id]:
                 msg(90, "Check LCM FW version ...")
