@@ -162,12 +162,12 @@ class winFcdFactory(Gtk.Window):
             msgerrror(self, "Security key files missing. Exiting...")
             return False
 
-        if self.check_comport() is False:
-            msgerrror(self, "Check host ttys failed. Exiting...")
-            return False
-
         if self.call_input_dlg() is False:
             msgerrror(self, "Inputs information incorrect. Exiting...")
+            return False
+
+        if self.check_comport() is False:
+            msgerrror(self, "Check host ttys failed. Exiting...")
             return False
 
         self._sync_cloud_blacklist()
@@ -301,7 +301,10 @@ class winFcdFactory(Gtk.Window):
 
                 CONST.active_tty.append(itty)
         else:
-            CONST.active_tty.append("ttyUSB0")
+            if CONST.active_product == "UFP-SENSE":
+                CONST.active_tty.append("ttyACM0")
+            else:
+                CONST.active_tty.append("ttyUSB0")
 
         num = len(CONST.active_tty)
         self.slot1.apply_comport_item(CONST.active_tty)
