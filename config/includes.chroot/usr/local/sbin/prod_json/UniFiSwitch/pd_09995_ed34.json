@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ed34-mfg.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-inform-poe-stats+733.230811.1436-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-ftu-ultra+727.230817.1935-unsigned.bin"
         ],
         [
           "tftp/images/ed34-ota.bin",
