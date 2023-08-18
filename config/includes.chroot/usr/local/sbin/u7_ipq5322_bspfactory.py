@@ -8,9 +8,9 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     a681: U7-Enterprise
+    a682: U7-Pro
+    a685: U7-Enterprise-IW
 '''
-
-
 class U7IPQ5322BspFactory(ScriptBase):
     def __init__(self):
         super(U7IPQ5322BspFactory, self).__init__()
@@ -26,57 +26,52 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.bootloader_prompt = "IPQ5332#"
         self.linux_prompt = "root@OpenWrt:/#"
 
-        #if self.board_id in ["a667", "a674"]:
-        #    self.log_upload_failed_alert_en = True
-
         self.ethnum = {
             'a681': "1",
+            'a682': "1",
             'a685': "4",
         }
 
         self.wifinum = {
             'a681': "3",
+            'a682': "3",
             'a685': "3",
         }
 
         self.btnum = {
             'a681': "1",
+            'a682': "1",
             'a685': "1",
         }
 
         self.bootm_addr = {
             'a681': "0x50000000",
+            'a682': "0x50000000",
             'a685': "0x50000000",
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
         self.bootm_cmd = {
-            'a650': "bootm $fileaddr#config@a650",
-            'a651': "bootm $fileaddr#config@a651",
-            'a652': "bootm $fileaddr#config@a652",
-            'a653': "bootm $fileaddr#config@a653",
-            'a654': "bootm $fileaddr#config@a654",
-            'a655': "bootm $fileaddr#config@a655",
-            'a656': 'bootm $fileaddr#config@a656',
-            'a665': "1",
-            'a666': "1",
-            'a667': "",
-            'a674': "",
-            'a675': "bootm $fileaddr#config@a675"
+            'a681': "bootm $fileaddr#config@a681",
+            'a682': "bootm $fileaddr#config@a682",
+            'a685': "bootm $fileaddr#config@a685",
         }
 
         self.linux_prompt_select = {
             'a681': "#",
+            'a682': "#",
             'a685': "#",
         }
 
         self.uboot_eth_port = {
             'a681': "eth0",
+            'a682': "eth0",
             'a685': "eth0",
         }
 
         self.lnx_eth_port = {
             'a681': "br-lan",
+            'a682': "br-lan",
             'a685': "br-lan",
         }
 
@@ -96,8 +91,10 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.DOHELPER_ENABLE = True
         self.CHKCALDATA_ENABLE = True
         self.REGISTER_ENABLE = True
-        self.FWUPDATE_ENABLE = False
-        self.DATAVERIFY_ENABLE = False
+        self.FANI2C_CHECK_ENABLE = True
+        self.FUSE_ENABLE = True
+        self.FWUPDATE_ENABLE = True
+        self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -133,11 +130,8 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
 
         cmdset = [
-            "tftpboot 0x50000000 {} && mmc erase 0x00000000 22 && mmc write 0x50000000 0x00000000 22".format(self.gpt),
-            "setenv bootcmd \"mmc read {0} 0x00000022 0x00020022; bootm {0}\"".format(self.bootm_addr[self.board_id]),
-            "setenv imgaddr 0x44000000",
-            "saveenv",
-            "tftpboot {} {}".format(self.bootm_addr[self.board_id] ,self.initramfs),
+            "tftpboot 0x44000000 {} && mmc write 0x44000000 0 34 && mmc rescan && mmc part".format(self.gpt),
+            "setenv imgaddr {} && tftpboot {} {}".format(self.bootm_addr[self.board_id], self.bootm_addr[self.board_id], self.initramfs),
             self.bootm_cmd[self.board_id]
         ]
         for cmd in cmdset:
@@ -145,10 +139,12 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
-        self.disable_udhcpc()
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd6", self.linux_prompt)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=12)
+        time.sleep(30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd7", self.linux_prompt)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=20)
         cmd = "ifconfig br0 {}".format(self.dutip)
+        self.disable_udhcpc()
+        time.sleep(3)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
         self.is_network_alive_in_linux()
 
@@ -156,10 +152,11 @@ class U7IPQ5322BspFactory(ScriptBase):
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
 
-        if self.board_id == 'a650' or self.board_id == 'a651':
-            time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
+        if self.board_id in ['a681', 'a682', 'a683', 'a685', 'a686']:
+            time.sleep(2)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
+        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
         self.linux_prompt = "#"
 
     def fwupdate(self):
@@ -256,65 +253,6 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.linux_prompt = "root"
         self.login("ui", "ui", timeout=300, log_level_emerg=True, press_enter=False, retry=3)
 
-    def registration_uex(self, regsubparams = None):
-        log_debug("Starting to do registration ...")
-        self.devreg_hostname = "stage.udrs.io"
-        if regsubparams is None:
-            regsubparams = self.access_chips_id()
-
-        code_type = "01"
-
-        # The HEX of the QR code
-        if self.qrcode is None or not self.qrcode:
-            reg_qr_field = ""
-        else:
-            reg_qr_field = "-i field=qr_code,format=hex,value={}".format(self.qrhex)
-
-        # The HEX of the activate code
-        if self.activate_code is None or not self.activate_code:
-            reg_activate_code = ""
-        else:
-            reg_activate_code = "-i field=code,format=hex,value={}".format(self.activate_code_hex)
-
-        clientbin = "/usr/local/sbin/client_rpi4_release"
-        regparam = [
-            "-h {}".format(self.devreg_hostname),
-            "-k {}".format(self.pass_phrase),
-            regsubparams,
-            "-i field=code_type,format=hex,value={}".format(code_type),
-            reg_qr_field,
-            reg_activate_code,
-            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
-            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
-            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
-            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
-            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
-            "-o field=registration_id",
-            "-o field=result",
-            "-o field=device_id",
-            "-o field=registration_status_id",
-            "-o field=registration_status_msg",
-            "-o field=error_message",
-            "-x {}ca.pem".format(self.key_dir),
-            "-y {}key.pem".format(self.key_dir),
-            "-z {}crt.pem".format(self.key_dir)
-        ]
-
-        regparam = ' '.join(regparam)
-
-        cmd = "sudo {0} {1}".format(clientbin, regparam)
-        print("cmd: " + cmd)
-        clit = ExpttyProcess(self.row_id, cmd, "\n")
-        clit.expect_only(30, "Security Service Device Registration Client")
-        clit.expect_only(30, "Hostname")
-        clit.expect_only(30, "field=result,format=u_int,value=1")
-
-        self.pass_devreg_client = True
-
-        log_debug("Excuting client registration successfully")
-        if self.FCD_TLV_data is True:
-            self.add_FCD_TLV_info()
-
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
@@ -322,45 +260,6 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.pexp.expect_only(10, "systemid=" + self.board_id)
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
-
-        if self.board_id in ["a667", "a674"]:
-            cmd = "ifconfig | grep -C 2 br0"
-            ct = 0
-            retry_max = 300
-            while ct < retry_max:
-                output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
-                pattern = r"192.168.1.[\d]+"
-                m_run = re.findall(pattern, output)
-                if len(m_run) == 1:
-                    rmsg = "The system is running good"
-                    log_debug(rmsg)
-                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
-                    break
-
-                time.sleep(1)
-                ct += 1
-            else:
-                rmsg = "The system is not booting up successfully, FAIL!!"
-                error_critical(rmsg)
-
-        # Joseph: Just keep it for a period of time, if there is no problem to the upper method, then will remove it
-        # if self.board_id in ["a667", "a674"]:
-        #     cmd = "systemctl is-system-running"
-        #     ct = 0
-        #     retry_max = 300
-        #     while ct < retry_max:
-        #         output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
-        #         m_run = re.findall("running", output)
-        #         if len(m_run) == 2:
-        #             rmsg = "The system is running good"
-        #             log_debug(rmsg)
-        #             break
-
-        #         time.sleep(1)
-        #         ct += 1
-        #     else:
-        #         rmsg = "The system is not booting up successfully, FAIL!!"
-        #         error_critical(rmsg)
 
     def chk_caldata_ipq5322(self):
         cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock9"
@@ -371,6 +270,46 @@ class U7IPQ5322BspFactory(ScriptBase):
         cmd = "hexdump -s 0x58800 -n 10 /dev/mtdblock9"
         post_exp = "0058800 0001 0404 0000 0000 7800"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+    def i2c_check(self, item):
+        if item == "fan":
+            cmd = "i2cdetect -y -r 0 0x4c 0x4c"
+            post_exp = "UU"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+    def fuse(self):
+        cmd = "hexdump -C /dev/mtd5 | grep 00002350"
+        post_exp = "Ubiquiti"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        log_debug(msg="Check TME-L image is OEM-Signed ... PASS")
+
+        cmd = "echo 1 > /sys/devices/system/qfprom/qfprom0/list_ipq5322_fuse"
+        post_exp = "TME_AUTH_EN\t0x000A00D0"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+        cmd = "echo 1 > /sys/devices/system/qfprom/qfprom0/list_ipq5322_fuse"
+        post_exp = "TME_OEM_ID\t0x000A00D0"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        log_debug(msg="Check the board fuse table ... PASS")
+
+        cmd = "md5sum /lib/firmware/sec.dat"
+        post_exp = "e3ddf61f6867b9fbee40b45a7a52e811"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        log_debug(msg="Check the md5sum of fuse blower sec.dat ... PASS")
+
+        cmd = "echo -n \"/lib/firmware/sec.dat\" > /sys/devices/system/qfprom/qfprom0/sec_dat"
+        post_exp = "Fuse Blow Success"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        log_debug(msg="Blow Miami fuse ... PASS")
+
+        cmd = "echo 1 > /sys/devices/system/qfprom/qfprom0/list_ipq5322_fuse"
+        post_exp = "TME_AUTH_EN\t0x000A00D0\t0x00000041"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+        cmd = "echo 1 > /sys/devices/system/qfprom/qfprom0/list_ipq5322_fuse"
+        post_exp = "TME_OEM_ID\t0x000A00D0\t0x02180000"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        log_debug(msg="Check Miami Fuse register ... PASS")
 
     def run(self):
         """
@@ -421,7 +360,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.CHKCALDATA_ENABLE is True:
-            if self.board_id in ["a681"]:
+            if self.board_id in ["a681", "a682", "a683", "a685", "a686"]:
                 self.chk_caldata_ipq5322()
                 msg(35, "Finish check wifi cal_data ...")
 
@@ -430,6 +369,14 @@ class U7IPQ5322BspFactory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+
+        if self.FANI2C_CHECK_ENABLE is True:
+            self.i2c_check(item="fan")
+            msg(62, "Succeeding in checking FAN i2c value ...")
+
+        if self.FUSE_ENABLE is True:
+            self.fuse()
+            msg(65, "Succeeding in fuse Qualcomm auth data ...")
 
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
