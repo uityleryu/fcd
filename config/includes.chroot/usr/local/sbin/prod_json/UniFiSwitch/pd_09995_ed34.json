@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ed34-mfg.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-ftu-ultra+729.230817.2037-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-ftu-ultra+736.230818.1027-unsigned.bin"
         ],
         [
           "tftp/images/ed34-ota.bin",
