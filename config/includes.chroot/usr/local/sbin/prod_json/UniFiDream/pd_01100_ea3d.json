@@ -2,7 +2,7 @@
   "UniFiDream": {
     "UDM-ENT": {
       "INDEX": 0,
-      "NAME": "UDM-ENT-01100",
+      "NAME": "UDM-ENT",
       "BOARDID": "ea3d",
       "BOMREV": "113-01100",
       "DESC": "UniFi Dream Machine Enterprise",
@@ -27,24 +27,36 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
           "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "UDMENT.cn9670.v1.0.1+root.12401.213fd14.230731.1436.bin",
-            "uImage_20230728",
-            "bootfs_uboot_20230728.img"
+            "UDMENT.cn9670.v1.0.0+root.12879.53b4232.230817.0602.bin",
+            "uImage_20230817",
+            "bootfs_uboot_20230817.img"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/devreg",
+          "DST_PATH": "tools/devreg",
+          "FILES": [
+            "cn9670_devreg_1.0.1-39+gef08af01854_arm64.deb"
           ]
         }
+
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea3d-fw.bin",
-          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.1+root.12401.213fd14.230731.1436.bin"
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v1.0.0+root.12879.53b4232.230817.0602.bin"
         ],
         [
           "tftp/images/ea3d-recovery",
-          "../udm-fw/udm-enterprise/uImage_20230728"
+          "../udm-fw/udm-enterprise/uImage_20230817"
         ],
         [
           "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/bootfs_uboot_20230728.img"
+          "../udm-fw/udm-enterprise/bootfs_uboot_20230817.img"
+        ],
+        [
+          "tftp/tools/ea3d-devreg.deb",
+          "../tools/devreg/cn9670_devreg_1.0.1-39+gef08af01854_arm64.deb"
         ]
       ]
     }

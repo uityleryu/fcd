@@ -469,7 +469,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
             self.set_ps_port_relay_on()
-        for i in range(30):
+        for i in range(10):
             try:
                 index = self.proc.expect(
                     [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=15)
@@ -576,6 +576,19 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             if self.lcm[self.board_id]:
                 msg(90, "Check LCM FW version ...")
                 self.lcm_fw_ver_check()
+        if self.DEV_REG_ENABLE:
+            pkg_sets = [
+                "{}-devreg.deb".format(self.board_id),
+            ]
+            for pkg in pkg_sets:
+                src_path = os.path.join(self.fcd_toolsdir, pkg)
+                dst_path = os.path.join(self.dut_tmpdir, pkg)
+                self.tftp_get(remote=src_path, local=dst_path, timeout=20)
+            cmd = "dpkg -i {}".format(dst_path)
+            self.pexp.expect_lnxcmd(15, self.linux_prompt, cmd)
+            output = self.pexp.expect_get_output(action="devreg_CN9670 | grep Result", prompt="", timeout=25)
+            if "PASS" not in output:
+                raise NameError('Check Registration FAIL')
         output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="", timeout=3)
         log_debug(output)
         cmd = "systemctl is-system-running"

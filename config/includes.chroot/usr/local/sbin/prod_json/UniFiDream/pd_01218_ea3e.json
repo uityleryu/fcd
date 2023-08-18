@@ -2,7 +2,7 @@
   "UniFiDream": {
     "UXG-ENT": {
       "INDEX": 0,
-      "NAME": "UXG-ENT-01218",
+      "NAME": "UXG-ENT",
       "BOARDID": "ea3e",
       "BOMREV": "113-01218",
       "DESC": "UniFi Dream Machine Enterprise",
@@ -31,6 +31,13 @@
             "uImage_20230802",
             "bootfs_uboot_20230802.img"
           ]
+        },
+        {
+          "SRC_PATH": "images/tools/devreg",
+          "DST_PATH": "tools/devreg",
+          "FILES": [
+            "cn9670_devreg_1.0.1-39+gef08af01854_arm64.deb"
+          ]
         }
       ],
       "CREATE_LINK": [
@@ -45,6 +52,10 @@
         [
           "tftp/images/ea3e-boot.img",
           "../udm-fw/uxg-enterprise/bootfs_uboot_20230802.img"
+        ],
+        [
+          "tftp/tools/ea3e-devreg.deb",
+          "../tools/devreg/cn9670_devreg_1.0.1-39+gef08af01854_arm64.deb"
         ]
       ]
     }
