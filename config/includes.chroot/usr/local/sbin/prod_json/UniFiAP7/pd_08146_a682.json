@@ -1,11 +1,11 @@
 {
   "UniFiAP7": {
-    "U7-Enterprise-01272": {
+    "U7-Pro-08146": {
       "INDEX": 0,
-      "NAME": "U7-Enterprise",
-      "BOARDID": "a681",
-      "BOMREV": "113-01272",
-      "DESC": "UniFi AP7 Enterprise",
+      "NAME": "U7-Pro",
+      "BOARDID": "a682",
+      "BOMREV": "113-08146",
+      "DESC": "UniFi AP7 Pro",
       "FILE": "u7_ipq5322_bspfactory.py",
       "T1FILE": "u7_ipq5322_mfg.py",
       "QRCHECK": "True",
@@ -36,23 +36,23 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a681-bsp.img",
+          "tftp/images/a682-bsp.img",
           "../u7-fw/ipq5322/u7-enterprise-1g-v4.img"
         ],
         [
-          "tftp/images/a681-fw.bin",
+          "tftp/images/a682-fw.bin",
           "../u7-fw/ipq5322/BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin"
         ],
         [
-          "tftp/images/a681-gpt.bin",
+          "tftp/images/a682-gpt.bin",
           "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
         ],
         [
-          "tftp/images/a681-initramfs.bin",
+          "tftp/images/a682-initramfs.bin",
           "../u7-fw/ipq5322/ramload-7.0.1.bin"
         ],
         [
-          "tftp/images/a681-nor.bin",
+          "tftp/images/a682-nor.bin",
           "../u7-fw/ipq5322/u7-enterprise-1g-v4_nor.bin"
         ],
         [

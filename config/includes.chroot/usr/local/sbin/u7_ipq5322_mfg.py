@@ -25,7 +25,7 @@ class U7IPQ5322MFGGeneral(ScriptBase):
         self.set_bootloader_prompt("IPQ5332#")
 
     def update_nor(self):
-        cmd = "sf probe; sf erase 0x0 0x300000; sf write {} 0x0 0x300000".format(self.mem_addr)
+        cmd = "sf probe; sf erase 0x0 +0x300000; sf write {} 0x0 0x300000".format(self.mem_addr)
         log_debug(cmd)
         self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
         self.pexp.expect_only(60, "Erased: OK")
@@ -41,7 +41,7 @@ class U7IPQ5322MFGGeneral(ScriptBase):
 
         if self.erase_devreg == "True":
             devreg_offset = "0x400000"
-            cmd = "sf erase 0x400000 0x100000"
+            cmd = "sf erase 0x400000 0x10000"
             log_debug("Erase devreg data ...")
             log_debug(cmd)
             self.pexp.expect_action(10, exptxt=self.bootloader_prompt, action=cmd)
