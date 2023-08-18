@@ -10,6 +10,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a681: U7-Enterprise
     a682: U7-Pro
     a685: U7-Enterprise-IW
+    a688: UK-Pro
 '''
 class U7IPQ5322BspFactory(ScriptBase):
     def __init__(self):
@@ -30,24 +31,28 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "1",
             'a682': "1",
             'a685': "4",
+            'a688': "1",
         }
 
         self.wifinum = {
             'a681': "3",
             'a682': "3",
             'a685': "3",
+            'a688': "2",
         }
 
         self.btnum = {
             'a681': "1",
             'a682': "1",
             'a685': "1",
+            'a688': "0",
         }
 
         self.bootm_addr = {
             'a681': "0x50000000",
             'a682': "0x50000000",
             'a685': "0x50000000",
+            'a688': "0x50000000",
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -55,24 +60,28 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "bootm $fileaddr#config@a681",
             'a682': "bootm $fileaddr#config@a682",
             'a685': "bootm $fileaddr#config@a685",
+            'a688': "bootm $fileaddr#config@a688",
         }
 
         self.linux_prompt_select = {
             'a681': "#",
             'a682': "#",
             'a685': "#",
+            'a688': "#",
         }
 
         self.uboot_eth_port = {
             'a681': "eth0",
             'a682': "eth0",
             'a685': "eth0",
+            'a688': "eth0",
         }
 
         self.lnx_eth_port = {
             'a681': "br-lan",
             'a682': "br-lan",
             'a685': "br-lan",
+            'a688': "br-lan",
         }
 
         self.devnetmeta = {
@@ -81,48 +90,30 @@ class U7IPQ5322BspFactory(ScriptBase):
             'btnum': self.btnum
         }
 
-        '''
-            This is a special case for the U6-Pro recall event.
-        '''
-        self.BOOT_INITRAM_IMAGE = False
-
         self.BOOT_BSP_IMAGE = True
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.CHKCALDATA_ENABLE = True
         self.REGISTER_ENABLE = True
-        self.FANI2C_CHECK_ENABLE = True
+
+        if self.board_id != "a688":
+            self.FANI2C_CHECK_ENABLE = True
+            self.FWUPDATE_ENABLE = True
+            self.DATAVERIFY_ENABLE = True
+        else:
+            self.FANI2C_CHECK_ENABLE = False
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
+
         self.FUSE_ENABLE = True
-        self.FWUPDATE_ENABLE = True
-        self.DATAVERIFY_ENABLE = True
+        # self.FWUPDATE_ENABLE = True
+        # self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
-
-    '''
-        This is a special case for the U6-Pro recall event.
-    '''
-    def run_initram_bootup(self):
-        self.pexp.expect_action(20, "to stop", "\033\033")
-        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
-        self.is_network_alive_in_uboot()
-        cmd = "tftpboot 0x50000000 images/{}.itb".format(self.board_id)
-        self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
-        cmd = self.bootm_cmd[self.board_id]
-        self.pexp.expect_ubcmd(20, self.bootloader_prompt, cmd)
-
-        self.linux_prompt = "#"
-        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
-        cmd = "ifconfig br0"
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, "Link encap:Ethernet", retry=10)
-
-        self.set_lnx_net("br0")
-        self.is_network_alive_in_linux()
-        cmd = "echo 5edfacbf > /proc/ubnthal/.uf"
-        self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
 
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
@@ -165,93 +156,6 @@ class U7IPQ5322BspFactory(ScriptBase):
         # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
         #sometimes DUT will fail log to interrupt the login in process so add below try process for it
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
-
-    def fwupdate_uex(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        self.pexp.expect_action(60, "to stop", "\033\033")
-        self.del_arp_table(self.dutip)
-        comma_mac = self.mac_format_str2comma(self.mac)
-        self.set_ub_net(comma_mac)
-        self.is_network_alive_in_uboot()
-        self.display_arp_table()
-
-        cmd = "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id)
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
-        cmd = "sf erase 0x110000 0xb0000"
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        cmd = "sf write 0x50000000 0x120000 $filesize"
-        self.pexp.expect_ubcmd(60, "Erased: OK", cmd)
-        self.pexp.expect_ubcmd(60, "Written: OK", "reset")
-
-        self.pexp.expect_action(60, "to stop", "\033\033")
-        self.del_arp_table(self.dutip)
-        comma_mac = self.mac_format_str2comma(self.mac)
-        self.set_ub_net(comma_mac)
-        self.is_network_alive_in_uboot()
-        self.display_arp_table()
-
-        cmd = "setenv bootargs 'console=ttyMSM0,115200 factory server={} nc_transfer client={}'".format(
-            self.tftp_server, self.dutip)
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-
-        '''
-            The recovery image == image loader
-            which is "uImage"
-        '''
-        cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        self.pexp.expect_only(60, "Bytes transferred")
-        cmd = "mmc write 0x50000000 0x20800 0xffff"
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(60, "written: OK", "bootm")
-
-        self.pexp.expect_only(120, "enter factory install mode")
-        log_debug(msg="Enter factory install mode ...")
-        self.pexp.expect_only(120, "Wait for nc client")
-        log_debug(msg="nc ready ...")
-
-        ct = 0
-        retry = 5
-        while ct < retry:
-            ct += 1
-            cmd = "ping -c 3 {}".format(self.dutip)
-            [buf, rtc] = self.fcd.common.xcmd(cmd)
-            if (int(rtc) > 0):
-                rmsg = "ping IP: {}, FAILED, Retry: {}".format(self.dutip, ct)
-                log_debug(rmsg)
-            else:
-                log_debug("ping IP: {} successfully".format(self.dutip))
-                break
-        else:
-            rmsg = "ping IP: {}, FAILED".format(self.dutip)
-            error_critical(rmsg)
-
-        cmd = "nc -N {} 5566 < {}/{}-fw.bin".format(self.dutip, self.fwdir, self.board_id)
-        log_debug("cmd: " + cmd)
-        ct = 0
-        retry = 4
-        while ct < retry:
-            ct += 1
-            [buf, rtc] = self.fcd.common.xcmd(cmd)
-            if (int(rtc) > 0):
-                rmsg = "\nCommand output:\n{}".format(buf)
-                rmsg += "Retry: {}".format(ct)
-                log_debug(rmsg)
-                time.sleep(1)
-            else:
-                break
-        else:
-            rmsg = "\nCommand output:\n{}".format(buf)
-            rmsg += "Uploading FW FAIL!!!"
-            error_critical(rmsg)
-
-        log_debug(msg="Upgrading FW ...")
-        self.pexp.expect_only(120, "Reboot system safely")
-        log_debug(msg="FW update done ...")
-
-        self.linux_prompt = "root"
-        self.login("ui", "ui", timeout=300, log_level_emerg=True, press_enter=False, retry=3)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
@@ -341,12 +245,6 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         if self.BOOT_BSP_IMAGE is True:
             self.init_bsp_image()
-
-        '''
-            This is a special case for the U6-Pro recall event. 
-        '''
-        if self.BOOT_INITRAM_IMAGE is True:
-            self.run_initram_bootup()
 
         msg(10, "Boot up to linux console by initram and network is good ...")
 
