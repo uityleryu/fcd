@@ -60,7 +60,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.bom_check_dict = {
             'a911': True,
             'a941': True,
-            'a912': True,
+            'a912': False,
             'a915': True,
             'a918': True,
             'a919': True,
@@ -454,6 +454,13 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
+
+        time.sleep(0.5)
+        rtc = self.ser.expect_only('Serial upload complete', timeout=10)
+        if rtc:
+            log_info('Sending devreg data successfully')
+        else:
+            error_critical('Sending devreg data failed')
 
     def _read_version(self, msg):
         # only for LOCK-R(a911) and 60G-LAS(a918)
