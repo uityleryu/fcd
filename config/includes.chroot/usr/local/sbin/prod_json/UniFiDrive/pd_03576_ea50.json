@@ -16,21 +16,15 @@
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "ea50-srt2-fw-image.bin"
+            "UNASSTU.al324.v1.0.0+root.12157.32ad37a.230629.0028.bin",
+            "ea50-sz-pr1-0.9.5.uImage"
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/unas/",
-          "DST_PATH": "unas",
-          "FILES": [
-            "ea50-srt2-uImage"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/unas/ea51/",
+          "SRC_PATH": "images/tools/unas",
           "DST_PATH": "tools/ea50",
           "FILES": [
-            "factory-test-tools_2.0-134+g5071bd6_arm64.deb"
+            "factory-test-tools_2.3-159+g076e6bb_arm64.deb"
           ]
         },
         {
@@ -58,11 +52,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea50-fw.bin",
-          "../unas/ea50-srt2-fw-image.bin"
+          "../unas/UNASSTU.al324.v1.0.0+root.12157.32ad37a.230629.0028.bin"
         ],
         [
-          "tftp/uImage",
-          "unas/ea50-srt2-uImage"
+          "tftp/unas/uImage-ea50",
+          "./ea50-sz-pr1-0.9.5.uImage"
         ]
       ]
     }

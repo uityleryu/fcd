@@ -5,7 +5,7 @@
       "NAME": "UCKP",
       "BOARDID": "e970",
       "BOMREV": "113-02570",
-      "DESC": "UniFi CloudKey Pluss",
+      "DESC": "UniFi CloudKey Plus",
       "FILE": "uck_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
@@ -15,16 +15,22 @@
           "SRC_PATH": "images/fcd-image/uck-fw/",
           "DST_PATH": "uck-fw/",
           "FILES": [
-            "CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img",
-            "RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img",
-            "UCKP.apq8053.v2.3.15.473c2bc.220209.1142.boot",
-            "UCKP.apq8053.v2.3.15.473c2bc.220209.1142.rootfs"
+            "CK2FCD.apq8053.v0.6.0.8f96a48.220617.1815-boot.img",
+            "RCK2.apq8053.v0.7.2.eb0683c.230721.1725-boot.img",
+            "UCKP.apq8053.v3.1.14.3aa57db.230714.2319.boot",
+            "UCKP.apq8053.v3.1.14.3aa57db.230714.2319.rootfs"
           ]
         },
         {
           "SRC_PATH": "images/tools/uck/",
           "DST_PATH": "tools/uck/",
-          "FILES": []
+          "FILES": [
+            "ck-ee",
+            "DRA_ed0eb1b5_helper_APQ8053_release.strip",
+            "mmc-prep.sh",
+            "check-part.sh",
+            "check-part.txt"
+          ]
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -40,19 +46,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/e970-mfg.bin",
-          "../uck-fw/CK2FCD.apq8053.v0.3.2.344e102.210830.1146-boot.img"
+          "../uck-fw/CK2FCD.apq8053.v0.6.0.8f96a48.220617.1815-boot.img"
         ],
         [
           "tftp/images/e970-recovery.bin",
-          "../uck-fw/RCK2.apq8053.v0.5.3.3284d8c.211102.1104-boot.img"
+          "../uck-fw/RCK2.apq8053.v0.7.2.eb0683c.230721.1725-boot.img"
         ],
         [
           "tftp/images/e970-rootfs.bin",
-          "../uck-fw/UCKP.apq8053.v2.3.15.473c2bc.220209.1142.rootfs"
+          "../uck-fw/UCKP.apq8053.v3.1.14.3aa57db.230714.2319.rootfs"
         ],
         [
           "tftp/images/e970-kernel.bin",
-          "../uck-fw/UCKP.apq8053.v2.3.15.473c2bc.220209.1142.boot"
+          "../uck-fw/UCKP.apq8053.v3.1.14.3aa57db.230714.2319.boot"
         ]
       ]
     }

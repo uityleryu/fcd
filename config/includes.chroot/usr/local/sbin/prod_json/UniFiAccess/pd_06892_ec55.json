@@ -1,0 +1,55 @@
+{
+  "UniFiAccess": {
+    "UA-HUB-ENTERPRISE": {
+      "INDEX": 1,
+      "NAME": "UA-HUB-ENTERPRISE",
+      "BOARDID": "ec55",
+      "BOMREV": "113-06892",
+      "DESC": "UniFi Access Hub Enterprise",
+      "FILE": "ua_mt7621_factory4.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw",
+          "DST_PATH": "ua-fw",
+          "FILES": [
+            "ua-hub-enterprise-nor-v2.bin",
+            "unifi-v1.1.11.27-g22d5148d_uah_enterprise-mt7621-64MB_nodebug_u-boot-support-winbond-64M-spi-flash.bin",
+            "HE.mt7621.v4.1.3.77.g0f785a8.230615.0845-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee_20230414"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec55-t1-fw.bin",
+          "../ua-fw/ua-hub-enterprise-nor-v2.bin"
+        ],
+        [
+          "tftp/images/ec55-uboot.bin",
+          "../ua-fw/unifi-v1.1.11.27-g22d5148d_uah_enterprise-mt7621-64MB_nodebug_u-boot-support-winbond-64M-spi-flash.bin"
+        ],
+        [
+          "tftp/images/ec55-fw.bin",
+          "../ua-fw/HE.mt7621.v4.1.3.77.g0f785a8.230615.0845-uboot.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230414"
+        ]
+      ]
+    }
+  }
+}
