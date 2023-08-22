@@ -20,7 +20,7 @@ REGISTER_EN = True
 CHECK_MAC_EN = True
 
 '''
-    aa03:  UniFi-AMP
+    aa03:  UniFiPlay-AMP
 '''
 
 
@@ -141,8 +141,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
         res = self.pexp.expect_get_output('cat /tmp/bsp_helper/cpuid', self.linux_prompt).split('\n')[-2]
         res = res.replace('\r', '')
         id = res
-        if self.board_id == 'aa01':
-            id = id.replace('0x00000000', '')
+        id = id.replace('0x00000000', '')
         log_debug(id)
         return id
 
