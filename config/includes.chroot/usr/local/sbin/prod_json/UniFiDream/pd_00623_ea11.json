@@ -10,7 +10,7 @@
       ],
       "DESC": "UniFi Dream Machine",
       "FILE": "udm_al324_factory.py",
-      "T1FILE": "",
+      "T1FILE": "ubios_alpine_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",
@@ -58,6 +58,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm",
           "DST_PATH": "udm-fw/udm",
           "FILES": [
+            "ubnt_udm_all_v1_boot.img",
             "UDM.al324.v3.0.20.5256a39.230406.2140.bin",
             "uImage-20230404",
             "boot-20230404.img"
@@ -65,6 +66,10 @@
         }
       ],
       "CREATE_LINK": [
+        [
+          "tftp/images/ea11-bsp.bin",
+          "../udm-fw/udm/ubnt_udm_all_v1_boot.img"
+        ],
         [
           "tftp/images/ea11-fw.bin",
           "../udm-fw/udm/UDM.al324.v3.0.20.5256a39.230406.2140.bin"
