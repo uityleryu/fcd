@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ed34-mfg.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-ftu-ultra+741.230818.1608-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-burnin-improve+738.230822.1507-unsigned.bin"
         ],
         [
           "tftp/images/ed34-ota.bin",
