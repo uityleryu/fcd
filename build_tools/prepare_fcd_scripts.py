@@ -34,7 +34,7 @@ curdir = os.getcwd()
 tmp_wget_dir = os.path.join(curdir, "output", "tmp_wget")
 reg_bs_dir = os.path.join(curdir, "config", "includes.chroot", "usr", "local", "sbin")
 prod_json_dir = os.path.join(reg_bs_dir, "prod_json")
-ftp_server_url = "http://10.2.0.33:8088"
+ftp_server_url = "http://pa1.corp.ubnt.com:8080"
 devreg_server_url = "https://ec2-18-166-47-160.ap-east-1.compute.amazonaws.com:20000/api/v1/product_mapping"
 
 print("Current DIR: " + curdir)
@@ -111,7 +111,7 @@ def download_images():
             download_list = pjson[pl][im]["DOWNLOAD_FILE"]
             for item in download_list:
                 if len(item["FILES"]) > 0:
-                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    # Ex: http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw
                     url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                     # Ex: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
                     local_dir = os.path.join(ostype_tftp_dir, item["DST_PATH"])
@@ -119,7 +119,7 @@ def download_images():
                         os.makedirs(local_dir)
 
                     for i in item["FILES"]:
-                        # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw/u-boot-art-qca955x.bin
+                        # Ex: http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw/u-boot-art-qca955x.bin
                         src_file_path = os.path.join(url_dir, i)
                         src_file_path = src_file_path.replace("\\", "/")
                         cmd = "wget -P {} {}".format(local_dir, src_file_path)
@@ -131,21 +131,21 @@ def download_images():
                                 print("WGET failed: " + cmd)
                                 exit(1)
                 else:
-                    # Ex: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    # Ex: http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw
                     url_dir = os.path.join(ftp_server_url, item["SRC_PATH"])
                     '''
-                        wget -r -np -nH -R "index.html*" http://10.2.0.33:8088/images/fcd-image/am-fw/
-                        It must need a "/" after the url http://10.2.0.33:8088/images/fcd-image/am-fw, then wget could download all files
+                        wget -r -np -nH -R "index.html*" http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw/
+                        It must need a "/" after the url http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw, then wget could download all files
                         under the folder "am-fw", or it will copy all files under "fcd-image"
                     '''
-                    # Ex: url_dir: http://10.2.0.33:8088/images/fcd-image/am-fw
+                    # Ex: url_dir: http://pa1.corp.ubnt.com:8080/images/fcd-image/am-fw
                     # Ex: local_dir: /home/vjc/malon/uifcd1/output/ostrich/tftp/am-fw
                     url_dir = url_dir.replace("\\", "/")
                     src_pattern = r"images/fcd-image[/]$|images/tools[/]$"
                     match_url = re.findall(src_pattern, url_dir)
                     if match_url:
                         print("!!!!!!!!! Fatal Error, you are going to copy all images from the FTP server !!!!!!!!!!!!")
-                        print("You attempt to copy http://10.2.0.33:8088/images/fcd-image/ or http://10.2.0.33:8088/images/tools/")
+                        print("You attempt to copy http://pa1.corp.ubnt.com:8080/images/fcd-image/ or http://pa1.corp.ubnt.com:8080/images/tools/")
                         exit(1)
 
                     cmd = "wget -r -np -nH -R \"index.html*\" {}".format(url_dir)
@@ -309,7 +309,7 @@ def gen_prod_json():
                 [devreg_pd, rtc] = cn.xcmd(cmd)
 
                 # Ex: FCD_e7f9_1.77.15_8.7.4_LBE-5AC-Gen2
-                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", "").replace(" ","-"))
+                fcdname = "FCD_{}_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver, devreg_pd.replace("\"", "").replace(" ", "-"))
             else:
                 # Ex: FCD_e7f9_1.77.15_8.7.4
                 fcdname = "FCD_{}_{}_{}".format(pn.split("_")[1], args.fcdver, args.fwver)
