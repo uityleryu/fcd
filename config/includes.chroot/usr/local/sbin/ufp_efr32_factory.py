@@ -23,6 +23,7 @@ REGISTER_ENABLE = True
 SET_SKU_ENABLE = True
 CHECK_MAC_ENABLE = True
 CHECK_BOMID_CORRECT = True
+CHECK_DEVREG_DATA_ENABLE = True
 
 class UFPEFR32FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -42,8 +43,21 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.cmd_version = "VERSION"
         self.cmd_reset = "RESET"
         self.cmd_erase_devreg = "ERASEDEVREG"
+        self.cmd_devregcheck = "DEVREGCHECK"
 
         self.mac_check_dict = {
+            'a911': True,
+            'a941': True,
+            'a912': True,
+            'a915': True,
+            'a918': True,
+            'a919': True,
+            'ee76': True,
+            'a922': True,
+            'ec51': True,
+        }
+
+        self.bom_check_dict = {
             'a911': True,
             'a941': True,
             'a912': False,
@@ -55,7 +69,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ec51': True,
         }
 
-        self.bom_check_dict = {
+        self.devreg_data_check_dict = {
             'a911': True,
             'a941': True,
             'a912': True,
@@ -187,19 +201,19 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             elif self.board_id == "ec51":
                 res = re.search(r"UNIQUEID:27-(.*)\r\n", uid_rtv, re.S)
             else:
-                res = re.search(r"UNIQUEID:27-(.*)\n", uid_rtv, re.S)
+                res = re.search(r"UNIQUEID:27-(.*?)\n", uid_rtv, re.S)
 
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            if self.board_id == "ec51":
+            if self.board_id in ["ec51", "a912"]:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\r", cpuid_rtv, re.S)
             else:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
-            if self.board_id == "ec51":
+            if self.board_id in ["ec51", "a912"]:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\r", jedecid_rtv, re.S)
             else:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
@@ -441,6 +455,13 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         stream = open(self.eesign_path, 'rb')
         modem.send(stream, retry=64)
 
+        time.sleep(0.5)
+        rtc = self.ser.expect_only('Serial upload complete', timeout=10)
+        if rtc:
+            log_info('Sending devreg data successfully')
+        else:
+            error_critical('Sending devreg data failed')
+
     def _read_version(self, msg):
         # only for LOCK-R(a911) and 60G-LAS(a918)
         log_info('Version information = {}'.format(msg))
@@ -558,6 +579,25 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         else:
             error_critical("MAC_DUT and MAC_expect are NOT match")
 
+    def check_devreg_data(self):
+        log_debug("Starting to check devreg data")
+        log_info("self.devreg_data_check_dict = {}".format(self.devreg_data_check_dict))
+
+        if self.devreg_data_check_dict[self.board_id] is False:
+            log_debug("skip check devreg data in DUT ...")
+            return
+
+        if self._reseted_flag is not True:
+            self._reset()
+        else:
+            log_info('Have reseted before, skip this time')
+
+        rtv_devregcheck = self.ser.execmd_getmsg(self.cmd_devregcheck)
+        if 'CHECK SUCCESS' in rtv_devregcheck:
+            log_debug('DEVREG: CHECK SUCCESS')
+        else:
+            error_critical('DEVREG: CHECK FAIL')
+
     def check_bom(self):
          log_debug("Starting to check BOM ID")
          log_info("self.bom_check_dict = {}".format(self.bom_check_dict))
@@ -628,6 +668,10 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         if CHECK_MAC_ENABLE is True:
             self.check_mac()
             msg(80, "Finish checking MAC in DUT ...")
+
+        if CHECK_DEVREG_DATA_ENABLE is True:
+            self.check_devreg_data()
+            msg(85, "Finish checking DEVREG DATA in DUT ...")
 
         if CHECK_BOMID_CORRECT is True:
             self.check_bom()
