@@ -1,0 +1,48 @@
+{
+  "UniFiVideo": {
+    "UVC-G5PTZULTRA": {
+      "INDEX": 0,
+      "NAME": "UVC-G5PTZULTRA",
+      "BOARDID": "a59b",
+      "BOMREV": "113-04272",
+      "DESC": "UVC G5 PTZ Ultra",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e04",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "g5ptzultra.UVC.gen4s.v4.65.93.67-fcddbg.M_9770db0.230816.0952.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a59b-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a59b-fw.bin",
+          "../uvc-fw/g5ptzultra.UVC.gen4s.v4.65.93.67-fcddbg.M_9770db0.230816.0952.bin"
+        ]
+      ]
+    }
+  }
+}

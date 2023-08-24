@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin",
+            "EL.mt7621.v4.2.0.15.g047f080.230718.0756-uboot.bin",
             "ua-gate-nor-v2.bin"
           ]
         },
@@ -46,7 +46,7 @@
         ],
         [
           "tftp/ua-fw/ua-elevator-fw.bin",
-          "../ua-fw/e9a5-openwrt-4.0.12-88-ff3d48809f534c6a9e67501c353d95f0.bin"
+          "../ua-fw/EL.mt7621.v4.2.0.15.g047f080.230718.0756-uboot.bin"
         ]
       ]
     }
