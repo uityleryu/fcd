@@ -7,6 +7,11 @@ import re
 import stat
 import filecmp
 import json
+import base64
+import zlib
+
+from pprint import pformat
+from collections import OrderedDict
 
 sys.path.append("/tftpboot/tools")
 
@@ -40,6 +45,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         self.reboot_dict = {
             'aa03': True
+        }
+
+        self.homekit_dict = {
+            'aa03': False
         }
 
         # number of Ethernet
@@ -98,6 +107,11 @@ class UCQCS403FactoryGeneral(ScriptBase):
         if REGISTER_EN is True:
             self.registration()
             msg(60, "Finish doing registration ...")
+
+            if self.homekit_dict[self.board_id] is True:
+                self.homekit_setup_after_registration()
+                msg(50, "Finish Homekit setup ...")
+
             self.check_devreg_data()
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
@@ -263,16 +277,108 @@ class UCQCS403FactoryGeneral(ScriptBase):
         for connect_type, mac in mac_dict_exp.items():
             is_match = mac_dict_dut[connect_type] == mac_dict_exp[connect_type]
             results_dict[connect_type] = "Pass" if is_match else "Fail"
-            log_info('{} MAC check is {}'.format(connect_type, "Pass" if is_match else "Fail"))
+            log_info('{} MAC address check is {}'.format(connect_type, "Pass" if is_match else "Fail"))
 
         pass_num = list(results_dict.values()).count("Pass")
         result = pass_num == len(results_dict)
-        log_info('MAC check results_dict = {}'.format(results_dict))
+        log_info('MAC address check results_dict = {}'.format(results_dict))
 
         if result:
-            log_info('MAC check successfully')
+            log_info('MAC address check successfully')
         else:
-            error_critical('MAC check failed')
+            error_critical('MAC address check failed')
+
+    def homekit_setup_after_registration(self):
+        if self.is_homekit_done_before is False:
+            self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
+        else:
+            self.__check_tokenid_match(self.client_x86_rsp)
+
+    def __check_tokenid_match(self, client_x86_rsp):
+        regex = re.compile(r'token_id,format=string,value=(.*)')
+        tokenid_client = regex.findall(client_x86_rsp+'\n')[0]
+
+        log_info('tokenid_client = {}'.format(tokenid_client))
+        log_info('tokenid_dut = {}'.format(self.tokenid_dut))
+
+        is_tokenid_match = tokenid_client == self.tokenid_dut
+        log_info('tokenid_dut & tokenid_client are {}match'.format('' if is_tokenid_match else 'NOT '))
+        if is_tokenid_match is False:
+            log_info('So server treat this DUT as first time HK registration')
+            self.__gen_homkit_token_csv_txt(client_x86_rsp)
+
+        return is_tokenid_match
+
+    def __gen_homkit_token_csv_txt(self, client_x86_rsp):
+        def _calculate_crc(info_dict):
+            byte = b''
+            byte += info_dict['product_plan_id'].encode('UTF-8')
+            byte += info_dict['token_id'].encode('UTF-8')
+            try:
+                token_encode = info_dict['token'].encode('UTF-8')
+                byte += base64.b64decode(token_encode)
+            except Exception as e:
+                log_info(e)
+                log_info('calculate_crc fail..')
+                crc32 = 0
+            else:
+                crc32 = hex(zlib.crc32(byte) & 0xffffffff).replace('0x', '')
+            return crc32
+
+        log_info('__gen_homkit_token_csv_txt..')
+
+        '''Devreg server response example:
+            field=flash_eeprom,format=binary,pathname=/tftpboot/e.s.0
+            field=registration_id,format=u_int,value=99099685
+            field=result,format=u_int,value=1
+            field=device_id,format=u_int,value=94429505
+            field=homekit_device_token_id,format=string,value=0C00852350D648C68519AE0EF79F0D7F
+            field=homekit_device_token,format=string,value=MYGrMFACAQECAQEESDBGAiEAqB6jlfVSXyItOGpYO5Cg3zvznl4PIi6eMZre9N5HmJgCIQC90d2p828W5bNhsAmnD+K9RDQ/9xZGfLJl9lImcnonRDBXAgECAgEBBE8xTTAJAgFmAgEBBAEBMBACAWUCAQEECPFcGs94AQAAMBQCAgDJAgEBBAsyMTcwMDEtMDAwNDAYAgFnAgEBBBAMAIUjUNZIxoUZrg73nw1/
+            field=homekit_device_uuid,format=string,value=1f551899-b3d3-4305-aa60-3e64185f7d7a
+            field=homekit_product_plan_id,format=string,value=217001-0004
+        '''
+
+        # prepare data
+        info_dict = OrderedDict()
+        info_dict['token_id'] = None
+        info_dict['token'] = None
+        info_dict['uuid'] = None
+        info_dict['product_plan_id'] = None
+
+        log_info('{}'.format([client_x86_rsp]))
+
+        re_tmp = r"{},format=string,value=(.*)\n"
+        for k, v in info_dict.items():
+            log_info('k = {}'.format(k))
+            regex = re.compile(re_tmp.format(k))
+            info_dict[k] = regex.findall(client_x86_rsp+'\n')[0]
+            log_info('v = {}'.format(info_dict[k]))
+
+        info_dict['crc32'] = _calculate_crc(info_dict)
+        log_info('info_dict = \n{}'.format(pformat(info_dict, indent=4)))
+
+        # gen file
+        file_dir = os.path.join('/home/ubnt/usbdisk', 'LOCK-R_hk_output')
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        # csv
+        csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
+        with open(csv_path, 'w') as f:
+            f.write('{}, {}, {}, {}'.format(
+                info_dict['product_plan_id'], info_dict['token_id'],
+                info_dict['token'], info_dict['crc32']))
+        # txt
+        txt_path = os.path.join(file_dir, 'uuid_{}.txt'.format(self.mac.upper()))
+        with open(txt_path, 'w') as f:
+            f.write('{}'.format(info_dict['uuid']))
+
+        is_file = os.path.isfile(csv_path) and os.path.isfile(txt_path)
+        log_info('csv_path = {}'.format(csv_path))
+        log_info('txt_path = {}'.format(txt_path))
+        log_info('Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
+
+        return is_file
 
 def main():
     uc_factory_general = UCQCS403FactoryGeneral()
