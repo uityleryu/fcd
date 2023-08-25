@@ -52,6 +52,8 @@ IMAGE-UC-THERMOSTAT =\
     images/ec47* \
     uc-fw/uc-thermostat/*
 
+IMAGE-UC-Magic-Link-Sensor =
+
 # Model
 # This is used for adding an option in the file of BackT1.desktop
 # and Factory.desktop
@@ -103,6 +105,8 @@ TOOLS-UC-THERMOSTAT+= \
     $(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
 
+TOOLS-UC-Magic-Link-Sensor+=$(TOOLS-CONFIG)
+
 # Project target
 
 $(eval $(call ProductImage,UC-Plug-US,FCD_$(PRD)_UC-Plug-US_$(VER)_$(FWVER)))
@@ -138,6 +142,8 @@ $(eval $(call ProductCompress,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULED-Instant,FCD_$(PRD)_ULED-Instant_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,ULED-Bulb,FCD_$(PRD)_ULED-Bulb_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UC-Magic-Link-Sensor,FCD_$(PRD)_UC-Magic-Link-Sensor_$(VER)_$(FWVER)))
+
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00997_ec5a))
@@ -168,3 +174,4 @@ $(eval $(call ProductCompress2,03119_ec41))
 $(eval $(call ProductCompress2,03523_ec80))
 $(eval $(call ProductCompress2,04101_efa1))
 $(eval $(call ProductCompress2,04143_ef83))
+$(eval $(call ProductCompress2,04231_a923))

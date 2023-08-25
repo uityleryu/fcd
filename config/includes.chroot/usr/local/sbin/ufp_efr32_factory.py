@@ -53,6 +53,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
+            'a923': True
         }
 
         self.bom_check_dict = {
@@ -65,6 +66,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
+            'a923': True
         }
 
         self.qrcode_dict = {
@@ -77,6 +79,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': False,
+            'a923': False
         }
 
         self.sku_dict = {
@@ -89,6 +92,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': False,
             'a922': True,
             'ec51': False,
+            'a923': False
         }
 
         self.homekit_dict = {
@@ -101,6 +105,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': False,
             'a922': False,
             'ec51': False,
+            'a923': False
         }
 
         # number of Ethernet
@@ -114,6 +119,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "0",
             'a922': "0",
             'ec51': "0",
+            'a923': "0"
         }
 
         # number of WiFi
@@ -127,6 +133,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "0",
             'a922': "1",
             'ec51': "0",
+            'a923': "0"
         }
 
         # number of Bluetooth
@@ -140,6 +147,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "1",
             'a922': "1",
             'ec51': "1",
+            'a923': "2"
         }
 
     def prepare_server_need_files(self):
