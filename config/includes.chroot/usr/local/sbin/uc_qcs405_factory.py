@@ -6,6 +6,7 @@ import os
 import re
 import stat
 import filecmp
+import json
 
 sys.path.append("/tftpboot/tools")
 
@@ -22,7 +23,6 @@ CHECK_MAC_EN = True
 '''
     aa03:  UniFiPlay-AMP
 '''
-
 
 class UCQCS403FactoryGeneral(ScriptBase):
     def __init__(self):
@@ -78,11 +78,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(10, "TTY initialization successfully ...")
 
-        log_debug(msg="sleep 70 secs") # wait for dut stable
-        time.sleep(70)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp="login:", action="", post_exp="")
 
         self.pexp.expect_lnxcmd(10, "", "")
-        self.login(username="root", password="oelinux123", timeout=120)
+        self.login(username="ui", password="ui", timeout=120)
         self.setup_network()
         msg(20, "Finish setting up network ...")
 
@@ -116,9 +115,8 @@ class UCQCS403FactoryGeneral(ScriptBase):
         msg(100, "Completing registration ...")
         self.close_fcd()
 
-
     def prepare_server_need_files(self, method="tftp"):
-        log_debug('prepare_server_need_files_ssh()')
+        log_info('prepare_server_need_files_ssh()')
 
         eebin_dut_path = os.path.join(self.dut_tmpdir, self.eebin)
         eetxt_dut_path = os.path.join(self.dut_tmpdir, self.eetxt)
@@ -134,8 +132,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
             dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
             self.tftp_put(remote=srcp, local=dstp, timeout=10)
 
-        log_debug("Send helper output files from DUT to host ...")
-
+        log_info("Send helper output files from DUT to host ...")
 
     def get_cpu_id(self):
         res = self.pexp.expect_get_output('cat /tmp/bsp_helper/cpuid', self.linux_prompt).split('\n')[-2]
@@ -177,8 +174,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
         cmd = 'echo "{}" > {}'.format(sstr, output_path)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt,
                                 valid_chk=True)
-        log_debug("provided {} successfully".format(output_path))
-
+        log_info("provided {} successfully".format(output_path))
 
     def helper_generate_e_b(self, output_path='/tmp/e.b'):
         log_debug('helper_generate_e_b to {}'.format(output_path))
@@ -187,27 +183,31 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd_dd, post_exp=self.linux_prompt,
                                 valid_chk=True)
         # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action='mv /tmp/e.org.0 /tmp/e.b.0', post_exp=self.linux_prompt, valid_chk=True)
-        log_debug("provided {} successfully".format(output_path))
-
+        log_info("provided {} successfully".format(output_path))
 
     def write_mac_addr(self):
         # write
         cmd = 'ubus call main hal_write_mac_addrs'
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt)
+        match = re.search(r'"result":\s+"ok"', res)
+
+        if not match:
+            error_critical('write MAC address failed')
+
+        log_info('write MAC address successfully')
 
         # sync data to flash
         cmd = "sync"
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
 
-        # reboot & re-login
+        # reboot to activate MAC address & re-login
         if self.reboot_dict[self.board_id] is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
-            log_debug(msg="sleep 50 secs to wait for boot-up")
+            log_info(msg="sleep 50 secs to wait for boot-up")
             time.sleep(50)
 
-            self.login(username="root", password="ubnt", timeout=120)
+            self.login(username="ui", password="ui", timeout=120)
             self.setup_network()
-
 
     def setup_network(self):
         cmd = "dmesg -n1"
@@ -224,7 +224,6 @@ class UCQCS403FactoryGeneral(ScriptBase):
         time.sleep(10)
         self.is_network_alive_in_linux()
 
-
     def setup_mfg_mode(self):
         cmd = "echo 1 > /data/mfg_mode"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
@@ -234,13 +233,46 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=flag)
 
     def check_mac(self):
-        log_debug("Starting to check MAC")
+        log_info("Starting to check MAC")
         log_info("self.mac_check_dict = {}".format(self.mac_check_dict))
 
         if self.mac_check_dict[self.board_id] is False:
-            log_debug("skip check the MAC in DUT ...")
+            log_info("skip check the MAC in DUT ...")
             return
 
+        # expected mac
+        int_mac = int(self.mac, 16)
+        mac_hex_wifi = hex(int_mac + 1).replace("0x", "").zfill(12)
+        mac_hex_bt = hex(int_mac + 2).replace("0x", "").zfill(12)
+
+        mac_dict_exp = {}
+        mac_dict_exp['eth0'] = self.mac_format_str2comma(self.mac)
+        mac_dict_exp['wlan0'] = self.mac_format_str2comma(mac_hex_wifi)
+        mac_dict_exp['BT'] = self.mac_format_str2comma(mac_hex_bt)
+
+        log_info('[exp] mac_dict = {}'.format(mac_dict_exp))
+
+        # read mac
+        cmd = 'ubus call main hal_read_mac_addrs'
+        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt)
+        json_data = re.search(r'{[^}]+}', res).group()
+        mac_dict_dut = json.loads(json_data)
+        log_info('[dut] mac_dict = {}'.format(mac_dict_dut))
+
+        results_dict = {}
+        for connect_type, mac in mac_dict_exp.items():
+            is_match = mac_dict_dut[connect_type] == mac_dict_exp[connect_type]
+            results_dict[connect_type] = "Pass" if is_match else "Fail"
+            log_info('{} MAC check is {}'.format(connect_type, "Pass" if is_match else "Fail"))
+
+        pass_num = list(results_dict.values()).count("Pass")
+        result = pass_num == len(results_dict)
+        log_info('MAC check results_dict = {}'.format(results_dict))
+
+        if result:
+            log_info('MAC check successfully')
+        else:
+            error_critical('MAC check failed')
 
 def main():
     uc_factory_general = UCQCS403FactoryGeneral()
