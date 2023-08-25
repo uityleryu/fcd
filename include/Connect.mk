@@ -122,6 +122,7 @@ $(eval $(call ProductImage,LVDU-4,FCD_$(PRD)_LVDU-4_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-24,FCD_$(PRD)_LVDU-24_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,LVDU-1,FCD_$(PRD)_LVDU-1_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-THERMOSTAT,FCD_$(PRD)_UC-THERMOSTAT_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UC-Magic-Link-Sensor,FCD_$(PRD)_UC-Magic-Link-Sensor_$(VER)_$(FWVER)))
 
 
 # Project compressed file for RPi FCD host
