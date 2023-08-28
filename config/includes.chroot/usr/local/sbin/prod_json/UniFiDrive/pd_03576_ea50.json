@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "UNASSTU.al324.v1.0.0+root.12157.32ad37a.230629.0028.bin",
+            "UNASSTU.al324.v3.1.16.456179c.230823.1801.bin",
             "ea50-sz-pr1-0.9.5.uImage"
           ]
         },
@@ -52,7 +52,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea50-fw.bin",
-          "../unas/UNASSTU.al324.v1.0.0+root.12157.32ad37a.230629.0028.bin"
+          "../unas/UNASSTU.al324.v3.1.16.456179c.230823.1801.bin"
         ],
         [
           "tftp/unas/uImage-ea50",
