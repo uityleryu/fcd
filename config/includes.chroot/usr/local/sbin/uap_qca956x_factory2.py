@@ -14,6 +14,7 @@ This FCD script is for
     e615: ULTE-FLEX-US
     e618: UMR-EU-AC
     e619: UMR-US-AC
+    e620: UMR-Ultra
     dca6: UMR-PRO-US
     dca7: UMR-PRO-EU
 '''
@@ -40,6 +41,7 @@ class UAPQCA956xFactory2(ScriptBase):
             'e615': "ulte_flex",
             'e618': "ulte_flex",
             'e619': "ulte_flex",
+            'e620': "ulte_flex",
             'dca6': "ulte_flex",
             'dca7': "ulte_flex"
         }
@@ -92,7 +94,7 @@ class UAPQCA956xFactory2(ScriptBase):
         fw_path = os.path.join(self.fwdir, self.board_id + ".bin")
         log_debug(msg="firmware path:" + fw_path)
 
-        if self.board_id in ["dca6", "dca7", "e618", "e619"]:
+        if self.board_id in ["dca6", "dca7", "e618", "e619", "e620"]:
             self.user = "ui"
             self.password = "ui"
 
@@ -171,7 +173,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
         time.sleep(15)  # for stable system
 
-        if self.board_id in ["e618", "e619"]:
+        if self.board_id in ["e618", "e619", "e620"]:
             log_debug(msg="Add IP Addr")
             cmd = "ifconfig"
             exp = "br-lan"
@@ -439,7 +441,7 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(55, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
             self.prepare_server_need_files()
-
+        '''
         if self.REGISTER_ENABLE is True:
             msg(60, "Doing registration ...")
             self.registration()
@@ -451,7 +453,7 @@ class UAPQCA956xFactory2(ScriptBase):
             self.fwupdate()
             self.login_kernel()
 
-            if self.board_id in ["e618", "e619"]:
+            if self.board_id in ["e618", "e619", "e620"]:
                 self.check_boot_complete()
                 time.sleep(10)
 
@@ -459,7 +461,7 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(90, "Checking the devrenformation ...")
             self.check_info()
 
-        if self.board_id in ["e618", "e619"]:
+        if self.board_id in ["e618", "e619", "e620"]:
             self.check_wireless_config()
 
             time.sleep(5)
