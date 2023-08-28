@@ -36,6 +36,9 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.prodclass = "0014"
 
         self.baudrate = 921600
+        if self.board_id in ['a923']:
+            self.baudrate = 115200
+
         self._reseted_flag = False
 
         # check MAC
@@ -66,7 +69,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': True
+            'a923': False
         }
 
         self.qrcode_dict = {
