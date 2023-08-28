@@ -100,14 +100,14 @@ TOOLS-CONFIG= \
     common/tmux.conf \
     common/x86-64k-ee \
     common/helper_UNIFI_MT7621_release \
-    common/aarch64-rpi4-64k-ee 
+    common/aarch64-rpi4-64k-ee
 
 # Assign common tool for every model
 TOOLS-UBB+= \
     uap/cfg_part.bin \
     uap/helper_IPQ40xx \
     uap/id_rsa \
-    uap/id_rsa.pub 
+    uap/id_rsa.pub
 
 TOOLS-UAP-INDUSTRIAL+= \
     uap/helper_UNIFI_MT7621_release
@@ -206,3 +206,4 @@ $(eval $(call ProductCompress2,UMR_US_AC-SERIES))
 $(eval $(call ProductCompress2,UAP_ACGEN2-SERIES))
 $(eval $(call ProductCompress2,01247_e618))
 $(eval $(call ProductCompress2,00729_e619))
+$(eval $(call ProductCompress2,08938_e620))
