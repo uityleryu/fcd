@@ -26,8 +26,8 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-enterprise-1g-v4.img",
-            "u7-enterprise-1g-v4_nor.bin",
+            "u7-pro-1g-v5.img",
+            "u7-pro-1g-v5_nor.bin",
             "BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin",
             "initramfs-ipq53xx_32.gpt",
             "ramload-7.0.1.bin"
@@ -37,7 +37,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a682-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v4.img"
+          "../u7-fw/ipq5322/u7-pro-1g-v5.img"
         ],
         [
           "tftp/images/a682-fw.bin",
@@ -53,7 +53,7 @@
         ],
         [
           "tftp/images/a682-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v4_nor.bin"
+          "../u7-fw/ipq5322/u7-pro-1g-v5_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",

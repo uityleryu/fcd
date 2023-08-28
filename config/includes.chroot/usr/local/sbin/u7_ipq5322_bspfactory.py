@@ -10,6 +10,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a681: U7-Enterprise
     a682: U7-Pro
     a685: U7-Enterprise-IW
+    a686: U7-Pro-IW
     a688: UK-Pro
 '''
 class U7IPQ5322BspFactory(ScriptBase):
@@ -31,6 +32,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "1",
             'a682': "1",
             'a685': "4",
+            'a686': "1",
             'a688': "1",
         }
 
@@ -38,6 +40,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "3",
             'a682': "3",
             'a685': "3",
+            'a686': "3",
             'a688': "2",
         }
 
@@ -45,6 +48,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "1",
             'a682': "1",
             'a685': "1",
+            'a686': "1",
             'a688': "0",
         }
 
@@ -52,6 +56,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "0x50000000",
             'a682': "0x50000000",
             'a685': "0x50000000",
+            'a686': "0x50000000",
             'a688': "0x50000000",
         }
 
@@ -60,6 +65,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "bootm $fileaddr#config@a681",
             'a682': "bootm $fileaddr#config@a682",
             'a685': "bootm $fileaddr#config@a685",
+            'a686': "bootm $fileaddr#config@a686",
             'a688': "bootm $fileaddr#config@a688",
         }
 
@@ -67,6 +73,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "#",
             'a682': "#",
             'a685': "#",
+            'a686': "#",
             'a688': "#",
         }
 
@@ -74,6 +81,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "eth0",
             'a682': "eth0",
             'a685': "eth0",
+            'a686': "eth0",
             'a688': "eth0",
         }
 
@@ -81,6 +89,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a681': "br-lan",
             'a682': "br-lan",
             'a685': "br-lan",
+            'a686': "br-lan",
             'a688': "br-lan",
         }
 
@@ -96,14 +105,18 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.CHKCALDATA_ENABLE = True
         self.REGISTER_ENABLE = True
 
-        if self.board_id != "a688":
-            self.FANI2C_CHECK_ENABLE = True
-            self.FWUPDATE_ENABLE = True
-            self.DATAVERIFY_ENABLE = True
-        else:
+        if self.board_id == "a688":
             self.FANI2C_CHECK_ENABLE = False
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a685":
+            self.FANI2C_CHECK_ENABLE = True
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
+        else:
+            self.FANI2C_CHECK_ENABLE = True
+            self.FWUPDATE_ENABLE = True
+            self.DATAVERIFY_ENABLE = True
 
         self.FUSE_ENABLE = True
         # self.FWUPDATE_ENABLE = True
@@ -143,7 +156,7 @@ class U7IPQ5322BspFactory(ScriptBase):
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
 
-        if self.board_id in ['a681', 'a682', 'a683', 'a685', 'a686']:
+        if self.board_id in ['a681', 'a682', 'a685', 'a686']:
             time.sleep(2)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
 
@@ -234,7 +247,6 @@ class U7IPQ5322BspFactory(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
-
 
         if self.ps_state is True:
             self.set_ps_port_relay_on()
