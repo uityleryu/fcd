@@ -58,6 +58,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
+            'a923': True
         }
 
         self.bom_check_dict = {
@@ -70,7 +71,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': True
+            'a923': False
         }
 
         self.devreg_data_check_dict = {
@@ -83,7 +84,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': False
+            'a923': True
         }
 
         self.qrcode_dict = {
@@ -209,7 +210,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
 
             if self.board_id == "a919" or self.board_id == "a922":
                 res = re.search(r"UNIQUEID:8-([a-fA-Z0-9]{16})\n", uid_rtv, re.S)
-            elif self.board_id == "ec51":
+            elif self.board_id in ["ec51", "a912", "a923"]:
                 res = re.search(r"UNIQUEID:27-(.*)\r\n", uid_rtv, re.S)
             else:
                 res = re.search(r"UNIQUEID:27-(.*?)\n", uid_rtv, re.S)
@@ -217,14 +218,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             self.uid = res.group(1)
 
             cpuid_rtv = self.ser.execmd_getmsg("GETCPUID", ignore=True)
-            if self.board_id in ["ec51", "a912"]:
+            if self.board_id in ["ec51", "a912", "a923"]:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\r", cpuid_rtv, re.S)
             else:
                 res = re.search(r"CPUID:([a-zA-Z0-9]{8})\n", cpuid_rtv, re.S)
             self.cpuid = res.group(1)
 
             jedecid_rtv = self.ser.execmd_getmsg("GETJEDEC", ignore=True)
-            if self.board_id in ["ec51", "a912"]:
+            if self.board_id in ["ec51", "a912", "a923"]:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\r", jedecid_rtv, re.S)
             else:
                 res = re.search(r"JEDECID:([a-fA-F0-9]{8})\n", jedecid_rtv, re.S)
@@ -451,11 +452,11 @@ class UFPEFR32FactoryGeneral(ScriptBase):
     def put_devreg_data_in_dut(self):
         log_debug("DUT request the signed 64KB file ...")
 
-        if self.board_id in ["a912", "a918", "a919", "ee76", "a922"]:
-            self.ser.execmd_expect("xstartdevreg", "begin upload")
-        elif self.board_id in ["a911", "a941", "a915", "a920", "ec51"]:
+        if self.board_id in ["a911", "a941", "a915", "a920", "ec51"]:
             self.ser.execmd("xstartdevreg")
             time.sleep(0.5)
+        else:
+            self.ser.execmd_expect("xstartdevreg", "begin upload")
 
         log_debug("Starting xmodem file transfer ...")
         if self.board_id in ["a919", "ee76", "a922"]:
