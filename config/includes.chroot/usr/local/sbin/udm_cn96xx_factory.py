@@ -579,6 +579,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 self.lcm_fw_ver_check()
         if self.DEV_REG_ENABLE:
             try:
+                time.sleep(2)
                 pkg_sets = [
                     "{}-devreg.deb".format(self.board_id)
                 ]
