@@ -182,6 +182,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "11025744")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + "57443322")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
         # reverse 77072aea to 2aea7707
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}{}".format(self.wsysid[self.board_id][4:],
