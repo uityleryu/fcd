@@ -183,11 +183,6 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
-        if self.board_id == "a667" or self.board_id == "a674":
-            self.BURNIN_ENABLE = True
-        else:
-            self.BURNIN_ENABLE = False
-
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
@@ -468,24 +463,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         post_exp = "0026800 0001 0404 0000 0000 8000"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
 
-    def install_burnin_packages(self):
-
-        pass
-
-    def set_burnin_timeout(self):
-        cmd = "/usr/share/burnin/set_burnin.sh run_time=13500;sync;sync;sync"
-        output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
-        if "Done" not in output or "in next bootup" not in output:
-            rmsg = "Enable burn in FAIL!!"
-            error_critical(rmsg)
-
-        cmd2 = "ls /root/burnin"
-        output2 = self.pexp.expect_get_output(action=cmd2, prompt="", timeout=3)
-        if "enable" not in output2:
-            rmsg2 = "Create the burnin enabled file FAIL!!"
-            error_critical(rmsg2)
-
-
     def run(self):
         """
             Main procedure of factory
@@ -543,11 +520,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
-
-        if self.BURNIN_ENABLE is True:
-            self.install_burnin_packages()
-            self.set_burnin_timeout()
-            msg(90, "Installed burn in packages and set burnin timeout ...")
 
         if self.board_id in ["a667", "a674"]:
             if self._upload_log() is True:
