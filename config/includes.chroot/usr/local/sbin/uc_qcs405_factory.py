@@ -246,6 +246,9 @@ class UCQCS403FactoryGeneral(ScriptBase):
         flag = "1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=flag)
 
+        cmd = "sync"
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
+
     def check_mac(self):
         log_info("Starting to check MAC")
         log_info("self.mac_check_dict = {}".format(self.mac_check_dict))
@@ -275,7 +278,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         results_dict = {}
         for connect_type, mac in mac_dict_exp.items():
-            is_match = mac_dict_dut[connect_type] == mac_dict_exp[connect_type]
+            is_match = mac_dict_dut[connect_type].upper() == mac_dict_exp[connect_type].upper()
             results_dict[connect_type] = "Pass" if is_match else "Fail"
             log_info('{} MAC address check is {}'.format(connect_type, "Pass" if is_match else "Fail"))
 
