@@ -583,6 +583,15 @@ class UVCFactoryGeneral(ScriptBase):
             "-b " + netmeta['btnum'][self.board_id],
             "-k " + self.rsakey_path
         ]
+
+        if self.tlb_rev != "":
+            log_debug("Top level BOM:" + self.tlb_rev)
+            sstr.append("-t 002-{}".format(self.tlb_rev))
+
+        if self.meb_rev != "":
+            log_debug("ME BOM:" + self.meb_rev)
+            sstr.append("-M 300-{}".format(self.meb_rev))
+
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
