@@ -84,7 +84,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'a678': "5",
-            'a678': "8",
+            'a679': "8",
             'a690': "5",
         }
 
