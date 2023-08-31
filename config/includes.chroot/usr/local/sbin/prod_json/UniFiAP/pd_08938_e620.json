@@ -16,10 +16,10 @@
           "SRC_PATH": "images/fcd-image/uap-fw/ulte-flex",
           "DST_PATH": "uap-fw/ulte-flex",
           "FILES": [
-            "ULTE-Flex.qca956x.v1.4.3.0-g86c168e5-recovery.bin",
+            "ULTE-Flex.qca956x.v1.6.2.2-g47289492-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V11.img",
-            "ee-1.4.3-0-g86c168e5-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
-            "qca956x-ulte-flex-u-boot-1.4.3.bin"
+            "ee-1.6.2-2-g47289492-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
+            "qca956x-ulte-flex-u-boot-1.6.2.2.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e620.bin",
-          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v1.4.3.0-g86c168e5-recovery.bin"
+          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v1.6.2.2-g47289492-recovery.bin"
         ],
         [
           "tftp/images/e620-mfg.bin",
@@ -51,11 +51,11 @@
         ],
         [
           "tftp/images/e620-recovery.bin",
-          "../uap-fw/ulte-flex/ee-1.4.3-0-g86c168e5-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
+          "../uap-fw/ulte-flex/ee-1.6.2-2-g47289492-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
         ],
         [
           "tftp/images/e620-uboot.bin",
-          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-1.4.3.bin"
+          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-1.6.2.2.bin"
         ]
       ]
     }

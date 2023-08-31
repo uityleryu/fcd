@@ -421,13 +421,13 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(55, "Do helper to get the output file to devreg server ...")
             self.erase_eefiles()
             self.prepare_server_need_files()
-        '''
+
         if self.REGISTER_ENABLE is True:
             msg(60, "Doing registration ...")
             self.registration()
             msg(65, "Checking signed file and EEPROM ...")
             self.check_devreg_data()
-
+        '''
         if self.FWUPDATE_ENABLE is True:
             msg(80, "Updating firmware ...")
             self.fwupdate()
