@@ -1,0 +1,54 @@
+{
+  "UniFiVideo": {
+    "UVC-G5TURRETULTRA": {
+      "INDEX": 0,
+      "NAME": "UVC-G5TURRETULTRA",
+      "BOARDID": "a59c",
+      "BOMREV": "113-08974",
+      "DESC": "UVC G5 Turret Ultra",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "g5turretultra.UVC.SAV530q.v4.65.115.67-fcddbg.f2ab6bf.230825.1013.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a59c-fw.bin",
+            "a59c-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee_20230608",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a59c-fw.bin",
+          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.65.115.67-fcddbg.f2ab6bf.230825.1013.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}
