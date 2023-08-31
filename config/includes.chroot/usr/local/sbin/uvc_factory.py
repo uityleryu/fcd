@@ -932,6 +932,9 @@ class UVCFactoryGeneral(ScriptBase):
         time_start = time.time()
         time.sleep(50)
 
+        if self.product_name == "UVC-G4DOORBELLPRO":
+            self.set_host_usb_ethernet_ip(usb_interface='eth1', ip='169.254.2.21')
+
         try:
             sshclient_obj = SSHClient(host=self.ip,
                                     username=self.username,
@@ -1172,9 +1175,16 @@ class UVCFactoryGeneral(ScriptBase):
         duration = int(time.time() - time_start)
         log_debug(duration_msg.format(cap=action, time=duration))
 
+    def set_host_usb_ethernet_ip(self, usb_interface, ip):
+        cmd = "ifconfig {} {}".format(usb_interface, ip)
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
     def run(self):
         """  Main procedure of factory
         """
+        if self.product_name == "UVC-G4DOORBELLPRO":
+            self.set_host_usb_ethernet_ip(usb_interface='eth1', ip='169.254.2.21')
 
         sshclient_obj = SSHClient(host=self.ip,
                                   username=self.username,

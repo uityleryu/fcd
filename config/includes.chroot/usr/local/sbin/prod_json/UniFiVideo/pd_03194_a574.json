@@ -36,6 +36,15 @@
             "aarch64-rpi4-64k-ee_20230608",
             "aarch64-rpi4-4k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/tools/uvc",
+          "DST_PATH": "tools/uvc",
+          "FILES": [
+            "128k_ff.bin",
+            "helper_uvcg4doorbellpro ",
+            "m25p80_uvcg4doorbellpro.ko"
+          ]
         }
       ],
       "CREATE_LINK": [
