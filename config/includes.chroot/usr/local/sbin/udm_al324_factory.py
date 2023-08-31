@@ -75,7 +75,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
             'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
-            'ea15': "al_eth2",
+            'ea15': "al_eth1",
             'ea11': "al_eth3"
         }
 
@@ -111,7 +111,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "br0",
             'ea2b': "psu0",
             'ea2c': "eth10",
-            'ea15': "eth10",
+            'ea15': "eth8",
             'ea11': "br0 "
         }
 
@@ -428,7 +428,24 @@ class UDM_AL324_FACTORY(ScriptBase):
                 break
             retry_time -= 1
             time.sleep(1)
+    def set_fake_EEPROM2(self):
+        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x10000")
+        self.pexp.expect_only(30, "Erased: OK")
 
+        # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+        # set sub-system ID
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
+        # set BOM and revision
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "0x01d30200")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
+        self.pexp.expect_only(30, "Written: OK")
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
     def run(self):
         """
         Main procedure of factory
@@ -446,9 +463,15 @@ class UDM_AL324_FACTORY(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_UBOOT is True:
-            self.set_fake_EEPROM()
-            self.update_uboot()
-            self.pexp.expect_action(10, self.bootloader_prompt, "reset")
+            if self.board_id=="ea15":
+                self.set_fake_EEPROM2()
+                self.update_uboot()
+                self.pexp.expect_action(10, self.bootloader_prompt, "reset")
+                self.set_fake_EEPROM()
+            else:
+                self.set_fake_EEPROM()
+                self.update_uboot()
+                self.pexp.expect_action(10, self.bootloader_prompt, "reset")
             msg(10, "Finish boot updating")
 
         if self.BOOT_RECOVERY_IMAGE is True:
