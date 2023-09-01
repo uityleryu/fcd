@@ -484,7 +484,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
                     if self.board_id == "ea3d":
-                        if "14 Aug" in output:
+                        if "31 Aug" in output:
                             self.fuse_config = True
                         else:
                             self.proc.send("b")
