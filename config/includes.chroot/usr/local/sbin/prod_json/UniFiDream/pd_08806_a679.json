@@ -24,16 +24,12 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra",
-          "DST_PATH": "udm-fw/udr-ultra",
+          "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra-poe",
+          "DST_PATH": "udm-fw/udr-ultra-poe",
           "FILES": [
-            "UDRULT.ipq5322.v0.0.1+root.12507.07a7a63.230801.1618.bin",
-            "uImage_20230801",
-            "u-boot_20230801.mbn",
-            "udr-pro-2g-rework-test-image.img",
-            "ipq5322_udr_ultra_v4.img",
-            "udr-pro_mi03_1-2g_nor.bin",
-            "ipq5322_udr_ultra_nor_v4.bin"
+            "UDRULTP.ipq5322.v1.0.0+root.13056.d81ae12.230901.0847.bin",
+            "uImage_20230901",
+            "u-boot_20230901.mbn"
           ]
         },
         {
@@ -47,31 +43,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/a679-fw.bin",
-          "../udm-fw/udr-ultra/UDRULT.ipq5322.v0.0.1+root.12507.07a7a63.230801.1618.bin"
+          "../udm-fw/udr-ultra-poe/UDRULTP.ipq5322.v1.0.0+root.13056.d81ae12.230901.0847.bin"
         ],
         [
           "tftp/images/a679-recovery",
-          "../udm-fw/udr-ultra/uImage_20230801"
+          "../udm-fw/udr-ultra-poe/uImage_20230901"
         ],
         [
           "tftp/images/a679-uboot.mbn",
-          "../udm-fw/udr-ultra/u-boot_20230801.mbn"
-        ],
-        [
-          "tftp/images/a679-bsp-2g_nor.bin",
-          "../udm-fw/udr-ultra/udr-pro_mi03_1-2g_nor.bin"
-        ],
-        [
-          "tftp/images/a679-bsp-4g_nor.bin",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v4.bin"
-        ],
-        [
-          "tftp/images/a679-bsp-2g.img",
-          "../udm-fw/udr-ultra/udr-pro-2g-rework-test-image.img"
-        ],
-        [
-          "tftp/images/a679-bsp-4g.img",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v4.img"
+          "../udm-fw/udr-ultra-poe/u-boot_20230901.mbn"
         ],
         [
           "tftp/tools/a679-devreg.deb",
