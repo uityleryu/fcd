@@ -430,22 +430,25 @@ class UDM_AL324_FACTORY(ScriptBase):
             time.sleep(1)
     def set_fake_EEPROM2(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x10000")
-        self.pexp.expect_only(30, "Erased: OK")
+        output = self.pexp.expect_get_output(action="ver", prompt="", timeout=3)
+        if "Feb 14 2023" not in output:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf erase 0x1f0000 0x1000")
+            self.pexp.expect_only(30, "Erased: OK")
 
-        # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
-        # set sub-system ID
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
-        # set BOM and revision
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "0x01d30200")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
-        self.pexp.expect_only(30, "Written: OK")
+            # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+            # set sub-system ID
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
+            # set BOM and revision
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "0x01d30200")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
+            self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
     def run(self):
         """
         Main procedure of factory
