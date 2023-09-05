@@ -202,9 +202,13 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.is_network_alive_in_uboot(retry=9, timeout=10)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
         self.pexp.expect_only(60, "Bytes transferred =")
-        # self.pexp.expect_ubcmd(30,self.bootloader_prompt,"mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x101A004 0x2")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw.l 0x1020000 0x2c1;sleep 1;mw.l 0x1020004 0x0")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x44000000")
+        # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw.l 0x1020000 0x2c1;sleep 2;mw.l 0x1020004 0x0;sleep 2")
+        if self.board_id=="a679":
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw.l 0x1020000 0x2c1;sleep 2;mw.l 0x1020004 0x0;sleep 2")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x44000000")
+        else:
+            self.pexp.expect_ubcmd(30,self.bootloader_prompt,"mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x1020000 0x2c1;sleep 1;mw.l 0x1020004 0x0;")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
 
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client to push firmware")
