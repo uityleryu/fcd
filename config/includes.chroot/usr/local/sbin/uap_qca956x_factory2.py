@@ -447,7 +447,7 @@ class UAPQCA956xFactory2(ScriptBase):
             self.registration()
             msg(65, "Checking signed file and EEPROM ...")
             self.check_devreg_data()
-        '''
+
         if self.FWUPDATE_ENABLE is True:
             msg(80, "Updating firmware ...")
             self.fwupdate()
