@@ -130,15 +130,29 @@ class UFPESP32FactoryGeneral(ScriptBase):
         fw_app        = os.path.join(self.tftpdir, "images", "{}-app{}.bin".format(self.board_id, encrypt_postfix))
         fw_nvs_key    = os.path.join(self.tftpdir, "images", "{}-nvs-key{}.bin".format(self.board_id, encrypt_postfix))
 
+        if self.board_id in ['ab12']:
+            fw_app_shipping = os.path.join(self.tftpdir, "images", "{}-app-shipping{}.bin".format(self.board_id, encrypt_postfix))
+            cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
+                  "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
+                  "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+                                                         "0x0", fw_bootloader,
+                                                         "0xb000", fw_ptn_table,
+                                                         "0xd000", fw_ota_data,
+                                                         "0x3fc000", fw_nvs_key,
+                                                         "0x200000 ", fw_app_shipping,
+                                                         "0x10000", fw_app)
 
-        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset "         \
-              "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
-              "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
-                                                     "0x0"     , fw_bootloader,
-                                                     "0xb000"  , fw_ptn_table ,
-                                                     "0xd000"  , fw_ota_data  ,
-                                                     "0x10000" , fw_app       ,
-                                                     "0x3fc000", fw_nvs_key   )
+        else:
+            cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
+                  "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
+                  "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+                                                         "0x0", fw_bootloader,
+                                                         "0xb000", fw_ptn_table,
+                                                         "0xd000", fw_ota_data,
+                                                         "0x10000", fw_app,
+                                                         "0x3fc000", fw_nvs_key)
+
+
         log_debug(cmd)
 
         [output, rv] = self.cnapi.xcmd(cmd)
