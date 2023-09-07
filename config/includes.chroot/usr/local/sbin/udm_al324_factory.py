@@ -75,7 +75,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
             'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
-            'ea15': "al_eth1",
+            'ea15': "al_eth3",
             'ea11': "al_eth3"
         }
 
@@ -111,7 +111,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "br0",
             'ea2b': "psu0",
             'ea2c': "eth10",
-            'ea15': "eth8",
+            'ea15': "eth9",
             'ea11': "br0 "
         }
 
@@ -190,7 +190,7 @@ class UDM_AL324_FACTORY(ScriptBase):
                                                                                          self.wsysid[self.board_id][
                                                                                          :4]))
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
-                               "mw.l 0x08000018 {} {}".format(str(self.row_id).zfill(2), "01ac74"))  # fake mac
+                               "mw.l 0x08000018 {}{}".format(str(self.row_id).zfill(2), "01ac74"))  # fake mac
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c {}".format("00032cbd"))
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
@@ -209,6 +209,10 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl mask network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id]))
+            if self.board_id == "ea15":
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ip link set br0 down")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "swconfig dev switch0 set reset 1")
         elif self.board_id == "ea11":
             cmd = "swconfig dev switch0 vlan 99 set ports '0 1 2 3 4'"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
@@ -447,6 +451,29 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "md 0x08000000")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf write 0x08000000 0x1f0000 20")
             self.pexp.expect_only(30, "Written: OK")
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "544e4255")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "11025744")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + "57443322")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
+            # reverse 77072aea to 2aea7707
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}{}".format(self.wsysid[self.board_id][4:],
+                                                                                             self.wsysid[self.board_id][
+                                                                                             :4]))
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "mw.l 0x08000018 {}{}".format(str(self.row_id).zfill(2), "01ac74"))  # fake mac
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c {}".format("00032cbd"))
+
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "sf erase {} 0x9000".format(self.eeprom_offset[self.board_id]))
+            self.pexp.expect_only(60, "Erased: OK")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "sf write 0x08000000 {} 0x20".format(self.eeprom_offset[self.board_id]))
+            self.pexp.expect_only(30, "Written: OK")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "sf write 0x08000000 {} 0x20".format(self.eeprom_offset_2[self.board_id]))
+            self.pexp.expect_only(30, "Written: OK")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def run(self):
@@ -565,9 +592,9 @@ class UDM_AL324_FACTORY(ScriptBase):
 
         if self.board_id in [ "ea15","ea2c"]:
             self.pexp.expect_action(30, self.linux_prompt, "systemctl unmask network-init udapi-server")
-            self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
-            self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0", "192.168.1.1", retry=3)
+            # self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
+            # self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
+            # self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0", "192.168.1.1", retry=3)
         if self.board_id == "ea11" or self.board_id == "ea15" or self.board_id == "ea2c":
             self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
             self.pexp.expect_action(10, self.linux_prompt, "sync;sync;sync")
