@@ -134,7 +134,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
             fw_app_shipping = os.path.join(self.tftpdir, "images", "{}-app-shipping{}.bin".format(self.board_id, encrypt_postfix))
             cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 --before=default_reset " \
                   "--after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB " \
-                  "{} {} {} {} {} {} {} {} {} {}".format(self.row_id,
+                  "{} {} {} {} {} {} {} {} {} {} {} {}".format(self.row_id,
                                                          "0x0", fw_bootloader,
                                                          "0xb000", fw_ptn_table,
                                                          "0xd000", fw_ota_data,
