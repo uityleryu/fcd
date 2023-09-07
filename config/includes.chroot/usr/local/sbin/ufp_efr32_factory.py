@@ -165,7 +165,7 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "1",
             'a922': "1",
             'ec51': "1",
-            'a923': "2"
+            'a923': "1"
         }
 
     def prepare_server_need_files(self):
