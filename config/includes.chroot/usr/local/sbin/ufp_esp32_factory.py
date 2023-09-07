@@ -139,7 +139,7 @@ class UFPESP32FactoryGeneral(ScriptBase):
                                                          "0xb000", fw_ptn_table,
                                                          "0xd000", fw_ota_data,
                                                          "0x3fc000", fw_nvs_key,
-                                                         "0x200000 ", fw_app_shipping,
+                                                         "0x200000", fw_app_shipping,
                                                          "0x10000", fw_app)
 
         else:
