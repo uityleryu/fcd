@@ -27,17 +27,20 @@ class UMNRF52840FactoryGeneral(ScriptBase):
 
         # number of Ethernet
         self.ethnum = {
-            '0121': "0"
+            '0121': "0",
+            '0122': "0"
         }
 
         # number of WiFi
         self.wifinum = {
-            '0121': "0"
+            '0121': "0",
+            '0122': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
-            '0121': "1"
+            '0121': "1",
+            '0122': "1"
         }
 
         self.devnetmeta = {
@@ -170,7 +173,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(70, "Finish checking MAC in DUT ...")
 
-        if self.board_id in ["0121"]:
+        if self.board_id in ["0121", "0122"]:
             self.__del__()
 
         msg(100, "Completing registration ...")

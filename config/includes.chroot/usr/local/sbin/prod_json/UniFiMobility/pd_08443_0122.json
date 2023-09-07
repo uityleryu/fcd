@@ -3,7 +3,7 @@
     "UMT-EU": {
       "INDEX": 0,
       "NAME": "UMT-EU",
-      "BOARDID": "0121",
+      "BOARDID": "0122",
       "BOMREV": "113-08443",
       "DESC": "UniFi Mobility Tag EU",
       "FILE": "um_nrf52840_factory.py",
