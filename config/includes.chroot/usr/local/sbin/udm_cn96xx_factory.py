@@ -248,6 +248,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.proc.send(self.newline)
         self.send_wo_extra_newline("(INS)Menu choice", "7\n")
         self.send_wo_extra_newline("(INS)Menu choice", "15\n")
+        time.sleep(2)
         self.send_wo_extra_newline("Choice:", "s", timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
 
@@ -371,7 +372,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def unlock_eeprom_permission(self):
         log_debug(msg="Unlock eeprom permission")
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf",valid_chk=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
