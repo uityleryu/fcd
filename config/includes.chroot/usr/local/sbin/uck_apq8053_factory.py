@@ -269,7 +269,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
             log_debug("kerenl is normal FW")
-            self.login(username="ui", password="ui", retry=7)
+            self.login(username="ui", password="ui", retry=12)
             self.set_lnx_net("eth0")
             self.is_network_alive_in_linux()
             msg(70, "Completing the image update")
@@ -308,6 +308,11 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        if self.board_id == "e970":
+            cmd = "poweroff"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            time.sleep(50)
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()
