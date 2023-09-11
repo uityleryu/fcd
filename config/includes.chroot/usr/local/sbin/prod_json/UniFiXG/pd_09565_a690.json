@@ -57,11 +57,11 @@
         ],
         [
           "tftp/images/a690-bsp-2g_nor.bin",
-          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v1.bin"
+          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v2.bin"
         ],
         [
           "tftp/images/a690-bsp-2g.img",
-          "../uxg-fw/uxg/ipq5322_uxg_max_v1.img"
+          "../uxg-fw/uxg/ipq5322_uxg_max_v2.img"
         ],
         [
           "tftp/tools/a690-devreg.deb",
