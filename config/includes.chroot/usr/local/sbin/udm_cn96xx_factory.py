@@ -124,7 +124,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         }
 
         self.board_rev = {
-            'ea3d': "r7",
+            'ea3d': "r8",
             'ea3e': "r3"
         }
 
