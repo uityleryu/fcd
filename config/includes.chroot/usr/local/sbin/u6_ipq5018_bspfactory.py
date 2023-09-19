@@ -1,10 +1,14 @@
 #!/usr/bin/python3
 import time
 import re
+import os
+import glob
 
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
+from PAlib.Framework.fcd.ssh_client import SSHClient
+
 
 '''
     a650: U6-PRO
@@ -36,6 +40,10 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.bomrev = "113-{}".format(self.bom_rev)
         self.bootloader_prompt = "IPQ5018#"
         self.linux_prompt = "root@OpenWrt:/#"
+        self.linux_prompt2 = "root@UX:~#"
+        self.username = "ui"
+        self.password = "ui"
+        self.polling_mins = 5
 
         if self.board_id in ["a667", "a674"]:
             self.log_upload_failed_alert_en = True
@@ -171,7 +179,6 @@ class U6IPQ5018BspFactory(ScriptBase):
             This is a special case for the U6-Pro recall event.
         '''
         self.BOOT_INITRAM_IMAGE = False
-
         self.BOOT_BSP_IMAGE = True
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
@@ -182,6 +189,14 @@ class U6IPQ5018BspFactory(ScriptBase):
         else:
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
+
+        if self.board_id == "a667" or self.board_id == "a674":
+            self.BURNIN_ENABLE = True
+            self.burnin_packages = ["bc_1.07.1-2+b2_arm64.deb", "factory-test-tools_2.3.3-189+g0954f00_arm64.deb"]
+            self.cdt_file = "ux-cdt-asr"
+            self.cdt_md5sum = "7b99ab8cd8e7e5d37e606f6b7dbb0cf7"
+        else:
+            self.BURNIN_ENABLE = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -425,7 +440,7 @@ class U6IPQ5018BspFactory(ScriptBase):
                 if len(m_run) == 1:
                     rmsg = "The system is running good"
                     log_debug(rmsg)
-                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
+                    # self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
                     break
 
                 time.sleep(1)
@@ -462,6 +477,114 @@ class U6IPQ5018BspFactory(ScriptBase):
         cmd = "hexdump -s 0x26800 -n 10 /dev/mtdblock8"
         post_exp = "0026800 0001 0404 0000 0000 8000"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+    def cdt_update(self):
+        cdt_file = self.cdt_file
+        cdt_md5sum = self.cdt_md5sum
+        md5sum_match = False
+        retry = 0
+
+        while not md5sum_match and retry < 8:
+            log_debug("Copy file {0} to DUT".format(cdt_file))
+            source = os.path.join("/tftpboot/tools/u6_express/", cdt_file)
+            target = os.path.join("/root/", cdt_file)
+            self.scp_get("ui", "ui", self.dutip, source, target)
+            self.pexp.expect_action(10, "", "")
+            log_debug("Change file permission - {0} ...".format(cdt_file))
+            cmd = "chmod 777 {0}".format(target)
+            self.pexp.expect_action(10, self.linux_prompt, cmd)
+            self.pexp.expect_action(30, self.linux_prompt, "md5sum {}".format(target))
+
+            log_debug("*** Checking md5sum in root directory ***")
+            cmd = "md5sum {0}".format(target)
+            buffer = self.pexp.expect_get_output(action=cmd, prompt="", timeout=180)
+            log_debug(buffer)
+            if cdt_md5sum not in buffer:
+                retry += 1
+                log_error("Md5sum mismatch, expect [{0}]! Retry...".format(cdt_md5sum))
+                continue
+            else:
+                md5sum_match = True
+                log_debug("Md5sum match!")
+
+        if not md5sum_match:
+            error_critical("Md5sum mismatch!! Not allow to proceed burn in test!")
+
+        md5sum2_match = False
+        retry2 = 0
+        while not md5sum2_match and retry2 < 8:
+            target_path = "/dev/mtdblock5"
+            cmd = "dd if=/root/{0} of={1}".format(cdt_file, target_path)
+            self.pexp.expect_action(10, self.linux_prompt, cmd)
+
+            log_debug("*** Checking md5sum in {0} ***".format(target_path))
+            cmd = "md5sum {0}".format(target_path)
+            buffer2 = self.pexp.expect_get_output(action=cmd, prompt="", timeout=180)
+            log_debug(buffer2)
+            if cdt_md5sum not in buffer2:
+                retry2 += 1
+                log_error("Md5sum mismatch, expect [{0}]! Retry...".format(cdt_md5sum))
+                continue
+            else:
+                md5sum2_match = True
+                log_debug("Md5sum match!")
+
+        if not md5sum2_match:
+            error_critical("Md5sum mismatch!! Not allow to proceed burn in test!")
+
+        # Check if ASR is enabled or not (0040 = enabled)
+        asr_list = ["0x112", "0x1fa"]
+        log_debug("*** Checking CDT update status ***")
+        for asr in asr_list:
+            cmd = "xxd -s {0} -l 2 /dev/mtd5".format(asr)
+            buf = self.pexp.expect_get_output(action=cmd, prompt="", timeout=180)
+            log_debug(buf)
+
+            if "0040" not in buf:
+                log_error("CDT update failed! [{}] is not enabled. Not allow to proceed.".format(asr))
+                error_critical("CDT update failed! Please don't power off the unit and contact Engineer for support.")
+
+        log_debug("CDT update successfully, allow to proceed!")
+
+    def copy_burnin_packages_to_dut(self):
+        burnin_packages = self.burnin_packages
+
+        for file in burnin_packages:
+            source = os.path.join("/tftpboot/tools/u6_express/", file)
+            target = os.path.join("/tmp/", file)
+            rmsg = "Copy file: {} to DUT".format(os.path.basename(file))
+            log_debug(rmsg)
+            self.scp_get("ui", "ui", self.dutip, source, target)
+            log_debug("Change file permission - {0} ...".format(file))
+            cmd = "chmod 777 {0}".format(target)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp=self.linux_prompt, valid_chk=True)
+
+    def change_br0_ip(self):
+        log_debug("Change br0 IP address to {0}".format(self.dutip))
+        cmd = "ifconfig br0 {0}".format(self.dutip)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
+
+    def install_burnin_packages(self):
+        log_debug("Install burn in packages...")
+        burnin_packages = self.burnin_packages
+
+        for package in burnin_packages:
+            cmd = "dpkg -i /tmp/{}".format(package)
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd)
+            time.sleep(3)
+
+    def set_burnin_timeout(self, timeout=13500):
+        cmd = "/usr/share/burnin/set_burnin.sh run_time={0};sync;sync;sync".format(timeout)
+        output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=180)
+        if "Done" not in output or "in next bootup" not in output:
+            rmsg = "Enable burn in FAIL!!"
+            error_critical(rmsg)
+
+        cmd2 = "ls /root/burnin"
+        output2 = self.pexp.expect_get_output(action=cmd2, prompt="", timeout=180)
+        if "enable" not in output2:
+            rmsg2 = "Create the burnin enabled file FAIL!!"
+            error_critical(rmsg2)
 
     def run(self):
         """
@@ -520,6 +643,17 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
+
+        if self.BURNIN_ENABLE is True:
+            self.change_br0_ip()
+            self.cdt_update()
+            msg(85, "Finish CDT update, proceed to enable burnin mode ...")
+
+            self.change_br0_ip()
+            self.copy_burnin_packages_to_dut()
+            self.install_burnin_packages()
+            self.set_burnin_timeout(timeout=13500)
+            msg(90, "Installed burn in packages and set burnin timeout ...")
 
         if self.board_id in ["a667", "a674"]:
             if self._upload_log() is True:

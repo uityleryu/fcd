@@ -23,6 +23,15 @@
           ]
         },
         {
+          "SRC_PATH": "images/tools/u6_express",
+          "DST_PATH": "tools/u6_express",
+          "FILES": [
+            "bc_1.07.1-2+b2_arm64.deb",
+            "factory-test-tools_2.3.3-189+g0954f00_arm64.deb",
+            "ux-cdt-asr"
+          ]
+        },
+        {
           "SRC_PATH": "images/fcd-image/a667",
           "DST_PATH": "a667",
           "FILES": [
