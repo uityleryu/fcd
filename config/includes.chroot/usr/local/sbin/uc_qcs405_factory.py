@@ -29,9 +29,9 @@ CHECK_MAC_EN = True
     aa03:  UniFiPlay-AMP
 '''
 
-class UCQCS403FactoryGeneral(ScriptBase):
+class UCQCS405FactoryGeneral(ScriptBase):
     def __init__(self):
-        super(UCQCS403FactoryGeneral, self).__init__()
+        super(UCQCS405FactoryGeneral, self).__init__()
 
         self.ver_extract()
         devreg_mtd = {
@@ -48,7 +48,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
         }
 
         self.homekit_dict = {
-            'aa03': False
+            'aa03': True
         }
 
         # number of Ethernet
@@ -86,6 +86,8 @@ class UCQCS403FactoryGeneral(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         msg(10, "TTY initialization successfully ...")
+        log_debug(msg="sleep 50 secs")
+        time.sleep(50)
 
         self.pexp.expect_lnxcmd(timeout=10, pre_exp="login:", action="", post_exp="")
 
@@ -110,7 +112,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
             if self.homekit_dict[self.board_id] is True:
                 self.homekit_setup_after_registration()
-                msg(50, "Finish Homekit setup ...")
+                msg(65, "Finish Homekit setup ...")
 
             self.check_devreg_data()
             msg(70, "Finish doing signed file and EEPROM checking ...")
@@ -200,20 +202,6 @@ class UCQCS403FactoryGeneral(ScriptBase):
         log_info("provided {} successfully".format(output_path))
 
     def write_mac_addr(self):
-        # write
-        cmd = 'ubus call main hal_write_mac_addrs'
-        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt)
-        match = re.search(r'"result":\s+"ok"', res)
-
-        if not match:
-            error_critical('write MAC address failed')
-
-        log_info('write MAC address successfully')
-
-        # sync data to flash
-        cmd = "sync"
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt, valid_chk=True)
-
         # reboot to activate MAC address & re-login
         if self.reboot_dict[self.board_id] is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
@@ -294,6 +282,7 @@ class UCQCS403FactoryGeneral(ScriptBase):
     def homekit_setup_after_registration(self):
         if self.is_homekit_done_before is False:
             self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
+            self.__write_homkit_token_to_dut()
         else:
             self.__check_tokenid_match(self.client_x86_rsp)
 
@@ -302,13 +291,14 @@ class UCQCS403FactoryGeneral(ScriptBase):
         tokenid_client = regex.findall(client_x86_rsp+'\n')[0]
 
         log_info('tokenid_client = {}'.format(tokenid_client))
-        log_info('tokenid_dut = {}'.format(self.tokenid_dut))
+        log_info('tokenid_dut = {}"'.format(self.tokenid_dut))
 
         is_tokenid_match = tokenid_client == self.tokenid_dut
         log_info('tokenid_dut & tokenid_client are {}match'.format('' if is_tokenid_match else 'NOT '))
         if is_tokenid_match is False:
             log_info('So server treat this DUT as first time HK registration')
             self.__gen_homkit_token_csv_txt(client_x86_rsp)
+            self.__write_homkit_token_to_dut()
 
         return is_tokenid_match
 
@@ -361,9 +351,16 @@ class UCQCS403FactoryGeneral(ScriptBase):
         log_info('info_dict = \n{}'.format(pformat(info_dict, indent=4)))
 
         # gen file
-        file_dir = os.path.join('/home/ubnt/usbdisk', 'LOCK-R_hk_output')
+        file_dir = os.path.join('/home/ubnt/usbdisk', 'UPL-AMP_hk_output')
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
+
+        # prepare token.txt to write into dut
+        self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
+        with open(self.token_txt_path, 'w') as f:
+            f.write('"product_plan_id","{}","device_uuid"," {}","security_token_id","{}","security_token","{}"'.format(
+                info_dict['product_plan_id'], info_dict['uuid'],
+                info_dict['token_id'], info_dict['token']))
 
         # csv
         csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
@@ -376,15 +373,143 @@ class UCQCS403FactoryGeneral(ScriptBase):
         with open(txt_path, 'w') as f:
             f.write('{}'.format(info_dict['uuid']))
 
-        is_file = os.path.isfile(csv_path) and os.path.isfile(txt_path)
+        is_file = os.path.isfile(self.token_txt_path) and os.path.isfile(csv_path) and os.path.isfile(txt_path)
+        log_info('token_info_path = {}'.format(self.token_txt_path))
         log_info('csv_path = {}'.format(csv_path))
         log_info('txt_path = {}'.format(txt_path))
-        log_info('Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
+        log_info('Token INFO TXT & Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
 
         return is_file
 
+    def __write_homkit_token_to_dut(self):
+
+        log_debug('__write_homkit_token_to_dut')
+        token_txt = 'token.txt'
+        read_txt = 'read.txt'
+
+        # record token.txt file size
+        cmd = 'wc -c {} | cut -d\' \' -f1'.format(self.token_txt_path)
+        [file_size, rtc] = self.fcd.common.xcmd(cmd)
+        log_debug('token.txt file_size = {}'.format(file_size))
+
+        # transfer token.txt to dut
+        token_txt_path_dut = os.path.join('/tmp', token_txt)
+        self.tftp_get(remote=token_txt, local=token_txt_path_dut)
+
+        # write into dut
+        log_debug("Change file permission - {0} ...".format(token_txt_path_dut))
+        cmd = "chmod 777 {0}".format(token_txt_path_dut)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, valid_chk=True)
+        cmd = 'dd if={} of={} bs=1 seek=65536 count={}'.format(token_txt_path_dut, self.devregpart, file_size)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, valid_chk=True)
+
+        # read from dut
+        read_txt_path_dut = os.path.join('/tmp', read_txt)
+        cmd = 'dd if={} of={} bs=1 skip=65536 count={}'.format(self.devregpart, read_txt_path_dut, file_size)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, valid_chk=True)
+
+        # transfer token_read.txt to RPi
+        read_txt_path= os.path.join(self.tftpdir, read_txt)
+        self.tftp_put(remote=read_txt, local=read_txt_path_dut)
+
+        # compare
+        otmsg = "Starting to compare the {0} and {1} files ...".format(self.token_txt_path, read_txt_path)
+        log_debug(otmsg)
+        rtc = filecmp.cmp(self.token_txt_path, read_txt_path)
+        if rtc is True:
+            log_debug("Comparing files successfully")
+        else:
+            error_critical("Comparing files failed!!")
+
+    def _check_is_homekit_done_mod_cmd(self, reg_cmd):
+
+        log_debug('_check_is_homekit_done')
+        self.tokenid_dut = ''
+
+        cmd = 'test -f /persist/apple/MFi_token ; echo $?'
+        rtc = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2]
+        log_debug('rtc = {}'.format(rtc))
+        if int(rtc) == 0:
+            cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
+            res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
+            self.tokenid_dut = res
+            log_info('tokenid = {}'.format(self.tokenid_dut))
+
+        self.is_homekit_done_before = self.tokenid_dut != ''
+
+        log_info('DUT has {}done homekit registration before'.format(
+            '' if self.is_homekit_done_before else 'NOT '))
+
+        if self.is_homekit_done_before is True:
+            reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
+
+        return reg_cmd
+
+    def registration(self, regsubparams = None):
+        log_debug("Starting to do registration ...")
+        if regsubparams is None:
+            regsubparams = self.access_chips_id()
+
+        clientbin = "/usr/local/sbin/client_x64_release_20230908"
+
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
+
+        cmd = [
+            "-h stage.udrs.io",
+#           "-h {}".format(self.devreg_hostname),
+            "-k {}".format(self.pass_phrase),
+            regsubparams,
+            reg_qr_field,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x {}ca.pem".format(self.key_dir),
+            "-y {}key.pem".format(self.key_dir),
+            "-z {}crt.pem".format(self.key_dir)
+        ]
+
+        if self.homekit_dict[self.board_id] is True:
+            cmd = self._check_is_homekit_done_mod_cmd(cmd)
+
+        cmdj = ' '.join(cmd)
+
+        reg_cmd = "sudo {0} {1}".format(clientbin, cmdj)
+
+        log_debug('cmd = \n{}'.format(pformat(cmd, indent=4)))
+        log_debug('cmd = {}'.format(reg_cmd))
+        [self.client_x86_rsp, rtc] = self.fcd.common.xcmd(reg_cmd)
+        log_debug('client_x86 return code = \n{}'.format(rtc))
+
+        if (int(rtc) > 0):
+            error_critical("client_x86 registration failed!!")
+        else:
+            log_debug("Excuting client_x86 registration successfully")
+
+#        clit = ExpttyProcess(self.row_id, cmd, "\n")
+#        clit.expect_only(30, "Security Service Device Registration Client")
+#        clit.expect_only(30, "Hostname")
+#        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
+
+        log_debug("Excuting client registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
+
 def main():
-    uc_factory_general = UCQCS403FactoryGeneral()
+    uc_factory_general = UCQCS405FactoryGeneral()
     uc_factory_general.run()
 
 
