@@ -102,7 +102,7 @@ region_names = (
     "Indonesia",
     "Israsel",
     "Japan",
-    "Thailand"
+    "Thailand",
     "Australia",
     "United Kingdom",
     "Canada"
@@ -128,10 +128,10 @@ country_codes = (
     '840',    # USA/Canada
     '360',    # Indonesia (HEX: 0x168)
     '376',    # Israsel  (HEX: 0x178)
-    '392'     # Japan  (HEX: 0x188)
+    '392',    # Japan  (HEX: 0x188)
     '764',    # Thailand  (HEX: 0x2FC)
     '36',     # Australia  (HEX: 0x24)
-    '826'     # United Kingdom  (HEX: 0x33A)
+    '826',    # United Kingdom  (HEX: 0x33A)
     '124'     # Canada (HEX: 0x7C)
 )
 
@@ -143,7 +143,7 @@ unifi_region_codes = (
     '8188ffffffffffffffffffffffffffff',    # Japan  (HEX: 0x188)
     '82fcffffffffffffffffffffffffffff',    # Thailand  (HEX: 0x2FC)
     '8124ffffffffffffffffffffffffffff',    # Australia  (HEX: 0x24)
-    '843affffffffffffffffffffffffffff'     # United kingdom  (HEX: 0x33A)
+    '843affffffffffffffffffffffffffff',    # United kingdom  (HEX: 0x33A)
     '817cffffffffffffffffffffffffffff'     # Canada  (HEX: 0x7C)
 )
 
