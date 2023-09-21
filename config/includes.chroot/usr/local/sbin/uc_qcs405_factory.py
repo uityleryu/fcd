@@ -202,10 +202,21 @@ class UCQCS405FactoryGeneral(ScriptBase):
         log_info("provided {} successfully".format(output_path))
 
     def write_mac_addr(self):
+        # write
+        cmd = 'ubus call main hal_write_mac_addrs'
+        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt)
+        match = re.search(r'"result":\s+"ok"', res)
+
+        if not match:
+            error_critical('write MAC address failed')
+
+        log_info('write MAC address successfully')
+
+
         # reboot to activate MAC address & re-login
         if self.reboot_dict[self.board_id] is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
-            log_info(msg="sleep 50 secs to wait for boot-up")
+            log_info(msg="reboot to activate MAC address, sleep 50 secs to wait for boot-up")
             time.sleep(50)
 
             self.login(username="ui", password="ui", timeout=120)
@@ -358,7 +369,7 @@ class UCQCS405FactoryGeneral(ScriptBase):
         # prepare token.txt to write into dut
         self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
         with open(self.token_txt_path, 'w') as f:
-            f.write('"product_plan_id","{}","device_uuid"," {}","security_token_id","{}","security_token","{}"'.format(
+            f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
                 info_dict['token_id'], info_dict['token']))
 
@@ -450,7 +461,7 @@ class UCQCS405FactoryGeneral(ScriptBase):
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
-        clientbin = "/usr/local/sbin/client_x64_release_20230908"
+        clientbin = "/usr/local/sbin/client_rpi4_release"
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
