@@ -933,7 +933,7 @@ class UVCFactoryGeneral(ScriptBase):
         time.sleep(50)
 
         if self.product_name == "UVC-G4DOORBELLPRO":
-            self.set_host_usb_ethernet_ip(usb_interface='eth1', ip='169.254.2.21')
+            self.set_host_usb_ethernet_ip()
 
         try:
             sshclient_obj = SSHClient(host=self.ip,
@@ -1175,7 +1175,18 @@ class UVCFactoryGeneral(ScriptBase):
         duration = int(time.time() - time_start)
         log_debug(duration_msg.format(cap=action, time=duration))
 
-    def set_host_usb_ethernet_ip(self, usb_interface, ip):
+    def set_host_usb_ethernet_ip(self, ip='169.254.2.21'):
+        # change netmask of eth0:0
+        cmd = 'ifconfig eth0:0 netmask netmask 255.255.255.0'
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
+        # assign IP address to USB ethernet
+        cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        usb_interface = output
+
         cmd = "ifconfig {} {}".format(usb_interface, ip)
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
@@ -1184,7 +1195,7 @@ class UVCFactoryGeneral(ScriptBase):
         """  Main procedure of factory
         """
         if self.product_name == "UVC-G4DOORBELLPRO":
-            self.set_host_usb_ethernet_ip(usb_interface='eth1', ip='169.254.2.21')
+            self.set_host_usb_ethernet_ip()
 
         sshclient_obj = SSHClient(host=self.ip,
                                   username=self.username,
