@@ -35,7 +35,8 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee"
+            "aarch64-rpi4-64k-ee",
+            "FCD_WEBGUI_0.0.35.tgz"
           ]
         }
       ],
