@@ -31,8 +31,12 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
         self.bomrev = "113-" + self.bom_rev
-        self.username = "ubnt"
-        self.password = "ubnt"
+        if self.board_id !="ea2c":
+            self.username = "ubnt"
+            self.password = "ubnt"
+        else:
+            self.username = "ui"
+            self.password = "ui"
         self.linux_prompt = "#"
 
         # Base path
@@ -292,7 +296,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             source=os.path.join(self.fwdir, self.board_id + "-recovery"),
             dest=os.path.join(self.tftpdir, "uImage")  # fixed name
         )
-
+        time.sleep(5)  # for stable
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootcmdtftp")
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client to push firmware")

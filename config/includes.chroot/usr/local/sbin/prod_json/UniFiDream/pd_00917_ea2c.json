@@ -16,7 +16,6 @@
           "SRC_PATH": "images/tools/udm_se",
           "DST_PATH": "tools/udm_se",
           "FILES": [
-            "nvr-lcm-tools_1.0.0-15+g09f5dc5_arm64.deb",
             "factory-test-tools_2.3.3-190+g0c466dfa394_arm64.deb",
             "memtester_4.5.1-1_arm64.deb"
           ]
@@ -43,24 +42,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-se",
           "DST_PATH": "udm-fw/udm-se",
           "FILES": [
-            "UDMPROSE.al324.v3.0.18.d533cd6.230216.1241.bin",
-            "uImage_3.0.18",
-            "boot_3.0.18.img"
+            "UDMPROSE.al324.v3.1.16.456179c.230823.1801.bin",
+            "uImage_3.1.16",
+            "boot_3.1.16.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea2c-fw.bin",
-         "../udm-fw/udm-se/UDMPROSE.al324.v3.0.18.d533cd6.230216.1241.bin"
+         "../udm-fw/udm-se/UDMPROSE.al324.v3.1.16.456179c.230823.1801.bin"
         ],
         [
           "tftp/images/ea2c-recovery",
-           "../udm-fw/udm-se/uImage_3.0.18"
+           "../udm-fw/udm-se/uImage_3.1.16"
         ],
         [
           "tftp/images/ea2c-uboot.bin",
-           "../udm-fw/udm-se/boot_3.0.18.img"
+           "../udm-fw/udm-se/boot_3.1.16.img"
         ],
         [
           "tftp/tools/ea2c-factory.deb",
