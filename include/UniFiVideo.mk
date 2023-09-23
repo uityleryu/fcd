@@ -102,6 +102,10 @@ IMAGE-UVC-G5TURRETULTRA= \
     images/a59c* \
     uvc-fw/g5turretultra.*
 
+IMAGE-UVC-G5DOME-ULTRA= \
+    images/a59d* \
+    uvc-fw/g5domeultra.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -126,6 +130,7 @@ IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO-MP)
 IMAGE-UVC+=$(IMAGE-UVC-G5TURRETPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5TURRETULTRA)
+IMAGE-UVC+=$(IMAGE-UVC-G5DOME-ULTRA)
 
 
 # Model
@@ -270,6 +275,10 @@ TOOLS-UVC-G5TURRETULTRA+=$(TOOLS-UVC)
 TOOLS-UVC-G5TURRETULTRA+= \
     uvc/128k_ff.bin
 
+TOOLS-UVC-G5PRO-ULTRA+=$(TOOLS-UVC)
+TOOLS-UVC-G5PRO-ULTRA+= \
+    uvc/128k_ff.bin
+
 # Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -295,6 +304,7 @@ $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO-MP,FCD_$(PRD)_G5PRO-MP_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5TURRETPRO,FCD_$(PRD)_G5TURRETPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5TURRETULTRA,FCD_$(PRD)_G5TURRETULTRA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5DOME-ULTRA,FCD_$(PRD)_G5DOME-ULTRA$(VER)_$(FWVER)))
 
 
 # Project target black panther
@@ -326,6 +336,8 @@ $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G5DOME-ULTRA,FCD_$(PRD)_G5DOME-ULTRA$(VER)_$(FWVER)))
+
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
@@ -350,3 +362,4 @@ $(eval $(call ProductCompress2,03821_a5a4))
 $(eval $(call ProductCompress2,03849_a575))
 $(eval $(call ProductCompress2,04272_a59b))
 $(eval $(call ProductCompress2,08974_a59c))
+$(eval $(call ProductCompress2,09268_a59d))

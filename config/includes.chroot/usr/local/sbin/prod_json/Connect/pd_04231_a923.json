@@ -1,16 +1,15 @@
 {
-  "UniFiMobility": {
-    "UMT-EU": {
+  "Connect": {
+    "UC-Magic-Link-Sensor": {
       "INDEX": 0,
-      "NAME": "UMT-EU",
-      "BOARDID": "0121",
-      "BOMREV": "113-08443",
-      "DESC": "UniFi Mobility Tag EU",
-      "FILE": "um_nrf52840_factory.py",
+      "NAME": "UC-Magic-Link-Sensor",
+      "BOARDID": "a923",
+      "BOMREV": "113-04231",
+      "DESC": "UniFi Connect Magic-Link-Sensor",
+      "FILE": "ufp_efr32_factory.py",
       "T1FILE": "",
-      "QRCHECK": "activate_code",
-      "FCD_ID": "0014",
-      "SW_ID": "2201",
+      "QRCHECK": "False",
+      "SW_ID": "1601",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
@@ -19,7 +18,6 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
             "aarch64-rpi4-64k-ee"
           ]
         }
