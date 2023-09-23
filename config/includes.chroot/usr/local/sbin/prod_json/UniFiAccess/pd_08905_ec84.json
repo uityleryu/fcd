@@ -1,0 +1,59 @@
+{
+  "UniFiAccess": {
+    "UA-Ultra": {
+      "INDEX": 0,
+      "NAME": "UA-Ultra",
+      "BOARDID": "ec84",
+      "BOMREV": "113-08905",
+      "DESC": "UniFi Access Ultra",
+      "FILE": "ua_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw/ua-ultra",
+          "DST_PATH": "ua-fw/ua-ultra",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec84-bootloader.bin",
+          "../ua-ultra/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec84-bootloader-digest.bin",
+          " ../ua-ultra/bootloader-reflash-digest.bin"
+        ],
+        [
+          "tftp/images/ec84-mfg.bin",
+          "../ua-ultra/LVDU.esp32mfg.v1.0.23.5.gc142.220715.1145.bin"
+        ],
+        [
+          "tftp/images/ec84-ota.bin",
+          "../ua-ultra/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec84-ptn-table.bin",
+          "../ua-ultra/partition-table.bin"
+        ],
+        [
+          "tftp/images/ec84-secure_boot_key.bin",
+          "../ua-ultra/secure-bootloader-key-256.bin"
+        ]
+      ]
+    }
+  }
+}
