@@ -77,6 +77,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 PTZ Ultra"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif self.product_name == "UVC-G5TURRETULTRA":
+            self.board_name = "UVC G5 Turret ULTRA"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
         elif self.product_name == "UVC-G5DOME-Ultra":
                 self.board_name = "UVC G5 DOME Ultra"
                 self.ip = "192.168.1.20"
@@ -106,6 +110,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a599': '1',
             'a59a': '1',
             'a59b': '1',
+            'a59c': '1',
             'a59d': '1'
         }
 
@@ -120,6 +125,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a599': '0',
             'a59a': '0',
             'a59b': '0',
+            'a59c': '0',
             'a59d': '0'
         }
 
@@ -134,6 +140,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a599': '0',
             'a59a': '0',
             'a59b': '0',
+            'a59c': '0',
             'a59d': '0'
         }
 
@@ -155,6 +162,7 @@ class UVCFactoryGeneral(ScriptBase):
             'a599': "ifconfig eth0 ",
             'a59a': "ifconfig eth0 ",
             'a59b': "ifconfig eth0 ",
+            'a59c': "ifconfig eth0 ",
             'a59d': "ifconfig eth0 "
         }
 
