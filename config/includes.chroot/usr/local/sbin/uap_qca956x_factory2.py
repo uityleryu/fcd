@@ -446,10 +446,8 @@ class UAPQCA956xFactory2(ScriptBase):
 
             self.enable_burn_in_mode()
 
-            if self._upload_log() is True:
-                self.upload = False  # Skip to upload log again while __del__
-            else:
-                error_critical("Failed to upload FCD log. This model must upload log")
+            self.log_upload_failed_alert_en = True
+            log_debug(msg="Set log_upload_failed_alert_en to True to ensure that log will be uploaded")
 
         msg(100, "Completed FCD process ...")
 
