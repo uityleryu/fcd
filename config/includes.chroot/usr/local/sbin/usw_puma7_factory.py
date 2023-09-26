@@ -386,8 +386,8 @@ class USWPUMA7FactoryGeneral(ScriptBase):
             return False
 
     def set_burnin_time(self):
-        log_info("Set burnin time to 4 hours")
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/scripts/uci-burnin.sh 600 14400", self.linux_prompt)
+        log_info("Set burnin time to 2 hours")
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "/unifi_fs/scripts/uci-burnin.sh 600 7200", self.linux_prompt)
 
     def flush_nvram(self):
         log_info("Flush NVRAM")
@@ -409,6 +409,13 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.pexp.expect_action(10, self.linux_prompt, "/unifi_fs/bin/syswrapper.sh restart")
         self.reboot_handler()
 
+    def set_dut_lan0_ip(self):
+        # DUT lan0 IP
+        baseip = 31
+        self.dutip = "192.168.100." + str((int(self.row_id) + baseip))
+        log_info("Set lan0 ip....")
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig lan0 " + self.dutip)
+
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
@@ -428,6 +435,7 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         self.wait_for_bootup(firstboot=True)
+        self.set_dut_lan0_ip()
         self.tftp_rescue_np_update()
 
         if PROVISION_ENABLE is True:

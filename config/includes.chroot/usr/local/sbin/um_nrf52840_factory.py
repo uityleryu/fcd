@@ -12,6 +12,7 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FLASH_DEVREG_DATA = False
 DEVREG_CHECK_ENABLE = False
+RECORD_MODEM_IMEI = True
 
 
 class UMNRF52840FactoryGeneral(ScriptBase):
@@ -21,23 +22,29 @@ class UMNRF52840FactoryGeneral(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.nrf52840_prompt = "umt-us:~"
+        self.nrf52840_prompt = "umt:~"
         self.product_class = "0015"  # for basic 4k product, please refer https://docs.google.com/spreadsheets/d/18hqzWQowU-3KRXN-N3BlWYDUyQ7WKnELLQrevznXOKA/edit#gid=1
         self.regsubparams = ""
 
+        if self.board_id in ["0121", "0122"]:
+            self.log_upload_failed_alert_en = True
+
         # number of Ethernet
         self.ethnum = {
-            '0121': "0"
+            '0121': "0",
+            '0122': "0"
         }
 
         # number of WiFi
         self.wifinum = {
-            '0121': "0"
+            '0121': "0",
+            '0122': "0"
         }
 
         # number of Bluetooth
         self.btnum = {
-            '0121': "1"
+            '0121': "1",
+            '0122': "1"
         }
 
         self.devnetmeta = {
@@ -47,6 +54,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
         }
 
     def prepare_server_need_files(self):
+        self.pexp.expect_lnxcmd(15, self.nrf52840_prompt, 'shell colors off')
         output = self.pexp.expect_get_output("uart_debug uniqueid", self.nrf52840_prompt, timeout=3)
         # log_debug(output)
         id_list = re.findall(r'id: 0x(\w+)', output)
@@ -54,7 +62,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
         flash_jedec_id = id_list[1]
         flash_uuid = id_list[2]
 
-        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
+        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid={}".format(cpu_id, flash_jedec_id, flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \
                             " -i field=cpu_rev_id,format=hex,value={}".format(cpu_id) + \
                             " -i field=flash_jedec_id,format=hex,value={}".format(flash_jedec_id) + \
@@ -130,7 +138,15 @@ class UMNRF52840FactoryGeneral(ScriptBase):
         self.pexp.expect_only(60, "DEVREG:")  # The security check will fail if littlefs isn't mounted
 
     def check_devreg_data(self):
-        output = self.pexp.expect_get_output("info", self.nrf52840_prompt, timeout=10)
+        output = self.pexp.expect_get_output2("info", "ubnt", self.nrf52840_prompt, timeout=10)
+
+    def record_modem_imei(self):
+        output = self.pexp.expect_get_output("uishell_mdm imei", self.nrf52840_prompt, timeout=3)
+        log_debug("rsp={}".format(output))
+        match = re.search(r'([0-9]{15,})', output)
+        imei = match.group(1)
+        log_debug("imei={}".format(imei))
+        self.imei = imei
 
     def run(self):
         """
@@ -170,8 +186,9 @@ class UMNRF52840FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(70, "Finish checking MAC in DUT ...")
 
-        if self.board_id in ["0121"]:
-            self.__del__()
+        if RECORD_MODEM_IMEI is True:
+            self.record_modem_imei()
+            msg(90, "Finish recording modem IMEI ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()

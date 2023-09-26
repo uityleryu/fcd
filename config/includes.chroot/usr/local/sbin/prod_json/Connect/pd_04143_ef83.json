@@ -1,15 +1,15 @@
 {
   "Connect": {
-    "EV-CHARGER-04277": {
+    "UCD-21-CR5": {
       "INDEX": 0,
-      "NAME": "EV-CHARGER",
-      "BOARDID": "efa0",
-      "BOMREV": "113-04277",
-      "DESC": "UniFi EV Charger (Second Source)",
+      "NAME": "UCD-21-CR5",
+      "BOARDID": "ef83",
+      "BOMREV": "113-04143",
+      "DESC": "UniFi Connect Display 21 (CR5)",
       "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1ce3",
+      "SW_ID": "1c01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
@@ -18,16 +18,11 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee_20230608"
+            "aarch64-rpi4-64k-ee"
           ]
         }
       ],
-      "CREATE_LINK": [
-        [
-          "tftp/tools/common/aarch64-rpi4-64k-ee",
-          "./aarch64-rpi4-64k-ee_20230608"
-        ]
-      ]
+      "CREATE_LINK": []
     }
   }
 }
