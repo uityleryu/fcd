@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g4dbpro.UVC.S5L_4.39.5-0816-fcddbg.bin"
+            "g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
           ]
         },
         {
@@ -50,7 +50,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a574-fw.bin",
-          "../uvc-fw/g4dbpro.UVC.S5L_4.39.5-0816-fcddbg.bin"
+          "../uvc-fw/g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
