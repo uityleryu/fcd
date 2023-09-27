@@ -31,12 +31,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
         self.bomrev = "113-" + self.bom_rev
-        if self.board_id !="ea2c":
-            self.username = "ubnt"
-            self.password = "ubnt"
-        else:
-            self.username = "ui"
-            self.password = "ui"
+        self.username = "ui"
+        self.password = "ui"
         self.linux_prompt = "#"
 
         # Base path
@@ -270,7 +266,6 @@ class UDM_AL324_FACTORY(ScriptBase):
                                "setenv bootargsextra 'factory server={} client={}'".format(self.tftp_server,
                                                                                            self.dutip))
 
-
         self.pexp.expect_action(10, self.bootloader_prompt, "run bootcmdtftp")
         self.pexp.expect_only(30, "Bytes transferred")
 
@@ -322,22 +317,22 @@ class UDM_AL324_FACTORY(ScriptBase):
 
     def lcm_fw_ver_check(self):
         self.scp_get(
-            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            dut_user="ui", dut_pass="ui", dut_ip=self.dutip,
             src_file=os.path.join(self.tool_folder, "factory-test-tools*"),
             dst_file=self.dut_tmpdir
         )
         self.scp_get(
-            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            dut_user="ui", dut_pass="ui", dut_ip=self.dutip,
             src_file=os.path.join(self.tool_folder, "bc_*"),
             dst_file=self.dut_tmpdir
         )
         self.scp_get(
-            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            dut_user="ui", dut_pass="ui", dut_ip=self.dutip,
             src_file=os.path.join(self.tool_folder, "memtester_*"),
             dst_file=self.dut_tmpdir
         )
         self.scp_get(
-            dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip,
+            dut_user="ui", dut_pass="ui", dut_ip=self.dutip,
             src_file=os.path.join(self.tool_folder, "mt-wifi-ated_*"),
             dst_file=self.dut_tmpdir
         )
@@ -436,6 +431,7 @@ class UDM_AL324_FACTORY(ScriptBase):
                 break
             retry_time -= 1
             time.sleep(1)
+
     def set_fake_EEPROM2(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         output = self.pexp.expect_get_output(action="ver", prompt="", timeout=3)
@@ -446,8 +442,10 @@ class UDM_AL324_FACTORY(ScriptBase):
 
             # set fake eth0 00:11:22:33:44:55 and eth1 02:11:22:33:44:55
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000000 " + "0x33221100")
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55+int(self.row_id))[2:]))
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + hex(0x55+int(self.row_id)) + "443322")
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "mw.l 0x08000004 " + "0x1102{}44".format(hex(0x55 + int(self.row_id))[2:]))
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "mw.l 0x08000008 " + hex(0x55 + int(self.row_id)) + "443322")
             # set sub-system ID
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
             # set BOM and revision
@@ -462,9 +460,10 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000008 " + "57443322")
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800000c " + self.wsysid[self.board_id])
             # reverse 77072aea to 2aea7707
-            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 {}{}".format(self.wsysid[self.board_id][4:],
-                                                                                             self.wsysid[self.board_id][
-                                                                                             :4]))
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt,
+                                   "mw.l 0x08000010 {}{}".format(self.wsysid[self.board_id][4:],
+                                                                 self.wsysid[self.board_id][
+                                                                 :4]))
             self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                    "mw.l 0x08000018 {}{}".format(str(self.row_id).zfill(2), "01ac74"))  # fake mac
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x0800001c {}".format("00032cbd"))
@@ -497,7 +496,7 @@ class UDM_AL324_FACTORY(ScriptBase):
         msg(5, "Open serial port successfully ...")
 
         if self.UPDATE_UBOOT is True:
-            if self.board_id=="ea15":
+            if self.board_id == "ea15":
                 self.set_fake_EEPROM2()
                 self.update_uboot()
                 self.pexp.expect_action(10, self.bootloader_prompt, "reset")
@@ -594,12 +593,12 @@ class UDM_AL324_FACTORY(ScriptBase):
                 rmsg = "Get LCM FW Version Fail!!!"
                 error_critical(rmsg)
 
-        if self.board_id in [ "ea15","ea2c"]:
+        if self.board_id in ["ea15", "ea2c"]:
             self.pexp.expect_action(30, self.linux_prompt, "systemctl unmask network-init udapi-server")
             # self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
             # self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
             # self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0", "192.168.1.1", retry=3)
-        if self.board_id == "ea11" or self.board_id == "ea15" or self.board_id == "ea2c":
+        if self.board_id in ["ea11","ea15", "ea2c","ea2a"]:
             self.pexp.expect_action(15, self.linux_prompt, "set-factory-mode on")
             self.pexp.expect_action(10, self.linux_prompt, "sync;sync;sync")
 
@@ -610,11 +609,14 @@ class UDM_AL324_FACTORY(ScriptBase):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
-            if len(m_run) == 2 or len(m_degraded) == 1:
+            if len(m_run) == 2:
                 rmsg = "The system is running good"
                 log_debug(rmsg)
                 break
-
+            elif len(m_degraded) == 1:
+                 rmsg = "The system is degraded"
+                 log_debug(rmsg)
+                 break
             time.sleep(1)
             ct += 1
         else:

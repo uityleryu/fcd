@@ -59,9 +59,9 @@
           "DST_PATH": "udm-fw/udm",
           "FILES": [
             "ubnt_udm_all_v1_boot.img",
-            "UDM.al324.v3.0.20.5256a39.230406.2140.bin",
-            "uImage-20230404",
-            "boot-20230404.img"
+            "UDM.al324.v3.1.16.456179c.230823.1801.bin",
+            "uImage-20230823",
+            "boot-20230823.img"
           ]
         }
       ],
@@ -72,15 +72,15 @@
         ],
         [
           "tftp/images/ea11-fw.bin",
-          "../udm-fw/udm/UDM.al324.v3.0.20.5256a39.230406.2140.bin"
+          "../udm-fw/udm/UDM.al324.v3.1.16.456179c.230823.1801.bin"
         ],
         [
           "tftp/images/ea11-recovery",
-          "../udm-fw/udm/uImage-20230404"
+          "../udm-fw/udm/uImage-20230823"
         ],
         [
           "tftp/images/ea11-uboot.bin",
-          "../udm-fw/udm/boot-20230404.img"
+          "../udm-fw/udm/boot-20230823.img"
         ],
         [
           "tftp/tools/ea11-factory.deb",

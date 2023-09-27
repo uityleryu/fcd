@@ -49,7 +49,7 @@ class UDMMT7622BspFactory(ScriptBase):
         self.REGISTER_ENABLE   = True 
         self.FWUPDATE_ENABLE   = True
         self.DATAVERIFY_ENABLE = True 
-        self.DIAG_MODE_ENABLE  = True 
+        self.DIAG_MODE_ENABLE  = False
         self.SET_NTP_ENABLE    = True 
 
     def enter_uboot(self, timeout=60):
@@ -170,7 +170,7 @@ class UDMMT7622BspFactory(ScriptBase):
             msg(70, "Rebooting ...")
 
         if self.DATAVERIFY_ENABLE is True:
-            self.login(timeout=600, retry=0,log_level_emerg=True)
+            self.login(timeout=600,username="ui",password="ui", retry=2,log_level_emerg=True)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/uptime")
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
