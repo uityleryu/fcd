@@ -1178,6 +1178,7 @@ class UVCFactoryGeneral(ScriptBase):
     def set_host_usb_ethernet_ip(self, ip='169.254.2.21'):
         # change netmask of eth0:0
         cmd = 'ifconfig eth0:0 netmask 255.255.255.0'
+        
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
 
