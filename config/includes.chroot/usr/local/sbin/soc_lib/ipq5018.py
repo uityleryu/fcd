@@ -227,6 +227,23 @@ class IPQ5018BSPFactory(ScriptBase):
             self.pexp.expect_only(180, "Firmware update complete.")
             log_debug("urescue: Firmware update complete.")
 
+
+            # Detect if unexpect error occured
+            exp_list = [
+                "Increase PRS flash failure count",
+                "Kernel panic",
+                "PREINIT: preinit script failed"
+            ]
+            index = self.pexp.expect_get_index(timeout=120, exptxt=exp_list)
+            if index != -1:
+                error_critical("Product FW Kernel Error")
+
+            if self.board_id == "ac15":
+                self.pexp.expect_ubcmd(120, "Please press Enter to activate this console.", "")
+            else:
+                self.pexp.expect_ubcmd(120, "running real init", "")
+
+
         else:
             self.pexp.expect_only(180, "Updating 0:HLOS partition")
             log_debug("urescue: HLOS partitio updated")

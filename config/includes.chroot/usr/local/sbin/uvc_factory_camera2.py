@@ -77,6 +77,14 @@ class UVCFactoryGeneral(ScriptBase):
             self.board_name = "UVC G5 PTZ Ultra"
             self.ip = "192.168.1.20"
             self.helper_rule = 1
+        elif self.product_name == "UVC-G5TURRETULTRA":
+            self.board_name = "UVC G5 Turret ULTRA"
+            self.ip = "192.168.1.20"
+            self.helper_rule = 1
+        elif self.product_name == "UVC-G5DOME-Ultra":
+                self.board_name = "UVC G5 DOME Ultra"
+                self.ip = "192.168.1.20"
+                self.helper_rule = 1
         ''' '''
         self.fillff = "128k_ff.bin"
         self.ver_extract()
@@ -101,7 +109,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a598': '1',
             'a599': '1',
             'a59a': '1',
-            'a59b': '1'
+            'a59b': '1',
+            'a59c': '1',
+            'a59d': '1'
         }
 
         # number of WiFi
@@ -114,7 +124,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a598': '0',
             'a599': '0',
             'a59a': '0',
-            'a59b': '0'
+            'a59b': '0',
+            'a59c': '0',
+            'a59d': '0'
         }
 
         # number of Bluetooth
@@ -127,7 +139,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a598': '0',
             'a599': '0',
             'a59a': '0',
-            'a59b': '0'
+            'a59b': '0',
+            'a59c': '0',
+            'a59d': '0'
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -147,7 +161,9 @@ class UVCFactoryGeneral(ScriptBase):
             'a598': "ifconfig eth0 ",
             'a599': "ifconfig eth0 ",
             'a59a': "ifconfig eth0 ",
-            'a59b': "ifconfig eth0 "
+            'a59b': "ifconfig eth0 ",
+            'a59c': "ifconfig eth0 ",
+            'a59d': "ifconfig eth0 "
         }
 
     def ezreadini(self, path, section, item):
@@ -414,11 +430,11 @@ class UVCFactoryGeneral(ScriptBase):
 
         if self.tlb_rev != "":
             log_debug("Top level BOM:" + self.tlb_rev)
-            sstr.append("-t 002-{}".format(self.tlb_rev))
+            sstr.append("-t {}".format(self.tlb_rev))
 
         if self.meb_rev != "":
             log_debug("ME BOM:" + self.meb_rev)
-            sstr.append("-M 300-{}".format(self.meb_rev))
+            sstr.append("-M {}".format(self.meb_rev))
 
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
