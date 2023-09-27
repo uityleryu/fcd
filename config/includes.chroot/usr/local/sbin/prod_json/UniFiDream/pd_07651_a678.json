@@ -31,9 +31,9 @@
             "uImage_20230831",
             "u-boot_20230905.mbn",
             "udr-pro-2g-rework-test-image.img",
-            "ipq5322_udr_ultra_v5.img",
+            "ipq5322_udr_ultra_v5.1.img",
             "udr-pro_mi03_1-2g_nor.bin",
-            "ipq5322_udr_ultra_nor_v5.bin"
+            "ipq5322_udr_ultra_nor_v5.1.bin"
           ]
         },
         {
@@ -63,7 +63,7 @@
         ],
         [
           "tftp/images/a678-bsp-4g_nor.bin",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v5.bin"
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v5.1.bin"
         ],
         [
           "tftp/images/a678-bsp-2g.img",
@@ -71,7 +71,7 @@
         ],
         [
           "tftp/images/a678-bsp-4g.img",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v5.img"
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v5.1.img"
         ],
         [
           "tftp/tools/a678-devreg.deb",
