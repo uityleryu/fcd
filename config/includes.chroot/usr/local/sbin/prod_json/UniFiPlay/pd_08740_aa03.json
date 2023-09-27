@@ -6,7 +6,7 @@
       "BOARDID": "aa03",
       "BOMREV": "113-08740",
       "DESC": "UniFi Play AMP",
-      "FILE": "uc_qcs405_factory.py",
+      "FILE": "upl_qcs405_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "SW_ID": "2301",

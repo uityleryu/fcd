@@ -29,9 +29,9 @@ CHECK_MAC_EN = True
     aa03:  UniFiPlay-AMP
 '''
 
-class UCQCS405FactoryGeneral(ScriptBase):
+class UPLQCS405FactoryGeneral(ScriptBase):
     def __init__(self):
-        super(UCQCS405FactoryGeneral, self).__init__()
+        super(UPLQCS405FactoryGeneral, self).__init__()
 
         self.ver_extract()
         devreg_mtd = {
@@ -520,7 +520,7 @@ class UCQCS405FactoryGeneral(ScriptBase):
             self.add_FCD_TLV_info()
 
 def main():
-    uc_factory_general = UCQCS405FactoryGeneral()
+    uc_factory_general = UPLQCS405FactoryGeneral()
     uc_factory_general.run()
 
 
