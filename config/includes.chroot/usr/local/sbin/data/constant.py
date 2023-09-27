@@ -98,13 +98,19 @@ finaltty = [
 
 region_names = (
     "World",
-    "USA/Canada",
+    "USA/Canada (UI)",
     "Indonesia",
     "Israsel",
     "Japan",
-    "Thailand"
+    "Thailand",
+    "Australia",
+    "United Kingdom",
+    "Canada"
 )
 
+# UI-defined region code
+# 0x8100 + country code (HEX, ISO-3166)
+# https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
 region_codes = (
     '0000',    # World
     '002a',    # USA/Canada/FCC
@@ -112,6 +118,9 @@ region_codes = (
     '8178',    # Israsel
     '8188',    # Japan
     '82fc',    # Thailand
+    '8124',    # Australia
+    '843a',    # United kingdom
+    '817c'     # Canada
 )
 
 country_codes = (
@@ -119,8 +128,11 @@ country_codes = (
     '840',    # USA/Canada
     '360',    # Indonesia (HEX: 0x168)
     '376',    # Israsel  (HEX: 0x178)
-    '392'     # Japan  (HEX: 0x188)
+    '392',    # Japan  (HEX: 0x188)
     '764',    # Thailand  (HEX: 0x2FC)
+    '36',     # Australia  (HEX: 0x24)
+    '826',    # United Kingdom  (HEX: 0x33A)
+    '124'     # Canada (HEX: 0x7C)
 )
 
 unifi_region_codes = (
@@ -130,6 +142,9 @@ unifi_region_codes = (
     '8178ffffffffffffffffffffffffffff',    # Israsel  (HEX: 0x178)
     '8188ffffffffffffffffffffffffffff',    # Japan  (HEX: 0x188)
     '82fcffffffffffffffffffffffffffff',    # Thailand  (HEX: 0x2FC)
+    '8124ffffffffffffffffffffffffffff',    # Australia  (HEX: 0x24)
+    '843affffffffffffffffffffffffffff',    # United kingdom  (HEX: 0x33A)
+    '817cffffffffffffffffffffffffffff'     # Canada  (HEX: 0x7C)
 )
 
 erasewifidata = [

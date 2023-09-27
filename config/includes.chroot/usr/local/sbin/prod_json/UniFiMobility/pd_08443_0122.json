@@ -1,11 +1,11 @@
 {
   "UniFiMobility": {
-    "UMT-US": {
+    "UMT-EU": {
       "INDEX": 0,
-      "NAME": "UMT-US",
-      "BOARDID": "0121",
-      "BOMREV": "113-03473",
-      "DESC": "UniFi Mobility Tag US",
+      "NAME": "UMT-EU",
+      "BOARDID": "0122",
+      "BOMREV": "113-08443",
+      "DESC": "UniFi Mobility Tag EU",
       "FILE": "um_nrf52840_factory.py",
       "T1FILE": "",
       "QRCHECK": "activate_code",

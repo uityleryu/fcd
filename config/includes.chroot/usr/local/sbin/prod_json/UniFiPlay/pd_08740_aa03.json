@@ -1,15 +1,16 @@
 {
-  "Connect": {
-    "EV-CHARGER-04277": {
+  "UniFiPlay": {
+    "UPL-AMP": {
       "INDEX": 0,
-      "NAME": "EV-CHARGER",
-      "BOARDID": "efa0",
-      "BOMREV": "113-04277",
-      "DESC": "UniFi EV Charger (Second Source)",
-      "FILE": "connect_apq8053_factory.py",
+      "NAME": "UPL-AMP",
+      "BOARDID": "aa03",
+      "BOMREV": "113-08740",
+      "DESC": "UniFi Play AMP",
+      "FILE": "upl_qcs405_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1ce3",
+      "SW_ID": "2301",
+      "CLIENT_FILE": "client_x64_release_20230908",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",
