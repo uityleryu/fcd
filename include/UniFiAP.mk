@@ -168,7 +168,6 @@ $(eval $(call ProductCompress,ULTE-PRO,FCD_$(PRD)_ULTE-PRO_$(VER)_$(FWVER)))
 
 
 # Project compressed type2 file for RPi FCD host
-
 $(eval $(call ProductCompress2,00390_e537))
 $(eval $(call ProductCompress2,00800_dc9c))
 $(eval $(call ProductCompress2,00958_dd12))
