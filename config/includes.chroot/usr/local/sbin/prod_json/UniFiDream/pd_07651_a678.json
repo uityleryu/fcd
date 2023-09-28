@@ -1,11 +1,11 @@
 {
   "UniFiDream": {
-    "UDR-ULTRA": {
+    "UCG-ULTRA": {
       "INDEX": 0,
-      "NAME": "UDR-ULTRA",
+      "NAME": "UCG-ULTRA",
       "BOARDID": "a678",
       "BOMREV": "113-07651",
-      "DESC": "UniFi Dream Router Ultra",
+      "DESC": "UniFi Console Gateway Ultra",
       "FILE": "udm_ipq53xx_factory.py",
       "T1FILE": "udm_ipq53xx_bspfactory.py",
       "QRCHECK": "True",
