@@ -34,12 +34,8 @@
           "../ua-ultra/bootloader.bin"
         ],
         [
-          "tftp/images/ec84-bootloader-digest.bin",
-          " ../ua-ultra/bootloader-reflash-digest.bin"
-        ],
-        [
           "tftp/images/ec84-mfg.bin",
-          "../ua-ultra/LVDU.esp32mfg.v1.0.23.5.gc142.220715.1145.bin"
+          "../ua-ultra/ua-ultra_mfg.bin"
         ],
         [
           "tftp/images/ec84-ota.bin",
@@ -48,10 +44,6 @@
         [
           "tftp/images/ec84-ptn-table.bin",
           "../ua-ultra/partition-table.bin"
-        ],
-        [
-          "tftp/images/ec84-secure_boot_key.bin",
-          "../ua-ultra/secure-bootloader-key-256.bin"
         ]
       ]
     }

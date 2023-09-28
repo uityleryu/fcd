@@ -68,7 +68,7 @@ class UAESP32FactoryGeneral(ScriptBase):
 
         self.partion_offset = {
             'ec84': {
-                'bootloader_digest': '0',
+#                'bootloader_digest': '0',
                 'bootloader': '0x1000',
                 'partition_table': '0xb000',
                 'ota': '0xd000',
