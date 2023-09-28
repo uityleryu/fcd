@@ -31,19 +31,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec84-bootloader.bin",
-          "../ua-ultra/bootloader.bin"
+          "../ua-fw/ua-ultra/bootloader.bin"
         ],
         [
           "tftp/images/ec84-mfg.bin",
-          "../ua-ultra/ua-ultra_mfg.bin"
+          "../ua-fw/ua-ultra/ua-ultra_mfg.bin"
         ],
         [
           "tftp/images/ec84-ota.bin",
-          "../ua-ultra/ota_data_initial.bin"
+          "../ua-fw/ua-ultra/ota_data_initial.bin"
         ],
         [
           "tftp/images/ec84-ptn-table.bin",
-          "../ua-ultra/partition-table.bin"
+          "../ua-fw/ua-ultra/partition-table.bin"
         ]
       ]
     }
