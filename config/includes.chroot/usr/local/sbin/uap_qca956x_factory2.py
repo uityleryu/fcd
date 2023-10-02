@@ -13,7 +13,8 @@ This FCD script is for
     e615: ULTE-FLEX-US
     e618: UMR-EU-AC
     e619: UMR-US-AC
-    e620: UMR-Ultra
+    e620: UMR-Industrial-US
+    e621: UMR-Industrial-EU
     dca6: UMR-PRO-US
     dca7: UMR-PRO-EU
 '''
@@ -41,6 +42,7 @@ class UAPQCA956xFactory2(ScriptBase):
             'e618': "ulte_flex",
             'e619': "ulte_flex",
             'e620': "ulte_flex",
+            'e621': "ulte_flex",
             'dca6': "ulte_flex",
             'dca7': "ulte_flex"
         }
@@ -93,7 +95,7 @@ class UAPQCA956xFactory2(ScriptBase):
         fw_path = os.path.join(self.fwdir, self.board_id + ".bin")
         log_debug(msg="firmware path:" + fw_path)
 
-        if self.board_id in ["dca6", "dca7", "e618", "e619", "e620"]:
+        if self.board_id in ["dca6", "dca7", "e618", "e619", "e620", "e621"]:
             self.user = "ui"
             self.password = "ui"
 
@@ -106,7 +108,7 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(30, 'Message Digest successfully verfied')
         self.pexp.expect_only(180, 'fw_inactive')
         self.pexp.expect_only(180, 'ltefw')
-        self.pexp.expect_only(180, 'recovery')
+        self.pexp.expect_only(240, 'recovery')
         self.pexp.expect_only(180, 'Updating boot select partitions')
         self.pexp.expect_action(180, self.linux_prompt, "reboot")
         # self.pexp.expect_only(540, 'Starting kernel')
@@ -172,7 +174,7 @@ class UAPQCA956xFactory2(ScriptBase):
 
         time.sleep(15)  # for stable system
 
-        if self.board_id in ["e618", "e619", "e620"]:
+        if self.board_id in ["e618", "e619", "e620", "e621"]:
             log_debug(msg="Add IP Addr")
             cmd = "ifconfig"
             exp = "br-lan"
@@ -427,13 +429,13 @@ class UAPQCA956xFactory2(ScriptBase):
             self.registration()
             msg(65, "Checking signed file and EEPROM ...")
             self.check_devreg_data()
-        '''
+
         if self.FWUPDATE_ENABLE is True:
             msg(80, "Updating firmware ...")
             self.fwupdate()
             self.login_kernel()
 
-            if self.board_id in ["e618", "e619", "e620"]:
+            if self.board_id in ["e618", "e619", "e620", "e621"]:
                 self.check_boot_complete()
                 time.sleep(10)
 
@@ -441,7 +443,7 @@ class UAPQCA956xFactory2(ScriptBase):
             msg(90, "Checking the devrenformation ...")
             self.check_info()
 
-        if self.board_id in ["e618", "e619", "e620"]:
+        if self.board_id in ["e618", "e619", "e620", "e621"]:
             self.check_wireless_config()
 
             time.sleep(5)
