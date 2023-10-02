@@ -1,0 +1,66 @@
+{
+  "UniFiCK": {
+    "UCKG2": {
+      "INDEX": "0",
+      "NAME": "UCKG2",
+      "BOARDID": "e960",
+      "BOMREV": "113-02618",
+      "DESC": "UniFi CloudKey Gen2",
+      "FILE": "uck_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uck-fw/",
+          "DST_PATH": "uck-fw/",
+          "FILES": [
+            "CK2FCD.apq8053.v0.6.0.8f96a48.220617.1815-boot.img",
+            "RCK2.apq8053.v0.7.2.eb0683c.230721.1725-boot.img",
+            "UCKG2.apq8053.v3.1.14.3aa57db.230714.2319.boot",
+            "UCKG2.apq8053.v3.1.14.3aa57db.230714.2319.rootfs"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uck/",
+          "DST_PATH": "tools/uck/",
+          "FILES": [
+            "ck-ee",
+            "DRA_ed0eb1b5_helper_APQ8053_release.strip",
+            "mmc-prep.sh",
+            "check-part.sh",
+            "check-part.txt"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e960-mfg.bin",
+          "../uck-fw/CK2FCD.apq8053.v0.6.0.8f96a48.220617.1815-boot.img"
+        ],
+        [
+          "tftp/images/e960-recovery.bin",
+          "../uck-fw/RCK2.apq8053.v0.7.2.eb0683c.230721.1725-boot.img"
+        ],
+        [
+          "tftp/images/e960-rootfs.bin",
+          "../uck-fw/UCKG2.apq8053.v3.1.14.3aa57db.230714.2319.rootfs"
+        ],
+        [
+          "tftp/images/e960-kernel.bin",
+          "../uck-fw/UCKG2.apq8053.v3.1.14.3aa57db.230714.2319.boot"
+        ]
+      ]
+    }
+  }
+}

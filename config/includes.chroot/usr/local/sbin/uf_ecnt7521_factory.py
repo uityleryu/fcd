@@ -333,8 +333,14 @@ class UFECNT7521Factory(ScriptBase):
         """
         Main procedure of factory
         """
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         msg(1, "Start Procedure")
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
+
         self.cnapi.config_stty(self.dev)
         self.cnapi.print_current_fcd_version()
 
@@ -343,6 +349,11 @@ class UFECNT7521Factory(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\r")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(1)
+        
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
 
         self.mac = self.mac.upper()
 
@@ -376,6 +387,7 @@ class UFECNT7521Factory(ScriptBase):
 
         if PROVISION_EN is True:    
             msg(50, "Sendtools to DUT and data provision ...")
+            self.kill_watchdog_if_reboot()
             self.copy_and_unzipping_tools_to_dut(timeout=60)
         
         if DOHELPER_EN is True:
@@ -414,6 +426,12 @@ class UFECNT7521Factory(ScriptBase):
             for cmd in cmdset:
                 self.pexp.expect_lnxcmd(10, self.linux_prompt_fcdfw, cmd)
 
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 
@@ -421,6 +439,7 @@ class UFECNT7521Factory(ScriptBase):
 def main():
     uf_ecnt7521_factory = UFECNT7521Factory()
     uf_ecnt7521_factory.run()
+
 
 if __name__ == "__main__":
     main()

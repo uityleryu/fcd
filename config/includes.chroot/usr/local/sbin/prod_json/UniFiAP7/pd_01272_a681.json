@@ -9,7 +9,6 @@
       "FILE": "u7_ipq5322_bspfactory.py",
       "T1FILE": "u7_ipq5322_mfg.py",
       "QRCHECK": "True",
-      "FCD_ID": "0004",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
@@ -27,36 +26,37 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-enterprise-1g-v2.1.img",
-            "u7-enterprise-512m-v2.2.img",
-            "u7-enterprise-1g-v2.1_nor.bin",
-            "u7-enterprise-512m-v2.2_nor.bin"
+            "u7-enterprise-1g-v6.img",
+            "u7-enterprise-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.7.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a681-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2.img"
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6.img"
         ],
         [
-          "tftp/images/a654-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+          "tftp/images/a681-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
         ],
         [
-          "tftp/images/a654-gpt.bin",
-          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+          "tftp/images/a681-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
         ],
         [
-          "tftp/images/a654-initramfs.bin",
-          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+          "tftp/images/a681-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
         ],
         [
           "tftp/images/a681-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2_nor.bin"
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
         ],
         [
-          "tftp/images/a654.itb",
+          "tftp/images/a6888.itb",
           "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
