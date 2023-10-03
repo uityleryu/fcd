@@ -1,11 +1,11 @@
 {
   "UniFiAP7": {
-    "U7-Pro-08146": {
+    "U7-LR-09466": {
       "INDEX": 0,
-      "NAME": "U7-Pro",
-      "BOARDID": "a682",
-      "BOMREV": "113-08146",
-      "DESC": "UniFi AP7 Pro",
+      "NAME": "U7-LR",
+      "BOARDID": "a691",
+      "BOMREV": "113-09466",
+      "DESC": "UniFi AP7 Long Range",
       "FILE": "u7_ipq5322_bspfactory.py",
       "T1FILE": "u7_ipq5322_mfg.py",
       "QRCHECK": "True",
@@ -26,34 +26,34 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v6.img",
-            "u7-pro-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
+            "u7-lr-wkk-lm512-v2.img",
+            "u7-lr-wkk-lm512-v2_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
             "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.7.bin"
+            "ramboot-7.0.5.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a682-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+          "tftp/images/a691-bsp.img",
+          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2.img"
         ],
         [
-          "tftp/images/a682-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
+          "tftp/images/a681-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
         ],
         [
-          "tftp/images/a682-gpt.bin",
+          "tftp/images/a681-gpt.bin",
           "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
         ],
         [
-          "tftp/images/a682-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
+          "tftp/images/a681-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
         ],
         [
-          "tftp/images/a682-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
+          "tftp/images/a691-nor.bin",
+          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",

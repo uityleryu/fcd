@@ -1,0 +1,49 @@
+{
+  "UniFiVideo": {
+    "UVC-G5DOME-Ultra": {
+      "INDEX": 0,
+      "NAME": "UVC-G5DOME-Ultra",
+      "BOARDID": "a59d",
+      "BOMREV": "113-09268",
+      "DESC": "UVC G5 Dome Ultra",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee_20230608",
+            "aarch64-rpi4-4k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a59d-fw.ini"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "g5domeultra.UVC.SAV530q.v4.66.8.67-fcddbg.M_579154c.230921.1131.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}
