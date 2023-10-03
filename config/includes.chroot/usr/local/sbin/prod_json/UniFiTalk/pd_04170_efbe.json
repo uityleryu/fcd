@@ -1,0 +1,40 @@
+{
+  "UniFiTalk": {
+    "UT-G3-Handset": {
+      "INDEX": 0,
+      "NAME": "UT-G3-Handset",
+      "BOARDID": "efbe",
+      "BOMREV": "113-04170",
+      "DESC": "UniFi Talk Phone G3 Handset",
+      "FILE": "ut_nrf5340_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0a01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-4k-ee",
+            "aarch64-rpi4-4k-ee_20230608"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/ut-g3-handset",
+          "DST_PATH": "tools/ut-g3-handset",
+          "FILES": [
+            "program.sh"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}

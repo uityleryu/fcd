@@ -154,14 +154,26 @@ class IPQ5018BSPFactory(ScriptBase):
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = True
+        elif self.board_id == "a658" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
+        elif self.board_id == "a664" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
         elif self.board_id == "a689" :
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
         else:
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -238,12 +250,6 @@ class IPQ5018BSPFactory(ScriptBase):
             if index != -1:
                 error_critical("Product FW Kernel Error")
 
-            if self.board_id == "ac15":
-                self.pexp.expect_ubcmd(120, "Please press Enter to activate this console.", "")
-            else:
-                self.pexp.expect_ubcmd(120, "running real init", "")
-
-
         else:
             self.pexp.expect_only(180, "Updating 0:HLOS partition")
             log_debug("urescue: HLOS partitio updated")
@@ -253,6 +259,13 @@ class IPQ5018BSPFactory(ScriptBase):
 
             self.pexp.expect_only(180, "Updating bs partition")
             log_debug("urescue bs updated")
+
+    def chk_usbspeed(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep link")
+        self.pexp.expect_only(10, "u0")
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep speed")
+        self.pexp.expect_only(10, "3.0")
 
     def check_info(self):
 
@@ -326,6 +339,10 @@ class IPQ5018BSPFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
+
+        if self.USBSPEED_EN is True:
+            self.chk_usbspeed()
+            msg(90, "Check USB success")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
