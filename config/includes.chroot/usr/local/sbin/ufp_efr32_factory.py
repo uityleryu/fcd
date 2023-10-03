@@ -187,6 +187,15 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             "-b " + self.btnum[self.board_id],
             "-k " + self.rsakey_path
         ]
+
+        log_debug("Top level BOM:" + self.tlb_rev)
+        if self.tlb_rev != "":
+            sstr.append("-t {}".format(self.tlb_rev))
+
+        log_debug("ME BOM:" + self.meb_rev)
+        if self.meb_rev != "":
+            sstr.append("-M {}".format(self.meb_rev))
+
         sstr = ' '.join(sstr)
         log_debug('sstr = {}'.format(sstr))
 
