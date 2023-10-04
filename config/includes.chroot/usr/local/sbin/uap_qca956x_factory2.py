@@ -105,7 +105,7 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_only(30, 'Message Digest successfully verfied')
         self.pexp.expect_only(180, 'fw_inactive')
         self.pexp.expect_only(180, 'ltefw')
-        self.pexp.expect_only(180, 'recovery')
+        self.pexp.expect_only(240, 'recovery')
         self.pexp.expect_only(180, 'Updating boot select partitions')
         self.pexp.expect_action(180, self.linux_prompt, "reboot")
         # self.pexp.expect_only(540, 'Starting kernel')
