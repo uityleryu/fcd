@@ -2,6 +2,7 @@
 import time
 import os
 import stat
+import re
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_info, log_debug, log_error, msg, error_critical
@@ -372,6 +373,18 @@ class UAPQCA956xFactory2(ScriptBase):
 
         log_debug("Enable burn in mode passed!!")
 
+    def record_modem_imei(self):
+        output = self.pexp.expect_get_output("echo \"ati\" | socat - /dev/ttyUSB2 | grep IMEI:", self.linux_prompt, timeout=3)
+        log_debug("IMEI cmd rsp = {}".format(output))
+
+        match = re.search(r'([0-9]{15,})', output)
+        if match is None:
+            error_critical('Failed to get IMEI')
+
+        imei = match.group(1)
+        log_debug("IMEI = {}".format(imei))
+        self.imei = imei
+
     def run(self):
         """Main procedure of factory
         """
@@ -445,6 +458,8 @@ class UAPQCA956xFactory2(ScriptBase):
             time.sleep(5)
 
             self.enable_burn_in_mode()
+
+            self.record_modem_imei()
 
             self.log_upload_failed_alert_en = True
             log_debug(msg="Set log_upload_failed_alert_en to True to ensure that log will be uploaded")
