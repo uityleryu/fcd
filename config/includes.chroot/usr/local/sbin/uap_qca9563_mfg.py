@@ -43,7 +43,7 @@ class UAPQCA956xMFG(ScriptBase):
         cmd = "reset"
         self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
 
-    def fwupdate(self, filename):
+    def fwupdate(self):
         self.pexp.expect_action(10, self.bootloader_prompt, "{} uclearenv".format(self.cmd_prefix))
         self.pexp.expect_action(10, self.bootloader_prompt, "setenv mtdparts \"mtdparts=ath-nor0:384k(u-boot)," \
                                                             "64k(u-boot-env),1280k(uImage), 14528k(rootfs)," \
@@ -101,7 +101,7 @@ class UAPQCA956xMFG(ScriptBase):
         if self.board_id == "dca8":
             self.art_update()
         else:
-            self.fwupdate(filename=self.board_id + "-mfg.bin")
+            self.fwupdate()
         msg(80, 'Finish fwupdate ...')
 
         self.enter_uboot(stop_uboot_only = True)

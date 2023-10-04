@@ -19,12 +19,17 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-4k-ee_20230608",
             "aarch64-rpi4-64k-ee"
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
     }
   }
 }

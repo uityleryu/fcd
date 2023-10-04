@@ -1,12 +1,12 @@
 {
   "UniFiVideo": {
-    "UVC-G4DOORBELLPRO": {
+    "UVC-G5TURRETULTRA": {
       "INDEX": 0,
-      "NAME": "UVC-G4DOORBELLPRO",
-      "BOARDID": "a574",
-      "BOMREV": "113-03194",
-      "DESC": "UVC G4 Doorbell Pro",
-      "FILE": "uvc_factory.py",
+      "NAME": "UVC-G5TURRETULTRA",
+      "BOARDID": "a59c",
+      "BOMREV": "113-08974",
+      "DESC": "UVC G5 Turret Ultra",
+      "FILE": "uvc_factory_camera2.py",
       "T1FILE": "",
       "QRCHECK": "False",
       "FCD_ID": "0009",
@@ -16,14 +16,15 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
+            "g5turretultra.UVC.SAV530q.v4.66.7.67-fcddbg.6160e9c.230906.0738.bin"
           ]
         },
         {
           "SRC_PATH": "images/fcd-image/images",
           "DST_PATH": "images",
           "FILES": [
-             "a574-fw.ini"
+            "a59c-fw.bin",
+            "a59c-fw.ini"
           ]
         },
         {
@@ -36,21 +37,12 @@
             "aarch64-rpi4-64k-ee_20230608",
             "aarch64-rpi4-4k-ee"
           ]
-        },
-        {
-          "SRC_PATH": "images/tools/uvc",
-          "DST_PATH": "tools/uvc",
-          "FILES": [
-            "128k_ff.bin",
-            "helper_uvcg4doorbellpro ",
-            "m25p80_uvcg4doorbellpro.ko"
-          ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a574-fw.bin",
-          "../uvc-fw/g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
+          "tftp/images/a59c-fw.bin",
+          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.66.7.67-fcddbg.6160e9c.230906.0738.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",

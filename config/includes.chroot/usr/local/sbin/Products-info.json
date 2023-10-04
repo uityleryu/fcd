@@ -1,13 +1,3080 @@
 {
-  "UniFiAP7": {
-    "U7-Enterprise-01272": {
+  "UniFiDream":
+  {
+    "UDM-00623":{
+      "INDEX"       : 0,
+      "NAME"        : "UDM-00623",
+      "BOARDID"     : "ea11",
+      "BOMREV"      : "113-00623",
+      "DESC"        : "UniFi Dream Machine",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+    "UDM-01134":{
+      "INDEX"       : 0,
+      "NAME"        : "UDM-01134",
+      "BOARDID"     : "ea11",
+      "BOMREV"      : "113-01134",
+      "DESC"        : "UniFi Dream Machine",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-SE":{
+      "INDEX"       : 1,
+      "NAME"        : "UDM-SE",
+      "BOARDID"     : "ea13",
+      "BOMREV"      : "113-00618",
+      "DESC"        : "UniFi Dream Machine Special",
+      "FILE"        : "udm_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True"
+    },
+
+    "UDM-PRO-00723":{
+      "INDEX"       : 2,
+      "NAME"        : "UDM-PRO-00723",
+      "BOARDID"     : "ea15",
+      "BOMREV"      : "113-00723",
+      "DESC"        : "UniFi Dream Machine Pro",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-PRO-01133":{
+      "INDEX"       : 3,
+      "NAME"        : "UDM-PRO-01133",
+      "BOARDID"     : "ea15",
+      "BOMREV"      : "113-01133",
+      "DESC"        : "UniFi Dream Machine Pro",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+
+    "UXG-PRO":{
+      "INDEX"       : 4,
+      "NAME"        : "UXG-PRO",
+      "BOARDID"     : "ea19",
+      "BOMREV"      : "113-00740",
+      "DESC"        : "UniFi Next-Generation Gateway",
+      "FILE"        : "ubios_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-B":{
+      "INDEX"       : 5,
+      "NAME"        : "UDM-B",
+      "BOARDID"     : "ec25",
+      "BOMREV"      : "113-00622",
+      "DESC"        : "UniFi One Dream Machine Beacon",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-XG":{
+      "INDEX"       : 6,
+      "NAME"        : "UDM-XG",
+      "BOARDID"     : "ea17",
+      "BOMREV"      : "113-02719",
+      "DESC"        : "UniFi One Dream Machine XG",
+      "FILE"        : "udm_xeon1521_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True"
+    },
+
+	"UDM-LITE":{
+      "INDEX"       : 7,
+      "NAME"        : "UDM-LITE",
+      "BOARDID"     : "ec2d",
+      "BOMREV"      : "113-01075",
+      "DESC"        : "UniFi Dream Machine LITE",
+      "FILE"        : "udm_mt7622_bspfactory.py",
+      "T1FILE"      : "udm_mt7622_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDR":{
+      "INDEX"       : 8,
+      "NAME"        : "UDR",
+      "BOARDID"     : "eccc",
+      "BOMREV"      : "113-00786",
+      "DESC"        : "UniFi Dream Router",
+      "FILE"        : "udm_mt7622_bspfactory.py",
+      "T1FILE"      : "udm_mt7622_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-SE-00917":{
+      "INDEX"       : 9,
+      "NAME"        : "UDM-SE-00917",
+      "BOARDID"     : "ea2c",
+      "BOMREV"      : "113-00917",
+      "DESC"        : "UniFi Dream Machine Pro SE",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDM-SE-01097":{
+      "INDEX"       : 10,
+      "NAME"        : "UDM-SE-01097",
+      "BOARDID"     : "ea2c",
+      "BOMREV"      : "113-01097",
+      "DESC"        : "UniFi Dream Machine Pro SE",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDW":{
+      "INDEX"       : 10,
+      "NAME"        : "UDW",
+      "BOARDID"     : "ea2a",
+      "BOMREV"      : "113-00843",
+      "DESC"        : "UniFi Dream Wall",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    },
+
+    "UDW-PRO-PU": {
+      "INDEX": 11,
+      "NAME": "UDW-PRO-PU",
+      "BOARDID": "ea2e",
+      "BOMREV": "113-01029",
+      "DESC": "UniFi Dream Wall Pro Power unit",
+      "FILE": "udw_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701"
+    },
+
+    "UDW-PRO":{
+      "INDEX"       : 12,
+      "NAME"        : "UDW-PRO",
+      "BOARDID"     : "ea2b",
+      "BOMREV"      : "113-00845",
+      "DESC"        : "UniFi Dream Wall Pro",
+      "FILE"        : "udm_al324_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0005",
+      "SW_ID"       : "0701"
+    }
+
+  },
+
+  "UniFiSwitch":
+  {
+    "US-FLEX-02767":{
+      "INDEX"       : 0,
+      "NAME"        : "US-FLEX",
+      "BOARDID"     : "ed10",
+      "BOMREV"      : "113-02767",
+      "DESC"        : "UniFi Switch Flex",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-FLEX-03909":{
+      "INDEX"       : 0,
+      "NAME"        : "US-FLEX",
+      "BOARDID"     : "ed10",
+      "BOMREV"      : "113-03909",
+      "DESC"        : "UniFi Switch Flex",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-8-150W":{
+      "INDEX"       : 1,
+      "NAME"        : "US-8-150W",
+      "BOARDID"     : "eb10",
+      "BOMREV"      : "113-02189",
+      "DESC"        : "UniFi Switch 8-port 150W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-8-60W":{
+      "INDEX"       : 2,
+      "NAME"        : "US-8-60W",
+      "BOARDID"     : "eb18",
+      "BOMREV"      : "113-02341",
+      "DESC"        : "UniFi Switch 8-port 60W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-16-150W":{
+      "INDEX"       : 3,
+      "NAME"        : "US-16-150W",
+      "BOARDID"     : "eb21",
+      "BOMREV"      : "113-02290",
+      "DESC"        : "UBNT UniFiSwitch 16-Port 150W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-6XG-150":{
+      "INDEX"       : 4,
+      "NAME"        : "US-6XG-150",
+      "BOARDID"     : "eb23",
+      "BOMREV"      : "113-02604",
+      "DESC"        : "UBNT UniFiSwitch 6XG",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-XG-24-POE":{
+      "INDEX"       : 5,
+      "NAME"        : "USW-XG-24-POE",
+      "BOARDID"     : "eb25",
+      "BOMREV"      : "113-02793",
+      "DESC"        : "UBNT UniFiSwitch XG 24-Port PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-XG-48-POE":{
+      "INDEX"       : 6,
+      "NAME"        : "USW-XG-48-POE",
+      "BOARDID"     : "eb26",
+      "BOMREV"      : "113-02792",
+      "DESC"        : "UBNT UniFiSwitch XG 48-Port PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Aggregation-Pro":{
+      "INDEX"       : 7,
+      "NAME"        : "USW-Aggregation-Pro",
+      "BOARDID"     : "eb27",
+      "BOMREV"      : "113-03046",
+      "DESC"        : "UBNT UniFiSwitch Aggregation Pro",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24":{
+      "INDEX"       : 8,
+      "NAME"        : "US-24",
+      "BOARDID"     : "eb30",
+      "BOMREV"      : "113-02294",
+      "DESC"        : "UBNT UniFiSwitch 24-Port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24-250W":{
+      "INDEX"       : 9,
+      "NAME"        : "US-24-250W",
+      "BOARDID"     : "eb31",
+      "BOMREV"      : "113-02147",
+      "DESC"        : "UBNT UniFiSwitch 24-Port 250W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-PRO-POE-02779":{
+      "INDEX"       : 10,
+      "NAME"        : "USW-24-PRO-POE",
+      "BOARDID"     : "eb36",
+      "BOMREV"      : "113-02779",
+      "DESC"        : "UBNT UniFiSwitch 24-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-PRO-POE-03965":{
+      "INDEX"       : 10,
+      "NAME"        : "USW-24-PRO-POE",
+      "BOARDID"     : "eb36",
+      "BOMREV"      : "113-03965",
+      "DESC"        : "UBNT UniFiSwitch 24-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-PRO":{
+      "INDEX"       : 11,
+      "NAME"        : "USW-24-PRO",
+      "BOARDID"     : "eb37",
+      "BOMREV"      : "113-02953",
+      "DESC"        : "UBNT UniFiSwitch 24-Port Pro",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-24-PoE-03154":{
+      "INDEX"       : 11,
+      "NAME"        : "USW-Enterprise-24-PoE",
+      "BOARDID"     : "eb38",
+      "BOMREV"      : "113-03154",
+      "DESC"        : "UniFi Switch Enterprise 24 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-24-PoE-03967":{
+      "INDEX"       : 11,
+      "NAME"        : "USW-Enterprise-24-PoE",
+      "BOARDID"     : "eb38",
+      "BOMREV"      : "113-03967",
+      "DESC"        : "UniFi Switch Enterprise 24 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48":{
+      "INDEX"       : 12,
+      "NAME"        : "US-48",
+      "BOARDID"     : "eb60",
+      "BOMREV"      : "113-02295",
+      "DESC"        : "UBNT UniFiSwitch 48-Port (BCM)",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48-500W":{
+      "INDEX"       : 13,
+      "NAME"        : "US-48-500W",
+      "BOARDID"     : "eb62",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UBNT UniFiSwitch 48-Port 500W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-500W":{
+      "INDEX"       : 14,
+      "NAME"        : "USW-48-500W",
+      "BOARDID"     : "eb67",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UBNT UniFiSwitch 48-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-PRO-POE-02757":{
+      "INDEX"       : 15,
+      "NAME"        : "USW-48-PRO-POE",
+      "BOARDID"     : "eb67",
+      "BOMREV"      : "113-02757",
+      "DESC"        : "UBNT UniFiSwitch 48-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-PRO-POE-03966":{
+      "INDEX"       : 15,
+      "NAME"        : "USW-48-PRO-POE",
+      "BOARDID"     : "eb67",
+      "BOMREV"      : "113-03966",
+      "DESC"        : "UBNT UniFiSwitch 48-Port Pro PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-PRO":{
+      "INDEX"       : 16,
+      "NAME"        : "USW-48-PRO",
+      "BOARDID"     : "eb68",
+      "BOMREV"      : "113-02952",
+      "DESC"        : "UBNT UniFiSwitch 48-Port Pro",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "ULS-RPS":{
+      "INDEX"       : 17,
+      "NAME"        : "ULS-RPS",
+      "BOARDID"     : "ed11",
+      "BOMREV"      : "113-02781",
+      "DESC"        : "UniFi Life Saver RPS",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-02848":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-02848",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-03955":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-03955",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-03959":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-03959",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16-POE-03960":{
+      "INDEX"       : 18,
+      "NAME"        : "USW-16-POE",
+      "BOARDID"     : "ed20",
+      "BOMREV"      : "113-03960",
+      "DESC"        : "UBNT UniFiSwitch 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-03956":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-03956",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-02831":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-02831",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-03961":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-03961",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24-POE-03962":{
+      "INDEX"       : 19,
+      "NAME"        : "USW-24-POE",
+      "BOARDID"     : "ed21",
+      "BOMREV"      : "113-03962",
+      "DESC"        : "UBNT UniFiSwitch 24 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-03957":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-03957",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-02865":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-02865",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-03963":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-03963",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48-POE-03964":{
+      "INDEX"       : 20,
+      "NAME"        : "USW-48-POE",
+      "BOARDID"     : "ed22",
+      "BOMREV"      : "113-03964",
+      "DESC"        : "UBNT UniFiSwitch 48 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-16":{
+      "INDEX"       : 21,
+      "NAME"        : "USW-16",
+      "BOARDID"     : "ed23",
+      "BOMREV"      : "113-02943",
+      "DESC"        : "UBNT UniFiSwitch 16",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-24":{
+      "INDEX"       : 22,
+      "NAME"        : "USW-24",
+      "BOARDID"     : "ed24",
+      "BOMREV"      : "113-02944",
+      "DESC"        : "UBNT UniFiSwitch 24",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-48":{
+      "INDEX"       : 23,
+      "NAME"        : "USW-48",
+      "BOARDID"     : "ed25",
+      "BOMREV"      : "113-02972",
+      "DESC"        : "UBNT UniFiSwitch 48 POE (RTK)",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-02945":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-02945",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-03954":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-03954",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-03958":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-03958",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-16-POE-03596":{
+      "INDEX"       : 24,
+      "NAME"        : "USW-LITE-16-POE",
+      "BOARDID"     : "ed26",
+      "BOMREV"      : "113-03596",
+      "DESC"        : "UBNT UniFiSwitch Lite 16 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LITE-8-POE":{
+      "INDEX"       : 25,
+      "NAME"        : "USW-LITE-8-POE",
+      "BOARDID"     : "ed2a",
+      "BOMREV"      : "113-02992",
+      "DESC"        : "UBNT UniFiSwitch Lite 8 POE",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-MISSION-CRITICAL":{
+      "INDEX"       : 26,
+      "NAME"        : "USW-MISSION-CRITICAL",
+      "BOARDID"     : "ed2c",
+      "BOMREV"      : "113-02730",
+      "DESC"        : "UBNT UniFiSwitch Mission Critical",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Aggregation":{
+      "INDEX"       : 27,
+      "NAME"        : "USW-Aggregation",
+      "BOARDID"     : "ed2d",
+      "BOMREV"      : "113-03138",
+      "DESC"        : "UBNT UniFiSwitch Aggregation",
+      "FILE"        : "us_rtl838x_factory.py",
+      "T1FILE"      : "us_rtl838x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-FLEX-MINI":{
+      "INDEX"       : 28,
+      "NAME"        : "USW-FLEX-MINI",
+      "BOARDID"     : "ed30",
+      "BOMREV"      : "113-02851",
+      "DESC"        : "UniFi Switch Flex Mini",
+      "FILE"        : "us_m487_factory.py",
+      "T1FILE"      : "us_m487_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LEAF":{
+      "INDEX"       : 29,
+      "NAME"        : "USW-LEAF",
+      "BOARDID"     : "f060",
+      "BOMREV"      : "113-02997",
+      "DESC"        : "UniFi Super Switch 48-port",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-SPINE":{
+      "INDEX"       : 30,
+      "NAME"        : "USW-SPINE",
+      "BOARDID"     : "f062",
+      "BOMREV"      : "113-02932",
+      "DESC"        : "UniFi Super Switch Spine",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-LEAF-PRO":{
+      "INDEX"       : 31,
+      "NAME"        : "USW-LEAF-PRO",
+      "BOARDID"     : "f063",
+      "BOMREV"      : "113-03162",
+      "DESC"        : "UniFi Super Switch 48-port",
+      "FILE"        : "us_udc-alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-48-PoE-03213":{
+      "INDEX"       : 32,
+      "NAME"        : "USW-Enterprise-48-PoE",
+      "BOARDID"     : "eb28",
+      "BOMREV"      : "113-03213",
+      "DESC"        : "UniFi Switch Enterprise 48 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-48-PoE-03968":{
+      "INDEX"       : 32,
+      "NAME"        : "USW-Enterprise-48-PoE",
+      "BOARDID"     : "eb28",
+      "BOMREV"      : "113-03968",
+      "DESC"        : "UniFi Switch Enterprise 48 PoE",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-EnterpriseXG-24":{
+      "INDEX"       : 7,
+      "NAME"        : "USW-EnterpriseXG-24",
+      "BOARDID"     : "eb29",
+      "BOMREV"      : "113-03112",
+      "DESC"        : "UniFiSwitch EnterpriseXG 24",
+      "FILE"        : "us_bcm5616_factory.py",
+      "T1FILE"      : "us_bcm5616_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-8-PoE-03188":{
+      "INDEX"       : 33,
+      "NAME"        : "USW-Enterprise-8-PoE",
+      "BOARDID"     : "ed41",
+      "BOMREV"      : "113-03188",
+      "DESC"        : "UniFi Switch Enterprise 8-port PoE",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-Enterprise-8-PoE-03969":{
+      "INDEX"       : 33,
+      "NAME"        : "USW-Enterprise-8-PoE",
+      "BOARDID"     : "ed41",
+      "BOMREV"      : "113-03969",
+      "DESC"        : "UniFi Switch Enterprise 8-port PoE",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USW-FLEX-XG":{
+      "INDEX"       : 34,
+      "NAME"        : "USW-FLEX-XG",
+      "BOARDID"     : "ed40",
+      "BOMREV"      : "113-03166",
+      "DESC"        : "UniFi Switch Flex XG",
+      "FILE"        : "us_mrvl_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-8":{
+      "INDEX"       : 35,
+      "NAME"        : "US-8",
+      "BOARDID"     : "eb19",
+      "BOMREV"      : "113-02311",
+      "DESC"        : "UniFi Switch 8-port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-24-500W":{
+      "INDEX"       : 36,
+      "NAME"        : "US-24-500W",
+      "BOARDID"     : "eb32",
+      "BOMREV"      : "113-02147",
+      "DESC"        : "UniFi Switch 24-port 500W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-48-750W":{
+      "INDEX"       : 37,
+      "NAME"        : "US-48-750W",
+      "BOARDID"     : "eb63",
+      "BOMREV"      : "113-02146",
+      "DESC"        : "UniFi Switch 48-port 750W",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "US-16-XG":{
+      "INDEX"       : 38,
+      "NAME"        : "US-16-XG",
+      "BOARDID"     : "eb20",
+      "BOMREV"      : "113-02376",
+      "DESC"        : "UniFi Switch XG 16 port",
+      "FILE"        : "us_bcm5334x_factory.py",
+      "T1FILE"      : "us_bcm5334x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USC-8":{
+      "INDEX"       : 39,
+      "NAME"        : "USC-8",
+      "BOARDID"     : "ed01",
+      "BOMREV"      : "113-02556",
+      "DESC"        : "UBNT UniFiSwitch USC 8 ports",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "UIS-8-450":{
+      "INDEX"       : 40,
+      "NAME"        : "UIS-8-450",
+      "BOARDID"     : "ed04",
+      "BOMREV"      : "113-02672",
+      "DESC"        : "UniFi Industrial Switch 8 ports 450W",
+      "FILE"        : "us_mscc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    }
+
+  },
+
+  "UniFiAP":
+  {
+    "UAP-FLEX-HD":{
+      "INDEX"       : 0,
+      "NAME"        : "UAP-FLEXHD",
+      "BOARDID"     : "ec26",
+      "BOMREV"      : "113-00641",
+      "DESC"        : "UniFi AP Flex HD",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-Building-Bridge":{
+      "INDEX"       : 1,
+      "NAME"        : "UAP-UBB",
+      "BOARDID"     : "dc98",
+      "BOMREV"      : "113-00694",
+      "DESC"        : "UniFi AP Building Bridge",
+      "FILE"        : "uap_ipq40xx_factory.py",
+      "T1FILE"      : "uap_ipq40xx_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-Industrial":{
+      "INDEX"       : 2,
+      "NAME"        : "UAP-Industrial",
+      "BOARDID"     : "ec2a",
+      "BOMREV"      : "113-00710",
+      "DESC"        : "UniFi AP nanoHD industrial",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-NANO-HD":{
+      "INDEX"       : 3,
+      "NAME"        : "UAP-NANO-HD",
+      "BOARDID"     : "ec20",
+      "BOMREV"      : "113-00573",
+      "DESC"        : "UniFi AP NANO HD",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-IW-HD":{
+      "INDEX"       : 4,
+      "NAME"        : "UAP-IWHD",
+      "BOARDID"     : "ec22",
+      "BOMREV"      : "113-00600",
+      "DESC"        : "UniFi AP IW HD",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "unifi_mt7621_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-Building-Bridge 831":{
+      "INDEX"       : 5,
+      "NAME"        : "UAP-UBB 831",
+      "BOARDID"     : "dc9c",
+      "BOMREV"      : "113-00800",
+      "DESC"        : "UniFi AP Building Bridge 831",
+      "FILE"        : "uap_ipq40xx_factory.py",
+      "T1FILE"      : "uap_ipq40xx_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-AC-Lite":{
+      "INDEX"       : 6,
+      "NAME"        : "UAP-AC-Lite",
+      "BOARDID"     : "e517",
+      "BOMREV"      : "113-00391",
+      "DESC"        : "UniFi AC Lite",
+      "FILE"        : "uap_qca9563_factory.py",
+      "T1FILE"      : "uap_qca9563_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-AC-LR":{
+      "INDEX"       : 7,
+      "NAME"        : "UAP-AC-LR",
+      "BOARDID"     : "e527",
+      "BOMREV"      : "113-00392",
+      "DESC"        : "UniFi AC Long Range",
+      "FILE"        : "uap_qca9563_factory.py",
+      "T1FILE"      : "uap_qca9563_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UAP-AC-PRO":{
+      "INDEX"       : 8,
+      "NAME"        : "UAP-AC-PRO",
+      "BOARDID"     : "e537",
+      "BOMREV"      : "113-00390",
+      "DESC"        : "UniFi AC PRO",
+      "FILE"        : "uap_qca9563_factory.py",
+      "T1FILE"      : "uap_qca9563_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "UBB-XG":{
+      "INDEX"       : 9,
+      "NAME"        : "UBB-XG",
+      "BOARDID"     : "dd12",
+      "BOMREV"      : "113-00958",
+      "DESC"        : "UniFi AP Building Bridge XG",
+      "FILE"        : "uap_ls104x_factory.py",
+      "T1FILE"      : "uap_ls104x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-FLEX-EU":{
+      "INDEX"       : 10,
+      "NAME"        : "ULTE-FLEX-EU",
+      "BOARDID"     : "e614",
+      "BOMREV"      : "113-00830",
+      "DESC"        : "UniFi LTE FLEX EU",
+      "FILE"        : "uap_qca956x_factory2.py",
+      "T1FILE"      : "uap_qca956x_mfg2.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-FLEX-US":{
+      "INDEX"       : 11,
+      "NAME"        : "ULTE-FLEX-US",
+      "BOARDID"     : "e615",
+      "BOMREV"      : "113-00758",
+      "DESC"        : "UniFi LTE FLEX US",
+      "FILE"        : "uap_qca956x_factory2.py",
+      "T1FILE"      : "uap_qca956x_mfg2.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE":{
+      "INDEX"       : 12,
+      "NAME"        : "ULTE",
+      "BOARDID"     : "e611",
+      "BOMREV"      : "113-02525",
+      "DESC"        : "UniFi LTE",
+      "FILE"        : "uap_qca956x_factory.py",
+      "T1FILE"      : "uap_qca956x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-Backup-Pro-EU":{
+      "INDEX"       : 13,
+      "NAME"        : "ULTE-Backup-Pro-EU",
+      "BOARDID"     : "e612",
+      "BOMREV"      : "113-00718",
+      "DESC"        : "UniFi LTE Pro EU",
+      "FILE"        : "uap_qca956x_factory.py",
+      "T1FILE"      : "uap_qca956x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+
+    "ULTE-Backup-Pro-US":{
+      "INDEX"       : 14,
+      "NAME"        : "ULTE-Backup-Pro-US",
+      "BOARDID"     : "e613",
+      "BOMREV"      : "113-00788",
+      "DESC"        : "UniFi LTE Pro US",
+      "FILE"        : "uap_qca956x_factory.py",
+      "T1FILE"      : "uap_qca956x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    }
+
+  },
+
+  "UniFiSG":
+  {
+  },
+
+  "Amplifi":
+  {
+    "AFi-6-Extender": {
       "INDEX": 0,
-      "NAME": "U7-Enterprise",
-      "BOARDID": "a681",
-      "BOMREV": "113-01272",
-      "DESC": "UniFi AP7 Enterprise",
-      "FILE": "u7_ipq5322_bspfactory.py",
-      "T1FILE": "u7_ipq5322_mfg.py",
+      "NAME": "AFi-6-Extender",
+      "BOARDID": "a666",
+      "BOMREV": "113-01136",
+      "DESC": "Amplifi 6 Extender",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-6-Router": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Router",
+      "BOARDID": "a665",
+      "BOMREV": "113-01135",
+      "DESC": "Amplifi 6 Router",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-100W-USB-C": {
+      "INDEX": 0,
+      "NAME": "AFi-100W-USB-C",
+      "BOARDID": "da20",
+      "BOMREV": "113-01039",
+      "DESC": "Amplifi 100W USB-C",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-6-Instant":{
+      "INDEX"       : 0,
+      "NAME"        : "AFi-6-Instant",
+      "BOARDID"     : "a616",
+      "BOMREV"      : "113-00775",
+      "DESC"        : "Amplifi Instant6",
+      "FILE"        : "afi_mt7621_bspfactory.py",
+      "T1FILE"      : "afi_mt7621_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "AFi-6-Instant": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Instant",
+      "BOARDID": "a641",
+      "BOMREV": "113-01135",
+      "DESC": "Amplifi 6 Instant",
+      "FILE": "afi_mt7621_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-6-Mesh": {
+      "INDEX": 0,
+      "NAME": "AFi-6-Mesh",
+      "BOARDID": "a639",
+      "BOMREV": "113-01136",
+      "DESC": "Amplifi 6 Mesh",
+      "FILE": "afi_mt7621_bspfactory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0004",
+      "SW_ID": "0601"
+    },
+    "AFi-ALN-R":{
+      "INDEX"       : 0,
+      "NAME"        : "AFi-ALN-R",
+      "BOARDID"     : "da11",
+      "BOMREV"      : "113-01605",
+      "DESC"        : "Amplifi Alien Router",
+      "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
+      "QRCHECK"     : "False"
+    },
+
+    "AFi-ALN-R-SKU-CHANGE":{
+      "INDEX"       : 1,
+      "NAME"        : "AFi-ALN-R",
+      "BOARDID"     : "da11",
+      "BOMREV"      : "113-01605",
+      "DESC"        : "Amplifi Alien Router SKU change",
+      "FILE"        : "afi_ipq807x_sku_change.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+    "AFi-ALN-P":{
+      "INDEX"       : 2,
+      "NAME"        : "AFi-ALN-P",
+      "BOARDID"     : "da12",
+      "BOMREV"      : "113-00657",
+      "DESC"        : "Amplifi Alien Mesh Point",
+      "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
+      "QRCHECK"     : "False"
+    },
+
+    "AFi-ALN-P-SKU-CHANGE":{
+      "INDEX"       : 3,
+      "NAME"        : "AFi-ALN-P",
+      "BOARDID"     : "da12",
+      "BOMREV"      : "113-00657",
+      "DESC"        : "Amplifi Alien Mesh Point SKU change",
+      "FILE"        : "afi_ipq807x_sku_change.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False"
+    },
+
+      "AFi-ALN-R-EU":{
+      "INDEX"       : 4,
+      "NAME"        : "AFi-ALN-R-EU",
+      "BOARDID"     : "da13",
+      "BOMREV"      : "113-01905",
+      "DESC"        : "Amplifi ALien Router EU",
+      "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
+      "QRCHECK"     : "False"
+    },
+
+      "AFi-ALN-P-EU":{
+      "INDEX"       : 5,
+      "NAME"        : "AFi-ALN-P-EU",
+      "BOARDID"     : "da14",
+      "BOMREV"      : "113-00957",
+      "DESC"        : "Amplifi ALien Mesh Point EU",
+      "FILE"        : "afi_ipq807x_factory.py",
+      "T1FILE"      : "afi_ipq807x_mfg.py",
+      "QRCHECK"     : "False"
+    },
+    "AFi-UPS": {
+     "INDEX": 0,
+     "NAME": "AFi-UPS",
+     "BOARDID": "ed14",
+     "BOMREV": "113-01033",
+     "DESC": "Amplifi UPS",
+     "FILE": "afi_mt7628_factory.py",
+     "T1FILE": "afi_mt7628_mfg.py",
+     "QRCHECK": "True",
+     "FCD_ID": "0011",
+     "SW_ID": "1c01"
+   }
+
+  },
+
+  "AirFiber":
+  {
+    "LTU-Pro":{
+      "INDEX"       : 0,
+      "NAME"        : "LTU-Pro",
+      "BOARDID"     : "ae06",
+      "BOMREV"      : "113-00680",
+      "DESC"        : "AirFiber LTU-LR",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "LTU-Lite":{
+      "INDEX"       : 1,
+      "NAME"        : "LTU-Lite",
+      "BOARDID"     : "ae08",
+      "BOMREV"      : "113-00708",
+      "DESC"        : "AirFiber LTU-Lite",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60":{
+      "INDEX"       : 2,
+      "NAME"        : "AF60",
+      "BOARDID"     : "dc9b",
+      "BOMREV"      : "113-00720",
+      "DESC"        : "AirFiber 60",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "af_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "LTU-LR":{
+      "INDEX"       : 3,
+      "NAME"        : "LTU-LR",
+      "BOARDID"     : "ae0b",
+      "BOMREV"      : "113-00727",
+      "DESC"        : "AirFiber LTU-LR",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60-LR":{
+      "INDEX"       : 4,
+      "NAME"        : "AF60-LR",
+      "BOARDID"     : "dc9e",
+      "BOMREV"      : "113-00738",
+      "DESC"        : "AirFiber 60 LR",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "af_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60-XG":{
+      "INDEX"       : 5,
+      "NAME"        : "AF60-XG",
+      "BOARDID"     : "dd11",
+      "BOMREV"      : "113-00809",
+      "DESC"        : "AirFiber 60 XG",
+      "FILE"        : "af_ls104x_factory.py",
+      "T1FILE"      : "af_ls104x_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "AF60-HD":{
+      "INDEX"       : 6,
+      "NAME"        : "AF60-HD",
+      "BOARDID"     : "dd13",
+      "BOMREV"      : "113-00871",
+      "DESC"        : "AirFiber 60 HD",
+      "FILE"        : "af_ls104x_factory.py",
+      "T1FILE"      : "af_ls104x_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "WaveBridge":{
+      "INDEX"       : 7,
+      "NAME"        : "WaveBridge",
+      "BOARDID"     : "ac11",
+      "BOMREV"      : "113-00719",
+      "DESC"        : "AirFiber Wave Bridge",
+      "FILE"        : "af_ipq80xx_factory.py",
+      "T1FILE"      : "af_ipq80xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "WaveAP":{
+      "INDEX"       : 8,
+      "NAME"        : "WaveAP",
+      "BOARDID"     : "dc9f",
+      "BOMREV"      : "113-00953",
+      "DESC"        : "Wave AP",
+      "FILE"        : "af_ipq40xx_factory.py",
+      "T1FILE"      : "af_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "LTU-XR":{
+      "INDEX"       : 9,
+      "NAME"        : "LTU-XR",
+      "BOARDID"     : "ae11",
+      "BOMREV"      : "113-00966",
+      "DESC"        : "AirFiber LTU-XR",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    },
+
+    "LTU-FEED":{
+      "INDEX"       : 10,
+      "NAME"        : "LTU-FEED",
+      "BOARDID"     : "ae10",
+      "BOMREV"      : "113-00927",
+      "DESC"        : "AirFiber LTU-FEED",
+      "FILE"        : "af_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000a",
+      "SW_ID"       : "1001"
+    }
+  },
+
+  "UniFiNVR":
+  {
+    "UNVR-4":{
+      "INDEX"       : 1,
+      "NAME"        : "UNVR-4",
+      "BOARDID"     : "ea1a",
+      "BOMREV"      : "113-03192",
+      "DESC"        : "UniFi NVR",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
+    },
+
+    "UNVR-PRO":{
+      "INDEX"       : 2,
+      "NAME"        : "UNVR-PRO",
+      "BOARDID"     : "ea20",
+      "BOMREV"      : "113-03137",
+      "DESC"        : "UniFi Protect NVR Pro",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
+    },
+
+
+    "UNVR-AI":{
+      "INDEX"       : 3,
+      "NAME"        : "UNVR-PRO",
+      "BOARDID"     : "ea21",
+      "BOMREV"      : "113-03026",
+      "DESC"        : "UniFi Protect NVR AI",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
+    },
+
+    "UNVR-HD":{
+      "INDEX"       : 4,
+      "NAME"        : "UNVR-HD",
+      "BOARDID"     : "ea30",
+      "BOMREV"      : "113-03298",
+      "DESC"        : "UniFi Protect NVR HD",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "0801"
+    }
+  },
+
+  "UniFiTalk":
+  {
+    "UT-PHONE-FLEX":{
+      "INDEX"       : 0,
+      "NAME"        : "UT-PHONE-FLEX",
+      "BOARDID"     : "ef0d",
+      "BOMREV"      : "113-02808",
+      "DESC"        : "UniFi Talk Phone FLEX",
+      "FILE"        : "ut_dvf9918_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-ATA":{
+      "INDEX"       : 1,
+      "NAME"        : "UT-ATA",
+      "BOARDID"     : "ef0f",
+      "BOMREV"      : "113-03808",
+      "DESC"        : "UniFi Talk Analog Telephone Adapter",
+      "FILE"        : "ut_dvf9918_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-CONF-BOX":{
+      "INDEX"       : 2,
+      "NAME"        : "UT-CONF-BOX",
+      "BOARDID"     : "ef10",
+      "BOMREV"      : "113-03028",
+      "DESC"        : "UniFi Talk conference box",
+      "FILE"        : "uvp_qcs603_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-CONFERENCE":{
+      "INDEX"       : 3,
+      "NAME"        : "UT-CONFERENCE",
+      "BOARDID"     : "ef11",
+      "BOMREV"      : "113-03038",
+      "DESC"        : "UniFi Talk conference",
+      "FILE"        : "uvp_qcs403_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-PHONE-TOUCH":{
+      "INDEX"       : 4,
+      "NAME"        : "UT-PHONE-TOUCH",
+      "BOARDID"     : "ef82",
+      "BOMREV"      : "113-02150",
+      "DESC"        : "UniFi Talk IP PHOME",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    },
+
+    "UT-PHONE-TOUCHMAX":{
+      "INDEX"       : 4,
+      "NAME"        : "UT-PHONE-TOUCHMAX",
+      "BOARDID"     : "ef0e",
+      "BOMREV"      : "113-02950",
+      "DESC"        : "UniFi Talk IP PHOMEMAX",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0007",
+      "SW_ID"       : "0a01"
+    }
+  },
+
+  "Connect":
+  {
+    "UC-Plug-US":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Plug-US",
+      "BOARDID"     : "ec5a",
+      "BOMREV"      : "113-00998",
+      "DESC"        : "UniFi Connect Plug US",
+      "FILE"        : "uc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+    "UC-Plug-EU":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Plug-EU",
+      "BOARDID"     : "ec5b",
+      "BOMREV"      : "113-01026",
+      "DESC"        : "UniFi Connect Plug EU",
+      "FILE"        : "uc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+    "UC-Wall-Outlet-US": {
+      "INDEX": 0,
+      "NAME": "UC-Wall-Outlet-US",
+      "BOARDID": "ec5c",
+      "BOMREV": "113-01013",
+      "DESC": "UniFi Connect Wall Outlet US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
+    "UC-Outlet-US": {
+      "INDEX": 0,
+      "NAME": "UC-Outlet-US",
+      "BOARDID": "ec5d",
+      "BOMREV": "113-01020",
+      "DESC": "UniFi Connect Outlet US",
+      "FILE": "uc_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
+    "UC-Thermostat":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-Thermostat",
+      "BOARDID"     : "ec47",
+      "BOMREV"      : "113-03232",
+      "DESC"        : "UniFi Connect Thermostat",
+      "FILE"        : "ufc_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+    "UC-DISPLAY-7":{
+      "INDEX"       : 0,
+      "NAME"        : "UC-DISPLAY-7",
+      "BOARDID"     : "ef80",
+      "BOMREV"      : "113-03168",
+      "DESC"        : "UniFi Connect Panel 7",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+
+    "UC-DISPLAY-13":{
+      "INDEX"       : 1,
+      "NAME"        : "UC-DISPLAY-13",
+      "BOARDID"     : "ef81",
+      "BOMREV"      : "113-03182",
+      "DESC"        : "UniFi Connect Panel 13",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+    },
+
+    "UC-DISPLAY-21": {
+      "INDEX": 0,
+      "NAME": "UC-DISPLAY-21",
+      "BOARDID": "ef83",
+      "BOMREV": "113-03287",
+      "DESC": "UniFi Connect Panel 21",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
+
+    "UC-DISPLAY-27": {
+      "INDEX": 0,
+      "NAME": "UC-DISPLAY-27",
+      "BOARDID": "ef84",
+      "BOMREV": "113-03256",
+      "DESC": "UniFi Connect Panel 27",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0011",
+      "SW_ID": "1c01"
+    },
+
+    "LVDU-1":{
+      "INDEX"       : 0,
+      "NAME"        : "LVDU-1",
+      "BOARDID"     : "ec48",
+      "BOMREV"      : "113-03435",
+      "DESC"        : "Low Voltage Distribution Unit 1 Port",
+      "FILE"        : "connect_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+     },
+
+    "LVDU-4":{
+      "INDEX"       : 4,
+      "NAME"        : "LVDU-4",
+      "BOARDID"     : "ec3d",
+      "BOMREV"      : "113-03076",
+      "DESC"        : "Low Voltage Distribution Unit 4 Ports",
+      "FILE"        : "uap_qca953x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+     },
+
+     "LVDU-24":{
+      "INDEX"       : 5,
+      "NAME"        : "LVDU-24",
+      "BOARDID"     : "ec41",
+      "BOMREV"      : "113-03119",
+      "DESC"        : "Low Voltage Distribution Unit 24 Ports",
+      "FILE"        : "uap_qca953x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0011",
+      "SW_ID"       : "1c01"
+     }
+  },
+
+  "airMAX":
+  {
+    "GBE":{
+      "INDEX"       : 0,
+      "NAME"        : "GBE",
+      "BOARDID"     : "dc9a",
+      "BOMREV"      : "113-00714",
+      "DESC"        : "GBE",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    },
+
+    "GBE-LR":{
+      "INDEX"       : 1,
+      "NAME"        : "GBE-LR",
+      "BOARDID"     : "dc99",
+      "BOMREV"      : "113-00709",
+      "DESC"        : "GBE",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    },
+
+    "PrismAP":{
+      "INDEX"       : 2,
+      "NAME"        : "PrismAP",
+      "BOARDID"     : "dc97",
+      "BOMREV"      : "113-00697",
+      "DESC"        : "PrismStation AP",
+      "FILE"        : "am_qca955x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    },
+
+    "GBE-AP":{
+      "INDEX"       : 3,
+      "NAME"        : "GBE-AP",
+      "BOARDID"     : "dca0",
+      "BOMREV"      : "113-00825",
+      "DESC"        : "GBE AP",
+      "FILE"        : "am_ipq40xx_factory.py",
+      "T1FILE"      : "am_ipq40xx_mfg.py",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1201"
+    },
+
+    "60G-LAS":{
+      "INDEX"       : 4,
+      "NAME"        : "60G-LAS",
+      "BOARDID"     : "a918",
+      "BOMREV"      : "113-00717",
+      "DESC"        : "Link Assist Sensor",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000b",
+      "SW_ID"       : "1203"
+    },
+
+    "LBE-5AC": {
+      "NAME": "LBE-5AC",
+      "BOARDID": "e7f9",
+      "BOMREV": "113-00497",
+      "DESC": "LiteBeam 5AC",
+      "FILE": "am_ar9342_factory.py",
+      "T1FILE": "am_ar9342_mfg.py",
+      "QRCHECK": "False",
+      "FCD_ID": "000b",
+      "SW_ID": "1202"
+    }
+  },
+
+  "UniFiProtect":
+  {
+    "UFP-SENSE":{
+      "INDEX"       : 0,
+      "NAME"        : "UFP-SENSE",
+      "BOARDID"     : "a912",
+      "BOMREV"      : "113-02823",
+      "DESC"        : "UniFi Protect Sensor",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1601"
+    },
+
+    "UFP-LOCK-R":{
+      "INDEX"       : 1,
+      "NAME"        : "UFP-LOCK-R",
+      "BOARDID"     : "a911",
+      "BOMREV"      : "113-02765",
+      "DESC"        : "UniFi Protect Doorlock",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1602"
+    },
+
+    "UFP-LOCK-R-HK":{
+      "INDEX"       : 2,
+      "NAME"        : "UFP-LOCK-R",
+      "BOARDID"     : "a941",
+      "BOMREV"      : "113-02765",
+      "DESC"        : "UniFi Protect Doorlock (HomeKit)",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1602"
+    },
+
+    "ULM":{
+      "INDEX"       : 3,
+      "NAME"        : "ULM",
+      "BOARDID"     : "a919",
+      "BOMREV"      : "113-03025",
+      "DESC"        : "UniFi BLE Location",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1601"
+    },
+
+    "UFP-TAG-COMBO":{
+      "INDEX"       : 4,
+      "NAME"        : "UFP-TAG-COMBO",
+      "BOARDID"     : "a913",
+      "BOMREV"      : "113-02973",
+      "DESC"        : "UniFi Protect Bluetooth Tag",
+      "FILE"        : "ufp_tag_combo_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UFP-CARD-COMBO":{
+      "INDEX"       : 5,
+      "NAME"        : "UFP-CARD-COMBO",
+      "BOARDID"     : "a914",
+      "BOMREV"      : "113-03089",
+      "DESC"        : "UniFi Protect Bluetooth Card",
+      "FILE"        : "ufp_tag_combo_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UP-GARAGE":{
+      "INDEX"       : 6,
+      "NAME"        : "UP-GARAGE",
+      "BOARDID"     : "a915",
+      "BOMREV"      : "113-03452",
+      "DESC"        : "UniFi Protect Bluetooth Card",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UFP-RADAR":{
+      "INDEX"       : 7,
+      "NAME"        : "UFP-RADAR",
+      "BOARDID"     : "dcb0",
+      "BOMREV"      : "113-00806",
+      "DESC"        : "UniFi Protect Radar",
+      "FILE"        : "ufp_uboot_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+
+    "UP-KEYPAD": {
+      "INDEX": 0,
+      "NAME": "UP-KEYPAD",
+      "BOARDID": "a920",
+      "BOMREV": "113-03325",
+      "DESC": "UniFi Protect Keypad",
+      "FILE": "up_a920_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "000d",
+      "SW_ID": "1601"
+    },
+
+    "UP-Chime":{
+      "INDEX"       : 7,
+      "NAME"        : "UP-Chime",
+      "BOARDID"     : "ab12",
+      "BOMREV"      : "113-03302",
+      "DESC"        : "UniFi Protect Chime",
+      "FILE"        : "ufp_esp32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000d",
+      "SW_ID"       : "1604"
+    },
+    "UP-MHS": {
+      "INDEX": 8,
+      "NAME": "UP-MHS",
+      "BOARDID": "ec70",
+      "BOMREV": "113-03274",
+      "DESC": "UniFi Protect Managed Health Scanner",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03"
+    }
+  },
+
+  "USP":
+  {
+    "USP-Plug":{
+      "INDEX"       : 0,
+      "NAME"        : "USP-Plug",
+      "BOARDID"     : "ee73",
+      "BOMREV"      : "113-00731",
+      "DESC"        : "UniFi smart plug",
+      "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP3":{
+      "INDEX"       : 1,
+      "NAME"        : "USP3",
+      "BOARDID"     : "e643",
+      "BOMREV"      : "113-00364",
+      "DESC"        : "Unifi Smart Plug 3",
+      "FILE"        : "unifi_ar9331_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP8":{
+      "INDEX"       : 2,
+      "NAME"        : "USP8",
+      "BOARDID"     : "e648",
+      "BOMREV"      : "113-00365",
+      "DESC"        : "Unifi Smart Plug 8",
+      "FILE"        : "unifi_ar9331_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP-STRIP_777":{
+      "INDEX"       : 3,
+      "NAME"        : "USP-STRIP_777",
+      "BOARDID"     : "ee74",
+      "BOMREV"      : "113-00777",
+      "DESC"        : "Unifi Smart Power STRIP",
+      "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP-STRIP_896":{
+      "INDEX"       : 4,
+      "NAME"        : "USP-STRIP_896",
+      "BOARDID"     : "ee74",
+      "BOMREV"      : "113-00896",
+      "DESC"        : "Unifi Smart Power STRIP",
+      "FILE"        : "usp_esp8266_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP-PDU-PRO":{
+      "INDEX"       : 5,
+      "NAME"        : "USP-PDU-PRO",
+      "BOARDID"     : "ed12",
+      "BOMREV"      : "113-00986",
+      "DESC"        : "UniFi Smart Power PDU PRO",
+      "FILE"        : "usp_mt7628_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000e",
+      "SW_ID"       : "1801"
+    },
+
+    "USP-PRO-PDU-HD":{
+      "INDEX": 0,
+      "NAME": "USP-PRO-PDU-HD",
+      "BOARDID": "ed15",
+      "BOMREV": "113-01036",
+      "DESC": "UniFi Smart Power PRO PDU HD",
+      "FILE": "usp_mt7628_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000e",
+      "SW_ID": "1801"
+    },
+
+    "USP-RPS-PRO":{
+      "INDEX"       : 6,
+      "NAME"        : "USP-RPS-PRO",
+      "BOARDID"     : "ed13",
+      "BOMREV"      : "113-03086",
+      "DESC"        : "UniFi SmartPower RPS PRO",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USP-RPS":{
+      "INDEX"       : 7,
+      "NAME"        : "USP-RPS",
+      "BOARDID"     : "ed11",
+      "BOMREV"      : "113-02781",
+      "DESC"        : "UniFi SmartPower RPS PRO",
+      "FILE"        : "us_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    },
+
+    "USP-Battery":{
+      "INDEX"       : 8,
+      "NAME"        : "USP-Battery",
+      "BOARDID"     : "ee76",
+      "BOMREV"      : "113-03491",
+      "DESC"        : "UniFi Smart Battery",
+      "FILE"        : "ufp_efr32_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0002",
+      "SW_ID"       : "0201"
+    }
+
+  },
+
+  "UniFiVideo":
+  {
+    "UVC-G4PRO":{
+      "INDEX"       : 0,
+      "NAME"        : "UVC-G4PRO",
+      "BOARDID"     : "a563",
+      "BOMREV"      : "113-02574",
+      "DESC"        : "UVC G4 Pro",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3BATTERY":{
+      "INDEX"       : 1,
+      "NAME"        : "UVC-G3BATTERY",
+      "BOARDID"     : "a580",
+      "BOMREV"      : "113-02692",
+      "DESC"        : "UVC G3 Battery",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4PTZ":{
+      "INDEX"       : 2,
+      "NAME"        : "UVC-G4PTZ",
+      "BOARDID"     : "a564",
+      "BOMREV"      : "113-02967",
+      "DESC"        : "UVC G4 PTZ",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4DOORBELL":{
+      "INDEX"       : 3,
+      "NAME"        : "UVC-G4DOORBELL",
+      "BOARDID"     : "a571",
+      "BOMREV"      : "113-02712",
+      "DESC"        : "UVC G4 Doorbell",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4BULLET":{
+      "INDEX"       : 4,
+      "NAME"        : "UVC-G4BULLET",
+      "BOARDID"     : "a572",
+      "BOMREV"      : "113-02987",
+      "DESC"        : "UVC G4 Bullet",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4DOME":{
+      "INDEX"       : 5,
+      "NAME"        : "UVC-G4DOME",
+      "BOARDID"     : "a573",
+      "BOMREV"      : "113-02998",
+      "DESC"        : "UVC G4 Dome",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4DOORBELLPRO":{
+      "INDEX"       : 6,
+      "NAME"        : "UVC-G4DOORBELLPRO",
+      "BOARDID"     : "a574",
+      "BOMREV"      : "113-03194",
+      "DESC"        : "UVC G4 Doorbell Pro",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-AI360":{
+      "INDEX"       : 7,
+      "NAME"        : "UVC-AI360",
+      "BOARDID"     : "a5a0",
+      "BOMREV"      : "113-03268",
+      "DESC"        : "UVC AI 360",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3MINI":{
+      "INDEX"       : 8,
+      "NAME"        : "UVC-G3MINI",
+      "BOARDID"     : "a590",
+      "BOMREV"      : "113-03132",
+      "DESC"        : "UVC G3 Mini",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4INS":{
+      "INDEX"       : 9,
+      "NAME"        : "UVC-G4INS",
+      "BOARDID"     : "a595",
+      "BOMREV"      : "113-03346",
+      "DESC"        : "UVC G4 Instant",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-AIBULLET":{
+      "INDEX"       : 10,
+      "NAME"        : "UVC-AIBULLET",
+      "BOARDID"     : "a5a2",
+      "BOMREV"      : "113-03388",
+      "DESC"        : "UVC AI Bullet",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G3FLEX": {
+      "INDEX"       : 11,
+      "NAME"        : "UVC-G3FLEX",
+      "BOARDID"     : "a534",
+      "BOMREV"      : "113-02591",
+      "DESC"        : "UVC G3 Flex",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UVC-G4FLOODLIGHTBATTERY": {
+      "INDEX": 12,
+      "NAME": "UVC-G4FLOODLIGHTBATTERY",
+      "BOARDID": "a596",
+      "BOMREV": "113-03455",
+      "DESC": "UVC G4 FloodLight Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+
+    "UVC-G4DOORBELLBATTERY": {
+      "INDEX": 13,
+      "NAME": "UVC-G4DOORBELLBATTERY",
+      "BOARDID": "a597",
+      "BOMREV": "113-03465",
+      "DESC": "UVC G4 Doorbell Battery",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+      "UVC-G5BULLET": {
+      "INDEX": 15,
+      "NAME": "UVC-G5GBULLET",
+      "BOARDID": "a591",
+      "BOMREV": "113-03815",
+      "DESC": "UVC G5 Bullet",
+      "FILE": "uvc_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5DOME": {
+      "INDEX": 16,
+      "NAME": "UVC-G5DOME",
+      "BOARDID": "a592",
+      "BOMREV": "113-03910",
+      "DESC": "UVC G5 Dome",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5FLEX": {
+      "INDEX": 17,
+      "NAME": "UVC-G5FLEX",
+      "BOARDID": "a593",
+      "BOMREV": "113-03911",
+      "DESC": "UVC G5 Flex",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G4DOORBELLPROPOE":{
+      "INDEX"       : 18,
+      "NAME"        : "UVC-G4DOORBELLPROPOE",
+      "BOARDID"     : "a575",
+      "BOMREV"      : "113-03849",
+      "DESC"        : "UVC G4 Doorbell Pro POE",
+      "FILE"        : "uvc_factory_camera2.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UNIFI-WAVEROVERCAMERA":{
+      "INDEX"       : 19,
+      "NAME"        : "UNIFI-WAVEROVERCAMERA",
+      "BOARDID"     : "a594",
+      "BOMREV"      : "113-04000",
+      "DESC"        : "UniFi Wave Rover Camera",
+      "FILE"        : "uvc_factory_camera2.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-AIPRO": {
+      "INDEX": 20,
+      "NAME": "UVC-AIPRO",
+      "BOARDID": "a5a4",
+      "BOMREV": "113-03821",
+      "DESC": "UVC AI Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5PRO": {
+      "INDEX": 21,
+      "NAME": "UVC-G5PRO",
+      "BOARDID": "a598",
+      "BOMREV": "113-03933",
+      "DESC": "UVC G5 Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5PRO-MP": {
+      "INDEX": 22,
+      "NAME": "UVC-G5PRO-MP",
+      "BOARDID": "a598",
+      "BOMREV": "113-04055",
+      "DESC": "UVC G5 Pro (MP ver.)",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    },
+    "UVC-G5TURRETPRO": {
+      "INDEX": 23,
+      "NAME": "UVC-G5TURRETPRO",
+      "BOARDID": "a59a",
+      "BOMREV": "113-04340",
+      "DESC": "UVC G5 Turret Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
+    }
+  },
+
+  "UbiquitiNMS":
+  {
+    "UNMS-S-LITE":{
+      "INDEX"       : 1,
+      "NAME"        : "UNMS-S-LITE",
+      "BOARDID"     : "eed0",
+      "BOMREV"      : "113-00817",
+      "DESC"        : "Ubiquiti Network Management System Switch Lite",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-LTE-US":{
+      "INDEX"       : 3,
+      "NAME"        : "UISP-LTE-US",
+      "BOARDID"     : "dca2",
+      "BOMREV"      : "113-00782",
+      "DESC"        : "Ubiquiti Network Management System LTE US version",
+      "FILE"        : "unms_qca9563_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-LTE-EU":{
+      "INDEX"       : 4,
+      "NAME"        : "UISP-LTE-EU",
+      "BOARDID"     : "dca3",
+      "BOMREV"      : "113-00832",
+      "DESC"        : "Ubiquiti Network Management System LTE EU version",
+      "FILE"        : "unms_qca9563_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-PRO-00818":{
+      "INDEX"       : 5,
+      "NAME"        : "UISP-S-PRO",
+      "BOARDID"     : "eed1",
+      "BOMREV"      : "113-00818",
+      "DESC"        : "Ubiquiti Network Management System Switch PRO",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-PRO-01209":{
+      "INDEX"       : 5,
+      "NAME"        : "UISP-S-PRO",
+      "BOARDID"     : "eed1",
+      "BOMREV"      : "113-01209",
+      "DESC"        : "Ubiquiti Network Management System Switch PRO",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-LITE":{
+      "INDEX"       : 6,
+      "NAME"        : "UISP-S-LITE",
+      "BOARDID"     : "ee50",
+      "BOMREV"      : "113-00900",
+      "DESC"        : "Ubiquiti Network Management System Switch Lite",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-O-LITE":{
+      "INDEX"       : 7,
+      "NAME"        : "UISP-O-LITE",
+      "BOARDID"     : "ee6c",
+      "BOMREV"      : "113-00819",
+      "DESC"        : "Ubiquiti Network Management System Outdoor Lite",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+     },
+
+    "UISP-CONSOLE":{
+      "INDEX"       : 9,
+      "NAME"        : "UISP-CONSOLE",
+      "BOARDID"     : "ee6a",
+      "BOMREV"      : "113-00973",
+      "DESC"        : "Ubiquiti Network Management System Router Console",
+      "FILE"        : "unms_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-O-PRO":{
+      "INDEX"       : 10,
+      "NAME"        : "UISP-O-PRO",
+      "BOARDID"     : "eed3",
+      "BOMREV"      : "113-00820",
+      "DESC"        : "UISP outdoor PRO",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-00989":{
+      "INDEX"       : 11,
+      "NAME"        : "UISP-R",
+      "BOARDID"     : "ee6e",
+      "BOMREV"      : "113-00989",
+      "DESC"        : "Ubiquiti Network Management System Router",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-01262":{
+      "INDEX"       : 11,
+      "NAME"        : "UISP-R",
+      "BOARDID"     : "ee6e",
+      "BOMREV"      : "113-01262",
+      "DESC"        : "Ubiquiti Network Management System Router",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S": {
+      "INDEX": 0,
+      "NAME": "UISP-S",
+      "BOARDID": "ee6f",
+      "BOMREV": "113-00988",
+      "DESC": "Ubiquiti Network Management System Switch",
+      "FILE": "unms_rtl838x_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "000f",
+      "SW_ID": "1a01"
+    },
+
+    "UISP-P-LITE":{
+      "INDEX"       : 13,
+      "NAME"        : "UISP-P-LITE",
+      "BOARDID"     : "eefa",
+      "BOMREV"      : "113-00821",
+      "DESC"        : "Ubiquiti Internet Service Provider Power Lite",
+      "FILE"        : "uisp_ar933x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-P",
+      "BOARDID"     : "ee5a",
+      "BOMREV"      : "113-01103",
+      "DESC"        : "Ubiquiti Internet Service Provider Power",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-PRO-00822":{
+      "INDEX"       : 15,
+      "NAME"        : "UISP-P-PRO",
+      "BOARDID"     : "ee5b",
+      "BOMREV"      : "113-00822",
+      "DESC"        : "Ubiquiti Internet Service Provider Power PRO",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-PRO-01216":{
+      "INDEX"       : 15,
+      "NAME"        : "UISP-P-PRO",
+      "BOARDID"     : "ee5b",
+      "BOMREV"      : "113-01216",
+      "DESC"        : "Ubiquiti Internet Service Provider Power PRO",
+      "FILE"        : "uisp_qca9531_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-PRO-01061":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-R-PRO",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-01061",
+      "DESC"        : "Ubiquiti Network Management System Router PRO",
+      "FILE"        : "uisp_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-PRO-01265":{
+      "INDEX"       : 14,
+      "NAME"        : "UISP-R-PRO",
+      "BOARDID"     : "ee6d",
+      "BOMREV"      : "113-01265",
+      "DESC"        : "Ubiquiti Network Management System Router PRO",
+      "FILE"        : "uisp_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-P-UPS":{
+      "INDEX"       : 16,
+      "NAME"        : "UISP-P-UPS",
+      "BOARDID"     : "eed6",
+      "BOMREV"      : "113-01123",
+      "DESC"        : "UISP Power UPS",
+      "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-Plus":{
+      "INDEX"       : 17,
+      "NAME"        : "UISP-S-Plus",
+      "BOARDID"     : "ee7c",
+      "BOMREV"      : "113-01223",
+      "DESC"        : "UISP S Plus",
+      "FILE"        : "uisp_mrvl98dx25xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-Plus":{
+      "INDEX"       : 18,
+      "NAME"        : "UISP-R-Plus",
+      "BOARDID"     : "ee7a",
+      "BOMREV"      : "113-01224",
+      "DESC"        : "UISP R Plus",
+      "FILE"        : "uisp_mrvlcn913x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    }
+  },
+
+  "UniFiServer":
+  {
+    "USRV-TT":{
+      "INDEX"       : 0,
+      "NAME"        : "USRV-TT",
+      "BOARDID"     : "1200",
+      "BOMREV"      : "113-00732",
+      "DESC"        : "Ubiquiti Server",
+      "FILE"        : "unifi_ast2500_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0010",
+      "SW_ID"       : "1b01"
+     }
+  },
+
+  "UniFiAccess":
+  {
+    "UA-PRO-BL":{
+      "INDEX"       : 0,
+      "NAME"        : "UA-PRO-BL",
+      "BOARDID"     : "ec60",
+      "BOMREV"      : "113-02966",
+      "DESC"        : "UniFi PRO Backlight",
+      "FILE"        : "connect_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+     },
+
+    "UA-GATE":{
+      "INDEX"       : 1,
+      "NAME"        : "UA-GATE",
+      "BOARDID"     : "ec46",
+      "BOMREV"      : "113-03329",
+      "DESC"        : "UniFi Access Gate",
+      "FILE"        : "ua_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+    },
+
+    "UA-ELEVATOR":{
+      "INDEX"       : 2,
+      "NAME"        : "UA-ELEVATOR",
+      "BOARDID"     : "ec3b",
+      "BOMREV"      : "113-03003",
+      "DESC"        : "UniFi Access Elevator",
+      "FILE"        : "ua_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0012",
+      "SW_ID"       : "1d01"
+    },
+
+    "UA-HOTEL":{
+      "INDEX"       : 3,
+      "NAME"        : "UA-HOTEL",
+      "BOARDID"     : "ec40",
+      "BOMREV"      : "113-02940",
+      "DESC"        : "UA Hotel Lock",
+      "FILE"        : "ua_psoc6_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0001",
+      "SW_ID"       : "0001"
+    },
+
+    "UA-Thermal-Scan":{
+      "INDEX"       : 10,
+      "NAME"        : "UA-Thermal-Scan",
+      "BOARDID"     : "ec70",
+      "BOMREV"      : "113-03274",
+      "DESC"        : "UniFi Thermal Scan",
+      "FILE"        : "uvc_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0009",
+      "SW_ID"       : "0e03"
+    },
+
+    "UA-ELEVATOR-EXTENDER-TX": {
+      "INDEX": 11,
+      "NAME": "UA-ELEVATOR-EXTENDER-TX",
+      "BOARDID": "ec44",
+      "BOMREV": "113-03272",
+      "DESC": "UA-ELEVATOR-EXTENDER-TX",
+      "FILE": "ua_homeplug_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01"
+    },
+
+      "UA-ELEVATOR-EXTENDER-RX": {
+      "INDEX": 12,
+      "NAME": "UA-ELEVATOR-EXTENDER-RX",
+      "BOARDID": "ec45",
+      "BOMREV": "113-03273",
+      "DESC": "UA-ELEVATOR-EXTENDER-RX",
+      "FILE": "ua_homeplug_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01"
+    }
+  },
+
+  "UniFiXG":
+  {
+    "UXG-LITE":{
+      "INDEX"       : 0,
+      "NAME"        : "UXG-LITE",
+      "BOARDID"     : "b080",
+      "BOMREV"      : "113-00778",
+      "DESC"        : "UniFi Next-Generation Gateway Lite",
+      "FILE"        : "uxg_mt7622_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0013",
+      "SW_ID"       : "1e01"
+    }
+  },
+
+  "UniFiCK":
+  {
+    "UCKP":{
+      "INDEX"       : 0,
+      "NAME"        : "UCKP",
+      "BOARDID"     : "e970",
+      "BOMREV"      : "113-02570",
+      "DESC"        : "UniFi Cloudy Key Plus",
+      "FILE"        : "uck_apq8053_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0008",
+      "SW_ID"       : "0c01"
+    }
+  },
+
+  "GPON":
+  {
+    "UF-WiFi6":{
+      "INDEX"       : 0,
+      "NAME"        : "UF-WiFi6",
+      "BOARDID"     : "eec5",
+      "BOMREV"      : "113-03376",
+      "DESC"        : "UF-WiFi6",
+      "FILE"        : "uf_ecnt7521_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "False",
+      "FCD_ID"      : "0008",
+      "SW_ID"       : "0c01"
+    }
+  },
+
+  "UniFiDrive":
+  {
+    "UNAS-Pro":{
+      "INDEX"       : 0,
+      "NAME"        : "UNAS-Pro",
+      "BOARDID"     : "ea51",
+      "BOMREV"      : "113-03751",
+      "DESC"        : "UNAS-Pro",
+      "FILE"        : "unas_alpine_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0006",
+      "SW_ID"       : "2101"
+    }
+  },
+
+  "UniFiAP6":
+  {
+    "U6-LITE-00773":{
+      "INDEX"       : 0,
+      "NAME"        : "U6-LITE-00773",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-00773",
+      "DESC"        : "UniFi AP6 LITE",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LITE-01076":{
+      "INDEX"       : 0,
+      "NAME"        : "U6-LITE-01076",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-01076",
+      "DESC"        : "UniFi AP6 LITE",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-00742": {
+      "INDEX"       : 0,
+      "NAME"        : "U6-LR-00742",
+      "BOARDID"     : "a614",
+      "BOMREV"      : "113-00742",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-00744": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR-00744",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-00774",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-01078": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR-01078",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-01078",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	  "U6-PRO":{
+      "INDEX"       : 2,
+      "NAME"        : "U6-PRO",
+      "BOARDID"     : "a650",
+      "BOMREV"      : "113-00963",
+      "DESC"        : "UniFi AP6 PRO",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-Mesh":{
+      "INDEX"       : 3,
+      "NAME"        : "U6-Mesh",
+      "BOARDID"     : "a651",
+      "BOMREV"      : "113-10743",
+      "DESC"        : "UniFi AP6 Mesh Point",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-IW":{
+      "INDEX"       : 4,
+      "NAME"        : "U6-IW",
+      "BOARDID"     : "a652",
+      "BOMREV"      : "113-10745",
+      "DESC"        : "UniFi AP6 InWall",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Extender-10746":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-10746",
+      "DESC"        : "UniFi AP6 Extender",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-Extender-01083":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-01083",
+      "DESC"        : "UniFi AP6 Extender",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Enterprise":{
+      "INDEX"       : 6,
+      "NAME"        : "U6-Enterprise",
+      "BOARDID"     : "a654",
+      "BOMREV"      : "113-10898",
+      "DESC"        : "UniFi AP6 Enterprise",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Infinity":{
+      "INDEX"       : 7,
+      "NAME"        : "U6-Infinity",
+      "BOARDID"     : "a655",
+      "BOMREV"      : "113-10897",
+      "DESC"        : "UniFi AP6 Infinity",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+  "U6-Enterprise-IW": {
+      "INDEX"       : 8,
+      "NAME"        : "U6-Enterprise-IW",
+      "BOARDID"     : "a656",
+      "BOMREV"      : "113-00956",
+      "DESC"        : "UniFi AP6 Enterprise IW",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LRPLUS": {
+      "INDEX": 0,
+      "NAME": "U6-LRPLUS",
+      "BOARDID": "a643",
+      "BOMREV": "113-01183",
+      "DESC": "UniFi AP6 Long Range Plus",
+      "FILE": "u6_mt7981_bspfactory.py",
+      "T1FILE": "u6_mt7981_mfg.py",
       "QRCHECK": "True",
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
@@ -23,41 +3090,30 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
-          "DST_PATH": "u7-fw/ipq5322",
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
+          "DST_PATH": "u6-fw/mt7981",
           "FILES": [
-            "u7-enterprise-1g-v5.img",
-            "u7-enterprise-1g-v5_nor.bin",
-            "BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramload-7.0.1.bin"
+            "BZ.MT7981_6.5.64+14808.230711.0243-uboot.bin",
+            "mtk-initramfs-mt7981-emmc.uboot",
+            "u6-LR-plus-emmc-single-image-V3-20220707.bin",
+            "u6-plus-fip.bin",
+            "mmc_20221116",
+            "EMMC04G-MK27-G02_FFU.BIN"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a681-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v5.img"
+          "tftp/images/a643-fw.bin",
+          "../u6-fw/mt7981/BZ.MT7981_6.5.64+14808.230711.0243-uboot.bin"
         ],
         [
-          "tftp/images/a681-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin"
+          "tftp/images/a643-uboot.bin",
+          "../u6-fw/mt7981/mtk-initramfs-mt7981-emmc.uboot"
         ],
         [
-          "tftp/images/a681-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
-        ],
-        [
-          "tftp/images/a681-initramfs.bin",
-          "../u7-fw/ipq5322/ramload-7.0.1.bin"
-        ],
-        [
-          "tftp/images/a681-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v5_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
+          "tftp/images/a643-bspfw.bin",
+          "../u6-fw/mt7981/u6-LR-plus-emmc-single-image-V3-20220707.bin"
         ]
       ]
     },
@@ -87,22 +3143,22 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v5.img",
-            "u7-pro-1g-v5_nor.bin",
-            "BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin",
+            "u7-pro-1g-v6.img",
+            "u7-pro-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
             "initramfs-ipq53xx_32.gpt",
-            "ramload-7.0.1.bin"
+            "ramboot-7.0.7.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a682-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v5.img"
+          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
         ],
         [
           "tftp/images/a682-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
         ],
         [
           "tftp/images/a682-gpt.bin",
@@ -110,11 +3166,11 @@
         ],
         [
           "tftp/images/a682-initramfs.bin",
-          "../u7-fw/ipq5322/ramload-7.0.1.bin"
+          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
         ],
         [
           "tftp/images/a682-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v5_nor.bin"
+          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",
@@ -148,22 +3204,22 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-enterprise-1g-v5.img",
-            "u7-enterprise-1g-v5_nor.bin",
-            "BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin",
+            "u7-enterprise-1g-v6.img",
+            "u7-enterprise-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
             "initramfs-ipq53xx_32.gpt",
-            "ramload-7.0.1.bin"
+            "ramboot-7.0.5.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a685-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v5.img"
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6.img"
         ],
         [
           "tftp/images/a685-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.1+15053.230805.0125-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
         ],
         [
           "tftp/images/a685-gpt.bin",
@@ -171,17 +3227,128 @@
         ],
         [
           "tftp/images/a685-initramfs.bin",
-          "../u7-fw/ipq5322/ramload-7.0.1.bin"
+          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
         ],
         [
           "tftp/images/a685-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v5_nor.bin"
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",
           "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
+    },
+    "U7-Pro-IW-08608": {
+      "INDEX": 3,
+      "NAME": "U7-Pro-IW",
+      "BOARDID": "a686",
+      "BOMREV": "113-08608",
+      "DESC": "UniFi AP7 Pro InWall",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-pro-1g-v6.img",
+            "u7-pro-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.5.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a686-bsp.img",
+          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+        ],
+        [
+          "tftp/images/a686-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+        ],
+        [
+          "tftp/images/a686-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+        ],
+        [
+          "tftp/images/a686-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+        ],
+        [
+          "tftp/images/a686-nor.bin",
+          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a6888.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U7-LR-09466": {
+      "INDEX": 4,
+      "NAME": "U7-LR",
+      "BOARDID": "a691",
+      "BOMREV": "113-09466",
+      "DESC": "UniFi AP7 Long Range",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-lr-wkk-lm512-v2.img",
+            "u7-lr-wkk-lm512-v2_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.5.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a643-bspub.bin",
+          "../u6-fw/mt7981/u6-plus-fip.bin"
+        ],
+        [
+          "tftp/images/mmc",
+          "../u6-fw/mt7981/mmc_20221116"
+        ],
+        [
+          "tftp/images/mmc-fw",
+          "../u6-fw/mt7981/EMMC04G-MK27-G02_FFU.BIN"
+        ]
+      ]
     }
   }
 }
+
