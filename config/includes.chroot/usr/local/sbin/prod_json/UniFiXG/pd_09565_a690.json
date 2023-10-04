@@ -27,9 +27,9 @@
           "SRC_PATH": "images/fcd-image/uxg-fw/a690",
           "DST_PATH": "uxg-fw/uxg",
           "FILES": [
-            "a690-fw_v3.2.2.bin",
-            "a690-loader_v3.2.2.img",
-            "a690-uboot_v3.2.2.mbn",
+            "a690-fw_v3.2.3.bin",
+            "a690-loader_v3.2.3.img",
+            "a690-uboot_v3.2.3.mbn",
             "ipq5322_uxg_max_v2.1.img",
             "ipq5322_uxg_max_nor_v2.1.bin"
           ]
@@ -45,15 +45,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/a690-fw.bin",
-          "../uxg-fw/uxg/a690-fw_v3.2.2.bin"
+          "../uxg-fw/uxg/a690-fw_v3.2.3.bin"
         ],
         [
           "tftp/images/a690-loader.img",
-          "../uxg-fw/uxg/a690-loader_v3.2.2.img"
+          "../uxg-fw/uxg/a690-loader_v3.2.3.img"
         ],
         [
           "tftp/images/a690-uboot.mbn",
-          "../uxg-fw/uxg/a690-uboot_v3.2.2.mbn"
+          "../uxg-fw/uxg/a690-uboot_v3.2.3.mbn"
         ],
         [
           "tftp/images/a690-bsp-2g_nor.bin",
