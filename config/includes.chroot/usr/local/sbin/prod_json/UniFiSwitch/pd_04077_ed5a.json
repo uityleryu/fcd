@@ -1,0 +1,53 @@
+{
+  "UniFiSwitch": {
+    "USW-PRO-8-POE": {
+      "INDEX": 0,
+      "NAME": "USW-PRO-8-POE",
+      "BOARDID": "ed5a",
+      "BOMREV": "113-04077",
+      "DESC": "UBNT UniFiSwitch Pro 8 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "usw-pro-8-poe-fw.bin",
+            "US2.rtl93xx_6.6.19+14864.230612.0249-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed5a-fw.bin",
+          "../usw-fw/usw-pro-8-poe-fw.bin"
+        ],
+        [
+          "tftp/images/ed5a-t1.bin",
+          "../usw-fw/usw-pro-8-poe-fw.bin"
+        ]
+      ]
+    }
+  }
+}

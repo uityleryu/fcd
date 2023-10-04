@@ -6,7 +6,7 @@
       "BOARDID": "ec46",
       "BOMREV": "113-03329",
       "DESC": "UniFi Access Hub Gate",
-      "FILE": "ua_mt7621_factory.py",
+      "FILE": "ua_mt7621_factory4.py",
       "T1FILE": "",
       "QRCHECK": "True",
       "FCD_ID": "0012",
@@ -16,8 +16,9 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "GT.mt7621.v4.0.14.3.gfa00743.220905.0308-uboot.bin",
-            "ua-gate-nor-v2.bin"
+            "ua-hub-enterprise-nor-v2.bin",
+            "unifi-v1.1.11.22-g788bdb59_uah-mt7621-64MB_nodebug_u-boot.bin",
+            "GT.mt7621.v5.2.11.6.g8c94980.230828.0808-uboot.bin"
           ]
         },
         {
@@ -33,20 +34,20 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec46-t1.bin",
-          "../ua-fw/ua-gate-t1.bin"
+          "tftp/images/ec46-t1-fw.bin",
+          "../ua-fw/ua-hub-enterprise-nor-v2.bin"
         ],
         [
-          "tftp/ua-fw/ua-gate-t1.bin",
-          "../ua-fw/ua-gate-nor-v2.bin"
+          "tftp/images/ec46-uboot.bin",
+          "../ua-fw/unifi-v1.1.11.22-g788bdb59_uah-mt7621-64MB_nodebug_u-boot.bin"
         ],
         [
           "tftp/images/ec46-fw.bin",
-          "../ua-fw/ua-gate-fw.bin"
+          "../ua-fw/GT.mt7621.v5.2.11.6.g8c94980.230828.0808-uboot.bin"
         ],
         [
-          "tftp/ua-fw/ua-gate-fw.bin",
-          "../ua-fw/GT.mt7621.v4.0.14.3.gfa00743.220905.0308-uboot.bin"
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230414"
         ]
       ]
     }

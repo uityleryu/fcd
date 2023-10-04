@@ -230,7 +230,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             "setenv bootcmd \"mmc read {0} 0x00000022 0x00020022; bootm {0}\"".format(self.bootm_addr[self.board_id]),
             "setenv imgaddr 0x44000000",
             "saveenv",
-            "tftpboot {} {}".format(self.bootm_addr[self.board_id] ,self.initramfs),
+            "tftpboot {} {}".format(self.bootm_addr[self.board_id], self.initramfs),
             self.bootm_cmd[self.board_id]
         ]
         for cmd in cmdset:

@@ -14,6 +14,14 @@
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/udm",
+          "DST_PATH": "tools/udm_pro",
+          "FILES": [
+            "factory-test-tools_2.3.2-181+ge954f1c4870_arm64.deb",
+            "memtester_4.5.1-1_arm64.deb"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/udm",
           "DST_PATH": "tools/udm",
           "FILES": [
             "helper_AL324_release"
@@ -32,34 +40,34 @@
         },
         {
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
-          "DST_PATH": "udm-fw/udmp",
+          "DST_PATH": "udm-fw/udm_pro",
           "FILES": [
-            "UDMPRO.al324.v2.4.27.c78626a.230119.1411.bin",
-            "uImage_v2.4.27",
-            "boot_v2.4.27.img"
+            "UDMPRO.al324.v3.0.20.5256a39.230406.2140.bin",
+            "uImage-20230404",
+            "boot-20230404.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/udmp/UDMPRO.al324.v2.4.27.c78626a.230119.1411.bin"
+          "../udm-fw/udm_pro/UDMPRO.al324.v3.0.20.5256a39.230406.2140.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/udmp/uImage_v2.4.27"
+          "../udm-fw/udm_pro/uImage-20230404"
         ],
         [
           "tftp/images/ea15-uboot.bin",
-          "../udm-fw/udmp/boot_v2.4.27.img"
+          "../udm-fw/udm_pro/boot-20230404.img"
         ],
         [
           "tftp/tools/ea15-factory.deb",
-          "../tools/udmp/factory-test-tools_2.3.1-168+g0dcf6938c5f_arm64.deb"
+          "../tools/udm_pro/factory-test-tools_2.3.2-181+ge954f1c4870_arm64.deb"
         ],
         [
           "tftp/tools/ea15-memtester.deb",
-          "../tools/udmp/memtester_4.5.1-1_arm64.deb"
+          "../tools/udm_pro/memtester_4.5.1-1_arm64.deb"
         ]
       ]
     }

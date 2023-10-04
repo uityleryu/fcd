@@ -32,7 +32,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "0x00120000",    # Prism-AX(NAND)
             'a672': "0x00120000",    # Prism-AX-OMT(NAND)
             'a670': "0x00120000",    # LAP-AX(NAND)
-            'a673': "0x00120000"     # NBE-AX(NAND)
+            'a673': "0x00120000",    # NBE-AX(NAND)
+            'a689': "0x00120000"     # Wave-Pico
         }
         self.ubaddr = self.uboot_address[self.board_id]
 
@@ -49,7 +50,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "0x000a0000",
             'a672': "0x000a0000",
             'a670': "0x000a0000",
-            'a673': "0x000a0000"
+            'a673': "0x000a0000",
+            'a689': "0x000a0000"
 
         }
         self.ubsize = self.uboot_size[self.board_id]
@@ -69,7 +71,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "#",
             'a672': "#",
             'a670': "#",
-            'a673': "#"
+            'a673': "#",
+            'a689': "#"
         }
         self.linux_prompt = "root@OpenWrt:/#"
         self.prod_prompt = "ubnt@OpenWrt:~#"
@@ -87,7 +90,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "1",
             'a672': "1",
             'a670': "1",
-            'a673': "1"
+            'a673': "1",
+            'a689': "1"
         }
 
         self.wifinum = {
@@ -103,7 +107,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "1",
             'a672': "1",
             'a670': "1",
-            'a673': "1"
+            'a673': "1",
+            'a689': "1"
         }
 
         self.btnum = {
@@ -119,7 +124,8 @@ class IPQ5018BSPFactory(ScriptBase):
             'a671': "1",
             'a672': "1",
             'a670': "1",
-            'a673': "1"
+            'a673': "1",
+            'a689': "1"
         }
 
         self.devnetmeta = {
@@ -148,10 +154,26 @@ class IPQ5018BSPFactory(ScriptBase):
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = True
+        elif self.board_id == "a658" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
+        elif self.board_id == "a664" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
+        elif self.board_id == "a689" :
+            self.FWUPDATE_ENABLE   = True
+            self.DATAVERIFY_ENABLE = True
+            self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = True
         else:
             self.FWUPDATE_ENABLE   = True
             self.DATAVERIFY_ENABLE = True
             self.WRITENAND_ENABLE = False
+            self.USBSPEED_EN = False
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -207,7 +229,7 @@ class IPQ5018BSPFactory(ScriptBase):
         self.pexp.expect_only(30, "Version:")
         log_debug("urescue: FW loaded")
 
-        if self.board_id == "a658" or self.board_id == "a664":
+        if self.board_id == "a658" or self.board_id == "a664" or self.board_id == "a689":
             self.pexp.expect_only(180, "Flashing system0")
             log_debug("urescue: Flashing system0")
 
@@ -216,6 +238,17 @@ class IPQ5018BSPFactory(ScriptBase):
 
             self.pexp.expect_only(180, "Firmware update complete.")
             log_debug("urescue: Firmware update complete.")
+
+
+            # Detect if unexpect error occured
+            exp_list = [
+                "Increase PRS flash failure count",
+                "Kernel panic",
+                "PREINIT: preinit script failed"
+            ]
+            index = self.pexp.expect_get_index(timeout=120, exptxt=exp_list)
+            if index != -1:
+                error_critical("Product FW Kernel Error")
 
         else:
             self.pexp.expect_only(180, "Updating 0:HLOS partition")
@@ -227,9 +260,16 @@ class IPQ5018BSPFactory(ScriptBase):
             self.pexp.expect_only(180, "Updating bs partition")
             log_debug("urescue bs updated")
 
+    def chk_usbspeed(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep link")
+        self.pexp.expect_only(10, "u0")
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep speed")
+        self.pexp.expect_only(10, "3.0")
+
     def check_info(self):
 
-        if self.board_id == "a658" or self.board_id == "a664":
+        if self.board_id == "a658" or self.board_id == "a664" or self.board_id == "a689":
             self.pexp.expect_ubcmd(600, "Please press Enter to activate this console.", "")
             self.pexp.expect_ubcmd(10, "login:", "ubnt")
             self.pexp.expect_ubcmd(10, "Password:", "ubnt")
@@ -300,6 +340,10 @@ class IPQ5018BSPFactory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
 
+        if self.USBSPEED_EN is True:
+            self.chk_usbspeed()
+            msg(90, "Check USB success")
+
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
@@ -334,7 +378,8 @@ class IPQ5018MFGGeneral(ScriptBase):
             'a671': "8040004",
             'a672': "8040004",
             'a670': "8040004",
-            'a673': ""
+            'a673': "",
+            'a689': "8040004"
         }
 
         self.bsp_2nd_type = {
@@ -350,7 +395,8 @@ class IPQ5018MFGGeneral(ScriptBase):
             'a671': "nand",
             'a672': "nand",
             'a670': "nand",
-            'a673': "nand"
+            'a673': "nand",
+            'a689': "emmc1"
         }
 
         self.set_bootloader_prompt("IPQ5018#")

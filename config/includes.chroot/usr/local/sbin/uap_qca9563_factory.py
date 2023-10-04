@@ -16,20 +16,21 @@ class UAPQCA9563Factory(ScriptBase):
     def init_vars(self):
         # script specific vars
         self.devregpart = "/dev/mtdblock6"
-        self.bomrev = "113-" + self.bom_rev
+        self.bomrev = "113-{}".format(self.bom_rev)
         self.helperexe = "helper_ARxxxx_musl"
         self.helper_path = "uap"
         self.user = "root"
         self.bootloader_prompt = "ath>"
         self.linux_prompt = "# "
         self.cmd_prefix = "go 0x80200020 "
-        self.product_class = "radio"  # For this product using radio
+
+        # For this product using radio
+        self.product_class = "radio"
         self.devregpart = "/dev/mtdblock6"
 
-        if self.board_id == "e587":
+        self.UPDATE_UBOOT_ENABLE = False
+        if self.board_id in ["e587", "dca8"]:
             self.UPDATE_UBOOT_ENABLE = True
-        else:
-            self.UPDATE_UBOOT_ENABLE = False
 
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
@@ -55,16 +56,37 @@ class UAPQCA9563Factory(ScriptBase):
         self.is_network_alive_in_uboot(retry=10, arp_logging_en=True, del_dutip_en=True)
 
     def update_uboot(self):
-        cmd = "tftp 0x80800000 images/{}.uboot".format(self.board_id)
+        if self.board_id == "e587":
+            tftp_upload_cmd = "tftp 0x80800000 images/{}-uboot.bin".format(self.board_id)
+            erase_cmd = "erase 0x9f000000 +$filesize"
+            copy_cmd = "cp.b $fileaddr 0x9f000000 $filesize"
+        elif self.board_id == "dca8":
+            tftp_upload_cmd = "tftp 0x81000000 images/{}-uboot.bin".format(self.board_id)
+            erase_cmd = "erase 0x9f000000 +0x60000; protect off all"
+            copy_cmd = "cp.b 0x81000000 0x9f000000 0x60000"
+        else:
+            rmsg = "Update U-Boot, system ID: {} is not supported!".format(self.board_id)
+            error_critical(rmsg)
+
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, tftp_upload_cmd)
+        self.pexp.expect_ubcmd(120, "Bytes transferred", erase_cmd)
+        self.pexp.expect_ubcmd(180, "Erased", copy_cmd)
+        self.pexp.expect_ubcmd(180, "done", "reset")
+        self.enter_uboot()
+
+    def update_old_art(self):
+        self.set_ub_net()
+        cmd = "tftp 0x81000000 images/{}-oldart.bin".format(self.board_id)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
-        cmd = "erase 0x9f000000 +$filesize"
-        self.pexp.expect_ubcmd(10, "Bytes transferred", cmd)
+        cmd = "erase 0x9f000000 +0xf90000; protect off all"
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
-        cmd = "cp.b $fileaddr 0x9f000000 $filesize"
-        self.pexp.expect_ubcmd(10, "Erased", cmd)
-        self.pexp.expect_ubcmd(10, "done", "reset")
-        self.enter_uboot()
+        cmd = "cp.b 0x81000144 0x9f000000 0xf90000"
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
+
+        cmd = "reset"
+        self.pexp.expect_ubcmd(240, self.bootloader_prompt, cmd)
 
     def fwupdate(self):
         # Uboot booting initial and Set IP on DUT
@@ -170,24 +192,31 @@ class UAPQCA9563Factory(ScriptBase):
         self.enter_uboot()
         self.boot_image()
 
-        '''
-            To check if the hostpad is running because it is an indirect method to check if the signed data is well stored in the
-            memory. If the signed data is not correct, hostapd can't work well
-        '''
-        cmd = "while ! grep -q \"hostapd\" /etc/inittab; do echo 'Wait hostapd...'; sleep 1; done"
-        self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
+        if self.board_id != "dca8":
+            '''
+                To check if the hostpad is running because it is an indirect method to check if the signed data is well stored in the
+                memory. If the signed data is not correct, hostapd can't work well
+            '''
+            cmd = "while ! grep -q \"hostapd\" /etc/inittab; do echo 'Wait hostapd...'; sleep 1; done"
+            self.pexp.expect_lnxcmd(60, self.linux_prompt, cmd, self.linux_prompt)
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
-        self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
-        self.pexp.expect_only(10, "systemid=" + self.board_id)
-        self.pexp.expect_only(10, "serialno=" + self.mac.lower())
-        self.pexp.expect_only(10, self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
+            self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
+            self.pexp.expect_only(10, "systemid=" + self.board_id)
+            self.pexp.expect_only(10, "serialno=" + self.mac.lower())
+            self.pexp.expect_only(10, self.linux_prompt)
 
     def run(self):
         """
             Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
         # Connect into DU and set pexpect helper for class using picocom
@@ -195,7 +224,13 @@ class UAPQCA9563Factory(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(2)
+        time.sleep(5)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         self.enter_uboot()
@@ -208,7 +243,7 @@ class UAPQCA9563Factory(ScriptBase):
             self.boot_image()
             msg(40, "Boot into kerenl successfully ...")
             self.erase_eefiles()
-            msg(10, "Erase eefiles successfully ...")
+            msg(45, "Erase eefiles successfully ...")
 
         if self.DOHELPER_ENABLE is True:
             self.prepare_server_need_files()
@@ -224,7 +259,13 @@ class UAPQCA9563Factory(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
-            msg(90, "Succeeding in checking the devrenformation ...")
+            msg(90, "Succeeding in checking the devreg information ...")
+
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Complete FCD procedure ...")
         self.close_fcd()

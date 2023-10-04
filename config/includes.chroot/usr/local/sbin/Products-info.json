@@ -1190,166 +1190,6 @@
 
   },
 
-  "UniFiAP6":
-  {
-    "U6-LITE-00773":{
-      "INDEX"       : 0,
-      "NAME"        : "U6-LITE-00773",
-      "BOARDID"     : "a612",
-      "BOMREV"      : "113-00773",
-      "DESC"        : "UniFi AP6 LITE",
-      "FILE"        : "u6_mt762x_factory.py",
-      "T1FILE"      : "u6_mt762x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-    "U6-LITE-01076":{
-      "INDEX"       : 0,
-      "NAME"        : "U6-LITE-01076",
-      "BOARDID"     : "a612",
-      "BOMREV"      : "113-01076",
-      "DESC"        : "UniFi AP6 LITE",
-      "FILE"        : "u6_mt762x_factory.py",
-      "T1FILE"      : "u6_mt762x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-    "U6-LR-00742": {
-      "INDEX"       : 0,
-      "NAME"        : "U6-LR-00742",
-      "BOARDID"     : "a614",
-      "BOMREV"      : "113-00742",
-      "DESC"        : "UniFi AP6 LR",
-      "FILE"        : "u6_mt762x_factory.py",
-      "T1FILE"      : "u6_mt762x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-    "U6-LR-00744": {
-      "INDEX"       : 1,
-      "NAME"        : "U6-LR-00744",
-      "BOARDID"     : "a620",
-      "BOMREV"      : "113-00774",
-      "DESC"        : "UniFi AP6 LR",
-      "FILE"        : "u6_mt762x_factory.py",
-      "T1FILE"      : "u6_mt762x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-    "U6-LR-01078": {
-      "INDEX"       : 1,
-      "NAME"        : "U6-LR-01078",
-      "BOARDID"     : "a620",
-      "BOMREV"      : "113-01078",
-      "DESC"        : "UniFi AP6 LR",
-      "FILE"        : "u6_mt762x_factory.py",
-      "T1FILE"      : "u6_mt762x_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	  "U6-PRO":{
-      "INDEX"       : 2,
-      "NAME"        : "U6-PRO",
-      "BOARDID"     : "a650",
-      "BOMREV"      : "113-00963",
-      "DESC"        : "UniFi AP6 PRO",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-    "U6-Mesh":{
-      "INDEX"       : 3,
-      "NAME"        : "U6-Mesh",
-      "BOARDID"     : "a651",
-      "BOMREV"      : "113-10743",
-      "DESC"        : "UniFi AP6 Mesh Point",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	"U6-IW":{
-      "INDEX"       : 4,
-      "NAME"        : "U6-IW",
-      "BOARDID"     : "a652",
-      "BOMREV"      : "113-10745",
-      "DESC"        : "UniFi AP6 InWall",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	"U6-Extender-10746":{
-      "INDEX"       : 5,
-      "NAME"        : "U6-Extender",
-      "BOARDID"     : "a653",
-      "BOMREV"      : "113-10746",
-      "DESC"        : "UniFi AP6 Extender",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-  "U6-Extender-01083":{
-      "INDEX"       : 5,
-      "NAME"        : "U6-Extender",
-      "BOARDID"     : "a653",
-      "BOMREV"      : "113-01083",
-      "DESC"        : "UniFi AP6 Extender",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	"U6-Enterprise":{
-      "INDEX"       : 6,
-      "NAME"        : "U6-Enterprise",
-      "BOARDID"     : "a654",
-      "BOMREV"      : "113-10898",
-      "DESC"        : "UniFi AP6 Enterprise",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-	"U6-Infinity":{
-      "INDEX"       : 7,
-      "NAME"        : "U6-Infinity",
-      "BOARDID"     : "a655",
-      "BOMREV"      : "113-10897",
-      "DESC"        : "UniFi AP6 Infinity",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    },
-  "U6-Enterprise-IW": {
-      "INDEX"       : 8,
-      "NAME"        : "U6-Enterprise-IW",
-      "BOARDID"     : "a656",
-      "BOMREV"      : "113-00956",
-      "DESC"        : "UniFi AP6 Enterprise IW",
-      "FILE"        : "u6_ipq5018_bspfactory.py",
-      "T1FILE"      : "u6_ipq5018_mfg.py",
-      "QRCHECK"     : "True",
-      "FCD_ID"      : "0004",
-      "SW_ID"       : "0601"
-    }
-  },
-
   "UniFiSG":
   {
   },
@@ -2602,6 +2442,20 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [],
       "CREATE_LINK": []
+    },
+    "UVC-G5TURRETPRO": {
+      "INDEX": 23,
+      "NAME": "UVC-G5TURRETPRO",
+      "BOARDID": "a59a",
+      "BOMREV": "113-04340",
+      "DESC": "UVC G5 Turret Pro",
+      "FILE": "uvc_factory_camera2.py",
+      "T1FILE": "",
+      "QRCHECK": "False",
+      "FCD_ID": "0009",
+      "SW_ID": "0e03",
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
   },
 
@@ -2724,11 +2578,24 @@
       "SW_ID"       : "1a01"
     },
 
-    "UISP-R":{
+    "UISP-R-00989":{
       "INDEX"       : 11,
       "NAME"        : "UISP-R",
       "BOARDID"     : "ee6e",
       "BOMREV"      : "113-00989",
+      "DESC"        : "Ubiquiti Network Management System Router",
+      "FILE"        : "unms_mt7621_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-01262":{
+      "INDEX"       : 11,
+      "NAME"        : "UISP-R",
+      "BOARDID"     : "ee6e",
+      "BOMREV"      : "113-01262",
       "DESC"        : "Ubiquiti Network Management System Router",
       "FILE"        : "unms_mt7621_factory.py",
       "T1FILE"      : "",
@@ -2835,6 +2702,32 @@
       "BOMREV"      : "113-01123",
       "DESC"        : "UISP Power UPS",
       "FILE"        : "unms_rtl838x_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-S-Plus":{
+      "INDEX"       : 17,
+      "NAME"        : "UISP-S-Plus",
+      "BOARDID"     : "ee7c",
+      "BOMREV"      : "113-01223",
+      "DESC"        : "UISP S Plus",
+      "FILE"        : "uisp_mrvl98dx25xx_factory.py",
+      "T1FILE"      : "",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "000f",
+      "SW_ID"       : "1a01"
+    },
+
+    "UISP-R-Plus":{
+      "INDEX"       : 18,
+      "NAME"        : "UISP-R-Plus",
+      "BOARDID"     : "ee7a",
+      "BOMREV"      : "113-01224",
+      "DESC"        : "UISP R Plus",
+      "FILE"        : "uisp_mrvlcn913x_factory.py",
       "T1FILE"      : "",
       "QRCHECK"     : "True",
       "FCD_ID"      : "000f",
@@ -3014,5 +2907,448 @@
       "FCD_ID"      : "0006",
       "SW_ID"       : "2101"
     }
+  },
+
+  "UniFiAP6":
+  {
+    "U6-LITE-00773":{
+      "INDEX"       : 0,
+      "NAME"        : "U6-LITE-00773",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-00773",
+      "DESC"        : "UniFi AP6 LITE",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LITE-01076":{
+      "INDEX"       : 0,
+      "NAME"        : "U6-LITE-01076",
+      "BOARDID"     : "a612",
+      "BOMREV"      : "113-01076",
+      "DESC"        : "UniFi AP6 LITE",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-00742": {
+      "INDEX"       : 0,
+      "NAME"        : "U6-LR-00742",
+      "BOARDID"     : "a614",
+      "BOMREV"      : "113-00742",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-00744": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR-00744",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-00774",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LR-01078": {
+      "INDEX"       : 1,
+      "NAME"        : "U6-LR-01078",
+      "BOARDID"     : "a620",
+      "BOMREV"      : "113-01078",
+      "DESC"        : "UniFi AP6 LR",
+      "FILE"        : "u6_mt762x_factory.py",
+      "T1FILE"      : "u6_mt762x_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	  "U6-PRO":{
+      "INDEX"       : 2,
+      "NAME"        : "U6-PRO",
+      "BOARDID"     : "a650",
+      "BOMREV"      : "113-00963",
+      "DESC"        : "UniFi AP6 PRO",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-Mesh":{
+      "INDEX"       : 3,
+      "NAME"        : "U6-Mesh",
+      "BOARDID"     : "a651",
+      "BOMREV"      : "113-10743",
+      "DESC"        : "UniFi AP6 Mesh Point",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-IW":{
+      "INDEX"       : 4,
+      "NAME"        : "U6-IW",
+      "BOARDID"     : "a652",
+      "BOMREV"      : "113-10745",
+      "DESC"        : "UniFi AP6 InWall",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Extender-10746":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-10746",
+      "DESC"        : "UniFi AP6 Extender",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-Extender-01083":{
+      "INDEX"       : 5,
+      "NAME"        : "U6-Extender",
+      "BOARDID"     : "a653",
+      "BOMREV"      : "113-01083",
+      "DESC"        : "UniFi AP6 Extender",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Enterprise":{
+      "INDEX"       : 6,
+      "NAME"        : "U6-Enterprise",
+      "BOARDID"     : "a654",
+      "BOMREV"      : "113-10898",
+      "DESC"        : "UniFi AP6 Enterprise",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+	"U6-Infinity":{
+      "INDEX"       : 7,
+      "NAME"        : "U6-Infinity",
+      "BOARDID"     : "a655",
+      "BOMREV"      : "113-10897",
+      "DESC"        : "UniFi AP6 Infinity",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+  "U6-Enterprise-IW": {
+      "INDEX"       : 8,
+      "NAME"        : "U6-Enterprise-IW",
+      "BOARDID"     : "a656",
+      "BOMREV"      : "113-00956",
+      "DESC"        : "UniFi AP6 Enterprise IW",
+      "FILE"        : "u6_ipq5018_bspfactory.py",
+      "T1FILE"      : "u6_ipq5018_mfg.py",
+      "QRCHECK"     : "True",
+      "FCD_ID"      : "0004",
+      "SW_ID"       : "0601"
+    },
+    "U6-LRPLUS": {
+      "INDEX": 0,
+      "NAME": "U6-LRPLUS",
+      "BOARDID": "a643",
+      "BOMREV": "113-01183",
+      "DESC": "UniFi AP6 Long Range Plus",
+      "FILE": "u6_mt7981_bspfactory.py",
+      "T1FILE": "u6_mt7981_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u6-fw/mt7981",
+          "DST_PATH": "u6-fw/mt7981",
+          "FILES": [
+            "BZ.MT7981_6.5.64+14808.230711.0243-uboot.bin",
+            "mtk-initramfs-mt7981-emmc.uboot",
+            "u6-LR-plus-emmc-single-image-V3-20220707.bin",
+            "u6-plus-fip.bin",
+            "mmc_20221116",
+            "EMMC04G-MK27-G02_FFU.BIN"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a643-fw.bin",
+          "../u6-fw/mt7981/BZ.MT7981_6.5.64+14808.230711.0243-uboot.bin"
+        ],
+        [
+          "tftp/images/a643-uboot.bin",
+          "../u6-fw/mt7981/mtk-initramfs-mt7981-emmc.uboot"
+        ],
+        [
+          "tftp/images/a643-bspfw.bin",
+          "../u6-fw/mt7981/u6-LR-plus-emmc-single-image-V3-20220707.bin"
+        ]
+      ]
+    },
+    "U7-Pro-08146": {
+      "INDEX": 1,
+      "NAME": "U7-Pro",
+      "BOARDID": "a682",
+      "BOMREV": "113-08146",
+      "DESC": "UniFi AP7 Pro",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-pro-1g-v6.img",
+            "u7-pro-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.7.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a682-bsp.img",
+          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+        ],
+        [
+          "tftp/images/a682-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
+        ],
+        [
+          "tftp/images/a682-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+        ],
+        [
+          "tftp/images/a682-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
+        ],
+        [
+          "tftp/images/a682-nor.bin",
+          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a6888.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U7-Enterprise-IW-01273": {
+      "INDEX": 2,
+      "NAME": "U7-Enterprise-IW",
+      "BOARDID": "a685",
+      "BOMREV": "113-01273",
+      "DESC": "UniFi AP7 EnterPrise InWall",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-enterprise-1g-v6.img",
+            "u7-enterprise-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.5.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a685-bsp.img",
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6.img"
+        ],
+        [
+          "tftp/images/a685-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+        ],
+        [
+          "tftp/images/a685-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+        ],
+        [
+          "tftp/images/a685-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+        ],
+        [
+          "tftp/images/a685-nor.bin",
+          "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a6888.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U7-Pro-IW-08608": {
+      "INDEX": 3,
+      "NAME": "U7-Pro-IW",
+      "BOARDID": "a686",
+      "BOMREV": "113-08608",
+      "DESC": "UniFi AP7 Pro InWall",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-pro-1g-v6.img",
+            "u7-pro-1g-v6_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.5.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a686-bsp.img",
+          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+        ],
+        [
+          "tftp/images/a686-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+        ],
+        [
+          "tftp/images/a686-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+        ],
+        [
+          "tftp/images/a686-initramfs.bin",
+          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+        ],
+        [
+          "tftp/images/a686-nor.bin",
+          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
+        ],
+        [
+          "tftp/images/a6888.itb",
+          "../u6-fw/ipq5018/ipq50xx.itb"
+        ]
+      ]
+    },
+    "U7-LR-09466": {
+      "INDEX": 4,
+      "NAME": "U7-LR",
+      "BOARDID": "a691",
+      "BOMREV": "113-09466",
+      "DESC": "UniFi AP7 Long Range",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "u7-lr-wkk-lm512-v2.img",
+            "u7-lr-wkk-lm512-v2_nor.bin",
+            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
+            "initramfs-ipq53xx_32.gpt",
+            "ramboot-7.0.5.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a643-bspub.bin",
+          "../u6-fw/mt7981/u6-plus-fip.bin"
+        ],
+        [
+          "tftp/images/mmc",
+          "../u6-fw/mt7981/mmc_20221116"
+        ],
+        [
+          "tftp/images/mmc-fw",
+          "../u6-fw/mt7981/EMMC04G-MK27-G02_FFU.BIN"
+        ]
+      ]
+    }
   }
 }
+

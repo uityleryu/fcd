@@ -116,9 +116,9 @@ packiso-blackpanther-$1:
 
 	echo " >> Generating NewLivedCD ISO "
 	cd $(NEWLIVEDCD); \
-	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(shell cat $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso .
+	genisoimage -r -V "$(NEW_LABEL)" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $(OUTDIR)/$(shell sed -e "s/ /_/g" < $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso .
 	sleep 1
-	chmod 777 $(OUTDIR)/$(shell cat $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso
+	chmod 777 $(OUTDIR)/$(shell sed -e "s/ /_/g" < $(NEWSQUASHFS)/etc/skel/Desktop/version.txt).iso
 
 endef
 

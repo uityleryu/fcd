@@ -34,7 +34,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # customize variable for different products
         self.wait_LCM_upgrade_en = {
             'ed20', 'ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58'
+            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58', 'ed5a'
         }
 
         self.disable_powerd_list = ['ed2c']
@@ -62,6 +62,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed55': "3",  # usw-lite-8-poe 32MB
             'ed56': "3",  # usw-pro-24-poe (RTK)
             'ed58': "3",  # usw-pro-48-poe (RTK)
+            'ed5a': "3",  # usw-pro-8-poe (RTK)
         }
 
         # number of WiFi
@@ -85,6 +86,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed55': "0",  # usw-lite-8-poe 32MB
             'ed56': "0",  # usw-pro-24-poe (RTK)
             'ed58': "0",  # usw-pro-48-poe (RTK)
+            'ed5a': "0",  # usw-pro-8-poe (RTK)
         }
 
         # number of Bluetooth
@@ -108,6 +110,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed55': "0",  # usw-lite-8-poe 32MB
             'ed56': "0",  # usw-pro-24-poe (RTK)
             'ed58': "0",  # usw-pro-48-poe (RTK)
+            'ed5a': "0",  # usw-pro-8-poe (RTK)
         }
 
         self.netif = {
@@ -130,6 +133,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed55': "ifconfig eth0 ",  # usw-lite-8-poe 32MB
             'ed56': "ifconfig eth0 ",  # usw-pro-24-poe (RTK)
             'ed58': "ifconfig eth0 ",  # usw-pro-48-poe (RTK)
+            'ed5a': "ifconfig eth0 ",  # usw-pro-8-poe (RTK)
         }
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")

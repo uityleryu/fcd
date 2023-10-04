@@ -94,6 +94,18 @@ IMAGE-UVC-G5PRO-MP= \
     images/a598* \
     uvc-fw/g5pro.*
 
+IMAGE-UVC-G5TURRETPRO= \
+    images/a59a* \
+    uvc-fw/g5turretpro.*
+
+IMAGE-UVC-G5TURRETULTRA= \
+    images/a59c* \
+    uvc-fw/g5turretultra.*
+
+IMAGE-UVC-G5DOME-ULTRA= \
+    images/a59d* \
+    uvc-fw/g5domeultra.*
+
 IMAGE-UVC+=$(IMAGE-UVC-G4PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G3BATTERY)
 IMAGE-UVC+=$(IMAGE-UVC-G4PTZ)
@@ -116,6 +128,10 @@ IMAGE-UVC+=$(IMAGE-UNIFI-WAVEROVERCAMERA)
 IMAGE-UVC+=$(IMAGE-UVC-AIPRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO)
 IMAGE-UVC+=$(IMAGE-UVC-G5PRO-MP)
+IMAGE-UVC+=$(IMAGE-UVC-G5TURRETPRO)
+IMAGE-UVC+=$(IMAGE-UVC-G5TURRETULTRA)
+IMAGE-UVC+=$(IMAGE-UVC-G5DOME-ULTRA)
+
 
 # Model
 # This is used for adding an option in the file of BackT1.desktop
@@ -251,6 +267,18 @@ TOOLS-UVC-G5PRO-MP+=$(TOOLS-UVC)
 TOOLS-UVC-G5PRO-MP+= \
     uvc/128k_ff.bin
 
+TOOLS-UVC-G5TURRETPRO+=$(TOOLS-UVC)
+TOOLS-UVC-G5TURRETPRO+= \
+    uvc/128k_ff.bin
+
+TOOLS-UVC-G5TURRETULTRA+=$(TOOLS-UVC)
+TOOLS-UVC-G5TURRETULTRA+= \
+    uvc/128k_ff.bin
+
+TOOLS-UVC-G5PRO-ULTRA+=$(TOOLS-UVC)
+TOOLS-UVC-G5PRO-ULTRA+= \
+    uvc/128k_ff.bin
+
 # Project target
 $(eval $(call ProductImage,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G3BATTERY,FCD_$(PRD)_G3BATTERY_$(VER)_$(FWVER)))
@@ -274,11 +302,16 @@ $(eval $(call ProductImage,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VE
 $(eval $(call ProductImage,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO,FCD_$(PRD)_G5PRO_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UVC-G5PRO-MP,FCD_$(PRD)_G5PRO-MP_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5TURRETPRO,FCD_$(PRD)_G5TURRETPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5TURRETULTRA,FCD_$(PRD)_G5TURRETULTRA_$(VER)_$(FWVER)))
+$(eval $(call ProductImage,UVC-G5DOME-ULTRA,FCD_$(PRD)_G5DOME-ULTRA$(VER)_$(FWVER)))
+
 
 # Project target black panther
 $(eval $(call ProductImage2,03933_a598))
 $(eval $(call ProductImage2,04055_a598))
 $(eval $(call ProductImage2,UVC_G5PRO-SERIES))
+$(eval $(call ProductImage2,04272_a59b))
 
 # Project compressed file for RPi FCD host
 $(eval $(call ProductCompress,UVC-G4PRO,FCD_$(PRD)_G4PRO_$(VER)_$(FWVER)))
@@ -302,6 +335,9 @@ $(eval $(call ProductCompress,UVC-G5DOME,FCD_$(PRD)_G5DOME_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G5FLEX,FCD_$(PRD)_G5FLEX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UVC-G4DOORBELLPROPOE,FCD_$(PRD)_G4DOORBELLPROPOE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UNIFI-WAVEROVERCAMERA,FCD_$(PRD)_WAVEROVERCAMERA_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-AIPRO,FCD_$(PRD)_AIPRO_$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UVC-G5DOME-ULTRA,FCD_$(PRD)_G5DOME-ULTRA$(VER)_$(FWVER)))
+
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,03268_a5a0))
 $(eval $(call ProductCompress2,02574_a563))
@@ -322,3 +358,8 @@ $(eval $(call ProductCompress2,03465_a597))
 $(eval $(call ProductCompress2,03759_a5c0))
 $(eval $(call ProductCompress2,03783_a5c1))
 $(eval $(call ProductCompress2,04000_a594))
+$(eval $(call ProductCompress2,03821_a5a4))
+$(eval $(call ProductCompress2,03849_a575))
+$(eval $(call ProductCompress2,04272_a59b))
+$(eval $(call ProductCompress2,08974_a59c))
+$(eval $(call ProductCompress2,09268_a59d))

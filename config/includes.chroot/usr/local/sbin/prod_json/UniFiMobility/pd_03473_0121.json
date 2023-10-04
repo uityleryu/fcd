@@ -1,11 +1,11 @@
 {
   "UniFiMobility": {
-    "UMT": {
+    "UMT-US": {
       "INDEX": 0,
-      "NAME": "UMT",
+      "NAME": "UMT-US",
       "BOARDID": "0121",
       "BOMREV": "113-03473",
-      "DESC": "UniFi Mobility Tag",
+      "DESC": "UniFi Mobility Tag US",
       "FILE": "um_nrf52840_factory.py",
       "T1FILE": "",
       "QRCHECK": "activate_code",
@@ -19,12 +19,17 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-4k-ee_20230608",
             "aarch64-rpi4-64k-ee"
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
     }
   }
 }

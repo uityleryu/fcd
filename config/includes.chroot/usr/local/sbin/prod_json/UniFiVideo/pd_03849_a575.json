@@ -13,18 +13,43 @@
       "SW_ID": "0e03",
       "DOWNLOAD_FILE": [
         {
+          "SRC_PATH": "images/fcd-image/uvc-fw",
+          "DST_PATH": "uvc-fw",
+          "FILES": [
+            "g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_6976a3e.230518.0307.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/images",
+          "DST_PATH": "images",
+          "FILES": [
+            "a575-fw.bin",
+            "a575-fw.ini"
+          ]
+        },
+        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee",
+            "aarch64-rpi4-64k-ee_20230608",
             "aarch64-rpi4-4k-ee"
           ]
         }
       ],
-      "CREATE_LINK": []
+      "CREATE_LINK": [
+        [
+          "tftp/images/a575-fw.bin",
+          "../uvc-fw/g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_6976a3e.230518.0307.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230608"
+        ]
+      ]
     }
   }
 }
+
