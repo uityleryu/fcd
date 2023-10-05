@@ -12,7 +12,6 @@ DOHELPER_ENABLE = True
 REGISTER_ENABLE = True
 FLASH_DEVREG_DATA = False
 DEVREG_CHECK_ENABLE = False
-RECORD_MODEM_IMEI = True
 
 
 class UMNRF52840FactoryGeneral(ScriptBase):
@@ -22,12 +21,9 @@ class UMNRF52840FactoryGeneral(ScriptBase):
 
     def init_vars(self):
         # script specific vars
-        self.nrf52840_prompt = "umt:~"
+        self.nrf52840_prompt = ["umt-us:~", "umt:~"]
         self.product_class = "0015"  # for basic 4k product, please refer https://docs.google.com/spreadsheets/d/18hqzWQowU-3KRXN-N3BlWYDUyQ7WKnELLQrevznXOKA/edit#gid=1
         self.regsubparams = ""
-
-        if self.board_id in ["0121", "0122"]:
-            self.log_upload_failed_alert_en = True
 
         # number of Ethernet
         self.ethnum = {
@@ -54,8 +50,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
         }
 
     def prepare_server_need_files(self):
-        self.pexp.expect_lnxcmd(15, self.nrf52840_prompt, 'shell colors off')
-        output = self.pexp.expect_get_output("uart_debug uniqueid", self.nrf52840_prompt, timeout=3)
+        output = self.pexp.expect_get_output2("uart_debug uniqueid", "ubnt", self.nrf52840_prompt, timeout=3)
         # log_debug(output)
         id_list = re.findall(r'id: 0x(\w+)', output)
         cpu_id = id_list[0]
@@ -140,14 +135,6 @@ class UMNRF52840FactoryGeneral(ScriptBase):
     def check_devreg_data(self):
         output = self.pexp.expect_get_output2("info", "ubnt", self.nrf52840_prompt, timeout=10)
 
-    def record_modem_imei(self):
-        output = self.pexp.expect_get_output("uishell_mdm imei", self.nrf52840_prompt, timeout=3)
-        log_debug("rsp={}".format(output))
-        match = re.search(r'([0-9]{15,})', output)
-        imei = match.group(1)
-        log_debug("imei={}".format(imei))
-        self.imei = imei
-
     def run(self):
         """
             Main procedure of factory
@@ -186,9 +173,8 @@ class UMNRF52840FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(70, "Finish checking MAC in DUT ...")
 
-        if RECORD_MODEM_IMEI is True:
-            self.record_modem_imei()
-            msg(90, "Finish recording modem IMEI ...")
+        if self.board_id in ["0121", "0122"]:
+            self.__del__()
 
         msg(100, "Completing registration ...")
         self.close_fcd()

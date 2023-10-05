@@ -20,7 +20,7 @@
             "uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb",
             "lede-ipq806x-4.4-itb-5.43.55-tftp",
             "uap-ac-sxg-spf.4.0_nor-v6.bin",
-            "BZ.ipq806x_6.5.62+14788.230622.2048-uboot.bin"
+            "BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
           ]
         },
         {
@@ -65,7 +65,7 @@
         ],
         [
           "tftp/images/e560.bin",
-          "../e560/BZ.ipq806x_6.5.62+14788.230622.2048-uboot.bin"
+          "../e560/BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
         ]
       ]
     }

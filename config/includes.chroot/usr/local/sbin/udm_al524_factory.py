@@ -24,7 +24,7 @@ class UDM_AL524_FACTORY(ScriptBase):
         self.fwimg = self.board_id + "-fw.bin"
         self.bootloader_prompt = ">"
         self.devregpart = "/dev/mtdblock4"
-        self.helperexe = "helper_AL524_release"
+        self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
         self.bomrev = "113-" + self.bom_rev
         self.username = "ui"
@@ -52,7 +52,7 @@ class UDM_AL524_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea32': "al_eth3"
+            'ea32': "al_eth0"
         }
 
         # number of Ethernet
@@ -72,7 +72,7 @@ class UDM_AL524_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea32': "br0"
+            'ea32': "eth9"
         }
 
         # LCM update
@@ -391,13 +391,13 @@ class UDM_AL524_FACTORY(ScriptBase):
         time.sleep(1)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT is True:
+        if self.UPDATE_UBOOT is False:
             self.set_fake_EEPROM()
             self.update_uboot()
             self.pexp.expect_action(10, self.bootloader_prompt, "reset")
             msg(10, "Finish boot updating")
 
-        if self.BOOT_RECOVERY_IMAGE is True:
+        if self.BOOT_RECOVERY_IMAGE is False:
             msg(15, "Updating FW")
             self.fwupdate()
 

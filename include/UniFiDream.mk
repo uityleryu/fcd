@@ -166,7 +166,7 @@ $(eval $(call ProductCompress,UDM-SE,FCD_$(PRD)_UDM-SE_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO,FCD_$(PRD)_UDW_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UDW-PRO-PU,FCD_$(PRD)_UDW-PRO-PU_$(VER)_$(FWVER)))
-
+$(eval $(call ProductCompress,UDM-PRO-MAX,FCD_$(PRD)_UDM-PRO-MAX_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 
 $(eval $(call ProductCompress2,00917_ea2c))
@@ -184,3 +184,4 @@ $(eval $(call ProductCompress2,01075_ec2d))
 $(eval $(call ProductCompress2,00843_ea2a))
 $(eval $(call ProductCompress2,00845_ea2b))
 $(eval $(call ProductCompress2,UniFiDream_UDMSE-SERIES))
+$(eval $(call ProductCompress2,09532_ea32))

@@ -60,7 +60,7 @@ class U7IPQ5322MFGGeneral(ScriptBase):
 
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in", 
-                                action="\x1b\x1b")
+                                action= "\x1b\x1b")
 
     def transfer_img(self, address, filename):
         img = os.path.join(self.image, filename)

@@ -11,52 +11,8 @@
       "QRCHECK": "False",
       "FCD_ID": "0009",
       "SW_ID": "0e03",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/fcd-image/uvc-fw",
-          "DST_PATH": "uvc-fw",
-          "FILES": [
-            "g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/images",
-          "DST_PATH": "images",
-          "FILES": [
-             "a574-fw.ini"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-64k-ee_20230608",
-            "aarch64-rpi4-4k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/tools/uvc",
-          "DST_PATH": "tools/uvc",
-          "FILES": [
-            "128k_ff.bin",
-            "helper_uvcg4doorbellpro ",
-            "m25p80_uvcg4doorbellpro.ko"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a574-fw.bin",
-          "../uvc-fw/g4dbpro.UVC.S5L_4.39.5-fcddbg-0926.bin"
-        ],
-        [
-          "tftp/tools/common/aarch64-rpi4-64k-ee",
-          "./aarch64-rpi4-64k-ee_20230608"
-        ]
-      ]
+      "DOWNLOAD_FILE": [],
+      "CREATE_LINK": []
     }
   }
 }

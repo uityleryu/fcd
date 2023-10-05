@@ -27,94 +27,76 @@ class UAMT7621Factory(ScriptBase):
         '''
 
         self.ubpmt = {
-            'ec42': "MT7621 #",
-            'ec36': "MT7621 #"
+            'ec42': "MT7621 #"
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'ec42': "root@LEDE:/#",
-            'ec36': "root@LEDE:/#"
+            'ec42': "root@LEDE:/#"
         }
 
         self.lnxpmt_fcdfw = {
-            'ec42': "#",
-            'ec36': "#"
+            'ec42': "#"
         }
 
         self.bootloader = {
-            'ec42': "ec42-t1.bin",
-            'ec36': "ec36-t1.bin"
+            'ec42': "ec42-t1.bin"
         }
 
         self.cacheaddr = {
-            'ec42': "0x83000000",
-            'ec36': "0x83000000"
+            'ec42': "0x83000000"
         }
 
         self.ubaddr = {
-            'ec42': "0x00000",
-            'ec36': "0x00000"
+            'ec42': "0x00000"
         }
 
         self.ubsz = {
-            'ec42': "0x2000000",
-            'ec36': "0x2000000"
+            'ec42': "0x2000000"
         }
 
         self.cfgaddr = {
-            'ec42': "0x1fc0000",
-            'ec36': "0x1fc0000"
+            'ec42': "0x1fc0000"
         }
 
         self.cfgsz = {
-            'ec42': "0x40000",
-            'ec36': "0x40000"
+            'ec42': "0x40000"
         }
 
         self.epromaddr = {
-            'ec42': "0x170000",
-            'ec36': "0x170000"
+            'ec42': "0x170000"
         }
 
         self.epromsz = {
-            'ec42': "0x10000",
-            'ec36': "0x10000"
+            'ec42': "0x10000"
         }
 
         self.product_class_table = {
-            'ec42': "basic",
-            'ec36': "basic"
+            'ec42': "basic"
         }
 
         self.devregmtd = {
-            'ec42': "/dev/mtdblock3",
-            'ec36': "/dev/mtdblock3"
+            'ec42': "/dev/mtdblock3"
         }
 
         self.helpername = {
-            'ec42': "",
-            'ec36': ""
+            'ec42': ""
         }
 
         self.pd_dir_table = {
-            'ec42': "ua_hub_4p",
-            'ec36': "ua_hub"
+            'ec42': "ua_hub_4p"
         }
 
         self.ethnum = {
-            'ec42': "1",
-            'ec36': "1"
+            'ec42': "1"
         }
 
         self.wifinum = {
-            'ec42': "2",
-            'ec36': "2"
+            'ec42': "2"
         }
 
         self.btnum = {
-            'ec42': "0",
-            'ec36': "0"
+            'ec42': "0"
         }
 
         self.devnetmeta = {

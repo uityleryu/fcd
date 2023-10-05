@@ -371,13 +371,6 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ethtool eth0 | grep Speed")
         self.pexp.expect_only(10, self.ethspeed_table[self.board_id])
 
-    def chk_usbspeed(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep link")
-        self.pexp.expect_only(10, "u0")
-
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "prs_serial status| grep speed")
-        self.pexp.expect_only(10, "3.0")
-
     def add_key(self):
         cmd = "rm {0}; dropbearkey -t rsa -f {0}".format(self.dropbear_key)
         [sto, rtc] = self.fcd.common.xcmd(cmd)
@@ -444,7 +437,6 @@ class IPQ80XXFactory(ScriptBase):
             ETHERSPEED_EN = False
         else:
             ETHERSPEED_EN = True
-        USBSPEED_EN = True
         DOHELPER_EN = True
         REGISTER_EN = True
         ADDKEYS_EN = False
@@ -512,10 +504,6 @@ class IPQ80XXFactory(ScriptBase):
         if ETHERSPEED_EN:
             msg(35, "Check Ethernet Speed")
             self.chk_ethernetspeed()
-
-        if USBSPEED_EN:
-            msg(37, "Check USB Speed")
-            self.chk_usbspeed()
 
         if DOHELPER_EN is True:
             self.erase_eefiles()

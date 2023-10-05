@@ -12,7 +12,6 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a685: U7-Enterprise-IW
     a686: U7-Pro-IW
     a688: UK-Pro
-    a691: U7-LR
 '''
 class U7IPQ5322BspFactory(ScriptBase):
     def __init__(self):
@@ -35,7 +34,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "4",
             'a686': "1",
             'a688': "1",
-            'a691': "1",
         }
 
         self.wifinum = {
@@ -44,7 +42,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "3",
             'a686': "3",
             'a688': "2",
-            'a691': "2",
         }
 
         self.btnum = {
@@ -53,16 +50,14 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "1",
             'a686': "1",
             'a688': "0",
-            'a691': "1",
         }
 
         self.bootm_addr = {
-            'a681': "0x50400000",
-            'a682': "0x50400000",
-            'a685': "0x50400000",
-            'a686': "0x50400000",
+            'a681': "0x50000000",
+            'a682': "0x50000000",
+            'a685': "0x50000000",
+            'a686': "0x50000000",
             'a688': "0x50000000",
-            'a691': "0x50400000",
         }
 
         # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
@@ -72,7 +67,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "bootm $fileaddr#config@a685",
             'a686': "bootm $fileaddr#config@a686",
             'a688': "bootm $fileaddr#config@a688",
-            'a691': "bootm $fileaddr#config@a691",
         }
 
         self.linux_prompt_select = {
@@ -81,7 +75,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "#",
             'a686': "#",
             'a688': "#",
-            'a691': "#",
         }
 
         self.uboot_eth_port = {
@@ -90,7 +83,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "eth0",
             'a686': "eth0",
             'a688': "eth0",
-            'a691': "eth0",
         }
 
         self.lnx_eth_port = {
@@ -99,7 +91,6 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a685': "br-lan",
             'a686': "br-lan",
             'a688': "br-lan",
-            'a691': "br-lan",
         }
 
         self.devnetmeta = {
@@ -118,7 +109,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.FANI2C_CHECK_ENABLE = False
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
-        elif self.board_id in ["a685", "a686", "a691"]:
+        elif self.board_id == "a685":
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
@@ -165,7 +156,7 @@ class U7IPQ5322BspFactory(ScriptBase):
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
 
-        if self.board_id in ['a681', 'a682', 'a685', 'a686', 'a691']:
+        if self.board_id in ['a681', 'a682', 'a685', 'a686']:
             time.sleep(2)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
 
@@ -194,7 +185,7 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         time.sleep(1)
         cmd = "hexdump -s 0x58800 -n 10 /dev/mtdblock9"
-        post_exp = "0058800 0001 0404 0000 0000"
+        post_exp = "0058800 0001 0404 0000 0000 7800"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
 
     def i2c_check(self, item):
@@ -279,7 +270,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.CHKCALDATA_ENABLE is True:
-            if self.board_id in ["a681", "a682", "a683", "a685", "a686", "a691"]:
+            if self.board_id in ["a681", "a682", "a683", "a685", "a686"]:
                 self.chk_caldata_ipq5322()
                 msg(35, "Finish check wifi cal_data ...")
 

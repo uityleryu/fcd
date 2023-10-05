@@ -12,7 +12,6 @@ import os
 import stat
 import shutil
 
-
 class UAMT7621Factory(ScriptBase):
     def __init__(self):
         super(UAMT7621Factory, self).__init__()
@@ -22,78 +21,63 @@ class UAMT7621Factory(ScriptBase):
     def init_vars(self):
         '''
             ec55: Hub-Enterprise
-            ec46: Hub-Gate
         '''
 
         self.ubpmt = {
-            'ec55': "=>",
-            'ec46': "=>"
+            'ec55': "=>"
         }
 
         self.ubpmt_fcdfw = {
-            'ec55': "MT7621 #",
-            'ec46': "MT7621 #"
+            'ec55': "MT7621 #"
         }
 
         # linux console prompt
         self.lnxpmt = {
-            'ec55': "root@LEDE:",
-            'ec46': "root@LEDE:/#"
+            'ec55': "root@LEDE:"
         }
 
         self.lnxpmt_fcdfw = {
-            'ec55': "#",
-            'ec46': "#"
+            'ec55': "#"
         }
 
         self.cacheaddr = {
-            'ec55': "0x80010000",
-            'ec46': "0x80010000"
+            'ec55': "0x80010000"
         }
 
         self.ubaddr = {
-            'ec55': "0x0",
-            'ec46': "0x0"
+            'ec55': "0x0"
         }
 
         self.ubsz = {
-            'ec55': "0x2000000",
-            'ec46': "0x2000000"
+            'ec55': "0x2000000"
         }
 
         self.ubmtd = {
-            'ec55': "/dev/mtd0",
-            'ec46': "/dev/mtd0"
+            'ec55': "/dev/mtd0"
         }
 
         self.product_class_table = {
-            'ec55': "basic",
-            'ec46': "basic"
+            'ec55': "basic"
         }
 
         self.devregmtd = {
-            'ec55': "/dev/mtdblock3",
-            'ec46': "/dev/mtdblock3"
+            'ec55': "/dev/mtdblock3"
         }
 
         self.pd_dir_table = {
-            'ec55': "",
-            'ec46': ""
+            'ec55': ""
         }
 
         self.ethnum = {
-            'ec55': "1",
-            'ec46': "1"
+            'ec55': "1"
         }
 
         self.wifinum = {
-            'ec55': "0",
-            'ec46': "1"
+            'ec55': "0"
         }
 
         self.btnum = {
-            'ec55': "0",
-            'ec46': "1"
+            'ec55': "0"
         }
 
         self.devnetmeta = {
@@ -126,18 +110,15 @@ class UAMT7621Factory(ScriptBase):
         self.id_rsa = os.path.join(self.tools_full_dir, "id_rsa")
         self.bomrev = "13-{0}".format(self.bom_rev)
 
+
     def stop_uboot(self, timeout=30):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "\033")
 
     def enter_console(self):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        if self.board_id in ['ec55']:
-            self.pexp.expect_ubcmd(10, "login:", "ui")
-            self.pexp.expect_ubcmd(10, "Password:", "ui")
-        else:
-            self.pexp.expect_ubcmd(10, "login:", "ubnt")
-            self.pexp.expect_ubcmd(10, "Password:", "ubnt")
-
+        self.pexp.expect_ubcmd(10, "login:", "ubnt")
+        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+       
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "setenv serverip " + self.tftp_server)
@@ -163,8 +144,7 @@ class UAMT7621Factory(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt_combine, cmd)
         self.pexp.expect_ubcmd(30, "Bytes transferred", "usetprotect spm off")
 
-        cmd = "sf probe;sf erase {0} {1};sf write {2} {0} {1}".format(self.uboot_address, self.uboot_size,
-                                                                      self.cache_address)
+        cmd = "sf probe;sf erase {0} {1};sf write {2} {0} {1}".format(self.uboot_address, self.uboot_size, self.cache_address)
         log_debug(cmd)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt_combine, cmd)
         time.sleep(1)
@@ -176,7 +156,7 @@ class UAMT7621Factory(ScriptBase):
     def update_fcd_uboot(self):
         source = os.path.join(self.fwdir, "{}-uboot.bin".format(self.board_id))
         target = os.path.join(self.dut_tmpdir, "uboot.bin")
-        # get length of uboot image
+        #get length of uboot image
         cmd = "stat -Lc %s {}".format(source)
         log_debug("host cmd: " + cmd)
         [uboot_img_sz, rtc] = self.fcd.common.xcmd(cmd)
@@ -185,35 +165,12 @@ class UAMT7621Factory(ScriptBase):
         log_debug("Send uboot image from host to DUT ...")
         self.tftp_get(remote=source, local=target, timeout=10, post_en=self.linux_prompt)
 
-        pattern = r"[A-Fa-f0-9]{32}"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase {}".format(self.ubootpart))
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if={} of={}".format(target, self.ubootpart))
-        rsp = self.pexp.expect_get_output("md5sum {}".format(target), self.linux_prompt)
-        log_debug('rsp = {}'.format(rsp))
-        try:
-            match = re.findall(pattern, rsp)
-            if match:
-                uboot_img_md5 = match[0]
-                log_debug('uboot md5sum from file is {}'.format(uboot_img_md5))
-            else:
-                error_critical("Parsing uboot md5sum from file failed!!!")
-        except Exception as e:
-            error_critical("Parsing uboot md5sum from file exception occurred!!!")
-
+        uboot_img_md5 = self.pexp.expect_get_output("md5sum {}".format(target), self.linux_prompt).split()[0]
         cmd = "dd if={} of=/tmp/dump_uboot bs=1 count={}".format(self.ubootpart, uboot_img_sz)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
-        rsp = self.pexp.expect_get_output("md5sum /tmp/dump_uboot", self.linux_prompt)
-        log_debug('rsp = {}'.format(rsp))
-        try:
-            match = re.findall(pattern, rsp)
-            if match:
-                uboot_dump_md5 = match[0]
-                log_debug('uboot md5sum from flash is {}'.format(uboot_dump_md5))
-            else:
-                error_critical("Parsing uboot md5sum from flash failed!!!")
-        except Exception as e:
-            error_critical("Parsing uboot md5sum from flash exception occurred!!!")
-
+        uboot_dump_md5 = self.pexp.expect_get_output("md5sum /tmp/dump_uboot", self.linux_prompt).split()[0]
         if uboot_img_md5 == uboot_dump_md5:
             log_debug("Upgrade FCD Uboot success !")
         else:
@@ -297,11 +254,11 @@ class UAMT7621Factory(ScriptBase):
             msg(10, "Booting the T1 image ...")
             self.boot_to_T1()
 
-        if PROVISION_EN is True:
+        if PROVISION_EN is True:    
             msg(20, "Sendtools to DUT and data provision ...")
             self.erase_eefiles()
             self.data_provision_64k(self.devnetmeta)
-
+        
         if DOHELPER_EN is True:
             msg(40, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
@@ -312,8 +269,8 @@ class UAMT7621Factory(ScriptBase):
             self.check_devreg_data()
             msg(60, "Finish doing signed file and EEPROM checking ...")
 
-        # self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
-
+        #self.pexp.expect_ubcmd(10, self.linux_prompt, "reboot")
+        
         if UPDATE_FCDFW_EN is True:
             msg(70, "update firmware...")
             self.update_fcd_uboot()
@@ -325,14 +282,13 @@ class UAMT7621Factory(ScriptBase):
             self.check_info2()
             msg(80, "Succeeding in checking the devreg information ...")
 
+
         msg(100, "Complete FCD process ...")
         self.close_fcd()
-
-
+        
 def main():
     ua_mt7621_factory = UAMT7621Factory()
     ua_mt7621_factory.run()
-
 
 if __name__ == "__main__":
     main()

@@ -226,7 +226,7 @@ class UFPUBOOTFactory(ScriptBase):
         #-----------------------------------------------------------------------------------
 
         msg(20, "Login new U-Boot")
-        self.pexp.expect_ubcmd(300, "Please press Enter to activate this console.", "")
+        self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
         self.pexp.expect_ubcmd(10, "login:", "ui")
         self.pexp.expect_ubcmd(10, "Password:", "ui")
         cmd = "ifconfig eth0 {0} up".format(self.dutip)

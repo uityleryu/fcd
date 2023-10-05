@@ -26,11 +26,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ab12-app.bin",
-          "../up-fw/up-chime/testing_fw/non_encrypt/up_chime_fw.v1.4.3.testing.bin"
+          "../up-fw/up-chime/testing_fw/non_encrypt/up_chime_fw.bin"
         ],
         [
           "tftp/images/ab12-app-encrypt.bin",
-          "../up-fw/up-chime/testing_fw/encypt/up_chime_fw.v1.4.3.testing-encrypt.bin"
+          "../up-fw/up-chime/testing_fw/encypt/up_chime_fw-encrypt.bin"
         ],
         [
           "tftp/images/ab12-bootloader.bin",
@@ -71,14 +71,6 @@
         [
           "tftp/images/ab12-secure_boot_key.bin",
           "../up-fw/up-chime/testing_fw/non_encrypt/secure-bootloader-key-256.bin"
-        ],
-        [
-          "tftp/images/ab12-app-shipping-encrypt.bin",
-          "../up-fw/up-chime/shipping_fw/sign/up_chime_fw.v1.4.3.shipping-encrypt.bin"
-        ],
-        [
-          "tftp/images/ab12-app-shipping.bin",
-          "../up-fw/up-chime/shipping_fw/sign/up_chime_fw.v1.4.3.shipping.bin"
         ]
       ]
     }

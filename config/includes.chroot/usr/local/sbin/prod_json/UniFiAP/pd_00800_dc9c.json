@@ -1,6 +1,6 @@
 {
   "UniFiAP": {
-    "UBB-00800": {
+    "UAP-Building-Bridge 831": {
       "INDEX": 0,
       "NAME": "UAP-UBB 831",
       "BOARDID": "dc9c",
@@ -16,20 +16,15 @@
           "SRC_PATH": "images/fcd-image/uap-fw",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "UBB.v3.0.6.177.230823.1059.bin",
+            "UBB.v2.0.8.42939.200723.1805.bin",
             "ubntubb-u-boot.rom",
             "Unifi_bridge-spf6.1.1_nor-v4.bin"
           ]
         },
         {
-          "SRC_PATH": "images/tools/uap",
-          "DST_PATH": "tools/uap",
-          "FILES": [
-            "cfg_part.bin",
-            "helper_IPQ40xx",
-            "id_rsa.pub",
-            "id_rsa"
-          ]
+          "SRC_PATH": "images/tools/",
+          "DST_PATH": "tools/",
+          "FILES": []
         },
         {
           "SRC_PATH": "images/tools/common",
@@ -45,7 +40,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dc9c.bin",
-          "../uap-fw/UBB.v3.0.6.177.230823.1059.bin"
+          "../uap-fw/UBB.v2.0.8.42939.200723.1805.bin"
         ],
         [
           "tftp/images/dc9c-bootloader.bin",

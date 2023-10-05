@@ -62,9 +62,9 @@ class IPQ40XXFactory(ScriptBase):
         self.bootloader = {
             '0000': "dc99-bootloader.bin",
             'dc99': "dc99-bootloader.bin",
-            'dc9a': "dc9a-bootloader.bin",
+            'dc9a': "dc99-bootloader.bin",
             'dc98': "dc98-bootloader.bin",
-            'dc9c': "dc9c-bootloader.bin",
+            'dc9c': "dc98-bootloader.bin",
             'dc9b': "dc9b-bootloader.bin",
             'dc9e': "dc9e-bootloader.bin",
             'dc9f': "dc9f-bootloader.bin",

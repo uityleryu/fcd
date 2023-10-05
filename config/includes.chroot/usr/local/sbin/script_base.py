@@ -279,7 +279,6 @@ class ScriptBase(object):
         self.sem_ver = ""
         self.sw_id = ""
         self.fw_ver = ""
-        self.imei = ""
 
         self.qrhex = ""
         # The HEX of the QR code
@@ -855,11 +854,11 @@ class ScriptBase(object):
         ]
         log_debug("Top level BOM:" + self.tlb_rev)
         if self.tlb_rev != "":
-            sstr.append("-t {}".format(self.tlb_rev))
+            sstr.append("-t 002-{}".format(self.tlb_rev))
 
         log_debug("ME BOM:" + self.meb_rev)
         if self.meb_rev != "":
-            sstr.append("-M {}".format(self.meb_rev))
+            sstr.append("-M 300-{}".format(self.meb_rev))
 
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
@@ -901,11 +900,11 @@ class ScriptBase(object):
         ]
         log_debug("Top level BOM:" + self.tlb_rev)
         if self.tlb_rev != "":
-            sstr.append("-t {}".format(self.tlb_rev))
+            sstr.append("-t 002-{}".format(self.tlb_rev))
 
         log_debug("ME BOM:" + self.meb_rev)
         if self.meb_rev != "":
-            sstr.append("-M {}".format(self.meb_rev))
+            sstr.append("-M 300-{}".format(self.meb_rev))
 
         if rsa_en is True:
             cmd_option = "-k {}".format(self.rsakey_path)

@@ -26,5 +26,3 @@ $(eval $(call ProductCompress2,03445_ec1f))
 $(eval $(call ProductCompress2,04099_efba))
 $(eval $(call ProductCompress2,04247_efbb))
 $(eval $(call ProductCompress2,04316_efbc))
-$(eval $(call ProductCompress2,04170_efbe))
-
