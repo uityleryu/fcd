@@ -374,11 +374,18 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug("Enable burn in mode passed!!")
 
     def record_modem_imei(self):
-        output = self.pexp.expect_get_output("echo \"ati\" | socat - /dev/ttyUSB2 | grep IMEI:", self.linux_prompt, timeout=3)
-        log_debug("IMEI cmd rsp = {}".format(output))
+        try_max = 15
+        for t in range(try_max):
+            output = self.pexp.expect_get_output("echo \"ati\" | socat - /dev/ttyUSB2 | grep IMEI:", self.linux_prompt, timeout=3)
+            log_debug(f"IMEI cmd rsp = {output}, (retry {t + 1}/{try_max})")
 
-        match = re.search(r'([0-9]{15,})', output)
-        if match is None:
+            match = re.search(r'([0-9]{15,})', output)
+            if match is None:
+                time.sleep(2)
+            else:
+                break
+
+        else:
             error_critical('Failed to get IMEI')
 
         imei = match.group(1)
