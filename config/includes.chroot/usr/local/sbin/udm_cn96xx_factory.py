@@ -124,7 +124,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         }
 
         self.board_rev = {
-            'ea3d': "r8",
+            'ea3d': "r9",
             'ea3e': "r3"
         }
 
@@ -243,6 +243,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(0, 12):
             # for i in range(0,11):
             self.send_wo_extra_newline("]:", "\n")
+        time.sleep(2)
         self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
         # self.send_wo_extra_newline("Secure NV counter", "0\n")
         self.proc.send(self.newline)
@@ -368,6 +369,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id], self.dutip))
         self.is_network_alive_in_linux(ipaddr=self.dutip)
 
     def unlock_eeprom_permission(self):
@@ -471,10 +473,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         msg(5, "Open serial port successfully ...")
         if self.ps_state is True:
             self.set_ps_port_relay_on()
-        for i in range(10):
+        for i in range(3):
             try:
                 index = self.proc.expect(
-                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 2 seconds for boot menu"], timeout=15)
+                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 1 seconds for boot menu"], timeout=15)
                 if index in [2] and not self.board_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
@@ -485,7 +487,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
                     if self.board_id == "ea3d":
-                        if "31 Aug" in output:
+                        if "06 Oct" in output:
                             self.fuse_config = True
                         else:
                             self.proc.send("b")
