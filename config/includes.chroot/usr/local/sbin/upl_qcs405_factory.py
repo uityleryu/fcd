@@ -114,6 +114,9 @@ class UPLQCS405FactoryGeneral(ScriptBase):
                 self.homekit_setup_after_registration()
                 msg(65, "Finish Homekit setup ...")
 
+            self.erase_devregpart()
+            msg(68, "Finish erasing EEPROM ...")
+
             self.check_devreg_data()
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
@@ -470,8 +473,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
         cmd = [
-            "-h stage.udrs.io",
-#           "-h {}".format(self.devreg_hostname),
+#            "-h stage.udrs.io",
+           "-h {}".format(self.devreg_hostname),
             "-k {}".format(self.pass_phrase),
             regsubparams,
             reg_qr_field,
@@ -518,6 +521,18 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
+    def erase_devregpart(self):
+        log_debug("erasing devregpart")
+        cmd = "/etc/mkfs_backup.sh -F"
+        log_debug(cmd)
+        rmsg = self.session.execmd_getmsg(cmd)
+        log_debug(rmsg)
+
+        log_debug("dump devregpart")
+        cmd = "hexdump -C {} 2>&1".format(self.devregpart)
+        log_debug(cmd)
+        rmsg = self.session.execmd_getmsg(cmd)
+        log_debug(rmsg)
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
