@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "UMR-EU-AC-01247": {
+    "UMR-EU-AU-UK-01247": {
       "INDEX": 0,
       "NAME": "UMR-EU-AC",
       "BOARDID": "e618",
       "BOMREV": "113-01247",
-      "DESC": "UniFi Mobile Router EU AC",
+      "DESC": "UniFi Mobile Router EU AU UK",
       "FILE": "uap_qca956x_factory2.py",
       "T1FILE": "uap_qca956x_mfg2.py",
       "QRCHECK": "activate_code",

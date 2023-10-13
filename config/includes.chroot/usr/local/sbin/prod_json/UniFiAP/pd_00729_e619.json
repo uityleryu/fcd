@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "UMR-US-AC-00729": {
+    "UMR-US-CA-00729": {
       "INDEX": 0,
-      "NAME": "UMR-US-AC",
+      "NAME": "UMR-US-CA",
       "BOARDID": "e619",
       "BOMREV": "113-00729",
-      "DESC": "UniFi Mobile Router US AC",
+      "DESC": "UniFi Mobile Router US CA",
       "FILE": "uap_qca956x_factory2.py",
       "T1FILE": "uap_qca956x_mfg2.py",
       "QRCHECK": "activate_code",
