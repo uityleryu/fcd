@@ -882,7 +882,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
             # Write ME BOM
             if self.write_mebom[self.board_id] is True:
-                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format("300-" + self.meb_rev)
+                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format(self.meb_rev)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
                 cmd = "chmod 644 /mnt/vendor/persist/bom_300_id"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
