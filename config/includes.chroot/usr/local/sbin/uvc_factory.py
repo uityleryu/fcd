@@ -583,6 +583,15 @@ class UVCFactoryGeneral(ScriptBase):
             "-b " + netmeta['btnum'][self.board_id],
             "-k " + self.rsakey_path
         ]
+
+        if self.tlb_rev != "":
+            log_debug("Top level BOM:" + self.tlb_rev)
+            sstr.append("-t 002-{}".format(self.tlb_rev))
+
+        if self.meb_rev != "":
+            log_debug("ME BOM:" + self.meb_rev)
+            sstr.append("-M 300-{}".format(self.meb_rev))
+
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
         [sto, rtc] = self.fcd.common.xcmd(sstr)
@@ -923,6 +932,9 @@ class UVCFactoryGeneral(ScriptBase):
         time_start = time.time()
         time.sleep(50)
 
+        if self.product_name == "UVC-G4DOORBELLPRO":
+            self.set_host_usb_ethernet_ip()
+
         try:
             sshclient_obj = SSHClient(host=self.ip,
                                     username=self.username,
@@ -936,6 +948,10 @@ class UVCFactoryGeneral(ScriptBase):
             self.critical_error("reconnected with DUT timeout fail")
 
         log_debug('Reboot duration = {:.2f} sec'.format(time.time() - time_start))
+
+        if self.board_id == "a564":
+            '''Check MCU version'''
+            self.check_mcu()
 
         cmd = "sudo rm /t/home/ubnt/.ssh/known_hosts; sync; sleep 1".format(self.row_id)
         log_debug(cmd)
@@ -1070,6 +1086,63 @@ class UVCFactoryGeneral(ScriptBase):
             self.session.execmd(cmd)
 
 
+    def check_mcu_version(self):
+        rv = False
+        cmd = "cat /tmp/checksum.conf"
+        pan_ver = self.session.execmd_getmsg(cmd).split("\n")[0].split(":")[1].strip()
+        cmd = "basename /lib/firmware/*.mot .mot"
+        expected_pan_ver = self.session.execmd_getmsg(cmd).strip()
+        if pan_ver == expected_pan_ver:
+            log_debug("Current Pan version({}) = expected({})".format(pan_ver, expected_pan_ver))
+            rv = rv or False
+        else:
+            log_debug("Current Pan version({}) != expected({})".format(pan_ver, expected_pan_ver))
+            rv = rv or True
+
+        cmd = "cat /tmp/version"
+        zoom_ver = self.session.execmd_getmsg(cmd).split()[3].strip()
+        cmd = "basename /lib/firmware/T*.bin .bin"
+        expected_zoom_ver = self.session.execmd_getmsg(cmd).strip()
+        if zoom_ver == expected_zoom_ver:
+            log_debug("Current Zoom version({}) = expected({})".format(zoom_ver, expected_zoom_ver))
+            rv = rv or False
+        else:
+            log_debug("Current Zoom version({}) != expected({})".format(zoom_ver, expected_zoom_ver))
+            rv = rv or True
+
+        return rv
+
+    def check_mcu(self):
+        if self.check_mcu_version():
+            log_debug("Need to wait for MCU upgrade reboot")
+            time_start = time.time()
+            while True:
+                time.sleep(1)
+                if self.cnapi.ip_is_alive(self.ip) is False:
+                    log_debug("DUT is rebooting")
+                    break
+                if time.time() - time_start > 120:
+                    self.critical_error('[Fail] MCU version incorrect and Fail to wait for reboot')
+
+            log_debug('MCU upgrade duration = {:.2f} sec'.format(time.time() - time_start))
+
+            try:
+                sshclient_obj = SSHClient(host=self.ip,
+                                        username=self.username,
+                                        password=self.password,
+                                        polling_connect=True,
+                                        polling_mins=self.polling_mins)
+                self.set_sshclient_helper(ssh_client=sshclient_obj)
+                log_debug("reconnected with DUT successfully")
+            except Exception as e:
+                print(str(e))
+                self.critical_error("Fail to reconnect to DUT ...")
+
+            if self.check_mcu_version():
+                self.critical_error("Fail to upgrade MCU FW ...")
+            else:
+                log_debug("MCU FW upgrade success")
+
     def _get_init_dut_info(self):
         log_debug('===Init dut info'.ljust(80, '='))
 
@@ -1102,9 +1175,28 @@ class UVCFactoryGeneral(ScriptBase):
         duration = int(time.time() - time_start)
         log_debug(duration_msg.format(cap=action, time=duration))
 
+    def set_host_usb_ethernet_ip(self, ip='169.254.2.21'):
+        # change netmask of eth0:0
+        cmd = 'ifconfig eth0:0 netmask 255.255.255.0'
+        
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
+        # assign IP address to USB ethernet
+        cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        usb_interface = output
+
+        cmd = "ifconfig {} {}".format(usb_interface, ip)
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
     def run(self):
         """  Main procedure of factory
         """
+        if self.product_name == "UVC-G4DOORBELLPRO":
+            self.set_host_usb_ethernet_ip()
 
         sshclient_obj = SSHClient(host=self.ip,
                                   username=self.username,

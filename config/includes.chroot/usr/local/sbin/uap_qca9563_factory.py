@@ -259,7 +259,7 @@ class UAPQCA9563Factory(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
-            msg(90, "Succeeding in checking the devrenformation ...")
+            msg(90, "Succeeding in checking the devreg information ...")
 
         if self.ps_state is True:
             time.sleep(2)

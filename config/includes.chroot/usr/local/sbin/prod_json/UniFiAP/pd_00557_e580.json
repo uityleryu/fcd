@@ -1,0 +1,73 @@
+{
+  "UniFiAP": {
+    "UWB-XG": {
+      "INDEX": 0,
+      "NAME": "UWB-XG",
+      "BOARDID": "e580",
+      "BOMREV": "113-00557",
+      "DESC": "UniFi WiFi Base Station",
+      "FILE": "uap_ipq806x_factory.py",
+      "T1FILE": "uap_ipq806x_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw/uwb-xg",
+          "DST_PATH": "uwb-xg",
+          "FILES": [
+            "gen3-uboot.mbn",
+            "uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin",
+            "uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb",
+            "lede-ipq806x-4.4-itb-5.43.55-tftp",
+            "uap-ac-stadium-spf.4.0_nor-v10.bin",
+            "BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uap",
+          "DST_PATH": "tools/uap",
+          "FILES": [
+            "ath3k-bdaddr",
+            "helper_IPQ806x_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e580-uboot.bin",
+          "../uwb-xg/gen3-uboot.mbn"
+        ],
+        [
+          "tftp/images/e580-factory.bin",
+          "../uwb-xg/uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin"
+        ],
+        [
+          "tftp/images/e580-fcd-kernel.bin",
+          "../uwb-xg/uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb"
+        ],
+        [
+          "tftp/images/e580-fcd-new-kernel.bin",
+          "../uwb-xg/lede-ipq806x-4.4-itb-5.43.55-tftp"
+        ],
+        [
+          "tftp/images/e580-art.bin",
+          "../uwb-xg/uap-ac-stadium-spf.4.0_nor-v10.bin"
+        ],
+        [
+          "tftp/images/e580.bin",
+          "../uwb-xg/BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+        ]
+      ]
+    }
+  }
+}

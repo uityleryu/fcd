@@ -1,0 +1,28 @@
+{
+  "Connect": {
+    "UCD-21-CR5": {
+      "INDEX": 0,
+      "NAME": "UCD-21-CR5",
+      "BOARDID": "ef83",
+      "BOMREV": "113-04143",
+      "DESC": "UniFi Connect Display 21 (CR5)",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "1c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

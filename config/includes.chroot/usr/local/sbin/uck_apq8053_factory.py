@@ -78,17 +78,13 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         postexp = [
             "Firmware version:",
             "Launching interactive shell",
-            "Welcome to CloudKey FCD",
-            "UniFi-CloudKey-Gen2-Plus"
+            "Welcome to CloudKey FCD"
         ]
         index = self.pexp.expect_get_index(200, postexp)
         if index == 0 or index == 1 or index == 2:
             log_debug("kernel is MFG or preload image")
             self.pexp.expect_action(10, "", "\n")
             self.pexp.expect_only(10, self.linux_prompt)
-        elif index == 3:
-            log_debug("kerenl is normal FW")
-            self.login()
         else:
             error_critical(msg="Can't get expected string to login kernel")
 
@@ -204,10 +200,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "echo USBETH=$(lsusb | grep -c 0b95:1790 2>/dev/null)"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBETH=1")
 
-            if self.board_id == "e970":
-                cmd = "echo USBSATA=$(lsusb | grep -c 174c:1153 2>/dev/null)"
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
-
+            cmd = "echo USBSATA=$(lsusb | grep -c '174c:1153\|174c:55aa' 2>/dev/null)"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
             msg(15, "Check the provisioning data successfully")
 
             src = os.path.join(self.tools, self.helper_path, "check-part.txt")
@@ -249,9 +243,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "dd if=/dev/zero of=/dev/disk/by-partlabel/appdata bs=32M >/dev/null 2>/dev/null"
             self.pexp.expect_lnxcmd(480, self.linux_prompt, cmd, self.linux_prompt)
 
-            if self.board_id == "e970":
-                cmd = "dd if=/dev/zero of=/dev/sda bs=32M count=1"
-                self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
+            cmd = "dd if=/dev/zero of=/dev/sda bs=32M count=1"
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
 
             cmd = "tftp -b 4096 -g -r {0}/{1}-recovery.bin -l /tmp/{1}-recovery.bin {2}".format(self.image, self.board_id, self.tftp_server)
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt, valid_chk=True)
@@ -274,7 +267,11 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
             cmd = "reboot -f"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-            self.login_kernel()
+
+            log_debug("kerenl is normal FW")
+            self.login(username="ui", password="ui", retry=12)
+            self.set_lnx_net("eth0")
+            self.is_network_alive_in_linux()
             msg(70, "Completing the image update")
 
         if self.board_id == "e970":
@@ -283,7 +280,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
         cmd = "grep -q 'WebRTC library version' /usr/lib/unifi/logs/server.log"
         self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd, self.linux_prompt)
-        msg(70, "Completing the initialization of UniFi")
+        msg(80, "Completing the initialization of UniFi")
 
         cmd = "ubnt-tools id"
         self.pexp.expect_lnxcmd(20, self.linux_prompt, cmd)
@@ -311,6 +308,11 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+
+        if self.board_id == "e970":
+            cmd = "poweroff"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            time.sleep(50)
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

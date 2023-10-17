@@ -1,11 +1,11 @@
 {
   "UniFiAP": {
-    "U-SAK": {
+    "UK-ULTRA": {
       "INDEX": 0,
-      "NAME": "U-SAK",
+      "NAME": "UK-ULTRA",
       "BOARDID": "dca8",
       "BOMREV": "113-01283",
-      "DESC": "UniFi SAK",
+      "DESC": "Swiss Army Knife Ultra",
       "FILE": "uap_qca9563_factory.py",
       "T1FILE": "uap_qca9563_mfg.py",
       "QRCHECK": "True",
@@ -18,7 +18,7 @@
           "FILES": [
             "unifi-v2.0.13.310-ga92d9480_uap-qca956x-16MB_u-boot.bin",
             "XD.qca956x-LSDK-ART-U-SAK-V1.img",
-            "gen2-u-sak-6.2.49-fcd-candidate.bin"
+            "BZ.qca956x_6.6.32+15058.230901.0738-uboot.bin"
           ]
         },
         {
@@ -35,7 +35,8 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee"
+            "aarch64-rpi4-64k-ee",
+            "FCD_WEBGUI_0.0.35.tgz"
           ]
         }
       ],
@@ -50,7 +51,7 @@
         ],
         [
           "tftp/images/dca8-fw.bin",
-          "../uap-fw/gen2-u-sak-6.2.49-fcd-candidate.bin"
+          "../uap-fw/BZ.qca956x_6.6.32+15058.230901.0738-uboot.bin"
         ]
       ]
     }

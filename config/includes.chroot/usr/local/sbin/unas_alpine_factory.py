@@ -319,7 +319,21 @@ class UNASALPINEFactory(ScriptBase):
 
     def wait_lcm_upgrade(self):
         if self.board_id == 'ea50':
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-control --command dump --sender FCD", post_exp="setup.ready", retry=240)
+            
+            retry = 30
+            for i in range(0, retry):
+                time.sleep(10)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "lcm-control --command dump --sender FCD")
+                try:
+                    self.pexp.expect_only(5, "setup.ready")
+                except Exception as e:
+                    print("Cannot get lcm::setup.ready ..." + str(i))
+                    continue
+                break
+            else:
+                print("Wait LCM setup.ready retry fail")
+                raise NameError('Wait LCM setup.ready retry fail')
+
         else:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/lcm-firmware/lcm-fw-info /dev/ttyACM0", post_exp="md5", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "")
@@ -498,6 +512,13 @@ class UNASALPINEFactory(ScriptBase):
             self.check_devreg_data(dut_tmp_subdir="unas")
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
+        if self.WAIT_LCMUPGRADE_ENABLE is True:
+            if self.board_id == 'ea50' or self.board_id == 'ea51':
+                self.load_pkg_tool()
+            if self.board_id in self.wait_LCM_upgrade_en:
+                msg(80, "Waiting LCM upgrading ...")
+                self.wait_lcm_upgrade()
+
         if self.FWUPDATE_ENABLE is True:
             self.fwupdate()
             self.pexp.expect_action(300, "login:", self.user)
@@ -518,13 +539,6 @@ class UNASALPINEFactory(ScriptBase):
 
             Retry(self.check_info, max_retry_count=3, delay_time=1)
             msg(90, "Succeeding in checking the devreg information ...")
-
-        if self.WAIT_LCMUPGRADE_ENABLE is True:
-            if self.board_id == 'ea50' or self.board_id == 'ea51':
-                self.load_pkg_tool()
-            if self.board_id in self.wait_LCM_upgrade_en:
-                msg(95, "Waiting LCM upgrading ...")
-                self.wait_lcm_upgrade()
 
         msg(100, "Completing firmware upgrading ...")
         self.close_fcd()

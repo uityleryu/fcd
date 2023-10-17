@@ -1,0 +1,73 @@
+{
+  "UniFiAP": {
+    "UAP-AC-SHD": {
+      "INDEX": 0,
+      "NAME": "UAP-AC-SHD",
+      "BOARDID": "e540",
+      "BOMREV": "113-00533",
+      "DESC": "UniFi AC SHD",
+      "FILE": "uap_ipq806x_factory.py",
+      "T1FILE": "uap_ipq806x_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw/uwb-xg",
+          "DST_PATH": "e540",
+          "FILES": [
+            "gen3-uboot.mbn",
+            "uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin",
+            "uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb",
+            "lede-ipq806x-4.4-itb-5.43.55-tftp",
+            "uap-ac-hd-rev5-ilq.3.0.csu4_nor-v12.bin",
+            "BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uap",
+          "DST_PATH": "tools/uap",
+          "FILES": [
+            "ath3k-bdaddr",
+            "helper_IPQ806x_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e540-uboot.bin",
+          "../e540/gen3-uboot.mbn"
+        ],
+        [
+          "tftp/images/e540-factory.bin",
+          "../e540/uap_v3.9.0.7334_ipq8064_dandelion_cc.uap_ipq806x_nor-factory.ubin"
+        ],
+        [
+          "tftp/images/e540-fcd-kernel.bin",
+          "../e540/uap_v3.9.18.8086_ipq8064_dandelion_cc.uap_ipq806x_factory_openwrt-ipq806x-3.14-itb"
+        ],
+        [
+          "tftp/images/e540-fcd-new-kernel.bin",
+          "../e540/lede-ipq806x-4.4-itb-5.43.55-tftp"
+        ],
+        [
+          "tftp/images/e540-art.bin",
+          "../e540/uap-ac-hd-rev5-ilq.3.0.csu4_nor-v12.bin"
+        ],
+        [
+          "tftp/images/e540.bin",
+          "../e540/BZ.ipq806x_5.43.55+12783.211206.1945-uboot.bin"
+        ]
+      ]
+    }
+  }
+}
