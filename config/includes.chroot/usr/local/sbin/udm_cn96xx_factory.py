@@ -319,7 +319,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         #     self.set_ps_port_relay_on()
 
     def update_recovery(self):
-        self.pexp.expect_action(60, "to stop", "\033\033")
+        self.pexp.expect_action(120, "to stop", "\033\033")
         self.set_boot_net()
         time.sleep(2)
         self.pexp.expect_action(40, self.bootloader_prompt, "ping {}".format(self.tftp_server))
@@ -513,6 +513,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                     break
             except Exception as e:
                 log_debug(str(e))
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = exc_tb.tb_frame.f_code.co_filename
+                line_number = exc_tb.tb_lineno
         else:
             raise Warning("Set Board Info Failed....")
         if self.UPDATE_UBOOT:
