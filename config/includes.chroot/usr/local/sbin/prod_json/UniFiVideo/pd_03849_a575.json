@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_6976a3e.230518.0307.bin"
+            "g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_746ed62.230918.1025.bin"
           ]
         },
         {
@@ -42,7 +42,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a575-fw.bin",
-          "../uvc-fw/g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_6976a3e.230518.0307.bin"
+          "../uvc-fw/g4dbpropoe.UVC.S5L.v4.57.28.67-fcddbg.M_746ed62.230918.1025.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
