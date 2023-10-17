@@ -46,8 +46,8 @@
           "../ua-fw/ua-ultra/20231016/partition-table.bin"
         ],
         [
-          "tftp/tools/common/aarch64-rpi4-64k-ee",
-          "./aarch64-rpi4-64k-ee_20230608"
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
         ]
       ]
     }
