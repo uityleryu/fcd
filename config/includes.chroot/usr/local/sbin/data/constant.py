@@ -118,9 +118,9 @@ region_codes = (
     '8178',    # Israsel
     '8188',    # Japan
     '82fc',    # Thailand
-    '8124',    # Australia
-    '843a',    # United kingdom
-    '817c'     # Canada
+    '8024',    # Australia
+    '833a',    # United kingdom
+    '807c'     # Canada
 )
 
 country_codes = (
@@ -142,9 +142,9 @@ unifi_region_codes = (
     '8178ffffffffffffffffffffffffffff',    # Israsel  (HEX: 0x178)
     '8188ffffffffffffffffffffffffffff',    # Japan  (HEX: 0x188)
     '82fcffffffffffffffffffffffffffff',    # Thailand  (HEX: 0x2FC)
-    '8124ffffffffffffffffffffffffffff',    # Australia  (HEX: 0x24)
-    '843affffffffffffffffffffffffffff',    # United kingdom  (HEX: 0x33A)
-    '817cffffffffffffffffffffffffffff'     # Canada  (HEX: 0x7C)
+    '8024ffffffffffffffffffffffffffff',    # Australia  (HEX: 0x24)
+    '833affffffffffffffffffffffffffff',    # United kingdom  (HEX: 0x33A)
+    '807cffffffffffffffffffffffffffff'     # Canada  (HEX: 0x7C)
 )
 
 erasewifidata = [
