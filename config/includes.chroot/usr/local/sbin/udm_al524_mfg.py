@@ -18,42 +18,70 @@ class UDM_AL524_MFG(ScriptBase):
         self.mfg_uboot_cal = os.path.join(self.image, self.board_id + "-mfg.bin")
         self.mfg_img = os.path.join(self.image, self.board_id + "-fcd.bin")
 
-        self.bootloader_prompt = "MT7622"
+        self.bootloader_prompt = "ALPINE_UBNT_UDM_PRO_MAX"
         self.linux_prompt = "#"
+        self.activeport = {
+            'ea32': "al_eth0"
+        }
+        self.UPDATE_UBOOT = True
+        self.BOOT_RECOVERY_IMAGE = True
+        self.INIT_RECOVERY_IMAGE = True
+        self.FW_UPGRADE = True
 
     def enter_uboot(self, timeout=60):
         self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
 
         log_debug("Setting network in uboot ...")
-        self.set_ub_net(premac="00:11:22:33:44:5" + str(self.row_id))
+        # self.set_ub_net(premac="00:11:22:33:44:5" + str(self.row_id))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
         self.is_network_alive_in_uboot()
+    def update_uboot(self, image):
+        log_debug("Transfer uboot image ...")
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-BSP_uboot.img"),
+            dest=os.path.join(self.tftpdir, "boot.img")
+        )
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootupd")
+        self.pexp.expect_only(120, "delenv script")
+    def update_uImage(self, image):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
+        self.is_network_alive_in_uboot()
+        log_debug("Transfer uImage ...")
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-BSP-uImage"),
+            dest=os.path.join(self.tftpdir, "uImage")
+        )
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot 0x08000004 uImage", self.bootloader_prompt)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "cp.b $fdtaddr $loadaddr_dt 7ffc", self.bootloader_prompt)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "fdt addr $loadaddr_dt", self.bootloader_prompt)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x08000004 - $fdtaddr", self.bootloader_prompt)
+        self.pexp.expect_only(30, "Starting kernel")
+    def init_recovery_image(self):
+        self.pexp.expect_only(20, "Starting kernel")
+        self.pexp.expect_only(20, "Starting udapi-bridge: OK")
+        self.pexp.expect_only(20, "boot: boot1 boot2 boot3 boot4")
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, "\015")
 
-    def transfer_img(self, image):
-        log_debug("Transfer image ...")
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpb {}".format(image), "Bytes transferred")
 
-    def erase_partition(self, start, length):
-        log_debug("Erase flash from {} to {}...".format(start, length))
-        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
-        self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor erase {} {}".format(start, length), self.bootloader_prompt)
+    def fw_upgrade(self):
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server)
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.board_id + "-BSP-fw.tar"),
+            dest=os.path.join(self.tftpdir, "upgrade.tar")
+        )
+        self.pexp.expect_action(10, self.linux_prompt, "cd /tmp")
+        self.pexp.expect_lnxcmd(240, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync",post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar",post_exp="upgrade.tar")
+        self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh",post_exp=self.bsp_fw_prompt)
 
-    def write_image(self, start, length):
-        log_debug("Write flash from {} to {}...".format(start, length))
-        self.pexp.expect_ubcmd(30, "", "\033")  # for prompt
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "nor init")
-        self.pexp.expect_ubcmd(90, self.bootloader_prompt, "snor write ${{loadaddr}} {} {}".format(start, length), self.bootloader_prompt)
-
-    def update_uboot(self, erase_cal):
-        log_debug("Updating uboot ...")
-        if erase_cal == "True":
-            log_debug("Clearing uboot and calibration data ...")
-            self.erase_partition(start="0x0", length="0x230000")
-            self.write_image(start="0x0", length="0x230000")
-        else:
-            log_debug("Clearing uboot ...")
-            self.erase_partition(start="0x0", length="0x1e0000")
-            self.write_image(start="0x0", length="0x1e0000")
 
     def update_kernel(self):
         log_debug("Updating kernel ...")
@@ -79,28 +107,24 @@ class UDM_AL524_MFG(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        self.enter_uboot()
-        msg(10, "Finish network setting in uboot ...")
+        if self.UPDATE_UBOOT:
+            self.enter_uboot()
+            msg(10, "Finish network setting in uboot ...")
 
-        self.transfer_img(self.mfg_uboot_cal)
-        msg(15, "Finish uboot with cal default data image transferring ...")
+            self.update_uboot()
+            msg(15, "Finish Update bootloader...")
+        if self.BOOT_RECOVERY_IMAGE:
+            self.update_uImage()
+            msg(30, "Finish uImage updating...")
+        if self.INIT_RECOVERY_IMAGE:
+            self.init_recovery_image()
+            msg(40, "Initial uImage ...")
+        if self.FW_UPGRADE:
+            self.fw_upgrade()
+            msg(50, "Finish kernel image transferring ...")
 
-        self.update_uboot(self.erasecal)
-        msg(30, "Finish uboot updating...")
-
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
-
-        self.enter_uboot()
-        msg(40, "Finish network setting in uboot ...")
-
-        self.transfer_img(self.mfg_img)
-        msg(50, "Finish kernel image transferring ...")
-
-        self.update_kernel()
-        msg(60, "Finish kernel updating...")
-
-        self.init_bsp_image()
-        msg(70, "Finish kernel login...")
+        output = self.pexp.expect_get_output(action="cat /lib/version", prompt="", timeout=3)
+        log_debug(output)
 
         msg(100, "Completed back to T1 process ...")
         self.close_fcd()

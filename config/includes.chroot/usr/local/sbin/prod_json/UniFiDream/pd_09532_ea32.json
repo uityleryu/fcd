@@ -36,7 +36,10 @@
           "FILES": [
             "UDMPROMAX.al324.v0.0.1+inaro.13673.33a413f.231004.1613.bin",
             "uImage_20231004",
-            "boot_20231004.img"
+            "boot_20231004.img",
+            "bsp_boot.img",
+            "uImage-initramfs-u6.v4",
+            "bsp-upgrade-u6-v3.6.7.tar"
           ]
         }
       ],
@@ -52,6 +55,18 @@
         [
           "tftp/images/ea32-uboot.bin",
            "../udm-fw/udm-pro-max/boot_20231004.img"
+        ],
+        [
+          "tftp/images/ea32-BSP_uboot.img",
+          "../udm-fw/udm-pro-max/bsp_boot.img"
+        ],
+        [
+          "tftp/images/ea32-BSP-uImage",
+          "../udm-fw/udm-pro-max/uImage-initramfs-u6.v4"
+        ],
+        [
+          "tftp/images/ea32-BSP-fw.tar",
+          "../udm-fw/udm-pro-max/bsp-upgrade-u6-v3.6.7.tar"
         ]
       ]
     }
