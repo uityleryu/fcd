@@ -72,8 +72,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea3d': "rvu_pf#3",
-            'ea3e': "rvu_pf#3",
+            'ea3d': "rvu_pf#5",
+            'ea3e': "rvu_pf#5",
         }
 
         # number of Ethernet
@@ -125,7 +125,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         self.board_rev = {
             'ea3d': "r9",
-            'ea3e': "r3"
+            'ea3e': "r5"
         }
 
         self.MAC_Num = {
