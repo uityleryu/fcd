@@ -97,6 +97,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         msg(20, "Finish setting up network ...")
 
         if PROVISION_EN is True:
+            self.erase_devregpart()
+            msg(25, "Finish erasing FCD data ...")
             self.erase_eefiles()
             msg(30, "Finish erasing ee files ...")
             self.data_provision_64k(self.devnetmeta)
@@ -113,9 +115,6 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             if self.homekit_dict[self.board_id] is True:
                 self.homekit_setup_after_registration()
                 msg(65, "Finish Homekit setup ...")
-
-            self.erase_devregpart()
-            msg(68, "Finish erasing EEPROM ...")
 
             self.check_devreg_data()
             msg(70, "Finish doing signed file and EEPROM checking ...")
@@ -523,7 +522,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.add_FCD_TLV_info()
     def erase_devregpart(self):
         log_debug("erasing devregpart")
-        cmd = "/etc/mkfs_backup.sh -F"
+        cmd = "/etc/mkfs_backup.sh "
         log_debug(cmd)
         rmsg = self.session.execmd_getmsg(cmd)
         log_debug(rmsg)
