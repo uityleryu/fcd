@@ -7,7 +7,7 @@
       "BOMREV": "113-09532",
       "DESC": "UniFi Dream Machine Pro Max",
       "FILE": "udm_al524_factory.py",
-      "T1FILE": "",
+      "T1FILE": "udm_al524_mfg.py",
       "QRCHECK": "True",
       "FCD_ID": "0005",
       "SW_ID": "0701",

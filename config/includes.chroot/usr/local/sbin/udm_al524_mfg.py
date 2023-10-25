@@ -23,6 +23,9 @@ class UDM_AL524_MFG(ScriptBase):
         self.activeport = {
             'ea32': "al_eth0"
         }
+        self.netif = {
+            'ea32': "eth0"
+        }
         self.UPDATE_UBOOT = True
         self.BOOT_RECOVERY_IMAGE = True
         self.INIT_RECOVERY_IMAGE = True
@@ -63,9 +66,8 @@ class UDM_AL524_MFG(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x08000004 - $fdtaddr", self.bootloader_prompt)
         self.pexp.expect_only(30, "Starting kernel")
     def init_recovery_image(self):
-        self.pexp.expect_only(20, "Starting kernel")
         self.pexp.expect_only(20, "Starting udapi-bridge: OK")
-        self.pexp.expect_only(20, "boot: boot1 boot2 boot3 boot4")
+        self.pexp.expect_lnxcmd(60, self.linux_prompt, "\015")
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "\015")
 
 
@@ -77,7 +79,7 @@ class UDM_AL524_MFG(ScriptBase):
             dest=os.path.join(self.tftpdir, "upgrade.tar")
         )
         self.pexp.expect_action(10, self.linux_prompt, "cd /tmp")
-        self.pexp.expect_lnxcmd(240, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(360, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync",post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar",post_exp="upgrade.tar")
         self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh",post_exp=self.bsp_fw_prompt)
