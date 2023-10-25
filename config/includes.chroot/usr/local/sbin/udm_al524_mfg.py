@@ -32,15 +32,14 @@ class UDM_AL524_MFG(ScriptBase):
         self.FW_UPGRADE = True
 
     def enter_uboot(self, timeout=60):
-        self.pexp.expect_ubcmd(timeout, "Hit any key to stop autoboot", "")
-
+        self.pexp.expect_action(40, "to stop", "\033\033")
         log_debug("Setting network in uboot ...")
         # self.set_ub_net(premac="00:11:22:33:44:5" + str(self.row_id))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
-        self.is_network_alive_in_uboot()
-    def update_uboot(self, image):
+        self.is_network_alive_in_uboot(timeout=15)
+    def update_uboot(self):
         log_debug("Transfer uboot image ...")
         self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-BSP_uboot.img"),
@@ -48,25 +47,26 @@ class UDM_AL524_MFG(ScriptBase):
         )
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run bootupd")
         self.pexp.expect_only(120, "delenv script")
-    def update_uImage(self, image):
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "reset")
+    def update_uImage(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ipaddr " + self.dutip)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv serverip " + self.tftp_server)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv ethact {}".format(self.activeport[self.board_id]))
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv bootargs pci=pcie_bus_perf console=ttyS0,115200")
-        self.is_network_alive_in_uboot()
+        self.is_network_alive_in_uboot(timeout=15)
         log_debug("Transfer uImage ...")
         self.copy_file(
             source=os.path.join(self.fwdir, self.board_id + "-BSP-uImage"),
             dest=os.path.join(self.tftpdir, "uImage")
         )
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot 0x08000004 uImage", self.bootloader_prompt)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "cp.b $fdtaddr $loadaddr_dt 7ffc", self.bootloader_prompt)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "fdt addr $loadaddr_dt", self.bootloader_prompt)
-        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x08000004 - $fdtaddr", self.bootloader_prompt)
-        self.pexp.expect_only(30, "Starting kernel")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot 0x08000004 uImage")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "cp.b $fdtaddr $loadaddr_dt 7ffc")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "fdt addr $loadaddr_dt")
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x08000004 - $fdtaddr")
+        self.pexp.expect_only(60, "Starting kernel")
     def init_recovery_image(self):
-        self.pexp.expect_only(20, "Starting udapi-bridge: OK")
+        self.pexp.expect_only(120, "Starting udapi-bridge: OK")
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "\015")
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "\015")
 
@@ -79,11 +79,12 @@ class UDM_AL524_MFG(ScriptBase):
             dest=os.path.join(self.tftpdir, "upgrade.tar")
         )
         self.pexp.expect_action(10, self.linux_prompt, "cd /tmp")
-        self.pexp.expect_lnxcmd(360, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync",post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar",post_exp="upgrade.tar")
-        self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh",post_exp=self.bsp_fw_prompt)
-
+        self.pexp.expect_lnxcmd(480, self.linux_prompt, "tftp -g -r upgrade.tar " + self.tftp_server,post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "sync")
+        self.pexp.expect_lnxcmd(40, self.linux_prompt, "ls upgrade.tar")
+        self.pexp.expect_lnxcmd(360, self.linux_prompt, "flash-factory.sh")
+        self.pexp.expect_only(120, "Restarting system")
+        self.pexp.expect_only(120, "root@alpine:~#")
 
     def update_kernel(self):
         log_debug("Updating kernel ...")
@@ -100,7 +101,7 @@ class UDM_AL524_MFG(ScriptBase):
         """Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
-        self.fcd.common.config_stty(self.dev)
+        # self.fcd.common.config_stty(self.dev)
         # Connect into DU and set pexpect helper for class using picocom
         pexpect_cmd = "sudo picocom /dev/" + self.dev + " -b 115200"
         log_debug(msg=pexpect_cmd)
@@ -109,7 +110,7 @@ class UDM_AL524_MFG(ScriptBase):
         time.sleep(2)
         msg(5, "Open serial port successfully ...")
 
-        if self.UPDATE_UBOOT:
+        if self.UPDATE_UBOOT is True:
             self.enter_uboot()
             msg(10, "Finish network setting in uboot ...")
 
@@ -121,7 +122,7 @@ class UDM_AL524_MFG(ScriptBase):
         if self.INIT_RECOVERY_IMAGE:
             self.init_recovery_image()
             msg(40, "Initial uImage ...")
-        if self.FW_UPGRADE:
+        if self.FW_UPGRADE is True:
             self.fw_upgrade()
             msg(50, "Finish kernel image transferring ...")
 
