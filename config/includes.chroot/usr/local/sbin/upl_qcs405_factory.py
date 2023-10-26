@@ -379,8 +379,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
                 info_dict['token_id'], info_dict['token']))
-        mfi_token_txt = os.path.join(file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
-        shutil.copy2(self.token_txt_path, mfi_token_txt)
+        mfi_token_txt_path = os.path.join(file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
+        shutil.copy2(self.token_txt_path, mfi_token_txt_path)
 
         # csv
         csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
@@ -395,6 +395,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         is_file = os.path.isfile(self.token_txt_path) and os.path.isfile(csv_path) and os.path.isfile(txt_path)
         log_info('token_info_path = {}'.format(self.token_txt_path))
+        log_info('token_info_path = {}'.format(mfi_token_txt_path))
         log_info('csv_path = {}'.format(csv_path))
         log_info('txt_path = {}'.format(txt_path))
         log_info('Token INFO TXT & Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
