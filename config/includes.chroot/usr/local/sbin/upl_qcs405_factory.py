@@ -472,6 +472,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         # must use new client to get hk token
         clientbin = "/usr/local/sbin/client_x64_release_20230908"
+        cmd = 'chmod 777 {}'.format(clientbin)
+        self.fcd.common.xcmd(cmd)
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
