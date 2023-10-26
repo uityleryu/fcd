@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+import logging
 import sys
 import time
 import os
@@ -124,6 +124,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.write_mac_addr()
             msg(80, "Finish writing MAC address ...")
 
+            if self.homekit_dict[self.board_id] is True:
+                self.check_tokenid_match_after_reboot()
+                msg(85, "Finish checking HK token ID ...")
+
         if CHECK_MAC_EN is True:
             self.check_mac()
             msg(90, "Finish checking MAC address ...")
@@ -214,7 +218,6 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             error_critical('write MAC address failed')
 
         log_info('write MAC address successfully')
-
 
         # reboot to activate MAC address & re-login
         if self.reboot_dict[self.board_id] is True:
@@ -375,6 +378,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         # prepare token.txt to write into dut / backup on usbdisk
         self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
+        self.tokenid_dut = info_dict['token_id']
         with open(self.token_txt_path, 'w') as f:
             f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
@@ -398,6 +402,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         log_info('token_info_path = {}'.format(mfi_token_txt_path))
         log_info('csv_path = {}'.format(csv_path))
         log_info('txt_path = {}'.format(txt_path))
+        log_info('token_id = {}'.format(self.tokenid_dut))
         log_info('Token INFO TXT & Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
 
         return is_file
@@ -531,6 +536,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
+
     def format_backup_partition_ext4(self):
         log_debug("erasing devregpart")
         cmd = "/etc/mkfs_backup.sh "
@@ -540,6 +546,20 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         cmd = "hexdump -C {} 2>&1".format(self.devregpart)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
 
+    def check_tokenid_match_after_reboot(self):
+        cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
+        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
+        self.tokenid_dut_after_reboot = res
+        log_info('tokenid_after_reboot = {}'.format(self.tokenid_dut_after_reboot))
+        log_info('tokenid_dut = {}'.format(self.tokenid_dut))
+
+        is_tokenid_match = self.tokenid_dut_after_reboot == self.tokenid_dut
+        log_info('tokenid_after_reboot & tokenid_dut are {}match'.format('' if is_tokenid_match else 'NOT '))
+
+        if is_tokenid_match:
+            log_info('HK Token ID check successfully')
+        else:
+            error_critical('HK Token ID check failed')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
