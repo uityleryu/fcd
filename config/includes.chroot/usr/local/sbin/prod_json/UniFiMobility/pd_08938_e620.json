@@ -13,13 +13,13 @@
       "SW_ID": "0601",
       "DOWNLOAD_FILE": [
         {
-          "SRC_PATH": "images/fcd-image/uap-fw/ulte-flex",
-          "DST_PATH": "uap-fw/ulte-flex",
+          "SRC_PATH": "images/fcd-image/umr-fw",
+          "DST_PATH": "umr-fw",
           "FILES": [
-            "ULTE-Flex.qca956x.v1.7.1.0-ga4942894-recovery.bin",
+            "UMR-Industrial.qca956x.v1.7.5.0-gc9bef628-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V11.img",
-            "ee-1.7.1-0-ga4942894-ath79-generic-ui_ulte-flex-initramfs-kernel.bin",
-            "qca956x-ulte-flex-u-boot-1.7.1.0.bin"
+            "ee-1.7.5-0-gc9bef628-ath79-generic-ui_umr-industrial-initramfs-kernel.bin",
+            "qca956x-umr-industrial-u-boot-1.7.5.0.bin"
           ]
         },
         {
@@ -43,19 +43,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/e620.bin",
-          "../uap-fw/ulte-flex/ULTE-Flex.qca956x.v1.7.1.0-ga4942894-recovery.bin"
+          "../umr-fw/UMR-Industrial.qca956x.v1.7.5.0-gc9bef628-recovery.bin"
         ],
         [
           "tftp/images/e620-mfg.bin",
-          "../uap-fw/ulte-flex/XD.qca956x-LSDK-ART-ULTE-FLEX-V11.img"
+          "../umr-fw/XD.qca956x-LSDK-ART-ULTE-FLEX-V11.img"
         ],
         [
           "tftp/images/e620-recovery.bin",
-          "../uap-fw/ulte-flex/ee-1.7.1-0-ga4942894-ath79-generic-ui_ulte-flex-initramfs-kernel.bin"
+          "../umr-fw/ee-1.7.5-0-gc9bef628-ath79-generic-ui_umr-industrial-initramfs-kernel.bin"
         ],
         [
           "tftp/images/e620-uboot.bin",
-          "../uap-fw/ulte-flex/qca956x-ulte-flex-u-boot-1.7.1.0.bin"
+          "../umr-fw/qca956x-umr-industrial-u-boot-1.7.5.0.bin"
         ]
       ]
     }
