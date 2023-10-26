@@ -9,6 +9,7 @@ import filecmp
 import json
 import base64
 import zlib
+import shutil
 
 from pprint import pformat
 from collections import OrderedDict
@@ -97,8 +98,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         msg(20, "Finish setting up network ...")
 
         if PROVISION_EN is True:
-            self.erase_devregpart()
-            msg(25, "Finish erasing FCD data ...")
+            self.format_backup_partition_ext4()
+            msg(25, "Finish formatting backup partition to ext4 ...")
             self.erase_eefiles()
             msg(30, "Finish erasing ee files ...")
             self.data_provision_64k(self.devnetmeta)
@@ -225,6 +226,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.setup_network()
 
     def setup_network(self):
+        # temporally added to avoid unexpected msg from console
+        cmd = 'killall ui-connect-mqttd'
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         self.chk_lnxcmd_valid()
@@ -368,12 +373,14 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        # prepare token.txt to write into dut
+        # prepare token.txt to write into dut / backup on usbdisk
         self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
         with open(self.token_txt_path, 'w') as f:
             f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
                 info_dict['token_id'], info_dict['token']))
+        mfi_token_txt = os.path.join(file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
+        shutil.copy2(self.token_txt_path, mfi_token_txt)
 
         # csv
         csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
@@ -520,18 +527,15 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
-    def erase_devregpart(self):
+    def format_backup_partition_ext4(self):
         log_debug("erasing devregpart")
         cmd = "/etc/mkfs_backup.sh "
-        log_debug(cmd)
-        rmsg = self.session.execmd_getmsg(cmd)
-        log_debug(rmsg)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
 
         log_debug("dump devregpart")
         cmd = "hexdump -C {} 2>&1".format(self.devregpart)
-        log_debug(cmd)
-        rmsg = self.session.execmd_getmsg(cmd)
-        log_debug(rmsg)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
+
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
