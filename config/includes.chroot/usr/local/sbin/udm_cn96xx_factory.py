@@ -223,7 +223,17 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
             self.send_cmd_by_char(cmd)
             self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
-
+    def set_fuse(self):
+        self.send_wo_extra_newline("(INS)Menu choice", "13\n")
+        self.send_wo_extra_newline("(INS)Menu choice", "6\n")
+        for i in range(0, 12):
+            # for i in range(0,11):
+            self.send_wo_extra_newline("]:", "\n")
+        time.sleep(2)
+        self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
+        # self.send_wo_extra_newline("Secure NV counter", "0\n")
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("(INS)Menu choice", "7\n")
     def config_fuse_setting(self):
         # # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
         # # if idx != 0:
@@ -238,43 +248,21 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         # self.proc.send("b")
         self.send_wo_extra_newline("Choice:", "s")
         self.send_wo_extra_newline("Choice:", "t")
-        self.send_wo_extra_newline("(INS)Menu choice", "13\n")
-        self.send_wo_extra_newline("(INS)Menu choice", "6\n")
-        for i in range(0, 12):
-            # for i in range(0,11):
-            self.send_wo_extra_newline("]:", "\n")
-        time.sleep(2)
-        self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
-        # self.send_wo_extra_newline("Secure NV counter", "0\n")
-        self.proc.send(self.newline)
-        self.send_wo_extra_newline("(INS)Menu choice", "7\n")
+        self.set_fuse()
+        for i in range(0,5):
+            self.send_wo_extra_newline("(INS)Menu choice", "6\n")
+            index = self.proc.expect(
+                [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "[   31] SPI_SAFEMODE         =          1 (0x1)"], timeout=15)
+            if index != 3:
+                self.set_fuse()
+            else:
+                break
         self.send_wo_extra_newline("(INS)Menu choice", "15\n")
         time.sleep(2)
         self.send_wo_extra_newline("Choice:", "s", timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
 
     def config_board_model_nbumer(self):
-        # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
-        # log_debug("idx={}".format(idx))
-        # if idx == 0:
-        #     return 0
-        # # if idx !=0 and idx !=1:
-        # #     for i in range(3):
-        # #         if self.ps_state is True:
-        # #             self.set_ps_port_relay_off()
-        # #             time.sleep(3)
-        # #             self.set_ps_port_relay_on()
-        # #         idx = self.pexp.expect_get_index(10, "OcteonTX SOC")
-        # #         if idx ==0:
-        # #             break
-        # idx = self.pexp.expect_get_index(10, "Choice:")
-        # if idx != 0:
-        #     return 1
-        # log_debug("idx={}".format(idx))
-        # self.pexp.close()
-        # time.sleep(1)
-        # self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', codec_errors='replace', timeout=2000)
-        # self.proc.logfile_read = sys.stdout
         self.proc.send(self.newline)
         self.send_wo_extra_newline("Choice:", "s")
         time.sleep(1)
@@ -486,22 +474,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 elif index in [3] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
-                    if self.board_id == "ea3d":
-                        if "06 Oct" in output:
-                            self.fuse_config = True
-                        else:
-                            self.proc.send("b")
-                            self.proc.send("b")
-                            self.config_fuse_setting()
-                            self.fuse_config = True
-                    else:
-                        if "01 Aug" in output:
-                            self.fuse_config = True
-                        else:
-                            self.proc.send("b")
-                            self.proc.send("b")
-                            self.config_fuse_setting()
-                            self.fuse_config = True
+                    self.proc.send("b")
+                    self.proc.send("b")
+                    self.config_fuse_setting()
+                    self.fuse_config = True
                 else:
                     if self.ps_state is True:
                         self.set_ps_port_relay_off()
