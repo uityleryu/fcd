@@ -10,6 +10,7 @@
       "T1FILE": "",
       "QRCHECK": "True",
       "SW_ID": "2301",
+      "CLIENT_FILE": "client_x64_release_20230908",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",

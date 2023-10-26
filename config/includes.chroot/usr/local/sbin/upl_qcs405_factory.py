@@ -470,7 +470,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
-        clientbin = "/usr/local/sbin/client_rpi4_release"
+        # must use new client to get hk token
+        clientbin = "/usr/local/sbin/client_x64_release_20230908"
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
