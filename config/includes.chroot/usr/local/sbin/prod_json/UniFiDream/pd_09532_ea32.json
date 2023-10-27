@@ -34,9 +34,9 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-pro-max",
           "DST_PATH": "udm-fw/udm-pro-max",
           "FILES": [
-            "UDMPROMAX.al324.v0.0.1+inaro.13673.33a413f.231004.1613.bin",
-            "uImage_20231004",
-            "boot_20231004.img",
+            "UDMPROMAX.al324.v0.0.1+inaro.13903.d97e593.231027.1412.bin",
+            "uImage_20231027",
+            "boot_20231027.img",
             "bsp_boot.img",
             "uImage-initramfs-u6.v4",
             "bsp-upgrade-u6-v3.6.7.tar"
@@ -46,15 +46,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea32-fw.bin",
-         "../udm-fw/udm-pro-max/UDMPROMAX.al324.v0.0.1+inaro.13673.33a413f.231004.1613.bin"
+         "../udm-fw/udm-pro-max/UDMPROMAX.al324.v0.0.1+inaro.13903.d97e593.231027.1412.bin"
         ],
         [
           "tftp/images/ea32-recovery",
-           "../udm-fw/udm-pro-max/uImage_20231004"
+           "../udm-fw/udm-pro-max/uImage_20231027"
         ],
         [
           "tftp/images/ea32-uboot.bin",
-           "../udm-fw/udm-pro-max/boot_20231004.img"
+           "../udm-fw/udm-pro-max/boot_20231027.img"
         ],
         [
           "tftp/images/ea32-BSP_uboot.img",

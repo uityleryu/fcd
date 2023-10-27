@@ -404,6 +404,9 @@ class UDM_AL524_FACTORY(ScriptBase):
         if self.INIT_RECOVERY_IMAGE is True:
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
+            if self.board_id in ["ea32"]:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig switch0 down")
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "iptables -I INPUT -j ACCEPT")
             self.set_kernel_net()
             msg(15, "Boot up to linux console and network is good ...")
 
@@ -427,6 +430,8 @@ class UDM_AL524_FACTORY(ScriptBase):
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
             time.sleep(15)  # for stable eth
+            if self.board_id in ["ea32"]:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
             self.set_kernel_net()
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")

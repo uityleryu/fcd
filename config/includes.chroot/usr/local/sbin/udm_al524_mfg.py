@@ -18,7 +18,7 @@ class UDM_AL524_MFG(ScriptBase):
         self.mfg_uboot_cal = os.path.join(self.image, self.board_id + "-mfg.bin")
         self.mfg_img = os.path.join(self.image, self.board_id + "-fcd.bin")
 
-        self.bootloader_prompt = "ALPINE_UBNT_UDM_PRO_MAX"
+        self.bootloader_prompt = ">"
         self.linux_prompt = "#"
         self.activeport = {
             'ea32': "al_eth0"
@@ -122,7 +122,7 @@ class UDM_AL524_MFG(ScriptBase):
         if self.INIT_RECOVERY_IMAGE:
             self.init_recovery_image()
             msg(40, "Initial uImage ...")
-        if self.FW_UPGRADE is True:
+        if self.FW_UPGRADE is not True:
             self.fw_upgrade()
             msg(50, "Finish kernel image transferring ...")
 
