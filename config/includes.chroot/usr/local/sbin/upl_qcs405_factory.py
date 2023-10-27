@@ -232,7 +232,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         cmd = 'killall ui-connect-mqttd'
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
-        cmd = 'killall ui-spotify-connect'
+        cmd = 'killall ui-spotify-connect spotify_connect'
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
         cmd = "dmesg -n1"
