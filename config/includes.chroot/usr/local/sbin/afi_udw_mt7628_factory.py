@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import re
-import sys
+
 import time
 import os
-import stat
-import shutil
+import re
+import json
+
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.common import Common
@@ -76,8 +76,35 @@ class UCMT7628Factory(ScriptBase):
         self.FWUPDATE_ENABLE        = True
         self.DATAVERIFY_ENABLE      = True
 
+        self.SOC_FW_CHECK_ENABLE = {
+            'ed14': False,
+            'ea2e': False,
+            'ed15': True,
+        }
+        self.SOC_FW_VERSION = {
+            'ed14': '',
+            'ea2e': '',
+            'ed15': 'US.mt7628_6.5.68+14839.230815.1558',
+        }
+
         self.LCM_FW_CHECK_ENABLE    = False
-        self.MCU_FW_CHECK_ENABLE    = False
+
+        self.MCU_FW_CHECK_ENABLE = {
+            'ed14': False,
+            'ea2e': False,
+            'ed15': True,
+        }
+        self.MCU_FW_VERSION = {
+            'ed14': '',
+            'ea2e': '',
+            'ed15': '1.2.7',
+        }
+        self.MCU_FW_LOADER = {
+            'ed14': '',
+            'ea2e': '',
+            'ed15': 'v1.0.1',
+        }
+
         self.OFF_POWER_UNIT_ENABLE  = {
             'ed14': False,
             'ea2e': True,
@@ -123,8 +150,6 @@ class UCMT7628Factory(ScriptBase):
         
         self.pexp.expect_only(30, "Loading kernel")
         self.login(press_enter=True, log_level_emerg=True, timeout=60)
-        
-        
         
         # #  remove DEVREG data
         # if self.board_id == 'ea2e':
@@ -257,18 +282,109 @@ class UCMT7628Factory(ScriptBase):
         
         retry_time = 15
         while retry_time >= 0:
-            output = self.pexp.expect_get_output(action="info", prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action="info", prompt="", timeout=3)
             if output.find("Version") >= 0:
                 break
             retry_time -= 1
             time.sleep(1)
             
+    def soc_fw_check(self):
+        version = self.pexp.expect_get_output("cat /usr/lib/version", self.linux_prompt)
+
+        if self.SOC_FW_VERSION[self.board_id] not in version:
+            err_msg = f"SOC FW version mismatch, got {version} but expect {self.SOC_FW_VERSION[self.board_id]}"
+            error_critical(err_msg)
+        else:
+            log_debug("SOC FW version matched!")
 
     def lcm_fw_check(self):
         self.pexp.expect_lnxcmd(5, self.linux_prompt, 'lcm-ctrl -t dump', 'version', retry=48)
 
     def mcu_fw_check(self):
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, 'ubus call power.outlet.meter_mcu info', 'version', retry=48)
+        if self.board_id == "ed15":
+            mcu_num = 2
+            global loader, mode, version
+
+            # pre-action before set loader true
+            self.stop_mcu_status_poll(mcu_num)
+
+            for i in range(1, mcu_num+1):
+                try:
+                    params = {"loader": True}
+                    mcu_info = self.mcu_info(i, params)
+                    loader = re.search(r'"loader":(.*),', mcu_info).group(1).strip()
+                    mode = re.search(r'"mode":(.*),', mcu_info).group(1).strip()
+                    version = re.search(r'"version":(.*),', mcu_info).group(1).strip()
+                    log_debug(f"Loader: {loader}, mode: {mode}, version: {version}")
+
+                except Exception as e:
+                    log_error(e)
+                    err_msg = f"MCU {i} unable to get info"
+                    self.mcu_error_handler(err_msg)
+
+                if "normal" not in mode:
+                    err_msg = f"MCU {i} wrong mode, expect normal mode! Not allow to proceed test!"
+                    self.mcu_error_handler(err_msg)
+
+                if self.MCU_FW_LOADER[self.board_id] in loader and self.MCU_FW_VERSION[self.board_id] in version:
+                    log_debug(f"MCU {i} FW version & loader version matched.")
+
+                if self.MCU_FW_LOADER[self.board_id] not in loader:
+                    err_msg = f"MCU {i} loader version mismatch, got {loader} but expect {self.MCU_FW_LOADER[self.board_id]}"  # noqa: E501
+                    self.mcu_error_handler(err_msg)
+
+                if self.MCU_FW_VERSION[self.board_id] not in version:
+                    err_msg = f"MCU {i} FW version mismatch, got {version} but expect {self.MCU_FW_LOADER[self.board_id]}"  # noqa: E501
+                    self.mcu_error_handler(err_msg)
+
+            # post-action after set loader true & before end test
+            self.start_mcu_status_poll(mcu_num)
+
+    def mcu_error_handler(self, err_msg):
+        mcu_num = 2
+        # post-action after set loader true & before end test
+        self.start_mcu_status_poll(mcu_num)
+        error_critical(err_msg)
+
+    def mcu_status_poll(self, mcu_id, enable):
+        cmd = f"ubus call power.outlet.meter_mcu.{mcu_id} status_poll '" + json.dumps({"set": "start" if enable else "stop"}) + "'"  # noqa: E501
+        try:
+            ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt)
+        except Exception:
+            raise Exception(f"MCU {mcu_id} status_poll error")
+        return ret_msg
+
+    def mcu_info(self, mcu_id, params=None):
+        ret_msg = None
+        if params is None:
+            params = {}
+        cmd = f"ubus call power.outlet.meter_mcu.{mcu_id} info " + (f" '{json.dumps(params)}'" if params != {} else "")
+
+        for retry in range(3):
+            try:
+                log_debug(f"Retrieve mcu info, attempt {retry+1}")
+                ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=20)
+                if ret_msg is None or "result" not in ret_msg:
+                    log_debug("Unable to get mcu info, try again...")
+                    if retry == 2:
+                        err_msg = f"MCU {mcu_id} get mcu_info error after max retries"
+                        self.mcu_error_handler(err_msg)
+                    continue
+                else:
+                    break
+            except Exception as e:
+                log_error(e)
+                err_msg = f"MCU {mcu_id} get mcu_info error"
+                self.mcu_error_handler(err_msg)
+        return ret_msg
+
+    def start_mcu_status_poll(self, mcu_num):
+        for mcu_id in range(1, mcu_num + 1):
+            self.mcu_status_poll(mcu_id, enable=True)
+
+    def stop_mcu_status_poll(self, mcu_num):
+        for mcu_id in range(1, mcu_num + 1):
+            self.mcu_status_poll(mcu_id, enable=False)
 
     def off_power_unit_power(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "i2ctransfer -y 4 w4@0xb 0x00 0x10 0x00 0x44", self.linux_prompt)
@@ -335,13 +451,17 @@ class UCMT7628Factory(ScriptBase):
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
+        if self.SOC_FW_CHECK_ENABLE[self.board_id] is True:
+            self.soc_fw_check()
+            msg(85, "Succeeding in checking the SOC FW information ...")
+
         if self.LCM_FW_CHECK_ENABLE is True:
             self.lcm_fw_check()
-            msg(85, "Succeeding in checking the LCM FW information ...")
+            msg(90, "Succeeding in checking the LCM FW information ...")
 
-        if self.MCU_FW_CHECK_ENABLE is True:
+        if self.MCU_FW_CHECK_ENABLE[self.board_id] is True:
             self.mcu_fw_check()
-            msg(90, "Succeeding in checking the MCU FW information ...")
+            msg(95, "Succeeding in checking the MCU FW information ...")
 
         if self.OFF_POWER_UNIT_ENABLE[self.board_id] is True:
             self.off_power_unit_power()
