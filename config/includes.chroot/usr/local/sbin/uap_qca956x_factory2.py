@@ -468,12 +468,13 @@ class UAPQCA956xFactory2(ScriptBase):
 
             time.sleep(5)
 
-            self.enable_burn_in_mode()
-
             self.record_modem_imei()
 
             self.log_upload_failed_alert_en = True
             log_debug(msg="Set log_upload_failed_alert_en to True to ensure that log will be uploaded")
+
+        if self.board_id in ["e618", "e619"]:
+            self.enable_burn_in_mode()
 
         msg(100, "Completed FCD process ...")
 

@@ -16,10 +16,10 @@
           "SRC_PATH": "images/fcd-image/umr-fw",
           "DST_PATH": "umr-fw",
           "FILES": [
-            "UMR-Industrial.qca956x.v1.7.5.0-gc9bef628-recovery.bin",
+            "UMR-Industrial.qca956x.v1.7.6.0-gf1694c90-recovery.bin",
             "XD.qca956x-LSDK-ART-ULTE-FLEX-V11.img",
-            "ee-1.7.5-0-gc9bef628-ath79-generic-ui_umr-industrial-initramfs-kernel.bin",
-            "qca956x-umr-industrial-u-boot-1.7.5.0.bin"
+            "ee-1.7.6-0-gf1694c90-ath79-generic-ui_umr-industrial-initramfs-kernel.bin",
+            "qca956x-umr-industrial-u-boot-1.7.6.0.bin"
           ]
         },
         {
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e620.bin",
-          "../umr-fw/UMR-Industrial.qca956x.v1.7.5.0-gc9bef628-recovery.bin"
+          "../umr-fw/UMR-Industrial.qca956x.v1.7.6.0-gf1694c90-recovery.bin"
         ],
         [
           "tftp/images/e620-mfg.bin",
@@ -51,11 +51,11 @@
         ],
         [
           "tftp/images/e620-recovery.bin",
-          "../umr-fw/ee-1.7.5-0-gc9bef628-ath79-generic-ui_umr-industrial-initramfs-kernel.bin"
+          "../umr-fw/ee-1.7.6-0-gf1694c90-ath79-generic-ui_umr-industrial-initramfs-kernel.bin"
         ],
         [
           "tftp/images/e620-uboot.bin",
-          "../umr-fw/qca956x-umr-industrial-u-boot-1.7.5.0.bin"
+          "../umr-fw/qca956x-umr-industrial-u-boot-1.7.6.0.bin"
         ]
       ]
     }
