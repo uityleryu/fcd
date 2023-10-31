@@ -1,0 +1,55 @@
+{
+  "UniFiAccess": {
+    "UA-Ultra": {
+      "INDEX": 0,
+      "NAME": "UA-Ultra",
+      "BOARDID": "ec84",
+      "BOMREV": "113-08905",
+      "DESC": "UniFi Access Ultra",
+      "FILE": "ua_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw/ua-ultra/",
+          "DST_PATH": "ua-fw/ua-ultra",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee_20230608"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec84-bootloader.bin",
+          "../ua-fw/ua-ultra/20231023/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec84-mfg.bin",
+          "../ua-fw/ua-ultra/20231023/ua-ultra_mfg.v0.1.1.0.g95cb.231023.1322.bin"
+        ],
+        [
+          "tftp/images/ec84-ota.bin",
+          "../ua-fw/ua-ultra/20231023/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec84-ptn-table.bin",
+          "../ua-fw/ua-ultra/20231023/partition-table.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}

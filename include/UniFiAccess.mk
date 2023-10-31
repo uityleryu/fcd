@@ -109,6 +109,8 @@ $(eval $(call ProductCompress,UA-G2-Reader-Pro,FCD_$(PRD)_UA-G2-Reader-Pro$(VER)
 $(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-TX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-TX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-ELEVATOR-EXTENDER-RX,FCD_$(PRD)_UA-ELEVATOR-EXTENDER-RX_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UA-G2-Portal,FCD_$(PRD)_UA-G2-Portal$(VER)_$(FWVER)))
+$(eval $(call ProductCompress,UA-Ultra,FCD_$(PRD)_UA-Ultra_$(VER)_$(FWVER)))
+
 # ==================================================================================================
 # Project compressed type2 file for RPi FCD host
 
@@ -140,3 +142,5 @@ $(eval $(call ProductCompress2,06892_ec55))
 $(eval $(call ProductCompress2,03693_ec64))
 $(eval $(call ProductCompress2,07717_ec65))
 $(eval $(call ProductCompress2,02964_ec36))
+$(eval $(call ProductCompress2,08905_ec84))
+
