@@ -334,7 +334,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             error_critical(rmsg)
 
         log_debug(msg="Upgrading FW ...")
-        self.pexp.expect_only(120, "Reboot system safely")
+        self.pexp.expect_only(300, "Reboot system safely")
         log_debug(msg="FW update done ...")
 
         self.linux_prompt = "root"

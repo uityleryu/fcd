@@ -409,6 +409,43 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ec65': True
         }
 
+        #Add method for write top level BOM
+        self.write_topbom = {
+            'e980': False,
+            'ef80': False,
+            'ef81': False,
+            'ef87': False,
+            'ef88': False,
+            'ef82': False,
+            'ef13': False,
+            'ef0e': False,
+            'ef83': False,
+            'ef84': False,
+            'ef85': False,
+            'ef86': False,
+            'ef90': False,
+            'ec5e': False,
+            'ec5f': False,
+            'ec60': False,
+            'ec62': False,
+            'ec61': False,
+            'efa0': False,
+            'efb0': False,
+            'efb1': False,
+            'efb2': False,
+            'efb3': False,
+            'efb4': False,
+            'efb5': False,
+            'efb6': False,
+            'efb7': False,
+            'efba': False,
+            'efa1': False,
+            'efbb': False,
+            'efbc': False,
+            'ec64': False,
+            'ec65': True
+        }
+
         self.cladb = None
         self.linux_prompt = self.lnxpmt[self.board_id]
         self.df_jedecid = emmc_jedec[self.board_id]
@@ -731,10 +768,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
-        # check ME BOM first
+        # check ME BOM
         if self.write_mebom[self.board_id] is True:
             if not self.meb_rev:
                 error_critical("ME BOM is required ...")
+
+        # check Top level BOM
+        if self.write_topbom[self.board_id] is True:
+            if not self.tlb_rev:
+                error_critical("Top level BOM is required ...")
 
         if self.board_id in self.usbadb_list:
             self.connect_adb_usb()
@@ -840,9 +882,16 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
             # Write ME BOM
             if self.write_mebom[self.board_id] is True:
-                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format("300-" + self.meb_rev)
+                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format(self.meb_rev)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
                 cmd = "chmod 644 /mnt/vendor/persist/bom_300_id"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+            # Write top level BOM
+            if self.write_topbom[self.board_id] is True:
+                cmd = "echo {} > /mnt/vendor/persist/top_id".format(self.tlb_rev)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+                cmd = "chmod 644 /mnt/vendor/persist/top_id"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
 
@@ -932,6 +981,15 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                         log_debug("Check ME BOM is matched !!")
                     else:
                         error_critical("Check ME BOM is not matched !!")
+
+                # Check Top level BOM
+                if self.write_topbom[self.board_id] is True:
+                    cmd = "cat /mnt/vendor/persist/top_id"
+                    m_gtopbom = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.tlb_rev in m_gtopbom:
+                        log_debug("Check Top level BOM is matched !!")
+                    else:
+                        error_critical("Check Top level BOM is not matched !!")
 
         if self.board_id == "ef90":
             msg(80, "Wait clean boot ...")
