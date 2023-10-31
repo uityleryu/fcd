@@ -27,7 +27,7 @@
           "DST_PATH": "ua-fw/ua-g2",
           "FILES": [
             "unifi-953x_v1.6.8.54-gca28e2c2_uap-qca953x-32MB_nodebug_u-boot.bin",
-            "DB.qca953x.v3.9.3.104.0.g97be247.230602.0315-uboot.bin"
+            "DB.qca953x.v3.9.3.105.0.gcd463e0.231013.0725-uboot.bin"
           ]
         }
       ],
@@ -38,7 +38,7 @@
         ],
         [
           "tftp/images/ec4d-fcd.bin",
-          "../ua-fw/ua-g2/DB.qca953x.v3.9.3.104.0.g97be247.230602.0315-uboot.bin"
+          "../ua-fw/ua-g2/DB.qca953x.v3.9.3.105.0.gcd463e0.231013.0725-uboot.bin"
         ]
       ]
     }

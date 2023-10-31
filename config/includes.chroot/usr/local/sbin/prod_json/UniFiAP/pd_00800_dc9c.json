@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uap-fw",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "UBB.v3.0.6.177.230823.1059.bin",
+            "UBB.v3.0.6-re-pair.183.231018.1138.bin",
             "ubntubb-u-boot.rom",
             "Unifi_bridge-spf6.1.1_nor-v4.bin"
           ]
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/dc9c.bin",
-          "../uap-fw/UBB.v3.0.6.177.230823.1059.bin"
+          "../uap-fw/UBB.v3.0.6-re-pair.183.231018.1138.bin"
         ],
         [
           "tftp/images/dc9c-bootloader.bin",

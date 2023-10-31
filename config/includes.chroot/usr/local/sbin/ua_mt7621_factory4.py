@@ -131,8 +131,12 @@ class UAMT7621Factory(ScriptBase):
 
     def enter_console(self):
         self.pexp.expect_ubcmd(240, "Please press Enter to activate this console.", "")
-        self.pexp.expect_ubcmd(10, "login:", "ubnt")
-        self.pexp.expect_ubcmd(10, "Password:", "ubnt")
+        if self.board_id in ['ec55']:
+            self.pexp.expect_ubcmd(10, "login:", "ui")
+            self.pexp.expect_ubcmd(10, "Password:", "ui")
+        else:
+            self.pexp.expect_ubcmd(10, "login:", "ubnt")
+            self.pexp.expect_ubcmd(10, "Password:", "ubnt")
 
     def set_uboot_network(self):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt_combine, "setenv ipaddr " + self.dutip)

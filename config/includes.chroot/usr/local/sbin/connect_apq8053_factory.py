@@ -14,7 +14,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 from datetime import datetime
 
 '''
-    e980: Viewport            (Android 9)
+    e980: Viewport            (Android 8)
     ef80: UC-Display-7  (BLE)       (Android 9)
     ef81: UC-Display-13 (BLE)       (Android 9)
     ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
@@ -46,6 +46,7 @@ from datetime import datetime
     efbb: Phone G3 Touch Pro   (Android 9)
     efbc: Phone G3 Touch Pro Max   (Android 9)
     ec64: UniFi Access G2 Portal(Android 9)
+    ec65: UniFi Access Intercom Viewer  (Android 9)
 
 '''
 
@@ -95,7 +96,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "0007f100",
             'efbb': "0007f100",
             'efbc': "0007f100",
-            'ec64': "0007f100"
+            'ec64': "0007f100",
+            'ec65': "0007f100"
         }
 
         # default product class: basic
@@ -105,7 +107,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
             "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
-            "efbc", "ec64"
+            "efbc", "ec64", "ec65"
         ]
 
         self.ospl = {
@@ -140,7 +142,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "adr9",
             'efbb': "adr9",
             'efbc': "adr9",
-            'ec64': "adr9"
+            'ec64': "adr9",
+            'ec65': "adr9"
         }
 
         self.lnxpmt = {
@@ -175,7 +178,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "ev_charger",
             'efbb': "utp_g3_pro",
             'efbc': "utp_g3_pro_max",
-            'ec64': "rdr_mdu"
+            'ec64': "rdr_mdu",
+            'ec65': "ua_viewpoint",
         }
 
         # Number of Ethernet
@@ -211,7 +215,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "1",
             'efbc': "1",
-            'ec64': "1"
+            'ec64': "1",
+            'ec65': "1"
         }
 
         # Number of WiFi
@@ -247,7 +252,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "1",
             'efbc': "1",
-            'ec64': "0"
+            'ec64': "0",
+            'ec65': "0"
         }
 
         # Number of Bluetooth
@@ -283,7 +289,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "2",
             'efbc': "2",
-            'ec64': "1"
+            'ec64': "1",
+            'ec65': "0"
         }
 
         self.qrcode_dict = {
@@ -318,7 +325,8 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': True,
             'efbb': True,
             'efbc': True,
-            'ec64': True
+            'ec64': True,
+            'ec65': True
         }
 
         self.devnetmeta = {
@@ -360,7 +368,82 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': True,
             'efbb': True,
             'efbc': True,
-            'ec64': True
+            'ec64': True,
+            'ec65': True
+        }
+
+        #Add method for write ME BOM
+        self.write_mebom = {
+            'e980': False,
+            'ef80': False,
+            'ef81': False,
+            'ef87': False,
+            'ef88': False,
+            'ef82': False,
+            'ef13': False,
+            'ef0e': False,
+            'ef83': False,
+            'ef84': False,
+            'ef85': False,
+            'ef86': False,
+            'ef90': False,
+            'ec5e': False,
+            'ec5f': False,
+            'ec60': False,
+            'ec62': False,
+            'ec61': False,
+            'efa0': False,
+            'efb0': False,
+            'efb1': False,
+            'efb2': False,
+            'efb3': False,
+            'efb4': False,
+            'efb5': False,
+            'efb6': False,
+            'efb7': False,
+            'efba': False,
+            'efa1': False,
+            'efbb': False,
+            'efbc': False,
+            'ec64': False,
+            'ec65': True
+        }
+
+        #Add method for write top level BOM
+        self.write_topbom = {
+            'e980': False,
+            'ef80': False,
+            'ef81': False,
+            'ef87': False,
+            'ef88': False,
+            'ef82': False,
+            'ef13': False,
+            'ef0e': False,
+            'ef83': False,
+            'ef84': False,
+            'ef85': False,
+            'ef86': False,
+            'ef90': False,
+            'ec5e': False,
+            'ec5f': False,
+            'ec60': False,
+            'ec62': False,
+            'ec61': False,
+            'efa0': False,
+            'efb0': False,
+            'efb1': False,
+            'efb2': False,
+            'efb3': False,
+            'efb4': False,
+            'efb5': False,
+            'efb6': False,
+            'efb7': False,
+            'efba': False,
+            'efa1': False,
+            'efbb': False,
+            'efbc': False,
+            'ec64': False,
+            'ec65': True
         }
 
         self.cladb = None
@@ -685,6 +768,16 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
+        # check ME BOM
+        if self.write_mebom[self.board_id] is True:
+            if not self.meb_rev:
+                error_critical("ME BOM is required ...")
+
+        # check Top level BOM
+        if self.write_topbom[self.board_id] is True:
+            if not self.tlb_rev:
+                error_critical("Top level BOM is required ...")
+
         if self.board_id in self.usbadb_list:
             self.connect_adb_usb()
         else:
@@ -787,6 +880,20 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 cmd = "chmod 644 /mnt/vendor/persist/bom_hwver"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
+            # Write ME BOM
+            if self.write_mebom[self.board_id] is True:
+                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format(self.meb_rev)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+                cmd = "chmod 644 /mnt/vendor/persist/bom_300_id"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+            # Write top level BOM
+            if self.write_topbom[self.board_id] is True:
+                cmd = "echo {} > /mnt/vendor/persist/top_id".format(self.tlb_rev)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+                cmd = "chmod 644 /mnt/vendor/persist/top_id"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
 
         if self.REGISTER_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
@@ -866,6 +973,23 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     else:
                         error_critical("Check QR ID is not matched !!")
 
+                # Check ME BOM
+                if self.write_mebom[self.board_id] is True:
+                    cmd = "cat /mnt/vendor/persist/bom_300_id"
+                    m_gmebom = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.meb_rev in m_gmebom:
+                        log_debug("Check ME BOM is matched !!")
+                    else:
+                        error_critical("Check ME BOM is not matched !!")
+
+                # Check Top level BOM
+                if self.write_topbom[self.board_id] is True:
+                    cmd = "cat /mnt/vendor/persist/top_id"
+                    m_gtopbom = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    if self.tlb_rev in m_gtopbom:
+                        log_debug("Check Top level BOM is matched !!")
+                    else:
+                        error_critical("Check Top level BOM is not matched !!")
 
         if self.board_id == "ef90":
             msg(80, "Wait clean boot ...")

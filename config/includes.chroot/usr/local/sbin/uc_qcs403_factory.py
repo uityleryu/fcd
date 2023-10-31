@@ -47,14 +47,14 @@ class UCQCS403FactoryGeneral(ScriptBase):
 
         # number of WiFi
         wifinum = {
-            'ec80': "1",
+            'ec80': "0",
             'aa01': "1",
             'aa02': "1"
         }
 
         # number of Bluetooth
         btnum = {
-            'ec80': "2",
+            'ec80': "0",
             'aa01': "2",
             'aa02': "1"
         }
@@ -80,12 +80,18 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
 
         msg(10, "TTY initialization successfully ...")
-        log_debug(msg="sleep 70 secs")
-        time.sleep(70)
+        if self.board_id == 'ec80':
+            log_debug(msg="sleep 90 secs")
+            time.sleep(90)
+        else:
+            log_debug(msg="sleep 70 secs")
+            time.sleep(70)
 
         self.pexp.expect_lnxcmd(10, "", "")
         if self.board_id == 'aa01':
             self.login(username="root", password="ubnt", timeout=120)
+        elif self.board_id == 'ec80':
+            self.login(username="ui", password="ui", timeout=120)
         else:
             self.login(username="root", password="ubnt", timeout=120)
         cmd = "dmesg -n1"
@@ -100,6 +106,14 @@ class UCQCS403FactoryGeneral(ScriptBase):
         self.set_lnx_net("eth0")
         self.set_lnx_net("eth0")
         time.sleep(10)
+        if self.board_id == 'ec80':
+            cmd = "ifconfig eth0 down"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            self.chk_lnxcmd_valid()
+            cmd = "ifconfig eth0 up"
+            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            self.chk_lnxcmd_valid()
+            time.sleep(10)
         self.is_network_alive_in_linux()
 
 
@@ -123,8 +137,10 @@ class UCQCS403FactoryGeneral(ScriptBase):
         if W_MAC_EN is True:
             # Write MAC
             int_mac = int(self.mac, 16)
-            hex_wifi_mac = hex(int_mac + 1).replace("0x", "").zfill(12)
-            hex_bt_mac = hex(int_mac + 2).replace("0x", "").zfill(12)
+            if int(self.devnetmeta['wifinum'][self.board_id]) > 0:
+                hex_wifi_mac = hex(int_mac + 1).replace("0x", "").zfill(12)
+            if int(self.devnetmeta['btnum'][self.board_id]) > 0:
+                hex_bt_mac = hex(int_mac + 2).replace("0x", "").zfill(12)
             comma_mac = self.mac_format_str2comma(self.mac)
 
             # Write Eth MAC
@@ -132,18 +148,20 @@ class UCQCS403FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # Write WiFi MAC
-            cmdset = [
-                "mkdir -p /persist/factory/wlan/",
-                "echo \"Intf0MacAddress={}\" > /persist/factory/wlan/wlan_mac.bin".format(hex_wifi_mac),
-                "echo \"END\" >> /persist/factory/wlan/wlan_mac.bin"
-            ]
-            for cmd in cmdset:
-                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            if int(self.devnetmeta['wifinum'][self.board_id]) > 0:
+                cmdset = [
+                    "mkdir -p /persist/factory/wlan/",
+                    "echo \"Intf0MacAddress={}\" > /persist/factory/wlan/wlan_mac.bin".format(hex_wifi_mac),
+                    "echo \"END\" >> /persist/factory/wlan/wlan_mac.bin"
+                ]
+                for cmd in cmdset:
+                    self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # Write BT MAC
-            comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
-            cmd = "btnvtool -b {}".format(comma_bt_mac)
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            if int(self.devnetmeta['btnum'][self.board_id]) > 0:
+                comma_bt_mac = self.mac_format_str2comma(hex_bt_mac)
+                cmd = "btnvtool -b {}".format(comma_bt_mac)
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
             # sync data to flash
             cmd = "sync"
@@ -177,21 +195,23 @@ class UCQCS403FactoryGeneral(ScriptBase):
                 self.is_network_alive_in_linux()
 
             # Check WiFi MAC
-            cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-            time.sleep(5)
-            cmd = "ifconfig wlan0 up"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+            if int(self.devnetmeta['wifinum'][self.board_id]) > 0:
+                cmd = "/sbin/insmod /usr/lib/modules/4.14.117-perf/extra/wlan.ko"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+                time.sleep(5)
+                cmd = "ifconfig wlan0 up"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
-            cmd = "ifconfig wlan0 | grep HWaddr"
-            comma_wifi_mac = self.mac_format_str2comma(hex_wifi_mac)
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_wifi_mac.upper())
-            # postexp = "Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac.upper())
-            # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
+                cmd = "ifconfig wlan0 | grep HWaddr"
+                comma_wifi_mac = self.mac_format_str2comma(hex_wifi_mac)
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_wifi_mac.upper())
+                # postexp = "Link encap:Ethernet  HWaddr {}".format(comma_wifi_mac.upper())
+                # self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=postexp)
 
             # Check BT MAC
-            cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
-            self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
+            if int(self.devnetmeta['btnum'][self.board_id]) > 0:
+                cmd = "cat /persist/factory/bluetooth/bdaddr.txt"
+                self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=comma_bt_mac)
 
 
         if REGISTER_EN is True:

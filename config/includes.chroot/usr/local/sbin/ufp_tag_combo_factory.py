@@ -478,14 +478,14 @@ class UFPEFR32FactoryGeneral(ScriptBase):
         self.dut_atqa = ss[0][1].replace(" ", "")
         self.dut_nfcid = ss[1][1].replace(" ", "")
         self.dut_sak = ss[2][1].replace(" ", "")
-        self.dut_ats = ss[3][1].replace(" ", "")
-        self.dut_desire = ss[4][1].replace(" ", "")
+        #self.dut_ats = ss[3][1].replace(" ", "")
+        self.dut_desire = ss[3][1].replace(" ", "")
         self.dut_cpuid = self.dut_atqa + self.dut_sak
 
         print('dut_atqa: {}'.format(self.dut_atqa))
         print('dut_nfcid: {}'.format(self.dut_nfcid))
         print('dut_sak: {}'.format(self.dut_sak))
-        print('dut_ats: {}'.format(self.dut_ats))
+        #print('dut_ats: {}'.format(self.dut_ats))
         print('dut_desire: {}'.format(self.dut_desire))
         print('dut_cpuid: {}'.format(self.dut_cpuid))
         return card_exist

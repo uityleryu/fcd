@@ -1,0 +1,63 @@
+{
+  "UniFiSwitch": {
+    "USW-Ultra-210W": {
+      "INDEX": 0,
+      "NAME": "USW-Ultra-210W",
+      "BOARDID": "ed34",
+      "BOMREV": "113-09995",
+      "DESC": "UniFi Switch Ultra 210W",
+      "FILE": "usw_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee_20230608"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw/usw-ultra",
+          "DST_PATH": "usw-fw/usw-ultra",
+          "FILES": []
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed34-app.bin",
+          "../usw-fw/usw-ultra/USM8P.esp32_1.1.1+742.230901.1707-unsigned.bin"
+        ],
+        [
+          "tftp/images/ed34-bootloader.bin",
+          "../usw-fw/usw-ultra/bootloader.bin"
+        ],
+        [
+          "tftp/images/ed34-factory.bin",
+          "../usw-fw/usw-ultra/ultra_factory.bin"
+        ],
+        [
+          "tftp/images/ed34-mfg.bin",
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_1.1.1+742.230901.1708-unsigned.bin"
+        ],
+        [
+          "tftp/images/ed34-ota.bin",
+          "../usw-fw/usw-ultra/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ed34-ptn-table.bin",
+          "../usw-fw/usw-ultra/partition-table.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}
