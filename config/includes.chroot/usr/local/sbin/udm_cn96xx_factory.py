@@ -148,7 +148,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.newline = "\n"
         self.board_config = False
         self.fuse_config = False
-        self.DEV_REG_ENABLE=True
+        self.DEV_REG_ENABLE = True
 
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -223,9 +223,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.proc.expect([pre_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
             self.send_cmd_by_char(cmd)
             self.proc.expect([post_exp, pexpect.EOF, pexpect.TIMEOUT], timout)
+
     def set_fuse(self):
-        self.send_wo_extra_newline("(INS)Menu choice", "13\n")
-        self.send_wo_extra_newline("(INS)Menu choice", "6\n")
+        self.send_wo_extra_newline("choice", "13\n")
+        self.send_wo_extra_newline("choice", "6\n",timout=2)
         for i in range(0, 12):
             # for i in range(0,11):
             self.send_wo_extra_newline("]:", "\n")
@@ -233,7 +234,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
         # self.send_wo_extra_newline("Secure NV counter", "0\n")
         self.proc.send(self.newline)
-        self.send_wo_extra_newline("(INS)Menu choice", "7\n")
+        self.send_wo_extra_newline("choice", "7\n",timout=2)
+
     def config_fuse_setting(self):
         # # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
         # # if idx != 0:
@@ -249,15 +251,17 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("Choice:", "s")
         self.send_wo_extra_newline("Choice:", "t")
         self.set_fuse()
-        for i in range(0,5):
-            self.send_wo_extra_newline("(INS)Menu choice", "6\n")
-            index = self.proc.expect(
-                [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "[   31] SPI_SAFEMODE         =          1 (0x1)"], timeout=15)
-            if index != 3:
+        for i in range(0, 5):
+            self.proc.send(self.newline)
+            self.send_wo_extra_newline("choice", "6\n",timout=2)
+            self.proc.send(self.newline)
+            self.send_wo_extra_newline("choice", "6\n",timout=2)
+            output = self.proc.before
+            if "31] SPI_SAFEMODE         =          1 (0x1)" not in output:
                 self.set_fuse()
             else:
                 break
-        self.send_wo_extra_newline("(INS)Menu choice", "15\n")
+        self.send_wo_extra_newline("choice", "15\n",timout=2)
         time.sleep(2)
         self.send_wo_extra_newline("Choice:", "s", timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
@@ -357,12 +361,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id], self.dutip))
+        self.pexp.expect_lnxcmd(10, self.linux_prompt,
+                                "brctl delif br0 {}".format(self.netif[self.board_id], self.dutip))
         self.is_network_alive_in_linux(ipaddr=self.dutip)
 
     def unlock_eeprom_permission(self):
         log_debug(msg="Unlock eeprom permission")
-        self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf",valid_chk=True)
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 5edfacbf > /proc/ubnthal/.uf", valid_chk=True)
 
     def check_info(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
