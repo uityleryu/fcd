@@ -17,8 +17,8 @@
           "DST_PATH": "ua-fw",
           "FILES": [
             "ua-hub-enterprise-nor-v2.bin",
-            "unifi-v1.1.11.22-g788bdb59_uah-mt7621-64MB_nodebug_u-boot.bin",
-            "GT.mt7621.v5.2.11.6.g8c94980.230828.0808-uboot.bin"
+            "unifi-v1.1.11.23-g4b474447_uah-mt7621-64MB_nodebug_u-boot-4-CPU-cores.bin",
+            "GT.mt7621.v0.1.2.0.gf6d9b56.231020.1206-uboot.bin"
           ]
         },
         {
@@ -39,11 +39,11 @@
         ],
         [
           "tftp/images/ec46-uboot.bin",
-          "../ua-fw/unifi-v1.1.11.22-g788bdb59_uah-mt7621-64MB_nodebug_u-boot.bin"
+          "../ua-fw/unifi-v1.1.11.23-g4b474447_uah-mt7621-64MB_nodebug_u-boot-4-CPU-cores.bin"
         ],
         [
           "tftp/images/ec46-fw.bin",
-          "../ua-fw/GT.mt7621.v5.2.11.6.g8c94980.230828.0808-uboot.bin"
+          "../ua-fw/GT.mt7621.v0.1.2.0.gf6d9b56.231020.1206-uboot.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
