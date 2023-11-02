@@ -119,20 +119,20 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.check_devreg_data()
             msg(70, "Finish doing signed file and EEPROM checking ...")
 
+        self.setup_mfg_mode()
+        msg(80, "Finish setting to mfg mode ...")
+
         if W_MAC_EN is True:
             self.write_mac_addr()
-            msg(80, "Finish writing MAC address ...")
+            msg(85, "Finish writing MAC address ...")
 
             if self.homekit_dict[self.board_id] is True:
                 self.check_tokenid_match_after_reboot()
-                msg(85, "Finish checking HK token ID ...")
+                msg(90, "Finish checking HK token ID ...")
 
         if CHECK_MAC_EN is True:
             self.check_mac()
-            msg(90, "Finish checking MAC address ...")
-
-        self.setup_mfg_mode()
-        msg(95, "Finish setting to mfg mode ...")
+            msg(95, "Finish checking MAC address ...")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
@@ -225,7 +225,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             time.sleep(50)
 
             self.login(username="ui", password="ui", timeout=120)
-            self.setup_network()
+            #self.setup_network()
 
     def setup_network(self):
         # temporally added to avoid unexpected msg from console
