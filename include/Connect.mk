@@ -1,5 +1,7 @@
-
 # Images
+
+IMAGE-UC-EV-Station-Ultra= \
+    images/a6a0*
 
 IMAGE-UC-Plug-US= \
     images/ec5a*
@@ -71,7 +73,8 @@ TOOLS-CONFIG= \
     common/aarch64-rpi4-64k-ee
 
 # Project specific tools
-
+TOOLS-UC-EV-Station-Ultra+=$(TOOLS-CONFIG) \
+    common/aarch64-rpi4-4k-ee
 TOOLS-UC-Plug-US+=$(TOOLS-CONFIG) \
     common/aarch64-rpi4-4k-ee
 TOOLS-UC-Plug-EU+=$(TOOLS-CONFIG) \
@@ -109,6 +112,7 @@ TOOLS-UC-Magic-Link-Sensor+=$(TOOLS-CONFIG)
 
 # Project target
 
+$(eval $(call ProductImage,UC-EV-Station-Ultra,FCD_$(PRD)_UC-EV-Station-Ultra_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-Plug-US,FCD_$(PRD)_UC-Plug-US_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-Plug-EU,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
 $(eval $(call ProductImage,UC-Wall-Outlet-US,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
@@ -127,6 +131,7 @@ $(eval $(call ProductImage,UC-Magic-Link-Sensor,FCD_$(PRD)_UC-Magic-Link-Sensor_
 
 # Project compressed file for RPi FCD host
 
+$(eval $(call ProductCompress,UC-EV-Station-Ultra,FCD_$(PRD)_UC-EV-Station-Ultra_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-Plug-US,FCD_$(PRD)_UC-Plug-US_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-Plug-EU,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
 $(eval $(call ProductCompress,UC-Wall-Outlet-US,FCD_$(PRD)_UC-Plug-EU_$(VER)_$(FWVER)))
@@ -147,6 +152,7 @@ $(eval $(call ProductCompress,UC-Magic-Link-Sensor,FCD_$(PRD)_UC-Magic-Link-Sens
 
 # Project compressed type2 file for RPi FCD host
 
+$(eval $(call ProductCompress2,01291_a6a0))
 $(eval $(call ProductCompress2,00997_ec5a))
 $(eval $(call ProductCompress2,01025_ec5b))
 $(eval $(call ProductCompress2,01013_ec5c))
