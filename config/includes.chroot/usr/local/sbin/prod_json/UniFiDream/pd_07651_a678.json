@@ -27,9 +27,9 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra",
           "DST_PATH": "udm-fw/udr-ultra",
           "FILES": [
-            "UDRULT.ipq5322.v1.0.0+root.13040.f130e5d.230831.1857.bin",
-            "uImage_20230831",
-            "u-boot_20230905.mbn",
+            "UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin",
+            "uImage_20231031",
+            "u-boot_20231031.mbn",
             "udr-pro-2g-rework-test-image.img",
             "ipq5322_udr_ultra_v5.1.img",
             "udr-pro_mi03_1-2g_nor.bin",
@@ -47,15 +47,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/a678-fw.bin",
-          "../udm-fw/udr-ultra/UDRULT.ipq5322.v1.0.0+root.13040.f130e5d.230831.1857.bin"
+          "../udm-fw/udr-ultra/UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin"
         ],
         [
           "tftp/images/a678-recovery",
-          "../udm-fw/udr-ultra/uImage_20230831"
+          "../udm-fw/udr-ultra/uImage_20231031"
         ],
         [
           "tftp/images/a678-uboot.mbn",
-          "../udm-fw/udr-ultra/u-boot_20230905.mbn"
+          "../udm-fw/udr-ultra/u-boot_20231031.mbn"
         ],
         [
           "tftp/images/a678-bsp-2g_nor.bin",
