@@ -130,10 +130,6 @@ class UPLQCS405FactoryGeneral(ScriptBase):
                 self.check_tokenid_match_after_reboot()
                 msg(90, "Finish checking HK token ID ...")
 
-            if self.homekit_dict[self.board_id] is True:
-                self.check_tokenid_match_after_reboot()
-                msg(85, "Finish checking HK token ID ...")
-
         if CHECK_MAC_EN is True:
             self.check_mac()
             msg(95, "Finish checking MAC address ...")
