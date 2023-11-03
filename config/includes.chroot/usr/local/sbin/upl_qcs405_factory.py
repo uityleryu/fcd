@@ -553,19 +553,30 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
 
     def check_tokenid_match_after_reboot(self):
-        cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
-        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
-        self.tokenid_dut_after_reboot = res
-        log_info('tokenid_after_reboot = {}'.format(self.tokenid_dut_after_reboot))
-        log_info('tokenid_dut = {}'.format(self.tokenid_dut))
+        # temporally added to avoid unexpected msg from console
+        cmd = 'killall ui-connect-mqttd'
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
 
-        is_tokenid_match = self.tokenid_dut_after_reboot == self.tokenid_dut
-        log_info('tokenid_after_reboot & tokenid_dut are {}match'.format('' if is_tokenid_match else 'NOT '))
+        cmd = 'killall ui-spotify-connect spotify_connect'
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        
+        for retry in range(3):
+            cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
+            res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
+            self.tokenid_dut_after_reboot = res
+            log_info('tokenid_after_reboot = {}'.format(self.tokenid_dut_after_reboot))
+            log_info('tokenid_dut = {}'.format(self.tokenid_dut))
 
-        if is_tokenid_match:
-            log_info('HK Token ID check successfully')
+            is_tokenid_match = self.tokenid_dut_after_reboot == self.tokenid_dut
+            log_info('tokenid_after_reboot & tokenid_dut are {}match'.format('' if is_tokenid_match else 'NOT '))
+
+            if is_tokenid_match:
+                log_info('HK Token ID check successfully')
+                break
+            else:
+                log_info('HK Token ID check failed, retry {} time'.format(retry))
         else:
-            error_critical('HK Token ID check failed')
+                error_critical('HK Token ID check failed')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
