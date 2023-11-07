@@ -5,6 +5,7 @@ import time
 import os
 import re
 import json
+import datetime
 
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
@@ -171,9 +172,17 @@ class UCMT7628Factory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, 'dd if=/dev/zero ibs=1 count=64K | tr "\000" "\377" > /tmp/ff.bin', self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "dd if=/tmp/ff.bin of=/dev/mtdblock3 bs=1k count=64", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "sync;sync;sync", self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
 
-        
+        # Nov 6, 2023: Richard requested to use USP-PDU-PRO to power cycle DUT instead of using reboot command to save test time # noqa: E501
+
+        if self.ps_state is True:
+            log_debug("Power cycling DUT with USP-PDU-PRO fixture...")
+            self.set_ps_port_relay_off()
+            time.sleep(3)
+            self.set_ps_port_relay_on()
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", self.linux_prompt)
+
     def init_ramfs_image(self):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot ${{loadaddr}} {}".format(self.initramfs))
         self.pexp.expect_only(20, "done")
@@ -302,9 +311,12 @@ class UCMT7628Factory(ScriptBase):
 
     def mcu_fw_check(self):
         if self.board_id == "ed15":
-            mcu_num = 2
             global loader, mode, version
+            mcu_num = 2
 
+            self.pre_mcu_check()
+
+            log_debug("Check MCU FW info after upgrade...")
             # pre-action before set loader true
             self.stop_mcu_status_poll(mcu_num)
 
@@ -340,6 +352,57 @@ class UCMT7628Factory(ScriptBase):
             # post-action after set loader true & before end test
             self.start_mcu_status_poll(mcu_num)
 
+    def pre_mcu_check(self):
+        log_debug("Wait 5 mins for MCU upgrade...")
+        time.sleep(300)
+        log_debug("Check MCU upgrade status...")
+
+        global check_mode
+        start_time = datetime.datetime.now()
+        log_debug(f"Start time: {start_time}")
+        upgrading = True
+        mcu_num = 2
+        max_upgrade_time = 480  # 8 mins
+
+        for mcu_id in range(1, mcu_num + 1):
+            while upgrading:
+                time.sleep(1)
+
+                end_time = datetime.datetime.now()
+                diff_time = end_time - start_time
+                total_time = diff_time.total_seconds()
+                if total_time > max_upgrade_time:
+                    log_error(f"MCU upgrade time [{total_time}s], expected [{max_upgrade_time}s]")
+                    error_critical("MCU upgrade is taking longer time than expected!")
+                    log_debug(f"Total time taken: {total_time}s")
+
+                try:
+                    cmd = f"ubus call power.outlet.meter_mcu.{mcu_id} info "
+                    ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=10)
+                    if ret_msg is None or "result" not in ret_msg:
+                        log_debug("Unable to get mcu info, try again...")
+                        continue
+                except Exception as e:
+                    log_error(e)
+                    log_debug("Unable to get mcu info, try again...")
+                    continue
+
+                try:
+                    check_mode = re.search(r'"mode":(.*),', ret_msg).group(1).strip()
+                    log_debug(f"Mode: {check_mode}")
+                except Exception as e:
+                    log_error(e)
+                    err_msg = f"MCU {mcu_id} unable to get info"
+                    log_error(err_msg)
+                    continue
+
+                if "normal" not in check_mode:
+                    log_debug(f"MCU {mcu_id} still upgrading...")
+                    continue
+                else:
+                    log_debug(f"MCU {mcu_id} upgrade completed!")
+                    break
+
     def mcu_error_handler(self, err_msg):
         mcu_num = 2
         # post-action after set loader true & before end test
@@ -363,7 +426,7 @@ class UCMT7628Factory(ScriptBase):
         for retry in range(3):
             try:
                 log_debug(f"Retrieve mcu info, attempt {retry+1}")
-                ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=20)
+                ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=10)
                 if ret_msg is None or "result" not in ret_msg:
                     log_debug("Unable to get mcu info, try again...")
                     if retry == 2:
@@ -438,7 +501,10 @@ class UCMT7628Factory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
+            self.mcu_fw_check()
+            msg(100, "check mcu version ...")
 
+        '''
         if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
             self.fwupdate(self.fwimg, reboot_en=True)
@@ -471,6 +537,7 @@ class UCMT7628Factory(ScriptBase):
             self.set_ps_port_relay_off()
         else:
             log_debug("No need power supply control")
+        '''
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
