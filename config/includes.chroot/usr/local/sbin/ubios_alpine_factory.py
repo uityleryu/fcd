@@ -3,7 +3,7 @@
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
-import time, os
+import time, os,re
 
 
 class UbiOSLib(object):
@@ -53,8 +53,8 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
         self.bom_number = "113-" + self.bom_rev.rsplit('-', 1)[0]
-        self.username = "root"
-        self.password = "ubnt"
+        self.username = "ui"
+        self.password = "ui"
         self.linux_prompt = "#"
         self.unifios_prompt = "root@ubnt:/#"
 
@@ -224,13 +224,13 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
         self.pexp.expect_only(30, "Bytes transferred")
 
     def init_recovery_image(self):
-        self.login(self.username, self.password, timeout=150, log_level_emerg=True)
+        self.login(self.username, self.password, timeout=240, log_level_emerg=True)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "info", self.linux_prompt)
         # if self.board_id == 'ea19':
         #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
         #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delbr br0")
         #     self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth0 down")
-
+        self.pexp.expect_lnxcmd(10, self.linux_prompt,"brctl addif br0 eth3")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, self.linux_prompt)
         time.sleep(2)
         postexp = [
@@ -319,7 +319,7 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
             msg(60, "Start FW update ...")
             self.fwupdate()
             msg(70, "FW update done ...")
-            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
 
 
         if self.LCM_CHECK_ENABLE is True:
@@ -328,10 +328,45 @@ class UbiosAlpineFactoryGeneral(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
-            self.login(self.username, self.password, timeout=180, log_level_emerg=True)
+            self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
+        cmd = "ulcmd --command dump --sender fcd_team"
+        ct = 0
+        retry_max = 240
+        while ct < retry_max:
+            cmd_reply = self.pexp.expect_get_output(cmd, self.linux_prompt)
+            log_debug("Get LCM FW version from shipping FW(raw data): " + cmd_reply)
+            pattern = r"v([\d].[\d].[\d])-"
+            m_prod_lcm_fw = re.findall(pattern, cmd_reply)
+            if m_prod_lcm_fw:
+                break
+            time.sleep(1)
+            ct += 1
+        else:
+            rmsg = "Get LCM FW Version Fail!!!"
+            error_critical(rmsg)
+        cmd = "systemctl is-system-running"
+        ct = 0
+        retry_max = 150
+        while ct < retry_max:
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
+            m_run = re.findall("running", output)
+            m_degraded = re.findall("degraded", output)
+            if len(m_run) == 2:
+                rmsg = "The system is running good"
+                log_debug(rmsg)
+                break
+            elif len(m_degraded) == 1:
+                rmsg = "The system is degraded"
+                log_debug(rmsg)
+                break
+            time.sleep(1)
+            ct += 1
+        else:
+            rmsg = "The system is not booting up successfully, FAIL!!"
+            error_critical(rmsg)
 
 
         if self.POWEROFF_CHECK_ENABLE is True:
