@@ -1,15 +1,15 @@
 {
-  "Connect": {
-    "UC-AUDIENCE": {
+  "UniFiAccess": {
+    "UA-Intercom-Viewer": {
       "INDEX": 0,
-      "NAME": "UC-AUDIENCE",
-      "BOARDID": "ec80",
-      "BOMREV": "113-03523",
-      "DESC": "UniFi Connect Audience",
-      "FILE": "uc_qcs403_factory.py",
+      "NAME": "UA-Intercom-Viewer",
+      "BOARDID": "ec65",
+      "BOMREV": "113-07717",
+      "DESC": "UniFiAccess Intercom Viewer",
+      "FILE": "connect_apq8053_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
-      "SW_ID": "1c01",
+      "SW_ID": "1d01",
       "DOWNLOAD_FILE": [
         {
           "SRC_PATH": "images/tools/common",

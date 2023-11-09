@@ -9,7 +9,7 @@ IMAGE-UAP-FLEXHD= \
     uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
+    uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP-IWHD= \
@@ -20,7 +20,7 @@ IMAGE-UAP-IWHD= \
     uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
+    uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UAP-NANO-IW-FLEXHD= \
@@ -28,7 +28,7 @@ IMAGE-UAP-NANO-IW-FLEXHD= \
     images/ec22* \
     images/ec26* \
     uap-fw/uap-nanohd-fcd.bin \
-	uap-fw/uap-nanohd-fw.bin \
+    uap-fw/uap-nanohd-fw.bin \
     uap-fw/uap-iwhd-fw.bin \
     uap-fw/uap-flexhd-fw.bin \
     uap-fw/unifiap-mt7621* \
@@ -36,7 +36,7 @@ IMAGE-UAP-NANO-IW-FLEXHD= \
     uap-fw/unifi-v1.1.19.50-g761f9863_uap-mt7621-32MB_u-boot.bin \
     uap-fw/V9-uImage_5030-TXBF_enabled-20171101.dms \
     uap-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
-	uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
+    uap-fw/lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel* \
     uap-fw/BZ.mt7621.*
 
 IMAGE-UBB= \
@@ -168,7 +168,6 @@ $(eval $(call ProductCompress,ULTE-PRO,FCD_$(PRD)_ULTE-PRO_$(VER)_$(FWVER)))
 
 
 # Project compressed type2 file for RPi FCD host
-
 $(eval $(call ProductCompress2,00390_e537))
 $(eval $(call ProductCompress2,00800_dc9c))
 $(eval $(call ProductCompress2,00958_dd12))
@@ -190,6 +189,7 @@ $(eval $(call ProductCompress2,00392_e527))
 $(eval $(call ProductCompress2,01068_dcb4))
 $(eval $(call ProductCompress2,01068_dcb5))
 $(eval $(call ProductCompress2,03621_a922))
+$(eval $(call ProductCompress2,03986_a924))
 $(eval $(call ProductCompress2,01112_dca6))
 $(eval $(call ProductCompress2,01248_dca7))
 $(eval $(call ProductCompress2,01283_dca8))

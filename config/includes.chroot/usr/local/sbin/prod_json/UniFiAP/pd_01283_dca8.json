@@ -18,7 +18,7 @@
           "FILES": [
             "unifi-v2.0.13.310-ga92d9480_uap-qca956x-16MB_u-boot.bin",
             "XD.qca956x-LSDK-ART-U-SAK-V1.img",
-            "BZ.qca956x_6.5.65+14815.230713.1727-uboot.bin"
+            "BZ.qca956x_6.6.48+15139.231027.2031-uboot.bin"
           ]
         },
         {
@@ -29,14 +29,20 @@
           ]
         },
         {
+          "SRC_PATH": "images/tools/common/FCD_WEBGUI",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "FCD_WEBGUI_0.0.39.tgz"
+          ]
+        },
+        {
           "SRC_PATH": "images/tools/common",
           "DST_PATH": "tools/common",
           "FILES": [
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-64k-ee",
-            "FCD_WEBGUI_0.0.35.tgz"
+            "aarch64-rpi4-64k-ee"
           ]
         }
       ],
@@ -51,7 +57,7 @@
         ],
         [
           "tftp/images/dca8-fw.bin",
-          "../uap-fw/BZ.qca956x_6.5.65+14815.230713.1727-uboot.bin"
+          "../uap-fw/BZ.qca956x_6.6.48+15139.231027.2031-uboot.bin"
         ]
       ]
     }
