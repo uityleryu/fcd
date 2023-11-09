@@ -1188,9 +1188,20 @@ class UVCFactoryGeneral(ScriptBase):
         [output, rv] = self.cnapi.xcmd(cmd)
         usb_interface = output
 
-        cmd = "ifconfig {} {}".format(usb_interface, ip)
-        log_debug(cmd)
-        self.cnapi.xcmd(cmd)
+        # check if usb interface is up
+        for retry in range(10):
+            cmd = 'ifconfig {}'.format(usb_interface)
+            log_debug(cmd)
+            [output, rv] = self.cnapi.xcmd(cmd)
+            log_debug('rsp = {}'.format(output))
+
+            if 'Device not found' not in output:
+                cmd = "ifconfig {} {}".format(usb_interface, ip)
+                log_debug(cmd)
+                self.cnapi.xcmd(cmd)
+            time.sleep(1)
+        else:
+            error_critical('Cannot detect usb interface')
 
     def run(self):
         """  Main procedure of factory
