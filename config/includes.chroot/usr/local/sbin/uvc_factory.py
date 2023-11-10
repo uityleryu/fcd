@@ -1190,10 +1190,11 @@ class UVCFactoryGeneral(ScriptBase):
         cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
         log_debug(cmd)
         [usb_interface, rv] = self.cnapi.xcmd(cmd)
+        log_debug('USB ethernet interface = {}'.format(usb_interface))
 
         # check if usb interface is up
         for retry in range(5):
-            log_debug('=== retry {} ===')
+            log_debug('=== retry {} ==='.format(retry))
             cmd = 'ifconfig {} |grep "inet " |awk \'{{print $2}}\''.format(usb_interface)
             log_debug(cmd)
             [current_ip, rv] = self.cnapi.xcmd(cmd)
@@ -1211,6 +1212,7 @@ class UVCFactoryGeneral(ScriptBase):
             else:
                 log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
                 break
+            time.sleep(1)
         else:
             error_critical('Cannot detect usb interface')
 
