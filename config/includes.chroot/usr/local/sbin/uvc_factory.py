@@ -1193,7 +1193,7 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug('USB ethernet interface = {}'.format(usb_interface))
 
         # check if usb interface is up
-        for retry in range(5):
+        for retry in range(10):
             log_debug('=== retry {} ==='.format(retry))
             cmd = 'ifconfig {} |grep "inet " |awk \'{{print $2}}\''.format(usb_interface)
             log_debug(cmd)
@@ -1212,7 +1212,7 @@ class UVCFactoryGeneral(ScriptBase):
             else:
                 log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
                 break
-            time.sleep(1)
+            time.sleep(2)
         else:
             error_critical('Cannot detect usb interface')
 
