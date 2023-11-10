@@ -1193,7 +1193,8 @@ class UVCFactoryGeneral(ScriptBase):
 
         # check if usb interface is up
         for retry in range(5):
-            cmd = 'ifconfig {} |grep "inet " |awk \'{print $2}\''
+            log_debug('=== retry {} ===')
+            cmd = 'ifconfig {} |grep "inet " |awk \'{{print $2}}\''.format(usb_interface)
             log_debug(cmd)
             [current_ip, rv] = self.cnapi.xcmd(cmd)
 
@@ -1203,6 +1204,10 @@ class UVCFactoryGeneral(ScriptBase):
                 log_debug(cmd)
                 self.cnapi.xcmd(cmd)
                 time.sleep(3)
+
+                cmd = 'sudo ifconfig {} {}'.format(usb_interface, ip)
+                log_debug(cmd)
+                self.cnapi.xcmd(cmd)
             else:
                 log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
                 break
