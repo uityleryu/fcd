@@ -1182,7 +1182,7 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
 
-        # assign IP address to USB ethernet
+        # assign IP address to USB ethernet interface
         cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
@@ -1193,13 +1193,23 @@ class UVCFactoryGeneral(ScriptBase):
             cmd = 'ifconfig {}'.format(usb_interface)
             log_debug(cmd)
             [output, rv] = self.cnapi.xcmd(cmd)
-            log_debug('rsp = {}'.format(output))
 
             if 'Device not found' not in output:
                 cmd = "ifconfig {} {}".format(usb_interface, ip)
                 log_debug(cmd)
                 self.cnapi.xcmd(cmd)
+                break
+
+            # down/up usb interface
+            cmd = 'sudo ifconfig down {}'.format(usb_interface)
+            log_debug(cmd)
+            self.cnapi.xcmd(cmd)
             time.sleep(1)
+            
+            cmd = 'sudo ifconfig up {}'.format(usb_interface)
+            log_debug(cmd)
+            self.cnapi.xcmd(cmd)
+            time.sleep(3)
         else:
             error_critical('Cannot detect usb interface')
 
