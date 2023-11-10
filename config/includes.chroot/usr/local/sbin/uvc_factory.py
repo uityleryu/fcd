@@ -1176,40 +1176,36 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(duration_msg.format(cap=action, time=duration))
 
     def set_host_usb_ethernet_ip(self, ip='169.254.2.21'):
+        # check current network
+        cmd = 'ifconfig'
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
         # change netmask of eth0:0
         cmd = 'ifconfig eth0:0 netmask 255.255.255.0'
-        
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
 
         # assign IP address to USB ethernet interface
         cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
         log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        usb_interface = output
+        [usb_interface, rv] = self.cnapi.xcmd(cmd)
 
         # check if usb interface is up
-        for retry in range(10):
-            cmd = 'ifconfig {}'.format(usb_interface)
+        for retry in range(5):
+            cmd = 'ifconfig {} |grep "inet " |awk \'{print $2}\''
             log_debug(cmd)
-            [output, rv] = self.cnapi.xcmd(cmd)
+            [current_ip, rv] = self.cnapi.xcmd(cmd)
 
-            if 'Device not found' not in output:
-                cmd = "ifconfig {} {}".format(usb_interface, ip)
+            if current_ip != ip:
+                # down/up usb interface
+                cmd = 'sudo ifconfig down {}; sleep 1; sudo ifconfig up {}'.format(usb_interface, usb_interface)
                 log_debug(cmd)
                 self.cnapi.xcmd(cmd)
+                time.sleep(3)
+            else:
+                log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
                 break
-
-            # down/up usb interface
-            cmd = 'sudo ifconfig down {}'.format(usb_interface)
-            log_debug(cmd)
-            self.cnapi.xcmd(cmd)
-            time.sleep(1)
-            
-            cmd = 'sudo ifconfig up {}'.format(usb_interface)
-            log_debug(cmd)
-            self.cnapi.xcmd(cmd)
-            time.sleep(3)
         else:
             error_critical('Cannot detect usb interface')
 
