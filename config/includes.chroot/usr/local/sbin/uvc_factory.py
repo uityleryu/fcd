@@ -1227,7 +1227,6 @@ class UVCFactoryGeneral(ScriptBase):
                 cmd = 'sudo ifconfig down {}; sleep 1; sudo ifconfig up {}'.format(usb_interface, usb_interface)
                 log_debug(cmd)
                 self.cnapi.xcmd(cmd)
-                time.sleep(3)
         else:
             error_critical('Cannot assign IP to usb interface')
 
