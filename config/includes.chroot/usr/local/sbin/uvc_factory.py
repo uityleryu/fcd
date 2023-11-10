@@ -586,11 +586,11 @@ class UVCFactoryGeneral(ScriptBase):
 
         if self.tlb_rev != "":
             log_debug("Top level BOM:" + self.tlb_rev)
-            sstr.append("-t 002-{}".format(self.tlb_rev))
+            sstr.append("-t {}".format(self.tlb_rev))
 
         if self.meb_rev != "":
             log_debug("ME BOM:" + self.meb_rev)
-            sstr.append("-M 300-{}".format(self.meb_rev))
+            sstr.append("-M {}".format(self.meb_rev))
 
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
