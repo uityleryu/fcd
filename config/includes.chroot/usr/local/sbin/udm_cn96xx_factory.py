@@ -468,14 +468,14 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(3):
             try:
                 index = self.proc.expect(
-                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 1 seconds for boot menu"], timeout=15)
+                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 1 seconds for boot menu","Press 'B' within 2 seconds for boot menu"], timeout=15)
                 if index in [2] and not self.board_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
                     self.config_board_model_nbumer()
                     self.board_config = True
                     continue
-                elif index in [3] and not self.fuse_config:
+                elif index in [3,4] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
                     self.proc.send("b")
