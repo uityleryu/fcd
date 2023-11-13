@@ -72,7 +72,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea3d': "rvu_pf#5",
+            'ea3d': "rvu_pf#3",
             'ea3e': "rvu_pf#5",
         }
 
@@ -254,7 +254,6 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(0, 5):
             self.proc.send(self.newline)
             self.send_wo_extra_newline("choice", "6\n",timout=2)
-            self.proc.send(self.newline)
             self.send_wo_extra_newline("choice", "6\n",timout=2)
             output = self.proc.before
             if "31] SPI_SAFEMODE         =          1 (0x1)" not in output:

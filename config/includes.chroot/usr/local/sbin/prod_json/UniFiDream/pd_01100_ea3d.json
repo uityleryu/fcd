@@ -1,11 +1,11 @@
 {
   "UniFiDream": {
-    "UDM-ENT": {
+    "EFG": {
       "INDEX": 0,
-      "NAME": "UDM-ENT",
+      "NAME": "EFG",
       "BOARDID": "ea3d",
       "BOMREV": "113-01100",
-      "DESC": "UniFi Dream Machine Enterprise",
+      "DESC": "Enterprise Fortress Gateway",
       "FILE": "udm_cn96xx_factory.py",
       "T1FILE": "udm_cn96xx_bspfactory.py",
       "QRCHECK": "True",
@@ -27,9 +27,9 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udm-enterprise",
           "DST_PATH": "udm-fw/udm-enterprise",
           "FILES": [
-            "UDMENT.cn9670.v3.2.5.87f91bb.231019.1627.bin",
-            "uImage_20231019",
-            "bootfs_uboot_20231019.img"
+            "UDMENT.cn9670.v3.2.6.535ae12.231106.2207.bin",
+            "uImage_20231106",
+            "bootfs_uboot_20231106.img"
           ]
         },
         {
@@ -44,15 +44,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea3d-fw.bin",
-          "../udm-fw/udm-enterprise/UDMENT.cn9670.v3.2.5.87f91bb.231019.1627.bin"
+          "../udm-fw/udm-enterprise/UDMENT.cn9670.v3.2.6.535ae12.231106.2207.bin"
         ],
         [
           "tftp/images/ea3d-recovery",
-          "../udm-fw/udm-enterprise/uImage_20231019"
+          "../udm-fw/udm-enterprise/uImage_20231106"
         ],
         [
           "tftp/images/ea3d-boot.img",
-          "../udm-fw/udm-enterprise/bootfs_uboot_20231019.img"
+          "../udm-fw/udm-enterprise/bootfs_uboot_20231106.img"
         ],
         [
           "tftp/tools/ea3d-devreg.deb",
