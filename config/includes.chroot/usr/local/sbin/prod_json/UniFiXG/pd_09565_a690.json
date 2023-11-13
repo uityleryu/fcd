@@ -30,8 +30,8 @@
             "a690-fw_v3.2.3.bin",
             "a690-loader_v3.2.3.img",
             "a690-uboot_v3.2.3.mbn",
-            "ipq5322_uxg_max_v2.1.img",
-            "ipq5322_uxg_max_nor_v2.1.bin"
+            "ipq5322_uxg_max_v3.img",
+            "ipq5322_uxg_max_nor_v3.bin"
           ]
         },
         {
@@ -57,11 +57,11 @@
         ],
         [
           "tftp/images/a690-bsp-2g_nor.bin",
-          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v2.1.bin"
+          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v3.bin"
         ],
         [
           "tftp/images/a690-bsp-2g.img",
-          "../uxg-fw/uxg/ipq5322_uxg_max_v2.1.img"
+          "../uxg-fw/uxg/ipq5322_uxg_max_v3.img"
         ],
         [
           "tftp/tools/a690-devreg.deb",
