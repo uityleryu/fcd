@@ -133,20 +133,17 @@ class U6MT762xFactory(ScriptBase):
         self.SPECIAL_RECALL_EVENT = False
         # 20221202 for Gavin BLE reboot special case
 
-        if self.SPECIAL_RECALL_EVENT is True:
-            self.UPDATE_UBOOT_ENABLE = False
-        else:
-            self.UPDATE_UBOOT_ENABLE = True
-
         self.BOOT_RECOVERY_IMAGE = True
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
 
         if self.SPECIAL_RECALL_EVENT is True:
+            self.UPDATE_UBOOT_ENABLE = False
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
+            self.UPDATE_UBOOT_ENABLE = True
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
@@ -262,7 +259,7 @@ class U6MT762xFactory(ScriptBase):
                 self.set_stp_env()
 
         elif self.board_id == "a620":
-            rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+            rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press|Autobooting in 3 seconds, press", "\x1b\x1b")
             retry = 2
             while retry > 0:
                 if rt != 0:
@@ -341,6 +338,48 @@ class U6MT762xFactory(ScriptBase):
         elif self.board_id == "a620":
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "setenv is_ble_stp true; saveenv", "done")
 
+    def check_wifi_eeprom(self):
+        time.sleep(10)
+        cmd = "ifconfig ra0 up"
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+        cmd = "ifconfig rai0 up"
+        self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, valid_chk=True)
+        time.sleep(5)
+
+        """
+        # 2G TX0 power OFDM 54M
+        self.eeprom_check(interface='ra0', address='58', check_value='22')
+        # 2G TX1 power OFDM 54M
+        self.eeprom_check(interface='ra0', address='5e', check_value='22')
+        # 2G TX2 power OFDM 54M
+        self.eeprom_check(interface='ra0', address='64', check_value='22')
+        # 2G TX3 power OFDM 54M
+        self.eeprom_check(interface='ra0', address='6a', check_value='22')
+        # 2G MCS0 TX power by rate
+        self.eeprom_check(interface='ra0', address='c5', check_value='C4C6')
+        # 5G TX0 power OFDM 54M
+        self.eeprom_check(interface='rai0', address='34c', check_value='2424')
+        # 5G TX1 power OFDM 54M
+        self.eeprom_check(interface='rai0', address='358', check_value='2424')
+        # 5G TX2 power OFDM 54M
+        self.eeprom_check(interface='rai0', address='364', check_value='2424')
+        # 5G TX3 power OFDM 54M
+        self.eeprom_check(interface='rai0', address='370', check_value='2424')
+        # 5G MCS0 TX power by rate
+        self.eeprom_check(interface='rai0', address='2a2', check_value='C4')
+        """
+
+        cmd = "hexdump -s 0x0 -n 131968 /dev/mtd4"
+        self.pexp.expect_lnxcmd(120, self.linux_prompt, cmd, "0020380")
+
+    def eeprom_check(self, interface, address, check_value):
+        cmd = "iwpriv {} e2p {}".format(interface, address)
+        buf = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
+        if check_value in buf.split(':')[2]:
+            log_debug("eeprom value check PASS!!!")
+        else:
+            error_critical("eeprom value check FAIL!!!")
+
     def check_info(self):
         self.enter_uboot()
         log_debug("check DUT ip of Uboot, ipaddr=192.168.1.20(default) or not ?")
@@ -397,14 +436,14 @@ class U6MT762xFactory(ScriptBase):
         while number_time < 14:  #14 * 5 = max 70 sec wait for dmesg key word for BT FW check, it will be around 43 sec 
             time.sleep(5)
             cmd = 'dmesg | grep -i "btmtk_load_flash_programing"'
-            output = self.pexp.expect_get_output(action=cmd, prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             log_debug(output)
             if output.find("btmtk_load_flash_programing: btmtk_load_flash_chech_version pass, no need update") >= 0:
                 log_debug("BT fw will 'not' need to be updated")
                 break
 
             cmd = 'dmesg | grep -i "Get event result:"'
-            output = self.pexp.expect_get_output(action=cmd, prompt= "" ,timeout=3)
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             log_debug(output)
             if output.find("Get event result: NG") >= 0:
                 log_debug("BT fw will need to be updated, it will reboot system automatically")
@@ -416,6 +455,10 @@ class U6MT762xFactory(ScriptBase):
                 break
 
             number_time = number_time + 1
+
+        # RF Eric_Liao's request
+        if self.board_id == "a620":
+            self.check_wifi_eeprom()
 
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_setenv is_ble_stp true")
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "fw_printenv", "is_ble_stp=true")
@@ -432,7 +475,7 @@ class U6MT762xFactory(ScriptBase):
             # self.login(timeout=240,press_enter=True)
             pass
         elif self.board_id == "a620":
-            self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+            self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press|Autobooting in 3 seconds, press", "")
 
     def run(self):
         """
@@ -470,7 +513,6 @@ class U6MT762xFactory(ScriptBase):
             #self.cnapi.xcmd("ll")
             self.pexp.expect_lnxcmd(timeout=1, pre_exp=self.linux_prompt, action="ll", post_exp="abcd")
             #### echo 5edfacbf > /proc/ubnthal/.uf
-
 
 
         if self.PROVISION_ENABLE is True:
