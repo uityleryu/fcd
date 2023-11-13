@@ -1220,7 +1220,8 @@ class UVCFactoryGeneral(ScriptBase):
 
             if current_ip == ip:
                 log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
-                break
+                if self.cnapi.ip_is_alive(ip=ip):
+                    break
 
             if retry == 5:
                 log_debug('=== retry:{}, ifdown and ifup {} ==='.format(retry, usb_interface))
