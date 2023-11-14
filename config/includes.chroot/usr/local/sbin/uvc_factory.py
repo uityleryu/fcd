@@ -1187,10 +1187,15 @@ class UVCFactoryGeneral(ScriptBase):
         self.cnapi.xcmd(cmd)
 
         # get USB ethernet interface
-        cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
-        log_debug(cmd)
-        [usb_interface, rv] = self.cnapi.xcmd(cmd)
-        log_debug('USB ethernet interface = {}'.format(usb_interface))
+        for retry in range(3):
+            cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
+            log_debug(cmd)
+            [usb_interface, rv] = self.cnapi.xcmd(cmd)
+            if usb_interface != '':
+                log_debug('USB ethernet interface = {}'.format(usb_interface))
+                break
+        else:
+            error_critical('Not detect USB ethernet interface')
 
         # wait for usb interface up
         for retry in range(30):
