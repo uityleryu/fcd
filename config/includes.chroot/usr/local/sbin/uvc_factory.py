@@ -1187,19 +1187,20 @@ class UVCFactoryGeneral(ScriptBase):
         self.cnapi.xcmd(cmd)
 
         # get USB ethernet interface
-        for retry in range(3):
-            cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
+        log_debug('Detecting USB device ...')
+        for retry in range(15):
+            cmd = 'dmesg |grep " register \'cdc_ether\'" |tail -1 |grep -o \'eth[0-9]\''
             log_debug(cmd)
             [usb_interface, rv] = self.cnapi.xcmd(cmd)
             if usb_interface != '':
                 log_debug('USB ethernet interface = {}'.format(usb_interface))
                 break
-            time.sleep(1)
+            time.sleep(2)
         else:
             error_critical('Not detect USB ethernet interface')
 
         # wait for usb interface up
-        for retry in range(30):
+        for retry in range(15):
             log_debug('=== retry:{},  wait 30s for {} up ==='.format(retry, usb_interface))
             cmd = 'ifconfig {}'.format(usb_interface)
             log_debug(cmd)
@@ -1207,7 +1208,7 @@ class UVCFactoryGeneral(ScriptBase):
             if 'Device not found' not in rsp:
                 log_debug('USB interface {} took {} seconds up'.format(usb_interface, retry))
                 break
-            time.sleep(1)
+            time.sleep(2)
         else:
             error_critical('Cannot detect usb interface')
 
