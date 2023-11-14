@@ -1194,6 +1194,7 @@ class UVCFactoryGeneral(ScriptBase):
             if usb_interface != '':
                 log_debug('USB ethernet interface = {}'.format(usb_interface))
                 break
+            time.sleep(1)
         else:
             error_critical('Not detect USB ethernet interface')
 
