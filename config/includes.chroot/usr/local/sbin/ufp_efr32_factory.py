@@ -58,7 +58,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': True
+            'a923': True,
+            'a924': True
         }
 
         self.bom_check_dict = {
@@ -71,7 +72,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': False
+            'a923': False,
+            'a924': True,
         }
 
         self.devreg_data_check_dict = {
@@ -84,7 +86,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': True,
-            'a923': True
+            'a923': True,
+            'a924': True,
         }
 
         self.qrcode_dict = {
@@ -97,7 +100,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': True,
             'a922': True,
             'ec51': False,
-            'a923': False
+            'a923': False,
+            'a924': True,
         }
 
         self.sku_dict = {
@@ -110,7 +114,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': False,
             'a922': True,
             'ec51': False,
-            'a923': False
+            'a923': False,
+            'a924': True,
         }
 
         self.homekit_dict = {
@@ -123,7 +128,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': False,
             'a922': False,
             'ec51': False,
-            'a923': False
+            'a923': False,
+            'a924': False,
         }
 
         # number of Ethernet
@@ -137,7 +143,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "0",
             'a922': "0",
             'ec51': "0",
-            'a923': "0"
+            'a923': "0",
+            'a924': "1",
         }
 
         # number of WiFi
@@ -151,7 +158,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "0",
             'a922': "1",
             'ec51': "0",
-            'a923': "0"
+            'a923': "0",
+            'a924': "1",
         }
 
         # number of Bluetooth
@@ -165,7 +173,8 @@ class UFPEFR32FactoryGeneral(ScriptBase):
             'ee76': "1",
             'a922': "1",
             'ec51': "1",
-            'a923': "1"
+            'a923': "1",
+            'a924': "1",
         }
 
     def prepare_server_need_files(self):
