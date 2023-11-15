@@ -119,5 +119,8 @@
   ],
   "USW_Ultra-SERIES" : [
     "04300_ed32", "09994_ed33", "09995_ed34"
+  ],
+  "UMR_Industrial-SERIES" : [
+    "08938_e620", "10336_e621"
   ]
 }
