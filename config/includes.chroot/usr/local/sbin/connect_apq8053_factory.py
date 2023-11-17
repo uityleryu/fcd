@@ -411,10 +411,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': False,
             'efb6': False,
             'efb7': False,
-            'efba': False,
+            'efba': True,
             'efa1': False,
-            'efbb': False,
-            'efbc': False,
+            'efbb': True,
+            'efbc': True,
             'ec64': False,
             'ec65': True
         }
@@ -449,10 +449,10 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efb5': False,
             'efb6': False,
             'efb7': False,
-            'efba': False,
+            'efba': True,
             'efa1': False,
-            'efbb': False,
-            'efbc': False,
+            'efbb': True,
+            'efbc': True,
             'ec64': False,
             'ec65': True
         }
