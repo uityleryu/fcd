@@ -1,11 +1,11 @@
 {
   "UniFiAccess": {
-    "UA-HUB-ENTERPRISE": {
+    "EAH-8": {
       "INDEX": 1,
-      "NAME": "UA-HUB-ENTERPRISE",
+      "NAME": "EAH-8",
       "BOARDID": "ec55",
       "BOMREV": "113-06892",
-      "DESC": "UniFi Access Hub Enterprise",
+      "DESC": "UniFi Enterprise Access Hub",
       "FILE": "ua_mt7621_factory4.py",
       "T1FILE": "",
       "QRCHECK": "True",
