@@ -46,28 +46,39 @@ class UAESP32FactoryGeneral(ScriptBase):
         # number of Ethernet
         self.ethnum = {
             'ec84': "1",
+            'ec87': "1",
         }
 
         # number of WiFi
         self.wifinum = {
             'ec84': "0",
+            'ec87': "0",
         }
 
         # number of Bluetooth
         self.btnum = {
             'ec84': "0",
+            'ec87': "0",
         }
 
         self.flash_size = {
             'ec84': "16MB",
+            'ec87': "16MB",
         }
 
         self.eeprom_offset = {
             'ec84': "0xfff000",
+            'ec87': "0xfff000",
         }
 
         self.partion_offset = {
             'ec84': {
+                'bootloader_digest': '0',
+                'bootloader': '0x1000',
+                'partition_table': '0xb000',
+                'ota': '0xd000',
+                'mfg': '0x90000'},
+            'ec87': {
                 'bootloader_digest': '0',
                 'bootloader': '0x1000',
                 'partition_table': '0xb000',
