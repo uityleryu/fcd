@@ -1,0 +1,55 @@
+{
+  "UniFiAccess": {
+    "UA-G2-Flex": {
+      "INDEX": 0,
+      "NAME": "UA-G2-Flex",
+      "BOARDID": "ec87",
+      "BOMREV": "113-08344",
+      "DESC": "Reader G2 Flex",
+      "FILE": "ua_esp32_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "FCD_ID": "0012",
+      "SW_ID": "1d01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/ua-fw/ua-g2-flex/",
+          "DST_PATH": "ua-fw/ua-g2-flex",
+          "FILES": []
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee_20230608"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ec87-bootloader.bin",
+          "../ua-fw/ua-g2-flex/bootloader.bin"
+        ],
+        [
+          "tftp/images/ec87-mfg.bin",
+          "../ua-fw/ua-g2-flex/ua-g2-flex_mfg.v0.1.0.0.g2550.231120.0909.bin"
+        ],
+        [
+          "tftp/images/ec87-ota.bin",
+          "../ua-fw/ua-g2-flex/ota_data_initial.bin"
+        ],
+        [
+          "tftp/images/ec87-ptn-table.bin",
+          "../ua-fw/ua-g2-flex/partition-table.bin"
+        ],
+        [
+          "tftp/tools/common/aarch64-rpi4-4k-ee",
+          "./aarch64-rpi4-4k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}

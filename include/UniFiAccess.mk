@@ -143,4 +143,5 @@ $(eval $(call ProductCompress2,03693_ec64))
 $(eval $(call ProductCompress2,07717_ec65))
 $(eval $(call ProductCompress2,02964_ec36))
 $(eval $(call ProductCompress2,08905_ec84))
+$(eval $(call ProductCompress2,08344_ec87))
 
