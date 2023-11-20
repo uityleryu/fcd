@@ -124,8 +124,8 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         if self.board_id == "a688":
             self.FANI2C_CHECK_ENABLE = False
-            self.FWUPDATE_ENABLE = False
-            self.DATAVERIFY_ENABLE = False
+            self.FWUPDATE_ENABLE = True
+            self.DATAVERIFY_ENABLE = True
         elif self.board_id in ["a681", "a685", "a696"]:
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = False
@@ -173,10 +173,10 @@ class U7IPQ5322BspFactory(ScriptBase):
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
 
-        if self.board_id in ['a681', 'a682', 'a685', 'a686', 'a691', 'a696']:
-            time.sleep(2)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
+        time.sleep(2)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
 
+        # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
         # self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
         self.linux_prompt = "#"
 
@@ -196,20 +196,55 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.pexp.expect_only(10, self.linux_prompt)
 
     def chk_caldata_ipq5322(self):
-        # 2G
-        if self.board_id in ["a696"]:
-            cmd = "hexdump -s 0x8A800 -n 10 /dev/mtdblock9"
-            post_exp = "008a800 0001 0404 0000 0000 e800"
-        else:
-            cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock9"
-            post_exp = "0001000 0001 0378 0000 0000 f800"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        CHK_2G_CALDATA_EN = True
+        CHK_5G_CALDATA_EN = True
 
-        time.sleep(1)
-        # 5G
-        cmd = "hexdump -s 0x58800 -n 10 /dev/mtdblock9"
-        post_exp = "0058800 0001 0404 0000 0000"
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+        # 2G cal data
+        if CHK_2G_CALDATA_EN is True:
+            if self.board_id in ["a696"]:
+                cmd = "hexdump -s 0x8A800 -n 10 /dev/mtdblock9"
+                post_exp = "008a800 0001 0404 0000 0000 e800"
+            else:
+                cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock9"
+                post_exp = "0001000 0001 0378 0000 0000 f800"
+
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+            time.sleep(1)
+
+        # 5G cal data
+        if CHK_5G_CALDATA_EN is True:
+            cmd = "hexdump -s 0x58800 -n 10 /dev/mtdblock9"
+            post_exp = "0058800 0001 0404 0000 0000"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+            time.sleep(1)
+
+    def chk_bdf_ipq5322(self):
+        CHK_2G_BDF_EN = True
+        CHK_5G_BDF_EN = True
+
+        if self.board_id in ["a681", "a682", "a685", "a686" "a691", "a696"]:
+            CHK_2G_BDF_EN = False
+            CHK_5G_BDF_EN = False
+
+        # 2G BDF
+        if CHK_2G_BDF_EN is True:
+            if self.board_id in ["a688"]:
+                cmd = "md5sum /lib/firmware/IPQ5332/bdwlan.b16"
+                post_exp = "06a6e5913e85b24d590fc499f881e954"
+            else:
+                pass
+
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+
+        # 5G BDF
+        if CHK_5G_BDF_EN is True:
+            if self.board_id in ["a688"]:
+                cmd = "md5sum /lib/firmware/qcn9224/bdwlan.b0002"
+                post_exp = "bbfa01b814b9f13fbd412275870c2150"
+            else:
+                pass
+
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
 
     def i2c_check(self, item):
         if item == "fan":
@@ -293,9 +328,8 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.prepare_server_need_files_bspnode()
 
         if self.CHKCALDATA_ENABLE is True:
-            if self.board_id in ["a681", "a682", "a683", "a685", "a686", "a691", 'a696']:
-                self.chk_caldata_ipq5322()
-                msg(35, "Finish check wifi cal_data ...")
+            self.chk_caldata_ipq5322()
+            msg(35, "Finish check wifi cal_data ...")
 
         if self.REGISTER_ENABLE is True:
             self.registration()
@@ -317,6 +351,7 @@ class U7IPQ5322BspFactory(ScriptBase):
 
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
+            self.chk_bdf_ipq5322()
             msg(80, "Succeeding in checking the devrenformation ...")
 
         if self.ps_state is True:
