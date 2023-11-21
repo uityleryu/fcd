@@ -58,7 +58,7 @@ class UAESP32FactoryGeneral(ScriptBase):
         # number of Bluetooth
         self.btnum = {
             'ec84': "0",
-            'ec87': "0",
+            'ec87': "1",
         }
 
         self.flash_size = {
