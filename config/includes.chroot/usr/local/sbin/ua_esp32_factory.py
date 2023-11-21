@@ -92,6 +92,18 @@ class UAESP32FactoryGeneral(ScriptBase):
             'btnum': self.btnum
         }
 
+        #Add method for write ME BOM
+        self.write_mebom = {
+            'ec84': False,
+            'ec87': True,
+        }
+
+        #Add method for write top level BOM
+        self.write_topbom = {
+            'ec84': False,
+            'ec87': True,
+        }
+
     def prepare_server_need_files(self):
         output = self.pexp.expect_get_output("uniqueid", "", timeout=3)
         log_debug(output)
@@ -226,6 +238,15 @@ class UAESP32FactoryGeneral(ScriptBase):
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
+        # check ME BOM
+        if self.write_mebom[self.board_id] is True:
+            if not self.meb_rev:
+                error_critical("ME BOM is required ...")
+
+        # check Top level BOM
+        if self.write_topbom[self.board_id] is True:
+            if not self.tlb_rev:
+                error_critical("Top level BOM is required ...")
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
         msg(5, "Open serial port successfully ...")
