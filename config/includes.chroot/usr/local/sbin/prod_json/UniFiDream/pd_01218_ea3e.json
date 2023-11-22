@@ -27,9 +27,9 @@
           "SRC_PATH": "images/fcd-image/udm-fw/uxg-enterprise",
           "DST_PATH": "udm-fw/uxg-enterprise",
           "FILES": [
-            "UXGENT.cn9670.v3.2.4+root.13904.7e31ec7.231027.1502.bin",
-            "uImage_20231027",
-            "bootfs_uboot_20231027.img"
+            "UXGENT.cn9670.v3.2.6+root.14191.a66fd82.231120.1111.bin",
+            "uImage_20231120",
+            "bootfs_uboot_20231120.img"
           ]
         },
         {
@@ -43,15 +43,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea3e-fw.bin",
-          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.4+root.13904.7e31ec7.231027.1502.bin"
+          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.6+root.14191.a66fd82.231120.1111.bin"
         ],
         [
           "tftp/images/ea3e-recovery",
-          "../udm-fw/uxg-enterprise/uImage_20231027"
+          "../udm-fw/uxg-enterprise/uImage_20231120"
         ],
         [
           "tftp/images/ea3e-boot.img",
-          "../udm-fw/uxg-enterprise/bootfs_uboot_20231027.img"
+          "../udm-fw/uxg-enterprise/bootfs_uboot_20231120.img"
         ],
         [
           "tftp/tools/ea3e-devreg.deb",
