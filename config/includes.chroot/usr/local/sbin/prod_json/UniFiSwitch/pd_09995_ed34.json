@@ -23,7 +23,7 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/usw-fw/usw-ultra",
+          "SRC_PATH": "images/fcd-image/usw-fw/usw-ultra/",
           "DST_PATH": "usw-fw/usw-ultra",
           "FILES": []
         }
@@ -31,7 +31,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed34-app.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32_1.1.1+742.230901.1707-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32_1.1.5+795.231103.1621-unsigned.bin"
         ],
         [
           "tftp/images/ed34-bootloader.bin",
@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ed34-mfg.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32mfg_1.1.1+742.230901.1708-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_develop-usm8p+799.231107.1355-unsigned.bin"
         ],
         [
           "tftp/images/ed34-ota.bin",
