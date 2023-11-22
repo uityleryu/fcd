@@ -141,6 +141,8 @@ class UMNRF52840FactoryGeneral(ScriptBase):
         output = self.pexp.expect_get_output2("info", "ubnt", self.nrf52840_prompt, timeout=10)
 
     def record_modem_imei(self):
+        output = self.pexp.expect_get_output("uishell_mdm enable", self.nrf52840_prompt, timeout=10)
+        log_debug("rsp={}".format(output))
         output = self.pexp.expect_get_output("uishell_mdm imei", self.nrf52840_prompt, timeout=3)
         log_debug("rsp={}".format(output))
         match = re.search(r'([0-9]{15,})', output)
