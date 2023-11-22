@@ -14,7 +14,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 from datetime import datetime
 
 '''
-    e980: Viewport            (Android 8)
+    e980: Viewport            (Android 9)
     ef80: UC-Display-7  (BLE)       (Android 9)
     ef81: UC-Display-13 (BLE)       (Android 9)
     ef87: UC-Display-7  (BLE/WIFI)  (Android 9)
@@ -46,7 +46,6 @@ from datetime import datetime
     efbb: Phone G3 Touch Pro   (Android 9)
     efbc: Phone G3 Touch Pro Max   (Android 9)
     ec64: UniFi Access G2 Portal(Android 9)
-    ec65: UniFi Access Intercom Viewer  (Android 9)
 
 '''
 
@@ -96,8 +95,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "0007f100",
             'efbb': "0007f100",
             'efbc': "0007f100",
-            'ec64': "0007f100",
-            'ec65': "0007f100"
+            'ec64': "0007f100"
         }
 
         # default product class: basic
@@ -106,8 +104,12 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "e980", "ec60", "ec62", "ef0e", "ef80", "ef81", "ef82",
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
-            "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
-            "efbc", "ec64", "ec65"
+            "efb7", "efa0", "ec5f", "efba", "efa1", "efbb", "efbc",
+            "ec64"
+        ]
+
+        self.ethadb_list = [
+            "ec5e"
         ]
 
         self.ospl = {
@@ -142,8 +144,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "adr9",
             'efbb': "adr9",
             'efbc': "adr9",
-            'ec64': "adr9",
-            'ec65': "adr9"
+            'ec64': "adr9"
         }
 
         self.lnxpmt = {
@@ -178,8 +179,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "ev_charger",
             'efbb': "utp_g3_pro",
             'efbc': "utp_g3_pro_max",
-            'ec64': "rdr_mdu",
-            'ec65': "ua_viewpoint",
+            'ec64': "rdr_mdu"
         }
 
         # Number of Ethernet
@@ -215,8 +215,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "1",
             'efbc': "1",
-            'ec64': "1",
-            'ec65': "1"
+            'ec64': "1"
         }
 
         # Number of WiFi
@@ -252,8 +251,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "1",
             'efbc': "1",
-            'ec64': "0",
-            'ec65': "0"
+            'ec64': "0"
         }
 
         # Number of Bluetooth
@@ -289,8 +287,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': "1",
             'efbb': "2",
             'efbc': "2",
-            'ec64': "1",
-            'ec65': "0"
+            'ec64': "1"
         }
 
         self.qrcode_dict = {
@@ -325,8 +322,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': True,
             'efbb': True,
             'efbc': True,
-            'ec64': True,
-            'ec65': True
+            'ec64': True
         }
 
         self.devnetmeta = {
@@ -368,82 +364,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'efa1': True,
             'efbb': True,
             'efbc': True,
-            'ec64': True,
-            'ec65': True
-        }
-
-        #Add method for write ME BOM
-        self.write_mebom = {
-            'e980': False,
-            'ef80': False,
-            'ef81': False,
-            'ef87': False,
-            'ef88': False,
-            'ef82': False,
-            'ef13': False,
-            'ef0e': False,
-            'ef83': False,
-            'ef84': False,
-            'ef85': False,
-            'ef86': False,
-            'ef90': False,
-            'ec5e': False,
-            'ec5f': False,
-            'ec60': False,
-            'ec62': False,
-            'ec61': False,
-            'efa0': False,
-            'efb0': False,
-            'efb1': False,
-            'efb2': False,
-            'efb3': False,
-            'efb4': False,
-            'efb5': False,
-            'efb6': False,
-            'efb7': False,
-            'efba': False,
-            'efa1': False,
-            'efbb': False,
-            'efbc': False,
-            'ec64': False,
-            'ec65': True
-        }
-
-        #Add method for write top level BOM
-        self.write_topbom = {
-            'e980': False,
-            'ef80': False,
-            'ef81': False,
-            'ef87': False,
-            'ef88': False,
-            'ef82': False,
-            'ef13': False,
-            'ef0e': False,
-            'ef83': False,
-            'ef84': False,
-            'ef85': False,
-            'ef86': False,
-            'ef90': False,
-            'ec5e': False,
-            'ec5f': False,
-            'ec60': False,
-            'ec62': False,
-            'ec61': False,
-            'efa0': False,
-            'efb0': False,
-            'efb1': False,
-            'efb2': False,
-            'efb3': False,
-            'efb4': False,
-            'efb5': False,
-            'efb6': False,
-            'efb7': False,
-            'efba': False,
-            'efa1': False,
-            'efbb': False,
-            'efbc': False,
-            'ec64': False,
-            'ec65': True
+            'ec64': True
         }
 
         self.cladb = None
@@ -511,6 +432,48 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             error_critical("Get DUT IP address failed!!")
 
     def connect_adb_eth(self):
+        # ADB connection to Android platform by Ethernet
+        retry = 20
+        portn = int(self.row_id) + 2
+        self.dutip = "192.168.{}.2".format(portn)
+
+        for i in range(0, retry):
+            try:
+                cmd = "adb connect {0}:5555".format(self.dutip)
+                [buffer, returncode] = self.cnapi.xcmd(cmd)
+                log_debug(buffer)
+                if "connected to {}".format(self.dutip) not in buffer:
+                    if i < retry:
+                        print("Retry {0}".format(i + 1))
+                        time.sleep(1)
+                        continue
+                    else:
+                        print("Exceeded maximum retry times {0}".format(i))
+                        error_critical(msg="ADB over ethernet Failed!")
+
+                self.cladb = ExpttyProcess(self.row_id, "adb -s {}:5555 root".format(self.dutip), "\n")
+                self.cladb.expect_only(2, "adbd is already running as root")
+
+                pexpect_cmd = "adb -s {0}:5555 shell".format(self.dutip)
+                log_debug(msg=pexpect_cmd)
+                pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
+            except Exception as e:
+                # Ctrl+C anyway to avoid hangup cmd
+                self.cladb.expect_action(3, "", "\003")
+                if i < retry:
+                    print("Retry {0}".format(i + 1))
+                    time.sleep(1)
+                    continue
+                else:
+                    print("Exceeded maximum retry times {0}".format(i))
+                    raise e
+            else:
+                break
+
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        time.sleep(1)
+
+    def connect_adb_eth_m(self):
         # ADB connection to Android platform by Ethernet
         retry = 60
         for i in range(0, retry):
@@ -737,7 +700,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         self.cnapi.xcmd(cmd)
         time.sleep(2)
         self.dutip = "192.168.168.11"
-        self.connect_adb_eth()
+        self.connect_adb_eth_m()
         cmd = "ethtool -E eth0 magic 0x78A5 offset 0 length 512 < /data/lan7801_eeprom.bin"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         time.sleep(2)
@@ -768,21 +731,13 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
-        # check ME BOM
-        if self.write_mebom[self.board_id] is True:
-            if not self.meb_rev:
-                error_critical("ME BOM is required ...")
-
-        # check Top level BOM
-        if self.write_topbom[self.board_id] is True:
-            if not self.tlb_rev:
-                error_critical("Top level BOM is required ...")
-
         if self.board_id in self.usbadb_list:
             self.connect_adb_usb()
+        elif self.board_id in self.ethadb_list:
+            self.connect_adb_eth()
         else:
             self.get_dut_ip()
-            self.connect_adb_eth()
+            self.connect_adb_eth_m()
 
         msg(5, "Open serial port successfully ...")
 
@@ -880,20 +835,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 cmd = "chmod 644 /mnt/vendor/persist/bom_hwver"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
-            # Write ME BOM
-            if self.write_mebom[self.board_id] is True:
-                cmd = "echo {} > /mnt/vendor/persist/bom_300_id".format(self.meb_rev)
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-                cmd = "chmod 644 /mnt/vendor/persist/bom_300_id"
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-
-            # Write top level BOM
-            if self.write_topbom[self.board_id] is True:
-                cmd = "echo {} > /mnt/vendor/persist/top_id".format(self.tlb_rev)
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-                cmd = "chmod 644 /mnt/vendor/persist/top_id"
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-
 
         if self.REGISTER_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
@@ -973,23 +914,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     else:
                         error_critical("Check QR ID is not matched !!")
 
-                # Check ME BOM
-                if self.write_mebom[self.board_id] is True:
-                    cmd = "cat /mnt/vendor/persist/bom_300_id"
-                    m_gmebom = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                    if self.meb_rev in m_gmebom:
-                        log_debug("Check ME BOM is matched !!")
-                    else:
-                        error_critical("Check ME BOM is not matched !!")
-
-                # Check Top level BOM
-                if self.write_topbom[self.board_id] is True:
-                    cmd = "cat /mnt/vendor/persist/top_id"
-                    m_gtopbom = self.pexp.expect_get_output(cmd, self.linux_prompt)
-                    if self.tlb_rev in m_gtopbom:
-                        log_debug("Check Top level BOM is matched !!")
-                    else:
-                        error_critical("Check Top level BOM is not matched !!")
 
         if self.board_id == "ef90":
             msg(80, "Wait clean boot ...")
@@ -1037,7 +961,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             #     raise e
 
         msg(100, "Complete FCD process ...")
-        if not self.board_id in self.usbadb_list:
+        if not self.board_id in self.usbadb_list and self.board_id not in self.ethadb_list:
             self.egsw.close()
 
         self.close_fcd()

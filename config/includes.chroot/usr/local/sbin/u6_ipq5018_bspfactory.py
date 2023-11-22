@@ -17,6 +17,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a665: AFi-6-R
     a666: AFi-6-Ext
     a667: UEX
+    a6a1: U6-Mesh-Pro
     a674: UEXP
     a675: UniFi6 Pro outdoor
     a677: UXG
@@ -52,6 +53,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "2",
             'a666': "0",
             'a667': "2",
+            'a6a1': "2",
             'a674': "2",
             'a675': "4",
             "a677": "3"
@@ -68,6 +70,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "2",
             'a666': "2",
             'a667': "2",
+            'a6a1': "2",
             'a674': "2",
             'a675': "0",
             'a677': "0"
@@ -84,6 +87,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "1",
+            'a6a1': "1",
             'a674': "1",
             'a675': "1",
             'a677': "1"
@@ -100,6 +104,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "",
+            'a6a1': "0x50000000",
             'a674': "",
             'a675': "0x50000000",
             'a677': ""
@@ -117,6 +122,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "",
+            'a6a1': 'bootm $fileaddr#config@a6a1',
             'a674': "",
             'a675': "bootm $fileaddr#config@a675",
             'a677': ""
@@ -133,6 +139,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "#",
             'a666': "#",
             'a667': "#",
+            'a6a1': "#",
             'a674': "#",
             'a675': "#",
             'a677': "#"
@@ -149,6 +156,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "eth0",
             'a666': "eth0",
             'a667': "eth0",
+            'a6a1': "eth0",
             'a674': "eth0",
             'a675': "eth0",
             'a677': "eth0"
@@ -165,6 +173,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "br-lan",
             'a666': "br-lan",
             'a667': "br-lan",
+            'a6a1': "br-lan",
             'a674': "br-lan",
             'a675': "br-lan",
             'a677': "br-lan"
@@ -185,7 +194,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id == "a666" or self.board_id == "a665" or self.board_id == "a675":
+        if self.board_id in ["a666", "a665", "a675"]:
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
@@ -233,6 +242,14 @@ class U6IPQ5018BspFactory(ScriptBase):
             "tftpboot {} {}".format(self.bootm_addr[self.board_id], self.initramfs),
             self.bootm_cmd[self.board_id]
         ]
+        if self.board_id == "a6a1":
+            cmdset = [
+                "tftpboot 0x44000000 {} && mmc write 0x44000000 0 34 && mmc rescan && mmc part".format(self.gpt),
+                "setenv imgaddr {} && tftpboot {} {}".format(self.bootm_addr[self.board_id],
+                                                             self.bootm_addr[self.board_id], self.initramfs),
+                self.bootm_cmd[self.board_id]
+            ]
+
         for cmd in cmdset:
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
@@ -249,14 +266,36 @@ class U6IPQ5018BspFactory(ScriptBase):
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
 
-        if self.board_id == 'a650' or self.board_id == 'a651':
+        if self.board_id in ['a650', 'a651']:
             time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
 
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
+        if self.board_id in ["a6a1"]:
+            time.sleep(2)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
+        else:
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
+
         self.linux_prompt = "#"
+
+    def _ramboot_uboot_update(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        cmd = "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id)
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
+        cmd = "sf erase 0x120000 +0xa0000"
+        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
+        cmd = "sf write 0x50000000 0x120000 $filesize"
+        self.pexp.expect_ubcmd(60, "Erased: OK", cmd)
+        self.pexp.expect_ubcmd(60, "Written: OK", "reset")
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
+        if self.board_id in ["a6a1"]:
+            self._ramboot_uboot_update()
+
         self._ramboot_uap_fwupdate()
         # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
         #sometimes DUT will fail log to interrupt the login in process so add below try process for it
@@ -343,7 +382,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             error_critical(rmsg)
 
         log_debug(msg="Upgrading FW ...")
-        self.pexp.expect_only(120, "Reboot system safely")
+        self.pexp.expect_only(300, "Reboot system safely")
         log_debug(msg="FW update done ...")
 
         self.linux_prompt = "root"
@@ -476,6 +515,11 @@ class U6IPQ5018BspFactory(ScriptBase):
         """
             Main procedure of factory
         """
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
@@ -485,6 +529,12 @@ class U6IPQ5018BspFactory(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         if self.BOOT_BSP_IMAGE is True:
@@ -507,9 +557,12 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
 
+        if self.board_id in ["a667", "a674", "a6a1"]:
+            self.chk_caldata_uex()
+            msg(33, "Check WiFi Calibration Data ...")
+
         if self.REGISTER_ENABLE is True:
-            if self.board_id == "a667" or self.board_id == "a674":
-                self.chk_caldata_uex()
+            if self.board_id in ["a667", "a674"]:
                 self.registration_uex()
             else:
                 self.registration()
@@ -535,6 +588,12 @@ class U6IPQ5018BspFactory(ScriptBase):
                 self.upload = False  # Skip to upload log again while __del__
             else:
                 error_critical("Failed to upload FCD log. This model must upload log")
+
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()

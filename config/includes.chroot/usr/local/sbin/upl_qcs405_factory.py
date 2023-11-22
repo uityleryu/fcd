@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 import sys
 import time
 import os
@@ -9,6 +8,7 @@ import filecmp
 import json
 import base64
 import zlib
+import shutil
 
 from pprint import pformat
 from collections import OrderedDict
@@ -97,6 +97,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         msg(20, "Finish setting up network ...")
 
         if PROVISION_EN is True:
+            self.format_backup_partition_ext4()
+            msg(25, "Finish formatting backup partition to ext4 ...")
             self.erase_eefiles()
             msg(30, "Finish erasing ee files ...")
             self.data_provision_64k(self.devnetmeta)
@@ -120,6 +122,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if W_MAC_EN is True:
             self.write_mac_addr()
             msg(80, "Finish writing MAC address ...")
+
+            if self.homekit_dict[self.board_id] is True:
+                self.check_tokenid_match_after_reboot()
+                msg(85, "Finish checking HK token ID ...")
 
         if CHECK_MAC_EN is True:
             self.check_mac()
@@ -212,7 +218,6 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         log_info('write MAC address successfully')
 
-
         # reboot to activate MAC address & re-login
         if self.reboot_dict[self.board_id] is True:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")
@@ -223,6 +228,13 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.setup_network()
 
     def setup_network(self):
+        # temporally added to avoid unexpected msg from console
+        cmd = 'killall ui-connect-mqttd'
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
+        cmd = 'killall ui-spotify-connect spotify_connect'
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+
         cmd = "dmesg -n1"
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
         self.chk_lnxcmd_valid()
@@ -366,12 +378,15 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        # prepare token.txt to write into dut
+        # prepare token.txt to write into dut / backup on usbdisk
         self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
+        self.tokenid_dut = info_dict['token_id']
         with open(self.token_txt_path, 'w') as f:
             f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
                 info_dict['token_id'], info_dict['token']))
+        mfi_token_txt_path = os.path.join(file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
+        shutil.copy2(self.token_txt_path, mfi_token_txt_path)
 
         # csv
         csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
@@ -386,8 +401,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         is_file = os.path.isfile(self.token_txt_path) and os.path.isfile(csv_path) and os.path.isfile(txt_path)
         log_info('token_info_path = {}'.format(self.token_txt_path))
+        log_info('token_info_path = {}'.format(mfi_token_txt_path))
         log_info('csv_path = {}'.format(csv_path))
         log_info('txt_path = {}'.format(txt_path))
+        log_info('token_id = {}'.format(self.tokenid_dut))
         log_info('Token INFO TXT & Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
 
         return is_file
@@ -461,7 +478,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
-        clientbin = "/usr/local/sbin/client_rpi4_release"
+        # must use new client to get hk token
+        clientbin = "/usr/local/sbin/client_x64_release_20230908"
+        cmd = 'chmod 777 {}'.format(clientbin)
+        self.fcd.common.xcmd(cmd)
 
         # The HEX of the QR code
         if self.qrcode is None or not self.qrcode:
@@ -470,8 +490,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
 
         cmd = [
-            "-h stage.udrs.io",
-#           "-h {}".format(self.devreg_hostname),
+#            "-h stage.udrs.io",
+           "-h {}".format(self.devreg_hostname),
             "-k {}".format(self.pass_phrase),
             regsubparams,
             reg_qr_field,
@@ -518,6 +538,30 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         log_debug("Excuting client registration successfully")
         if self.FCD_TLV_data is True:
             self.add_FCD_TLV_info()
+
+    def format_backup_partition_ext4(self):
+        log_debug("erasing devregpart")
+        cmd = "/etc/mkfs_backup.sh "
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
+
+        log_debug("dump devregpart")
+        cmd = "hexdump -C {} 2>&1".format(self.devregpart)
+        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
+
+    def check_tokenid_match_after_reboot(self):
+        cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
+        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
+        self.tokenid_dut_after_reboot = res
+        log_info('tokenid_after_reboot = {}'.format(self.tokenid_dut_after_reboot))
+        log_info('tokenid_dut = {}'.format(self.tokenid_dut))
+
+        is_tokenid_match = self.tokenid_dut_after_reboot == self.tokenid_dut
+        log_info('tokenid_after_reboot & tokenid_dut are {}match'.format('' if is_tokenid_match else 'NOT '))
+
+        if is_tokenid_match:
+            log_info('HK Token ID check successfully')
+        else:
+            error_critical('HK Token ID check failed')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()

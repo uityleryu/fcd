@@ -16,15 +16,15 @@
           "SRC_PATH": "images/fcd-image/unas/",
           "DST_PATH": "unas",
           "FILES": [
-            "UNASSTU.al324.v3.1.17.285c30b.230825.2229.bin",
-            "ea50-fxn-pr1-vn-3.1.17.uImage"
+            "UNASSTU.al324.v3.2.5.1619790.231020.1227.bin",
+            "ea50-fxn-vn-pr1-lcm-sata-3.2.5.uImage"
           ]
         },
         {
           "SRC_PATH": "images/tools/unas",
           "DST_PATH": "tools/ea50",
           "FILES": [
-            "factory-test-tools_2.3.1-168%2Bg0dcf6938c5f_arm64.deb"
+            "factory-test-tools_2.3.4-197+g4e9e359739e_arm64.deb"
           ]
         },
         {
@@ -52,11 +52,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea50-fw.bin",
-          "../unas/UNASSTU.al324.v3.1.17.285c30b.230825.2229.bin"
+          "../unas/UNASSTU.al324.v3.2.5.1619790.231020.1227.bin"
         ],
         [
           "tftp/unas/uImage-ea50",
-          "./ea50-fxn-pr1-vn-3.1.17.uImage"
+          "./ea50-fxn-vn-pr1-lcm-sata-3.2.5.uImage"
         ]
       ]
     }

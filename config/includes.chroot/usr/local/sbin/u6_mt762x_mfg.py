@@ -61,7 +61,8 @@ class MT762xMFGGeneral(ScriptBase):
                 self.set_stp_env()
 
         elif self.board_id == "a620":
-            rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+            # rt = self.pexp.expect_action(30, "Hit any key to stop autoboot", "")
+            rt = self.pexp.expect_action(30, "Hit any key to stop autoboot|Autobooting in 2 seconds, press|Autobooting in 3 seconds, press", "\x1b\x1b")
             retry = 2
             while retry > 0:
                 if rt != 0:

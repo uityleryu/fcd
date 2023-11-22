@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g5ptzultra.UVC.gen4s.v4.65.93.67-fcddbg.M_f730251.230817.1054.bin"
+            "g5ptzultra.UVC.gen4s.v4.68.1.67-fcddbg.7e51b61.231012.0531.bin"
           ]
         },
         {
@@ -40,7 +40,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a59b-fw.bin",
-          "../uvc-fw/g5ptzultra.UVC.gen4s.v4.65.93.67-fcddbg.M_f730251.230817.1054.bin"
+          "../uvc-fw/g5ptzultra.UVC.gen4s.v4.68.1.67-fcddbg.7e51b61.231012.0531.bin"
         ]
       ]
     }

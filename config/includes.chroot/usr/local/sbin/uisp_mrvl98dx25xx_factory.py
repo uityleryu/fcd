@@ -94,7 +94,7 @@ class UispMrvl98Dx25xx(ScriptBase):
         cmd = [
             'set bootdelay 3',
             'set ethaddr; set ipaddr {} && set serverip {}'.format(self.dutip, self.tftp_server),
-            'set mtdids nand0=nand0 && set mtdparts mtdparts=nand0:256M@0x0(ubi0)',
+            'set mtdids nand0=nand0 && set mtdparts mtdparts=nand0:255M@0x0(ubi0)',
             'set kernel_addr_r 0x209000000; set image_name {}'.format(self.imageName),
             "set KERNEL_UPDATE_N 'usb start && tftpboot $kernel_addr_r $image_name && nand erase.chip && nand erase 0x0 0x3c00000 && nand write $kernel_addr_r 0x0 $filesize'",
             "set get_images_nand 'ubi part ubi0 && ubi read $kernel_addr_r kernel'",

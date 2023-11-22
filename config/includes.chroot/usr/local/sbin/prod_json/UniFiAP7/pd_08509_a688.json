@@ -24,40 +24,37 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
-          "DST_PATH": "u7-fw/ipq5322",
+          "SRC_PATH": "images/fcd-image/u7-fw/a688",
+          "DST_PATH": "u7-fw",
           "FILES": [
-            "u7-enterprise-1g-v2.1.img",
-            "u7-enterprise-512m-v2.2.img",
-            "u7-enterprise-1g-v2.1_nor.bin",
-            "u7-enterprise-512m-v2.2_nor.bin"
+            "BZ2.ipq53xx_7.0.22+15346.231116.0559-uboot.bin",
+            "initramfs-ipq53xx_512m.gpt",
+            "ramload-7.0.22_512m.bin",
+            "u7-sak-pro-wkk-lm512-v3.img",
+            "u7-sak-pro-wkk-lm512-v3_nor.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a688-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2.img"
+          "../u7-fw/u7-sak-pro-wkk-lm512-v3.img"
         ],
         [
           "tftp/images/a688-fw.bin",
-          "../u6-fw/ipq5018/BZ.ipq50xx_6.2.49+14111.221201.0229-uboot.bin"
+          "../u7-fw/BZ2.ipq53xx_7.0.22+15346.231116.0559-uboot.bin"
         ],
         [
           "tftp/images/a688-gpt.bin",
-          "../u6-fw/ipq5018/maple-4g-gpt_u6_pro_2nd_source.bin"
+          "../u7-fw/initramfs-ipq53xx_512m.gpt"
         ],
         [
           "tftp/images/a688-initramfs.bin",
-          "../u6-fw/ipq5018/ramload-6.2.49.bin"
+          "../u7-fw/ramload-7.0.22_512m.bin"
         ],
         [
           "tftp/images/a688-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-512m-v2.2_nor.bin"
-        ],
-        [
-          "tftp/images/a688.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
+          "../u7-fw/u7-sak-pro-wkk-lm512-v3_nor.bin"
         ]
       ]
     }
