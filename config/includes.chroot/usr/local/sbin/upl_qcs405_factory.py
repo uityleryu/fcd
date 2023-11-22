@@ -71,12 +71,31 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             'wifinum': wifinum,
             'btnum': btnum,
         }
+        #Add method for write ME BOM
+        self.write_mebom = {
+            'aa03': True
+        }
+
+        #Add method for write top level BOM
+        self.write_topbom = {
+            'aa03': False
+        }
 
     def run(self):
         """
         Main procedure of factory
         """
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
+
+        # check ME BOM
+        if self.write_mebom[self.board_id] is True:
+            if not self.meb_rev:
+                error_critical("ME BOM is required ...")
+        # check Top level BOM
+        if self.write_topbom[self.board_id] is True:
+            if not self.tlb_rev:
+                error_critical("Top level BOM is required ...")
+
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
 
@@ -572,7 +591,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             else:
                 log_info('HK Token ID check failed, retry {} time'.format(retry))
         else:
-                error_critical('HK Token ID check failed')
+            error_critical('HK Token ID check failed')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
