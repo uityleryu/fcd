@@ -77,12 +77,23 @@ class U7IPQ5322MFGGeneral(ScriptBase):
         Main procedure of back to T1
         """
 
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         # Connect into DUT using picocom
         pexpect_cmd = "sudo picocom /dev/{} -b 115200".format(self.dev)
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         # Update NOR(uboot)
@@ -112,6 +123,11 @@ class U7IPQ5322MFGGeneral(ScriptBase):
         # Check if we are in T1 image
         self.t1_image_check()
         msg(90, 'Check T1 image done ...')
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Back to T1 has completed")
         self.close_fcd()
