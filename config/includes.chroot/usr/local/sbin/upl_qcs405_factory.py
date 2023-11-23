@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import csv
 import sys
 import time
 import os
@@ -500,17 +499,20 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         txt_path = os.path.join('/home/ubnt/usbdisk', 'UPL-AMP_hk_output', 'MFi_token_{}.txt'.format(self.mac.upper()))
         self.is_token_txt_exist = os.path.isfile(txt_path)
+        log_info('MFi_token.txt {}exist in USB Key'.format('' if self.is_token_txt_exist else 'NOT '))
 
         if self.is_token_txt_exist is True:
-            
+
             # read tokenid from usbdisk
             with open(txt_path, 'r') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    if 'security_token_id' in row:
-                        self.tokenid_dut = row['security_token_id']
-
-            reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
+                content = file.read()
+                # security_token_id is between quotes after "security_token_id"," and before ","
+                start_index = content.find('"security_token_id","') + len('"security_token_id","')
+                end_index = content.find('","', start_index)
+                if start_index != -1 and end_index != -1:
+                    self.tokenid_dut = content[start_index:end_index]
+                    reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
+                    log_info('Retrieve token ID from USB key, file path = {}'.format(txt_path))
 
         return reg_cmd
 
@@ -581,7 +583,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.add_FCD_TLV_info()
 
     def format_backup_partition_ext4(self):
-        log_debug("erasing devregpart")
+        log_debug("format backup partition to ext4")
         cmd = "/etc/mkfs_backup.sh "
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd)
 
