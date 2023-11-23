@@ -23,13 +23,14 @@ from PAlib.Framework.fcd.logger import log_debug, log_info, log_error, msg, erro
 from PAlib.Framework.fcd.singleton import errorcollecter
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.devices.usp_pdu_pro_ed12 import USP_PDU_PRO
+from PAlib.devices.usw_devices import USW_DEVICES
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from threading import Thread
 from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.57"
+    __version__ = "1.0.59"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -83,36 +84,54 @@ class ScriptBase(object):
         if self.power_supply is None:
             if ps_ssid == "ed12":
                 self.power_supply = USP_PDU_PRO(ip=self.ps_ipaddr)
-                if self.power_supply.connect() is False:
-                    rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
-                    error_critical(rmsg)
-                else:
-                    rmsg = "SSH connection with the {}".format(ps_ssid)
-                    log_debug(rmsg)
+            elif ps_ssid in ["eb36"]:
+                self.power_supply = USW_DEVICES(ip=self.ps_ipaddr)
             else:
-                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(self.ps_ssid))
+                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(ps_ssid))
+
+            if self.power_supply.connect() is False:
+                rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+                error_critical(rmsg)
+            else:
+                rmsg = "SSH connection with the {}".format(ps_ssid)
+                log_debug(rmsg)
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_on(port=int(self.power_supply_port))
+        if ps_ssid == "ed12":
+            self.power_supply.set_port_relay_on(port=int(self.power_supply_port))
+        elif ps_ssid in ["eb36"]:
+            self.power_supply.set_port_poe_on(port=int(self.power_supply_port))
+        else:
+            error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(ps_ssid))
+
         time.sleep(2)
 
     def set_ps_port_relay_off(self, ps_ssid="ed12"):
         if self.power_supply is None:
             if ps_ssid == "ed12":
                 self.power_supply = USP_PDU_PRO(ip=self.ps_ipaddr)
-                if self.power_supply.connect() is False:
-                    rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
-                    error_critical(rmsg)
-                else:
-                    rmsg = "SSH connection with the {}".format(ps_ssid)
-                    log_debug(rmsg)
+            elif ps_ssid in ["eb36"]:
+                self.power_supply = USW_DEVICES(ip=self.ps_ipaddr)
             else:
-                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(self.ps_ssid))
+                error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(ps_ssid))
+
+            if self.power_supply.connect() is False:
+                rmsg = "Can't make SSH connection with the {}, FAIL!!!".format(ps_ssid)
+                error_critical(rmsg)
+            else:
+                rmsg = "SSH connection with the {}".format(ps_ssid)
+                log_debug(rmsg)
         else:
             log_debug("Power supply instance is existed")
 
-        self.power_supply.set_port_relay_off(port=int(self.power_supply_port))
+        if ps_ssid == "ed12":
+            self.power_supply.set_port_relay_off(port=int(self.power_supply_port))
+        elif ps_ssid in ["eb36"]:
+            self.power_supply.set_port_poe_off(port=int(self.power_supply_port))
+        else:
+            error_critical("GU:{}, Power supply doesn't support, FAIL!!!".format(ps_ssid))
+
         time.sleep(4)
 
     def set_sshclient_helper(self, ssh_client):
@@ -602,7 +621,7 @@ class ScriptBase(object):
 
         self.print_eeprom_content(self.eesigndate_path)
 
-    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, zmodem=False, timeout=10):
+    def check_devreg_data(self, dut_tmp_subdir=None, mtd_count=None, post_en=True, method="tftp", timeout=10):
         """check devreg data
         in default we assume the datas under /tmp on dut
         but if there is sub dir in your tools.tar, you should set dut_subdir
@@ -632,10 +651,14 @@ class ScriptBase(object):
         else:
             eewrite_dut_path = os.path.join(self.dut_tmpdir, eewrite)
 
-        if zmodem is False:
-            self.tftp_get(remote=eewrite, local=eewrite_dut_path, timeout=timeout, post_en=post_en)
-        else:
+        if method == "zmodem":
             self.zmodem_send_to_dut(file=eewrite_path, dest_path=self.dut_tmpdir)
+        elif method == "tftp":
+            self.tftp_get(remote=eewrite, local=eewrite_dut_path, timeout=timeout, post_en=post_en)
+        elif method == "scp":
+            self.scp_get(self.user, self.password, self.dutip, eewrite, eewrite_dut_path)
+        else:
+            error_critical("Transferring interface not support !!!!")
 
         log_debug("Change file permission - {0} ...".format(eewrite))
         cmd = "chmod 777 {0}".format(eewrite_dut_path)
@@ -651,10 +674,14 @@ class ScriptBase(object):
 
         log_debug("Send " + self.eechk + " from DUT to host ...")
 
-        if zmodem is False:
-            self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, post_en=post_en)
-        else:
+        if method == "zmodem":
             self.zmodem_recv_from_dut(file=eechk_dut_path, dest_path=self.tftpdir)
+        elif method == "tftp":
+            self.tftp_put(remote=self.eechk_path, local=eechk_dut_path, timeout=timeout, post_en=post_en)
+        elif method == "scp":
+            self.scp_put(self.user, self.password, self.dutip, self.eechk_path, eechk_dut_path)
+        else:
+            error_critical("Transferring interface not support !!!!")
 
         self.print_eeprom_content(self.eechk_path)
 
@@ -876,7 +903,7 @@ class ScriptBase(object):
         log_debug("cmd: " + cmd)
         self.cnapi.xcmd(cmd)
 
-    def data_provision_64k(self, netmeta, post_en=True, rsa_en=True):
+    def data_provision_64k(self, netmeta, post_en=True, rsa_en=True, method="tftp"):
         if rsa_en is True:
             self.gen_rsa_key()
 
@@ -929,7 +956,12 @@ class ScriptBase(object):
 
         # Ex: /tmp/e.org.0
         dstp = "{0}/{1}".format(self.dut_tmpdir, self.eeorg)
-        self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
+        if method == "tftp":
+            self.tftp_put(remote=self.eeorg_path, local=dstp, timeout=20)
+        elif method == "scp":
+            self.scp_put(self.user, self.password, self.dutip, self.eeorg_path, dstp)
+        else:
+            error_critical("Transferring interface not support !!!!")
 
         log_debug("Writing the information from e.gen.{} to e.org.{}".format(self.row_id, self.row_id))
         '''
@@ -980,7 +1012,12 @@ class ScriptBase(object):
         self.print_eeprom_content(self.eeorg_path)
 
         eeorg_dut_path = os.path.join(self.dut_tmpdir, self.eeorg)
-        self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
+        if method == "tftp":
+            self.tftp_get(remote=self.eeorg, local=eeorg_dut_path, timeout=15)
+        elif method == "scp":
+            self.scp_get(self.user, self.password, self.dutip, self.eeorg, eeorg_dut_path)
+        else:
+            error_critical("Transferring interface not support !!!!")
 
         # Ex: dd if=/tmp/e.org.0 of=/dev/mtdblock2 bs=1k count=64
         cmd = "dd if={0}/{1} of={2} bs=1k count=64".format(self.dut_tmpdir, self.eeorg, self.devregpart)
@@ -999,6 +1036,8 @@ class ScriptBase(object):
             self.tftp_get(remote=srcp, local=helperexe_path, timeout=60)
         elif method == "wget":
             self.dut_wget(srcp, helperexe_path, timeout=100)
+        elif method == "scp":
+            self.scp_get(self.user, self.password, self.dutip, srcp, helperexe_path)
         else:
             error_critical("Transferring interface not support !!!!")
 
@@ -1037,7 +1076,12 @@ class ScriptBase(object):
 
             # Ex: /tmp/e.t.0
             dstp = "{0}/{1}".format(self.dut_tmpdir, fh)
-            self.tftp_put(remote=srcp, local=dstp, timeout=10)
+            if method == "tftp":
+                self.tftp_put(remote=srcp, local=dstp, timeout=10)
+            elif method == "scp":
+                self.scp_put(self.user, self.password, self.dutip, srcp, dstp)
+            else:
+                error_critical("Transferring interface not support !!!!")
 
         log_debug("Send helper output files from DUT to host ...")
 
@@ -1247,18 +1291,51 @@ class ScriptBase(object):
             dut_user: DUT username
             dut_pass: DUT password
             dut_ip  : DUT IP address
-            src_file: Source filename. It has to be absolutely path
-            dst_file: Destination filename. It has to be absolutely path
+            src_file: Source filename. It has to be absolutely path, from the DUT
+            dst_file: Destination filename. It has to be absolutely path, to the Host
     '''
 
-    def scp_get(self, dut_user, dut_pass, dut_ip, src_file, dst_file):
+    def scp_get(self, dut_user, dut_pass, dut_ip, src_file, dst_file, func=None):
+        if func is None:
+            scp_cmd = "scp"
+        elif func == "recursive":
+            scp_cmd = "scp -r"
+
+        cmd = [
+            'sshpass -p {}'.format(dut_pass),
+            scp_cmd,
+            '-o StrictHostKeyChecking=no',
+            '-o UserKnownHostsFile=/dev/null',
+            src_file,
+            "{}@{}:{}".format(dut_user, dut_ip, dst_file)
+        ]
+        cmdj = ' '.join(cmd)
+        log_debug('Exec "{}"'.format(cmdj))
+        [stout, rv] = self.cnapi.xcmd(cmdj)
+        if int(rv) != 0:
+            error_critical('Exec "{}" failed'.format(cmdj))
+        else:
+            log_debug('scp successfully')
+
+
+    '''
+        DUT view point
+        To put the file from the DUT by scp command
+            dut_user: DUT username
+            dut_pass: DUT password
+            dut_ip  : DUT IP address
+            src_file: Source filename. It has to be absolutely path, from the DUT
+            dst_file: Destination filename. It has to be absolutely path, to the Host
+    '''
+
+    def scp_put(self, dut_user, dut_pass, dut_ip, src_file, dst_file):
         cmd = [
             'sshpass -p {}'.format(dut_pass),
             'scp',
             '-o StrictHostKeyChecking=no',
             '-o UserKnownHostsFile=/dev/null',
-            src_file,
-            "{}@{}:{}".format(dut_user, dut_ip, dst_file)
+            "{}@{}:{}".format(dut_user, dut_ip, dst_file),
+            src_file
         ]
         cmdj = ' '.join(cmd)
         log_debug('Exec "{}"'.format(cmdj))
@@ -1358,6 +1435,10 @@ class ScriptBase(object):
     def mac_format_str2list(self, strmac):
         mac_list = self.mac_format_str2comma(strmac).split(':')
         return mac_list
+
+    def mac_incr(self, strmac, incr=0):
+        mac_incr = hex(int(strmac, 16) + int(incr))[2:].zfill(12)
+        return mac_incr
 
     def update_eebin_regdmn(self, eebin = None, regdmn = None):
         if eebin is None:
