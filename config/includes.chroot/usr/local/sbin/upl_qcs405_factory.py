@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import csv
 import sys
 import time
 import os
@@ -488,6 +489,27 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             '' if self.is_homekit_done_before else 'NOT '))
 
         if self.is_homekit_done_before is True:
+            reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
+        else:
+            reg_cmd = self._check_is_token_txt_exist(reg_cmd)
+
+        return reg_cmd
+
+    def _check_is_token_txt_exist(self, reg_cmd):
+        log_debug('_check_is_token_txt_exist')
+
+        txt_path = os.path.join('/home/ubnt/usbdisk', 'UPL-AMP_hk_output', 'MFi_token_{}.txt'.format(self.mac.upper()))
+        self.is_token_txt_exist = os.path.isfile(txt_path)
+
+        if self.is_token_txt_exist is True:
+            
+            # read tokenid from usbdisk
+            with open(txt_path, 'r') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    if 'security_token_id' in row:
+                        self.tokenid_dut = row['security_token_id']
+
             reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
 
         return reg_cmd
