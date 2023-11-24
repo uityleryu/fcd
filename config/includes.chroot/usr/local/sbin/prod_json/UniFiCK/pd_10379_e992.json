@@ -1,0 +1,66 @@
+{
+  "UniFiCK": {
+    "UCKG3P": {
+      "INDEX": "0",
+      "NAME": "UCKG3P",
+      "BOARDID": "e992",
+      "BOMREV": "113-10379",
+      "DESC": "UniFi CloudKey Gen3 Plus",
+      "FILE": "uck_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "0c01",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uck-fw/e992",
+          "DST_PATH": "uck-fw/",
+          "FILES": [
+            "CK2FCD.apq8053.v0.7.2.126ac6f.231122.1245-boot.img",
+            "RCK2.apq8053.v0.7.2.126ac6f.231122.1244-boot.img",
+            "UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.boot",
+            "UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.rootfs"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/uck/",
+          "DST_PATH": "tools/uck/",
+          "FILES": [
+            "ck-ee",
+            "DRA_ed0eb1b5_helper_APQ8053_release.strip",
+            "mmc-prep.sh",
+            "check-part.sh",
+            "check-part.txt"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e992-mfg.bin",
+          "../uck-fw/CK2FCD.apq8053.v0.7.2.126ac6f.231122.1245-boot.img"
+        ],
+        [
+          "tftp/images/e992-recovery.bin",
+          "../uck-fw/RCK2.apq8053.v0.7.2.126ac6f.231122.1244-boot.img"
+        ],
+        [
+          "tftp/images/e992-rootfs.bin",
+          "../uck-fw/UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.rootfs"
+        ],
+        [
+          "tftp/images/e992-kernel.bin",
+          "../uck-fw/UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.boot"
+        ]
+      ]
+    }
+  }
+}

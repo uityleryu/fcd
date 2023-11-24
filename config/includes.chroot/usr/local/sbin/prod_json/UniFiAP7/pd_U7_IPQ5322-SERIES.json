@@ -1,68 +1,7 @@
 {
   "UniFiAP7": {
-    "U7-Enterprise-01272": {
-      "INDEX": 0,
-      "NAME": "U7-Enterprise",
-      "BOARDID": "a681",
-      "BOMREV": "113-01272",
-      "DESC": "UniFi AP7 Enterprise",
-      "FILE": "u7_ipq5322_bspfactory.py",
-      "T1FILE": "u7_ipq5322_mfg.py",
-      "QRCHECK": "True",
-      "SW_ID": "0601",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
-            "aarch64-rpi4-64k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
-          "DST_PATH": "u7-fw/ipq5322",
-          "FILES": [
-            "u7-enterprise-1g-v6.img",
-            "u7-enterprise-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.7.bin"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a681-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v6.img"
-        ],
-        [
-          "tftp/images/a681-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
-        ],
-        [
-          "tftp/images/a681-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
-        ],
-        [
-          "tftp/images/a681-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
-        ],
-        [
-          "tftp/images/a681-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
-        ]
-      ]
-    },
     "U7-Pro-08146": {
-      "INDEX": 1,
+      "INDEX": 0,
       "NAME": "U7-Pro",
       "BOARDID": "a682",
       "BOMREV": "113-08146",
@@ -87,95 +26,34 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v6.img",
-            "u7-pro-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.7.bin"
+            "u7-pro-1g-v7.img",
+            "u7-pro-1g-v7_nor.bin",
+            "BZ.ipq53xx_7.0.12+15246.231007.0828-uboot.bin",
+            "initramfs-ipq53xx_1g.gpt",
+            "ramload_1g-7.0.12.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a682-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+          "../u7-fw/ipq5322/u7-pro-1g-v7.img"
         ],
         [
           "tftp/images/a682-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.7+15162.230912.1638-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.12+15246.231007.0828-uboot.bin"
         ],
         [
           "tftp/images/a682-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
         ],
         [
           "tftp/images/a682-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.7.bin"
+          "../u7-fw/ipq5322/ramload_1g-7.0.12.bin"
         ],
         [
           "tftp/images/a682-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
-        ]
-      ]
-    },
-    "U7-Enterprise-IW-01273": {
-      "INDEX": 2,
-      "NAME": "U7-Enterprise-IW",
-      "BOARDID": "a685",
-      "BOMREV": "113-01273",
-      "DESC": "UniFi AP7 EnterPrise InWall",
-      "FILE": "u7_ipq5322_bspfactory.py",
-      "T1FILE": "u7_ipq5322_mfg.py",
-      "QRCHECK": "True",
-      "SW_ID": "0601",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
-            "aarch64-rpi4-64k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
-          "DST_PATH": "u7-fw/ipq5322",
-          "FILES": [
-            "u7-enterprise-1g-v6.img",
-            "u7-enterprise-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.5.bin"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a685-bsp.img",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v6.img"
-        ],
-        [
-          "tftp/images/a685-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
-        ],
-        [
-          "tftp/images/a685-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
-        ],
-        [
-          "tftp/images/a685-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
-        ],
-        [
-          "tftp/images/a685-nor.bin",
-          "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
+          "../u7-fw/ipq5322/u7-pro-1g-v7_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",
@@ -184,7 +62,7 @@
       ]
     },
     "U7-Pro-IW-08608": {
-      "INDEX": 3,
+      "INDEX": 1,
       "NAME": "U7-Pro-IW",
       "BOARDID": "a686",
       "BOMREV": "113-08608",
@@ -209,34 +87,34 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v6.img",
-            "u7-pro-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.5.bin"
+            "u7-pro-1g-v7.img",
+            "u7-pro-1g-v7_nor.bin",
+            "BZ.ipq53xx_7.0.12+15246.231007.0828-uboot.bin",
+            "initramfs-ipq53xx_1g.gpt",
+            "ramload_1g-7.0.12.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a686-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+          "../u7-fw/ipq5322/u7-pro-1g-v7.img"
         ],
         [
           "tftp/images/a686-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.12+15246.231007.0828-uboot.bin"
         ],
         [
           "tftp/images/a686-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
         ],
         [
           "tftp/images/a686-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+          "../u7-fw/ipq5322/ramload_1g-7.0.12.bin"
         ],
         [
           "tftp/images/a686-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
+          "../u7-fw/ipq5322/u7-pro-1g-v7_nor.bin"
         ],
         [
           "tftp/images/a6888.itb",
@@ -245,7 +123,7 @@
       ]
     },
     "U7-LR-09466": {
-      "INDEX": 4,
+      "INDEX": 2,
       "NAME": "U7-LR",
       "BOARDID": "a691",
       "BOMREV": "113-09466",
@@ -272,9 +150,9 @@
           "FILES": [
             "u7-lr-wkk-lm512-v2.img",
             "u7-lr-wkk-lm512-v2_nor.bin",
-            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.5.bin"
+            "BZ2.ipq53xx_7.0.12+15246.231007.0828-uboot.bin",
+            "initramfs-ipq53xx_512m.gpt",
+            "ramload_512m-7.0.12.bin"
           ]
         }
       ],
@@ -284,16 +162,16 @@
           "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2.img"
         ],
         [
-          "tftp/images/a681-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+          "tftp/images/a691-fw.bin",
+          "../u7-fw/ipq5322/BZ2.ipq53xx_7.0.12+15246.231007.0828-uboot.bin"
         ],
         [
-          "tftp/images/a681-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+          "tftp/images/a691-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_512m.gpt"
         ],
         [
-          "tftp/images/a681-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+          "tftp/images/a691-initramfs.bin",
+          "../u7-fw/ipq5322/ramload_512m-7.0.12.bin"
         ],
         [
           "tftp/images/a691-nor.bin",
