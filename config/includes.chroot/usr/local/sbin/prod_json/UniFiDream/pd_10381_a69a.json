@@ -1,0 +1,74 @@
+{
+  "UniFiDream": {
+    "UCG-PRO": {
+      "INDEX": 0,
+      "NAME": "UCG-PRO",
+      "BOARDID": "a69a",
+      "BOMREV": "113-10381",
+      "DESC": "UniFi Console Gateway Pro",
+      "FILE": "udm_ipq53xx_factory.py",
+      "T1FILE": "udm_ipq53xx_bspfactory.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0005",
+      "SW_ID": "0701",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra",
+          "DST_PATH": "udm-fw/udr-ultra",
+          "FILES": [
+            "UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin",
+            "uImage_20231031",
+            "u-boot_20231031.mbn",
+            "ipq5322_udr_ultra_v5.1.img",
+            "ipq5322_udr_ultra_nor_v5.1.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/devreg",
+          "DST_PATH": "tools/devreg",
+          "FILES": [
+            "ipq5322_devreg_1.0.1-38+g4e0943abeaa_arm64.deb"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a69a-fw.bin",
+          "../udm-fw/udr-ultra/UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin"
+        ],
+        [
+          "tftp/images/a69a-recovery",
+          "../udm-fw/udr-ultra/uImage_20231031"
+        ],
+        [
+          "tftp/images/a69a-uboot.mbn",
+          "../udm-fw/udr-ultra/u-boot_20231031.mbn"
+        ],
+        [
+          "tftp/images/a69a-bsp_nor-4g.bin",
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v5.1.bin"
+        ],
+        [
+          "tftp/images/a69a-bsp-4g.img",
+          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v5.1.img"
+        ],
+        [
+          "tftp/tools/a69a-devreg.deb",
+          "../tools/devreg/ipq5322_devreg_1.0.1-38+g4e0943abeaa_arm64.deb"
+        ]
+
+      ]
+    }
+  }
+}

@@ -9,9 +9,10 @@ import os
 import re
 
 '''
-    a678: UDR-Ultra
-    a679: UDR-Ultra-PoE
+    a678: UCG-Ultra
+    a679: UCG-Ultra-PoE
     a690: UXG
+    a69a: UCG-Pro
 '''
 
 
@@ -44,7 +45,8 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         tool_name = {
             'a678': "udr_ultra",
             'a679': "udr_ultra_poe",
-            'a690': "uxg"
+            'a690': "uxg",
+            'a69a': "udr_pro"
 
         }
 
@@ -53,13 +55,15 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.eeprom_offset = {
             'a678': "0x00410000",
             'a679': "0x00410000",
-            'a690': "0x00410000"
+            'a690': "0x00410000",
+            'a69a': "0x00410000"
         }
 
         self.eeprom_offset_2 = {
             'a678': "0x00418000",
             'a679': "0x00418000",
-            'a690': "0x00418000"
+            'a690': "0x00418000",
+            'a69a': "0x00418000"
         }
 
         # Vendor ID + Sys ID
@@ -67,6 +71,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "770778a6",
             'a679': "770779a6",
             'a690': "770790a6",
+            'a69a': "77079aa6"
         }
 
         # Sys ID + Vendor ID
@@ -74,6 +79,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "78a67707",
             'a679': "79a67707",
             'a690': "90a67707",
+            'a69a': "9aa67707"
         }
 
         # active port
@@ -81,6 +87,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "al_eth3",
             'a679': "al_eth3",
             'a690': "al_eth3",
+            'a69a': "al_eth3"
         }
 
         # number of Ethernet
@@ -88,6 +95,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "5",
             'a679': "8",
             'a690': "5",
+            'a69a': "5",
         }
 
         # number of Wi-Fi
@@ -95,6 +103,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "0",
             'a679': "0",
             'a690': "0",
+            'a69a': "0"
         }
 
         # number of Bluetooth
@@ -102,6 +111,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "1",
             'a679': "1",
             'a690': "1",
+            'a69a': "1"
         }
 
         # ethernet interface
@@ -109,6 +119,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "switch0",
             'a679': "switch0",
             'a690': "switch0",
+            'a69a': "switch0"
         }
 
         # LCM
@@ -116,6 +127,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': False,
             'a679': False,
             'a690': False,
+            'a69a': False
         }
 
         # Wifi cal data setting
@@ -123,6 +135,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': False,
             'a679': False,
             'a690': False,
+            'a69a': False,
         }
 
         self.devnetmeta = {
