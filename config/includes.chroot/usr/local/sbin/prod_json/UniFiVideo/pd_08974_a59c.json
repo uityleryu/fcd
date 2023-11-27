@@ -42,7 +42,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a59c-fw.bin",
-          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.66.11.67-fcddbg.7cb5ffb.231124.1241.binn"
+          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.66.11.67-fcddbg.7cb5ffb.231124.1241.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",
