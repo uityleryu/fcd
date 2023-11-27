@@ -36,21 +36,24 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         ethnum = {
             'e960': "1",
             'e961': "1",
-            'e970': "1"
+            'e970': "1",
+            'e992': "1"
         }
 
         # number of WiFi
         wifinum = {
             'e960': "0",
             'e961': "0",
-            'e970': "0"
+            'e970': "0",
+            'e992': "0"
         }
 
         # number of Bluetooth
         btnum = {
             'e960': "1",
             'e961': "1",
-            'e970': "1"
+            'e970': "1",
+            'e992': "1"
         }
 
         flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
@@ -64,7 +67,8 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         self.netif = {
             'e960': "ifconfig eth0 ",
             'e961': "ifconfig eth0 ",
-            'e970': "ifconfig eth0 "
+            'e970': "ifconfig eth0 ",
+            'e992': "ifconfig eth0 "
         }
 
     def login_kernel(self):
@@ -142,6 +146,12 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         """
         Main procedure of factory
         """
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_off("eb36")
+        else:
+            log_debug("No need power supply control")
+
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
@@ -151,10 +161,21 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         log_debug(pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
-        time.sleep(1)
+        time.sleep(2)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on("eb36")
+        else:
+            log_debug("No need power supply control")
 
         msg(5, "Boot to linux console ...")
-        self.login_kernel()
+        if self.board_id == "e992":
+            self.login(username="ui", password="ui")
+            self.set_lnx_net("eth0")
+            self.is_network_alive_in_linux()
+        else:
+            self.login_kernel()
+
         colon_mac = self.mac_colon_format(self.mac)
         msg(10, "Boot up to linux console and network is good ...")
 
@@ -309,7 +330,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
-        if self.board_id == "e970":
+        if self.board_id == ["e970", "e992"]:
             cmd = "poweroff"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
             time.sleep(50)
