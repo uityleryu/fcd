@@ -231,20 +231,18 @@ class U7IPQ5322BspFactory(ScriptBase):
             if self.board_id in ["a688"]:
                 cmd = "md5sum /lib/firmware/IPQ5332/bdwlan.b16"
                 post_exp = "06a6e5913e85b24d590fc499f881e954"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
             else:
                 pass
-
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
 
         # 5G BDF
         if CHK_5G_BDF_EN is True:
             if self.board_id in ["a688"]:
                 cmd = "md5sum /lib/firmware/qcn9224/bdwlan.b0002"
                 post_exp = "bbfa01b814b9f13fbd412275870c2150"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
             else:
                 pass
-
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
 
     def i2c_check(self, item):
         if item == "fan":

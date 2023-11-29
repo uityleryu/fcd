@@ -54,10 +54,6 @@
         [
           "tftp/images/a685-nor.bin",
           "../u7-fw/ipq5322/u7-enterprise-1g-v6_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
     }

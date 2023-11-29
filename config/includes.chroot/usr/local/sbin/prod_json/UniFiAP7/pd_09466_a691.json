@@ -54,10 +54,6 @@
         [
           "tftp/images/a691-nor.bin",
           "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
     }
