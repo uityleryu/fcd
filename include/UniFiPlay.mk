@@ -39,4 +39,5 @@ $(eval $(call ProductCompress,AMP,FCD_$(PRD)_UPL-AMP_$(VER)_$(FWVER)))
 # Project compressed type2 file for RPi FCD host
 $(eval $(call ProductCompress2,08740_aa03))
 $(eval $(call ProductCompress2,10404_aa03))
+$(eval $(call ProductCompress2,UPL_AMP-SERIES))
 
