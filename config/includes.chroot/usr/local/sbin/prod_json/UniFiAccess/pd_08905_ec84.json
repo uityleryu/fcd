@@ -30,7 +30,7 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec84-bootloader.bin",
+          "tftp/images/ec84-bootloader-digest.bin",
           "../ua-fw/ua-ultra/20231130_testing/bootloader-reflash-digest.bin"
         ],
         [
