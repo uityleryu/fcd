@@ -1,0 +1,34 @@
+{
+  "UniFiPlay": {
+    "UPL-AMP": {
+      "INDEX": 0,
+      "NAME": "UPL-AMP",
+      "BOARDID": "aa03",
+      "BOMREV": "113-10404",
+      "DESC": "UniFi Play AMP",
+      "FILE": "upl_qcs405_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "2301",
+      "CLIENT_FILE": "client_x64_release_20230908",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee_20230608"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/tools/common/aarch64-rpi4-64k-ee",
+          "./aarch64-rpi4-64k-ee_20230608"
+        ]
+      ]
+    }
+  }
+}
