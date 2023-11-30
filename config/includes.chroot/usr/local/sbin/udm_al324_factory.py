@@ -537,11 +537,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
             self.login(self.username, self.password, timeout=180, log_level_emerg=True)
             time.sleep(15)  # for stable eth
-            if self.board_id=="ea11":
-                self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-                self.is_network_alive_in_linux(ipaddr=self.tftp_server, retry=10)
-            else:
-                self.set_kernel_net()
+            self.set_kernel_net()
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
