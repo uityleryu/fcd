@@ -1,11 +1,11 @@
 {
   "UniFiPlay": {
-    "UPL-AMP": {
+    "UPL-AMP-W": {
       "INDEX": 0,
-      "NAME": "UPL-AMP",
+      "NAME": "UPL-AMP-W",
       "BOARDID": "aa03",
       "BOMREV": "113-10404",
-      "DESC": "UniFi Play AMP",
+      "DESC": "UniFi Play AMP White",
       "FILE": "upl_qcs405_factory.py",
       "T1FILE": "",
       "QRCHECK": "True",
