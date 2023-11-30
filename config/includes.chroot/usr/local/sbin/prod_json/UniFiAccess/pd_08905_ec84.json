@@ -31,19 +31,23 @@
       "CREATE_LINK": [
         [
           "tftp/images/ec84-bootloader.bin",
-          "../ua-fw/ua-ultra/20231113/bootloader.bin"
+          "../ua-fw/ua-ultra/20231130_testing/bootloader-reflash-digest.bin"
         ],
         [
           "tftp/images/ec84-mfg.bin",
-          "../ua-fw/ua-ultra/20231113/ua-ultra_mfg.v0.1.2.0.gc0d38.231113.1137.bin"
+          "../ua-fw/ua-ultra/20231130_testing/ua-ultra_mfg.bin"
         ],
         [
           "tftp/images/ec84-ota.bin",
-          "../ua-fw/ua-ultra/20231113/ota_data_initial.bin"
+          "../ua-fw/ua-ultra/20231130_testing/ota_data_initial.bin"
         ],
         [
           "tftp/images/ec84-ptn-table.bin",
-          "../ua-fw/ua-ultra/20231113/partition-table.bin"
+          "../ua-fw/ua-ultra/20231130_testing/partition-table.bin"
+        ],
+        [
+          "tftp/images/ec84-secure_boot_key.bin",
+          "../ua-fw/ua-ultra/20231130_testing/secure-bootloader-key-256.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-4k-ee",
