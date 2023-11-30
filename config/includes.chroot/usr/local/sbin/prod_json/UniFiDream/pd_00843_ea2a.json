@@ -44,24 +44,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udw",
           "DST_PATH": "udm-fw/udw",
           "FILES": [
-            "UDW.al324.v3.1.16.456179c.230823.1835.bin",
-            "uImage_20230823",
-            "boot_20230823.img"
+            "UDW.al324.v3.2.7.3589072.231124.2100.bin",
+            "uImage_20231124",
+            "boot_20231124.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea2a-fw.bin",
-          "../udm-fw/udw/UDW.al324.v3.1.16.456179c.230823.1835.bin"
+          "../udm-fw/udw/UDW.al324.v3.2.7.3589072.231124.2100.bin"
         ],
         [
           "tftp/images/ea2a-recovery",
-          "../udm-fw/udw/uImage_20230823"
+          "../udm-fw/udw/uImage_20231124"
         ],
         [
           "tftp/images/ea2a-uboot.bin",
-          "../udm-fw/udw/boot_20230823.img"
+          "../udm-fw/udw/boot_20231124.img"
         ]
       ]
     }
