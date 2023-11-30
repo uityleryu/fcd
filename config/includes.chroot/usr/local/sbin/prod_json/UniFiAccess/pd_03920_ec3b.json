@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/ua-fw",
           "DST_PATH": "ua-fw",
           "FILES": [
-            "EL.mt7621.v4.2.0.15.g047f080.230718.0756-uboot.bin",
+            "EL.mt7621.v4.2.0.17.g24d98f7.231128.0517-uboot.bin",
             "ua-gate-nor-v2.bin"
           ]
         },
@@ -46,7 +46,7 @@
         ],
         [
           "tftp/ua-fw/ua-elevator-fw.bin",
-          "../ua-fw/EL.mt7621.v4.2.0.15.g047f080.230718.0756-uboot.bin"
+          "../ua-fw/EL.mt7621.v4.2.0.17.g24d98f7.231128.0517-uboot.bin"
         ]
       ]
     }
