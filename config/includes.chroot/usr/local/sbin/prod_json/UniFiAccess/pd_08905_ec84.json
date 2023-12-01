@@ -24,7 +24,8 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee_20230608"
+            "aarch64-rpi4-4k-ee_20230608",
+            "nvs_partition_gen.py"
           ]
         }
       ],
@@ -48,6 +49,14 @@
         [
           "tftp/images/ec84-secure_boot_key.bin",
           "../ua-fw/ua-ultra/20231130_testing/secure-bootloader-key-256.bin"
+        ],
+        [
+          "tftp/images/ec84-nfc_keys.bin",
+          "../ua-fw/ua-ultra/20231130_testing/nfc_key/nfc_keys.bin"
+        ],
+        [
+          "tftp/images/ec84-ui_nvs_1.csv",
+          "../ua-fw/ua-ultra/20231130_testing/nfc_key/ui_nvs_1.csv"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-4k-ee",
