@@ -417,6 +417,11 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig lan0 " + self.dutip)
 
     def run(self):
+        if self.ps_state is True:
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
+
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
 
         self.fcd.common.config_stty(self.dev)
@@ -432,6 +437,12 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         log_debug(msg=pexpect_cmd)
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        else:
+            log_debug("No need power supply control")
+
         msg(5, "Open serial port successfully ...")
 
         self.wait_for_bootup(firstboot=True)
@@ -499,6 +510,12 @@ class USWPUMA7FactoryGeneral(ScriptBase):
         if SET_BURNIN_TIME is True:
             self.set_burnin_time()
             msg(95, "Finish set burnin time ...")
+
+        if self.ps_state is True:
+            time.sleep(2)
+            self.set_ps_port_relay_off()
+        else:
+            log_debug("No need power supply control")
 
         msg(100, "Completing registration ...")
         self.close_fcd()
