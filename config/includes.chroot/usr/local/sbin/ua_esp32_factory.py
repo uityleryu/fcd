@@ -229,10 +229,13 @@ class UAESP32FactoryGeneral(ScriptBase):
                 log_debug("{}: {}".format(key, info[key]))
 
     def program_nfc_key(self):
+        self.pexp.close()
+
         aes_key = '{}{}{}'.format(self.flash_uuid, self.board_id, self.mac).upper()
+        image_path = os.path.join(self.tftpdir, "images")
 
         # gen key
-        cmd = 'openssl aes-128-cbc -K {} -iv \'00000000000000000000000000000000\' -in {} -out nfc_keys_aes.bin'.format(aes_key, self.fw_nfc_key)
+        cmd = 'openssl aes-128-cbc -K {} -iv \'00000000000000000000000000000000\' -in {} -out /tftpboot/images/nfc_keys_aes.bin'.format(aes_key, self.fw_nfc_key)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
@@ -240,7 +243,7 @@ class UAESP32FactoryGeneral(ScriptBase):
             error_critical(otmsg)
 
         # gen nvs partition
-        cmd = 'python /tftpboot/tools/common/nvs_partition_gen.py generate {} {} 0x40000'.format(self.fw_nvs_csv, self.fw_nvs_bin)
+        cmd = 'cd {} ; python3 /tftpboot/tools/common/nvs_partition_gen.py generate {} {} 0x40000'.format(image_path, self.fw_nvs_csv, self.fw_nvs_bin)
         log_debug(cmd)
         [output, rv] = self.cnapi.xcmd(cmd)
         if int(rv) > 0:
@@ -256,6 +259,12 @@ class UAESP32FactoryGeneral(ScriptBase):
         if int(rv) > 0:
             otmsg = "write_nvs_partition failed"
             error_critical(otmsg)
+
+        # The waiting time
+        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.pexp.expect_only(60, self.esp32_prompt)
+        log_debug("Device boots well")
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
