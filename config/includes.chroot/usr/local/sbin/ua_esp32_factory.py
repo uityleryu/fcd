@@ -215,7 +215,8 @@ class UAESP32FactoryGeneral(ScriptBase):
         # value is our expected string
         devreg_data_dict = {'system_id': self.board_id,
                             'mac_addr': self.mac.upper(),
-                            'devreg_check': 'PASS'}
+                            'devreg_check': 'PASS',
+                            'nfckey_check': 'PASS'}
 
         for key in devreg_data_dict:
             regex = re.compile(r'"{}":"((\w+:?)*)"'.format(key))
