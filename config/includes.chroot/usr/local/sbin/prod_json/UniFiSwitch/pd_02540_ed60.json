@@ -40,10 +40,10 @@
           ]
         },
         {
-          "SRC_PATH": "images/tools/usw_puma7/20230906_3600",
+          "SRC_PATH": "images/tools/usw_puma7/20231204_8000",
           "DST_PATH": "certs",
           "FILES": [
-            "certs_20230906_3600.tar.gz"
+            "certs_20231204_8000.tar.gz"
           ]
         }
       ],
@@ -66,7 +66,7 @@
         ],
         [
           "tftp/certs/certs.tar.gz",
-          "certs_20230906_3600.tar.gz"
+          "certs_20231204_8000.tar.gz"
         ]
       ]
     }
