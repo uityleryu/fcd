@@ -27,7 +27,7 @@
           "SRC_PATH": "images/fcd-image/udm-fw/uxg-enterprise",
           "DST_PATH": "udm-fw/uxg-enterprise",
           "FILES": [
-            "UXGENT.cn9670.v3.2.6+root.14191.a66fd82.231120.1111.bin",
+            "UXGENT.cn9670.v3.2.7.4f2c271.231120.1647.bin",
             "uImage_20231120",
             "bootfs_uboot_20231120.img"
           ]
@@ -43,7 +43,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ea3e-fw.bin",
-          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.6+root.14191.a66fd82.231120.1111.bin"
+          "../udm-fw/uxg-enterprise/UXGENT.cn9670.v3.2.7.4f2c271.231120.1647.bin"
         ],
         [
           "tftp/images/ea3e-recovery",
