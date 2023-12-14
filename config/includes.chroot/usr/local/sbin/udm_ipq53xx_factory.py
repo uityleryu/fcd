@@ -161,7 +161,10 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000000 " + "544e4255")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x4400000c " + self.vdr_sysid[self.board_id])
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010 " + self.sysid_vdr[self.board_id])
+        if self.board_id!="a690":
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010 " + self.sysid_vdr[self.board_id])
+        else:
+            self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x44000010 " + self.bom_rev.split('-')[1]+"5d2500")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf erase {} +0x9000".format(self.eeprom_offset[self.board_id]))
@@ -174,6 +177,13 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.pexp.expect_only(30, "Written: OK")
 
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
+
+    def choose_boot_address(self, bom_value):
+        ranges = [(0, 3, "uxg-v1"), (4, 8, "uxg-v2")]
+        for start, end, version in ranges:
+            if start <= bom_value <= end:
+                return f"bootm 0x44000000#{version}"
+        return "bootm 0x44000000#uxg-v3"
 
     def update_uboot(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
@@ -238,7 +248,10 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
                                    "mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x1020000 0x2c1;sleep 1;mw.l 0x1020004 0x0;")
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         else:
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
+            log_debug("BOM REV:" + self.bom_rev.split('-')[1])
+            bm = self.bom_rev.split('-')[1]
+            cmd = self.choose_boot_address(int(bm))
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
 
         log_debug(msg="Enter factory install mode ...")
         self.pexp.expect_only(120, "Wait for nc client to push firmware")
