@@ -52,7 +52,7 @@ class UDM_AL524_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea32': "al_eth0"
+            'ea32': "al_eth2"
         }
 
         # number of Ethernet
@@ -72,7 +72,7 @@ class UDM_AL524_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea32': "eth9"
+            'ea32': "eth10"
         }
 
         # LCM update
@@ -154,7 +154,7 @@ class UDM_AL524_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "reset")
 
     def set_kernel_net(self):
-        if self.board_id == "ea2c" or self.board_id == "ea15":
+        if self.board_id in [ "ea15","ea2c","ea32"]:
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl mask network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "systemctl stop network-init udapi-server")
             self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl delif br0 {}".format(self.netif[self.board_id]))
@@ -488,7 +488,7 @@ class UDM_AL524_FACTORY(ScriptBase):
                 rmsg = "Get LCM FW Version Fail!!!"
                 error_critical(rmsg)
 
-        if self.board_id in [ "ea15","ea2c"]:
+        if self.board_id in [ "ea15","ea2c","ea32"]:
             self.pexp.expect_action(30, self.linux_prompt, "systemctl unmask network-init udapi-server")
             self.pexp.expect_action(30, self.linux_prompt, "systemctl start network-init udapi-server")
             self.pexp.expect_action(30, self.linux_prompt, "systemctl daemon-reload")
