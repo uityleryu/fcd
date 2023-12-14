@@ -87,7 +87,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             'a665': "1",
             'a666': "1",
             'a667': "1",
-            'a6a1': "1",
+            'a6a1': "0",
             'a674': "1",
             'a675': "1",
             'a677': "1"
@@ -194,7 +194,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id in ["a666", "a665", "a675", "a6a1"]:
+        if self.board_id in ["a666", "a665", "a675"]:
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
         else:
