@@ -24,6 +24,7 @@ class U7IPQ5322BspFactory(ScriptBase):
         # script specific vars
         self.fwimg = "images/{}-fw.bin".format(self.board_id)
         self.initramfs = "images/{}-initramfs.bin".format(self.board_id)
+        self.initramboot = "images/{}-initramfs.uboot".format(self.board_id)
         self.gpt = "images/{}-gpt.bin".format(self.board_id)
         self.devregpart = "/dev/mtdblock10"
         self.bomrev = "113-{}".format(self.bom_rev)
@@ -51,12 +52,12 @@ class U7IPQ5322BspFactory(ScriptBase):
         }
 
         self.btnum = {
-            'a681': "1",
-            'a682': "1",
-            'a685': "1",
-            'a686': "1",
+            'a681': "0",
+            'a682': "0",
+            'a685': "0",
+            'a686': "0",
             'a688': "0",
-            'a691': "1",
+            'a691': "0",
             'a696': "1",
         }
 
@@ -126,7 +127,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.FANI2C_CHECK_ENABLE = False
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
-        elif self.board_id in ["a681", "a685", "a696"]:
+        elif self.board_id in ["a681", "a685"]:
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
@@ -139,11 +140,66 @@ class U7IPQ5322BspFactory(ScriptBase):
         # self.FWUPDATE_ENABLE = True
         # self.DATAVERIFY_ENABLE = True
 
+    def stop_uboot(self, timeout=60):
+        self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in",
+                                action="\x1b\x1b")
+
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
+
+    def _ramboot_u7Maimi_fwupdate(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        # update GPT
+        cmd = "tftpboot 0x50400000 {} && mmc write 0x50400000 0 34 && mmc rescan && mmc part".format(self.gpt)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        # update initram.uboot
+        cmd = "tftpboot 0x44000000 {} && echo && echo \"Download Successful\"".format(self.initramboot)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "sf probe && sf erase 0x260000 +0xa0000 && sf write $fileaddr 0x260000 0xa0000 && echo && echo \"Write Successful\""
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_lnxcmd(30, self.bootloader_prompt, "reset")
+
+        time.sleep(2)
+        self.stop_uboot()
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        # update initramfs
+        cmd = "setenv imgaddr {} && tftpboot {} {}".format(self.bootm_addr[self.board_id], self.bootm_addr[self.board_id], self.initramfs)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        # bootm
+        cmd = self.bootm_cmd[self.board_id]
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
+        self.linux_prompt = self.linux_prompt_select[self.board_id]
+        self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
+        time.sleep(30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd7", self.linux_prompt)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=30)
+        cmd = "ifconfig br0 {}".format(self.dutip)
+        self.disable_udhcpc()
+        time.sleep(3)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, self.linux_prompt)
+        self.is_network_alive_in_linux()
+
+        src = "{}/{}-fw.bin".format(self.fwdir, self.board_id)
+        dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
+        self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
+
+        time.sleep(2)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
+
+        # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
+        # self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
+        self.linux_prompt = "#"
 
     def _ramboot_uap_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
@@ -151,18 +207,22 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.is_network_alive_in_uboot()
 
         cmdset = [
-            "tftpboot 0x44000000 {} && mmc write 0x44000000 0 34 && mmc rescan && mmc part".format(self.gpt),
+            "tftpboot 0x50400000 {} && mmc write 0x50400000 0 34 && mmc rescan && mmc part".format(self.gpt),
             "setenv imgaddr {} && tftpboot {} {}".format(self.bootm_addr[self.board_id], self.bootm_addr[self.board_id], self.initramfs),
             self.bootm_cmd[self.board_id]
         ]
         for cmd in cmdset:
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
+        # bootm
+        cmd = self.bootm_cmd[self.board_id]
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+
         self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
         time.sleep(30)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd7", self.linux_prompt)
-        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=20)
+        self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=30)
         cmd = "ifconfig br0 {}".format(self.dutip)
         self.disable_udhcpc()
         time.sleep(3)
@@ -182,9 +242,11 @@ class U7IPQ5322BspFactory(ScriptBase):
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        self._ramboot_uap_fwupdate()
-        # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
-        #sometimes DUT will fail log to interrupt the login in process so add below try process for it
+        if self.board_id in ["a682", "a686", "a696"]:
+            self._ramboot_u7Maimi_fwupdate()
+        else:
+            self._ramboot_uap_fwupdate()
+
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
 
     def check_info(self):
