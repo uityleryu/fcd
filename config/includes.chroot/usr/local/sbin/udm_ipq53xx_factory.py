@@ -26,8 +26,8 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         # script specific vars
         self.fw_img = self.board_id + "-fw.bin"
         self.recovery_img = self.board_id + "-recovery"
-        if self.board_id == "a690":
-            self.recovery_img = self.board_id + "-loader.img"
+        # if self.board_id == "a690":
+        #     self.recovery_img = self.board_id + "-loader.img"
         self.bootloader_img = self.board_id + "-uboot.mbn"
         self.bootloader_prompt = "#"
         self.linux_prompt = "#"
@@ -206,26 +206,26 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(30, self.bootloader_prompt,
                                "setenv bootargsextra factory nc_transfer client={}".format(self.dutip))
 
-        if self.board_id != "a690":
-            # copy recovery image to tftp server
-            self.copy_file(
-                source=os.path.join(self.fwdir, self.recovery_img),
-                dest=os.path.join(self.tftpdir, "uImage")  # fixed name
-            )
-        else:
-            # copy recovery image to tftp server
-            self.copy_file(
-                source=os.path.join(self.fwdir, self.recovery_img),
-                dest=os.path.join(self.tftpdir, "loader.img")  # fixed name
-            )
+        # if self.board_id != "a690":
+        # copy recovery image to tftp server
+        self.copy_file(
+            source=os.path.join(self.fwdir, self.recovery_img),
+            dest=os.path.join(self.tftpdir, "uImage")  # fixed name
+        )
+        # else:
+        #     # copy recovery image to tftp server
+        #     self.copy_file(
+        #         source=os.path.join(self.fwdir, self.recovery_img),
+        #         dest=os.path.join(self.tftpdir, "loader.img")  # fixed name
+        #     )
         time.sleep(2)
         self.pexp.expect_ubcmd(30, self.bootloader_prompt, "run load_bootargs")
         self.set_boot_net()
         self.is_network_alive_in_uboot(retry=9, timeout=10)
-        if self.board_id != "a690":
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
-        else:
-            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot loader.img")
+        # if self.board_id != "a690":
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot uImage")
+        # else:
+        #     self.pexp.expect_ubcmd(30, self.bootloader_prompt, "tftpboot loader.img")
 
         self.pexp.expect_only(60, "Bytes transferred =")
         # self.pexp.expect_ubcmd(30, self.bootloader_prompt, "mw.l 0x1020000 0x2c1;sleep 2;mw.l 0x1020004 0x0;sleep 2")
