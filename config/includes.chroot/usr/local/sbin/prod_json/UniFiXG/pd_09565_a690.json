@@ -30,8 +30,8 @@
             "UXGB.ipq5322.v3.2.10.bea1202.231212.0944.bin",
             "uImage_20231212",
             "u-boot_20231212.mbn",
-            "ipq5322_uxg_max_v3.img",
-            "ipq5322_uxg_max_nor_v3.bin"
+            "ipq5322_uxg_max_v4.img",
+            "ipq5322_uxg_max_nor_v4.bin"
           ]
         },
         {
@@ -57,11 +57,11 @@
         ],
         [
           "tftp/images/a690-bsp-2g_nor.bin",
-          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v3.bin"
+          "../uxg-fw/uxg/ipq5322_uxg_max_nor_v4.bin"
         ],
         [
           "tftp/images/a690-bsp-2g.img",
-          "../uxg-fw/uxg/ipq5322_uxg_max_v3.img"
+          "../uxg-fw/uxg/ipq5322_uxg_max_v4.img"
         ],
         [
           "tftp/tools/a690-devreg.deb",
