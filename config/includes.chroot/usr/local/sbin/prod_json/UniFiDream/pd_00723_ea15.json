@@ -42,24 +42,24 @@
           "SRC_PATH": "images/fcd-image/udm-fw/udmp",
           "DST_PATH": "udm-fw/udm_pro",
           "FILES": [
-            "UDMPRO.al324.v3.1.16.456179c.230823.1801.bin",
-            "uImage_20230823",
-            "boot-20230823.img"
+            "UDMPRO.al324.v3.0.20.5256a39.230406.2140.bin",
+            "uImage-20230404",
+            "boot-20230404.img"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/ea15-fw.bin",
-          "../udm-fw/udm_pro/UDMPRO.al324.v3.1.16.456179c.230823.1801.bin"
+          "../udm-fw/udm_pro/UDMPRO.al324.v3.0.20.5256a39.230406.2140.bin"
         ],
         [
           "tftp/images/ea15-recovery",
-          "../udm-fw/udm_pro/uImage_20230823"
+          "../udm-fw/udm_pro/uImage-20230404"
         ],
         [
           "tftp/images/ea15-uboot.bin",
-          "../udm-fw/udm_pro/boot-20230823.img"
+          "../udm-fw/udm_pro/boot-20230404.img"
         ],
         [
           "tftp/tools/ea15-factory.deb",

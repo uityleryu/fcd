@@ -75,7 +75,7 @@ class UDM_AL324_FACTORY(ScriptBase):
             'ea2a': "al_eth3",
             'ea2b': "al_eth3",
             'ea2c': "al_eth2",  # set sfp 0 or 2 for SPF+
-            'ea15': "al_eth3",
+            'ea15': "al_eth0",
             'ea11': "al_eth3"
         }
 
