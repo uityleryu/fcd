@@ -251,7 +251,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("Choice:", "s")
         self.send_wo_extra_newline("Choice:", "t")
         self.set_fuse()
-        for i in range(0, 5):
+        for i in range(0, 3):
             self.proc.send(self.newline)
             self.send_wo_extra_newline("choice", "6\n",timout=2)
             self.send_wo_extra_newline("choice", "6\n",timout=2)
