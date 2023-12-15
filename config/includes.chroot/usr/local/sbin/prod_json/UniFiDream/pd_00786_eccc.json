@@ -34,10 +34,10 @@
             "preloader_evb7622_64_forspinor_lower_DDR_freq.bin",
             "preloader_rfb1_7622_64_forspinor_flyby_restore_DDR_setting.bin",
             "udr-mt7622-mt7915a-v11_emmc.bin",
-            "UDR.mt7622.v3.1.16.456179c.230823.1836.bin",
-            "u-boot-mtk_20230823.bin",
+            "UDR.mt7622.v3.2.7.3589072.231124.2101.bin",
+            "u-boot-mtk_20231124.bin",
             "udr-mt7622-mt7915a-v11_nor.bin",
-            "uImage_20230823"
+            "uImage_20231124"
           ]
         }
       ],
@@ -60,11 +60,11 @@
         ],
         [
           "tftp/images/eccc-fw.bin",
-          "../udm-fw/udr/UDR.mt7622.v3.1.16.456179c.230823.1836.bin"
+          "../udm-fw/udr/UDR.mt7622.v3.2.7.3589072.231124.2101.bin"
         ],
         [
           "tftp/images/eccc-fw.uboot",
-          "../udm-fw/udr/u-boot-mtk_20230823.bin"
+          "../udm-fw/udr/u-boot-mtk_20231124.bin"
         ],
         [
           "tftp/images/eccc-mfg.bin",
@@ -72,7 +72,7 @@
         ],
         [
           "tftp/images/eccc-recovery",
-          "../udm-fw/udr/uImage_20230823"
+          "../udm-fw/udr/uImage_20231124"
         ]
       ]
     }

@@ -31,8 +31,8 @@ class UDM_AL324_FACTORY(ScriptBase):
         self.helperexe = "helper_AL324_release"
         self.helper_path = "udm"
         self.bomrev = "113-" + self.bom_rev
-        self.username = "ubnt"
-        self.password = "ubnt"
+        self.username = "ui"
+        self.password = "ui"
         self.linux_prompt = "#"
 
         # Base path
