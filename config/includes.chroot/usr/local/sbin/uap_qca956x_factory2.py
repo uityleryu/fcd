@@ -108,8 +108,8 @@ class UAPQCA956xFactory2(ScriptBase):
         self.pexp.expect_action(240, self.linux_prompt, "uh-fw-tool -f /tmp/{}.bin".format(self.board_id))
         self.pexp.expect_only(30, 'Message Digest successfully verfied')
         self.pexp.expect_only(180, 'fw_inactive')
-        self.pexp.expect_only(180, 'ltefw')
-        self.pexp.expect_only(240, 'recovery')
+        self.pexp.expect_only(240, 'ltefw')
+        self.pexp.expect_only(360, 'recovery')
         self.pexp.expect_only(180, 'Updating boot select partitions')
         self.pexp.expect_action(180, self.linux_prompt, "reboot")
         # self.pexp.expect_only(540, 'Starting kernel')
@@ -378,7 +378,7 @@ class UAPQCA956xFactory2(ScriptBase):
         log_debug("Enable burn in mode passed!!")
 
     def record_modem_imei(self):
-        try_max = 15
+        try_max = 20
         for t in range(try_max):
             output = self.pexp.expect_get_output("echo \"ati\" | socat - /dev/ttyUSB2 | grep IMEI:", self.linux_prompt, timeout=3)
             log_debug(f"IMEI cmd rsp = {output}, (retry {t + 1}/{try_max})")
