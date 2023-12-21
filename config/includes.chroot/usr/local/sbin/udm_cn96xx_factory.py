@@ -9,6 +9,7 @@ import os
 import re
 import pexpect
 import sys
+import signal
 
 '''
     ea3d: UDM-Enterprise
@@ -125,9 +126,13 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         self.board_rev = {
             'ea3d': "r9",
-            'ea3e': "r5"
+            'ea3e': "r3"
         }
 
+        self.board_rev_uxg = {
+            'ea3d': "r9",
+            'ea3e': "r5"
+        }
         self.MAC_Num = {
             'ea3d': "12",
             'ea3e': "12"
@@ -149,7 +154,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.board_config = False
         self.fuse_config = False
         self.DEV_REG_ENABLE = True
-
+        self.bd_rev_set_uxg=False
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
@@ -193,7 +198,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + "050c0000")
         #
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08008000 " + "544e4255")
-        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08000010 " + self.sysid_vdr[self.board_id])
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, "mw.l 0x08008010 " + self.sysid_vdr[self.board_id])
         self.pexp.expect_ubcmd(10, self.bootloader_prompt,
                                "sf write 0x08000000 {} 0x10000".format(self.eeprom_offset[self.board_id]))
         self.pexp.expect_only(30, "Written: OK")
@@ -226,7 +231,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def set_fuse(self):
         self.send_wo_extra_newline("choice", "13\n")
-        self.send_wo_extra_newline("choice", "6\n",timout=2)
+        self.send_wo_extra_newline("choice", "6\n", timout=2)
         for i in range(0, 12):
             # for i in range(0,11):
             self.send_wo_extra_newline("]:", "\n")
@@ -234,7 +239,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("SPI_SAFEMODE", "1\n")
         # self.send_wo_extra_newline("Secure NV counter", "0\n")
         self.proc.send(self.newline)
-        self.send_wo_extra_newline("choice", "7\n",timout=2)
+        self.send_wo_extra_newline("choice", "7\n", timout=2)
 
     def config_fuse_setting(self):
         # # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
@@ -253,14 +258,14 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.set_fuse()
         for i in range(0, 3):
             self.proc.send(self.newline)
-            self.send_wo_extra_newline("choice", "6\n",timout=2)
-            self.send_wo_extra_newline("choice", "6\n",timout=2)
+            self.send_wo_extra_newline("choice", "6\n", timout=2)
+            self.send_wo_extra_newline("choice", "6\n", timout=2)
             output = self.proc.before
             if "31] SPI_SAFEMODE         =          1 (0x1)" not in output:
                 self.set_fuse()
             else:
                 break
-        self.send_wo_extra_newline("choice", "15\n",timout=2)
+        self.send_wo_extra_newline("choice", "15\n", timout=2)
         time.sleep(2)
         self.send_wo_extra_newline("Choice:", "s", timout=15)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
@@ -282,6 +287,27 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.send_wo_extra_newline("Choice:", "w")
         self.send_wo_extra_newline("Choice:", "q")
         # self.send_wo_extra_newline("Choice:", "f")
+        # self.proc.close()
+        # return 1
+
+    def config_board_model_nbumer_uxg(self):
+        self.proc.send(self.newline)
+        self.send_wo_extra_newline("Choice:", "s")
+        time.sleep(1)
+        self.send_wo_extra_newline("Choice:", "b")
+        time.sleep(1)
+        self.send_wo_extra_newline("]:", "{}\n".format(self.boarad_model[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "b")
+        time.sleep(1)
+        self.send_wo_extra_newline("]:", "{}\n".format(self.boarad_model[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "r")
+        self.send_wo_extra_newline("]:", "{}\n".format(self.board_rev_uxg[self.board_id]))
+        self.send_wo_extra_newline("Choice:", "n")
+        self.send_wo_extra_newline("]:", "{}\n".format(self.MAC_Num[self.board_id]))
+        time.sleep(1)
+        self.send_wo_extra_newline("Choice:", "w")
+        self.send_wo_extra_newline("Choice:", "q")
+        self.send_wo_extra_newline("Choice:", "f")
         # self.proc.close()
         # return 1
 
@@ -446,6 +472,30 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         log_debug("Send bspnode output files from DUT to host ...")
 
+    def set_bd_info(self):
+        if self.ps_state is True:
+            self.set_ps_port_relay_on()
+        for i in range(3):
+            try:
+                for j in range(30):
+                    self.proc.send("b")
+                    time.sleep(0.1)
+
+                self.config_board_model_nbumer_uxg()
+                self.board_config = True
+                self.fuse_config = True
+                if self.fuse_config:
+                    self.proc.close(True)
+                    # self.proc.close(True)
+                    break
+            except Exception as e:
+                log_debug(str(e))
+                exc_type, exc_obj, exc_tb = sys.exc_info()
+                fname = exc_tb.tb_frame.f_code.co_filename
+                line_number = exc_tb.tb_lineno
+        else:
+            raise Warning("Set Board Info Failed....")
+
     def run(self):
         if self.ps_state is True:
             self.set_ps_port_relay_off()
@@ -477,6 +527,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                     continue
                 elif index in [3,4] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
+                    if self.board_id == "ea3e" and "Board Revision: r5" in output:
+                        self.bd_rev_set_uxg=True
                     log_debug(output)
                     self.proc.send("b")
                     self.proc.send("b")
@@ -506,10 +558,24 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             # self.pexp.expect_action(10, "", "123456")  # For Local test
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
+                self.update_uboot()
             elif self.board_id == "ea3e":
+                if not self.bd_rev_set_uxg:
+                    pexpect_obj.proc.terminate(force=True)
+                    self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+                    if self.ps_state is True:
+                        self.set_ps_port_relay_off()
+                    self.proc = pexpect.spawn(self.pexpect_cmd, encoding='utf-8', timeout=10)
+                    self.proc.logfile_read = sys.stdout
+                    self.set_bd_info()
+                    pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+                    self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+                    if self.ps_state is True:
+                        self.set_ps_port_relay_off()
+                        time.sleep(2)
+                        self.set_ps_port_relay_on()
                 self.set_fake_eeprom_uxg()
-            self.update_uboot()
-
+                self.update_uboot()
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
