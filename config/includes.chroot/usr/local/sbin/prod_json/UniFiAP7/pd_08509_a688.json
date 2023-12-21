@@ -27,11 +27,12 @@
           "SRC_PATH": "images/fcd-image/u7-fw/a688",
           "DST_PATH": "u7-fw",
           "FILES": [
-            "BZ2.ipq53xx_7.0.22+15346.231116.0559-uboot.bin",
-            "initramfs-ipq53xx_512m.gpt",
-            "ramload-7.0.22_512m.bin",
+            "BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
+            "initramfs-ipq53xx_512m_20231223.gpt",
+            "ramload-7.0.27_512m_20231223.bin",
             "u7-sak-pro-wkk-lm512-v3.img",
-            "u7-sak-pro-wkk-lm512-v3_nor.bin"
+            "u7-sak-pro-wkk-lm512-v3_nor.bin",
+            "initramfs-ipq53xx_512m_20231212.uboot"
           ]
         }
       ],
@@ -42,15 +43,19 @@
         ],
         [
           "tftp/images/a688-fw.bin",
-          "../u7-fw/BZ2.ipq53xx_7.0.22+15346.231116.0559-uboot.bin"
+          "../u7-fw/BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
         ],
         [
           "tftp/images/a688-gpt.bin",
-          "../u7-fw/initramfs-ipq53xx_512m.gpt"
+          "../u7-fw/initramfs-ipq53xx_512m_20231223.gpt"
         ],
         [
           "tftp/images/a688-initramfs.bin",
-          "../u7-fw/ramload-7.0.22_512m.bin"
+          "../u7-fw/ramload-7.0.27_512m_20231223.bin"
+        ],
+        [
+          "tftp/images/a688-initramfs.uboot",
+          "../u7-fw/initramfs-ipq53xx_512m_20231212.uboot"
         ],
         [
           "tftp/images/a688-nor.bin",
