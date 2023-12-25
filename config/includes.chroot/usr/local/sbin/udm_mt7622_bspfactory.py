@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import time
-import os
+import os,re
 import stat
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
@@ -181,7 +181,26 @@ class UDMMT7622BspFactory(ScriptBase):
         if self.SET_NTP_ENABLE is True:
             self.set_ntptime_to_dut(rtc_tool="busybox hwclock")
             msg(95, "Set NTP time to DUT ...")
-
+        cmd = "systemctl is-system-running"
+        ct = 0
+        retry_max = 120
+        while ct < retry_max:
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
+            m_run = re.findall("running", output)
+            m_degraded = re.findall("degraded", output)
+            if len(m_run) == 2:
+                rmsg = "The system is running good"
+                log_debug(rmsg)
+                break
+            elif len(m_degraded) == 1:
+                rmsg = "The system is degraded"
+                log_debug(rmsg)
+                break
+            time.sleep(1)
+            ct += 1
+        else:
+            rmsg = "The system is not booting up successfully, FAIL!!"
+            error_critical(rmsg)
         msg(100, "Completed FCD process ...")
         self.close_fcd()
 
