@@ -81,6 +81,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             'aa03': False
         }
 
+        self.check_mebom = {
+            'aa03': True
+        }
+
     def run(self):
         """
         Main procedure of factory
@@ -95,6 +99,9 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if self.write_topbom[self.board_id] is True:
             if not self.tlb_rev:
                 error_critical("Top level BOM is required ...")
+
+        if self.check_mebom[self.board_id] is True:
+            self.check_mebom_is_correct()
 
         self.fcd.common.config_stty(self.dev)
         self.fcd.common.print_current_fcd_version()
@@ -616,6 +623,22 @@ class UPLQCS405FactoryGeneral(ScriptBase):
                 log_info('HK Token ID check failed, retry {} time'.format(retry))
         else:
             error_critical('HK Token ID check failed')
+
+    def check_mebom_is_correct(self):
+        sku_dict = {}
+        if self.board_id == 'aa03':
+            sku_dict = {
+                    '08740' : '01182', #black
+                    '01404' : '01318'  #white
+            }
+
+        expect_mebom = sku_dict[self.bom_rev]
+        log_info('FCD = {}, Expected = {}'.format(self.meb_rev, expect_mebom))
+
+        if self.meb_rev == expect_mebom:
+            log_info('ME BOM insert is correct. ')
+        else:
+            log_error('ME BOM insert is incorrect')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
