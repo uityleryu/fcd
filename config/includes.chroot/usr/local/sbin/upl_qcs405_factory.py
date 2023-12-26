@@ -632,10 +632,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
                     '01404' : '01318'  #white
             }
 
-        expect_mebom = sku_dict[self.bom_rev]
-        log_info('FCD = {}, Expected = {}'.format(self.meb_rev, expect_mebom))
+        expect_mebom = sku_dict[self.bom_rev.split('-')[0]]
+        log_info('FCD = {}, Expected = {}'.format(self.meb_rev.split('-')[1], expect_mebom))
 
-        if self.meb_rev == expect_mebom:
+        if self.meb_rev.split('-')[1] == expect_mebom:
             log_info('ME BOM insert is correct. ')
         else:
             log_error('ME BOM insert is incorrect')
