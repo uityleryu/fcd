@@ -182,6 +182,7 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.linux_prompt = self.linux_prompt_select[self.board_id]
         self.login(self.user, self.password, timeout=300, log_level_emerg=True, press_enter=True, retry=3)
         time.sleep(30)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "con", self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "mtd erase /dev/mtd7", self.linux_prompt)
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "ifconfig br0", "inet addr", retry=30)
         cmd = "ifconfig br0 {}".format(self.dutip)
@@ -242,7 +243,7 @@ class U7IPQ5322BspFactory(ScriptBase):
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        if self.board_id in ["a682", "a686", "a696"]:
+        if self.board_id in ["a682", "a686", "a696", "a691"]:
             self._ramboot_u7Maimi_fwupdate()
         else:
             self._ramboot_uap_fwupdate()
