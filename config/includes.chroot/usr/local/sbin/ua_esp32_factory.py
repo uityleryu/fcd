@@ -17,6 +17,7 @@ DOHELPER_ENABLE     = True
 REGISTER_ENABLE     = True
 FLASH_DEVREG_DATA   = True
 DEVREG_CHECK_ENABLE = True
+SIGN_NFC_KEY_ENABLE = True
 
 
 class UAESP32FactoryGeneral(ScriptBase):
@@ -35,6 +36,9 @@ class UAESP32FactoryGeneral(ScriptBase):
         self.fw_ota_data = os.path.join(self.tftpdir, "images", "{}-ota.bin".format(self.board_id))
         self.fw_ptn_table = os.path.join(self.tftpdir, "images", "{}-ptn-table.bin".format(self.board_id))
         self.fw_mfg = os.path.join(self.tftpdir, "images", "{}-mfg.bin".format(self.board_id))
+        self.fw_nfc_key = os.path.join(self.tftpdir, "images", "{}-nfc_keys.bin".format(self.board_id))
+        self.fw_nvs_csv = os.path.join(self.tftpdir, "images", "{}-ui_nvs_1.csv".format(self.board_id))
+        self.fw_nvs_bin = os.path.join(self.tftpdir, "images", "{}-ui_nvs_1.bin".format(self.board_id)) #output
 
         # Index 0: flag to control key is existed or flash is encrypted
         #       1: key name
@@ -72,7 +76,8 @@ class UAESP32FactoryGeneral(ScriptBase):
                 'bootloader': '0x1000',
                 'partition_table': '0xb000',
                 'ota': '0xd000',
-                'mfg': '0x90000'},
+                'mfg': '0x90000',
+                'nvs': '0x50000'},
         }
 
         self.devnetmeta = {
@@ -97,13 +102,13 @@ class UAESP32FactoryGeneral(ScriptBase):
         id_list = re.findall(r'id: 0x(\w+)', output)
         cpu_id = id_list[0]
         flash_jedec_id = id_list[1]
-        flash_uuid = id_list[2]
+        self.flash_uuid = id_list[2]
 
-        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, flash_uuid))
+        log_debug("cpu_id={}, flash_jedec_id={}, flash_uuid{}".format(cpu_id, flash_jedec_id, self.flash_uuid))
         self.regsubparams = " -i field=product_class_id,format=hex,value={}".format(self.product_class) + \
                             " -i field=cpu_rev_id,format=hex,value={}".format(cpu_id)                   + \
                             " -i field=flash_jedec_id,format=hex,value={}".format(flash_jedec_id)       + \
-                            " -i field=flash_uid,format=hex,value={}".format(flash_uuid)
+                            " -i field=flash_uid,format=hex,value={}".format(self.flash_uuid)
 
     ### To check if keys are exist and device is first programmed or not
     def check_device_stat(self):
@@ -173,9 +178,9 @@ class UAESP32FactoryGeneral(ScriptBase):
 
     def fwupdate(self):
         self.check_device_stat()
-        #self.program_keys()
-        self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader'], file_bin=self.fw_bootloader)
-        #self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader_digest'], file_bin=self.fw_bootloader_digeset)
+        self.program_keys()
+        #self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader'], file_bin=self.fw_bootloader)
+        self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader_digest'], file_bin=self.fw_bootloader_digeset)
         self.program_fw()
 
     def put_devreg_data_in_dut(self):
@@ -210,7 +215,8 @@ class UAESP32FactoryGeneral(ScriptBase):
         # value is our expected string
         devreg_data_dict = {'system_id': self.board_id,
                             'mac_addr': self.mac.upper(),
-                            'devreg_check': 'PASS'}
+                            'devreg_check': 'PASS',
+                            'nfckey_check': 'PASS'}
 
         for key in devreg_data_dict:
             regex = re.compile(r'"{}":"((\w+:?)*)"'.format(key))
@@ -222,6 +228,44 @@ class UAESP32FactoryGeneral(ScriptBase):
                 error_critical("{}: {}, not {}".format(key, info[key], devreg_data_dict[key]))
             else:
                 log_debug("{}: {}".format(key, info[key]))
+
+    def program_nfc_key(self):
+        self.pexp.close()
+
+        aes_key = '{}{}{}'.format(self.flash_uuid, self.board_id, self.mac).upper()
+        image_path = os.path.join(self.tftpdir, "images")
+
+        # gen key
+        cmd = 'openssl aes-128-cbc -K {} -iv \'00000000000000000000000000000000\' -in {} -out /tftpboot/images/nfc_keys_aes.bin'.format(aes_key, self.fw_nfc_key)
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = 'gen_key "nfc_keys_aes.bin" failed!'
+            error_critical(otmsg)
+
+        # gen nvs partition
+        cmd = 'cd {} ; python3 /tftpboot/tools/common/nvs_partition_gen.py generate {} {} 0x40000'.format(image_path, self.fw_nvs_csv, self.fw_nvs_bin)
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = 'gen_nvs_partition failed!'
+            error_critical(otmsg)
+
+        # write nvs partition
+        offset = self.partion_offset[self.board_id]['nvs']
+        cmd = "esptool.py --chip esp32 -p /dev/ttyUSB{} -b 460800 write_flash " \
+              "{} {}".format(self.row_id, offset, self.fw_nvs_bin)
+        log_debug(cmd)
+        [output, rv] = self.cnapi.xcmd(cmd)
+        if int(rv) > 0:
+            otmsg = "write_nvs_partition failed"
+            error_critical(otmsg)
+
+        # The waiting time
+        pexpect_obj = ExpttyProcess(self.row_id, self.pexpect_cmd, "\n")
+        self.set_pexpect_helper(pexpect_obj=pexpect_obj)
+        self.pexp.expect_only(60, self.esp32_prompt)
+        log_debug("Device boots well")
 
     def run(self):
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
@@ -254,6 +298,10 @@ class UAESP32FactoryGeneral(ScriptBase):
         if DOHELPER_ENABLE is True:
             self.prepare_server_need_files()
             msg(30, "Finish preparing the devreg file ...")
+
+        if SIGN_NFC_KEY_ENABLE is True:
+            self.program_nfc_key()
+            msg(35, "Finish programing NFC key ...")
 
         if REGISTER_ENABLE is True:
             self.registration(regsubparams=self.regsubparams)

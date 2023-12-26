@@ -24,26 +24,39 @@
             "sshd_config",
             "tmux.conf",
             "x86-64k-ee",
-            "aarch64-rpi4-4k-ee_20230608"
+            "aarch64-rpi4-4k-ee_20230608",
+            "nvs_partition_gen.py"
           ]
         }
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/ec84-bootloader.bin",
-          "../ua-fw/ua-ultra/20231113/bootloader.bin"
+          "tftp/images/ec84-bootloader-digest.bin",
+          "../ua-fw/ua-ultra/20231204/bootloader-reflash-digest.bin"
         ],
         [
           "tftp/images/ec84-mfg.bin",
-          "../ua-fw/ua-ultra/20231113/ua-ultra_mfg.v0.1.2.0.gc0d38.231113.1137.bin"
+          "../ua-fw/ua-ultra/20231204/ua-ultra_mfg.v0.1.3.0.g744a8.231204.1336.bin"
         ],
         [
           "tftp/images/ec84-ota.bin",
-          "../ua-fw/ua-ultra/20231113/ota_data_initial.bin"
+          "../ua-fw/ua-ultra/20231204/ota_data_initial.bin"
         ],
         [
           "tftp/images/ec84-ptn-table.bin",
-          "../ua-fw/ua-ultra/20231113/partition-table.bin"
+          "../ua-fw/ua-ultra/20231204/partition-table.bin"
+        ],
+        [
+          "tftp/images/ec84-secure_boot_key.bin",
+          "../ua-fw/ua-ultra/20231204/secure-bootloader-key-256.bin"
+        ],
+        [
+          "tftp/images/ec84-nfc_keys.bin",
+          "../ua-fw/ua-ultra/20231204/nfc_key/nfc_keys.bin"
+        ],
+        [
+          "tftp/images/ec84-ui_nvs_1.csv",
+          "../ua-fw/ua-ultra/20231204/nfc_key/ui_nvs_1.csv"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-4k-ee",
