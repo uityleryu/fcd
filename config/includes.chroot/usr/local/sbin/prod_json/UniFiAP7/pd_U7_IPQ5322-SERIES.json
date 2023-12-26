@@ -124,65 +124,8 @@
         ]
       ]
     },
-    "U7-LR-09466": {
-      "INDEX": 2,
-      "NAME": "U7-LR",
-      "BOARDID": "a691",
-      "BOMREV": "113-09466",
-      "DESC": "UniFi AP7 Long Range",
-      "FILE": "u7_ipq5322_bspfactory.py",
-      "T1FILE": "u7_ipq5322_mfg.py",
-      "QRCHECK": "True",
-      "SW_ID": "0601",
-      "DOWNLOAD_FILE": [
-        {
-          "SRC_PATH": "images/tools/common",
-          "DST_PATH": "tools/common",
-          "FILES": [
-            "sshd_config",
-            "tmux.conf",
-            "x86-64k-ee",
-            "aarch64-rpi4-4k-ee",
-            "aarch64-rpi4-64k-ee"
-          ]
-        },
-        {
-          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
-          "DST_PATH": "u7-fw/ipq5322",
-          "FILES": [
-            "u7-lr-wkk-lm512-v3.img",
-            "u7-lr-wkk-lm512-v3_nor.bin",
-            "BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
-            "initramfs-ipq53xx_512m.gpt",
-            "ramload_512m-7.0.27.bin"
-          ]
-        }
-      ],
-      "CREATE_LINK": [
-        [
-          "tftp/images/a691-bsp.img",
-          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v3.img"
-        ],
-        [
-          "tftp/images/a691-fw.bin",
-          "../u7-fw/ipq5322/BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
-        ],
-        [
-          "tftp/images/a691-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_512m.gpt"
-        ],
-        [
-          "tftp/images/a691-initramfs.bin",
-          "../u7-fw/ipq5322/ramload_512m-7.0.27.bin"
-        ],
-        [
-          "tftp/images/a691-nor.bin",
-          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v3_nor.bin"
-        ]
-      ]
-    },
     "U7-Pro-MAX-10353": {
-      "INDEX": 3,
+      "INDEX": 2,
       "NAME": "U7-Pro-max",
       "BOARDID": "a696",
       "BOMREV": "113-10353",
