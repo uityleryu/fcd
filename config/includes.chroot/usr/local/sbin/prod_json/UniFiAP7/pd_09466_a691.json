@@ -26,22 +26,23 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-lr-wkk-lm512-v2.img",
-            "u7-lr-wkk-lm512-v2_nor.bin",
-            "BZ2.ipq53xx_7.0.12+15246.231007.0828-uboot.bin",
+            "u7-lr-wkk-lm512-v3.img",
+            "u7-lr-wkk-lm512-v3_nor.bin",
+            "BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
             "initramfs-ipq53xx_512m.gpt",
-            "ramload_512m-7.0.12.bin"
+            "initramfs-ipq53xx_512m_7.0.27.uboot",
+            "ramload_512m-7.0.27.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a691-bsp.img",
-          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2.img"
+          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v3.img"
         ],
         [
           "tftp/images/a691-fw.bin",
-          "../u7-fw/ipq5322/BZ2.ipq53xx_7.0.12+15246.231007.0828-uboot.bin"
+          "../u7-fw/ipq5322/BZ2.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
         ],
         [
           "tftp/images/a691-gpt.bin",
@@ -49,15 +50,15 @@
         ],
         [
           "tftp/images/a691-initramfs.bin",
-          "../u7-fw/ipq5322/ramload_512m-7.0.12.bin"
+          "../u7-fw/ipq5322/ramload_512m-7.0.27.bin"
+        ],
+        [
+          "tftp/images/a691-initramfs.uboot",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_512m_7.0.27.uboot"
         ],
         [
           "tftp/images/a691-nor.bin",
-          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v2_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
+          "../u7-fw/ipq5322/u7-lr-wkk-lm512-v3_nor.bin"
         ]
       ]
     }

@@ -27,10 +27,10 @@
           "SRC_PATH": "images/fcd-image/a6a1",
           "DST_PATH": "a6a1",
           "FILES": [
-            "BZ.ipq50xx_7.0.19+15317.231107.0440-uboot.bin",
-            "maple-4g-gpt_20231027.bin",
-            "ramload-7.0.19.bin",
-            "unifi-v1.0.28.154-g6c5f4b97_ipq5018_u-boot.mbn",
+            "BZ.ipq50xx_7.0.24+15376.231129.2330-uboot.bin",
+            "maple-4g-gpt_20231201.bin",
+            "ramload-7.0.24.bin",
+            "unifi-v1.0.29.154-ga5f65278_ipq5018_u-boot.mbn",
             "u6-mesh-pro-spf11.4-csu1-v1.2.img",
             "u6-mesh-pro-spf11.4-csu1-v1.2_nor.bin"
           ]
@@ -47,19 +47,19 @@
         ],
         [
           "tftp/images/a6a1-fw.bin",
-          "../a6a1/BZ.ipq50xx_7.0.19+15317.231107.0440-uboot.bin"
+          "../a6a1/BZ.ipq50xx_7.0.24+15376.231129.2330-uboot.bin"
         ],
         [
           "tftp/images/a6a1-gpt.bin",
-          "../a6a1/maple-4g-gpt_20231027.bin"
+          "../a6a1/maple-4g-gpt_20231201.bin"
         ],
         [
           "tftp/images/a6a1-uboot.mbn",
-          "../a6a1/unifi-v1.0.28.154-g6c5f4b97_ipq5018_u-boot.mbn"
+          "../a6a1/unifi-v1.0.29.154-ga5f65278_ipq5018_u-boot.mbn"
         ],
         [
           "tftp/images/a6a1-initramfs.bin",
-          "../a6a1/ramload-7.0.19.bin"
+          "../a6a1/ramload-7.0.24.bin"
         ]
       ]
     }

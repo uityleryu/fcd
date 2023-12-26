@@ -1,0 +1,28 @@
+{
+  "Connect": {
+    "UC-CAST-ULTRA": {
+      "INDEX": 0,
+      "NAME": "UC-CAST-ULTRA",
+      "BOARDID": "ef91",
+      "BOMREV": "113-10368",
+      "DESC": "UniFi Connect Cast Ultra",
+      "FILE": "connect_apq8053_factory.py",
+      "T1FILE": "",
+      "QRCHECK": "True",
+      "SW_ID": "1ce1",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": []
+    }
+  }
+}

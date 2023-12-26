@@ -170,7 +170,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
 
         msg(5, "Boot to linux console ...")
         if self.board_id == "e992":
-            self.login(username="ui", password="ui")
+            self.login(username="ui", password="ui", timeout=40)
             self.set_lnx_net("eth0")
             self.is_network_alive_in_linux()
         else:
@@ -262,7 +262,7 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(120, self.linux_prompt, cmd, self.linux_prompt)
 
             cmd = "dd if=/dev/zero of=/dev/disk/by-partlabel/appdata bs=32M >/dev/null 2>/dev/null"
-            self.pexp.expect_lnxcmd(480, self.linux_prompt, cmd, self.linux_prompt)
+            self.pexp.expect_lnxcmd(1200, self.linux_prompt, cmd, self.linux_prompt)
 
             cmd = "dd if=/dev/zero of=/dev/sda bs=32M count=1"
             self.pexp.expect_lnxcmd(30, self.linux_prompt, cmd, self.linux_prompt)
