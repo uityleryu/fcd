@@ -523,7 +523,7 @@ class USBCM5616FactoryGeneral(ScriptBase):
         if REGISTER_ENABLE is True:
             self.registration()
             msg(40, "Finish doing registration ...")
-            self.check_devreg_data(zmodem=True)
+            self.check_devreg_data(method="zmodem")
             msg(50, "Finish doing signed file and EEPROM checking ...")
             self.pexp.expect_action(timeout=10, exptxt=self.linux_prompt, action="reboot")
 

@@ -17,7 +17,7 @@
           "DST_PATH": "af-fw",
           "FILES": [
             "u-boot_01070.mbn",
-            "GMC.ipq5018.v3.3.0-alpha7.c590b4de.230821.1042.bin",
+            "GMC.ipq5018.v3.2.1.abd69644.231107.1320.bin",
             "wave-pico-maple-spf11.4-csu1-v2_emmc.bin",
             "wave-pico-maple-spf11.4-csu1-v2_nor.bin"
           ]
@@ -48,7 +48,7 @@
         ],
         [
           "tftp/images/a689.bin",
-          "../af-fw/GMC.ipq5018.v3.3.0-alpha7.c590b4de.230821.1042.bin"
+          "../af-fw/GMC.ipq5018.v3.2.1.abd69644.231107.1320.bin"
         ]
       ]
     }

@@ -17,7 +17,6 @@ class U6IPQ5018MFGGeneral(ScriptBase):
     para5:   Erase calibration data selection
     ex: [script, 1, 'ttyUSB1', '192.168.1.19', 'eb23', True]
     """
-
     def __init__(self):
         super(U6IPQ5018MFGGeneral, self).__init__()
         self.mem_addr = "0x44000000"
@@ -61,7 +60,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
 
     def stop_uboot(self, timeout=60):
         self.pexp.expect_action(timeout=timeout, exptxt="Hit any key to stop autoboot|Autobooting in",
-                                action="\x1b\x1b")
+                                action= "\x1b\x1b")
 
     def transfer_img(self, address, filename):
         img = os.path.join(self.image, filename)
@@ -92,7 +91,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
-        elif self.board_id in ["a667", "a677"]:
+        elif  self.board_id in ["a667","a677"]:
             comma_mac = self.mac_format_str2comma(self.mac)
             self.set_ub_net(comma_mac, ethact="eth1")
         else:
@@ -111,7 +110,7 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         # U6-Enterprise-IW , default Eth0 is not work but Eth1 work
         if self.board_id == "a656":
             self.set_ub_net(self.premac, ethact="eth1")
-        elif self.board_id in ["a667", "a677"]:
+        elif  self.board_id in ["a667","a677"]:
             comma_mac = self.mac_format_str2comma(self.mac)
             self.set_ub_net(comma_mac, ethact="eth1")
         else:
@@ -131,11 +130,9 @@ class U6IPQ5018MFGGeneral(ScriptBase):
         msg(100, "Back to T1 has completed")
         self.close_fcd()
 
-
 def main():
     u6_ipq5018_mfg_general = U6IPQ5018MFGGeneral()
     u6_ipq5018_mfg_general.run()
-
 
 if __name__ == "__main__":
     main()

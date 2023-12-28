@@ -1,11 +1,11 @@
 {
   "UniFiAP7": {
-    "U7-Pro-08146": {
+    "U7-Pro-MAX-10353": {
       "INDEX": 0,
-      "NAME": "U7-Pro",
-      "BOARDID": "a682",
-      "BOMREV": "113-08146",
-      "DESC": "UniFi AP7 Pro",
+      "NAME": "U7-Pro-max",
+      "BOARDID": "a696",
+      "BOMREV": "113-10353",
+      "DESC": "UniFi AP7 Pro Max",
       "FILE": "u7_ipq5322_bspfactory.py",
       "T1FILE": "u7_ipq5322_mfg.py",
       "QRCHECK": "True",
@@ -26,8 +26,8 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v8.img",
-            "u7-pro-1g-v8_nor.bin",
+            "u7-pro-max-1g-v2.img",
+            "u7-pro-max-1g-v2_nor.bin",
             "BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
             "initramfs-ipq53xx_1g.gpt",
             "initramfs-ipq53xx_1g_7.0.27.uboot",
@@ -37,28 +37,28 @@
       ],
       "CREATE_LINK": [
         [
-          "tftp/images/a682-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v8.img"
+          "tftp/images/a696-bsp.img",
+          "../u7-fw/ipq5322/u7-pro-max-1g-v2.img"
         ],
         [
-          "tftp/images/a682-fw.bin",
+          "tftp/images/a696-fw.bin",
           "../u7-fw/ipq5322/BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
         ],
         [
-          "tftp/images/a682-gpt.bin",
+          "tftp/images/a696-gpt.bin",
           "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
         ],
         [
-          "tftp/images/a682-initramfs.bin",
+          "tftp/images/a696-initramfs.bin",
           "../u7-fw/ipq5322/ramload-7.0.27_1g.bin"
         ],
         [
-          "tftp/images/a682-initramfs.uboot",
+          "tftp/images/a696-initramfs.uboot",
           "../u7-fw/ipq5322/initramfs-ipq53xx_1g_7.0.27.uboot"
         ],
         [
-          "tftp/images/a682-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v8_nor.bin"
+          "tftp/images/a696-nor.bin",
+          "../u7-fw/ipq5322/u7-pro-max-1g-v2_nor.bin"
         ]
       ]
     }

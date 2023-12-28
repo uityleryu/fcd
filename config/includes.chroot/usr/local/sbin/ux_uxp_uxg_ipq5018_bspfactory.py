@@ -1,32 +1,20 @@
 #!/usr/bin/python3
 import time
 import re
-
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
 from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
-    a650: U6-PRO
-    a651: U6-Mesh
-    a652: U6-IW
-    a653: U6-Extender
-    a654: U6-Enterprise
-    a655: U6-Infinity
-    a656: U6-Exterprise-IW
-    a665: AFi-6-R
-    a666: AFi-6-Ext
     a667: UEX
-    a6a1: U6-Mesh-Pro
     a674: UEXP
-    a675: UniFi6 Pro outdoor
     a677: UXG
 '''
 
 
-class U6IPQ5018BspFactory(ScriptBase):
+class UX_UXP_UXG_IPQ5018_BspFactory(ScriptBase):
     def __init__(self):
-        super(U6IPQ5018BspFactory, self).__init__()
+        super(UX_UXP_UXG_IPQ5018_BspFactory, self).__init__()
         self.init_vars()
 
     def init_vars(self):
@@ -42,140 +30,58 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.board_id in ["a667", "a674"]:
             self.log_upload_failed_alert_en = True
 
+        self.prod_shortname ={
+            'a667': "UX",
+            'a674': "UXP",
+            "a677": "UXG"
+
+        }
+
         self.ethnum = {
-            'a650': "1",
-            'a651': "1",
-            'a652': "1",
-            'a653': "0",
-            'a654': "1",
-            'a655': "1",
-            'a656': "1",
-            'a665': "2",
-            'a666': "0",
             'a667': "2",
-            'a6a1': "2",
             'a674': "2",
-            'a675': "4",
-            "a677": "3"
+            "a677": "2"
         }
 
         self.wifinum = {
-            'a650': "2",
-            'a651': "2",
-            'a652': "2",
-            'a653': "2",
-            'a654': "3",
-            'a655': "3",
-            'a656': "3",
-            'a665': "2",
-            'a666': "2",
             'a667': "2",
-            'a6a1': "2",
             'a674': "2",
-            'a675': "0",
             'a677': "0"
         }
 
         self.btnum = {
-            'a650': "1",
-            'a651': "1",
-            'a652': "1",
-            'a653': "1",
-            'a654': "1",
-            'a655': "1",
-            'a656': "1",
-            'a665': "1",
-            'a666': "1",
             'a667': "1",
-            'a6a1': "0",
             'a674': "1",
-            'a675': "1",
             'a677': "1"
         }
 
         self.bootm_addr = {
-            'a650': "0x50000000",
-            'a651': "0x50000000",
-            'a652': "0x50000000",
-            'a653': "0x50000000",
-            'a654': "0x50000000",
-            'a655': "0x50000000",
-            'a656': "0x50000000",
-            'a665': "1",
-            'a666': "1",
             'a667': "",
-            'a6a1': "0x50000000",
             'a674': "",
-            'a675': "0x50000000",
             'a677': ""
         }
 
-        # 650 U6-Pro, 651 U6-Mesh, 652 U6-IW, 653 U6-Extender, 656 U6-Enterprise-IW
         self.bootm_cmd = {
-            'a650': "bootm $fileaddr#config@a650",
-            'a651': "bootm $fileaddr#config@a651",
-            'a652': "bootm $fileaddr#config@a652",
-            'a653': "bootm $fileaddr#config@a653",
-            'a654': "bootm $fileaddr#config@a654",
-            'a655': "bootm $fileaddr#config@a655",
-            'a656': 'bootm $fileaddr#config@a656',
-            'a665': "1",
-            'a666': "1",
             'a667': "",
-            'a6a1': 'bootm $fileaddr#config@a6a1',
             'a674': "",
-            'a675': "bootm $fileaddr#config@a675",
             'a677': ""
         }
 
         self.linux_prompt_select = {
-            'a650': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
-            'a651': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
-            'a652': "#",
-            'a653': "#",
-            'a654': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
-            'a655': "#",    #prompt will be like "UBNT-BZ.5.65.0#"
-            'a656': "#",
-            'a665': "#",
-            'a666': "#",
             'a667': "#",
-            'a6a1': "#",
             'a674': "#",
-            'a675': "#",
             'a677': "#"
         }
 
         self.uboot_eth_port = {
-            'a650': "eth0",
-            'a651': "eth0",
-            'a652': "eth1",
-            'a653': "eth0",
-            'a654': "eth0",
-            'a655': "eth0",
-            'a656': "eth1",
-            'a665': "eth0",
-            'a666': "eth0",
             'a667': "eth0",
-            'a6a1': "eth0",
             'a674': "eth0",
-            'a675': "eth0",
             'a677': "eth0"
         }
 
         self.lnx_eth_port = {
-            'a650': "br-lan",
-            'a651': "br-lan",
-            'a652': "br-lan",
-            'a653': "br-lan",
-            'a654': "br-lan",
-            'a655': "br-lan",
-            'a656': "br-lan",
-            'a665': "br-lan",
-            'a666': "br-lan",
             'a667': "br-lan",
-            'a6a1': "br-lan",
             'a674': "br-lan",
-            'a675': "br-lan",
             'a677': "br-lan"
         }
 
@@ -194,12 +100,8 @@ class U6IPQ5018BspFactory(ScriptBase):
         self.PROVISION_ENABLE = True
         self.DOHELPER_ENABLE = True
         self.REGISTER_ENABLE = True
-        if self.board_id in ["a666", "a665", "a675"]:
-            self.FWUPDATE_ENABLE = False
-            self.DATAVERIFY_ENABLE = False
-        else:
-            self.FWUPDATE_ENABLE = True
-            self.DATAVERIFY_ENABLE = True
+        self.FWUPDATE_ENABLE = True
+        self.DATAVERIFY_ENABLE = True
 
     def init_bsp_image(self):
         self.pexp.expect_only(60, "Starting kernel")
@@ -239,17 +141,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             "setenv bootcmd \"mmc read {0} 0x00000022 0x00020022; bootm {0}\"".format(self.bootm_addr[self.board_id]),
             "setenv imgaddr 0x44000000",
             "saveenv",
-            "tftpboot {} {}".format(self.bootm_addr[self.board_id], self.initramfs),
+            "tftpboot {} {}".format(self.bootm_addr[self.board_id] ,self.initramfs),
             self.bootm_cmd[self.board_id]
         ]
-        if self.board_id == "a6a1":
-            cmdset = [
-                "tftpboot 0x44000000 {} && mmc write 0x44000000 0 34 && mmc rescan && mmc part".format(self.gpt),
-                "setenv imgaddr {} && tftpboot {} {}".format(self.bootm_addr[self.board_id],
-                                                             self.bootm_addr[self.board_id], self.initramfs),
-                self.bootm_cmd[self.board_id]
-            ]
-
         for cmd in cmdset:
             self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
 
@@ -265,37 +159,11 @@ class U6IPQ5018BspFactory(ScriptBase):
         src = "{}/{}-fw.bin".format(self.fwdir, self.board_id)
         dst = "{}/fwupdate.bin".format(self.dut_tmpdir)
         self.scp_get(dut_user=self.user, dut_pass=self.password, dut_ip=self.dutip, src_file=src, dst_file=dst)
-
-        if self.board_id in ['a650', 'a651']:
-            time.sleep(10)  # because do not wait to run "syswrapper.sh upgrade2" could be fail, the system ae still startup
-
-        if self.board_id in ["a6a1"]:
-            time.sleep(2)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "fwupdate.real -m /{}".format(dst))
-        else:
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
-
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "syswrapper.sh upgrade2")
         self.linux_prompt = "#"
-
-    def _ramboot_uboot_update(self):
-        self.pexp.expect_action(40, "to stop", "\033\033")
-        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
-        self.is_network_alive_in_uboot()
-
-        cmd = "tftpb 0x50000000 images/{}-uboot.mbn".format(self.board_id)
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        self.pexp.expect_ubcmd(60, "Bytes transferred", "sf probe")
-        cmd = "sf erase 0x120000 +0xa0000"
-        self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
-        cmd = "sf write 0x50000000 0x120000 $filesize"
-        self.pexp.expect_ubcmd(60, "Erased: OK", cmd)
-        self.pexp.expect_ubcmd(60, "Written: OK", "reset")
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        if self.board_id in ["a6a1"]:
-            self._ramboot_uboot_update()
-
         self._ramboot_uap_fwupdate()
         # U6-IW, the upgrade fw process ever have more than 150sec, to increase 150 -> 300 sec to check if it still fail
         #sometimes DUT will fail log to interrupt the login in process so add below try process for it
@@ -337,7 +205,7 @@ class U6IPQ5018BspFactory(ScriptBase):
         cmd = "tftpb 0x50000000 images/{}-loader.img".format(self.board_id)
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_only(60, "Bytes transferred")
-        cmd = "mmc write 0x50000000 0x20800 0xffff"
+        cmd = "mmc write 0x50000000 0x20800 0xffff; saveenv"
         self.pexp.expect_ubcmd(60, self.bootloader_prompt, cmd)
         self.pexp.expect_ubcmd(60, "written: OK", "bootm")
 
@@ -382,7 +250,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             error_critical(rmsg)
 
         log_debug(msg="Upgrading FW ...")
-        self.pexp.expect_only(300, "Reboot system safely")
+        self.pexp.expect_only(120, "Reboot system safely")
         log_debug(msg="FW update done ...")
 
         self.linux_prompt = "root"
@@ -448,58 +316,14 @@ class U6IPQ5018BspFactory(ScriptBase):
             self.add_FCD_TLV_info()
 
     def check_info(self):
-        if self.board_id == "a667":
-            prod_shortname = "UX"
-        elif self.board_id == "a674":
-            prod_shortname = "UXP"
 
         self.pexp.expect_lnxcmd(5, self.linux_prompt, "info", "Version", retry=24)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/ubnthal/system.info")
         self.pexp.expect_only(10, "flashSize=", err_msg="No flashSize, factory sign failed.")
         self.pexp.expect_only(10, "systemid=" + self.board_id)
-        if self.board_id in ["a667", "a674"]:
-            self.pexp.expect_only(10, "shortname=" + prod_shortname)
+        self.pexp.expect_only(10, "shortname=" + self.prod_shortname[self.board_id])
         self.pexp.expect_only(10, "serialno=" + self.mac.lower())
         self.pexp.expect_only(10, self.linux_prompt)
-
-        if self.board_id in ["a667", "a674"]:
-            cmd = "ifconfig | grep -C 2 br0"
-            ct = 0
-            retry_max = 300
-            while ct < retry_max:
-                output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
-                pattern = r"192.168.1.[\d]+"
-                m_run = re.findall(pattern, output)
-                if len(m_run) == 1:
-                    rmsg = "The system is running good"
-                    log_debug(rmsg)
-                    self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
-                    break
-
-                time.sleep(1)
-                ct += 1
-            else:
-                rmsg = "The system is not booting up successfully, FAIL!!"
-                error_critical(rmsg)
-
-        # Joseph: Just keep it for a period of time, if there is no problem to the upper method, then will remove it
-        # if self.board_id in ["a667", "a674"]:
-        #     cmd = "systemctl is-system-running"
-        #     ct = 0
-        #     retry_max = 300
-        #     while ct < retry_max:
-        #         output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
-        #         m_run = re.findall("running", output)
-        #         if len(m_run) == 2:
-        #             rmsg = "The system is running good"
-        #             log_debug(rmsg)
-        #             break
-
-        #         time.sleep(1)
-        #         ct += 1
-        #     else:
-        #         rmsg = "The system is not booting up successfully, FAIL!!"
-        #         error_critical(rmsg)
 
     def chk_caldata_uex(self):
         cmd = "hexdump -s 0x1000 -n 10 /dev/mtdblock8"
@@ -515,11 +339,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         """
             Main procedure of factory
         """
-        if self.ps_state is True:
-            self.set_ps_port_relay_off()
-        else:
-            log_debug("No need power supply control")
-
         log_debug(msg="The HEX of the QR code=" + self.qrhex)
         self.fcd.common.config_stty(self.dev)
         self.ver_extract()
@@ -529,12 +348,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         pexpect_obj = ExpttyProcess(self.row_id, pexpect_cmd, "\n")
         self.set_pexpect_helper(pexpect_obj=pexpect_obj)
         time.sleep(2)
-
-        if self.ps_state is True:
-            self.set_ps_port_relay_on()
-        else:
-            log_debug("No need power supply control")
-
         msg(5, "Open serial port successfully ...")
 
         if self.BOOT_BSP_IMAGE is True:
@@ -557,12 +370,9 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(30, "Do helper to get the output file to devreg server ...")
             self.prepare_server_need_files_bspnode()
 
-        if self.board_id in ["a667", "a674", "a6a1"]:
-            self.chk_caldata_uex()
-            msg(33, "Check WiFi Calibration Data ...")
-
         if self.REGISTER_ENABLE is True:
-            if self.board_id in ["a667", "a674"]:
+            if self.board_id == "a667" or self.board_id == "a674":
+                self.chk_caldata_uex()
                 self.registration_uex()
             else:
                 self.registration()
@@ -572,7 +382,7 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
         if self.FWUPDATE_ENABLE is True:
-            if self.board_id == "a667" or self.board_id == "a674":
+            if self.board_id == "a667" or self.board_id == "a674" or self.board_id == "a677":
                 self.fwupdate_uex()
             else:
                 self.fwupdate()
@@ -584,24 +394,32 @@ class U6IPQ5018BspFactory(ScriptBase):
             msg(80, "Succeeding in checking the devrenformation ...")
 
         if self.board_id in ["a667", "a674"]:
-            if self._upload_log() is True:
-                self.upload = False  # Skip to upload log again while __del__
-            else:
-                error_critical("Failed to upload FCD log. This model must upload log")
+            self.__del__()
+        cmd = "systemctl is-system-running"
+        ct = 0
+        retry_max = 120
+        while ct < retry_max:
+            output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
+            m_run = re.findall("running", output)
+            m_degraded = re.findall("degraded", output)
+            if len(m_run) == 2 or len(m_degraded) == 1:
+                rmsg = "The system is running good"
+                log_debug(rmsg)
+                break
 
-        if self.ps_state is True:
-            time.sleep(2)
-            self.set_ps_port_relay_off()
+            time.sleep(1)
+            ct += 1
         else:
-            log_debug("No need power supply control")
+            rmsg = "The system is not booting up successfully, FAIL!!"
+            error_critical(rmsg)
 
         msg(100, "Completing FCD process ...")
         self.close_fcd()
 
 
 def main():
-    u6ipq5018_bspfactory = U6IPQ5018BspFactory()
-    u6ipq5018_bspfactory.run()
+    ux_uxp_uxg_ipq5018_bspfactory = UX_UXP_UXG_IPQ5018_BspFactory()
+    ux_uxp_uxg_ipq5018_bspfactory.run()
 
 if __name__ == "__main__":
     main()

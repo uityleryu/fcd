@@ -1,0 +1,67 @@
+{
+  "UniFiAP6": {
+    "U6-MESH-PRO": {
+      "INDEX": 0,
+      "NAME": "U6-MESH-PRO-10350",
+      "BOARDID": "a6a1",
+      "BOMREV": "113-10350",
+      "DESC": "UniFi AP6 Mesh Pro",
+      "FILE": "u6_ipq5018_bspfactory.py",
+      "T1FILE": "u6_ipq5018_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/a6a1",
+          "DST_PATH": "a6a1",
+          "FILES": [
+            "BZ.ipq50xx_7.0.24+15376.231129.2330-uboot.bin",
+            "maple-4g-gpt_20231201.bin",
+            "ramload-7.0.24.bin",
+            "unifi-v1.0.29.154-ga5f65278_ipq5018_u-boot.mbn",
+            "u6-mesh-pro-spf11.4-csu1-v1.2.img",
+            "u6-mesh-pro-spf11.4-csu1-v1.2_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a6a1-nor.bin",
+          "../a6a1/u6-mesh-pro-spf11.4-csu1-v1.2_nor.bin"
+        ],
+        [
+          "tftp/images/a6a1-emmc.img",
+          "../a6a1/u6-mesh-pro-spf11.4-csu1-v1.2.img"
+        ],
+        [
+          "tftp/images/a6a1-fw.bin",
+          "../a6a1/BZ.ipq50xx_7.0.24+15376.231129.2330-uboot.bin"
+        ],
+        [
+          "tftp/images/a6a1-gpt.bin",
+          "../a6a1/maple-4g-gpt_20231201.bin"
+        ],
+        [
+          "tftp/images/a6a1-uboot.mbn",
+          "../a6a1/unifi-v1.0.29.154-ga5f65278_ipq5018_u-boot.mbn"
+        ],
+        [
+          "tftp/images/a6a1-initramfs.bin",
+          "../a6a1/ramload-7.0.24.bin"
+        ]
+      ]
+    }
+  }
+}

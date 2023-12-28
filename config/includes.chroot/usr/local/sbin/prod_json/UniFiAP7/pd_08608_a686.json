@@ -26,38 +26,39 @@
           "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
           "DST_PATH": "u7-fw/ipq5322",
           "FILES": [
-            "u7-pro-1g-v6.img",
-            "u7-pro-1g-v6_nor.bin",
-            "BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin",
-            "initramfs-ipq53xx_32.gpt",
-            "ramboot-7.0.5.bin"
+            "u7-pro-1g-v8.img",
+            "u7-pro-1g-v8_nor.bin",
+            "BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
+            "initramfs-ipq53xx_1g.gpt",
+            "initramfs-ipq53xx_1g_7.0.27.uboot",
+            "ramload-7.0.27_1g.bin"
           ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a686-bsp.img",
-          "../u7-fw/ipq5322/u7-pro-1g-v6.img"
+          "../u7-fw/ipq5322/u7-pro-1g-v8.img"
         ],
         [
           "tftp/images/a686-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.5+15146.230902.1655-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
         ],
         [
           "tftp/images/a686-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_32.gpt"
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
         ],
         [
           "tftp/images/a686-initramfs.bin",
-          "../u7-fw/ipq5322/ramboot-7.0.5.bin"
+          "../u7-fw/ipq5322/ramload-7.0.27_1g.bin"
+        ],
+        [
+          "tftp/images/a686-initramfs.uboot",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g_7.0.27.uboot"
         ],
         [
           "tftp/images/a686-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-1g-v6_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
+          "../u7-fw/ipq5322/u7-pro-1g-v8_nor.bin"
         ]
       ]
     }
