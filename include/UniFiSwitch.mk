@@ -23,7 +23,7 @@ IMAGE-USW-FLEX= \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     usw-fw/MFG.us-flex.BL_gd9df1cea.UAP_4be38fd.image \
     usw-fw/US.mt7621.* \
-    usw-fw/US.mt7621_* 
+    usw-fw/US.mt7621_*
 
 IMAGE-ULS-RPS= \
     images/ed11* \
@@ -31,7 +31,7 @@ IMAGE-ULS-RPS= \
     usw-fw/uap_km-uap-ramips-factory_7559_9984a40_lede-ramips-mt7621-UAP-NANO-HD-initramfs-kernel.bin \
     usw-fw/unifi-v1.1.2.71-gd9df1cea_usw-mt7621-16MB_u-boot.bin \
     usw-fw/US.mt7621.*
-    
+
 IMAGE-USW-16-24-48-16MB= \
     images/ed20* \
     images/ed21* \
@@ -415,3 +415,8 @@ $(eval $(call ProductCompress2,04086_ed58))
 $(eval $(call ProductCompress2,04077_ed5a))
 $(eval $(call ProductCompress2,USW_Ultra-SERIES))
 $(eval $(call ProductCompress2,04271_f064))
+$(eval $(call ProductCompress2,05000_ed5b))
+$(eval $(call ProductCompress2,09037_ed5c))
+$(eval $(call ProductCompress2,05001_ed5d))
+$(eval $(call ProductCompress2,09038_ed5e))
+$(eval $(call ProductCompress2,USW_PROMAX-SERIES))

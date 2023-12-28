@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import re
 
 from script_base import ScriptBase
 from PAlib.Framework.fcd.expect_tty import ExpttyProcess
@@ -26,20 +27,63 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.devregpart = "/dev/mtd6"
 
         self.bomrev = "113-" + self.bom_rev
-        self.helperexe = "helper_RTL838x"
+
+        self.helpername = {
+            'ed20': "helper_RTL838x",
+            'ed21': "helper_RTL838x",
+            'ed22': "helper_RTL838x",
+            'ed23': "helper_RTL838x",
+            'ed24': "helper_RTL838x",
+            'ed25': "helper_RTL838x",
+            'ed26': "helper_RTL838x",
+            'ed2a': "helper_RTL838x",
+            'ed2c': "helper_RTL838x",
+            'ed2d': "helper_RTL838x",
+            'ed2e': "helper_RTL838x",  # usw-16-poe 32MB
+            'ed50': "helper_RTL838x",  # usw-24-poe 32MB
+            'ed51': "helper_RTL838x",  # usw-24 32MB
+            'ed52': "helper_RTL838x",  # usw-48-pe 32MB
+            'ed53': "helper_RTL838x",  # usw-48 32MB
+            'ed54': "helper_RTL838x",  # usw-lite-16-poe 32MB
+            'ed55': "helper_RTL838x",  # usw-lite-8-poe 32MB
+            'ed56': "helper_RTL838x",  # usw-pro-24-poe (RTK)
+            'ed58': "helper_RTL838x",  # usw-pro-48-poe (RTK)
+            'ed5a': "helper_RTL838x",  # usw-pro-8-poe (RTK)
+            'ed5b': "helper_RTL838x_UNIFI_release",  # usw-pro-max-24-poe (RTK)
+            'ed5c': "helper_RTL838x_UNIFI_release",  # usw-pro-max-24 (RTK)
+            'ed5d': "helper_RTL838x_UNIFI_release",  # usw-pro-max-48-poe (RTK)
+            'ed5e': "helper_RTL838x_UNIFI_release",  # usw-pro-max-48 (RTK)
+        }
+
+        self.helperexe = self.helpername[self.board_id]
         self.helper_path = "usw_rtl838x"
         self.bootloader_prompt = "uboot>"
         self.fwimg = self.board_id + "-fw.bin"
 
         # customize variable for different products
+        self.skip_FW_upgrade = {}
+
+        # customize variable for different products
         self.wait_LCM_upgrade_en = {
             'ed20', 'ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
-            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58', 'ed5a'
+            'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58', 'ed5a',
+            'ed5b', 'ed5c', 'ed5d', 'ed5e'
+        }
+        # TODO: Add ed5b & ed5d later when available
+
+        self.check_led_mcu_fw_en = {
+            'ed5b', 'ed5c', 'ed5d', 'ed5e'
+        }
+
+        self.led_board_id = {
+            'ed5b': "2",
+            'ed5c': "2",
+            'ed5d': "1",
+            'ed5e': "1",
         }
 
         self.disable_powerd_list = ['ed2c']
         self.disable_battery = {'ed2c'}
-
 
         # number of Ethernet
         self.macnum = {
@@ -51,7 +95,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed25': "3",  # usw-48
             'ed26': "3",  # usw-lite-16-poe
             'ed2a': "3",  # usw-lite-8-poe
-            'ed2c': "2",  # usw-missioon-critical. Total 3 (eth:2 + bt:1). Mike taylor could not increse so workaround it
+            'ed2c': "2",  # usw-missioon-critical. Total 3 (eth:2 + bt:1). Mike taylor could not increase so workaround it  # noqa: E501
             'ed2d': "3",  # usw-aggregation
             'ed2e': "3",  # usw-16-poe 32MB
             'ed50': "3",  # usw-24-poe 32MB
@@ -63,6 +107,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed56': "3",  # usw-pro-24-poe (RTK)
             'ed58': "3",  # usw-pro-48-poe (RTK)
             'ed5a': "3",  # usw-pro-8-poe (RTK)
+            'ed5b': "3",  # usw-pro-max-24-poe (RTK)
+            'ed5c': "3",  # usw-pro-max-24 (RTK)
+            'ed5d': "3",  # usw-pro-max-48-poe (RTK)
+            'ed5e': "3",  # usw-pro-max-48 (RTK)
         }
 
         # number of WiFi
@@ -87,6 +135,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed56': "0",  # usw-pro-24-poe (RTK)
             'ed58': "0",  # usw-pro-48-poe (RTK)
             'ed5a': "0",  # usw-pro-8-poe (RTK)
+            'ed5b': "0",  # usw-pro-max-24-poe (RTK)
+            'ed5c': "0",  # usw-pro-max-24 (RTK)
+            'ed5d': "0",  # usw-pro-max-48-poe (RTK)
+            'ed5e': "0",  # usw-pro-max-48 (RTK)
         }
 
         # number of Bluetooth
@@ -111,6 +163,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed56': "0",  # usw-pro-24-poe (RTK)
             'ed58': "0",  # usw-pro-48-poe (RTK)
             'ed5a': "0",  # usw-pro-8-poe (RTK)
+            'ed5b': "0",  # usw-pro-max-24-poe (RTK)
+            'ed5c': "0",  # usw-pro-max-24 (RTK)
+            'ed5d': "0",  # usw-pro-max-48-poe (RTK)
+            'ed5e': "0",  # usw-pro-max-48 (RTK)
         }
 
         self.netif = {
@@ -134,7 +190,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed56': "ifconfig eth0 ",  # usw-pro-24-poe (RTK)
             'ed58': "ifconfig eth0 ",  # usw-pro-48-poe (RTK)
             'ed5a': "ifconfig eth0 ",  # usw-pro-8-poe (RTK)
+            'ed5b': "ifconfig eth0 ",  # usw-pro-max-24-poe (RTK)
+            'ed5c': "ifconfig eth0 ",  # usw-pro-max-24 (RTK)
+            'ed5d': "ifconfig eth0 ",  # usw-pro-max-48-poe (RTK)
+            'ed5e': "ifconfig eth0 ",  # usw-pro-max-48 (RTK)
         }
+
+        self.set_boardmodel_uboot = ['ed5b', 'ed5c']
+        self.longtime_login = ['ed5b', 'ed5d']
 
         self.flashed_dir = os.path.join(self.tftpdir, self.tools, "common")
         self.devnetmeta = {
@@ -226,22 +289,26 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
 
     def login_kernel(self):
-        self.pexp.expect_lnxcmd(300, "Please press Enter to activate this console", "")
+        if self.board_id in self.longtime_login:
+            self.pexp.expect_lnxcmd(600, "Please press Enter to activate this console", "")  # Color LED models
+        else:
+            self.pexp.expect_lnxcmd(300, "Please press Enter to activate this console", "")
+
         self.login()
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /lib/build.properties", post_exp=self.linux_prompt)
 
     def SetNetEnv(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/lcmd/d\" /etc/inittab", post_exp=self.linux_prompt)  # noqa: E501
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i \"/\/sbin\/udhcpc/d\" /etc/inittab", post_exp=self.linux_prompt)  # noqa: E501
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", post_exp=self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "initd", post_exp=self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, self.netif[self.board_id] + self.dutip, post_exp=self.linux_prompt)  # noqa: E501
         if self.board_id == "ed2d":
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "/usr/share/librtk/diag -c \"port set 10g-media port all fiber10g\"", post_exp=self.linux_prompt)  # noqa: E501
         self.is_network_alive_in_linux()
 
     def disable_powerd(self):
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i '/powerd/ s,^,#,g' /etc/inittab && init -q", post_exp=self.linux_prompt)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "sed -i '/powerd/ s,^,#,g' /etc/inittab && init -q", post_exp=self.linux_prompt)  # noqa: E501
         time.sleep(5)
 
     def clear_eeprom_in_uboot(self, timeout=30):
@@ -250,6 +317,52 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.pexp.expect_action(timeout, "Hit Esc key to stop autoboot", "\x1b")
         self.pexp.expect_action(10, self.boot_prompt, "bootubnt ucleareeprom")
         self.pexp.expect_action(10, self.boot_prompt, "reset")
+
+    def set_boardmodel_in_uboot(self):
+        self.pexp.expect_action(30, "Hit Esc key to stop autoboot", "\x1b")
+        self.pexp.expect_ubcmd(5, self.boot_prompt, 'setenv boardmodel UBNT_USPM24')
+        self.pexp.expect_ubcmd(5, self.boot_prompt, 'saveenv')
+        self.pexp.expect_action(5, self.boot_prompt, "bootubnt")
+
+    def check_led_mcu_fw_version(self):
+
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "", post_exp=self.linux_prompt)
+        output = self.pexp.expect_get_output(action="ls -l /usr/share/firmware/port_led_fw.bin", prompt=self.linux_prompt, timeout=10)  # noqa: E501
+        regex_pattern = r'\d+(?:\.\d+)+'
+        match = re.search(regex_pattern, output.split("->")[1])
+
+        if not match:
+            error_critical("LED MCU FW not found.")
+        else:
+            led_mcu_fw_version = match.group()
+            log_debug("LED MCU FW Expect Version: {0}".format(led_mcu_fw_version))
+            try:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, "cat /proc/led/led_version", post_exp=led_mcu_fw_version, retry=18)  # noqa: E501
+                log_debug("LED MCU FW version matched!")
+            except Exception as e:
+                log_error(e)
+                error_critical("LED MCU FW version mismatch, expect version is {0}!".format(led_mcu_fw_version))
+
+    def set_boardid_for_mcu_fw(self):
+        led_board_id = self.led_board_id[self.board_id]
+        log_debug("LED board ID for [{0}] is {1}".format(self.board_id, led_board_id))
+
+        # unlock MCU
+        cmd = 'echo "unlock_board_id 1" > /proc/led/led_test_cmd'
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp=self.linux_prompt)
+
+        time.sleep(0.2)
+        cmd = "echo {0} > /proc/led/led_board_id".format(led_board_id)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp=self.linux_prompt)
+
+        time.sleep(0.2)
+        # lock MCU
+        cmd = 'echo "unlock_board_id 0" > /proc/led/led_test_cmd'
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp=self.linux_prompt)
+
+    def check_boardid_for_mcu_fw(self):
+        cmd = "cat /proc/led/led_board_id"
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp=self.led_board_id[self.board_id])
 
     def disable_li_battery(self):
         self.pexp.expect_action(10, self.linux_prompt, "syswrapper.sh shutdown")
@@ -269,6 +382,10 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             if key in res:
                 rtk_network_on = 'rtk network on'
                 self.pexp.expect_ubcmd(5, self.boot_prompt, rtk_network_on)
+
+            if self.board_id == "ed5d":
+                self.pexp.expect_ubcmd(5, self.boot_prompt, 'setenv boardmodel UBNT_USPM48')
+                self.pexp.expect_ubcmd(5, self.boot_prompt, 'saveenv')
             self.pexp.expect_ubcmd(5, self.boot_prompt, 'bootubnt')
 
     def run(self):
@@ -294,8 +411,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.clear_eeprom_in_uboot()
         msg(10, "Clear EEPROM in uboot")
 
-        msg(13, "Check RTK Network")
-        self.check_rtk_network()
+        # TODO: ed5b got error in uboot
+        if self.board_id in self.set_boardmodel_uboot:
+            self.set_boardmodel_in_uboot()
+            msg(13, "Set boardmodel in uboot")
+
+        else:
+            msg(13, "Check RTK Network")
+            self.check_rtk_network()
 
         self.login_kernel()
         self.SetNetEnv()
@@ -320,24 +443,31 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         # reboot anyway
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot -f")
         if self.FWUPDATE_ENABLE is True:
-            msg(55, "Starting firmware upgrade process...")
-            self.fwupdate()
-            msg(75, "Completing firmware upgrading ...")
+            if self.board_id not in self.skip_FW_upgrade:
+                msg(55, "Starting firmware upgrade process...")
+                self.fwupdate()
+                msg(80, "Completing firmware upgrading ...")
 
         self.login_kernel()
 
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
-            msg(80, "Succeeding in checking the devreg information ...")
+            msg(82, "Succeeding in checking the devreg information ...")
 
         if self.board_id in self.disable_powerd_list:
-            msg(85, "Disable powerd")
+            msg(83, "Disable powerd")
             self.disable_powerd()
 
         if self.WAIT_LCMUPGRADE_ENABLE is True:
             if self.board_id in self.wait_LCM_upgrade_en:
-                msg(90, "Waiting LCM upgrading ...")
+                msg(85, "Waiting LCM upgrading ...")
                 self.wait_lcm_upgrade()
+
+        if self.board_id in self.check_led_mcu_fw_en:
+            msg(90, "Check LED MCU FW version and board ID...")
+            self.check_led_mcu_fw_version()
+            self.set_boardid_for_mcu_fw()
+            self.check_boardid_for_mcu_fw()
 
         if self.board_id in self.disable_battery:
             msg(95, "Disable battery")
