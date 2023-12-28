@@ -313,10 +313,16 @@ class UCMT7628Factory(ScriptBase):
         if self.board_id == "ed15":
             global loader, mode, version
             mcu_num = 2
+            upgrade_result = []
+            for mcu_id in range(1, mcu_num+1):
+                upgrade_result.append(self.mcu_check_mode_and_version(mcu_id, version_checking=True))
 
-            self.pre_mcu_check()
+            if all(upgrade_result) is False:
+                self.pre_mcu_check()
+            else:
+                log_debug("Skip MCU upgrade process, both MCUs have been upgraded...")
 
-            log_debug("Check MCU FW info after upgrade...")
+            log_debug("Check MCU FW info...")
             # pre-action before set loader true
             self.stop_mcu_status_poll(mcu_num)
 
@@ -346,7 +352,7 @@ class UCMT7628Factory(ScriptBase):
                     self.mcu_error_handler(err_msg)
 
                 if self.MCU_FW_VERSION[self.board_id] not in version:
-                    err_msg = f"MCU {i} FW version mismatch, got {version} but expect {self.MCU_FW_LOADER[self.board_id]}"  # noqa: E501
+                    err_msg = f"MCU {i} FW version mismatch, got {version} but expect {self.MCU_FW_VERSION[self.board_id]}"  # noqa: E501
                     self.mcu_error_handler(err_msg)
 
             # post-action after set loader true & before end test
@@ -376,32 +382,60 @@ class UCMT7628Factory(ScriptBase):
                     error_critical("MCU upgrade is taking longer time than expected!")
                     log_debug(f"Total time taken: {total_time}s")
 
-                try:
-                    cmd = f"ubus call power.outlet.meter_mcu.{mcu_id} info "
-                    ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=10)
-                    if ret_msg is None or "result" not in ret_msg:
-                        log_debug("Unable to get mcu info, try again...")
-                        continue
-                except Exception as e:
-                    log_error(e)
-                    log_debug("Unable to get mcu info, try again...")
+                if self.mcu_check_mode_and_version(mcu_id):
+                    break
+                else:
                     continue
 
-                try:
-                    check_mode = re.search(r'"mode":(.*),', ret_msg).group(1).strip()
-                    log_debug(f"Mode: {check_mode}")
-                except Exception as e:
-                    log_error(e)
-                    err_msg = f"MCU {mcu_id} unable to get info"
-                    log_error(err_msg)
-                    continue
-
-                if "normal" not in check_mode:
-                    log_debug(f"MCU {mcu_id} still upgrading...")
+    def mcu_check_mode_and_version(self, mcu_id, version_checking=False):
+        result = False
+        for i in range(3):
+            try:
+                cmd = f"ubus call power.outlet.meter_mcu.{mcu_id} info "
+                ret_msg = self.pexp.expect_get_output(cmd, self.linux_prompt, timeout=30)
+                if ret_msg is None or "result" not in ret_msg:
+                    log_debug("Unable to get mcu info")
+                    if i == 2:
+                        return False
                     continue
                 else:
-                    log_debug(f"MCU {mcu_id} upgrade completed!")
                     break
+            except Exception as e:
+                if i == 2:
+                    log_error("Unable to get mcu_info after max retries...")
+                    return False
+
+                log_error(e)
+                log_debug("Unable to get mcu info, try again...")
+                continue
+
+        try:
+            mode = re.search(r'"mode":(.*),', ret_msg).group(1).strip()
+            log_debug(f"Mode: {mode}")
+
+            if "normal" not in mode:
+                log_debug(f"MCU {mcu_id} still upgrading...")
+                return False
+            else:
+                result = True
+
+            if version_checking and "normal" in mode:
+                version = re.search(r'"version":(.*),', ret_msg).group(1).strip()
+
+                if self.MCU_FW_VERSION[self.board_id] not in version:
+                    log_debug(f"MCU {mcu_id} FW version: {version} but expect {self.MCU_FW_VERSION[self.board_id]}")
+                    result = False
+                else:
+                    log_debug(f"MCU {mcu_id} FW version: {version}")
+                    result = True
+
+        except Exception as e:
+            log_error(e)
+            err_msg = f"MCU {mcu_id} unable to get info"
+            log_error(err_msg)
+            result = False
+
+        return result
 
     def mcu_error_handler(self, err_msg):
         mcu_num = 2
@@ -501,10 +535,7 @@ class UCMT7628Factory(ScriptBase):
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
-            self.mcu_fw_check()
-            msg(100, "check mcu version ...")
 
-        '''
         if self.FWUPDATE_ENABLE is True:
             msg(60, "Updating released firmware ...")
             self.fwupdate(self.fwimg, reboot_en=True)
@@ -537,14 +568,15 @@ class UCMT7628Factory(ScriptBase):
             self.set_ps_port_relay_off()
         else:
             log_debug("No need power supply control")
-        '''
 
         msg(100, "Complete FCD process ...")
         self.close_fcd()
 
+
 def main():
     uc_mt7628_factory = UCMT7628Factory()
     uc_mt7628_factory.run()
+
 
 if __name__ == "__main__":
     main()

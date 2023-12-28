@@ -21,6 +21,7 @@ from datetime import datetime
     ef88: UC-Display-13 (BLE/WIFI)  (Android 9)
     ef82: UVP_Touch           (Android 7)
     ef90: UC-Cast             (Android 9)
+    ef91: UC-Cast-Ultra       (Android 9)
     ef13: UT-PHONE-TOUCH-W    (Android 7)
     ef0e: UVP_TouchMax        (Android 7)
     ef83: UC-Display-21       (Android 9)
@@ -73,6 +74,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "0007f100",  # UI EMMC PN: 140-04199
             'ef88': "0007f100",  # UI EMMC PN: 140-04199
             'ef90': "0007f102",  # UI EMMC PN: 140-04869
+            'ef91': "0007f102",  # UI EMMC PN: 140-04869
             'ef0e': "0007f100",
             'ef83': "0007f100",  # UI EMMC PN: 140-04199
             'ef84': "0007f100",  # UI EMMC PN: 140-04199
@@ -107,7 +109,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
             "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
-            "efbc", "ec64", "ec65"
+            "efbc", "ec64", "ec65", "ef91"
         ]
 
         self.ospl = {
@@ -119,6 +121,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef87': "adr9",
             'ef88': "adr9",
             'ef90': "adr9",
+            'ef91': "adr9",
             'ef0e': "adr9",
             'ef83': "adr9",
             'ef84': "adr9",
@@ -160,6 +163,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "",
             'ef86': "",
             'ef90': "uc_cast",
+            'ef91': "uc_cast",
             'ec5e': "uapro_g2",
             'ec5f': "frontrow_da",
             'ec60': "msm8953_uapro",
@@ -197,6 +201,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "0",
             'ef86': "0",
             'ef90': "1",
+            'ef91': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -234,6 +239,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "1",
             'ef86': "1",
             'ef90': "1",
+            'ef91': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -271,6 +277,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': "1",
             'ef86': "1",
             'ef90': "1",
+            'ef91': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -307,6 +314,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': True,
             'ef86': True,
             'ef90': True,
+            'ef91': True,
             'ec5e': True,
             'ec5f': False,
             'ec60': True,
@@ -350,6 +358,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': False,
             'ef86': False,
             'ef90': False,
+            'ef91': False,
             'ec5e': True,
             'ec5f': False,
             'ec60': False,
@@ -387,6 +396,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': False,
             'ef86': False,
             'ef90': False,
+            'ef91': False,
             'ec5e': False,
             'ec5f': False,
             'ec60': False,
@@ -424,6 +434,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef85': False,
             'ef86': False,
             'ef90': False,
+            'ef91': False,
             'ec5e': False,
             'ec5f': False,
             'ec60': False,
@@ -461,7 +472,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.cfg_file = ""
                 self.f_eth_mac = "/mnt/vendor/persist/eth_mac"
                 self.f_qr_id = "/mnt/vendor/persist/qr_id"
-            elif self.board_id == "ef90":
+            elif self.board_id == "ef90" or self.board_id == "ef91":
                 self.persist_cfg_file = "/persist/WCNSS_qcom_cfg_extra.ini"
                 self.f_eth_mac = "/vendor/factory/MAC_ADDR"
                 self.f_qr_id = "/vendor/factory/qr_id"
@@ -580,7 +591,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         time.sleep(1)
 
     def access_chips_id(self):
-        if self.board_id == "ef90":
+        if self.board_id == "ef90" or self.board_id == "ef91":
             cmd = "cat /sys/devices/system/cpu/cpu0/regs/identification/midr_el1"
             tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
             cpuid = tmp.replace('\r', '').split("\n")
@@ -792,7 +803,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.data_provision_64k(self.devnetmeta)
 
             # Write MAC
-            if self.board_id == "ef90":
+            if self.board_id == "ef90" or self.board_id == "ef91":
                 lmac = self.mac_format_str2comma(self.mac)
                 moount = 'mount -o rw,remount /vendor/factory'
                 cmd = "echo {0} > {1}".format(lmac, self.f_eth_mac)
@@ -825,7 +836,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                    /data/misc/wifi/WCNSS_qcom_cfg.ini   (Android7)
                 then, remove them
             '''
-            if self.board_id == "ef90":
+            if self.board_id == "ef90" or self.board_id == "ef91":
                 if self.region is not None:
                     if self.region == '0000':
                         wifi_country_code = 'EU'
@@ -833,7 +844,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                         wifi_country_code = 'US'
                     cmd = "echo {0} > {1}".format(wifi_country_code, self.f_wifi_country_code)
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            if self.board_id != "ef90" or self.board_id != "ec5f":
+            if self.board_id != "ef90" and self.board_id != "ef91" and self.board_id != "ec5f":
                 cmd = "rm {}".format(self.cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
@@ -844,7 +855,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
             
             # Write persist cfg file
-            if self.board_id == "e980" or self.board_id == "ef90" or self.board_id == "ef84" or self.board_id == 'ec5f':
+            if self.board_id == "e980" or self.board_id == "ef90" or self.board_id == "ef91" or self.board_id == "ef84" or self.board_id == 'ec5f':
                 # No WiFi, No need to write teh country code
                 pass
             else:
@@ -901,7 +912,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
 
         if self.INFOCHECK_ENABLE is True:
             msg(60, "Check the information ...")
-            if self.board_id == "ef90":
+            if self.board_id == "ef90" or self.board_id == "ef91":
                 cmd = "cat /vendor/factory/MAC_ADDR"
                 getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
                 m_gmac = re.findall(r"macaddr=(.*)", getmac)
@@ -991,7 +1002,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     else:
                         error_critical("Check Top level BOM is not matched !!")
 
-        if self.board_id == "ef90":
+        if self.board_id == "ef90" or self.board_id == "ef91":
             msg(80, "Wait clean boot ...")
             # time.sleep(40)
             t_secs = 60

@@ -28,9 +28,10 @@
           "FILES": [
             "u7-pro-1g-v8.img",
             "u7-pro-1g-v8_nor.bin",
-            "BZ.ipq53xx_7.0.21+15336.231109.1716-uboot.bin",
+            "BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
             "initramfs-ipq53xx_1g.gpt",
-            "ramload-7.0.21_1g.bin"
+            "initramfs-ipq53xx_1g_7.0.27.uboot",
+            "ramload-7.0.27_1g.bin"
           ]
         }
       ],
@@ -41,7 +42,7 @@
         ],
         [
           "tftp/images/a682-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.21+15336.231109.1716-uboot.bin"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
         ],
         [
           "tftp/images/a682-gpt.bin",
@@ -49,15 +50,15 @@
         ],
         [
           "tftp/images/a682-initramfs.bin",
-          "../u7-fw/ipq5322/ramload-7.0.21_1g.bin"
+          "../u7-fw/ipq5322/ramload-7.0.27_1g.bin"
+        ],
+        [
+          "tftp/images/a682-initramfs.uboot",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g_7.0.27.uboot"
         ],
         [
           "tftp/images/a682-nor.bin",
           "../u7-fw/ipq5322/u7-pro-1g-v8_nor.bin"
-        ],
-        [
-          "tftp/images/a6888.itb",
-          "../u6-fw/ipq5018/ipq50xx.itb"
         ]
       ]
     }

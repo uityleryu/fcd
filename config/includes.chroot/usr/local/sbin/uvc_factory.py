@@ -586,11 +586,11 @@ class UVCFactoryGeneral(ScriptBase):
 
         if self.tlb_rev != "":
             log_debug("Top level BOM:" + self.tlb_rev)
-            sstr.append("-t 002-{}".format(self.tlb_rev))
+            sstr.append("-t {}".format(self.tlb_rev))
 
         if self.meb_rev != "":
             log_debug("ME BOM:" + self.meb_rev)
-            sstr.append("-M 300-{}".format(self.meb_rev))
+            sstr.append("-M {}".format(self.meb_rev))
 
         sstr = ' '.join(sstr)
         log_debug("flash editor cmd: " + sstr)
@@ -1176,21 +1176,67 @@ class UVCFactoryGeneral(ScriptBase):
         log_debug(duration_msg.format(cap=action, time=duration))
 
     def set_host_usb_ethernet_ip(self, ip='169.254.2.21'):
+        # check current network status
+        cmd = 'ifconfig'
+        log_debug(cmd)
+        self.cnapi.xcmd(cmd)
+
         # change netmask of eth0:0
         cmd = 'ifconfig eth0:0 netmask 255.255.255.0'
-        
         log_debug(cmd)
         self.cnapi.xcmd(cmd)
 
-        # assign IP address to USB ethernet
-        cmd = 'dmesg |grep cdc_ether |tail -1 |grep -o \'eth[0-9]\''
-        log_debug(cmd)
-        [output, rv] = self.cnapi.xcmd(cmd)
-        usb_interface = output
+        # get USB ethernet interface
+        log_debug('Detecting USB device ...')
+        for retry in range(15):
+            cmd = 'dmesg |grep " register \'cdc_ether\'" |tail -1 |grep -o \'eth[0-9]\''
+            log_debug(cmd)
+            [usb_interface, rv] = self.cnapi.xcmd(cmd)
+            if usb_interface != '':
+                log_debug('USB ethernet interface = {}'.format(usb_interface))
+                break
+            time.sleep(2)
+        else:
+            error_critical('Not detect USB ethernet interface')
 
-        cmd = "ifconfig {} {}".format(usb_interface, ip)
-        log_debug(cmd)
-        self.cnapi.xcmd(cmd)
+        # wait for usb interface up
+        for retry in range(15):
+            log_debug('=== retry:{},  wait 30s for {} up ==='.format(retry, usb_interface))
+            cmd = 'ifconfig {}'.format(usb_interface)
+            log_debug(cmd)
+            [rsp, rv] = self.cnapi.xcmd(cmd)
+            if 'Device not found' not in rsp:
+                log_debug('USB interface {} took {} seconds up'.format(usb_interface, retry))
+                break
+            time.sleep(2)
+        else:
+            error_critical('Cannot detect usb interface')
+
+        # check IP address
+        for retry in range(10):
+            # assign IP address
+            log_debug('=== retry:{}, assign and check {} IP address ==='.format(retry, usb_interface))
+            cmd = 'sudo ifconfig {} {}'.format(usb_interface, ip)
+            log_debug(cmd)
+            self.cnapi.xcmd(cmd)
+            time.sleep(3)
+
+            cmd = 'ifconfig {} |grep "inet " |awk \'{{print $2}}\''.format(usb_interface)
+            log_debug(cmd)
+            [current_ip, rv] = self.cnapi.xcmd(cmd)
+
+            if current_ip == ip:
+                log_debug('USB ethernet interface = {}, ip = {}'.format(usb_interface, current_ip))
+                if self.cnapi.ip_is_alive(ip=ip):
+                    break
+
+            if retry == 5:
+                log_debug('=== retry:{}, ifdown and ifup {} ==='.format(retry, usb_interface))
+                cmd = 'sudo ifconfig down {}; sleep 1; sudo ifconfig up {}'.format(usb_interface, usb_interface)
+                log_debug(cmd)
+                self.cnapi.xcmd(cmd)
+        else:
+            error_critical('Cannot assign IP to usb interface')
 
     def run(self):
         """  Main procedure of factory

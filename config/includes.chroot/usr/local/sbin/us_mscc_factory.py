@@ -282,7 +282,7 @@ class UsMsccFactory(ScriptBase):
         self.registration()
 
         msg(40, "Check devreg")
-        self.check_devreg_data(zmodem=True)
+        self.check_devreg_data(method="zmodem")
         self.reboot()
         
         msg(60, 'Update to FW image')

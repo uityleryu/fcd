@@ -15,10 +15,10 @@
           "SRC_PATH": "images/fcd-image/uck-fw/e992",
           "DST_PATH": "uck-fw/",
           "FILES": [
-            "CK2FCD.apq8053.v0.7.2.126ac6f.231122.1245-boot.img",
-            "RCK2.apq8053.v0.7.2.126ac6f.231122.1244-boot.img",
-            "UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.boot",
-            "UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.rootfs"
+            "CK2FCD.apq8053.v0.8.0.0c0de82.231214.0738-boot.img",
+            "RCK2.apq8053.v0.8.0.0c0de82.231214.0738-boot.img",
+            "UCKG3P.apq8053.v0.0.2.0c0de82.231214.0724.boot",
+            "UCKG3P.apq8053.v0.0.2.0c0de82.231214.0724.rootfs"
           ]
         },
         {
@@ -46,19 +46,19 @@
       "CREATE_LINK": [
         [
           "tftp/images/e992-mfg.bin",
-          "../uck-fw/CK2FCD.apq8053.v0.7.2.126ac6f.231122.1245-boot.img"
+          "../uck-fw/CK2FCD.apq8053.v0.8.0.0c0de82.231214.0738-boot.img"
         ],
         [
           "tftp/images/e992-recovery.bin",
-          "../uck-fw/RCK2.apq8053.v0.7.2.126ac6f.231122.1244-boot.img"
+          "../uck-fw/RCK2.apq8053.v0.8.0.0c0de82.231214.0738-boot.img"
         ],
         [
           "tftp/images/e992-rootfs.bin",
-          "../uck-fw/UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.rootfs"
+          "../uck-fw/UCKG3P.apq8053.v0.0.2.0c0de82.231214.0724.rootfs"
         ],
         [
           "tftp/images/e992-kernel.bin",
-          "../uck-fw/UCKG3P.apq8053.v0.0.1.126ac6f.231122.1353.boot"
+          "../uck-fw/UCKG3P.apq8053.v0.0.2.0c0de82.231214.0724.boot"
         ]
       ]
     }
