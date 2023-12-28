@@ -15,6 +15,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a691: U7-LR
     a696: U7-Pro-MAX
     a697: E7
+    a69b: UX-Max
 '''
 class U7IPQ5322BspFactory(ScriptBase):
     def __init__(self):
@@ -41,6 +42,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "1",
             'a696': "1",
             'a697': "2",
+            'a69b': "1",
         }
 
         self.wifinum = {
@@ -52,6 +54,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "2",
             'a696': "3",
             'a697': "4",
+            'a69b': "4",
         }
 
         self.btnum = {
@@ -63,6 +66,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "0",
             'a696': "1",
             'a697': "0",
+            'a69b': "1",
         }
 
         self.bootm_addr = {
@@ -96,6 +100,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "#",
             'a696': "#",
             'a697': "#",
+            'a69b': "#",
         }
 
         self.uboot_eth_port = {
@@ -107,6 +112,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "eth0",
             'a696': "eth0",
             'a697': "eth0",
+            'a69b': "eth0",
         }
 
         self.lnx_eth_port = {
@@ -118,6 +124,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a691': "br-lan",
             'a696': "br-lan",
             'a697': "br-lan",
+            'a69b': "br-lan",
         }
 
         self.devnetmeta = {
@@ -140,12 +147,16 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
+        elif self.board_id == "a69b":
+            self.FANI2C_CHECK_ENABLE = False
+            self.FWUPDATE_ENABLE = False
+            self.DATAVERIFY_ENABLE = False
         else:
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
 
-        self.FUSE_ENABLE = True
+        self.FUSE_ENABLE = False  # TODO: Winnie
         # self.FWUPDATE_ENABLE = True
         # self.DATAVERIFY_ENABLE = True
 
@@ -157,6 +168,11 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.pexp.expect_only(60, "Starting kernel")
         self.pexp.expect_lnxcmd(180, "UBNT BSP INIT", "dmesg -n1", self.linux_prompt, retry=0)
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
+
+        if self.board_id == "a69b":
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "brctl addif br-lan eth1", self.linux_prompt)
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig eth1 0.0.0.0 up", self.linux_prompt)
+
         self.is_network_alive_in_linux()
 
     def _ramboot_u7v3_fwupdate(self):
@@ -391,6 +407,65 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
         log_debug(msg="Check Miami Fuse register ... PASS")
 
+    def registration_ux(self, regsubparams = None):
+        log_debug("Starting to do registration ...")
+        if regsubparams is None:
+            regsubparams = self.access_chips_id()
+
+        code_type = "01"  # for activation code field
+
+        # The HEX of the QR code
+        if self.qrcode is None or not self.qrcode:
+            reg_qr_field = ""
+        else:
+            reg_qr_field = "-i field=qr_code,format=hex,value={}".format(self.qrhex)
+
+        # The HEX of the activate code
+        if self.activate_code is None or not self.activate_code:
+            reg_activate_code = ""
+        else:
+            reg_activate_code = "-i field=code,format=hex,value={}".format(self.activate_code_hex)
+
+        clientbin = "/usr/local/sbin/client_rpi4_release"
+        regparam = [
+            "-h {}".format(self.devreg_hostname),
+            "-k {}".format(self.pass_phrase),
+            regsubparams,
+            "-i field=code_type,format=hex,value={}".format(code_type),
+            reg_qr_field,
+            reg_activate_code,
+            "-i field=flash_eeprom,format=binary,pathname={}".format(self.eebin_path),
+            "-i field=fcd_version,format=hex,value={}".format(self.sem_ver),
+            "-i field=sw_id,format=hex,value={}".format(self.sw_id),
+            "-i field=sw_version,format=hex,value={}".format(self.fw_ver),
+            "-o field=flash_eeprom,format=binary,pathname={}".format(self.eesign_path),
+            "-o field=registration_id",
+            "-o field=result",
+            "-o field=device_id",
+            "-o field=registration_status_id",
+            "-o field=registration_status_msg",
+            "-o field=error_message",
+            "-x {}ca.pem".format(self.key_dir),
+            "-y {}key.pem".format(self.key_dir),
+            "-z {}crt.pem".format(self.key_dir)
+        ]
+
+        regparam = ' '.join(regparam)
+
+        cmd = "sudo {0} {1}".format(clientbin, regparam)
+        print("cmd: " + cmd)
+        clit = ExpttyProcess(self.row_id, cmd, "\n")
+        clit.expect_only(30, "Security Service Device Registration Client")
+        clit.expect_only(30, "Hostname")
+        clit.expect_only(30, "field=result,format=u_int,value=1")
+
+        self.pass_devreg_client = True
+
+        log_debug("Excuting client registration successfully")
+        if self.FCD_TLV_data is True:
+            self.add_FCD_TLV_info()
+
+
     def run(self):
         """
             Main procedure of factory
@@ -437,11 +512,15 @@ class U7IPQ5322BspFactory(ScriptBase):
             msg(35, "Finish check wifi cal_data ...")
 
         if self.REGISTER_ENABLE is True:
-            self.registration()
+            if self.board_id == "a69b":
+                self.registration_ux()
+            else:
+                self.registration()
             msg(40, "Finish doing registration ...")
             self.check_devreg_data()
             msg(50, "Finish doing signed file and EEPROM checking ...")
 
+        '''
         if self.FANI2C_CHECK_ENABLE is True:
             self.i2c_check(item="fan")
             msg(62, "Succeeding in checking FAN i2c value ...")
@@ -458,6 +537,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.check_info()
             self.chk_bdf_ipq5322()
             msg(80, "Succeeding in checking the devrenformation ...")
+        '''
 
         if self.ps_state is True:
             time.sleep(2)

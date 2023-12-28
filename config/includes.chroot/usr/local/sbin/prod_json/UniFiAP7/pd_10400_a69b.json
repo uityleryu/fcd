@@ -1,0 +1,46 @@
+{
+  "UniFiAP7": {
+    "UX-Max": {
+      "INDEX": 0,
+      "NAME": "UX-Max",
+      "BOARDID": "a69b",
+      "BOMREV": "113-10400",
+      "DESC": "UX-Max",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "mac-qr-ac",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/ipq5322",
+          "DST_PATH": "u7-fw/ipq5322",
+          "FILES": [
+            "express-max-4g-v1.img",
+            "express-max-4g-v1_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a69b-bsp.img",
+          "../u7-fw/ipq5322/express-max-4g-v1.img"
+        ],
+        [
+          "tftp/images/a69b-nor.bin",
+          "../u7-fw/ipq5322/express-max-4g-v1_nor.bin"
+        ]
+      ]
+    }
+  }
+}
