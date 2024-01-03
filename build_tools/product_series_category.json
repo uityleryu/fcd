@@ -116,5 +116,8 @@
   ],
   "USW_Ultra-SERIES" : [
     "04300_ed32", "09994_ed33", "09995_ed34"
+  ],
+  "USW_PROMAX-SERIES" : [
+    "05000_ed5b", "05001_ed5d", "09037_ed5c", "09038_ed5e"
   ]
 }
