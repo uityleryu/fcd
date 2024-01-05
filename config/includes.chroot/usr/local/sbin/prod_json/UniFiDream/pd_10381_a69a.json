@@ -1,11 +1,11 @@
 {
   "UniFiDream": {
-    "UCG-PRO": {
+    "UCG-Max": {
       "INDEX": 0,
-      "NAME": "UCG-PRO",
+      "NAME": "UCG-MAX",
       "BOARDID": "a69a",
       "BOMREV": "113-10381",
-      "DESC": "UniFi Console Gateway Pro",
+      "DESC": "UniFi Console Gateway Max",
       "FILE": "udm_ipq53xx_factory.py",
       "T1FILE": "udm_ipq53xx_bspfactory.py",
       "QRCHECK": "True",
@@ -24,14 +24,12 @@
           ]
         },
         {
-          "SRC_PATH": "images/fcd-image/udm-fw/udr-ultra",
-          "DST_PATH": "udm-fw/udr-ultra",
+          "SRC_PATH": "images/fcd-image/udm-fw/ucg-max",
+          "DST_PATH": "udm-fw/ucg-max",
           "FILES": [
-            "UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin",
-            "uImage_20231031",
-            "u-boot_20231031.mbn",
-            "ipq5322_udr_ultra_v5.1.img",
-            "ipq5322_udr_ultra_nor_v5.1.bin"
+            "UCGMAX.ipq5322.v0.0.1+root.14678.5da1256.240103.1409.bin",
+            "uImage_20240103",
+            "u-boot_20231228.mbn"
           ]
         },
         {
@@ -45,23 +43,15 @@
       "CREATE_LINK": [
         [
           "tftp/images/a69a-fw.bin",
-          "../udm-fw/udr-ultra/UDRULT.ipq5322.v3.2.6.260f441.231031.2334.bin"
+          "../udm-fw/ucg-max/UCGMAX.ipq5322.v0.0.1+root.14678.5da1256.240103.1409.bin"
         ],
         [
           "tftp/images/a69a-recovery",
-          "../udm-fw/udr-ultra/uImage_20231031"
+          "../udm-fw/ucg-max/uImage_20240103"
         ],
         [
           "tftp/images/a69a-uboot.mbn",
-          "../udm-fw/udr-ultra/u-boot_20231031.mbn"
-        ],
-        [
-          "tftp/images/a69a-bsp_nor-4g.bin",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_nor_v5.1.bin"
-        ],
-        [
-          "tftp/images/a69a-bsp-4g.img",
-          "../udm-fw/udr-ultra/ipq5322_udr_ultra_v5.1.img"
+          "../udm-fw/ucg-max/u-boot_20231228.mbn"
         ],
         [
           "tftp/tools/a69a-devreg.deb",

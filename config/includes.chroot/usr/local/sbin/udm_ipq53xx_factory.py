@@ -12,7 +12,7 @@ import re
     a678: UCG-Ultra
     a679: UCG-Ultra-PoE
     a690: UXG
-    a69a: UCG-Pro
+    a69a: UCG-Max
 '''
 
 
@@ -46,7 +46,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             'a678': "udr_ultra",
             'a679': "udr_ultra_poe",
             'a690': "uxg",
-            'a69a': "udr_pro"
+            'a69a': "ucg_max"
 
         }
 
@@ -243,7 +243,7 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt,
                                    "mw.l 0x1020000 0x2c1;sleep 2;mw.l 0x1020004 0x0;sleep 2")
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x44000000")
-        elif self.board_id == "a678":
+        elif self.board_id in ["a678","a69a"]:
             self.pexp.expect_ubcmd(30, self.bootloader_prompt,
                                    "mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x1020000 0x2c1;sleep 1;mw.l 0x1020004 0x0;")
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
