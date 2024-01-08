@@ -14,6 +14,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
     a688: UK-Pro
     a691: U7-LR
     a696: U7-Pro-MAX
+    a697: E7
 '''
 class U7IPQ5322BspFactory(ScriptBase):
     def __init__(self):
@@ -39,6 +40,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "1",
             'a691': "1",
             'a696': "1",
+            'a697': "2",
         }
 
         self.wifinum = {
@@ -49,6 +51,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "2",
             'a691': "2",
             'a696': "3",
+            'a697': "4",
         }
 
         self.btnum = {
@@ -59,6 +62,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "0",
             'a691': "0",
             'a696': "1",
+            'a697': "0",
         }
 
         self.bootm_addr = {
@@ -69,6 +73,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "0x50000000",
             'a691': "0x50400000",
             'a696': "0x50400000",
+            'a697': "0x50400000",
         }
 
         self.bootm_cmd = {
@@ -79,6 +84,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "bootm $fileaddr#config@a688",
             'a691': "bootm $fileaddr#config@a691",
             'a696': "bootm $fileaddr#config@a696",
+            'a697': "bootm $fileaddr#config@a697",
         }
 
         self.linux_prompt_select = {
@@ -89,6 +95,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "#",
             'a691': "#",
             'a696': "#",
+            'a697': "#",
         }
 
         self.uboot_eth_port = {
@@ -99,6 +106,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "eth0",
             'a691': "eth0",
             'a696': "eth0",
+            'a697': "eth0",
         }
 
         self.lnx_eth_port = {
@@ -109,6 +117,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             'a688': "br-lan",
             'a691': "br-lan",
             'a696': "br-lan",
+            'a697': "br-lan",
         }
 
         self.devnetmeta = {
@@ -127,7 +136,7 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.FANI2C_CHECK_ENABLE = False
             self.FWUPDATE_ENABLE = True
             self.DATAVERIFY_ENABLE = True
-        elif self.board_id in ["a681", "a685"]:
+        elif self.board_id in ["a681", "a685", "a697"]:
             self.FANI2C_CHECK_ENABLE = True
             self.FWUPDATE_ENABLE = False
             self.DATAVERIFY_ENABLE = False
@@ -281,11 +290,18 @@ class U7IPQ5322BspFactory(ScriptBase):
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
             time.sleep(1)
 
+        # 6G cal data
+        if self.board_id in ["a697"]:
+            cmd = "hexdump -s 0x8a800 -n 10 /dev/mtdblock9"
+            post_exp = "008a800 0001 0404 0000 0000 9000"
+            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, post_exp, retry=5)
+            time.sleep(1)
+
     def chk_bdf_ipq5322(self):
         CHK_2G_BDF_EN = True
         CHK_5G_BDF_EN = True
 
-        if self.board_id in ["a681", "a682", "a685", "a686" "a691", "a696"]:
+        if self.board_id in ["a681", "a682", "a685", "a686" "a691", "a696", "a697"]:
             CHK_2G_BDF_EN = False
             CHK_5G_BDF_EN = False
 

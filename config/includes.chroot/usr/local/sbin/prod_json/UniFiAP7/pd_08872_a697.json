@@ -1,0 +1,62 @@
+{
+  "UniFiAP7": {
+    "E7-08872": {
+      "INDEX": 0,
+      "NAME": "E7",
+      "BOARDID": "a697",
+      "BOMREV": "113-08872",
+      "DESC": "UniFi AP7 Enterprise",
+      "FILE": "u7_ipq5322_bspfactory.py",
+      "T1FILE": "u7_ipq5322_mfg.py",
+      "QRCHECK": "True",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-4k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        },
+        {
+          "SRC_PATH": "images/fcd-image/u7-fw/E7",
+          "DST_PATH": "u7-fw/E7",
+          "FILES": [
+            "norplusemmc-ipq5332-single_v1.3.img",
+            "e7-prism-spf12.2-cs-1g-v1.2_nor.bin"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/a697-bsp.img",
+          "../u7-fw/E7/norplusemmc-ipq5332-single_v1.3.img"
+        ],
+        [
+          "tftp/images/a697-nor.bin",
+          "../u7-fw/E7/e7-prism-spf12.2-cs-1g-v1.2_nor.bin"
+        ],
+        [
+          "tftp/images/a682-fw.bin",
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
+        ],
+        [
+          "tftp/images/a682-gpt.bin",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
+        ],
+        [
+          "tftp/images/a682-initramfs.bin",
+          "../u7-fw/ipq5322/ramload-7.0.27_1g.bin"
+        ],
+        [
+          "tftp/images/a682-initramfs.uboot",
+          "../u7-fw/ipq5322/initramfs-ipq53xx_1g_7.0.27.uboot"
+        ]
+      ]
+    }
+  }
+}
