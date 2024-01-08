@@ -265,9 +265,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 self.set_fuse()
             else:
                 break
-        self.send_wo_extra_newline("choice", "15\n", timout=2)
+        self.send_wo_extra_newline("choice", "15\n", timout=3)
         time.sleep(2)
-        self.send_wo_extra_newline("Choice:", "s", timout=15)
+        self.send_wo_extra_newline("Choice:", "s", timout=5)
+        self.send_wo_extra_newline("Choice:", "s", timout=5)
         # idx = self.pexp.expect_get_index(10, "Press 'B' within 2 seconds for boot menu")
 
     def config_board_model_nbumer(self):
@@ -561,6 +562,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 self.update_uboot()
             elif self.board_id == "ea3e":
                 if not self.bd_rev_set_uxg:
+                    self.update_uboot()
                     pexpect_obj.proc.terminate(force=True)
                     self.set_pexpect_helper(pexpect_obj=pexpect_obj)
                     if self.ps_state is True:
@@ -574,8 +576,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                         self.set_ps_port_relay_off()
                         time.sleep(2)
                         self.set_ps_port_relay_on()
+                else:
+                    self.update_uboot()
                 self.set_fake_eeprom_uxg()
-                self.update_uboot()
+
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
