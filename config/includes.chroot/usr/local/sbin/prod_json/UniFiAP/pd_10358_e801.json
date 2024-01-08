@@ -1,0 +1,61 @@
+{
+  "UniFiAP": {
+    "UDB": {
+      "INDEX": 0,
+      "NAME": "UDB",
+      "BOARDID": "e801",
+      "BOMREV": "113-10358",
+      "DESC": "UniFi Device Bridge",
+      "FILE": "uap_ar9342_factory.py",
+      "T1FILE": "uap_ar9342_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0004",
+      "SW_ID": "0601",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/uap-fw",
+          "DST_PATH": "uap-fw",
+          "FILES": [
+            "UDB.v0.12.0.9bf58858.231218.1412.bin",
+            "u-boot-with-app.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/am",
+          "DST_PATH": "tools/uap",
+          "FILES": [
+            "helper_ARxxxx_11ac_20210329",
+            "cfg_part_ac_series.bin",
+            "id_rsa",
+            "id_rsa.pub",
+            "fl_lock_11ac_re"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/e801.bin",
+          "../uap-fw/UDB.v0.12.0.9bf58858.231218.1412.bin"
+        ],
+        [
+          "tftp/images/e801-uboot.bin",
+          "../uap-fw/u-boot-with-app.bin"
+        ],
+        [
+          "tftp/images/e801-mfg.bin",
+          "../uap-fw/Unifi_bridge-spf6.1.1_nor-v4.bin"
+        ]
+      ]
+    }
+  }
+}

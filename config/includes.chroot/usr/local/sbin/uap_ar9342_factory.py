@@ -546,6 +546,36 @@ class AMAR9342Factory(ScriptBase):
                     print("Exceeded maximum retry times {}".format(i))
                     raise e
 
+    def access_chips_id(self):
+        int_mask_16bit = int("ffff", 16)
+
+        cmd = 'cat {} | sed -r -e \"s~^field=(.*)\$~-i field=\\1~g\" | grep -v \"eeprom\"'.format(self.eetxt_path)
+        log_debug(cmd)
+        [regsubparams, rtc] = self.cnapi.xcmd(cmd)
+        regsubparams = regsubparams.split("\n")
+
+        cmd = "grep cpu_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
+        [cpu_rev_id, rtc] = self.cnapi.xcmd(cmd)
+        int_cpu_rev_id = int(cpu_rev_id, 16)
+        cpu_rev_id_msk = hex(int_cpu_rev_id & int_mask_16bit)
+        new_cpu_rev_id = "-i field=cpu_rev_id,format=hex,value={:0>8}".format(cpu_rev_id_msk.replace("0x", ""))
+        regsubparams[3] = new_cpu_rev_id
+
+        '''
+        cmd = "grep radio1_rev_id {} | cut -d \"=\" -f4".format(self.eetxt_path)
+        [radio1_rev_id, rtc] = self.cnapi.xcmd(cmd)
+        int_radio1_rev_id = int(radio1_rev_id, 16)
+        radio1_rev_id_msk = hex(int_radio1_rev_id& int_mask_16bit)
+        new_radio1_rev_id = "-i field=ARxxxx_radio1_rev_id,format=hex,value={:0>8}".format(radio1_rev_id_msk.replace("0x", ""))
+        regsubparams[2] = new_radio1_rev_id
+        '''
+        
+        regsubparams = " ".join(regsubparams)
+
+        log_debug(regsubparams)
+
+        return regsubparams
+
     ''' Remove local implementation
     def registration(self):
         log_debug("Starting to do registration ...")
@@ -715,11 +745,13 @@ class AMAR9342Factory(ScriptBase):
 
         f3 = open(self.eebin_path, "wb")
         
+        ''' Disable this work around, use uboot default MAC
         # Write MAC0/1, use flasheditor generated MAC address to overwrite original MAC
         content_sz = 12
         for idx in range(0, content_sz):
             bin_tres[idx] = gen_tres[idx]
-
+        '''
+            
         # Write Unifi Extend content start from 0x8000 ~ 0x8100
         content_sz = 256 # 0x100
         offset = 32768  # 0x8000
