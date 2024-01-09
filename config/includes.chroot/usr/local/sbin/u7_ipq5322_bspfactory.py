@@ -159,7 +159,32 @@ class U7IPQ5322BspFactory(ScriptBase):
         self.set_lnx_net(self.lnx_eth_port[self.board_id])
         self.is_network_alive_in_linux()
 
-    def _ramboot_u7Maimi_fwupdate(self):
+    def _ramboot_u7v3_fwupdate(self):
+        self.pexp.expect_action(40, "to stop", "\033\033")
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        # update uboot
+        cmd = "tftpboot 0x44000000 {} && echo && echo \"Download Successful\"".format(self.initramboot)
+        self.pexp.expect_ubcmd(10, self.bootloader_prompt, cmd)
+        cmd = "sf probe && sf erase 0x260000 +0xa0000 && sf write $fileaddr 0x260000 0xa0000 && echo && echo \"Write Successful\""
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_lnxcmd(30, self.bootloader_prompt, "reset")
+
+        time.sleep(2)
+        self.stop_uboot()
+        self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
+        self.is_network_alive_in_uboot()
+
+        # update and install FW
+        cmd = "setenv imgaddr {} && tftpboot {} {} && echo && echo \"Download Successful\"".format(self.bootm_addr[self.board_id], self.bootm_addr[self.board_id], self.fwimg)
+        self.pexp.expect_ubcmd(30, self.bootloader_prompt, cmd)
+        self.pexp.expect_lnxcmd(30, self.bootloader_prompt, "install")
+        time.sleep(10)
+        self.linux_prompt = self.linux_prompt_select[self.board_id]
+
+
+    def _ramboot_u7v2_fwupdate(self):
         self.pexp.expect_action(40, "to stop", "\033\033")
         self.set_ub_net(self.premac, ethact=self.uboot_eth_port[self.board_id])
         self.is_network_alive_in_uboot()
@@ -253,8 +278,10 @@ class U7IPQ5322BspFactory(ScriptBase):
 
     def fwupdate(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "reboot", "")
-        if self.board_id in ["a682", "a686", "a688", "a691", "a696"]:
-            self._ramboot_u7Maimi_fwupdate()
+        if self.board_id in ["a682", "a686", "a688", "a696"]:
+            self._ramboot_u7v3_fwupdate()
+        elif self.board_id in ["a691"]:
+            self._ramboot_u7v2_fwupdate()
         else:
             self._ramboot_uap_fwupdate()
 

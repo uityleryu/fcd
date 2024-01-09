@@ -39,11 +39,15 @@
           "../u7-fw/ipq5322/u7-pro-1g-v8.img"
         ],
         [
+          "tftp/images/a686-nor.bin",
+          "../u7-fw/ipq5322/u7-pro-1g-v8_nor.bin"
+        ],
+        [
           "tftp/images/a686-fw.bin",
           "../u7-fw/ipq5322/BZ.ipq53xx_7.0.32+15447.231223.0115-uboot.bin"
         ],
         [
-          "tftp/images/a686-nor.bin",
+          "tftp/images/a686-initramfs.uboot",
           "../u7-fw/ipq5322/u-boot-7.0.32.bin"
         ]
       ]
