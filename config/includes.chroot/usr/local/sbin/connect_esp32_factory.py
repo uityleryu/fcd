@@ -164,7 +164,7 @@ class CONNECTESP32FactoryGeneral(ScriptBase):
     def fwupdate(self):
         self.check_device_stat()
         self.program_keys()
-        self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader'], file_bin=self.fw_bootloader)
+        #self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader'], file_bin=self.fw_bootloader)
         self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader_digest'], file_bin=self.fw_bootloader_digeset)
         self.program_fw()
 

@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g5turretultra.UVC.SAV530q.v4.66.10.67-fcddbg.e46bddf.231108.0824.bin"
+            "g5turretultra.UVC.SAV530q.v4.66.11.67-fcddbg.7cb5ffb.231124.1241.bin"
           ]
         },
         {
@@ -42,7 +42,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/a59c-fw.bin",
-          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.66.10.67-fcddbg.e46bddf.231108.0824.bin"
+          "../uvc-fw/g5turretultra.UVC.SAV530q.v4.66.11.67-fcddbg.7cb5ffb.231124.1241.bin"
         ],
         [
           "tftp/tools/common/aarch64-rpi4-64k-ee",

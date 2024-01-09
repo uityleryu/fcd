@@ -423,7 +423,9 @@ class ScriptBase(object):
                 break
             else:
                 self.pexp.expect_action(timeout, "", "\003")
-                print("Retry login {}/{}".format(i + 1, retry))
+                time.sleep(1)
+                self.pexp.expect_action(timeout, "", "")
+                print("Retry login {}/{}".format(i, retry))
                 timeout = 10
         else:
             raise Exception("Login exceeded maximum retry times {}".format(retry))
@@ -810,7 +812,7 @@ class ScriptBase(object):
     def disable_inittab_process(self, process):
         self.pexp.expect_lnxcmd(60, self.linux_prompt, "while ! grep -q \"{}\" /etc/inittab; "\
                                 "do echo 'Wait {}...'; sleep 1; done".format(process, process), self.linux_prompt)
-        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'sed -i "/{}/d" /etc/inittab'.format(process), 
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, 'sed -i "/{}/d" /etc/inittab'.format(process),
                                 self.linux_prompt)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "init -q", self.linux_prompt)
 
@@ -1113,7 +1115,7 @@ class ScriptBase(object):
             log_debug(sstr)
             self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
                                 valid_chk=True)
-       
+
         sstr = [
             "echo -e \"field=product_class_id,format=hex,value={}\n".format(product_class_hexval),
             "field=cpu_rev_id,format=hex,value=$fcd_reg_val1\n",
@@ -1125,7 +1127,7 @@ class ScriptBase(object):
         log_debug(sstr)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=sstr, post_exp=self.linux_prompt,
                                 valid_chk=True)
-        
+
         # copy "e.org" as "e.b", cp -a /tmp/e.org.0 /tmp/e.b.0
         cmd = "cp -a {0}/{1} {0}/{2}".format(self.dut_tmpdir, self.eeorg, self.eebin)
         self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)

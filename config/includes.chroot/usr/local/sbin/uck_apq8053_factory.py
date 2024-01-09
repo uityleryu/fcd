@@ -221,8 +221,10 @@ class UCKAPQ8053FactoryGeneral(ScriptBase):
             cmd = "echo USBETH=$(lsusb | grep -c 0b95:1790 2>/dev/null)"
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBETH=1")
 
-            cmd = "echo USBSATA=$(lsusb | grep -c '174c:1153\|174c:55aa' 2>/dev/null)"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
+            if self.board_id in ["e970", "e992"]:
+                cmd = "echo USBSATA=$(lsusb | grep -c 174c:1153 2>/dev/null)"
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, "USBSATA=1")
+
             msg(15, "Check the provisioning data successfully")
 
             src = os.path.join(self.tools, self.helper_path, "check-part.txt")

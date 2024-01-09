@@ -28,10 +28,8 @@
           "FILES": [
             "u7-pro-max-1g-v2.img",
             "u7-pro-max-1g-v2_nor.bin",
-            "BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin",
-            "initramfs-ipq53xx_1g.gpt",
-            "initramfs-ipq53xx_1g_7.0.27.uboot",
-            "ramload-7.0.27_1g.bin"
+            "BZ.ipq53xx_7.0.32+15447.231223.0115-uboot.bin",
+            "u-boot-7.0.32.bin"
           ]
         }
       ],
@@ -42,23 +40,11 @@
         ],
         [
           "tftp/images/a696-fw.bin",
-          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.27+15412.231210.2050-uboot.bin"
-        ],
-        [
-          "tftp/images/a696-gpt.bin",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_1g.gpt"
-        ],
-        [
-          "tftp/images/a696-initramfs.bin",
-          "../u7-fw/ipq5322/ramload-7.0.27_1g.bin"
-        ],
-        [
-          "tftp/images/a696-initramfs.uboot",
-          "../u7-fw/ipq5322/initramfs-ipq53xx_1g_7.0.27.uboot"
+          "../u7-fw/ipq5322/BZ.ipq53xx_7.0.32+15447.231223.0115-uboot.bin"
         ],
         [
           "tftp/images/a696-nor.bin",
-          "../u7-fw/ipq5322/u7-pro-max-1g-v2_nor.bin"
+          "../u7-fw/ipq5322/u-boot-7.0.32.bin"
         ]
       ]
     }

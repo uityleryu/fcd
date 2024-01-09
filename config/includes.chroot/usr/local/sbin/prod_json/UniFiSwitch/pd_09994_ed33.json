@@ -31,7 +31,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed33-app.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32_1.1.5+795.231103.1621-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32_1.1.7+812.231214.1500-unsigned.bin"
         ],
         [
           "tftp/images/ed33-bootloader.bin",
@@ -43,7 +43,7 @@
         ],
         [
           "tftp/images/ed33-mfg.bin",
-          "../usw-fw/usw-ultra/USM8P.esp32mfg_develop-usm8p+799.231107.1355-unsigned.bin"
+          "../usw-fw/usw-ultra/USM8P.esp32mfg_feat-devreg-cli+821.231225.1813-unsigned.bin"
         ],
         [
           "tftp/images/ed33-ota.bin",
