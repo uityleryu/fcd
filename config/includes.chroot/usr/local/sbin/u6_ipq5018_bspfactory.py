@@ -390,7 +390,6 @@ class U6IPQ5018BspFactory(ScriptBase):
 
     def registration_uex(self, regsubparams = None):
         log_debug("Starting to do registration ...")
-        self.devreg_hostname = "stage.udrs.io"
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
@@ -582,12 +581,6 @@ class U6IPQ5018BspFactory(ScriptBase):
         if self.DATAVERIFY_ENABLE is True:
             self.check_info()
             msg(80, "Succeeding in checking the devrenformation ...")
-
-        if self.board_id in ["a667", "a674"]:
-            if self._upload_log() is True:
-                self.upload = False  # Skip to upload log again while __del__
-            else:
-                error_critical("Failed to upload FCD log. This model must upload log")
 
         if self.ps_state is True:
             time.sleep(2)
