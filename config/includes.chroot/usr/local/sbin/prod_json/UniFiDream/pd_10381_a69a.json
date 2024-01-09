@@ -29,7 +29,7 @@
           "FILES": [
             "UCGMAX.ipq5322.v0.0.1+root.14678.5da1256.240103.1409.bin",
             "uImage_20240103",
-            "u-boot_20231228.mbn"
+            "u-boot_20240103.mbn"
           ]
         },
         {
@@ -51,7 +51,7 @@
         ],
         [
           "tftp/images/a69a-uboot.mbn",
-          "../udm-fw/ucg-max/u-boot_20231228.mbn"
+          "../udm-fw/ucg-max/u-boot_20240103.mbn"
         ],
         [
           "tftp/tools/a69a-devreg.deb",
