@@ -633,7 +633,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             }
 
         expect_mebom = sku_dict[self.bom_rev.split('-')[0]]
-        log_info('[BOM_REV = {}] ME BOM input in FCD = {}, Expected = {}'.format(self.bom_rev, self.meb_rev.split('-')[1], expect_mebom))
+        log_info('[BOM_REV = 113-{}, Expected ME_BOM = 300-{}] ME BOM input in FCD = {}'.format(self.bom_rev, expect_mebom, self.meb_rev.split('-')[1],))
 
         if self.meb_rev.split('-')[1] == expect_mebom:
             log_info('ME BOM insert is correct. ')
