@@ -628,12 +628,12 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         sku_dict = {}
         if self.board_id == 'aa03':
             sku_dict = {
-                    '08740' : '01182', #black
-                    '10404' : '01318'  #white
+                    '08740' : '01182', #black (hw_bom : me_bom)
+                    '10404' : '01318'  #white (hw_bom : me_bom)
             }
 
         expect_mebom = sku_dict[self.bom_rev.split('-')[0]]
-        log_info('[BOM_REV = 113-{}, Expected ME_BOM = 300-{}] ME BOM input in FCD = {}'.format(self.bom_rev, expect_mebom, self.meb_rev.split('-')[1],))
+        log_info('[BOM_REV = 113-{}, Expected ME_BOM = 300-{}] ME BOM input in FCD = 300-{}'.format(self.bom_rev, expect_mebom, self.meb_rev.split('-')[1],))
 
         if self.meb_rev.split('-')[1] == expect_mebom:
             log_info('ME BOM insert is correct. ')
