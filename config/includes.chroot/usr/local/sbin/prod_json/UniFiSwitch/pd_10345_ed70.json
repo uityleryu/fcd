@@ -1,0 +1,52 @@
+{
+  "UniFiSwitch": {
+    "USW-PRO-MAX-16-POE": {
+      "INDEX": 0,
+      "NAME": "USW-PRO-MAX-16-POE",
+      "BOARDID": "ed70",
+      "BOMREV": "113-10345",
+      "DESC": "UBNT UniFiSwitch Pro Max 16 POE",
+      "FILE": "us_rtl838x_factory.py",
+      "T1FILE": "us_rtl838x_mfg.py",
+      "QRCHECK": "True",
+      "FCD_ID": "0002",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "US2.rtl93xx_pcb-usw-pro-max-16+15438.231206.0250-uboot.bin"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/usw_rtl838x",
+          "DST_PATH": "tools/usw_rtl838x",
+          "FILES": [
+            "helper_RTL838x_UNIFI_release"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/ed70-fw.bin",
+          "../usw-fw/US2.rtl93xx_pcb-usw-pro-max-16+15438.231206.0250-uboot.bin"
+        ],
+        [
+          "tftp/images/ed70-t1.bin",
+          "../usw-fw/US2.rtl93xx_pcb-usw-pro-max-16+15438.231206.0250-uboot.bin"
+        ]
+      ]
+    }
+  }
+}
