@@ -638,7 +638,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         if self.meb_rev.split('-')[1] == expect_mebom:
             log_info('ME BOM insert is correct. ')
         else:
-            log_error('ME BOM insert is incorrect')
+            error_critical('ME BOM insert is incorrect')
 
 def main():
     uc_factory_general = UPLQCS405FactoryGeneral()
