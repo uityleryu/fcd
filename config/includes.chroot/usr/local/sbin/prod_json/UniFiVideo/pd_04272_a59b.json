@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uvc-fw",
           "DST_PATH": "uvc-fw",
           "FILES": [
-            "g5ptzultra.UVC.gen4s.v4.68.1.67-fcddbg.7e51b61.231012.0531.bin"
+            "g5ptzultra.UVC.gen4s.v4.69.24.67-fcddbg.2128ecb.231129.0925.bin"
           ]
         },
         {
@@ -35,12 +35,19 @@
             "x86-64k-ee",
             "aarch64-rpi4-64k-ee"
           ]
+        },
+        {
+          "SRC_PATH": "images/tools/common/FCD_WEBGUI",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "FCD_WEBGUI_0.0.39.tgz"
+          ]
         }
       ],
       "CREATE_LINK": [
         [
           "tftp/images/a59b-fw.bin",
-          "../uvc-fw/g5ptzultra.UVC.gen4s.v4.68.1.67-fcddbg.7e51b61.231012.0531.bin"
+          "../uvc-fw/g5ptzultra.UVC.gen4s.v4.69.24.67-fcddbg.2128ecb.231129.0925.bin"
         ]
       ]
     }
