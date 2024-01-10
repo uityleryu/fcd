@@ -22,6 +22,7 @@ from datetime import datetime
     ef82: UVP_Touch           (Android 7)
     ef90: UC-Cast             (Android 9)
     ef91: UC-Cast-Ultra       (Android 9)
+    ef92: UC-Cast-Pro         (Android 9)
     ef13: UT-PHONE-TOUCH-W    (Android 7)
     ef0e: UVP_TouchMax        (Android 7)
     ef83: UC-Display-21       (Android 9)
@@ -75,6 +76,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef88': "0007f100",  # UI EMMC PN: 140-04199
             'ef90': "0007f102",  # UI EMMC PN: 140-04869
             'ef91': "0007f102",  # UI EMMC PN: 140-04869
+            'ef92': "0007f103",
             'ef0e': "0007f100",
             'ef83': "0007f100",  # UI EMMC PN: 140-04199
             'ef84': "0007f100",  # UI EMMC PN: 140-04199
@@ -109,7 +111,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             "ef83", "ef84", "ef87", "ef88", "ef90", "ef13", "ec61",
             "efb0", "efb1", "efb2", "efb3", "efb4", "efb5", "efb6",
             "efb7", "efa0", "ec5e", "ec5f", "efba", "efa1", "efbb",
-            "efbc", "ec64", "ec65", "ef91"
+            "efbc", "ec64", "ec65", "ef91", "ef92"
         ]
 
         self.ospl = {
@@ -122,6 +124,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef88': "adr9",
             'ef90': "adr9",
             'ef91': "adr9",
+            'ef92': "adr9",
             'ef0e': "adr9",
             'ef83': "adr9",
             'ef84': "adr9",
@@ -164,6 +167,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "",
             'ef90': "uc_cast",
             'ef91': "uc_cast",
+            'ef92': "uc_cast_pro",
             'ec5e': "uapro_g2",
             'ec5f': "frontrow_da",
             'ec60': "msm8953_uapro",
@@ -202,6 +206,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "0",
             'ef90': "1",
             'ef91': "1",
+            'ef92': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -240,6 +245,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ef91': "1",
+            'ef92': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -278,6 +284,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': "1",
             'ef90': "1",
             'ef91': "1",
+            'ef92': "1",
             'ec5e': "1",
             'ec5f': "1",
             'ec60': "1",
@@ -315,6 +322,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': True,
             'ef90': True,
             'ef91': True,
+            'ef92': True,
             'ec5e': True,
             'ec5f': False,
             'ec60': True,
@@ -359,6 +367,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': False,
             'ef90': False,
             'ef91': False,
+            'ef92': False,
             'ec5e': True,
             'ec5f': False,
             'ec60': False,
@@ -397,6 +406,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': False,
             'ef90': False,
             'ef91': False,
+            'ef92': False,
             'ec5e': False,
             'ec5f': False,
             'ec60': False,
@@ -435,6 +445,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
             'ef86': False,
             'ef90': False,
             'ef91': False,
+            'ef92': False,
             'ec5e': False,
             'ec5f': False,
             'ec60': False,
@@ -477,6 +488,13 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 self.f_eth_mac = "/vendor/factory/MAC_ADDR"
                 self.f_qr_id = "/vendor/factory/qr_id"
                 self.f_wifi_country_code = "/vendor/factory/wificountrycode"
+                self.cfg_file = ""
+            elif self.board_id == "ef92":
+                self.persist_cfg_file = ""
+                self.f_eth_mac = "nvram_tool ethhwaddr{}{} 2> /dev/null"
+                self.f_qr_id = "proinfo_tool ubnt_qr_id{}{}"
+                self.f_bom_id = "proinfo_tool ubnt_bom_id{}{}"
+                self.f_wifi_country_code = "proinfo_tool ubnt_wifi_country_code{}{}"
                 self.cfg_file = ""
             elif self.board_id == "ec5f":
                 self.persist_cfg_file = ""
@@ -591,7 +609,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
         time.sleep(1)
 
     def access_chips_id(self):
-        if self.board_id == "ef90" or self.board_id == "ef91":
+        if self.board_id == "ef90" or self.board_id == "ef91" or self.board_id == "ef92":
             cmd = "cat /sys/devices/system/cpu/cpu0/regs/identification/midr_el1"
             tmp = self.pexp.expect_get_output(cmd, self.linux_prompt)
             cpuid = tmp.replace('\r', '').split("\n")
@@ -808,6 +826,9 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 moount = 'mount -o rw,remount /vendor/factory'
                 cmd = "echo {0} > {1}".format(lmac, self.f_eth_mac)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, moount, valid_chk=True)
+            elif self.board_id == "ef92":
+                lmac = self.mac_format_str2comma(self.mac)
+                cmd = self.f_eth_mac.format(" ", lmac)
             elif self.board_id == "ec5f":
                 lmac = self.mac_format_str2comma(self.mac)
                 cmd = "mkdir /persist/eth; echo {0} > {1}".format(lmac, self.f_eth_mac)
@@ -820,15 +841,27 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                                                                      lmac[5])
                 cmd = "echo -n -e \'{0}\' > {1}".format(bmac, self.f_eth_mac)
 
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+            if self.board_id == "ef92":
+                self.pexp.expect_action(10, "", cmd)
+                time.sleep(5)
+                self.pexp.expect_only(10, "done")
+            else:
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
             # Write QR code
             if self.board_id == 'e980' or self.board_id == 'ec5f':
                 pass
+            elif self.board_id == 'ef92':
+                cmd = self.f_qr_id.format(" ", self.qrcode)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
             else:
                 cmd = "echo {0} > {1}".format(self.qrcode, self.f_qr_id)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
+            # Write BOM ID
+            if self.board_id == 'ef92':
+                cmd = self.f_bom_id.format(" 113-", self.bom_rev)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
             # Write Country Code
             '''
                 If finding
@@ -844,18 +877,28 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                         wifi_country_code = 'US'
                     cmd = "echo {0} > {1}".format(wifi_country_code, self.f_wifi_country_code)
                     self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
-            if self.board_id != "ef90" and self.board_id != "ef91" and self.board_id != "ec5f":
+            elif self.board_id == 'ef92':
+                if self.region is not None:
+                    if self.region == '0000':
+                        wifi_country_code = 'EU'
+                    elif self.region == '002a':
+                        wifi_country_code = 'US'
+                    cmd = self.f_wifi_country_code.format(" ", wifi_country_code)
+                    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
+
+            if self.board_id != "ef90" and self.board_id != "ef91" and self.board_id != "ef92" and self.board_id != "ec5f":
                 cmd = "rm {}".format(self.cfg_file)
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
             #Set permission
-            cmd = "chmod 644 {}".format(self.f_eth_mac)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-            cmd = "chmod 644 {}".format(self.f_qr_id)
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+            if self.board_id != "ef92":
+                cmd = "chmod 644 {}".format(self.f_eth_mac)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+                cmd = "chmod 644 {}".format(self.f_qr_id)
+                self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
             
             # Write persist cfg file
-            if self.board_id == "e980" or self.board_id == "ef90" or self.board_id == "ef91" or self.board_id == "ef84" or self.board_id == 'ec5f':
+            if self.board_id == "e980" or self.board_id == "ef90" or self.board_id == "ef91" or self.board_id == "ef92" or self.board_id == "ef84" or self.board_id == 'ec5f':
                 # No WiFi, No need to write teh country code
                 pass
             else:
@@ -905,7 +948,6 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                 cmd = "chmod 644 /mnt/vendor/persist/top_id"
                 self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd, valid_chk=True)
 
-
         if self.REGISTER_ENABLE is True:
             msg(40, "Send tools to DUT and data provision ...")
             self.registration()
@@ -929,6 +971,51 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     log_debug("Get QR_ID: " + m_gqr[0])
                     if self.qrcode not in m_gqr[0]:
                         error_critical("Check QRID is not matched !!")
+            elif self.board_id == "ef92":
+                cmd = self.f_eth_mac.format("", "")
+                getmac = self.pexp.expect_get_output2(cmd, self.linux_prompt, self.linux_prompt, timeout=10)
+                log_debug("rsp = {}".format(getmac))
+                m_gmac = re.findall(r"([0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2})", getmac)
+                if m_gmac:
+                    log_debug("Get MAC address: " + m_gmac[0])
+                    if lmac not in m_gmac[0]:
+                        error_critical("Check MAC is not matched !!")
+                else:
+                    error_critical("MAC is not found !!")
+
+                cmd = self.f_qr_id.format("", "")
+                getqrid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                log_debug("rsp = {}".format(getqrid))
+                m_gqr = re.findall(r"ubnt_qr_id: (.*)", getqrid)
+                if m_gqr:
+                    log_debug("Get QR_ID: " + m_gqr[0])
+                    if self.qrcode not in m_gqr[0]:
+                        error_critical("Check QRID is not matched !!")
+                else:
+                    error_critical("QRID is not found !!")
+
+                cmd = self.f_bom_id.format("", "")
+                getbomid = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                log_debug("rsp = {}".format(getbomid))
+                m_gbom = re.findall(r"ubnt_bom_id: (.*)", getbomid)
+                if m_gbom:
+                    log_debug("Get BOM_ID: " + m_gbom[0])
+                    if self.bom_rev not in m_gbom[0]:
+                        error_critical("Check BOMID is not matched !!")
+                else:
+                    error_critical("BOMID is not found !!")
+
+                if self.region is not None:
+                    cmd = self.f_wifi_country_code.format("", "")
+                    getwificountrycode = self.pexp.expect_get_output(cmd, self.linux_prompt)
+                    log_debug("rsp = {}".format(getwificountrycode))
+                    m_gwificode = re.findall(r"ubnt_wifi_country_code: (.*)", getwificountrycode)
+                    if m_gwificode:
+                        log_debug("Get WiFi_country_code: " + m_gwificode[0])
+                        if wifi_country_code not in m_gwificode[0]:
+                            error_critical("Check WiFi country code is not matched !!")
+                    else:
+                        error_critical("WiFi country code is not found !!")
             else:
                 cmd = "cat {}| xxd -p".format(self.f_eth_mac)
                 getmac = self.pexp.expect_get_output(cmd, self.linux_prompt)
@@ -1002,7 +1089,7 @@ class CONNECTAPQ8053actoryGeneral(ScriptBase):
                     else:
                         error_critical("Check Top level BOM is not matched !!")
 
-        if self.board_id == "ef90" or self.board_id == "ef91":
+        if self.board_id == "ef90" or self.board_id == "ef91" or self.board_id == "ef92":
             msg(80, "Wait clean boot ...")
             # time.sleep(40)
             t_secs = 60
