@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/uap-fw",
           "DST_PATH": "uap-fw",
           "FILES": [
-            "UDB.v0.12.0.9bf58858.231218.1412.bin",
+            "UDB.v0.13.0.a7d09628.240105.1313.bin",
             "u-boot-with-app.bin"
           ]
         },
@@ -45,7 +45,7 @@
       "CREATE_LINK": [
         [
           "tftp/images/e801.bin",
-          "../uap-fw/UDB.v0.12.0.9bf58858.231218.1412.bin"
+          "../uap-fw/UDB.v0.13.0.a7d09628.240105.1313.bin"
         ],
         [
           "tftp/images/e801-uboot.bin",
