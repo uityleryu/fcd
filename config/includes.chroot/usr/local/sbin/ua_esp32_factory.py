@@ -194,11 +194,17 @@ class UAESP32FactoryGeneral(ScriptBase):
     def extra_update(self):
         if self.board_id in ['ec87']:
             log_debug("Update touch FW ...")
-            output = self.pexp.expect_get_output("touch_fw_update", "success upgrade to fw version", timeout=20)
-            log_debug(output)
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_action(10, self.esp32_prompt, "touch_fw_update")
+            self.pexp.expect_only(20, "success upgrade to fw version")
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_only(10, self.esp32_prompt)
             log_debug("Update MCU FW ...")
-            output = self.pexp.expect_get_output("nuvoton_m031_fw_update", "ui_mcu_driver: program finish", timeout=100)
-            log_debug(output)
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_action(10, self.esp32_prompt, "nuvoton_m031_fw_update")
+            self.pexp.expect_only(100, "ui_mcu_driver: program finish")
+            self.pexp.expect_action(10, "", "")
+            self.pexp.expect_only(10, self.esp32_prompt)
 
 
 
