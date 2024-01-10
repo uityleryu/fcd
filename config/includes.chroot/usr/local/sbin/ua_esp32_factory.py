@@ -191,6 +191,17 @@ class UAESP32FactoryGeneral(ScriptBase):
         #self.program_bootloader(offset=self.partion_offset[self.board_id]['bootloader_digest'], file_bin=self.fw_bootloader_digeset)
         self.program_fw()
 
+    def extra_update(self):
+        if self.board_id in ['ec87']:
+            log_debug("Update touch FW ...")
+            output = self.pexp.expect_get_output("touch_fw_update", "success upgrade to fw version", timeout=20)
+            log_debug(output)
+            log_debug("Update MCU FW ...")
+            output = self.pexp.expect_get_output("nuvoton_m031_fw_update", "ui_mcu_driver: program finish", timeout=100)
+            log_debug(output)
+
+
+
     def put_devreg_data_in_dut(self):
         self.pexp.close()
         time.sleep(1)
@@ -256,6 +267,7 @@ class UAESP32FactoryGeneral(ScriptBase):
 
         if FWUPDATE_ENABLE is True:
             self.fwupdate()
+            self.extra_update()
             msg(15, "Finish FW updating ...")
 
         if PROVISION_ENABLE is True:
