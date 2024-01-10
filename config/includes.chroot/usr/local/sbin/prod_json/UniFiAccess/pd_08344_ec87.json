@@ -35,7 +35,7 @@
         ],
         [
           "tftp/images/ec87-mfg.bin",
-          "../ua-fw/ua-g2-flex/ua-g2-flex_mfg.v0.1.3.0.g5e04.240105.1746.bin"
+          "../ua-fw/ua-g2-flex/ua-g2-flex_mfg.v0.1.4.0.g5b85d.240110.0912.bin"
         ],
         [
           "tftp/images/ec87-ota.bin",
