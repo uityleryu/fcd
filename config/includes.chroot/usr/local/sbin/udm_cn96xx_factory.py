@@ -73,8 +73,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # active port
         self.activeport = {
-            'ea3d': "rvu_pf#3",
-            'ea3e': "rvu_pf#5",
+            'ea3d': "rvu_pf#4",
+            'ea3e': "rvu_pf#4",
         }
 
         # number of Ethernet
@@ -97,8 +97,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         # ethernet interface
         self.netif = {
-            'ea3d': "eth3",
-            'ea3e': "br0",
+            'ea3d': "eth0",
+            'ea3e': "eth0",
         }
 
         # LCM
@@ -126,7 +126,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         self.board_rev = {
             'ea3d': "r9",
-            'ea3e': "r3"
+            'ea3e': "r5"
         }
 
         self.board_rev_uxg = {
@@ -154,7 +154,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         self.board_config = False
         self.fuse_config = False
         self.DEV_REG_ENABLE = True
-        self.bd_rev_set_uxg=False
+        self.bd_rev_set_uxg = False
+
     def set_fake_eeprom(self):
         self.pexp.expect_action(60, "to stop", "\033\033")
         self.pexp.expect_ubcmd(10, self.bootloader_prompt, "sf probe")
@@ -387,9 +388,8 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
     def set_kernel_net(self):
         self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig {} {}".format(self.netif[self.board_id], self.dutip))
-        self.pexp.expect_lnxcmd(10, self.linux_prompt,
-                                "brctl delif br0 {}".format(self.netif[self.board_id], self.dutip))
-        self.is_network_alive_in_linux(ipaddr=self.dutip)
+        self.pexp.expect_lnxcmd(10, self.linux_prompt, "ifconfig br0 down")
+        self.is_network_alive_in_linux(ipaddr=self.tftp_server)
 
     def unlock_eeprom_permission(self):
         log_debug(msg="Unlock eeprom permission")
@@ -519,17 +519,18 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         for i in range(3):
             try:
                 index = self.proc.expect(
-                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 1 seconds for boot menu","Press 'B' within 2 seconds for boot menu"], timeout=15)
+                    [pexpect.EOF, pexpect.TIMEOUT, 'Choice:', "Press 'B' within 1 seconds for boot menu",
+                     "Press 'B' within 2 seconds for boot menu"], timeout=15)
                 if index in [2] and not self.board_config:
                     output = self.proc.before  # Get the previous data
                     log_debug(output)
                     self.config_board_model_nbumer()
                     self.board_config = True
                     continue
-                elif index in [3,4] and not self.fuse_config:
+                elif index in [3, 4] and not self.fuse_config:
                     output = self.proc.before  # Get the previous data
                     if self.board_id == "ea3e" and "Board Revision: r5" in output:
-                        self.bd_rev_set_uxg=True
+                        self.bd_rev_set_uxg = True
                     log_debug(output)
                     self.proc.send("b")
                     self.proc.send("b")
@@ -557,6 +558,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
             self.set_pexpect_helper(pexpect_obj=pexpect_obj)
             time.sleep(2)
             # self.pexp.expect_action(10, "", "123456")  # For Local test
+            '''
             if self.board_id == "ea3d":
                 self.set_fake_eeprom()
                 self.update_uboot()
@@ -579,7 +581,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                 else:
                     self.update_uboot()
                 self.set_fake_eeprom_uxg()
-
+            '''
+            self.set_fake_eeprom()
+            self.update_uboot()
             msg(10, "Boot up to linux console and network is good ...")
 
         if self.BOOT_RECOVERY_IMAGE:
@@ -594,8 +598,9 @@ class UDM_CN96XX_FACTORY(ScriptBase):
         if self.INIT_RECOVERY_IMAGE:
             self.login(self.username, self.password, timeout=360, log_level_emerg=True)
             # time.sleep(15)  # for stable eth
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "systemctl stop udapi-server network-init")
             self.set_kernel_net()
-            self.pexp.expect_lnxcmd(30, self.linux_prompt, "echo 140 >> /sys/class/hwmon/hwmon0/pwm1")
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0 down")
             self.unlock_eeprom_permission()
             time.sleep(1)
             msg(20, "Boot up to linux console and network is good ...")
@@ -614,13 +619,10 @@ class UDM_CN96XX_FACTORY(ScriptBase):
 
         if self.DATAVERIFY_ENABLE:
             self.pexp.expect_action(10, self.linux_prompt, "reboot -f")  # for correct ubnthal
-            # if self.ps_state and idx == 0:
-            #     self.set_ps_port_relay_off()
-            #     time.sleep(3)
-            #     self.set_ps_port_relay_on()
             self.login(self.username, self.password, timeout=240, log_level_emerg=True)
             time.sleep(15)  # for stable eth
-            self.set_kernel_net()
+            # self.set_kernel_net()
+            self.pexp.expect_lnxcmd(30, self.linux_prompt, "ifconfig br0 {}".format(self.dutip))
             self.check_info()
             msg(80, "Succeeding in checking the devreg information ...")
 
