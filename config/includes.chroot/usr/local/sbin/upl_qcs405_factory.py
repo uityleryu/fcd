@@ -34,6 +34,18 @@ class UPLQCS405FactoryGeneral(ScriptBase):
     def __init__(self):
         super(UPLQCS405FactoryGeneral, self).__init__()
 
+        # gen file to dut
+        self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
+
+        # gen file to usbdisk
+        self.is_token_txt_exist = False
+        self.file_dir = os.path.join('/home/ubnt/usbdisk', 'UPL-AMP_hk_output')
+        self.txt_path = os.path.join(self.file_dir, 'uuid_{}.txt'.format(self.mac.upper()))
+        self.csv_path = os.path.join(self.file_dir, 'token_{}.csv'.format(self.mac.upper()))
+        self.mfi_token_txt_path = os.path.join(self.file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
+        if not os.path.exists(self.file_dir):
+            os.makedirs(self.file_dir)
+
         self.ver_extract()
         devreg_mtd = {
             'aa03': "/dev/block/bootdevice/by-name/factory"
@@ -414,37 +426,28 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         info_dict['crc32'] = _calculate_crc(info_dict)
         log_info('info_dict = \n{}'.format(pformat(info_dict, indent=4)))
 
-        # gen file
-        file_dir = os.path.join('/home/ubnt/usbdisk', 'UPL-AMP_hk_output')
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
         # prepare token.txt to write into dut / backup on usbdisk
-        self.token_txt_path = os.path.join(self.tftpdir, 'token.txt')
         self.tokenid_dut = info_dict['token_id']
         with open(self.token_txt_path, 'w') as f:
             f.write('"product_plan_id","{}","device_uuid","{}","security_token_id","{}","security_token","{}"'.format(
                 info_dict['product_plan_id'], info_dict['uuid'],
                 info_dict['token_id'], info_dict['token']))
-        mfi_token_txt_path = os.path.join(file_dir, 'MFi_token_{}.txt'.format(self.mac.upper()))
-        shutil.copy2(self.token_txt_path, mfi_token_txt_path)
+        shutil.copy2(self.token_txt_path, self.mfi_token_txt_path)
 
         # csv
-        csv_path = os.path.join(file_dir, 'token_{}.csv'.format(self.mac.upper()))
-        with open(csv_path, 'w') as f:
+        with open(self.csv_path, 'w') as f:
             f.write('{}, {}, {}, {}'.format(
                 info_dict['product_plan_id'], info_dict['token_id'],
                 info_dict['token'], info_dict['crc32']))
         # txt
-        txt_path = os.path.join(file_dir, 'uuid_{}.txt'.format(self.mac.upper()))
-        with open(txt_path, 'w') as f:
+        with open(self.txt_path, 'w') as f:
             f.write('{}'.format(info_dict['uuid']))
 
-        is_file = os.path.isfile(self.token_txt_path) and os.path.isfile(csv_path) and os.path.isfile(txt_path)
+        is_file = os.path.isfile(self.token_txt_path) and os.path.isfile(self.csv_path) and os.path.isfile(self.txt_path)
         log_info('token_info_path = {}'.format(self.token_txt_path))
-        log_info('token_info_path = {}'.format(mfi_token_txt_path))
-        log_info('csv_path = {}'.format(csv_path))
-        log_info('txt_path = {}'.format(txt_path))
+        log_info('token_info_path = {}'.format(self.mfi_token_txt_path))
+        log_info('csv_path = {}'.format(self.csv_path))
+        log_info('txt_path = {}'.format(self.txt_path))
         log_info('token_id = {}'.format(self.tokenid_dut))
         log_info('Token INFO TXT & Token CSV & uuid TXT files generate {}'.format('success' if is_file else 'fail'))
 
@@ -457,6 +460,20 @@ class UPLQCS405FactoryGeneral(ScriptBase):
         read_txt = 'read.txt'
 
         # record token.txt file size
+        log_info('self.is_token_txt_exist = {}'.format(self.is_token_txt_exist))
+        log_info('token_info_path = {} is {}exist'.format(self.token_txt_path, os.path.isfile(self.token_txt_path)))
+        log_info('token_info_path = {}'.format(self.mfi_token_txt_path))
+
+        if self.is_token_txt_exist:
+            log_info('copy {} to {}'.format(self.mfi_token_txt_path, self.token_txt_path))
+            cmd = 'sudo {} {}'.format(self.mfi_token_txt_path, self.token_txt_path)
+            self.fcd.common.xcmd(cmd)
+            #shutil.copy2(self.mfi_token_txt_path, self.token_txt_path)
+
+        is_file_exist = os.path.isfile(self.token_txt_path)
+        if is_file_exist is not True:
+            error_critical('{} not exist'.format(self.token_txt_path))
+
         cmd = 'wc -c {} | cut -d\' \' -f1'.format(self.token_txt_path)
         [file_size, rtc] = self.fcd.common.xcmd(cmd)
         log_debug('token.txt file_size = {}'.format(file_size))
@@ -504,10 +521,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.tokenid_dut = res
             log_info('tokenid = {}'.format(self.tokenid_dut))
 
-        self.is_homekit_write_before = self.tokenid_dut != ''
-        log_info('DUT has {}written homekit before'.format('' if self.is_homekit_write_before else 'NOT '))
+        self.is_homekit_done_before = self.tokenid_dut != ''
+        log_info('DUT has {}written homekit before'.format('' if self.is_homekit_done_before else 'NOT '))
 
-        if self.is_homekit_write_before is True:
+        if self.is_homekit_done_before is True:
             reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
         else:
             reg_cmd = self._check_is_token_txt_exist(reg_cmd)
