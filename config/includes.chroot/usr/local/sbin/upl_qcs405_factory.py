@@ -162,6 +162,8 @@ class UPLQCS405FactoryGeneral(ScriptBase):
                                       polling_connect=True,
                                       polling_mins=3)
 
+            self.set_sshclient_helper(ssh_client=sshclient_obj)
+
             if self.homekit_dict[self.board_id] is True:
                 self.check_tokenid_match_after_reboot()
                 msg(90, "Finish checking HK token ID ...")
