@@ -12,6 +12,7 @@ import shutil
 
 from pprint import pformat
 from collections import OrderedDict
+from PAlib.Framework.fcd.ssh_client import SSHClient
 
 sys.path.append("/tftpboot/tools")
 
@@ -38,6 +39,9 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             'aa03': "/dev/block/bootdevice/by-name/factory"
         }
         self.devregpart = devreg_mtd[self.board_id]
+        self.ip = "192.168.1.20"
+        self.username = "ubnt"
+        self.password = "ubnt"
 
         self.mac_check_dict = {
             'aa03': True
@@ -152,6 +156,12 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.write_mac_addr()
             msg(85, "Finish writing MAC address ...")
 
+            sshclient_obj = SSHClient(host=self.ip,
+                                      username=self.username,
+                                      password=self.password,
+                                      polling_connect=True,
+                                      polling_mins=3)
+
             if self.homekit_dict[self.board_id] is True:
                 self.check_tokenid_match_after_reboot()
                 msg(90, "Finish checking HK token ID ...")
@@ -250,7 +260,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             log_info(msg="reboot to activate MAC address, sleep 50 secs to wait for boot-up")
             time.sleep(50)
 
-            self.login(username="ui", password="ui", timeout=120)
+            #self.login(username="ui", password="ui", timeout=120)
             #self.setup_network()
 
     def setup_network(self):
@@ -308,7 +318,7 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
         # read mac
         cmd = 'ubus call main hal_read_mac_addrs'
-        res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt)
+        res = self.session.execmd_getmsg(cmd)
         json_data = re.search(r'{[^}]+}', res).group()
         mac_dict_dut = json.loads(json_data)
         log_info('[dut] mac_dict = {}'.format(mac_dict_dut))
@@ -330,8 +340,11 @@ class UPLQCS405FactoryGeneral(ScriptBase):
 
     def homekit_setup_after_registration(self):
         if self.is_homekit_done_before is False:
-            self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
+
+            if self.is_token_txt_exist is False:
+                self.__gen_homkit_token_csv_txt(self.client_x86_rsp)
             self.__write_homkit_token_to_dut()
+
         else:
             self.__check_tokenid_match(self.client_x86_rsp)
 
@@ -489,12 +502,10 @@ class UPLQCS405FactoryGeneral(ScriptBase):
             self.tokenid_dut = res
             log_info('tokenid = {}'.format(self.tokenid_dut))
 
-        self.is_homekit_done_before = self.tokenid_dut != ''
+        self.is_homekit_write_before = self.tokenid_dut != ''
+        log_info('DUT has {}written homekit before'.format('' if self.is_homekit_write_before else 'NOT '))
 
-        log_info('DUT has {}done homekit registration before'.format(
-            '' if self.is_homekit_done_before else 'NOT '))
-
-        if self.is_homekit_done_before is True:
+        if self.is_homekit_write_before is True:
             reg_cmd.append('-i field=last_homekit_device_token_id,format=string,value={}'.format(self.tokenid_dut))
         else:
             reg_cmd = self._check_is_token_txt_exist(reg_cmd)
@@ -601,14 +612,14 @@ class UPLQCS405FactoryGeneral(ScriptBase):
     def check_tokenid_match_after_reboot(self):
         # temporally added to avoid unexpected msg from console
         cmd = 'killall ui-connect-mqttd'
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
+        self.session.execmd(cmd)
 
         cmd = 'killall ui-spotify-connect spotify_connect'
-        self.pexp.expect_lnxcmd(timeout=10, pre_exp=self.linux_prompt, action=cmd, post_exp=self.linux_prompt)
-        
+        self.session.execmd(cmd)
+
         for retry in range(3):
             cmd = 'cat /persist/apple/MFi_token |awk -F \'","\' \'{print $6}\''
-            res = self.pexp.expect_get_output(action=cmd, prompt=self.linux_prompt).split('\n')[-2].strip()
+            res = self.session.execmd_getmsg(cmd).split('\n')[-2].strip()
             self.tokenid_dut_after_reboot = res
             log_info('tokenid_after_reboot = {}'.format(self.tokenid_dut_after_reboot))
             log_info('tokenid_dut = {}'.format(self.tokenid_dut))
