@@ -27,8 +27,8 @@
           "SRC_PATH": "images/fcd-image/udm-fw/ucg-max",
           "DST_PATH": "udm-fw/ucg-max",
           "FILES": [
-            "UCGMAX.ipq5322.v0.0.1+root.14678.5da1256.240103.1409.bin",
-            "uImage_20240103",
+            "UCGMAX.ipq5322.v0.0.1+root.14889.44f8732.240111.1556.bin",
+            "uImage_20240111",
             "u-boot_20240103.mbn"
           ]
         },
@@ -43,11 +43,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/a69a-fw.bin",
-          "../udm-fw/ucg-max/UCGMAX.ipq5322.v0.0.1+root.14678.5da1256.240103.1409.bin"
+          "../udm-fw/ucg-max/UCGMAX.ipq5322.v0.0.1+root.14889.44f8732.240111.1556.bin"
         ],
         [
           "tftp/images/a69a-recovery",
-          "../udm-fw/ucg-max/uImage_20240103"
+          "../udm-fw/ucg-max/uImage_20240111"
         ],
         [
           "tftp/images/a69a-uboot.mbn",

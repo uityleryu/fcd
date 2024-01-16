@@ -243,9 +243,14 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
             self.pexp.expect_ubcmd(30, self.bootloader_prompt,
                                    "mw.l 0x1020000 0x2c1;sleep 2;mw.l 0x1020004 0x0;sleep 2")
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm 0x44000000")
-        elif self.board_id in ["a678","a69a"]:
+        elif self.board_id in ["a678"]:
             self.pexp.expect_ubcmd(30, self.bootloader_prompt,
                                    "mw.l 0x101A000 0x2c1;sleep 1;mw.l 0x101A004 0x0;sleep 1;mw.l 0x1020000 0x2c1;sleep 1;mw.l 0x1020004 0x0;")
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
+        elif self.board_id in ["a69a"]:
+            self.pexp.expect_ubcmd(30, self.bootloader_prompt,
+                                   "mw.l 0x3a504000 0x40010000;sleep 1;mw.l 0x3a504004 0x300000c6;sleep 1")
+            time.sleep(2)
             self.pexp.expect_ubcmd(30, self.bootloader_prompt, "bootm")
         else:
             log_debug("BOM REV:" + self.bom_rev.split('-')[1])
@@ -455,9 +460,8 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
         output = self.pexp.expect_get_output(action="cat /usr/lib/version", prompt="", timeout=3)
         log_debug(output)
         cmd = "systemctl is-system-running"
-        ct = 0
         retry_max = 150
-        while ct < retry_max:
+        for _ in range(retry_max):
             output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
             m_run = re.findall("running", output)
             m_degraded = re.findall("degraded", output)
@@ -470,7 +474,6 @@ class UDM_IPQ53XX_FACTORY(ScriptBase):
                 log_debug(rmsg)
                 break
             time.sleep(1)
-            ct += 1
         else:
             rmsg = "The system is not booting up successfully, FAIL!!"
             error_critical(rmsg)
