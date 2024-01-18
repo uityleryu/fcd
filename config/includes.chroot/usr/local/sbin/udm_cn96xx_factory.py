@@ -365,7 +365,7 @@ class UDM_CN96XX_FACTORY(ScriptBase):
                                    self.board_id))
         self.pexp.expect_action(60, self.bootloader_prompt,
                                 "setenv bootcmd 'ext4load mmc 0:1 $loadaddr uImage;bootm $loadaddr'")
-        self.pexp.expect_action(60, self.bootloader_prompt, "saveenv")
+        # self.pexp.expect_action(60, self.bootloader_prompt, "saveenv")
         self.pexp.expect_action(60, self.bootloader_prompt,
                                 "setenv bootargs console=ttyAMA0,115200n8 earlycon=pl011,0x87e028000000 net.ifnames=0 maxcpus=24 rootwait rw root= coherent_pool=16M client={} server={} sysid={} factory".format(
                                     self.dutip,
