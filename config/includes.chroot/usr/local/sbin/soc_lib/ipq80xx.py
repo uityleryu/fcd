@@ -361,9 +361,9 @@ class IPQ80XXFactory(ScriptBase):
         self.pexp.expect_ubcmd(10, "Password:", "ubnt")
         cmd = "ifconfig br0 {0} up".format(self.dutip)
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-        if self.board_id == "ac19":
-            cmd = "brctl addif br0 eth0"
-            self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
+        #if self.board_id == "ac19":
+        #    cmd = "brctl addif br0 eth0"
+        #    self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
         self.chk_lnxcmd_valid()
         self.lnx_netcheck()
 
@@ -736,7 +736,7 @@ class IPQ80XXMFG(ScriptBase):
 
         msg(90, "Reboot")
         if self.board_id == 'ac19':
-            self.pexp.expect_only(120, "Linux version 4.4.241")
+            self.pexp.expect_only(120, "Linux version 4.4.60")
         else:
             self.pexp.expect_only(120, "Linux version 4.4.60")
 
