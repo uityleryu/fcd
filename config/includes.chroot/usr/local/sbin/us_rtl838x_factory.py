@@ -54,6 +54,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "helper_RTL838x_UNIFI_release",  # usw-pro-max-48-poe (RTK)
             'ed5e': "helper_RTL838x_UNIFI_release",  # usw-pro-max-48 (RTK)
             'ed70': "helper_RTL838x_UNIFI_release",  # usw-pro-max-16-poe (RTK)
+            'ed71': "helper_RTL838x_UNIFI_release",  # usw-pro-max-16 (RTK)
         }
 
         self.helperexe = self.helpername[self.board_id]
@@ -68,12 +69,12 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
         self.wait_LCM_upgrade_en = {
             'ed20', 'ed21', 'ed22', 'ed23', 'ed24', 'ed25', 'ed2c', 'ed2d',
             'ed2e', 'ed50', 'ed51', 'ed52', 'ed53', 'ed56', 'ed58', 'ed5a',
-            'ed5b', 'ed5c', 'ed5d', 'ed5e', 'ed70'
+            'ed5b', 'ed5c', 'ed5d', 'ed5e', 'ed70', 'ed71'
         }
         # TODO: Add ed5b & ed5d later when available
 
         self.check_led_mcu_fw_en = {
-            'ed5b', 'ed5c', 'ed5d', 'ed5e', 'ed70'
+            'ed5b', 'ed5c', 'ed5d', 'ed5e', 'ed70', 'ed71'
         }
 
         self.led_board_id = {
@@ -82,6 +83,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "1",
             'ed5e': "1",
             'ed70': "3",
+            'ed71': "3",
         }
 
         self.disable_powerd_list = ['ed2c']
@@ -114,6 +116,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "3",  # usw-pro-max-48-poe (RTK)
             'ed5e': "3",  # usw-pro-max-48 (RTK)
             'ed70': "3",  # usw-pro-max-16-poe (RTK)
+            'ed71': "3",  # usw-pro-max-16 (RTK)
         }
 
         # number of WiFi
@@ -143,6 +146,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "0",  # usw-pro-max-48-poe (RTK)
             'ed5e': "0",  # usw-pro-max-48 (RTK)
             'ed70': "0",  # usw-pro-max-16-poe (RTK)
+            'ed71': "0",  # usw-pro-max-16 (RTK)
         }
 
         # number of Bluetooth
@@ -172,6 +176,7 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "0",  # usw-pro-max-48-poe (RTK)
             'ed5e': "0",  # usw-pro-max-48 (RTK)
             'ed70': "0",  # usw-pro-max-16-poe (RTK)
+            'ed71': "0",  # usw-pro-max-16 (RTK)
         }
 
         self.netif = {
@@ -200,12 +205,14 @@ class USW_RTL838X_FactoryGeneral(ScriptBase):
             'ed5d': "ifconfig eth0 ",  # usw-pro-max-48-poe (RTK)
             'ed5e': "ifconfig eth0 ",  # usw-pro-max-48 (RTK)
             'ed70': "ifconfig eth0 ",  # usw-pro-max-16-poe (RTK)
+            'ed71': "ifconfig eth0 ",  # usw-pro-max-16 (RTK)
         }
 
         self.set_boardmodel_uboot = {
             'ed5b': 'UBNT_USPM24',
             'ed5c': 'UBNT_USPM24',
             'ed70': 'UBNT_USPM16',
+            'ed71': 'UBNT_USPM16',
         }
 
         self.longtime_login = ['ed5b', 'ed5d']
