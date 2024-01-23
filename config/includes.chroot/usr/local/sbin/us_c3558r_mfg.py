@@ -80,13 +80,14 @@ class HYPERSWITCH_MFG(ScriptBase):
         try:
             ssh_DUT = SSHClient(host=preload_gu_ip, username=preload_gu_username, password=preload_gu_password)
         except Exception as e:
-            rmsg = "Can't make SSH connection: {preload_gu_ip}... FAIL!!!"
+            rmsg = "The status of the extra RPi4 for loading FW image:"
+            rmsg += "Can't make SSH connection: {}... FAIL!!!".format(preload_gu_ip)
             error_critical(rmsg)
 
         onie_file = "onie-installer.bin"
         src_file = os.path.join(self.fwdir, onie_file)
         dst_file = "/tftpboot/{}".format(onie_file)
-        cmd = "ll {}".format(self.fwdir)
+        cmd = "ls -la {}".format(self.fwdir)
         self.cn.xcmd(cmd)
 
         cmd = "md5sum {} | awk '{{print $1}}'".format(dst_file)
@@ -160,7 +161,7 @@ class HYPERSWITCH_MFG(ScriptBase):
 
         cmd = "cat /usr/lib/version"
         self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
-        self.pexp.expect_only(10, "ESWHS.Atom-C3K")
+        self.pexp.expect_only(10, "Atom-C3K")
 
         msg(no=100, out="Load the FW image completed")
         self.close_fcd()

@@ -1,0 +1,69 @@
+{
+  "UniFiSwitch": {
+    "ESWAGG": {
+      "INDEX": 0,
+      "NAME": "ESWAGG",
+      "BOARDID": "f066",
+      "BOMREV": "113-10341",
+      "DESC": "Enterprise Aggregation",
+      "FILE": "us_c3558r_factory.py",
+      "T1FILE": "us_c3558r_mfg.py",
+      "QRCHECK": "mac-qr-ac",
+      "SW_ID": "0201",
+      "DOWNLOAD_FILE": [
+        {
+          "SRC_PATH": "images/fcd-image/usw-fw/f066",
+          "DST_PATH": "usw-fw",
+          "FILES": [
+            "onie-recovery-x86_64-ubiquiti_esw_aggregation-r0_2.0.efi64.pxe",
+            "ESW.Atom-C3K_0.1.8.onie",
+            "EC_PCOM-B701GT-UBQ_0_5_0.bin",
+            "B701GT-UBQ_0_0_18.cab"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/f064",
+          "DST_PATH": "tools/",
+          "FILES": [
+            "DNV_LAN0_KR_KX_BP_noMNG_2p10_80000BDF.bin",
+            "DNV_LAN1_KR_KX_BP_noMNG_2p10_80000BF9.bin",
+            "fparts.txt",
+            "spsFPT_v42649.efi",
+            "eeupdate64e",
+            "helper_MRVL_HS_release",
+            "devreg_MRVL_HS_debug",
+            "ECUpdate"
+          ]
+        },
+        {
+          "SRC_PATH": "images/tools/common",
+          "DST_PATH": "tools/common",
+          "FILES": [
+            "sshd_config",
+            "tmux.conf",
+            "x86-64k-ee",
+            "aarch64-rpi4-64k-ee"
+          ]
+        }
+      ],
+      "CREATE_LINK": [
+        [
+          "tftp/images/onie-installer.bin",
+          "../usw-fw/ESW.Atom-C3K_0.1.8.onie"
+        ],
+        [
+          "tftp/images/bootx64.efi",
+          "../usw-fw/onie-recovery-x86_64-ubiquiti_esw_aggregation-r0_2.0.efi64.pxe"
+        ],
+        [
+          "tftp/images/f066-ec.bin",
+          "../usw-fw/EC_PCOM-B701GT-UBQ_0_5_0.bin"
+        ],
+        [
+          "tftp/images/f066-bios.cab",
+          "../usw-fw/B701GT-UBQ_0_0_18.cab"
+        ]
+      ]
+    }
+  }
+}

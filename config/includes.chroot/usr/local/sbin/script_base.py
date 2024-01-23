@@ -30,7 +30,7 @@ from uuid import getnode as get_mac
 
 
 class ScriptBase(object):
-    __version__ = "1.0.59"
+    __version__ = "1.0.60"
     __authors__ = "PA team"
     __contact__ = "fcd@ui.com"
 
@@ -523,6 +523,8 @@ class ScriptBase(object):
         if regsubparams is None:
             regsubparams = self.access_chips_id()
 
+        code_type = "01"
+
         # To decide which client executed file
         cmd = "uname -a"
         [sto, rtc] = self.cnapi.xcmd(cmd)
@@ -541,6 +543,12 @@ class ScriptBase(object):
             reg_qr_field = ""
         else:
             reg_qr_field = "-i field=qr_code,format=hex,value=" + self.qrhex
+
+        # The HEX of the activate code
+        if self.activate_code is None or not self.activate_code:
+            reg_activate_code = ""
+        else:
+            reg_activate_code = "-i field=code,format=hex,value={}".format(self.activate_code_hex)
 
         if self.sem_ver == "" or self.sw_id == "" or self.fw_ver == "":
             regparam = [
@@ -582,6 +590,9 @@ class ScriptBase(object):
                 "-y {}key.pem".format(self.key_dir),
                 "-z {}crt.pem".format(self.key_dir)
             ]
+            code_type_option = "-i field=code_type,format=hex,value={}".format(code_type)
+            regparam.insert(3, code_type_option)
+            regparam.insert(4, reg_activate_code)
 
         regparam = ' '.join(regparam)
 

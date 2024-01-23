@@ -13,6 +13,7 @@ from PAlib.Framework.fcd.logger import log_debug, log_error, msg, error_critical
 
 '''
     f064: HyperSwitch
+    f066: Enterprise Aggregation
 '''
 
 
@@ -42,15 +43,18 @@ class HYPERSWITCHFactoryGeneral(ScriptBase):
         self.UPDATE_EC_EN = True
 
         self.ethnum = {
-            'f064': "8"
+            'f064': "8",
+            'f066': "8"
         }
 
         self.wifinum = {
             'f064': "0",
+            'f066': "0",
         }
 
         self.btnum = {
             'f064': "0",
+            'f066': "0",
         }
 
         self.devnetmeta = {
@@ -522,7 +526,7 @@ class HYPERSWITCHFactoryGeneral(ScriptBase):
             src_path = os.path.join(self.fwdir, self.ec_filename)
             self.scp_get(self.user, self.password, self.dutip, src_path, self.dut_tmpdir)
 
-            cmd = "ECUpdate /tmp/{}".format(self.ec_filename)
+            cmd = "/tmp/ECUpdate /tmp/{}".format(self.ec_filename)
             self.pexp.expect_lnxcmd(10, self.linux_prompt, cmd)
 
         if self.UPDATE_BIOS_EN is True:
@@ -549,8 +553,6 @@ class HYPERSWITCHFactoryGeneral(ScriptBase):
         else:
             log_debug("No need power supply control")
         time.sleep(6)
-
-        self.pexp.expect_only(80, "Found update")
 
         if self.DATAVERIFY_EN is True:
             msg(70, "Checking registration ...")
