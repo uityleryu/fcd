@@ -466,10 +466,10 @@ class U6IPQ5018BspFactory(ScriptBase):
             ct = 0
             retry_max = 300
             while ct < retry_max:
-                output = self.pexp.expect_get_output(action=cmd, prompt="" ,timeout=3)
+                output = self.pexp.expect_get_output(action=cmd, prompt="", timeout=3)
                 pattern = r"192.168.1.[\d]+"
                 m_run = re.findall(pattern, output)
-                if len(m_run) == 1:
+                if len(m_run) >= 1:
                     rmsg = "The system is running good"
                     log_debug(rmsg)
                     self.pexp.expect_lnxcmd(5, self.linux_prompt, "poweroff")
