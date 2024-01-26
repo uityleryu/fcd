@@ -85,7 +85,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
     def check_devreg_data(self):
         pattern = r"[a-f0-9]{64}"
         for i in range(3):
-            cmd = "ui_flash sha256 w25q64jv@0 0x7ff000 0x1000"
+            cmd = "ui_flash sha256 w25q64jw@0 0x7ff000 0x1000"
             output = self.pexp.expect_get_output2(cmd, self.nrf5340_prompt, self.nrf5340_prompt, timeout=3)
             sha256_eeprom = re.findall(pattern, output)
             if sha256_eeprom:
