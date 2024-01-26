@@ -77,7 +77,7 @@ class UMNRF52840FactoryGeneral(ScriptBase):
     def check_qspi_flash(self):
         timeout = 300
         log_info("Start checking QSPI flash, maximum {} seconds ...".format(timeout))
-        cmd = "ui_flash verify_range w25q64jv@0 0x0 0x7ff000"
+        cmd = "ui_flash verify_range w25q64jw@0 0x0 0x7ff000"
         self.pexp.expect_action(2, "", cmd)
         self.pexp.expect_only(timeout, "err=0")
         log_info("QSPI Flash check pass!!!")
