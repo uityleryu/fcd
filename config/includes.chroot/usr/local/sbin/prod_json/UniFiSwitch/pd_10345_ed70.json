@@ -16,7 +16,7 @@
           "SRC_PATH": "images/fcd-image/usw-fw",
           "DST_PATH": "usw-fw",
           "FILES": [
-            "US2.rtl93xx_pcb-usw-pro-max-16+15556.240125.1016-uboot.bin"
+            "US2.rtl93xx_develop+15511.240126.0536-uboot.bin"
           ]
         },
         {
@@ -40,11 +40,11 @@
       "CREATE_LINK": [
         [
           "tftp/images/ed70-fw.bin",
-          "../usw-fw/US2.rtl93xx_pcb-usw-pro-max-16+15556.240125.1016-uboot.bin"
+          "../usw-fw/US2.rtl93xx_develop+15511.240126.0536-uboot.bin"
         ],
         [
           "tftp/images/ed70-t1.bin",
-          "../usw-fw/US2.rtl93xx_pcb-usw-pro-max-16+15556.240125.1016-uboot.bin"
+          "../usw-fw/US2.rtl93xx_develop+15511.240126.0536-uboot.bin"
         ]
       ]
     }
