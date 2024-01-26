@@ -408,13 +408,19 @@ def copy_required_files():
             if args.ostype == "ISO":
                 sclient_f = "client_x86_release"
             else:
-                sclient_f = "client_rpi4_release"
+                sclient_f = ["client_rpi4_release", "client_rpi5_release"]
         else:
             sclient_f = pjson[pl][im]['CLIENT_FILE']
 
-        print("Will use {}".format(sclient_f))
-        if sclient_f not in register_libs:
-            register_libs.append(sclient_f)
+        if isinstance(sclient_f, str):
+            print("Will use {}".format(sclient_f))
+            if sclient_f not in register_libs:
+                register_libs.append(sclient_f)
+        elif isinstance(sclient_f, list):
+            print("Will use {}".format(sclient_f))
+            for item in sclient_f:
+                if item not in register_libs:
+                    register_libs.append(item)
 
         if "FILE" in pjson[pl][im].keys():
             poq = pjson[pl][im]['FILE']
