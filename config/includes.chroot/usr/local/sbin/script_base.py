@@ -182,8 +182,9 @@ class ScriptBase(object):
             error_critical("Get linux information failed!!")
         else:
             log_debug("Get linux information successfully")
-            match = re.findall("armv7l", sto)
-            if match:
+            match_rpi4 = re.findall("armv7l", sto)
+            match_rpi5 = re.findall("aarch64", sto)
+            if match_rpi4 or match_rpi5:
                 self.fcd_version_info_file_path = os.path.join("/home/ubnt", self.fcd_version_info_file)
                 self.fcd_user = "ubnt"
                 self.fcd_passw = "ubnt"
@@ -210,10 +211,14 @@ class ScriptBase(object):
             error_critical("Get linux information failed!!")
         else:
             log_debug("Get linux information successfully")
-            match = re.findall("armv7l", sto)
-            if match:
+            match_rpi4 = re.findall("armv7l", sto)
+            match_rpi5 = re.findall("aarch64", sto)
+            if match_rpi4:
                 self.eepmexe   = "aarch64-rpi4-64k-ee"
                 self.eepmexe4k = "aarch64-rpi4-4k-ee"
+            elif match_rpi5:
+                self.eepmexe   = "aarch64-rpi5-64k-ee"
+                self.eepmexe4k = "aarch64-rpi5-4k-ee"
             else:
                 self.eepmexe   = "x86-64k-ee"
                 self.eepmexe4k = "x86-4k-ee"
@@ -530,9 +535,12 @@ class ScriptBase(object):
             error_critical("Get linux information failed!!")
         else:
             log_debug("Get linux information successfully")
-            match = re.findall("armv7l", sto)
-            if match:
+            match_rpi4 = re.findall("armv7l", sto)
+            match_rpi5 = re.findall("aarch64", sto)
+            if match_rpi4:
                 clientbin = "/usr/local/sbin/client_rpi4_release"
+            elif match_rpi5:
+                clientbin = "/usr/local/sbin/client_rpi5_release"
             else:
                 clientbin = "/usr/local/sbin/client_x86_release"
 
